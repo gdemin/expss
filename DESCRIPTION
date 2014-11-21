@@ -1,9 +1,16 @@
 Package: CleanR
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: Tool for cleaning (checking) data from marketing/sociological studies.
+Version: 0.5
 Date: 2014-11-21
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Gregory Demin
+Maintainer: Gregory Demin <gdemin@gmail.com>
+Depends:
+    dplyr
+Description: Data from marketing/sociological surveys are often needed for the
+    additional checking/cleaning for consistency (e. g. missing values, values
+    out and so on). CleanR main features: checking of single/multiple response
+    questions, conditional checking, checking for uniqueness of values and so
+    on.
+License: GPL (>= 2)
+URL: https://github.com/gdemin/cleanr

@@ -1,0 +1,1 @@
+sngl = function(x){}
