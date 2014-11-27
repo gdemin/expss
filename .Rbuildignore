@@ -1,4 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-<<<<<<< HEAD
 ^tests
+\.Rhistory
+\.gitignore
+\.git
