@@ -6,30 +6,30 @@
 \alias{row_countif}
 \title{Count values that meet a criterion that you specify.}
 \usage{
-countif(criteria = NULL, ...)
+countif(criterion = NULL, ...)
 
-row_countif(criteria = NULL, ...)
+row_countif(criterion = NULL, ...)
 
-x \%has\% criteria
+x \%has\% criterion
 
 crit(FUN, ...)
 }
 \arguments{
-\item{criteria}{Vector with counted values or function (possibly constructed with \code{crit})}
+\item{criterion}{Vector with counted values or function (possibly constructed with \code{crit})}
 
 \item{...}{Tested data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.}
 
 \item{x}{Tested data. Vector, matrix, data.frame, list. Shorter columns in list
  will be recycled.}
 
-\item{FUN}{Function for criteria construction. In most cases it is '>','==' and so on.}
+\item{FUN}{Function for criterion construction. In most cases it is '>','==' and so on.}
 }
 \value{
 \code{countif} return single value (vector of length 1).
 \code{row_countif} returns vector of counts for each row of supplied arguments.
-\code{\%has\%} returns logical vector - presense indicator of criteria in each row.
-\code{crit} returns function of class 'criteria' that test argument for
-supplied criteria.
+\code{\%has\%} returns logical vector - presense indicator of criterion in each row.
+\code{crit} returns function of class 'criterion' that test argument for
+supplied condition.
 }
 \description{
 There are two flavors of this function - one works on entire dataset/matrix/vector
@@ -43,13 +43,13 @@ value (vector of length 1).
 \code{row_countif} counts values in each row of supplied arguments and return
 vector of counts for each row of supplied arguments.
 
-Both functions never return NA's. If criteria is missing (or is NULL)
+Both functions never return NA's. If criterion is missing (or is NULL)
 non-NA's values will be counted.
 
 \code{crit(FUN,...)} translate FUN in function \code{FUN(x,...)}. Functions
 returned by \code{crit} may be combined with logical operators: |, &, !.
 
-\code{\%has\%} is simple wrapper for rather frequent case \code{row_countif(criteria,x)>0}.
+\code{\%has\%} is simple wrapper for rather frequent case \code{row_countif(criterion,x)>0}.
 }
 \examples{
 # Examples borrowed from Microsoft Excel help for COUNTIF
@@ -59,15 +59,22 @@ df1 = data.frame(
 )
 
 countif("apples",df1$a) # 2
+
 countif("apples",df1) # 2
+
 with(df1,countif("apples",a,b)) # 2
+
 countif(crit(">",55),df1$b) # 2
+
 countif(crit("!=",75),df1$b) # 3
+
 countif(crit(">=",32),df1$b) # 4
+
 countif(crit(">",32) & crit("<",86),df1$b) # 2
+
 countif(33:85,df1$b) # 2
 
-# more complex criteria
+# more complex criterion
 # values with letters
 countif(function(x) grepl("^[A-z]+$",x),df1) # 4
 
@@ -76,6 +83,7 @@ countif(function(x) grepl("^a",x),df1) # 2
 
 # row_countif
 row_countif(function(x) grepl("^a",x),df1) # c(1,0,0,1)
+
 df1 \%has\% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
 
 # example with dplyr
@@ -85,7 +93,9 @@ df2 = as.data.frame(
 )
 df2  \%>\% mutate(exact = row_countif(8,V1,V2,V3),
                 greater = row_countif(crit(">",8),V1,V2,V3),
-                range = row_countif(5:8,V1,V2,V3)
+                range = row_countif(5:8,V1,V2,V3),
+                na = row_countif(is.na,V1,V2,V3),
+                not_na = row_countif(,V1,V2,V3)
                 ) -> result
 result
 }
