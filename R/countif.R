@@ -5,7 +5,7 @@
 #' similar to SPSS \code{COUNT} function. 
 #'  
 #' @param criterion Vector with counted values or function (possibly constructed with \code{crit}) 
-#' @param ... Tested data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.
+#' @param ... Counted data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.
 #' @param FUN Function for criterion construction. In most cases it is '>','==' and so on.
 #' @param x Tested data. Vector, matrix, data.frame, list. Shorter columns in list
 #'  will be recycled.
@@ -56,7 +56,7 @@
 #' 
 #' countif(33:85,df1$b) # 2
 #' 
-#' # more complex criterion
+#' # more complex criteria
 #' # values with letters
 #' countif(function(x) grepl("^[A-z]+$",x),df1) # 4
 #' 
@@ -81,7 +81,7 @@
 #'                 ) -> result
 #' result
 countif=function(criterion=NULL,...){
-    dtfrm = do.call(data.frame,list(...)) # form data.frame to use rowSums 
+    dtfrm = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame  
     cond = build_criterion(criterion,dtfrm)
     sum(cond,na.rm=TRUE)
 }
@@ -89,7 +89,7 @@ countif=function(criterion=NULL,...){
 #' @export
 #' @rdname countif
 row_countif=function(criterion=NULL,...){
-    dtfrm = do.call(data.frame,list(...)) # form data.frame to use rowSums 
+    dtfrm = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
     cond = build_criterion(criterion,dtfrm)
     rowSums(cond,na.rm=TRUE)
 }

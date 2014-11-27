@@ -17,7 +17,7 @@ crit(FUN, ...)
 \arguments{
 \item{criterion}{Vector with counted values or function (possibly constructed with \code{crit})}
 
-\item{...}{Tested data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.}
+\item{...}{Counted data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.}
 
 \item{x}{Tested data. Vector, matrix, data.frame, list. Shorter columns in list
  will be recycled.}
@@ -74,7 +74,7 @@ countif(crit(">",32) & crit("<",86),df1$b) # 2
 
 countif(33:85,df1$b) # 2
 
-# more complex criterion
+# more complex criteria
 # values with letters
 countif(function(x) grepl("^[A-z]+$",x),df1) # 4
 
