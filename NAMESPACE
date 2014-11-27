@@ -3,6 +3,7 @@
 S3method("!",criteria)
 S3method("&",criteria)
 S3method("|",criteria)
+export("%has%")
 export(countif)
 export(crit)
 export(row_countif)

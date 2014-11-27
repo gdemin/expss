@@ -22,9 +22,5 @@ sngl = function(.data,values=sqrt(.data),...){
 
 
 
-############ TODO переписать с оптимизацией ??? ##############
-'%in_case%'=function(x,value){
-    row_countif(value=value,...)>0
-}
 
 

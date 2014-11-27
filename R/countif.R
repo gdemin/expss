@@ -7,21 +7,30 @@
 #' @param criteria Vector with counted values or function (possibly constructed with \code{crit}) 
 #' @param ... Tested data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.
 #' @param FUN Function for criteria construction. In most cases it is '>','==' and so on.
+#' @param x Tested data. Vector, matrix, data.frame, list. Shorter columns in list
+#'  will be recycled.
 #' 
 #' @return 
 #' \code{countif} return single value (vector of length 1). 
 #' \code{row_countif} returns vector of counts for each row of supplied arguments.
+#' \code{\%has\%} returns logical vector - presense indicator of criteria in each row.
 #' \code{crit} returns function of class 'criteria' that test argument for 
-#' supplied criteria.
+#' supplied criteria. 
 #' 
 #' @details
 #' \code{countif} counts values in entire dataset and return single 
 #' value (vector of length 1).
+#' 
 #' \code{row_countif} counts values in each row of supplied arguments and return
-#' vector of counts for each row of supplied arguments. Both functions never 
-#' return NA's. If criteria is missing (or is NULL) non-NA's values will be 
-#' counted. Functions returned by \code{crit} may be combined with 
-#' logical operators: |,&,!.
+#' vector of counts for each row of supplied arguments.
+#' 
+#' Both functions never return NA's. If criteria is missing (or is NULL) 
+#' non-NA's values will be counted. 
+#' 
+#' \code{crit(FUN,...)} translate FUN in function \code{FUN(x,...)}. Functions 
+#' returned by \code{crit} may be combined with logical operators: |, &, !.
+#' 
+#' \code{\%has\%} is simple wrapper for rather frequent case \code{row_countif(criteria,x)>0}.
 #' 
 #' @export
 #' @examples
@@ -49,6 +58,7 @@
 #' 
 #' # row_countif
 #' row_countif(function(x) grepl("^a",x),df1) # c(1,0,0,1)
+#' df1 %has% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
 #' 
 #' # example with dplyr
 #' set.seed(123)
@@ -72,6 +82,12 @@ row_countif=function(criteria=NULL,...){
     dtfrm = do.call(data.frame,list(...)) # form data.frame to use rowSums 
     cond = build_criteria(criteria,dtfrm)
     rowSums(cond,na.rm=TRUE)
+}
+
+#' @export
+#' @rdname countif
+'%has%'=function(x,criteria){
+    row_countif(criteria=criteria,x)>0
 }
 
 #' @export
