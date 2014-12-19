@@ -15,6 +15,7 @@
 .ERROR_DUPLICATED_VALUE = "Duplicated value"
 .ERROR_UNIQUE = "Value is not unique"
 .ERROR_VALUE_SHOULD_BE_MISSING = "Value should be missing"
+.NO_ERROR_MESSAGE = "No error"
 
 always = function(dfs){
     UseMethod("always")
@@ -81,23 +82,35 @@ check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = FALSE,cond=NULL,s
 
 print.check=function(object,error_num=20,...){
     stopifnot_message(all(.CHK_COLUMNS %in% colnames(object)),"Incorrect 'check' object. There are no some of check columns.")
-        
+    check_summary = summary(object)
+    if (identical(check_summary,.NO_ERROR_MESSAGE)){
+        cat(.NO_ERROR_MESSAGE,"\n")
+        return()
+    }
+    cat("Details:\n")
+    print(check_summary[[1]])
+    cat("\nSummary:\n")
+    print(check_summary[[2]])
+    return()
     
 }
 
 summary.check=function(object,skip_details = FALSE){
     stopifnot_message(all(.CHK_COLUMNS %in% colnames(object)),"Incorrect 'check' object. There are no some of check columns.")
+    if (all(is.na(object[,.CHK_ERR]))){
+        return(.NO_ERROR_MESSAGE)
+    }
     if (!skip_details){
         detailed_res = table(object[,.CHK_VAL],object[,.CHK_ERR],useNA = "always")
         detailed_res = detailed_res[,!is.na(colnames(detailed_res)),drop=FALSE]
         detailed_res = addmargins(detailed_res,1,FUN = list("Total" = sum),quiet = TRUE)
-        
+          
     }
     res = table(object[,.CHK_ERR],useNA = "always")
     names(res)[is.na(names(res))] = "No errors"
     res = cbind(res,round(prop.table(res)*100,1))
     res = addmargins(res,1,FUN = list("Total" = sum),quiet = TRUE)
-    colnames(res) = c("Count","%")
+     colnames(res) = c("Count","%")
     if (!skip_details){
         list("Details"= detailed_res,"Summary"=res)
     } else {
