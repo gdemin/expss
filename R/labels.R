@@ -18,6 +18,7 @@
 #'   we set variable class to "with_labels". There are special methods of
 #'   subsetting and concatenation for this class. To drop variable label use 
 #'   \code{var_lab(var) <- NULL} or \code{unvr(var)}.
+#' @export  
 #' @examples
 #' a = rep(1:2,5)
 #' b = a
@@ -31,12 +32,14 @@ var_lab=function(x){
     UseMethod("var_lab")
 }
 
-#'@rdname var_lab
+#' @rdname var_lab
+#' @export
 "var_lab<-"=function(x,value){
     with_var_lab(x,value)
 }
 
-#'@rdname var_lab
+#' @rdname var_lab
+#' @export
 with_var_lab=function(x,value){
     if (length(value)==0){
         attr(x,"label")=NULL
@@ -47,10 +50,13 @@ with_var_lab=function(x,value){
     x
 }
 
+
+#' @export
 var_lab.default=function(x){
     attr(x,"label")
 }
 
+#' @export
 var_lab.data.frame=function(x)
     ## Drop this function???
     ## mainly for multiple choice questions
@@ -67,19 +73,23 @@ var_lab.data.frame=function(x)
 }
 
 #'@rdname var_lab
+#' @export
 unvr=function(x){
     UseMethod("unvr")
 }
 
+#' @export
 unvr.default=function(x){
     with_var_lab(x,NULL)
 }
 
+#' @export
 unvr.data.frame=function(x){
     for (each in seq_along(x)) x[[i]] = unvr(x[[i]])
     x
 }
 
+#' @export
 unvr.list=function(x){
     for (each in seq_along(x)) x[[i]] = unvr(x[[i]])
     x
@@ -113,12 +123,14 @@ unvr.list=function(x){
 #'   from droping this attribute during some operations (such as \code{c}).
 #'   There are special methods of subsetting and concatenation for this class.
 #'   To drop value labels use \code{val_lab(var) <- NULL} or \code{unvl(var)}.
+#' @export
 #' @examples
 #' data(mtcars)
 val_lab=function(x){
     UseMethod("val_lab")
 }
 
+#' @export
 val_lab.data.frame=function(x)
 {
     res=val_lab.default(x)
@@ -130,6 +142,7 @@ val_lab.data.frame=function(x)
     res
 }
 
+#' @export
 val_lab.default=function(x){
     attr(x,"value_labels")
 }

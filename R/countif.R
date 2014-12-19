@@ -119,7 +119,18 @@ crit = function(FUN,...){
 
 #' @export
 '|.criterion' = function(e1,e2) {
-    res = function(x) e1(x) | e2(x)
+    
+    if (is.function(e1)) {
+        f1 = e1
+    } else {
+        f1 = function(x) x %in% e1
+    }
+    if (is.function(e2)) {
+        f2 = e2
+    } else {
+        f2 = function(x) x %in% e2
+    }
+    res = function(x) f1(x) | f2(x)
     class(res) = unique("criterion",class(res))
     res
 }
@@ -127,7 +138,17 @@ crit = function(FUN,...){
 
 #' @export
 '&.criterion' = function(e1,e2) {
-    res = function(x) e1(x) & e2(x)
+    if (is.function(e1)) {
+        f1 = e1
+    } else {
+        f1 = function(x) x %in% e1
+    }
+    if (is.function(e2)) {
+        f2 = e2
+    } else {
+        f2 = function(x) x %in% e2
+    }
+    res = function(x) f1(x) & f2(x)
     class(res) = unique("criterion",class(res))
     res
 }
