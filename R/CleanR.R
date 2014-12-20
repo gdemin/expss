@@ -87,9 +87,37 @@ print.check=function(object,error_num=20,...){
         cat(.NO_ERROR_MESSAGE,"\n")
         return()
     }
-    cat("Details:\n")
+    resample = function(x,n) x[sample.int(length(x), n)]
+    errors_row =(1:nrow(object))[!is.na(object[,.CHK_ERR])] 
+    valid_row = (1:nrow(object))[is.na(object[,.CHK_ERR])]
+    errors = length(errors_row) 
+    no_errors = length(valid_row)
+    if (errors>error_num){
+        block_with_error = object[resample(errors_row,error_num),,drop=FALSE]
+        cat("**Random sample of",error_num,"errors**\n")
+    } else {
+        cat("**Total",errors,"errors**\n")
+        block_with_error = object[errors_row,,drop=FALSE]
+        
+    }
+    print(tbl_df(block_with_error),n=error_num)
+    if (no_errors>0){
+        if (no_errors>min(error_num,errors)){
+            cat("\n**Random sample of",min(error_num,errors),"valid cases**\n")
+            valid_block = object[resample(valid_row,min(error_num,errors)),,drop=FALSE]
+            
+        } else {
+            cat("\n**Total",no_errors,"valid cases**\n")
+            valid_block = object[valid_row,,drop=FALSE]
+            
+        }
+        print(tbl_df(valid_block),n=error_num*2)
+    } else {
+        cat("\n**No valid cases**\n")
+    }
+    cat("\n**Details**\n")
     print(check_summary[[1]])
-    cat("\nSummary:\n")
+    cat("\n**Summary**\n")
     print(check_summary[[2]])
     return()
     
