@@ -1,17 +1,17 @@
 #### special columns which are created in data.frame for checking
-.CHK_ERR = ".CHK_ERROR" 
-.CHK_COND = ".CHK_COND" 
-.CHK_SUBSET = ".CHK_SUBSET" 
-.CHK_VAL = ".CHK_VALUE"
-.CHK_QUEST = ".CHK_QUESTION"
+.CHK_ERR = ".Error" 
+.CHK_COND = ".Condition" 
+.CHK_SUBSET = ".Subset" 
+.CHK_VAL = ".IncorrectValue"
+.CHK_QUEST = ".VariableValue"
 
 .CHK_COLUMNS = c(.CHK_ERR,.CHK_VAL, .CHK_COND,.CHK_QUEST)
 
 #### Error codes
-.ERROR_SNGL_MISSING = "Value is missing"
-.ERROR_MULT_MISSING = "Value is missing"
-.ERROR_SNGL_OUT_OF_RANGE = "Value is out of range"
-.ERROR_MULT_OUT_OF_RANGE = "Value is out of range"
+# .ERROR_SNGL_MISSING = "Missing/out of range"
+# .ERROR_MULT_MISSING = "Missing/out of range"
+.ERROR_SNGL_OUT_OF_RANGE = "Missing/Out of range"
+.ERROR_MULT_OUT_OF_RANGE = "Missing/Out of range"
 .ERROR_DUPLICATED_VALUE = "Duplicated value"
 .ERROR_UNIQUE = "Value is not unique"
 .ERROR_VALUE_SHOULD_BE_MISSING = "Value should be missing"
@@ -22,7 +22,12 @@ always = function(dfs){
 }
 
 always.data.frame = function(dfs){
-    attr(dfs,"always",exact = TRUE)
+    res = attr(dfs,"always",exact = TRUE)
+    if (!is.null(res)) {
+        res = intersect(res,colnames(dfs))
+        if (length(res)==0) res = NULL
+    }
+    res
 }
 
 "always<-" = function(x,value){
@@ -37,7 +42,7 @@ always.data.frame = function(dfs){
     
 }
 
-check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = FALSE,cond=NULL,subset = NULL){
+check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = mult,cond=NULL,subset = NULL){
     raw_dfs = as.data.frame(dfs,stringsAsFactors=FALSE)
     if (is.null(subset)) {
         dfs = raw_dfs        
@@ -45,23 +50,35 @@ check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = FALSE,cond=NULL,s
         dfs = raw_dfs[subset,,drop=FALSE]
         if (!is.null(cond)) cond = cond[subset]
     }
+    
+    count_notna = row_countif(NULL,dfs) # count non-NA
+
+    if (mult) values = values | crit(is.na) # NA's allowed in multiple response
     valid = build_criterion(values,dfs)
     count_valid = rowSums(valid,na.rm=TRUE)
-    chk = ifelse(count_valid == NCOL(dfs),NA,.ERROR_SNGL_OUT_OF_RANGE)
+    chk = ifelse(count_valid != NCOL(dfs),.ERROR_SNGL_OUT_OF_RANGE, NA)
     chk_res=data.frame(chk_err=chk,chk_val=NA,stringsAsFactors = FALSE)
     if (!all(is.na(chk))){
-        res = which(!as.matrix(valid),arr.ind=TRUE)
-        res = res[!duplicated(res[,1]),,drop=FALSE]
-        chk_res[res[,1],"chk_val"] = unlist(lapply(1:nrow(res),function(x) dfs[res[x,1],res[x,2]]))
-        chk_res$chk_err = with(chk_res,ifelse(is.na(chk_val) & !is.na(chk_err),.ERROR_SNGL_MISSING,chk_err)) 
+        # if errors exists
+        res = which(!as.matrix(valid),arr.ind=TRUE) # find rows,columns of incorrect values
+        res = res[!duplicated(res[,1]),,drop=FALSE] # we will report only first errors in each case
+        chk_res[res[,1],"chk_val"] = unlist(lapply(1:nrow(res),function(x) dfs[res[x,1],res[x,2]])) # get incorrect values
+#             chk_res$chk_err = with(chk_res,ifelse(is.na(chk_val) & !is.na(chk_err),.ERROR_SNGL_MISSING,chk_err)) # separate missings and out of range
+    }
+    if (mult){
+        chk_res$chk_err = ifelse(is.na(chk_res$chk_err) & (count_notna==0),.ERROR_SNGL_OUT_OF_RANGE, chk_res$chk_err)    
+        chk_quest = apply(raw_dfs,1,function(x) paste(x[!is.na(x)],collapse=","))
+        chk_quest[chk_quest==""] = NA
+    } else {
+        chk_quest = apply(raw_dfs,1,function(x) paste(x,collapse=","))
     }
     if (!is.null(cond)){
-        count_notna = row_countif(NULL,dfs) # count non-NA
         chk_res$chk_err=ifelse((count_notna>0) & !cond,.ERROR_VALUE_SHOULD_BE_MISSING,chk_res$chk_err)
+        chk_res$chk_err=ifelse(!is.na(chk_res$chk_err) & !cond & is.na(chk_res$chk_val),NA,chk_res$chk_err)
     } else {
         cond=NA
     }    
-    chk_quest = apply(raw_dfs,1,function(x) paste(x,collapse=","))
+
     fin = setNames(data.frame(chk_quest,stringsAsFactors = FALSE),.CHK_QUEST)
     if(!is.null(subset)){
         fin[subset,.CHK_ERR] = chk_res$chk_err        
@@ -71,13 +88,14 @@ check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = FALSE,cond=NULL,s
         fin[,c(.CHK_ERR,.CHK_VAL,.CHK_COND)] = data.frame(chk_res,cond,stringsAsFactors = FALSE)
     }
     res = fin[,c(.CHK_ERR,.CHK_VAL,.CHK_COND,.CHK_QUEST)]
-    if (!is.null(always(raw_dfs))){
-        res =data.frame(raw_dfs[,always(raw_dfs),drop = FALSE],res,stringsAsFactors = FALSE)
-        
-    }
     class(res) = unique(c("check",class(res)))
     res
 }
+
+# if (!is.null(always(raw_dfs))){
+#     res =data.frame(raw_dfs[,always(raw_dfs),drop = FALSE],res,stringsAsFactors = FALSE)
+#     
+# }
 
 
 print.check=function(object,error_num=20,...){
@@ -94,30 +112,36 @@ print.check=function(object,error_num=20,...){
     no_errors = length(valid_row)
     if (errors>error_num){
         block_with_error = object[resample(errors_row,error_num),,drop=FALSE]
-        cat("**Random sample of",error_num,"errors**\n")
+        cat("==========================================================\n")
+        cat("Random sample of",error_num,"error(s)\n")
     } else {
-        cat("**Total",errors,"errors**\n")
+        cat("==========================================================\n")
+        cat("Total",errors,"error(s)\n")
         block_with_error = object[errors_row,,drop=FALSE]
         
     }
     print(tbl_df(block_with_error),n=error_num)
     if (no_errors>0){
         if (no_errors>min(error_num,errors)){
-            cat("\n**Random sample of",min(error_num,errors),"valid cases**\n")
+            cat("\n==========================================================\n")
+            cat("Random sample of",min(error_num,errors),"valid case(s)\n")
             valid_block = object[resample(valid_row,min(error_num,errors)),,drop=FALSE]
             
         } else {
-            cat("\n**Total",no_errors,"valid cases**\n")
+            cat("\n==========================================================\n")
+            cat("Total",no_errors,"valid case(s)\n")
             valid_block = object[valid_row,,drop=FALSE]
             
         }
         print(tbl_df(valid_block),n=error_num*2)
     } else {
-        cat("\n**No valid cases**\n")
+        cat("\nNo valid cases\n")
     }
-    cat("\n**Details**\n")
+    cat("\n==========================================================\n")
+    cat("Details\n")
     print(check_summary[[1]])
-    cat("\n**Summary**\n")
+    cat("\n==========================================================\n")
+    cat("Summary\n")
     print(check_summary[[2]])
     return()
     
@@ -167,7 +191,7 @@ check_mult = function(dfs,values=NULL){
     cnt = row_countif(values,dfs)
     cnt2 = row_countif(NULL,dfs)
     chk = ifelse(cnt>0,NA,.ERROR_MULT_MISSING)
-    chk = ifelse(is.na(chk),NA,ifelse(cnt2>cnt,NA,.ERROR_MULT_OUT_OF_RANGE)
+    chk = ifelse(is.na(chk),NA,ifelse(cnt2>cnt,NA,.ERROR_MULT_OUT_OF_RANGE))
     chk 
 }
 

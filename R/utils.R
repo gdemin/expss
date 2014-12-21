@@ -9,20 +9,6 @@ stopifnot_message = function(cond,...){
     invisible()
 }
 
-function (...) 
-{
-
-    mc <- match.call()
-    for (i in 1L:n) if (!(is.logical(r <- ll[[i]]) && !anyNA(r) && 
-                              all(r))) {
-        ch <- deparse(mc[[i + 1]], width.cutoff = 60L)
-        if (length(ch) > 1L) 
-            ch <- paste(ch[1L], "....")
-        stop(sprintf(ngettext(length(r), "%s is not TRUE", "%s are not all TRUE"), 
-                     ch), call. = FALSE, domain = NA)
-    }
-    invisible()
-}
 
 #' @import dplyr
 NULL
