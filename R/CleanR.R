@@ -10,8 +10,8 @@
 #### Error codes
 # .ERROR_SNGL_MISSING = "Missing/out of range"
 # .ERROR_MULT_MISSING = "Missing/out of range"
-.ERROR_SNGL_OUT_OF_RANGE = "Missing/Out of range"
-.ERROR_MULT_OUT_OF_RANGE = "Missing/Out of range"
+.ERROR_OUT_OF_RANGE = "Missing/Out of range"
+# .ERROR_MULT_OUT_OF_RANGE = "Missing/Out of range"
 .ERROR_DUPLICATED_VALUE = "Duplicated value"
 .ERROR_UNIQUE = "Value is not unique"
 .ERROR_VALUE_SHOULD_BE_MISSING = "Value should be missing"
@@ -48,37 +48,21 @@ check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = mult,cond=NULL,su
         dfs = raw_dfs        
     } else { 
         dfs = raw_dfs[subset,,drop=FALSE]
-        if (!is.null(cond)) cond = cond[subset]
+        cond = cond[subset]
     }
     
-    count_notna = row_countif(NULL,dfs) # count non-NA
-
-    if (mult) values = values | crit(is.na) # NA's allowed in multiple response
-    valid = build_criterion(values,dfs)
-    count_valid = rowSums(valid,na.rm=TRUE)
-    chk = ifelse(count_valid != NCOL(dfs),.ERROR_SNGL_OUT_OF_RANGE, NA)
-    chk_res=data.frame(chk_err=chk,chk_val=NA,stringsAsFactors = FALSE)
-    if (!all(is.na(chk))){
-        # if errors exists
-        res = which(!as.matrix(valid),arr.ind=TRUE) # find rows,columns of incorrect values
-        res = res[!duplicated(res[,1]),,drop=FALSE] # we will report only first errors in each case
-        chk_res[res[,1],"chk_val"] = unlist(lapply(1:nrow(res),function(x) dfs[res[x,1],res[x,2]])) # get incorrect values
-#             chk_res$chk_err = with(chk_res,ifelse(is.na(chk_val) & !is.na(chk_err),.ERROR_SNGL_MISSING,chk_err)) # separate missings and out of range
-    }
-    if (mult){
-        chk_res$chk_err = ifelse(is.na(chk_res$chk_err) & (count_notna==0),.ERROR_SNGL_OUT_OF_RANGE, chk_res$chk_err)    
+    ##########
+    
+    if (mult) {
+        chk_res = check_mult(dfs,values,cond)
         chk_quest = apply(raw_dfs,1,function(x) paste(x[!is.na(x)],collapse=","))
         chk_quest[chk_quest==""] = NA
     } else {
+        chk_res = check_single(dfs,values,cond)
         chk_quest = apply(raw_dfs,1,function(x) paste(x,collapse=","))
     }
-    if (!is.null(cond)){
-        chk_res$chk_err=ifelse((count_notna>0) & !cond,.ERROR_VALUE_SHOULD_BE_MISSING,chk_res$chk_err)
-        chk_res$chk_err=ifelse(!is.na(chk_res$chk_err) & !cond & is.na(chk_res$chk_val),NA,chk_res$chk_err)
-    } else {
-        cond=NA
-    }    
-
+    if (is.null(cond)) cond = NA
+    ##############
     fin = setNames(data.frame(chk_quest,stringsAsFactors = FALSE),.CHK_QUEST)
     if(!is.null(subset)){
         fin[subset,.CHK_ERR] = chk_res$chk_err        
@@ -97,6 +81,83 @@ check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = mult,cond=NULL,su
 #     
 # }
 
+# internal functions
+check_single = function(dfs,values,cond){
+
+    valid = build_criterion(values,dfs)
+    if (!is.null(cond)){
+        na = is.na(as.matrix(dfs)) 
+        valid[!cond,] = na[!cond,,drop = FALSE]  # if not cond then valid oly NA's
+        count_valid = rowSums(valid,na.rm=TRUE)
+        chk = ifelse(count_valid != NCOL(dfs), 
+                     ifelse(cond,
+                            .ERROR_OUT_OF_RANGE, 
+                            .ERROR_VALUE_SHOULD_BE_MISSING), 
+                     NA)
+        
+    } else {
+        count_valid = rowSums(valid,na.rm=TRUE)
+        chk = ifelse(count_valid != NCOL(dfs),.ERROR_OUT_OF_RANGE, NA) 
+    }
+    chk_res=data.frame(chk_err=chk,chk_val=NA,stringsAsFactors = FALSE)
+    if (!all(is.na(chk))){
+        # if errors 
+        res = which(!as.matrix(valid),arr.ind=TRUE) # find rows,columns of incorrect values
+        # TODO report all values???
+        res = res[!duplicated(res[,1]),,drop=FALSE] # we will report only first error in each case
+        chk_res[res[,1],"chk_val"] = unlist(lapply(1:nrow(res),function(x) dfs[res[x,1],res[x,2]])) # get incorrect values
+        
+    }
+    chk_res
+}
+
+check_mult = function(dfs,values, cond){
+    valid = build_criterion(values | crit(is.na),dfs)
+    na = is.na(as.matrix(dfs))
+    count_notna = rowSums(!na,na.rm=TRUE)
+    valid[count_notna==0,1] = FALSE # if all is NA this is not valid
+    if (!is.null(cond)){
+        
+        valid[!cond,] = na[!cond,,drop = FALSE] # if not cond then valid oly NA's
+        count_valid = rowSums(valid,na.rm=TRUE)
+        chk = ifelse(count_valid != NCOL(dfs), 
+                     ifelse(cond,
+                            .ERROR_OUT_OF_RANGE, 
+                            .ERROR_VALUE_SHOULD_BE_MISSING), 
+                     NA)
+        
+    } else {
+        count_valid = rowSums(valid,na.rm=TRUE)
+        chk = ifelse(count_valid != NCOL(dfs),.ERROR_OUT_OF_RANGE, NA)
+    }
+    chk_res=data.frame(chk_err=chk,chk_val=NA,stringsAsFactors = FALSE)
+    if (!all(is.na(chk))){
+        # if errors 
+        res = which(!as.matrix(valid),arr.ind=TRUE) # find rows,columns of incorrect values
+        # TODO report all values???
+        res = res[!duplicated(res[,1]),,drop=FALSE] # we will report only first error in each case
+        chk_res[res[,1],"chk_val"] = unlist(lapply(1:nrow(res),function(x) dfs[res[x,1],res[x,2]])) # get incorrect values
+        
+    }
+    chk_res
+}
+
+check_dup = function(dfs){
+    chk_dup = apply(dfs,1, function(each_row) {
+        dup = anyDuplicated(each_row,incomparables=NA)
+        if (dup>0) each_row[dup] else NA
+    })
+    chk_dup
+}
+
+check_uniq = function(dfs,uniqs){
+    cnt = row_countif(,dfs)
+    cnt2 = row_countif(uniqs,dfs)
+    chk_uniqs = ifelse(cnt2>1 | cnt>cnt2, .ERROR_UNIQUE,NA)
+    chk
+    
+}
+
 
 print.check=function(object,error_num=20,...){
     stopifnot_message(all(.CHK_COLUMNS %in% colnames(object)),"Incorrect 'check' object. There are no some of check columns.")
@@ -113,18 +174,18 @@ print.check=function(object,error_num=20,...){
     if (errors>error_num){
         block_with_error = object[resample(errors_row,error_num),,drop=FALSE]
         cat("==========================================================\n")
-        cat("Random sample of",error_num,"error(s)\n")
+        cat("Random sample of",error_num,"error(s) from",errors,"\n")
     } else {
         cat("==========================================================\n")
         cat("Total",errors,"error(s)\n")
         block_with_error = object[errors_row,,drop=FALSE]
         
     }
-    print(tbl_df(block_with_error),n=error_num)
+    print(tbl_df(block_with_error),n=error_num, width=Inf)
     if (no_errors>0){
         if (no_errors>min(error_num,errors)){
             cat("\n==========================================================\n")
-            cat("Random sample of",min(error_num,errors),"valid case(s)\n")
+            cat("Random sample of",min(error_num,errors),"valid case(s) from",no_errors,"\n")
             valid_block = object[resample(valid_row,min(error_num,errors)),,drop=FALSE]
             
         } else {
@@ -133,7 +194,7 @@ print.check=function(object,error_num=20,...){
             valid_block = object[valid_row,,drop=FALSE]
             
         }
-        print(tbl_df(valid_block),n=error_num*2)
+        print(tbl_df(valid_block),n=error_num, width=Inf)
     } else {
         cat("\nNo valid cases\n")
     }
@@ -172,44 +233,7 @@ summary.check=function(object,skip_details = FALSE){
 }
 
 
-# internal function
-check_single_ = function(dfs,values=NULL){
-    dfs = as.data.frame(dfs,stringsAsFactors=FALSE)
-    res = build_criterion(values,dfs)
-    cnt = rowSums(res,na.rm=TRUE)
-    chk = ifelse(cnt == NCOL(dfs),NA,.ERROR_SNGL_OUT_OF_RANGE)
-    if (!all(cnt == NCOL(dfs))){
-        res = which(!as.matrix(res),arr.ind=TRUE)
-        res = res[!duplicated(res[,1]),]
-    }
-    chk = ifelse(cnt == NCOL(dfs),NA,.ERROR_SNGL_OUT_OF_RANGE)
-    chk
-}
 
-check_mult = function(dfs,values=NULL){
-    dfs = as.data.frame(dfs)
-    cnt = row_countif(values,dfs)
-    cnt2 = row_countif(NULL,dfs)
-    chk = ifelse(cnt>0,NA,.ERROR_MULT_MISSING)
-    chk = ifelse(is.na(chk),NA,ifelse(cnt2>cnt,NA,.ERROR_MULT_OUT_OF_RANGE))
-    chk 
-}
-
-check_dup = function(dfs){
-    chk_dup = apply(dfs,1, function(each_row) {
-        dup = anyDuplicated(each_row,incomparables=NA)
-        if (dup>0) each_row[dup] else NA
-    })
-    chk_dup
-}
-
-check_uniq = function(dfs,uniqs){
-    cnt = row_countif(,dfs)
-    cnt2 = row_countif(uniqs,dfs)
-    chk_uniqs = ifelse(cnt2>1 | cnt>cnt2, .ERROR_UNIQUE,NA)
-    chk
-   
-}
 
 
 
