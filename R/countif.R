@@ -81,16 +81,16 @@
 #'                 ) -> result
 #' result
 countif=function(criterion=NULL,...){
-    dtfrm = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame  
-    cond = build_criterion(criterion,dtfrm)
+    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame  
+    cond = build_criterion(criterion,dfs)
     sum(cond,na.rm=TRUE)
 }
 
 #' @export
 #' @rdname countif
 row_countif=function(criterion=NULL,...){
-    dtfrm = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
-    cond = build_criterion(criterion,dtfrm)
+    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+    cond = build_criterion(criterion,dfs)
     rowSums(cond,na.rm=TRUE)
 }
 
@@ -155,16 +155,16 @@ crit = function(FUN,...){
 
 
 
-build_criterion = function(criterion,dtfrm){
+build_criterion = function(criterion,dfs){
     if (is.null(criterion)){
-        cond = !is.na(dtfrm)
+        cond = !is.na(dfs)
         return(cond)
     }
     UseMethod("build_criterion")
 }
 
-build_criterion.function = function(criterion,dtfrm){
-    res = lapply(dtfrm,function(colmn){
+build_criterion.function = function(criterion,dfs){
+    res = lapply(dfs,function(colmn){
         cond = criterion(colmn)
         stopifnot_message(length(cond)==length(colmn),"Cells number of criterion doesn't equal cells number of argument.")
         as.logical(cond)
@@ -172,12 +172,12 @@ build_criterion.function = function(criterion,dtfrm){
     do.call(cbind,res)
 }
 
-build_criterion.default = function(criterion,dtfrm){
-    build_criterion.function(function(x) x %in% criterion,dtfrm)
+build_criterion.default = function(criterion,dfs){
+    build_criterion.function(function(x) x %in% criterion,dfs)
 }
 
-build_criterion.criterion = function(criterion,dtfrm){
-    build_criterion.function(criterion,dtfrm)
+build_criterion.criterion = function(criterion,dfs){
+    build_criterion.function(criterion,dfs)
 }
 
 

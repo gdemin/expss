@@ -8,6 +8,8 @@ Maintainer: Gregory Demin <gdemin@gmail.com>
 Depends:
     R (>= 3.1.2),
     dplyr
+Imports:
+    lazyeval
 Description: Data from marketing/sociological surveys are often needed for the
     additional checking/cleaning for consistency (e. g. missing values, values
     out and so on). CleanR main features: checking of single/multiple response

@@ -54,10 +54,13 @@ check(select(w,s4_1:s4_99),c(7:9),mult=TRUE)  # always errors
 check(select(w,s4_1:s4_99),c(7:9,99),mult=TRUE)
 
 check(select(w,q1_1:q1_99),c(1:7,99),mult=TRUE)
+check(select(w,q1_1:q1_99),c(1:7,99),mult=TRUE,uniq = 1:2) # always errors
 check(select(w,q1_1:q1_99),c(1:7),mult=TRUE)  # always errors
 
 check(select(w,q5_1:q5_99),c(1:6,98,99),mult=TRUE)   # always errors
-check(select(w,q5_1:q5_99),c(1:6,98,99),cond=with(w,!((q4 %in% 2) | (q4 %in% 99))),mult=TRUE)
+check(select(w,q5_1:q5_99),c(1:6,98,99),cond=with(w,!((q4 %in% 2) | (q4 %in% 99))),mult=TRUE,uniq=99)
+check(select(w,q8_1:q8_99),c(1:6,99),mult=TRUE,uniq=99)  
+check(select(w,q21_1:q21_99),c(6,13,15,18,39,50,58,61,62,66,68,84,86,98,99,126,134,150,155,271),mult=TRUE,uniq=99)  
 
 
 
@@ -186,7 +189,10 @@ chk(dfs,filt=a1>5)  = sngl(a1,a2,a45,no_dup = TRUE)(1,2,3,4,uniq=5:7)
 check_single(iris)
 
 
-
+ddd = function(dfs,cond){
+    
+    eval(substitute(expr), data, enclos = parent.frame())
+}
 
 
 
