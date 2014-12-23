@@ -13,7 +13,7 @@
 .ERROR_OUT_OF_RANGE = "Missing/Out of range"
 # .ERROR_MULT_OUT_OF_RANGE = "Missing/Out of range"
 .ERROR_DUPLICATED_VALUE = "Duplicated value"
-.ERROR_UNIQUE = "Value is not unique"
+.ERROR_EXCLUSIVE = "Exclusive value"
 .ERROR_VALUE_SHOULD_BE_MISSING = "Value should be missing"
 .NO_ERROR_MESSAGE = "No error"
 
@@ -42,7 +42,8 @@ always.data.frame = function(dfs){
     
 }
 
-check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = mult,cond=NULL,subset = NULL){
+
+check = function(dfs,values=NULL,exclusive=NULL,mult=FALSE,no_dup = mult,cond=NULL,subset = NULL){
     raw_dfs = as.data.frame(dfs,stringsAsFactors=FALSE)
     if (is.null(subset)) {
         dfs = raw_dfs        
@@ -76,15 +77,15 @@ check = function(dfs,values=NULL,uniq=NULL,mult=FALSE,no_dup = mult,cond=NULL,su
     }
     
     ####################
-    if (!is.null(uniq)){
+    if (!is.null(exclusive)){
         if(!is.null(cond)){
             next_check = is.na(chk_res$chk_err) & (!cond)
         }   else {
             next_check = is.na(chk_res$chk_err) 
         }     
-        chk_uniq = check_uniq(dfs[next_check,,drop=FALSE],uniq)
-        chk_res[next_check,"chk_err"] = chk_uniq$chk_err        
-        chk_res[next_check,"chk_val"] = chk_uniq$chk_val  
+        chk_exclusive = check_exclusive(dfs[next_check,,drop=FALSE],exclusive)
+        chk_res[next_check,"chk_err"] = chk_exclusive$chk_err        
+        chk_res[next_check,"chk_val"] = chk_exclusive$chk_val  
         
     }
         
@@ -192,15 +193,15 @@ check_dup = function(dfs,incomparables = NULL){
 
 #################
 
-check_uniq = function(dfs,uniqs){
+check_exclusive = function(dfs,exclusive){
     count_notna = row_countif(,dfs)
-    uni = build_criterion(uniqs,dfs)
-    count_uniqs = rowSums(uni,na.rm = TRUE)
-    chk = ifelse((count_uniqs>1) | (count_uniqs>0 & count_notna>count_uniqs), .ERROR_UNIQUE,NA)
+    exclusives = build_criterion(exclusive,dfs)
+    count_exclusives = rowSums(exclusives,na.rm = TRUE)
+    chk = ifelse((count_exclusives>1) | (count_exclusives>0 & count_notna>count_exclusives), .ERROR_EXCLUSIVE,NA)
     chk_res=data.frame(chk_err=chk,chk_val=NA,stringsAsFactors = FALSE)
     if (!all(is.na(chk))){
         # if errors 
-        res = which(as.matrix(uni[!is.na(chk),,drop=FALSE]),arr.ind=TRUE) # find rows,columns of incorrect values
+        res = which(as.matrix(count_exclusives[!is.na(chk),,drop=FALSE]),arr.ind=TRUE) # find rows,columns of incorrect values
         res = res[!duplicated(res[,1]),,drop=FALSE] # we will report only first error in each case
         temp = dfs[!is.na(chk),,drop=FALSE]
         chk_res[!is.na(chk),"chk_val"][res[,1]] = unlist(lapply(1:nrow(res),
