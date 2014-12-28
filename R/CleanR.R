@@ -17,6 +17,7 @@
 .ERROR_VALUE_SHOULD_BE_MISSING = "Value should be missing"
 .NO_ERROR_MESSAGE = "No error"
 
+###############
 always = function(dfs){
     UseMethod("always")
 }
@@ -42,16 +43,39 @@ always.data.frame = function(dfs){
     
 }
 
+###########################
+
+check_result = function(dfs){
+    UseMethod("check_result")
+}
+
+check_result.data.frame = function(dfs){
+    res = attr(dfs,"check_result",exact = TRUE)
+    res
+}
+
+"check_result<-" = function(x,value){
+    
+    UseMethod("check_result<-")
+}
+
+"check_result<-.data.frame" = function(x,value){
+    attr(x,"check_result") = value
+    x   
+}
+
+#########################
 
 check = function(dfs,values=NULL,exclusive=NULL,mult=FALSE,no_dup = mult,cond=NULL,subset = NULL){
     raw_dfs = as.data.frame(dfs,stringsAsFactors=FALSE)
     if (is.null(subset)) {
         dfs = raw_dfs        
     } else { 
+        subset = subset & !is.na(subset)
         dfs = raw_dfs[subset,,drop=FALSE]
         cond = cond[subset]
     }
-    
+    if (!is.null(cond)) cond = cond & !is.na(cond)
     ##########
     
     if (mult) {
@@ -110,6 +134,123 @@ check = function(dfs,values=NULL,exclusive=NULL,mult=FALSE,no_dup = mult,cond=NU
 #     res =data.frame(raw_dfs[,always(raw_dfs),drop = FALSE],res,stringsAsFactors = FALSE)
 #     
 # }
+
+sngl = function(...,cond=NULL,subset=NULL,no_dup=FALSE,show=NULL){
+    
+    sngl_ (.dots=lazyeval::lazy_dots(...),
+           cond=lazyeval::lazy(cond),
+           subset=lazyeval::lazy(subset),
+           no_dup=no_dup,
+           show=lazyeval::lazy(show))    
+    
+}
+
+
+mult = function(...,cond=NULL,subset=NULL,no_dup=TRUE,show=NULL){
+    
+    mult_ (.dots=lazyeval::lazy_dots(...),
+           cond=lazyeval::lazy(cond),
+           subset=lazyeval::lazy(subset),
+           no_dup=no_dup,
+           show=lazyeval::lazy(show))    
+    
+}
+
+sngl_ = function(...,.dots,cond=~NULL,subset=~NULL,no_dup=FALSE,show=NULL){
+
+    vars = lazyeval::all_dots(.dots,...)
+    
+    function(.data,...){
+        dfs = dplyr::select_(.data,.dots=vars)
+        cond = lazyeval::lazy_eval(cond,.data)
+        subset = lazyeval::lazy_eval(subset,.data)
+        values = list(...)
+        matches = pmatch(names(values),"exclusive")
+        if (!all(is.na(matches))){
+            arg = which(!is.na(matches))
+            exclusive = values[[arg]]
+        } else {
+            exclusive=NULL 
+        }
+        ## for case when function/criteria supplied as valid value
+        funcs = sapply(values,is.function)
+        if (any(funcs)){
+            first_fun_index = which(funcs)[1]
+            new_values = crit(values[[first_fun_index]])
+            values = values[-first_fun_index]
+            for (i in seq_along(values)){
+                new_values = new_values | values[[i]]
+            }
+            values = new_values
+        } else {
+            values=unlist(values)
+        }
+        
+        res = check(dfs,values=values,exclusive = exclusive,mult = FALSE,no_dup = no_dup,cond = cond,subset = subset)
+        check_result(.data) = res
+        invisible(.data)
+    }
+    
+}
+
+
+mult_ = function(...,.dots,cond=~NULL,subset=~NULL,no_dup=TRUE,show=NULL){
+    
+    vars = lazyeval::all_dots(.dots,...)
+    
+    function(.data,...){
+        dfs = dplyr::select_(.data,.dots=vars)
+        #         browser()
+        cond = lazyeval::lazy_eval(cond,.data)
+        subset = lazyeval::lazy_eval(subset,.data)
+        values = list(...)
+        matches = pmatch(names(values),"exclusive")
+        if (!all(is.na(matches))){
+            arg = which(!is.na(matches))
+            exclusive = values[[arg]]
+        } else {
+            exclusive=NULL 
+        }
+        
+        ## for case when function/criteria supplied as valid value
+        funcs = sapply(values,is.function)
+        if (any(funcs)){
+            first_fun_index = which(funcs)[1]
+            new_values = crit(values[[first_fun_index]])
+            values = values[-first_fun_index]
+            for (i in seq_along(values)){
+                new_values = new_values | values[[i]]
+            }
+            values = new_values
+        } else {
+            values=unlist(values)
+        }
+        
+        res = check(dfs,values=values,exclusive = exclusive,mult = TRUE,no_dup = no_dup,cond = cond,subset = subset)
+        check_result(.data) = res
+        invisible(.data)
+    }
+    
+}
+
+
+#### TODO аргументы со степенью детальности вывода информации... соответсвенно, их и в метод print надо добавить
+#### TODO тоже в print - таблицу с частотками правильных значений
+report = function(.data){
+    chk = check_result(.data)
+    if (is.null(chk)){
+        warning("No result of checking")
+        return(invisible(.data))
+    } 
+    print (chk)
+    invisible(.data)
+}
+
+check_provider = function(dfs,mult=FALSE,no_dup = mult,cond=NULL,subset = NULL){
+    function()
+    
+    
+}
 
 # internal functions
 
@@ -239,9 +380,14 @@ print.check=function(x,error_num=20,...){
     print(tbl_df(block_with_error),n=error_num, width=Inf)
     if (no_errors>0){
         if (no_errors>min(error_num,errors)){
+            if (errors<5) {
+                num_valid = min(5,no_errors)
+            } else {
+                num_valid = min(error_num,errors)
+            }
             cat("\n==========================================================\n")
-            cat("Random sample of",min(error_num,errors),"valid case(s) from",no_errors,"\n")
-            valid_block = x[resample(valid_row,min(error_num,errors)),,drop=FALSE]
+            cat("Random sample of",num_valid,"valid case(s) from",no_errors,"\n")
+            valid_block = x[resample(valid_row,num_valid),,drop=FALSE]
             
         } else {
             cat("\n==========================================================\n")

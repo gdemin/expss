@@ -63,14 +63,14 @@ check(select(w,q8_1:q8_99),c(1:6,99),mult=TRUE,uniq=99)
 check(select(w,q21_1:q21_99),c(6,13,15,18,39,50,58,61,62,66,68,84,86,98,99,126,134,150,155,271),mult=TRUE,uniq=99)  
 
 
+############
 
-chk = check_single(checked_data$s1,1:2)
-table(chk)
-chk = check_single(checked_data$s2_1,14:65)
-table(chk)
-chk = check_single(checked_data$s2_2,2:6)
-table(chk)
+w %>% sngl_(~reg)(reg_vec)
+sngl_(~reg,.data=w)(reg_vec)
 
+w %>% sngl_("s1",subset = ~s1 %in% 1)(1:2)
+for (each in c("reg","s1")) print(w %>% sngl_(each)(1:2))
+for (each in c("reg","s1")) print(sum(w %>% select_(each)))
 
 
 
@@ -195,6 +195,20 @@ ddd = function(dfs,cond){
 }
 
 
+fff = function(...){
+    values = list(...)
+    matches = pmatch(names(values),"exclusive")
+    if (!all(is.na(matches))){
+        arg = which(!is.na(matches))
+        exclusive = values[[arg]]
+        values = values[-arg]
+    } else {
+        exclusive=NULL 
+    }
+    
+    exclusive
+    
+}
 
 
 
