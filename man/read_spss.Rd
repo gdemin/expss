@@ -15,6 +15,7 @@ read_spss_to_list(file, reencode = NA)
 }
 \value{
 \code{read_spss} returns data.frame.
+
 \code{read_spss_to_list} returns list of variables from SPSS files.
 }
 \description{
@@ -34,6 +35,6 @@ list_w = read_spss_to_list("project_123.sav") # to list
 }
 }
 \seealso{
-\code{\link{foreign::read.spss}}, \code{\link{val_lab}}, \code{\link{var_lab}}
+\code{\link{read.spss}} in package \code{foreign}, \code{\link{val_lab}}, \code{\link{var_lab}}
 }
 

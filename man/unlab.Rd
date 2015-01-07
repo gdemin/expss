@@ -16,7 +16,7 @@ unlab(x)
 }
 \examples{
 raw_var = rep(1:2,5)
-var_with_lab = with_var_lab(raw_var,"Income")
+var_with_lab = set_var_lab(raw_var,"Income")
 val_lab(var_with_lab) = c("Low"=1,"High"=2)
 stopifnot(identical(raw_var,unlab(var_with_lab)))
 }

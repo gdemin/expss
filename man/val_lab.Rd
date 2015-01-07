@@ -2,13 +2,15 @@
 \name{val_lab}
 \alias{add_val_lab}
 \alias{add_val_lab<-}
+\alias{set_val_lab}
 \alias{unvl}
 \alias{val_lab}
 \alias{val_lab<-}
-\alias{with_val_lab}
 \title{Set or get value labels}
 \usage{
 val_lab(x)
+
+val_lab(x) <- value
 }
 \arguments{
 \item{x}{Variable(s). Vector/data.frame/list.}
@@ -18,7 +20,7 @@ appropriate values of variable x.}
 }
 \value{
 \code{val_lab} return value labels (named vector). If labels doesn't
-  exist it return NULL . \code{val_lab<-} and \code{with_val_lab} return
+  exist it return NULL . \code{val_lab<-} and \code{set_val_lab} return
   variable (vector x) of class "with_labels" with attribute "value_labels"
   which contains value labels.
 }
@@ -26,7 +28,7 @@ appropriate values of variable x.}
 \code{val_lab} returns value labels or NULL if labels doesn't
 exist.
 \code{val_lab<-} set value labels.
-\code{with_val_lab} returns variable with value labels.
+\code{set_val_lab} returns variable with value labels.
 \code{add_val_lab<-} add value labels to already existing value labels.
 \code{add_val_lab} return variable with added value labels to already existing value labels.
 \code{unvl} drops value labels.
