@@ -160,18 +160,12 @@ sngl_ = function(...,.dots,cond=~NULL,subset=~NULL,no_dup=FALSE,show=NULL){
 
     vars = lazyeval::all_dots(.dots,...)
     
-    function(.data,...){
+    function(.data,...,exclusive=NULL){
         dfs = dplyr::select_(.data,.dots=vars)
         cond = lazyeval::lazy_eval(cond,.data)
         subset = lazyeval::lazy_eval(subset,.data)
         values = list(...)
-        matches = pmatch(names(values),"exclusive")
-        if (!all(is.na(matches))){
-            arg = which(!is.na(matches))
-            exclusive = values[[arg]]
-        } else {
-            exclusive=NULL 
-        }
+        
         ## for case when function/criteria supplied as valid value
         funcs = sapply(values,is.function)
         if (any(funcs)){
@@ -198,20 +192,13 @@ mult_ = function(...,.dots,cond=~NULL,subset=~NULL,no_dup=TRUE,show=NULL){
     
     vars = lazyeval::all_dots(.dots,...)
     
-    function(.data,...){
+    function(.data,...,exclusive=NULL){
         dfs = dplyr::select_(.data,.dots=vars)
         #         browser()
         cond = lazyeval::lazy_eval(cond,.data)
         subset = lazyeval::lazy_eval(subset,.data)
         values = list(...)
-        matches = pmatch(names(values),"exclusive")
-        if (!all(is.na(matches))){
-            arg = which(!is.na(matches))
-            exclusive = values[[arg]]
-        } else {
-            exclusive=NULL 
-        }
-        
+               
         ## for case when function/criteria supplied as valid value
         funcs = sapply(values,is.function)
         if (any(funcs)){
@@ -246,11 +233,6 @@ report = function(.data){
     invisible(.data)
 }
 
-check_provider = function(dfs,mult=FALSE,no_dup = mult,cond=NULL,subset = NULL){
-    function()
-    
-    
-}
 
 # internal functions
 

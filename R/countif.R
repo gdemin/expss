@@ -1,4 +1,4 @@
-#' Count values that meet a criterion that you specify.
+#' Count values that meet a criterion that you specify
 #' 
 #' There are two flavors of this function - one works on entire dataset/matrix/vector
 #' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise - e. g. 

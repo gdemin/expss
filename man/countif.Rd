@@ -4,7 +4,7 @@
 \alias{countif}
 \alias{crit}
 \alias{row_countif}
-\title{Count values that meet a criterion that you specify.}
+\title{Count values that meet a criterion that you specify}
 \usage{
 countif(criterion = NULL, ...)
 

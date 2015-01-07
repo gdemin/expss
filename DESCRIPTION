@@ -1,4 +1,4 @@
-Package: CleanR
+Package: cleanr
 Type: Package
 Title: Tool for cleaning (checking) data from marketing/sociological studies.
 Version: 0.5
@@ -7,9 +7,11 @@ Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
 Depends:
     R (>= 3.1.2),
-    dplyr
+    dplyr,
+    magrittr
 Imports:
-    lazyeval
+    lazyeval,
+    foreign
 Description: Data from marketing/sociological surveys are often needed for the
     additional checking/cleaning for consistency (e. g. missing values, values
     out and so on). CleanR main features: checking of single/multiple response

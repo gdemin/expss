@@ -210,5 +210,9 @@ fff = function(...){
     
 }
 
+################ Создание dataset образца
+
+
+ds = read_spss("tests/0413 165 ank.sav")
 
 
