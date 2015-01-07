@@ -40,7 +40,7 @@ read_spss_to_list=function(file, reencode = NA){
     attr(spss,'label.table') = NULL
     for (var_name in names(var_labs)) {
         curr_lab = var_labs[[var_name]]
-        if (!is.null(curr_lab) & curr_lab!="") var_lab(spss[[var_name]]) = curr_lab
+        if (!is.null(curr_lab) && (curr_lab!="")) var_lab(spss[[var_name]]) = curr_lab
     }
     for (var_name in names(spss)) {
         # Trim whitespaces from start and end of character variables
