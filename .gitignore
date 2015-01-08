@@ -1,7 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
-check_beeline.R
-checked_data.RData
-dataset.xlsx
-raw_data.rdata
+tests/check_beeline.R
+tests/checked_data.RData
+tests/dataset.xlsx
+tests/raw_data.rdata
