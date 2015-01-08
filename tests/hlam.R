@@ -213,6 +213,49 @@ fff = function(...){
 ################ Создание dataset образца
 
 
-ds = read_spss("tests/0413 165 ank.sav")
+ds = read_spss("C:/Temp/я пробел/Base_Beeline_BT_oct.sav")
+
+val_lab(ds$reg)
+var_lab(ds$reg)
+
+aaa = c(ds$reg,ds$reg)
+val_lab(aaa)
+var_lab(aaa)
+val_lab(aaa[1:2])
+
+ds2 = ds[1:2,]
+str(ds2)
+
+val_lab(ds$reg) = c(val_lab(ds$reg),c("Кукушкино" = 10000))
+
+add_val_lab(ds$reg) = c("Кукуево" = 10000)
+
+
+fff = function(expr){
+    
+    # all.names
+    all.names(as.expression(substitute(expr)))
+    
+}
+
+fff2 = function(expr){
+    
+    # all.names
+    as.expression(substitute(expr))
+    
+}
+
+a="fff"
+while (a!="f"){
+    
+   a=readline(":") 
+   if (a=="") cat("Done!\n")
+}
+
+
+
+
+
+
 
 

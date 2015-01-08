@@ -6,7 +6,9 @@ w = checked_data
 w = raw_data
 reg_vec = c(301,342,343,345,351,353,381:385,395,421,423,473,483:485,487,492,495:497,812:814,817,831,835,842,844,845,861,863,865,3513,3854,3951,4234,8453,8635,846,843,8622)
 
+action = invisible
 action = report
+
 w  %>% sngl(reg)(reg_vec)  %>% action
 w  %>% sngl(s1)(1:2)  %>% action
 w  %>% sngl(s2_1)(14:65)  %>% action

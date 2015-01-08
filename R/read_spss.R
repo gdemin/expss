@@ -16,7 +16,7 @@
 #' for working with \code{val_lab}/\code{var_lab} functions. User-missings values are ignored.
 #' 
 #'  @seealso
-#'  \code{\link{read.spss}} in package \code{foreign}, \code{\link{val_lab}}, \code{\link{var_lab}} 
+#'  \code{\link[foreign]{read.spss}} in package \code{foreign}, \code{\link{val_lab}}, \code{\link{var_lab}} 
 #' 
 #' @export
 #' @examples
