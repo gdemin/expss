@@ -5,6 +5,7 @@ Version: 0.5
 Date: 2014-11-21
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
+URL: https://github.com/gdemin/cleanr
 Depends:
     R (>= 3.1.2),
     dplyr,
@@ -12,10 +13,13 @@ Depends:
 Imports:
     lazyeval,
     foreign
+Suggests:
+    knitr
 Description: Data from marketing/sociological surveys are often needed for the
     additional checking/cleaning for consistency (e. g. missing values, values
     out and so on). CleanR main features: checking of single/multiple response
     questions, conditional checking, checking for uniqueness of values and so
     on.
+VignetteBuilder: knitr
+LazyData: yes
 License: GPL (>= 2)
-URL: https://github.com/gdemin/cleanr

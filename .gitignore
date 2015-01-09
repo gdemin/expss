@@ -1,7 +1,4 @@
 .Rproj.user
 .Rhistory
 .RData
-tests/check_beeline.R
-tests/checked_data.RData
-tests/dataset.xlsx
-tests/raw_data.rdata
+SupplementaryMaterials
