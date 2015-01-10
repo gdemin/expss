@@ -37,7 +37,7 @@ always.data.frame = function(dfs){
 }
 
 "always<-.data.frame" = function(x,value){
-    stopifnot_message(all(value %in% colnames(x)),"'",paste(setdiff(value,colnames(x)),collapse=","),"' doesn't exist in data.frame")
+    stopif (!all(value %in% colnames(x)),"'",paste(setdiff(value,colnames(x)),collapse=","),"' doesn't exist in data.frame")
     attr(x,"always") = value
     x
     
@@ -338,7 +338,7 @@ check_exclusive = function(dfs,exclusive){
 ##############
 
 print.check=function(x,error_num=20,...){
-    stopifnot_message(all(.CHK_COLUMNS %in% colnames(x)),"Incorrect 'check' object. There are no some of check columns.")
+    stopif(!all(.CHK_COLUMNS %in% colnames(x)),"Incorrect 'check' object. There are no some of check columns.")
     check_summary = summary(x)
     if (identical(check_summary,.NO_ERROR_MESSAGE)){
         cat(.NO_ERROR_MESSAGE,"\n")
@@ -392,7 +392,7 @@ print.check=function(x,error_num=20,...){
 }
 
 summary.check=function(object,skip_details = FALSE){
-    stopifnot_message(all(.CHK_COLUMNS %in% colnames(object)),"Incorrect 'check' object. There are no some of check columns.")
+    stopif(!all(.CHK_COLUMNS %in% colnames(object)),"Incorrect 'check' object. There are no some of check columns.")
     valid =is.na(object[,.CHK_ERR]) 
     if (all(valid)){
         return(.NO_ERROR_MESSAGE)

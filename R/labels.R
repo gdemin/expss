@@ -164,7 +164,7 @@ set_val_lab = function(x,value){
 
 #' @export
 set_val_lab.default = function(x,value){
-    if (anyDuplicated(value)) stop("Duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
+    stopif(anyDuplicated(value),"Duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
     if (length(value)==0) value=NULL else value=sort(value)
     attr(x,"value_labels")=value
     if (!isS4(x)) if (!("with_labels" %in% class(x))) class(x)=c("with_labels",class(x))
@@ -199,7 +199,7 @@ add_val_lab=function(x,value){
 
 #' @export
 add_val_lab.default=function(x,value){
-    if (anyDuplicated(value)) stop("Duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
+    stopif (anyDuplicated(value),"Duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
     val_lab(x) = combine_labels(value,val_lab(x))
     x
 }
