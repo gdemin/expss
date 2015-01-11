@@ -154,7 +154,8 @@ crit = function(FUN,...){
 }
 
 
-
+# TODO Удалить
+#' @export
 build_criterion = function(criterion,dfs){
     if (is.null(criterion)){
         cond = !is.na(dfs)
@@ -163,6 +164,8 @@ build_criterion = function(criterion,dfs){
     UseMethod("build_criterion")
 }
 
+# TODO Удалить
+#' @export
 build_criterion.function = function(criterion,dfs){
     res = lapply(dfs,function(colmn){
         cond = criterion(colmn)
@@ -172,10 +175,14 @@ build_criterion.function = function(criterion,dfs){
     do.call(cbind,res)
 }
 
+# TODO Удалить
+#' @export
 build_criterion.default = function(criterion,dfs){
     build_criterion.function(function(x) x %in% criterion,dfs)
 }
 
+# TODO Удалить
+#' @export
 build_criterion.criterion = function(criterion,dfs){
     build_criterion.function(criterion,dfs)
 }

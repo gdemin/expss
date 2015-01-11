@@ -1,5 +1,7 @@
 ## stop if condition with message
 
+# TODO Удалить
+#' @export
 stopif = function(cond,...){
     if (isTRUE(cond)) {
         # to know name of the parent function
