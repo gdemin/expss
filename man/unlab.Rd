@@ -10,7 +10,7 @@ unlab(x)
 \item{x}{Variable(s). Vector/data.frame/list.}
 }
 \value{
-\code{unlab} returns original variable x without variable label and value labels.
+\code{unlab} returns original variable x without variable label, value labels and class.
 }
 \description{
 \code{unlab} returns variable x without variable labels and value labels
@@ -19,9 +19,9 @@ unlab(x)
 raw_var = rep(1:2,5)
 var_with_lab = set_var_lab(raw_var,"Income")
 val_lab(var_with_lab) = c("Low"=1,"High"=2)
-stopifnot(identical(raw_var,unlab(var_with_lab)))
+identical(raw_var,unlab(var_with_lab)) # should be TRUE
 }
 \seealso{
-\code{link{unvr}} \code{link{unvl}}
+\code{\link{unvr}} \code{\link{unvl}}
 }
 

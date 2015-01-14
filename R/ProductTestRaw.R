@@ -1,4 +1,4 @@
-#' Raw data from product test of chocolate confectionary
+#' Data from product test of chocolate confectionary
 #'
 #' Rather artificial dataset is containing raw data from product test of two 
 #' samples of chocolate sweets. 150 respondents tested two kinds of sweets
@@ -6,7 +6,8 @@
 #' 75 respondents in each group. In cell 1 VSX123 was presented first and then SDF546. 
 #' In cell 2 sweets were presented in reversed order. There are screening questions at the beginning of the questionnaire.  Questions about respondent
 #' impressions about first product are in the block A (and about second tested product in the
-#' block B). At the end of the questionnaire  there are questions about preferences between sweets.  
+#' block B). At the end of the questionnaire  there are questions about preferences between sweets. 
+#' ProductTestRaw contains some errors in data. It used for examples in  cleaning functions.  
 #'    
 #' 
 #' @format A data frame with 150 rows and 77 variables:
@@ -37,4 +38,9 @@
 #'    \item{c1}{Preferences.}
 #'    \item{c2_1-c2_6}{Reasons for preferences. Multiple response.}
 #' }
+#' @docType data
+"ProductTest"
+
+
+#' @rdname ProductTest
 "ProductTestRaw"

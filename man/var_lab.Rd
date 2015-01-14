@@ -34,18 +34,18 @@ exist.
 }
 \details{
 Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
-  preserving from droping this attribute during some operations (such as \code{c})
+  preserving from dropping this attribute during some operations (such as \code{c})
   we set variable class to "with_labels". There are special methods of
   subsetting and concatenation for this class. To drop variable label use
   \code{var_lab(var) <- NULL} or \code{unvr(var)}.
 }
 \examples{
-a = rep(1:2,5)
-b = a
-var_lab(a) = "Gender"
-b = set_var_lab(b,"Gender")
-identical(a,b) # should be TRUE
+data(ProductTest)
+age_group = ProductTest$s2b
+var_lab(ProductTest$s2b) = "Age group"
+age_group = set_var_lab(age_group,"Age group")
+identical(age_group,ProductTest$s2b) # should be TRUE
 
-identical(var_lab(a),attr(a,"label")) # should be TRUE
+identical(var_lab(age_group),attr(age_group,"label")) # should be TRUE
 }
 
