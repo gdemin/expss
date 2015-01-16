@@ -124,31 +124,6 @@ sngl_ = function(...,.dots,no_dup=FALSE,show=NULL){
 }
 
 
-check_if = function(.data,cond){
-    cond=lazyeval::lazy(cond)
-    check_if_(.data,cond)
-}
-
-check_if_ = function(.data,cond){
-    cond = lazyeval::lazy_eval(cond,.data)
-    res= list(.data=.data,cond=cond)
-    class(res) = c("chk_if",class(res))
-    invisible(res)
-    
-}
-
-check_subset = function(.data,subset){
-    subset=lazyeval::lazy(subset)
-    check_if_(.data,subset)
-}
-
-check_subset_ = function(.data,cond){
-    subset = lazyeval::lazy_eval(subset,.data)
-    res= list(.data=.data,subset=subset)
-    class(res) = c("chk_if",class(res))
-    invisible(res)
-    
-}
     
 #### TODO аргументы со степенью детальности вывода информации... соответсвенно, их и в метод print надо добавить
 #### TODO тоже в print - таблицу с частотками правильных значений
