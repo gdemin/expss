@@ -1,4 +1,4 @@
-#' Check multiple/single-response questions for valid values 
+#' Internal function for checking multiple/single-response questions for valid values 
 #' 
 #' This is low-level function intended for programming. For interactive usage
 #' see functions \code{\link{mult}} and \code{\link{sngl}}.
