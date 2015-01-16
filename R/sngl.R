@@ -73,38 +73,33 @@
 #'      values=valid_a4,mult = TRUE, exclusive=99,
 #'       cond = ProductTestRaw$a3 %in%  1:4)
 #' 
-sngl = function(...,cond=NULL,subset=NULL,no_dup=FALSE,show=NULL){
+sngl = function(...,no_dup=FALSE,show=NULL){
     
     sngl_ (.dots=lazyeval::lazy_dots(...),
-           cond=lazyeval::lazy(cond),
-           subset=lazyeval::lazy(subset),
            no_dup=no_dup,
            show=lazyeval::lazy(show))    
     
 }
 
-#' @export
-#' @rdname sngl
-mult = function(...,cond=NULL,subset=NULL,no_dup=TRUE,show=NULL){
-    
-    mult_ (.dots=lazyeval::lazy_dots(...),
-           cond=lazyeval::lazy(cond),
-           subset=lazyeval::lazy(subset),
-           no_dup=no_dup,
-           show=lazyeval::lazy(show))    
-    
-}
 
 #' @export
 #' @rdname sngl
-sngl_ = function(...,.dots,cond=~NULL,subset=~NULL,no_dup=FALSE,show=NULL){
+sngl_ = function(...,.dots,no_dup=FALSE,show=NULL){
     
     vars = lazyeval::all_dots(.dots,...)
-    
-    function(.data,...,exclusive=NULL){
+
+    values_fun = function(.data,..., exclusive=NULL){
+        if ("chk_if" %in% class(.data)){
+            cond=.data$cond
+            subset=.data$subset
+            .data=.data$.data
+            stopif(is.null(.data),"Incorrect 'chk_if' object. No data.")
+        } else {
+            cond= NULL
+            subset= NULL
+        }
+        
         dfs = dplyr::select_(.data,.dots=vars)
-        cond = lazyeval::lazy_eval(cond,.data)
-        subset = lazyeval::lazy_eval(subset,.data)
         values = list(...)
         
         ## for case when function/criteria supplied as valid value
@@ -120,49 +115,41 @@ sngl_ = function(...,.dots,cond=~NULL,subset=~NULL,no_dup=FALSE,show=NULL){
         } else {
             values=unlist(values)
         }
-        
-        res = check_internal(dfs,values=values,exclusive = exclusive,mult = FALSE,no_dup = no_dup,cond = cond,subset = subset)
+        res = check_internal(dfs,values=values,exclusive = exclusive,mult = FALSE,no_dup = no_dup,cond=cond,subset=subset)
         check_result(.data) = res
-        invisible(.data)
+        invisible(.data)    
     }
-    
-}
-
-#' @export
-#' @rdname sngl
-mult_ = function(...,.dots,cond=~NULL,subset=~NULL,no_dup=TRUE,show=NULL){
-    
-    vars = lazyeval::all_dots(.dots,...)
-    
-    function(.data,...,exclusive=NULL){
-        dfs = dplyr::select_(.data,.dots=vars)
-        #         browser()
-        cond = lazyeval::lazy_eval(cond,.data)
-        subset = lazyeval::lazy_eval(subset,.data)
-        values = list(...)
-        
-        ## for case when function/criteria supplied as valid value
-        funcs = sapply(values,is.function)
-        if (any(funcs)){
-            first_fun_index = which(funcs)[1]
-            new_values = crit(values[[first_fun_index]])
-            values = values[-first_fun_index]
-            for (i in seq_along(values)){
-                new_values = new_values | values[[i]]
-            }
-            values = new_values
-        } else {
-            values=unlist(values)
-        }
-        
-        res = check_internal(dfs,values=values,exclusive = exclusive,mult = TRUE,no_dup = no_dup,cond = cond,subset = subset)
-        check_result(.data) = res
-        invisible(.data)
-    }
+    invisible(values_fun)
     
 }
 
 
+check_if = function(.data,cond){
+    cond=lazyeval::lazy(cond)
+    check_if_(.data,cond)
+}
+
+check_if_ = function(.data,cond){
+    cond = lazyeval::lazy_eval(cond,.data)
+    res= list(.data=.data,cond=cond)
+    class(res) = c("chk_if",class(res))
+    invisible(res)
+    
+}
+
+check_subset = function(.data,subset){
+    subset=lazyeval::lazy(subset)
+    check_if_(.data,subset)
+}
+
+check_subset_ = function(.data,cond){
+    subset = lazyeval::lazy_eval(subset,.data)
+    res= list(.data=.data,subset=subset)
+    class(res) = c("chk_if",class(res))
+    invisible(res)
+    
+}
+    
 #### TODO аргументы со степенью детальности вывода информации... соответсвенно, их и в метод print надо добавить
 #### TODO тоже в print - таблицу с частотками правильных значений
 #' @export
