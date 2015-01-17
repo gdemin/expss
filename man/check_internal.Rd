@@ -4,7 +4,7 @@
 \alias{check_internal}
 \alias{print.check}
 \alias{summary.check}
-\title{Check multiple/single-response questions for valid values}
+\title{Internal function for checking multiple/single-response questions for valid values}
 \usage{
 check_internal(dfs, values = NULL, exclusive = NULL, mult = FALSE,
   no_dup = mult, cond = NULL, subset = NULL)

@@ -1,43 +1,37 @@
 #' Functions for checking multiple/single-response questions for valid values 
 #' 
-#' These functions are designed for working with piping operator \code{\link[magrittr]{`%>%`}}
+#' These functions are designed for working with piping operator \code{\link[magrittr]{\%>\%}}
 #'  from 'magrittr' package.  
 #'  
-#' @param ... List of variables.
+#' @param ... Comma separated list of unquoted variable names. You can use special 
+#' functions such as 'starts_with', 'ends_with', 'contains' and etc. For details see
+#' \code{\link[dplyr]{select}} in package 'dplyr'.
+#' @param .dots  Use mult_()/sngl_() to do standard evaluation. 
+#' See vignette("nse") in dplyr package for details   
 #' @param no_dup Logical. Should we check for absence of duplicated values in each row?
-#' @param cond Logical vector. TRUE indicated rows in dfs that should contain valid
-#'  values. In other rows all dfs values should be NA. It used for questions that
-#'   were asked by condition on answer on previous questions.
-#' @param subset Logical vector. TRUE indicated rows in dfs that should be checked. 
-#' Other rows will be ignored.
-#' @param show
-#' @param .data Check object for printing.
-#' 
-#' @return 
-#' \code{check_internal} return object of class 'check'. It is data.frame that contains 
-#' check result for each row of dfs and description for each error if any of them
-#'  exists.
-#' \code{print.check} invisibly returns its argument x. 
-#' \code{summary.check} returns list with summary check.
-#' 
+#' @param show Additional variables (such as 'id') that should be shown with report about 
+#' errors.
+#' @param .data data.frame
+#' @return \code{mult}/\code{sngl} functions returns another function 
+#' value(.data,...,exclusive). That function accepts data.frame and valid values.
+#'  See examples. 'value' function return data.frame with attribute with
+#'   results of checking.
+#' \code{report} print results of checking and invisibly returns checked data.frame.   
 #' @details
-#' values Valid values. All other values will be considered incorrect.
-#' exclusive Numeric/character values. These values should be exclusive. 
-#' All other values should be NA if any of exclusive values exists in row. 
-#' 'mult=TRUE' for multiple response questions means that it is allowed to have NA
-#'  values in row. It is only necessary for multiple response questions that each
-#'  row will have at least one non-NA values.
-#'  This function checks multiple response questions only with categorical coding.
+#'  Supposed usage is: \code{checked_data.frame  \%>\% mult(var_names)(valid_values,exclusive)}
+#'  or \code{checked_data.frame  \%>\% mult(var_names)(valid_values)}
+#'  Only valid values should be exists in var_names. All other values will be considered
+#'   incorrect. For multiple response questions (\code{mult}) it is only necessary
+#'  that each row will have at least one valid non-NA values.
+#'  If any of exclusive values exists in row all other values should be NA . 
+#'  \code{mult} function checks multiple response questions only with categorical coding.
 #'  For checking multiple response questions with dichotomous coding see \code{\link{dmult}}. 
-#'  If 'mult=FALSE' all values should be non-NA. However one can put NA in 'values' argument.
-#'  Then NA will be considered valid.
-#'  By default if 'mult=TRUE' then no_dup also is TRUE.
 #'  If 'values' is missing than all values considered valid except NA.
-#'  'check' report only for first error in row. If there are other errors for 
+#'  Only first error in the row is reported. If there are other errors for 
 #'  this case they will be reported only after correction of first error.
-#'
-#' @seealso \code{\link{mult}}, \code{\link{mult_}}, \code{\link{sngl}}, 
-#' \code{\link{sngl_}}, \code{\link{dmult}}
+#' @seealso \code{\link{check_internal}}, \code{\link[dplyr]{select}}, 
+#' \code{\link[magrittr]{\%>\%}}, \code{\link{dmult}}, \code{\link{test}}, 
+#' \code{\link{move}}
 #' @export
 #' @examples
 #' 
@@ -47,7 +41,9 @@
 #' ## Example 1 ##
 #' 
 #' # 4 errors: 2 missing, 2 invalid codes
-#' check_internal(ProductTestRaw$s2b,values=2:3)
+#' ProductTestRaw  %>% 
+#'          sngl(s2b)(2:3)  %>% 
+#'          report
 #' 
 #' ## Example 2 ##
 #' 
@@ -60,18 +56,36 @@
 #' # 99 Hard to say
 #' 
 #' # 5 errors: 1 missing value, 1 invalid code, 1 code duplication, 
-#' # 2 non-exclusive values
-#' check_internal(select(ProductTestRaw,a1_1:a1_6),values=valid_a1,
-#'      mult = TRUE, exclusive=c(1,2,99))
+#' # 2 non-exclusive values.
+#' # Additional variable 'id' also is shown.
+#' ProductTestRaw  %>% 
+#'          mult(a1_1:a1_6,show = id)(valid_a1,exclusive=c(1,2,99))  %>% 
+#'          report
 #' 
 #' ## Example 3 ##
 #' 
 #' valid_a4 = make_labels(codeframe$dislikes_in_appearance)
+#' 
 #' # question a4 was asked only if codes 1-4 marked in a3
 #' # 3 errors: 1 missing value, 1 invalid code, 1 code in case of a3 in 5-7.
-#' check_internal(select(ProductTestRaw,a4_1:a4_6),
-#'      values=valid_a4,mult = TRUE, exclusive=99,
-#'       cond = ProductTestRaw$a3 %in%  1:4)
+#' ProductTestRaw  %>% 
+#'          check_if(a3 %in% 1:4)  %>% 
+#'          mult(a4_1:a4_6)(valid_a4,exclusive=99)  %>%
+#'          report 
+#' 
+#' 
+#' ## Example 4 ##
+#' 
+#' Usage in programming (e. g. in cycle 'for')
+#' 
+#' checked_vars = c("a3","a22","b3","b23")
+#' # there is one error in a22
+#' 
+#' for (each_var in checked_vars){
+#'      ProductTestRaw  %>% 
+#'          sngl_(each_var)(1:7)  %>% 
+#'          report     
+#' }
 #' 
 sngl = function(...,no_dup=FALSE,show=NULL){
     
