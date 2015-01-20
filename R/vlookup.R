@@ -130,7 +130,7 @@ vlookup = function(lookup_value,dict,result_columns=NULL,lookup_column=1) {
             if (lookup_column=="row.names"){
                 ind = match(lookup_value,row.names(dict),incomparables = NA) 	
             } else {
-                ind = match(lookup_value,dict[,lookup_column],incomparables = NA) 
+                ind = match(lookup_value,unlist(dict[,lookup_column]),incomparables = NA) 
             }
         } else {
             if (lookup_column=="row.names"){
