@@ -149,6 +149,12 @@ report = function(.data){
         warning("No result of checking")
         return(invisible(.data))
     } 
+    alw = always(.data)
+    if (!is.null(alw) & !is.null(chk)){
+        chk = data.frame(.data[,alw],chk)
+        chk = chk[do.call(order,as.list(chk[,alw])),]  ### not sure about it...
+        class(chk) = unique(c("check",class(chk)))
+    }
     print (chk)
     invisible(.data)
 }
@@ -156,10 +162,12 @@ report = function(.data){
 
 
 ###############
+#' @export
 always = function(dfs){
     UseMethod("always")
 }
 
+#' @export
 always.data.frame = function(dfs){
     res = attr(dfs,"always",exact = TRUE)
     if (!is.null(res)) {
@@ -169,11 +177,13 @@ always.data.frame = function(dfs){
     res
 }
 
+#' @export
 "always<-" = function(x,value){
     
     UseMethod("always<-")
 }
 
+#' @export
 "always<-.data.frame" = function(x,value){
     stopif (!all(value %in% colnames(x)),"'",paste(setdiff(value,colnames(x)),collapse=","),"' doesn't exist in data.frame")
     attr(x,"always") = value

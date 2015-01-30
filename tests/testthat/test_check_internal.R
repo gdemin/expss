@@ -21,7 +21,12 @@ valid_a1 = make_labels(codeframe$likes)
 
 # 5 errors: 1 missing value, 1 invalid code, 1 code duplication, 2 non-exclusive values
 expect_equal_to_reference(check_internal(select(ProductTestRaw,a1_1:a1_6),values=valid_a1,mult = TRUE, exclusive=c(1,2,99)),
-                          "check2.rds")            
+                          "check2.rds")   
+
+# 5 errors: 1 missing value, 1 invalid code, 1 code duplication, 2 non-exclusive values
+# test for including exclusive in valid values
+expect_equal_to_reference(check_internal(select(ProductTestRaw,a1_1:a1_6),values=valid_a1[-(1:2)],mult = TRUE, exclusive=c(1,2,99)),
+                          "check2.rds")  
 
 ## Example 3 ##
 

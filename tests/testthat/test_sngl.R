@@ -21,7 +21,8 @@ valid_a1 = make_labels(codeframe$likes)
 # 2 Disliked everything
 # 99 Hard to say
 
-expect_equal_to_reference(ProductTestRaw  %>% mult(a1_1:a1_6)(valid_a1,exclusive=c(1,2,99))  %>% report, "mult1.rds") 
+expect_equal_to_reference(ProductTestRaw  %>% mult(a1_1:a1_6)(valid_a1,exclusive=c(1,2,99))  %>% report,
+                          "mult1.rds") 
 expect_equal_to_reference(ProductTestRaw %>% check_subset(cell %in% 2)  %>% mult(a1_1:a1_6)(valid_a1,exclusive=c(1,2,99))  %>% report,
                           "mult2.rds")
 

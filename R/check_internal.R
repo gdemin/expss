@@ -87,6 +87,10 @@ check_internal = function(dfs,values=NULL,exclusive=NULL,mult=FALSE,no_dup = mul
     }
     if (!is.null(cond)) cond = cond & !is.na(cond)
     ##########
+    if (!is.null(exclusive) & !is.null(values)){
+        
+        values = unique(c(values,exclusive))
+    }
     
     if (mult) {
         chk_res = check_mult(dfs,values,cond)
@@ -149,7 +153,7 @@ print.check=function(x,error_num=20,...){
         cat(.NO_ERROR_MESSAGE,"\n")
         return()
     }
-    resample = function(x,n) x[sample.int(length(x), n)]
+    resample = function(x,n) x[sort(sample.int(length(x), n))]
     errors_row =(1:nrow(x))[!is.na(x[,.CHK_ERR])] 
     valid_row = (1:nrow(x))[is.na(x[,.CHK_ERR])]
     errors = length(errors_row) 
