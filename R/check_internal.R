@@ -190,12 +190,15 @@ print.check=function(x,error_num=20,...){
     } else {
         cat("\nNo valid cases\n")
     }
-    cat("\n==========================================================\n")
-    cat("Details\n")
-    print(check_summary[[1]])
+    
+    if ("Details" %in% names(check_summary)){
+        cat("\n==========================================================\n")
+        cat("Details\n")
+        print(check_summary$Details)
+    }
     cat("\n==========================================================\n")
     cat("Summary\n")
-    print(check_summary[[2]])
+    print(check_summary$Summary)
     invisible(x)
     
 }
@@ -209,19 +212,19 @@ summary.check=function(object,skip_details = FALSE){
     if (all(valid)){
         return(.NO_ERROR_MESSAGE)
     }
-    if (!skip_details){
+    if ((!skip_details) & (.CHK_VAL %in% colnames(object))){
         only_errors = object[!valid,,drop = FALSE]
         detailed_res = table(only_errors[,.CHK_VAL],only_errors[,.CHK_ERR],useNA = "ifany")
         #         detailed_res = detailed_res[,!is.na(colnames(detailed_res)),drop=FALSE]
         detailed_res = addmargins(detailed_res,1,FUN = list("Total" = sum),quiet = TRUE)
         
-    }
+    } else detailed_res = NULL
     res = table(object[,.CHK_ERR],useNA = "always")
     names(res)[is.na(names(res))] = "No errors"
     res = cbind(res,round(prop.table(res)*100,1))
     res = addmargins(res,1,FUN = list("Total" = sum),quiet = TRUE)
     colnames(res) = c("Count","%")
-    if (!skip_details){
+    if (!is.null(detailed_res)){
         list("Details"= detailed_res,"Summary"=res)
     } else {
         list("Summary"=res)
@@ -236,7 +239,7 @@ summary.check=function(object,skip_details = FALSE){
 .CHK_VAL = ".IncorrectValue"
 .CHK_QUEST = ".VariableValue"
 
-.CHK_COLUMNS = c(.CHK_ERR,.CHK_VAL,.CHK_QUEST)
+.CHK_COLUMNS = c(.CHK_ERR)  # .CHK_VAL,.CHK_QUEST
 
 #### Error codes
 # .ERROR_SNGL_MISSING = "Missing/out of range"
@@ -247,7 +250,7 @@ summary.check=function(object,skip_details = FALSE){
 .ERROR_EXCLUSIVE = "Exclusive value"
 .ERROR_VALUE_SHOULD_BE_MISSING = "Value should be missing"
 .NO_ERROR_MESSAGE = "No error"
-
+.ERROR_IF = "Logical error"
 
 # internal functions
 
