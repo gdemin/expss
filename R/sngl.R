@@ -30,7 +30,7 @@
 #'  Only first error in the row is reported. If there are other errors for 
 #'  this case they will be reported only after correction of first error.
 #' @seealso \code{\link{check_internal}}, \code{\link[dplyr]{select}}, 
-#' \code{\link[magrittr]{\%>\%}}, \code{\link{dmult}}, \code{\link{test}}, 
+#' \code{\link[magrittr]{\%>\%}}, \code{\link{dmult}}, \code{\link{error_if}}, 
 #' \code{\link{move}}
 #' @export
 #' @examples
@@ -76,7 +76,7 @@
 #' 
 #' ## Example 4 ##
 #' 
-#' Usage in programming (e. g. in cycle 'for')
+#' # Usage in programming (e. g. in cycle 'for')
 #' 
 #' checked_vars = c("a3","a22","b3","b23")
 #' # there is one error in a22

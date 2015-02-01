@@ -99,7 +99,7 @@ ProductTestRaw  \%>\%
 
 ## Example 4 ##
 
-Usage in programming (e. g. in cycle 'for')
+# Usage in programming (e. g. in cycle 'for')
 
 checked_vars = c("a3","a22","b3","b23")
 # there is one error in a22
@@ -112,7 +112,7 @@ for (each_var in checked_vars){
 }
 \seealso{
 \code{\link{check_internal}}, \code{\link[dplyr]{select}},
-\code{\link[magrittr]{\%>\%}}, \code{\link{dmult}}, \code{\link{test}},
+\code{\link[magrittr]{\%>\%}}, \code{\link{dmult}}, \code{\link{error_if}},
 \code{\link{move}}
 }
 

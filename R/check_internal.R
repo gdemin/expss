@@ -199,6 +199,7 @@ print.check=function(x,error_num=20,...){
     cat("\n==========================================================\n")
     cat("Summary\n")
     print(check_summary$Summary)
+    cat("==========================================================\n")
     invisible(x)
     
 }

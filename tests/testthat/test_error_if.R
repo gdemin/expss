@@ -12,3 +12,12 @@ expect_equal_to_reference(ProductTestRaw  %>% check_if(cell==2)  %>% error_if((s
 
 expect_equal_to_reference(ProductTestRaw  %>% check_subset(cell==1)  %>% error_if((s2a %in% 18:26) & !(s2b %in% 2)),"error_if6.rds")  
 expect_equal_to_reference(ProductTestRaw  %>% check_subset(cell==2)  %>% error_if((s2a %in% 18:26) & !(s2b %in% 2)) ,"error_if7.rds") 
+
+
+checked_vars = c("a3","a22","b3","b23")
+
+# there is one error in a22
+
+for (each_var in checked_vars){
+    expect_equal_to_reference(ProductTestRaw  %>% error_if(!(ProductTestRaw[,each_var] %in% 1:7),show=c(id,cell)),sprintf("error_if_%s.rds",each_var))  
+}
