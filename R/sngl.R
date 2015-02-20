@@ -129,8 +129,11 @@ sngl_ = function(...,.dots,no_dup=FALSE,show=NULL){
         } else {
             values=unlist(values)
         }
+#         check = list(name="sngl",vars=vars,values=values,exclusive = exclusive,no_dup = no_dup,cond=cond,subset=subset)
+#         last_check(.data) = check
         res = check_internal(dfs,values=values,exclusive = exclusive,mult = FALSE,no_dup = no_dup,cond=cond,subset=subset)
         check_result(.data) = res
+        
         invisible(.data)    
     }
     invisible(values_fun)
@@ -210,5 +213,26 @@ check_result.data.frame = function(dfs){
 
 "check_result<-.data.frame" = function(x,value){
     attr(x,"check_result") = value
+    x   
+}
+
+
+####################
+last_check = function(dfs){
+    UseMethod("last_check")
+}
+
+last_check.data.frame = function(dfs){
+    res = attr(dfs,"last_check",exact = TRUE)
+    res
+}
+
+"last_check<-" = function(x,value){
+    
+    UseMethod("last_check<-")
+}
+
+"last_check<-.data.frame" = function(x,value){
+    attr(x,"last_check") = value
     x   
 }
