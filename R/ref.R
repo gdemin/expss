@@ -1,7 +1,8 @@
 #' Auxiliary functions to pass arguments to function by reference
 #' 
-#' Sometimes it is useful to modify variables in place (produce side effect). 
-#' These two functions aimed to simplify build functions with side-effects.
+#' These two functions aimed to simplify build functions with side-effects 
+#' (e. g. for modifying variables in place). Of cause it is not the R way of 
+#' doing things but sometimes it can save several keystrokes.
 #'  
 #' @param x Reference to variable, it is formula, ~var_name. 
 #' @param value Value that should be assigned to modified variable.
@@ -16,6 +17,9 @@
 #' If argument \code{x} of these functions is not formula then these functions have no effect
 #'  e. g. \code{ref(a)} is identical to \code{a} and after \code{ref(a) = value}
 #'   \code{a} is identical to \code{value}.
+#' It is not possible to use function as argument \code{x} in assignment form. For example, 
+#' \code{ref(some_function(x)) = some_value} will rise error. 
+#' Use \code{y = some_function(x); ref(y) = some_value} instead.
 #' 
 #' @export
 #' @examples
@@ -27,7 +31,7 @@
 #' ref(b)[2] = 4 # here we modify a
 #' identical(a,c(1,4,3)) # TRUE
 #' 
-#' # usage Inside function
+#' # usage inside function
 #' 
 #' # top 10 rows 
 #' head10 = function(x){
