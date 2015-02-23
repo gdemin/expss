@@ -95,6 +95,20 @@ sngl = function(...,no_dup=FALSE,show=NULL){
     
 }
 
+#' @export
+#' @rdname sngl
+.sngl = function(...,no_dup=FALSE,show=NULL){
+    
+    values_fun = sngl_ (.dots=lazyeval::lazy_dots(...),
+           no_dup=no_dup,
+           show=lazyeval::lazy(show))  
+    values_fun2 = function(..., exclusive=NULL){
+        .data = default_dataset()
+        values_fun(.data,...,exclusive = exclusive)
+    }
+    invisible(values_fun2)
+    
+}
 
 #' @export
 #' @rdname sngl
@@ -112,8 +126,8 @@ sngl_ = function(...,.dots,no_dup=FALSE,show=NULL){
             cond= NULL
             subset= NULL
         }
-        
-        dfs = dplyr::select_(.data,.dots=vars)
+        dat = ref(.data)
+        dfs = dplyr::select_(dat,.dots=vars)
         values = list(...)
         
         ## for case when function/criteria supplied as valid value
@@ -130,10 +144,10 @@ sngl_ = function(...,.dots,no_dup=FALSE,show=NULL){
             values=unlist(values)
         }
 #         check = list(name="sngl",vars=vars,values=values,exclusive = exclusive,no_dup = no_dup,cond=cond,subset=subset)
-#         last_check(.data) = check
+#         last_check(dat) = check
         res = check_internal(dfs,values=values,exclusive = exclusive,mult = FALSE,no_dup = no_dup,cond=cond,subset=subset)
-        check_result(.data) = res
-        
+        check_result(dat) = res
+        ref(.data) = dat
         invisible(.data)    
     }
     invisible(values_fun)
