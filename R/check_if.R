@@ -4,21 +4,20 @@
 #' \code{\link[magrittr]{\%>\%}} from 'magrittr' package.  
 #' 
 #' @param .data data.frame for checking 
-#' @param cond Logical vector/expression. TRUE indicated rows in .data that should contain valid
-#'  values. In other rows all .data values should be NA. It used for questions that
-#'   were asked by condition on answer on previous questions.
-#' @param subset Logical vector/expression. TRUE indicated rows in .data that should be checked. 
-#' Other rows will be ignored.
-
+#' @param expr Logical vector/expression. 
+#' 
+#' @details TRUE in expr vector indicated rows in .data that should contain valid
+#'  values. For \code{check_if} in other rows all .data values should be NA. It used for questions that
+#'   were asked by condition on answer from previous questions. For \code{check_subset} values in 
+#'   other rows will be ignored - they are all will be considered as valid.
 #' 
 #' @return These functions returns object of class 'chk_if'. It is suited for consumption by 
-#' functions: \code{\link{sngl}},\code{\link{mult}},\code{\link{dmult}}, \code{\link{test}} and
+#' functions: \code{\link{sngl}},\code{\link{mult}},\code{\link{dmult}}, \code{\link{error_if}} and
 #' \code{\link{move}}. Also it can be accepted by next \code{\link{check_if}} and/or 
 #' \code{\link{check_subset}}.
 #' 
-#' @seealso \code{\link{mult}}, \code{\link{mult_}}, \code{\link{sngl}}, 
-#' \code{\link{sngl_}}, \code{\link{dmult}}, \code{\link{test}} and
-#' \code{\link{move}}
+#' @seealso \code{\link{sngl}}, \code{\link{mult}},  \code{\link{dmult}}, 
+#' \code{\link{error_if}} and \code{\link{move}}
 #' @export
 #' @examples
 #' 
@@ -53,71 +52,93 @@
 #'      mult(a4_1:a4_6)(valid_a4,exclusive=99)  %>%
 #'      report 
 #' 
-check_if = function(.data,cond){
-    cond=lazyeval::lazy(cond)
-    check_if_(.data,cond)
+check_if = function(.data,expr){
+    if (missing(.data)){
+        .data = default_dataset() 
+        expr=lazyeval::lazy(expr)
+    } else if (missing(expr)) {
+        expr=lazyeval::lazy(.data)
+        .data = default_dataset()
+    } else {
+        expr=lazyeval::lazy(expr)
+    }
+
+
+    check_if_(.data,expr)
 }
 
 #' @export
-check_if_ = function(.data,cond){
+check_if_ = function(.data,expr){
     UseMethod("check_if_")
     
 }
 
 #' @export
-check_if_.default = function(.data,cond){
-    cond = lazyeval::lazy_eval(cond,.data)
-    res= list(.data=.data,cond=cond)
+check_if_.default = function(.data,expr){
+    dat = ref(.data) 
+    expr = lazyeval::lazy_eval(expr,dat)
+    res= list(.data=.data,cond=expr)
     class(res) = c("chk_if",class(res))
     invisible(res)
     
 }
 
 #' @export
-check_if_.chk_if = function(.data,cond){
+check_if_.chk_if = function(.data,expr){
     subset = .data$subset
     old_cond = .data$cond
     .data = .data$.data
     stopif(is.null(.data),"Incorrect 'chk_if' object. No data.")
-    cond = lazyeval::lazy_eval(cond,.data)
-    if (!is.null(old_cond)) cond = cond & old_cond
-    res= list(.data=.data,cond=cond, subset=subset)
+    dat = ref(.data) 
+    expr = lazyeval::lazy_eval(expr,dat)
+    if (!is.null(old_cond)) expr = expr & old_cond
+    res= list(.data=.data,cond=expr, subset=subset)
     class(res) = c("chk_if",class(res))
     invisible(res)
     
 }
 
 #' @export
-check_subset = function(.data,subset){
-    subset=lazyeval::lazy(subset)
-    check_subset_(.data,subset)
+check_subset = function(.data,expr){
+    if (missing(.data)){
+        .data = default_dataset() 
+        expr=lazyeval::lazy(expr)
+    } else if (missing(expr)) {
+        expr=lazyeval::lazy(.data)
+        .data = default_dataset()
+    } else {
+        expr=lazyeval::lazy(expr)
+    }
+    check_subset_(.data,expr)
 }
 
 #' @export
-check_subset_ = function(.data,subset){
+check_subset_ = function(.data,expr){
     UseMethod("check_subset_")
     
 }
 
 
 #' @export
-check_subset_.default = function(.data,subset){
-    subset = lazyeval::lazy_eval(subset,.data)
-    res= list(.data=.data,subset=subset)
+check_subset_.default = function(.data,expr){
+    dat = ref(.data) 
+    expr = lazyeval::lazy_eval(expr,dat)
+    res= list(.data=.data,subset=expr)
     class(res) = c("chk_if",class(res))
     invisible(res)
     
 }
 
 #' @export
-check_subset_.chk_if = function(.data,subset){
+check_subset_.chk_if = function(.data,expr){
     old_subset = .data$subset
     cond = .data$cond
     .data = .data$.data
     stopif(is.null(.data),"Incorrect 'chk_if' object. No data.")
-    subset = lazyeval::lazy_eval(subset,.data)
-    if (!is.null(old_subset)) subset = subset & old_subset
-    res= list(.data=.data,cond=cond, subset=subset)
+    dat = ref(.data) 
+    expr = lazyeval::lazy_eval(expr,dat)
+    if (!is.null(old_subset)) expr = expr & old_subset
+    res= list(.data=.data,cond=cond, subset=expr)
     class(res) = c("chk_if",class(res))
     invisible(res)
     

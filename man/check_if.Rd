@@ -4,27 +4,28 @@
 \alias{check_if}
 \title{Functions for checking conditional questions/subset of data.}
 \usage{
-check_if(.data, cond)
+check_if(.data, expr)
 }
 \arguments{
 \item{.data}{data.frame for checking}
 
-\item{cond}{Logical vector/expression. TRUE indicated rows in .data that should contain valid
-values. In other rows all .data values should be NA. It used for questions that
- were asked by condition on answer on previous questions.}
-
-\item{subset}{Logical vector/expression. TRUE indicated rows in .data that should be checked.
-Other rows will be ignored.}
+\item{expr}{Logical vector/expression.}
 }
 \value{
 These functions returns object of class 'chk_if'. It is suited for consumption by
-functions: \code{\link{sngl}},\code{\link{mult}},\code{\link{dmult}}, \code{\link{test}} and
+functions: \code{\link{sngl}},\code{\link{mult}},\code{\link{dmult}}, \code{\link{error_if}} and
 \code{\link{move}}. Also it can be accepted by next \code{\link{check_if}} and/or
 \code{\link{check_subset}}.
 }
 \description{
 These functions are designed for working with piping operator
 \code{\link[magrittr]{\%>\%}} from 'magrittr' package.
+}
+\details{
+TRUE in expr vector indicated rows in .data that should contain valid
+ values. For \code{check_if} in other rows all .data values should be NA. It used for questions that
+  were asked by condition on answer from previous questions. For \code{check_subset} values in
+  other rows will be ignored - they are all will be considered as valid.
 }
 \examples{
 library(dplyr)
@@ -59,8 +60,7 @@ ProductTestRaw  \%>\%
      report
 }
 \seealso{
-\code{\link{mult}}, \code{\link{mult_}}, \code{\link{sngl}},
-\code{\link{sngl_}}, \code{\link{dmult}}, \code{\link{test}} and
-\code{\link{move}}
+\code{\link{sngl}}, \code{\link{mult}},  \code{\link{dmult}},
+\code{\link{error_if}} and \code{\link{move}}
 }
 

@@ -48,9 +48,17 @@
 #'          report     
 #' }
 error_if = function(.data,expr,show=NULL){
-    
+    if (missing(.data)){
+        .data = default_dataset() 
+        expr=lazyeval::lazy(expr)
+    } else if (missing(expr)) {
+        expr=lazyeval::lazy(.data)
+        .data = default_dataset()
+    } else {
+        expr=lazyeval::lazy(expr)
+    }
     error_if_ (.data,
-           expr=lazyeval::lazy(expr),
+           expr=expr,
            show=lazyeval::lazy(show)
            )    
     
@@ -59,6 +67,7 @@ error_if = function(.data,expr,show=NULL){
 
 error_if_ = function(.data,expr,show=NULL){
     # TODO Should be rewritten 
+
     if ("chk_if" %in% class(.data)){
         cond=.data$cond
         subset=.data$subset
@@ -68,12 +77,13 @@ error_if_ = function(.data,expr,show=NULL){
         cond= NULL
         subset= NULL
     }
-    err_if = lazyeval::lazy_eval(expr,.data)
+    dat = ref(.data)
+    err_if = lazyeval::lazy_eval(expr,dat)
     var_names = all.vars(expr)
     if ("lazy" %in% class(expr)) {
         var_names = all.vars(expr$expr) 
-        if (any(var_names %in% colnames(.data))) {
-            vars = select_(.data,.dots = var_names[var_names %in% colnames(.data)])
+        if (any(var_names %in% colnames(dat))) {
+            vars = select_(dat,.dots = var_names[var_names %in% colnames(dat)])
         } else {
             vars = NULL
         }
@@ -83,9 +93,9 @@ error_if_ = function(.data,expr,show=NULL){
     if (!is.null(cond)) err_if[!(cond %in% TRUE)] = FALSE 
     if (!is.null(subset)) err_if[!(subset %in% TRUE)] = FALSE 
     if ("lazy" %in% class(show)) {
-        if (!is.null(show$expr)) show_var = select_(.data,.dots=lazyeval::all_dots(show)) else show_var = NULL
+        if (!is.null(show$expr)) show_var = select_(dat,.dots=lazyeval::all_dots(show)) else show_var = NULL
     } else {
-        if (!is.null(show)) show_var = select_(.data,.dots=show) else show_var = NULL
+        if (!is.null(show)) show_var = select_(dat,.dots=show) else show_var = NULL
         
     }
     chk_err = ifelse(err_if %in% TRUE,.ERROR_IF,NA)
@@ -94,9 +104,10 @@ error_if_ = function(.data,expr,show=NULL){
     if (!is.null(vars)) fin = data.frame(fin,vars,stringsAsFactors = FALSE)
     if (!is.null(show_var)) fin = data.frame(fin,show_var,stringsAsFactors = FALSE)
     class(fin) = unique(c("check",class(fin)))
-    check_result(.data) = fin
-    invisible(.data)    
-    
+    check_result(dat) = fin
+    ref(.data) = dat
+    invisible(.data)
+
     
 }
 
