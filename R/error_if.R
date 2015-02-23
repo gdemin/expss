@@ -48,19 +48,22 @@
 #'          report     
 #' }
 error_if = function(.data,expr,show=NULL){
-    if (missing(.data)){
-        .data = default_dataset() 
-        expr=lazyeval::lazy(expr)
-    } else if (missing(expr)) {
-        expr=lazyeval::lazy(.data)
-        .data = default_dataset()
-    } else {
-        expr=lazyeval::lazy(expr)
-    }
     error_if_ (.data,
-           expr=expr,
+           expr=lazyeval::lazy(expr),
            show=lazyeval::lazy(show)
            )    
+    
+}
+
+
+#' @export
+#' @rdname error_if
+.error_if = function(expr,show=NULL){
+    .data = default_dataset()
+    error_if_ (.data,
+               expr=lazyeval::lazy(expr),
+               show=lazyeval::lazy(show)
+    )    
     
 }
 

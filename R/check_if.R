@@ -53,17 +53,15 @@
 #'      report 
 #' 
 check_if = function(.data,expr){
-    if (missing(.data)){
-        .data = default_dataset() 
-        expr=lazyeval::lazy(expr)
-    } else if (missing(expr)) {
-        expr=lazyeval::lazy(.data)
-        .data = default_dataset()
-    } else {
-        expr=lazyeval::lazy(expr)
-    }
+    expr=lazyeval::lazy(expr)
+    check_if_(.data,expr)
+}
 
-
+#' @export
+#' @rdname check_if
+.check_if = function(expr){
+    .data = default_dataset()
+    expr=lazyeval::lazy(expr)
     check_if_(.data,expr)
 }
 
@@ -99,16 +97,18 @@ check_if_.chk_if = function(.data,expr){
 }
 
 #' @export
+#' @rdname check_if
 check_subset = function(.data,expr){
-    if (missing(.data)){
-        .data = default_dataset() 
-        expr=lazyeval::lazy(expr)
-    } else if (missing(expr)) {
-        expr=lazyeval::lazy(.data)
-        .data = default_dataset()
-    } else {
-        expr=lazyeval::lazy(expr)
-    }
+    expr=lazyeval::lazy(expr)
+    check_subset_(.data,expr)
+}
+
+
+#' @export
+#' @rdname check_if
+.check_subset = function(expr){
+    .data = default_dataset()
+    expr=lazyeval::lazy(expr)
     check_subset_(.data,expr)
 }
 
