@@ -42,5 +42,3 @@
 "ProductTest"
 
 
-#' @rdname ProductTest
-"ProductTestRaw"

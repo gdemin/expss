@@ -1,25 +1,18 @@
-Package: cleanr
+Package: labelr
 Type: Package
-Title: Tool for cleaning (checking) data from marketing/sociological studies.
+Title: Basic SPSS labels support for R functions.
 Version: 0.5
-Date: 2014-11-21
+Date: 2015-02-24
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
-URL: https://github.com/gdemin/cleanr
+URL: https://github.com/gdemin/labelr
 Depends:
     R (>= 3.1.2),
-    dplyr,
-    magrittr
 Imports:
-    lazyeval,
     foreign
 Suggests:
     knitr
-Description: Data from marketing/sociological surveys are often needed for the
-    additional checking/cleaning for consistency (e. g. missing values, values
-    out and so on). CleanR main features: checking of single/multiple response
-    questions, conditional checking, checking for uniqueness of values and so
-    on.
+Description: TODO TODO TODO
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)

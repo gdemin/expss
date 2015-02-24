@@ -3,7 +3,6 @@
 \docType{data}
 \name{ProductTest}
 \alias{ProductTest}
-\alias{ProductTestRaw}
 \title{Data from product test of chocolate confectionary}
 \format{A data frame with 150 rows and 77 variables:
 \describe{
@@ -35,8 +34,6 @@
 }}
 \usage{
 ProductTest
-
-ProductTestRaw
 }
 \description{
 Rather artificial dataset is containing raw data from product test of two

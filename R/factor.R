@@ -94,12 +94,12 @@ as.factor.with_labels=function(x){
 #' @export
 #' @rdname factor
 ordered = function (x, ...) {
-    cleanr::factor(x, ..., ordered = TRUE)
+    labelr::factor(x, ..., ordered = TRUE)
 }    
 
 #' @export
 #' @rdname factor
 as.ordered = function (x) {
-    if (is.ordered(x)) x else cleanr::ordered(x)
+    if (is.ordered(x)) x else labelr::ordered(x)
 }
 
