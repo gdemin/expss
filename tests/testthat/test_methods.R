@@ -32,3 +32,5 @@ new_vec = rep(vec_with_lab,2)
 expect_identical(var_lab(new_vec),var_lab(vec_with_lab))
 expect_identical(val_lab(new_vec),val_lab(vec_with_lab))
 
+
+

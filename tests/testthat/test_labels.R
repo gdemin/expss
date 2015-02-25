@@ -1,25 +1,25 @@
 context("var_lab")
 
-data(ProductTest)
-age_group = ProductTest$s2b
-var_lab(ProductTest$s2b) = "Age group"
+test_ds = data.frame(total = 1, s2b = sample(2:3,100,replace = TRUE))
+age_group = test_ds$s2b
+var_lab(test_ds$s2b) = "Age group"
 age_group = set_var_lab(age_group,"Age group")
-expect_identical(age_group,ProductTest$s2b) # should be TRUE
+expect_identical(age_group,test_ds$s2b) # should be TRUE
 
 expect_identical(var_lab(age_group),attr(age_group,"label")) # should be TRUE
 
 
 context("val_lab")
-data(ProductTest)
+
 
 ### Common usage ###
 
-ProductTest = unlab(ProductTest)
-val_lab(ProductTest$s2b) = c('18 - 26' = 2, '27 - 35' = 3)
+test_ds = unlab(test_ds)
+val_lab(test_ds$s2b) = c('18 - 26' = 2, '27 - 35' = 3)
 
-# head(factor(ProductTest$s2b))
+# head(factor(test_ds$s2b))
 
-expect_identical(levels(factor(ProductTest$s2b)), names(val_lab(ProductTest$s2b)))
+expect_identical(levels(factor(test_ds$s2b)), names(val_lab(test_ds$s2b)))
 
 
 
@@ -43,24 +43,24 @@ expect_identical(c(a=1,b=2),val_lab(dd))
 
 ### Add labels ###
 
-ProductTest = unlab(ProductTest) # drop all labels
+test_ds = unlab(test_ds) # drop all labels
 
 age_groups = c('18 - 26' = 2, '27 - 35' = 3)
-add_val_lab(ProductTest$s2b) = age_groups[1]
-add_val_lab(ProductTest$s2b) = age_groups[2]
+add_val_lab(test_ds$s2b) = age_groups[1]
+add_val_lab(test_ds$s2b) = age_groups[2]
 
-expect_identical(ProductTest$s2b, set_val_lab(unlab(ProductTest$s2b),age_groups))
+expect_identical(test_ds$s2b, set_val_lab(unlab(test_ds$s2b),age_groups))
 
-ProductTest$s2b = unlab(ProductTest$s2b)
+test_ds$s2b = unlab(test_ds$s2b)
 
 ## make labels from text copied from questionnaire
 
-val_lab(ProductTest$s2b) = make_labels("
+val_lab(test_ds$s2b) = make_labels("
  2. 18 - 26
  3. 27 - 35
 ")
 
-expect_equal(ProductTest$s2b, set_val_lab(ProductTest$s2b,age_groups))
+expect_equal(test_ds$s2b, set_val_lab(test_ds$s2b,age_groups))
 
 context("make_labels")
 

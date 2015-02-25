@@ -19,11 +19,11 @@
 #'   \code{var_lab(var) <- NULL} or \code{unvr(var)}.
 #' @export  
 #' @examples
-#' data(ProductTest)
-#' age_group = ProductTest$s2b
-#' var_lab(ProductTest$s2b) = "Age group"
+#' test_ds = data.frame(total = 1, s2b = sample(2:3,100,replace = TRUE))
+#' age_group = test_ds$s2b
+#' var_lab(test_ds$s2b) = "Age group"
 #' age_group = set_var_lab(age_group,"Age group")
-#' identical(age_group,ProductTest$s2b) # should be TRUE
+#' identical(age_group,test_ds$s2b) # should be TRUE
 #' 
 #' identical(var_lab(age_group),attr(age_group,"label")) # should be TRUE
 #' 
@@ -131,40 +131,42 @@ unvr.list=function(x){
 #'   to named vector. See examples.
 #' @export
 #' @examples
-#' data(ProductTest)
+#' test_ds = data.frame(total = 1, 
+#'                      s2b = sample(2:3,100,replace = TRUE),
+#'                      s8_1 = sample(1:8,100,replace = TRUE))
 #' 
 #' ### Common usage ###
-#' val_lab(ProductTest$s2b) = c('18 - 26' = 2, '27 - 35' = 3)
+#' val_lab(test_ds$s2b) = c('18 - 26' = 2, '27 - 35' = 3)
 #' 
-#' head(factor(ProductTest$s2b))
+#' head(factor(test_ds$s2b))
 #' 
-#' identical(levels(factor(ProductTest$s2b)), names(val_lab(ProductTest$s2b)))
+#' identical(levels(factor(test_ds$s2b)), names(val_lab(test_ds$s2b)))
 #' 
-#' ProductTest = unlab(ProductTest) # drop all labels
+#' test_ds = unlab(test_ds) # drop all labels
 #' 
 #' ### Add labels ###
 #' 
 #' age_groups = c('18 - 26' = 2, '27 - 35' = 3)
 #' 
-#' add_val_lab(ProductTest$s2b) = age_groups[1]
-#' add_val_lab(ProductTest$s2b) = age_groups[2]
+#' add_val_lab(test_ds$s2b) = age_groups[1]
+#' add_val_lab(test_ds$s2b) = age_groups[2]
 #' 
-#' identical(ProductTest$s2b, set_val_lab(ProductTest$s2b,age_groups))
+#' identical(test_ds$s2b, set_val_lab(test_ds$s2b,age_groups))
 #' 
-#' ProductTest$s2b = unlab(ProductTest$s2b)
+#' test_ds$s2b = unlab(test_ds$s2b)
 #' 
 #' ## make labels from text copied from questionnaire
 #' 
-#' val_lab(ProductTest$s2b) = make_labels("
+#' val_lab(test_ds$s2b) = make_labels("
 #'  1. 18 - 26
 #'  2. 27 - 35
 #' ")
 #' 
-#' head(factor(ProductTest$s2b))
+#' head(factor(test_ds$s2b))
 #' 
 #' # or, if in original codes is on the right side
 #' 
-#' val_lab(ProductTest$s8_1) = make_labels("
+#' val_lab(test_ds$s8_1) = make_labels("
 #'  Chocolate bars    1
 #'  Chocolate sweets (bulk)	2
 #'  Slab chocolate(packed)	3
@@ -175,7 +177,7 @@ unvr.list=function(x){
 #'  Other	8
 #' ", code_position = "right")
 #' 
-#' head(factor(ProductTest$s8_1))
+#' head(factor(test_ds$s8_1))
 val_lab=function(x){
     UseMethod("val_lab")
 }

@@ -40,11 +40,11 @@ Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
   \code{var_lab(var) <- NULL} or \code{unvr(var)}.
 }
 \examples{
-data(ProductTest)
-age_group = ProductTest$s2b
-var_lab(ProductTest$s2b) = "Age group"
+test_ds = data.frame(total = 1, s2b = sample(2:3,100,replace = TRUE))
+age_group = test_ds$s2b
+var_lab(test_ds$s2b) = "Age group"
 age_group = set_var_lab(age_group,"Age group")
-identical(age_group,ProductTest$s2b) # should be TRUE
+identical(age_group,test_ds$s2b) # should be TRUE
 
 identical(var_lab(age_group),attr(age_group,"label")) # should be TRUE
 }
