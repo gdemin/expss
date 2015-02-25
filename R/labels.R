@@ -332,3 +332,13 @@ combine_labels = function(...){
     new_lab = new_lab[!duplicated(new_lab)]
     sort(new_lab)
 }
+
+labeled_and_unlabeled = function(uniqs,vallab){
+    uniqs=uniqs[!is.na(uniqs)]
+    unlabeled=setdiff(uniqs,vallab)
+    if (length(unlabeled)>0){
+        names(unlabeled)=unlabeled
+        vallab=c(vallab,unlabeled)
+    }
+    sort(vallab)
+}

@@ -55,20 +55,10 @@ factor.default = function(...){
 factor.with_labels = function(x,  ordered = is.ordered(x),...){
     vallab=val_lab(x)
     varlab = var_lab(x)
-#     browser()
-#     if (length(vallab)>0){
-        uniqs=unique(x)
-        uniqs=uniqs[!is.na(uniqs)]
-        unlabeled=setdiff(uniqs,vallab)
-        if (length(unlabeled)>0){
-            names(unlabeled)=unlabeled
-            vallab=c(vallab,unlabeled)
-        }
-        vallab=sort(vallab)
-
-        if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = labels_sep)
-        res=base_factor(x,levels=vallab,labels=names(vallab),ordered=ordered)
-#     } else res=base_factor(x ,exclude=exclude,ordered=ordered,nmax=nmax)
+    uniqs=unique(x)
+    vallab = labeled_and_unlabeled(uniqs,vallab) 
+    if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = labels_sep)
+    res=base_factor(x,levels=vallab,labels=names(vallab),ordered=ordered)
     res 
     
 }
