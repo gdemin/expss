@@ -56,7 +56,7 @@ factor.with_labels = function(x,  ordered = is.ordered(x),...){
     vallab=val_lab(x)
     varlab = var_lab(x)
     uniqs=unique(x)
-    vallab = labeled_and_unlabeled(uniqs,vallab) 
+    vallab = labelled_and_unlabelled(uniqs,vallab) 
     if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = labels_sep)
     res=base_factor(x,levels=vallab,labels=names(vallab),ordered=ordered)
     res 

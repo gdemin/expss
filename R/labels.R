@@ -6,7 +6,6 @@
 #' \code{set_var_lab} returns variable with label.
 #' \code{unvr} drops variable label.
 #' 
-#' @aliases var_lab<- set_var_lab unvr
 #' @param x Variable. In the most cases it is numeric vector.
 #' @param value A character scalar - label for the variable x.
 #' @return \code{var_lab} return variable label. If label doesn't exist it return
@@ -14,7 +13,7 @@
 #'   of class "with_labels" with attribute "label" which equals submitted value.
 #' @details Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
 #'   preserving from dropping this attribute during some operations (such as \code{c})
-#'   we set variable class to "with_labels". There are special methods of
+#'   variable class is set to "with_labels". There are special methods of
 #'   subsetting and concatenation for this class. To drop variable label use 
 #'   \code{var_lab(var) <- NULL} or \code{unvr(var)}.
 #' @export  
@@ -333,12 +332,29 @@ combine_labels = function(...){
     sort(new_lab)
 }
 
-labeled_and_unlabeled = function(uniqs,vallab){
-    uniqs=uniqs[!is.na(uniqs)]
+labelled_and_unlabelled = function(uniqs,vallab){
+    if (length(uniqs)>0) uniqs=uniqs[!is.na(uniqs)]
     unlabeled=setdiff(uniqs,vallab)
     if (length(unlabeled)>0){
         names(unlabeled)=unlabeled
         vallab=c(vallab,unlabeled)
     }
-    sort(vallab)
+    if (length(vallab>1)) sort(vallab) else vallab
+}
+
+as.with_labels = function(x){
+    UseMethod("as.with_labels")
+}
+
+as.with_labels.default = function(x){
+    x
+}
+
+as.with_labels.factor = function(x){
+    labels = seq_along(levels(x))
+    names(labels) = levels(x)
+    x = as.numeric(x)
+    val_lab(x) = labels
+    x
+    
 }

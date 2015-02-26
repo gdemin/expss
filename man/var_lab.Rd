@@ -35,7 +35,7 @@ exist.
 \details{
 Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
   preserving from dropping this attribute during some operations (such as \code{c})
-  we set variable class to "with_labels". There are special methods of
+  variable class is set to "with_labels". There are special methods of
   subsetting and concatenation for this class. To drop variable label use
   \code{var_lab(var) <- NULL} or \code{unvr(var)}.
 }
