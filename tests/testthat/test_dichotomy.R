@@ -316,5 +316,10 @@ expect_identical(dichotomy(vec, keep_unused = TRUE,keep=2:45),
                  structure(c(0, 1, NA,0,0,NA), .Dim = c(3L, 2L), .Dimnames = list(
                      NULL, c( "Label|2","Label|d")), class = c("dichotomy", "matrix")))
 
+set.seed(123)
+brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))
+expect_equal_to_reference(dichotomy(brands[,1]),"brands.rds")
+
+###########
 
 

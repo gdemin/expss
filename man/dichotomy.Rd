@@ -2,19 +2,19 @@
 % Please edit documentation in R/dichotomy.R
 \name{dichotomy}
 \alias{dichotomy}
-\title{Convert variable to matrix of dummy variables (dichotomy).}
+\title{Convert variable (possibly multiple choice question) to matrix of dummy variables.}
 \usage{
 dichotomy(x, keep_unused = FALSE, use_na = TRUE, keep = NULL)
 }
 \arguments{
 \item{x}{vector/factor/matrix/data.frame.}
 
-\item{keep_unused}{Logical. Should we create columns for unused labels/factor levels.}
+\item{keep_unused}{Logical. Should we create columns for unused value labels/factor levels.}
 
-\item{use_na}{Logical. Should we use NA for rows with all NA or use 0.}
+\item{use_na}{Logical. Should we use NA for rows with all NA or use 0's instead.}
 
-\item{keep}{Numeric/character. Labels/levels/values that should be keeped.
-By default all used values will be keeped.}
+\item{keep}{Numeric/character. Labels/levels/values that should be kept.
+By default all values will be kept.}
 }
 \value{
 matrix with 0,1 which column names are value labels. If label doesn't exist for
@@ -24,16 +24,49 @@ particular value then this value will be used as column name.
 \code{dichotomy} returns matrix with 0,1 and possibly NA.
 }
 \details{
-.
+This function converts variable/multiple response variable(matrix/data.frame)
+ with category encoding into matrix with dichotomy encoding (0/1)
+suited for most statistical analysis, e. g. clustering, factor analysis,
+linear regression and so on.
 }
 \examples{
-test_ds = data.frame(total = 1, s2b = sample(2:3,100,replace = TRUE))
-age_group = test_ds$s2b
-var_lab(test_ds$s2b) = "Age group"
-age_group = set_var_lab(age_group,"Age group")
-identical(age_group,test_ds$s2b) # should be TRUE
+# toy example
+# brands - multiple response question
+# Which brands do you use during last three months?
+set.seed(123)
+brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))
+# score - evaluation of tested product
+score = sample(-1:1,20,replace = TRUE)
+var_lab(brands) = "Used brands"
+val_lab(brands) = make_labels("
+                              1 Brand A
+                              2 Brand B
+                              3 Brand C
+                              4 Brand D
+                              5 Brand E
+                              ")
 
-identical(var_lab(age_group),attr(age_group,"label")) # should be TRUE
+var_lab(score) = "Evaluation of tested brand"
+val_lab(score) = make_labels("
+                             -1 Dislike it
+                              0 So-so
+                              1 Like it
+                             ")
+
+# percentage of used brands
+colMeans(dichotomy(brands))
+
+# percentage of brands within each score
+aggregate(dichotomy(brands) ~ factor(score), FUN = mean)
+
+# or, same result in another form
+by(dichotomy(brands), factor(score), FUN = colMeans)
+
+# customer segmentation by used brands
+kmeans(dichotomy(brands),3)
+
+# model of influence of used brands on evaluation of tested product
+summary(lm(score ~ dichotomy(brands)))
 }
 \seealso{
 \code{\link{category}} for reverse conversion.
