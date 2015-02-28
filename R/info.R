@@ -5,7 +5,7 @@ info=function(x, frequencies = TRUE, max_levels= 30){
 
 #' @export
 info.default=function(x, frequencies = TRUE, max_levels= 30){
-    max_levels = min(1,max_levels)
+    max_levels = max(1,max_levels)
     varlab=var_lab(x)
     if (length(varlab)==0) varlab=NA
     vallab=val_lab(x)
@@ -14,7 +14,11 @@ info.default=function(x, frequencies = TRUE, max_levels= 30){
     else {
         vallab=paste(paste(names(vallab),vallab,sep="="),collapse=", ")
     }
-    res = list("Mode"=mode(x),Length=length(x),Valid=sum(!is.na(x)),"Label"=varlab,"Value labels"=vallab)
+    res = list("Class"=paste(class(x),collapse=","),
+               "Length"=length(x),
+               "NotNA"=sum(!is.na(x)),
+               "Label"=varlab,
+               "ValueLabels"=vallab)
     if (frequencies){
         values=table(x,useNA="ifany")
         if (NA %in% names(values)) values=c(tail(values,1),head(values,-1))
@@ -26,21 +30,24 @@ info.default=function(x, frequencies = TRUE, max_levels= 30){
         values=paste(paste(names(values),values,sep="="),collapse=", ")
         res = c(res, Frequency =values)
     }
-    res
+    curr_name = paste(as.character(substitute(x)),collapse = "")
+    as.data.frame(c(Name=curr_name,res),stringsAsFactors = FALSE)
 }
 
 #' @export
 info.data.frame=function(x, frequencies = TRUE, max_levels= 30){
-    info.list(x)
+    info.list(x,frequencies,max_levels)
+}
+
+info.matrix=function(x, frequencies = TRUE, max_levels= 30){
+    info.list(as.data.frame(x,stringsAsFactors = FALSE),frequencies,max_levels)
 }
 
 #' @export
 info.list=function(x, frequencies = TRUE, max_levels= 30){
-    var_names = names(x)
-    res = lapply(var_names,function(y) c(y,unlist(info(x[,y]))))
-    res=as.data.frame(do.call(rbind,res))
+    res = lapply(x,function(y) info(y,frequencies,max_levels))
+    res = do.call(rbind,res)
     rownames(res) = seq_len(nrow(res))                  
-    res[,2]=as.numeric(res[,2])
-    res[,3]=as.numeric(res[,3])
+    res$Name = names(x)
     res
 }

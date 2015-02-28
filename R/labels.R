@@ -83,13 +83,13 @@ unvr.default=function(x){
 
 #' @export
 unvr.data.frame=function(x){
-    for (each in seq_along(x)) x[[i]] = unvr(x[[i]])
+    for (each in seq_along(x)) x[[each]] = unvr(x[[each]])
     x
 }
 
 #' @export
 unvr.list=function(x){
-    for (each in seq_along(x)) x[[i]] = unvr(x[[i]])
+    for (each in seq_along(x)) x[[each]] = unvr(x[[each]])
     x
 }
 
@@ -226,13 +226,13 @@ set_val_lab.default = function(x,value, add = FALSE){
 
 #' @export
 set_val_lab.data.frame = function(x,value, add = FALSE){
-    for (i in seq_along(x)) val_lab(x[[i]]) = value
+    for (each in seq_along(x)) val_lab(x[[each]]) = value
     x
 }
 
 #' @export
 set_val_lab.list = function(x,value, add = FALSE){
-    for (i in seq_along(x)) val_lab(x[[i]]) = value
+    for (each in seq_along(x)) val_lab(x[[each]]) = value
     x
 }
 

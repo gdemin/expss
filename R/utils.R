@@ -11,6 +11,3 @@ stopif = function(cond,...){
     invisible()
 }
 
-
-#' @import dplyr
-NULL
