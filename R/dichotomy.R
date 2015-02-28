@@ -1,6 +1,7 @@
 #' Convert variable (possibly multiple choice question) to matrix of dummy variables.
 #' 
-#' \code{dichotomy} returns matrix with 0,1 and possibly NA.
+#' \code{dichotomy} returns matrix with 0,1 and possibly NA. 
+#' \code{dichotomy1} returns same result as \code{dichotomy} but without last category.
 #' 
 #' @param x vector/factor/matrix/data.frame.
 #' @param keep_unused Logical. Should we create columns for unused value labels/factor levels.
@@ -13,6 +14,8 @@
 #'  with category encoding into matrix with dichotomy encoding (0/1) 
 #' suited for most statistical analysis, e. g. clustering, factor analysis, 
 #' linear regression and so on.  
+#' \code{dichotomy1} drops last column in dichotomy matrix. It is useful in many cases
+#' because any column of such matrix usually is linear combinations of other columns.
 #' @seealso \code{\link{category}} for reverse conversion.
 #' @examples
 #' # toy example
@@ -51,7 +54,7 @@
 #' kmeans(dichotomy(brands),3)
 #' 
 #' # model of influence of used brands on evaluation of tested product 
-#' summary(lm(score ~ dichotomy(brands)))
+#' summary(lm(score ~ dichotomy1(brands)))
 #' 
 #' @export
 dichotomy = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL){
@@ -127,4 +130,12 @@ dichotomy_helper = function(x, keep_unused = FALSE, keep = NULL){
     vallab    
 }
 
-
+#' @export
+#' @rdname dichotomy
+dichotomy1 = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL){
+    res = dichotomy(x,keep_unused,use_na,keep)
+    if (ncol(res)>0){
+        res = res[,-ncol(res),drop = FALSE]
+    }
+    res
+}

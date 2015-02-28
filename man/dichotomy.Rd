@@ -2,9 +2,12 @@
 % Please edit documentation in R/dichotomy.R
 \name{dichotomy}
 \alias{dichotomy}
+\alias{dichotomy1}
 \title{Convert variable (possibly multiple choice question) to matrix of dummy variables.}
 \usage{
 dichotomy(x, keep_unused = FALSE, use_na = TRUE, keep = NULL)
+
+dichotomy1(x, keep_unused = FALSE, use_na = TRUE, keep = NULL)
 }
 \arguments{
 \item{x}{vector/factor/matrix/data.frame.}
@@ -22,12 +25,15 @@ particular value then this value will be used as column name.
 }
 \description{
 \code{dichotomy} returns matrix with 0,1 and possibly NA.
+\code{dichotomy1} returns same result as \code{dichotomy} but without last category.
 }
 \details{
 This function converts variable/multiple response variable(matrix/data.frame)
  with category encoding into matrix with dichotomy encoding (0/1)
 suited for most statistical analysis, e. g. clustering, factor analysis,
 linear regression and so on.
+\code{dichotomy1} drops last column in dichotomy matrix. It is useful in many cases
+because any column of such matrix usually is linear combinations of other columns.
 }
 \examples{
 # toy example
@@ -66,7 +72,7 @@ by(dichotomy(brands), factor(score), FUN = colMeans)
 kmeans(dichotomy(brands),3)
 
 # model of influence of used brands on evaluation of tested product
-summary(lm(score ~ dichotomy(brands)))
+summary(lm(score ~ dichotomy1(brands)))
 }
 \seealso{
 \code{\link{category}} for reverse conversion.
