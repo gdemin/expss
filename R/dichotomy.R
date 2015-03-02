@@ -73,7 +73,7 @@ dichotomy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL)
     }
     res[] = res*1
     colnames(res) = names(vallab)
-    class(res) = unique(c("dichotomy",class(res))) # for future usage. by now there is no methods for this class
+    class(res) = union("dichotomy",class(res)) # for future usage. by now there is no methods for this class
     res
 }
 
@@ -105,7 +105,7 @@ dichotomy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep = NU
         res[nas,] = NA
     }
     colnames(res) = names(vallab)
-    class(res) = unique(c("dichotomy",class(res))) # for future usage. by now there is no methods for this class
+    class(res) = union("dichotomy",class(res)) # for future usage. by now there is no methods for this class
     res    
     
 }

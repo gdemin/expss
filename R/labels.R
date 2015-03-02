@@ -44,7 +44,7 @@ set_var_lab=function(x,value){
         return(x)
     }
     attr(x,"label")=value
-    if (!isS4(x)) if (!("with_labels" %in% class(x))) class(x)=c("with_labels",class(x))
+    class(x)=union("with_labels",class(x))
     x
 }
 
@@ -220,7 +220,7 @@ set_val_lab.default = function(x,value, add = FALSE){
     if (add) value = combine_labels(value,val_lab(x))
     if (length(value)==0) value=NULL else value=sort(value)
     attr(x,"value_labels")=value
-    if (!isS4(x)) if (!("with_labels" %in% class(x))) class(x)=c("with_labels",class(x))
+    class(x)=union("with_labels",class(x))
     x
 }
 
@@ -275,7 +275,7 @@ unlab=function(x){
 unlab.default=function(x){
     var_lab(x) = NULL
     val_lab(x) = NULL
-    class(x) = class(x)[!(class(x) %in% "with_labels")]
+    class(x) = setdiff(class(x),"with_labels")
     x
 }
 

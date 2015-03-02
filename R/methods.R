@@ -10,7 +10,7 @@ c.with_labels=function(..., recursive = FALSE)
     
     dummy= lapply(vectors,val_lab)
     val_lab(y)=do.call(combine_labels,dummy)
-    class(y) = unique(c("with_labels",class(y)))
+    class(y) = union("with_labels",class(y))
     y
 }
 
