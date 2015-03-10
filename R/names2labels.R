@@ -1,9 +1,10 @@
 #' Replace data.frame/list names with corresponding variables labels.
 #' 
 #' @param x data.frame/list.
-#' @param keep_names logical. If TRUE original names will be appended to labels in round brackets.
+#' @param keep_names logical. If TRUE original column names will be appended to labels in round brackets.
 #' @return Object of the same type as x but with variable labels instead of names. If there are no labels for
-#'  some variables their names remain unchanged. 
+#'  some variables their names remain unchanged.
+#' @details \code{n2l} is just shortcut to \code{names2labels}. 
 #' @seealso \code{\link{values2labels}}
 #' @examples
 #' data(mtcars)
@@ -62,3 +63,8 @@ names2labels.matrix = function(x, keep_names = FALSE){
     x
 
 }
+
+
+#' @export
+#' @rdname names2labels
+n2l = names2labels

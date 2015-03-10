@@ -1,5 +1,7 @@
 #' @export
 write_labelled = function(x, filename, fileEncoding = ""){
+    # R doesn' read its own CSV if it contain newlines in the character field.
+    for (i in seq_along(x)) if(is.character(x[,i])) x[,i] = gsub("[\\n\\r]+"," ",x[,i],perl = TRUE)
     write.table(x,file = paste0(filename,".csv"),
                 sep=",",
                 na="",
@@ -68,5 +70,26 @@ make_make_labs = function(vars,named_vec){
     vallab = paste0("    ",named_vec,' ',labs,'')[labs!=""]
     vallab = paste(vallab, collapse = "\n")
     sprintf('%s = make_labels("\n%s\n")',vars,vallab)
+    
+}
+
+
+# @export
+# @rdname write_labelled
+read_labelled = function(filename, colClasses = NA,fileEncoding = ""){
+    w = read.table(file = paste0(filename,".csv"),
+                   header = TRUE,
+                   sep = ",",
+                   colClasses = colClasses,
+                   stringsAsFactors = FALSE,
+                   fileEncoding = fileEncoding
+                   )
+    dic_file = paste0(filename,".dic.R")
+    if (file.exists(dic_file)){
+        source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
+    } else {
+        warning(".dic.R file doesn't exists. Labels will not be applied to data.")
+    }
+    
     
 }
