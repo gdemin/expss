@@ -4,26 +4,34 @@
 \alias{info}
 \title{Provide variables info for dataset.}
 \usage{
-info(x, frequencies = TRUE, max_levels = 10)
+info(x, stats = TRUE, frequencies = TRUE, max_levels = 10)
 }
 \arguments{
 \item{x}{vector/factor/list/data.frame.}
 
-\item{frequencies}{Logical. Should we calculate frequencies for each variable? This calculation can
-take significant amount of time for large datasets.}
+\item{stats}{Logical. Should we calculate Min, LowHinge, Median, HighHinge,
+Max for each variable?}
 
-\item{max_levels}{Numeric. Maximum levels for using in frequency calculations. Levels above
-this value will convert to 'Other values'.}
+\item{frequencies}{Logical. Should we calculate frequencies for each
+variable? This calculation can take significant amount of time for large
+datasets.}
+
+\item{max_levels}{Numeric. Maximum levels for using in frequency
+calculations. Levels above this value will convert to 'Other values'.}
 }
 \value{
-data.frame with following columns: Name, Class, Length, NotNA, Label, ValueLabels, Frequency.
+data.frame with following columns: Name, Class, Length, NotNA,
+  Distincts, Label, ValueLabels, Min, LowHinge, Median, HighHinge, Max,
+  Frequency.
 }
 \description{
 \code{into} returns data.frame with variables info.
 }
 \details{
-Resulting data.frame of this function mainly intended to be saved as csv to keep before eyes
-in RStudio viewer or spreadsheet software as reference about working dataset.
+Resulting data.frame of this function mainly intended to be saved as
+  csv to keep before eyes in RStudio viewer or spreadsheet software as
+  reference about working dataset. Min, LowHinge, Median, HighHinge, Max -
+  values which are produced by boxplot.stats function.
 }
 \examples{
 data(mtcars)
