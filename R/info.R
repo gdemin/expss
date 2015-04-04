@@ -1,22 +1,20 @@
-#' Provide variables info for dataset.
+#' Provides variables info for dataset.
 #' 
 #' \code{into} returns data.frame with variables info.
 #' 
 #' @param x vector/factor/list/data.frame.
-#' @param stats Logical. Should we calculate Min, LowHinge, Median, HighHinge,
-#'   Max for each variable?
+#' @param stats Logical. Should we calculate summary for each variable?
 #' @param frequencies Logical. Should we calculate frequencies for each 
 #'   variable? This calculation can take significant amount of time for large 
 #'   datasets.
 #' @param max_levels Numeric. Maximum levels for using in frequency 
 #'   calculations. Levels above this value will convert to 'Other values'.
 #' @return data.frame with following columns: Name, Class, Length, NotNA, 
-#'   Distincts, Label, ValueLabels, Min, LowHinge, Median, HighHinge, Max, 
+#'   Distincts, Label, ValueLabels, Min., 1st Qu., Median, Mean, 3rd Qu., Max., 
 #'   Frequency.
 #' @details Resulting data.frame of this function mainly intended to be saved as
-#'   csv to keep before eyes in RStudio viewer or spreadsheet software as 
-#'   reference about working dataset. Min, LowHinge, Median, HighHinge, Max -
-#'   values which are produced by boxplot.stats function.
+#'   csv to keep in front of eyes in RStudio viewer or spreadsheet software as 
+#'   reference about working dataset. 
 #' @examples
 #' data(mtcars)
 #' var_lab(mtcars$am) = "Transmission"
@@ -45,14 +43,12 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
                "Label"=varlab,
                "ValueLabels"=vallab)
     if (stats){
-        if (!is.character(x) && !is.factor(x)){
-            bxplt = boxplot.stats(x)$stats 
-            names(bxplt) = c("Min", "LowHinge", "Median", "HighHinge", "Max")
-            res = c(res, bxplt)
+        if (is.numeric(x)){
+            res = c(res, summary(na.omit(x)))
         } else {
-            bxplt = rep(NA, 5) 
-            names(bxplt) = c("Min", "LowHinge", "Median", "HighHinge", "Max")
-            res = c(res, bxplt)
+            placeholder = rep(NA, 6) 
+            names(placeholder) = c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max." )
+            res = c(res, placeholder)
         }
     } 
     if (frequencies){
@@ -67,7 +63,7 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
         res = c(res, Frequency =values)
     }
     curr_name = paste(as.character(substitute(x)),collapse = "")
-    as.data.frame(c(Name=curr_name,res),stringsAsFactors = FALSE)
+    setNames(as.data.frame(c(curr_name,res),stringsAsFactors = FALSE),c("Name",names(res)))
 }
 
 #' @export
@@ -87,3 +83,4 @@ info.list=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
     res$Name = names(x)
     res
 }
+

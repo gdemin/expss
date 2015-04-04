@@ -2,15 +2,14 @@
 % Please edit documentation in R/info.R
 \name{info}
 \alias{info}
-\title{Provide variables info for dataset.}
+\title{Provides variables info for dataset.}
 \usage{
 info(x, stats = TRUE, frequencies = TRUE, max_levels = 10)
 }
 \arguments{
 \item{x}{vector/factor/list/data.frame.}
 
-\item{stats}{Logical. Should we calculate Min, LowHinge, Median, HighHinge,
-Max for each variable?}
+\item{stats}{Logical. Should we calculate summary for each variable?}
 
 \item{frequencies}{Logical. Should we calculate frequencies for each
 variable? This calculation can take significant amount of time for large
@@ -21,7 +20,7 @@ calculations. Levels above this value will convert to 'Other values'.}
 }
 \value{
 data.frame with following columns: Name, Class, Length, NotNA,
-  Distincts, Label, ValueLabels, Min, LowHinge, Median, HighHinge, Max,
+  Distincts, Label, ValueLabels, Min., 1st Qu., Median, Mean, 3rd Qu., Max.,
   Frequency.
 }
 \description{
@@ -29,9 +28,8 @@ data.frame with following columns: Name, Class, Length, NotNA,
 }
 \details{
 Resulting data.frame of this function mainly intended to be saved as
-  csv to keep before eyes in RStudio viewer or spreadsheet software as
-  reference about working dataset. Min, LowHinge, Median, HighHinge, Max -
-  values which are produced by boxplot.stats function.
+  csv to keep in front of eyes in RStudio viewer or spreadsheet software as
+  reference about working dataset.
 }
 \examples{
 data(mtcars)

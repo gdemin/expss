@@ -17,3 +17,15 @@ expect_equal_to_reference(info(iris),"rds/info5.rds")
 expect_equal_to_reference(info(iris,max_levels=3),"rds/info6.rds")
 expect_equal_to_reference(info(iris,frequencies = FALSE),"rds/info7.rds")
 expect_equal_to_reference(info(iris,stats = FALSE, frequencies = FALSE),"rds/info8.rds")
+
+vec = NA
+expect_equal_to_reference(info(vec),"rds/info9.rds")
+
+vec = rep(NA, 5)
+expect_equal_to_reference(info(vec),"rds/info10.rds")
+
+vec = data.frame(first=vec,second=vec)
+expect_equal_to_reference(info(vec),"rds/info11.rds")
+
+lst = list(a = c(1:5,NA), b = c(45,NA))
+expect_equal_to_reference(info(lst),"rds/info12.rds")
