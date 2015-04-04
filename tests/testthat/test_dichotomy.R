@@ -313,9 +313,12 @@ expect_identical(dichotomy(vec,keep="a"),
                  structure(c(1, 0, NA), .Dim = c(3L, 1L), .Dimnames = list(
                      NULL, c("Label|a")), class = c("dichotomy", "matrix")))
 
-expect_identical(dichotomy(vec, keep_unused = TRUE,keep=2:45),
-                 structure(c(0, 1, NA,0,0,NA), .Dim = c(3L, 2L), .Dimnames = list(
-                     NULL, c( "Label|2","Label|d")), class = c("dichotomy", "matrix")))
+expect_identical(dichotomy(vec, keep_unused = TRUE,keep=c(2:7,45)),
+                 structure(c(0, 1, NA, 0, 0, NA, 0, 0, NA, 0, 0, NA, 0, 0, NA, 
+                             0, 0, NA, 0, 0, NA), .Dim = c(3L, 7L), .Dimnames = list(NULL, 
+                             c("Label|2", "Label|3", "Label|4", "Label|5", "Label|6", 
+                            "Label|7", "Label|d")), class = c("dichotomy", "matrix")))
+expect_error(dichotomy(vec, keep_unused = TRUE,keep="unknown label"))
 
 set.seed(123)
 brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))

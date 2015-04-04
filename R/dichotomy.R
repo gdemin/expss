@@ -114,6 +114,13 @@ dichotomy_helper = function(x, keep_unused = FALSE, keep = NULL){
     vallab=val_lab(x)
     varlab = var_lab(x)
     uniqs=sort(unique(c(x,recursive = TRUE)))
+    if(!is.null(keep) && is.numeric(keep) && keep_unused){
+        uniqs = sort(union(uniqs,keep))
+    }
+    if(!is.null(keep) && is.character(keep) && keep_unused){
+            stopif(!all(keep %in% names(vallab)),"keep_unused = TRUE but some values in 'keep'",
+                   " doesn't exist in value labels, e. g. '", keep[!(keep %in% names(vallab))][1],"'")
+    }
     if (length(uniqs)>0) uniqs = uniqs[!is.na(uniqs)]
     vallab = labelled_and_unlabelled(uniqs,vallab)
     if (!keep_unused) {
