@@ -77,16 +77,34 @@ val_lab(indep) = c(a=1,b=2,c=3)
 expect_equal_to_reference(lm(dep ~ dichotomy(indep)),"rds/lm_dichotomy_default.rds")
 expect_equal_to_reference(lm(dep ~ dichotomy1(indep)),"rds/lm_dichotomy_default2.rds")
 
-expect_identical(dichotomy(indep,keep=1),structure(c(1, 1, 0, 0, 0, 0), .Dim = c(6L, 1L), .Dimnames = list(
+expect_identical(dichotomy(indep,keep_values=1),structure(c(1, 1, 0, 0, 0, 0), .Dim = c(6L, 1L), .Dimnames = list(
     NULL, "Label|a"), class = c("dichotomy", "matrix")))
-expect_identical(dichotomy(indep,keep=2:3),structure(c(0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1), 
+
+expect_identical(dichotomy(indep,drop_values=2:3),structure(c(1, 1, 0, 0, 0, 0), .Dim = c(6L, 1L), .Dimnames = list(
+    NULL, "Label|a"), class = c("dichotomy", "matrix")))
+
+expect_identical(dichotomy(indep,keep_values=2:3),structure(c(0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1), 
                                                      .Dim = c(6L,2L), .Dimnames = list(NULL, c("Label|b", "Label|c")), 
                                                      class = c("dichotomy","matrix")))
-expect_identical(dichotomy(indep,keep=c("c")),structure(c(0, 0, 1, 0, 0, 1), .Dim = c(6L, 1L), .Dimnames = list(
+
+expect_identical(dichotomy(indep,drop_values=1),structure(c(0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1), 
+                                                            .Dim = c(6L,2L), .Dimnames = list(NULL, c("Label|b", "Label|c")), 
+                                                            class = c("dichotomy","matrix")))
+
+
+expect_identical(dichotomy(indep,keep_labels=c("c")),structure(c(0, 0, 1, 0, 0, 1), .Dim = c(6L, 1L), .Dimnames = list(
     NULL, "Label|c"), class = c("dichotomy", "matrix")))
-expect_identical(dichotomy(indep,keep=c("a","c")),structure(c(1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1), .Dim = c(6L, 2L), 
+
+expect_identical(dichotomy(indep,drop_labels=c("a","b")),structure(c(0, 0, 1, 0, 0, 1), .Dim = c(6L, 1L), .Dimnames = list(
+    NULL, "Label|c"), class = c("dichotomy", "matrix")))
+
+expect_identical(dichotomy(indep,keep_labels=c("a","c")),structure(c(1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1), .Dim = c(6L, 2L), 
                                                             .Dimnames = list(NULL, c("Label|a", "Label|c")), class = c("dichotomy", 
                                                                                                                        "matrix")))
+expect_identical(dichotomy(indep,drop_labels=c("b")),structure(c(1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1), .Dim = c(6L, 2L), 
+                                                                   .Dimnames = list(NULL, c("Label|a", "Label|c")), class = c("dichotomy", 
+                                                                                                                              "matrix")))
+
 
 vec = letters[1:5]
 expect_identical(dichotomy(vec),structure(c(1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 
@@ -101,7 +119,10 @@ expect_identical(dichotomy(vec),structure(c(1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 
                                                                                        c("a", "b", "c", "d", "e")), class = c("dichotomy", "matrix"
                                                                                        )))
 
-expect_identical(dichotomy(vec,keep=c("d","e")),structure(c(0, 0, 0, 1, 0, 0, 0, 0, 0, 1), .Dim = c(5L, 2L), .Dimnames = list(
+expect_identical(dichotomy(vec,keep_labels=c("d","e")),structure(c(0, 0, 0, 1, 0, 0, 0, 0, 0, 1), .Dim = c(5L, 2L), .Dimnames = list(
+    NULL, c("d", "e")), class = c("dichotomy", "matrix")))
+
+expect_identical(dichotomy(vec,drop_labels=letters[1:3]),structure(c(0, 0, 0, 1, 0, 0, 0, 0, 0, 1), .Dim = c(5L, 2L), .Dimnames = list(
     NULL, c("d", "e")), class = c("dichotomy", "matrix")))
 
 
@@ -309,16 +330,23 @@ var_lab(vec) = "Label"
 val_lab(vec) = c(a=1,d=45)
 vec = data.frame(vec,vec,vec)
 
-expect_identical(dichotomy(vec,keep="a"),
+expect_identical(dichotomy(vec,keep_labels="a"),
                  structure(c(1, 0, NA), .Dim = c(3L, 1L), .Dimnames = list(
                      NULL, c("Label|a")), class = c("dichotomy", "matrix")))
 
-expect_identical(dichotomy(vec, keep_unused = TRUE,keep=c(2:7,45)),
+expect_identical(dichotomy(vec,drop_values =2),
+                 structure(c(1, 0, NA), .Dim = c(3L, 1L), .Dimnames = list(
+                     NULL, c("Label|a")), class = c("dichotomy", "matrix")))
+
+expect_identical(dichotomy(vec, keep_unused = TRUE,keep_values=c(2:7,45)),
                  structure(c(0, 1, NA, 0, 0, NA, 0, 0, NA, 0, 0, NA, 0, 0, NA, 
                              0, 0, NA, 0, 0, NA), .Dim = c(3L, 7L), .Dimnames = list(NULL, 
                              c("Label|2", "Label|3", "Label|4", "Label|5", "Label|6", 
                             "Label|7", "Label|d")), class = c("dichotomy", "matrix")))
-expect_error(dichotomy(vec, keep_unused = TRUE,keep="unknown label"))
+
+
+
+expect_error(dichotomy(vec, keep_unused = TRUE,keep_labels="unknown label"))
 
 set.seed(123)
 brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))

@@ -1,21 +1,26 @@
 #' Convert variable (possibly multiple choice question) to matrix of dummy variables.
 #' 
+#' This function converts variable/multiple response variable(matrix/data.frame)
+#'  with category encoding into matrix with dichotomy encoding (0/1) 
+#' suited for most statistical analysis, e. g. clustering, factor analysis, 
+#' linear regression and so on.  
 #' \code{dichotomy} returns matrix with 0,1 and possibly NA. 
-#' \code{dichotomy1} returns same result as \code{dichotomy} but without last category.
+#' \code{dichotomy1} drops last column in dichotomy matrix. It is useful in many cases
+#' because any column of such matrix usually is linear combinations of other columns.
 #' 
 #' @param x vector/factor/matrix/data.frame.
 #' @param keep_unused Logical. Should we create columns for unused value labels/factor levels.
 #' @param use_na Logical. Should we use NA for rows with all NA or use 0's instead.
-#' @param keep Numeric/character. Labels/levels/values that should be kept.
-#' By default all values will be kept.
+#' @param keep_values Numeric/character. Values that should be kept. By default
+#'   all values will be kept.
+#' @param keep_labels Numeric/character. Labels/levels that should be kept. By
+#'   default all values will be kept.
+#' @param drop_values Numeric/character. Values that should be dropped. By default
+#'   all values will be kept. Ignored if keep_values/keep_labels are provided.
+#' @param drop_labels Numeric/character. Labels/levels that should be dropped. By
+#'   default all values will be kept. Ignored if keep_values/keep_labels are provided.
 #' @return matrix with 0,1 which column names are value labels. If label doesn't exist for 
 #' particular value then this value will be used as column name.
-#' @details This function converts variable/multiple response variable(matrix/data.frame)
-#'  with category encoding into matrix with dichotomy encoding (0/1) 
-#' suited for most statistical analysis, e. g. clustering, factor analysis, 
-#' linear regression and so on.  
-#' \code{dichotomy1} drops last column in dichotomy matrix. It is useful in many cases
-#' because any column of such matrix usually is linear combinations of other columns.
 #' @seealso \code{\link{category}} for reverse conversion.
 #' @examples
 #' # toy example
@@ -57,13 +62,20 @@
 #' summary(lm(score ~ dichotomy1(brands)))
 #' 
 #' @export
-dichotomy = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL){
+dichotomy = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                     keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     UseMethod("dichotomy")    
 }
 
 #' @export
-dichotomy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL){
-    vallab = dichotomy_helper(x,keep_unused,keep)
+dichotomy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                             keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    vallab = dichotomy_helper(x = x,
+                              keep_unused = keep_unused,
+                              keep_values = keep_values, 
+                              keep_labels = keep_labels, 
+                              drop_values = drop_values, 
+                              drop_labels = drop_labels)
     x = c(x, recursive=TRUE)
     res = matrix(0,nrow = length(x),ncol=length(vallab))
     if (use_na) {
@@ -78,23 +90,49 @@ dichotomy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL)
 }
 
 #' @export
-dichotomy.factor = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL){
-    dichotomy.default(as.with_labels(x), keep_unused, use_na, keep)
+dichotomy.factor = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                            keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    dichotomy.default(as.with_labels(x), 
+                      keep_unused = keep_unused,
+                      use_na = use_na,
+                      keep_values = keep_values, 
+                      keep_labels = keep_labels, 
+                      drop_values = drop_values, 
+                      drop_labels = drop_labels)
 }
 
 #' @export
-dichotomy.matrix = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL){
+dichotomy.matrix = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                            keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     if (NCOL(x)<2) {
-        dichotomy.default(x, keep_unused, use_na, keep)
+        dichotomy.default(x, 
+                          keep_unused = keep_unused,
+                          use_na = use_na,
+                          keep_values = keep_values, 
+                          keep_labels = keep_labels, 
+                          drop_values = drop_values, 
+                          drop_labels = drop_labels)
     } else {
-        dichotomy.data.frame(x, keep_unused, use_na, keep)    
+        dichotomy.data.frame(x,
+                             keep_unused = keep_unused,
+                             use_na = use_na,
+                             keep_values = keep_values, 
+                             keep_labels = keep_labels, 
+                             drop_values = drop_values, 
+                             drop_labels = drop_labels)
     }
     
 }
 
 #' @export
-dichotomy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL){
-    vallab = dichotomy_helper(x,keep_unused,keep)
+dichotomy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                                keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    vallab = dichotomy_helper(x = x,
+                              keep_unused = keep_unused,
+                              keep_values = keep_values, 
+                              keep_labels = keep_labels, 
+                              drop_values = drop_values, 
+                              drop_labels = drop_labels)
     if (!is.matrix(x)) x = as.matrix(x) 
     res = matrix(0,nrow = nrow(x),ncol=length(vallab))
     for (i in seq_along(vallab)) res[,i] = res[,i] + rowSums(matrix(x %in% vallab[i],nrow=nrow(x)))
@@ -110,27 +148,37 @@ dichotomy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep = NU
     
 }
 
-dichotomy_helper = function(x, keep_unused = FALSE, keep = NULL){
+
+# returns values+labels that will be used during dichotomizing
+dichotomy_helper = function(x, keep_unused = FALSE, keep_values = NULL,
+                            keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     vallab=val_lab(x)
     varlab = var_lab(x)
     uniqs=sort(unique(c(x,recursive = TRUE)))
-    if(!is.null(keep) && is.numeric(keep) && keep_unused){
-        uniqs = sort(union(uniqs,keep))
+    if(!is.null(keep_values) && keep_unused){
+        uniqs = sort(union(uniqs,keep_values))
     }
-    if(!is.null(keep) && is.character(keep) && keep_unused){
-            stopif(!all(keep %in% names(vallab)),"keep_unused = TRUE but some values in 'keep'",
-                   " doesn't exist in value labels, e. g. '", keep[!(keep %in% names(vallab))][1],"'")
+    if(!is.null(keep_labels) && keep_unused){
+            stopif(!all(keep_labels %in% names(vallab)),"keep_unused = TRUE but some values in 'keep_labels'",
+                   " doesn't exist in value labels, e. g. '", keep_labels[!(keep_labels %in% names(vallab))][1],"'")
     }
     if (length(uniqs)>0) uniqs = uniqs[!is.na(uniqs)]
     vallab = labelled_and_unlabelled(uniqs,vallab)
     if (!keep_unused) {
         vallab = vallab[vallab %in% uniqs]        
     } 
-    if (!is.null(keep)){
-        if(is.numeric(keep)){
-            vallab = vallab[vallab %in% keep]
-        } else {
-            vallab = vallab[keep]
+    if(!is.null(keep_values)){
+            vallab = vallab[vallab %in% keep_values]
+    } 
+    if(!is.null(keep_labels)){
+            vallab = vallab[keep_labels]
+    }
+    if(is.null(keep_values) && is.null(keep_labels)){
+        if(!is.null(drop_values)){
+            vallab = vallab[!(vallab %in% drop_values)]
+        }
+        if(!is.null(drop_labels)){
+            vallab = vallab[setdiff(names(vallab),drop_labels)]
         }
     }
     if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = labels_sep) 
@@ -139,8 +187,15 @@ dichotomy_helper = function(x, keep_unused = FALSE, keep = NULL){
 
 #' @export
 #' @rdname dichotomy
-dichotomy1 = function(x, keep_unused = FALSE, use_na = TRUE, keep = NULL){
-    res = dichotomy(x,keep_unused,use_na,keep)
+dichotomy1 = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                      keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    res = dichotomy(x,
+                    keep_unused = keep_unused,
+                    use_na = use_na,
+                    keep_values = keep_values, 
+                    keep_labels = keep_labels, 
+                    drop_values = drop_values, 
+                    drop_labels = drop_labels)
     if (ncol(res)>0){
         res = res[,-ncol(res),drop = FALSE]
     }
