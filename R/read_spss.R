@@ -35,7 +35,7 @@ read_spss=function(file, reencode = NA){
 #' @export
 #' @rdname read_spss
 read_spss_to_list=function(file, reencode = NA){
-    spss = foreign::read.spss(file,use.value.labels=FALSE,to.data.frame=FALSE,reencode = reencode, use.missings = FALSE)
+    spss = foreign::read.spss(enc2native(file),use.value.labels=FALSE,to.data.frame=FALSE,reencode = reencode, use.missings = FALSE)
     var_labs = attr(spss,'variable.labels')
     attr(spss,'label.table') = NULL
     for (var_name in names(var_labs)) {
