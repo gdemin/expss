@@ -1,7 +1,7 @@
 #' @export
 write_labelled = function(x, filename, fileEncoding = ""){
-    # R doesn' read its own CSV if it contain newlines in the character field.
-    for (i in seq_along(x)) if(is.character(x[,i])) x[,i] = gsub("[\\n\\r]+"," ",x[,i],perl = TRUE)
+    # R doesn't read its own CSV if it contain newlines in the character field.
+    for (i in seq_along(x)) if(is.character(x[,i]) || is.factor(x[,i])) x[,i] = gsub("[\\n\\r]+"," ",x[,i],perl = TRUE)
     write.table(x,file = paste0(filename,".csv"),
                 sep=",",
                 na="",
@@ -9,6 +9,7 @@ write_labelled = function(x, filename, fileEncoding = ""){
                 col.names = TRUE,
                 fileEncoding = fileEncoding
     )
+    # readr::write_csv(x = x, path = filename)
     var_labs = lapply(x,var_lab)
     val_labs = lapply(x,val_lab)
     var_num = ncol(x)
@@ -84,6 +85,11 @@ read_labelled = function(filename, colClasses = NA,fileEncoding = ""){
                    stringsAsFactors = FALSE,
                    fileEncoding = fileEncoding
                    )
+#     w = read_delim(file = paste0(filename,".csv"),
+#                    delim = ",",
+#                    col_names = TRUE,
+#                    na=""
+#     )
     dic_file = paste0(filename,".dic.R")
     if (file.exists(dic_file)){
         source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
