@@ -92,7 +92,7 @@ dichotomy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep_values 
 #' @export
 dichotomy.factor = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                             keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    dichotomy.default(as.with_labels(x), 
+    dichotomy.default(as.labelled(x), 
                       keep_unused = keep_unused,
                       use_na = use_na,
                       keep_values = keep_values, 

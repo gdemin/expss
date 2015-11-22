@@ -1,6 +1,6 @@
 #' @export
-c.with_labels=function(..., recursive = FALSE)
-    ### concatenate vectors of class 'with_labels' and preserve labels
+c.labelled=function(..., recursive = FALSE)
+    ### concatenate vectors of class 'labelled' and preserve labels
 {
     y = NextMethod("c")
     vectors=list(...)
@@ -10,14 +10,14 @@ c.with_labels=function(..., recursive = FALSE)
     
     dummy= lapply(vectors,val_lab)
     val_lab(y)=do.call(combine_labels,dummy)
-    class(y) = union("with_labels",class(y))
+    class(y) = union("labelled",class(y))
     y
 }
 
 
 
 #' @export
-rep.with_labels=function (x, ...){
+rep.labelled=function (x, ...){
     y=NextMethod("rep")
     var_attr(y)=var_attr(x)
     class(y) = class(x)
@@ -25,7 +25,7 @@ rep.with_labels=function (x, ...){
 }
 
 #' @export
-'[.with_labels'=function (x, ...){
+'[.labelled'=function (x, ...){
     y = NextMethod("[")
     var_attr(y)=var_attr(x)
     class(y) = class(x)
@@ -34,11 +34,11 @@ rep.with_labels=function (x, ...){
 
 
 var_attr=function(x){
-    list(label=var_lab(x),value_labels=val_lab(x))
+    list(label=var_lab(x),labels=val_lab(x))
 }
 
 'var_attr<-'=function(x,value){
     var_lab(x)=value$label
-    val_lab(x)=value$value_labels
+    val_lab(x)=value$labels
     x
 }

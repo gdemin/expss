@@ -10,10 +10,10 @@
 #' @param value A character scalar - label for the variable x.
 #' @return \code{var_lab} return variable label. If label doesn't exist it return
 #'   NULL . \code{var_lab<-} and \code{set_var_lab} return variable (vector x)
-#'   of class "with_labels" with attribute "label" which equals submitted value.
+#'   of class "labelled" with attribute "label" which equals submitted value.
 #' @details Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
 #'   preserving from dropping this attribute during some operations (such as \code{c})
-#'   variable class is set to "with_labels". There are special methods of
+#'   variable class is set to "labelled". There are special methods of
 #'   subsetting and concatenation for this class. To drop variable label use 
 #'   \code{var_lab(var) <- NULL} or \code{unvr(var)}.
 #' @export  
@@ -44,7 +44,7 @@ set_var_lab=function(x,value){
         return(x)
     }
     attr(x,"label")=value
-    class(x)=union("with_labels",class(x))
+    class(x)=union("labelled",class(x))
     x
 }
 
@@ -117,12 +117,12 @@ unvr.list=function(x){
 #' \code{text}.
 #' @return \code{val_lab} return value labels (named vector). If labels doesn't
 #'   exist it return NULL . \code{val_lab<-} and \code{set_val_lab} return
-#'   variable (vector x) of class "with_labels" with attribute "value_labels"
+#'   variable (vector x) of class "labelled" with attribute "labels"
 #'   which contains value labels. \code{make_labels} return named vector for usage as value labels.
-#' @details Value labels are stored in attribute "value_labels" 
-#'   (\code{attr(x,"value_labels")}). Duplicated values are not allowed. If
+#' @details Value labels are stored in attribute "labels" 
+#'   (\code{attr(x,"labels")}). Duplicated values are not allowed. If
 #'   argument \code{x} is data.frame or list then labels applied to all elements
-#'   of data.frame/list. We set variable class to "with_labels" for preserving
+#'   of data.frame/list. We set variable class to "labelled" for preserving
 #'   labels from dropping during some operations (such as \code{c} and \code{[}).
 #'   There are special methods of subsetting and concatenation for this class.
 #'   To drop value labels use \code{val_lab(var) <- NULL} or \code{unvl(var)}.
@@ -195,7 +195,7 @@ val_lab.data.frame=function(x)
 
 #' @export
 val_lab.default=function(x){
-    attr(x,"value_labels")
+    attr(x,"labels")
 }
 
 #####################
@@ -219,8 +219,8 @@ set_val_lab.default = function(x,value, add = FALSE){
     stopif(anyDuplicated(value),"Duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
     if (add) value = combine_labels(value,val_lab(x))
     if (length(value)==0) value=NULL else value=sort(value)
-    attr(x,"value_labels")=value
-    class(x)=union("with_labels",class(x))
+    attr(x,"labels")=value
+    class(x)=union("labelled",class(x))
     x
 }
 
@@ -275,7 +275,7 @@ unlab=function(x){
 unlab.default=function(x){
     var_lab(x) = NULL
     val_lab(x) = NULL
-    class(x) = setdiff(class(x),"with_labels")
+    class(x) = setdiff(class(x),"labelled")
     x
 }
 
@@ -342,15 +342,15 @@ labelled_and_unlabelled = function(uniqs,vallab){
     if (length(vallab>1)) sort(vallab) else vallab
 }
 
-as.with_labels = function(x){
-    UseMethod("as.with_labels")
+as.labelled = function(x){
+    UseMethod("as.labelled")
 }
 
-as.with_labels.default = function(x){
+as.labelled.default = function(x){
     x
 }
 
-as.with_labels.factor = function(x){
+as.labelled.factor = function(x){
     labels = seq_along(levels(x))
     names(labels) = levels(x)
     x = as.numeric(x)

@@ -52,7 +52,7 @@ factor.default = function(...){
 }  
 
 #' @export
-factor.with_labels = function(x,  ordered = is.ordered(x),...){
+factor.labelled = function(x,  ordered = is.ordered(x),...){
     vallab=val_lab(x)
     varlab = var_lab(x)
     uniqs=unique(x)
@@ -77,8 +77,8 @@ as.factor.default=function(x) base_as_factor(x)
 
 
 #' @export
-as.factor.with_labels=function(x){
-    factor.with_labels(x)
+as.factor.labelled=function(x){
+    factor.labelled(x)
 }
 
 #' @export
