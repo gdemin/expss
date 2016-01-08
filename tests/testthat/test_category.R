@@ -9,6 +9,7 @@ category_matrix=category(dichotomy_matrix)
 expect_identical(val_lab(category_matrix),c(Milk = 1L,Sugar = 2L,Tea = 3L,Coffee = 4L))
 
 class(dichotomy_matrix) = union("dichotomy",class(dichotomy_matrix))
+
 expect_identical(dichotomy(category_matrix,use_na = FALSE),dichotomy_matrix*1.0)
 
 

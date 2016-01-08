@@ -51,7 +51,7 @@ set_var_lab=function(x,value){
 
 #' @export
 var_lab.default=function(x){
-    attr(x,"label")
+    attr(x,"label", exact = TRUE)
 }
 
 #' @export
@@ -195,7 +195,7 @@ val_lab.data.frame=function(x)
 
 #' @export
 val_lab.default=function(x){
-    attr(x,"labels")
+    attr(x,"labels", exact = TRUE)
 }
 
 #####################

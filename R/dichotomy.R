@@ -14,11 +14,11 @@
 #' @param keep_values Numeric/character. Values that should be kept. By default
 #'   all values will be kept.
 #' @param keep_labels Numeric/character. Labels/levels that should be kept. By
-#'   default all values will be kept.
+#'   default all labels/levels will be kept.
 #' @param drop_values Numeric/character. Values that should be dropped. By default
 #'   all values will be kept. Ignored if keep_values/keep_labels are provided.
 #' @param drop_labels Numeric/character. Labels/levels that should be dropped. By
-#'   default all values will be kept. Ignored if keep_values/keep_labels are provided.
+#'   default all labels/levels will be kept. Ignored if keep_values/keep_labels are provided.
 #' @return matrix with 0,1 which column names are value labels. If label doesn't exist for 
 #' particular value then this value will be used as column name.
 #' @seealso \code{\link{category}} for reverse conversion.
@@ -133,6 +133,8 @@ dichotomy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep_valu
                               keep_labels = keep_labels, 
                               drop_values = drop_values, 
                               drop_labels = drop_labels)
+    # it seems strange that we call dichotomy.data.frame from dichotomy.matrix
+    # but it is because we lost all labels if we convert data.frame to matrix and then call dichotomy.matrix
     if (!is.matrix(x)) x = as.matrix(x) 
     res = matrix(0,nrow = nrow(x),ncol=length(vallab))
     for (i in seq_along(vallab)) res[,i] = res[,i] + rowSums(matrix(x %in% vallab[i],nrow=nrow(x)))
@@ -160,7 +162,7 @@ dichotomy_helper = function(x, keep_unused = FALSE, keep_values = NULL,
     }
     if(!is.null(keep_labels) && keep_unused){
             stopif(!all(keep_labels %in% names(vallab)),"keep_unused = TRUE but some values in 'keep_labels'",
-                   " doesn't exist in value labels, e. g. '", keep_labels[!(keep_labels %in% names(vallab))][1],"'")
+                   " doesn't exist in value labels, e. g. '", setdiff(keep_labels, names(vallab))[1],"'")
     }
     if (length(uniqs)>0) uniqs = uniqs[!is.na(uniqs)]
     vallab = labelled_and_unlabelled(uniqs,vallab)
