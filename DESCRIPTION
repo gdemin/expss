@@ -7,6 +7,8 @@ Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
 URL: https://github.com/gdemin/labelr
 Depends:
+    dplyr,
+    magrittr,
     R (>= 3.1.2)
 Imports:
     foreign
