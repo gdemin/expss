@@ -20,7 +20,7 @@ labels_sep = "|"
 #' @param nmax an upper bound on the number of levels.
 #' @param ...	(in ordered(.)): any of the above, apart from ordered itself.
 #' 
-#' @return \code{factor}, \code{as.factor}, \code{ordered}, \code{as.ordered} 
+#' @return \code{factor2}, \code{as.factor2}, \code{ordered2}, \code{as.ordered2} 
 #' return an object of class factor. For details see base \code{factor} documentation.
 #' @details For variables with labels arguments \code{levels}, \code{labels}, \code{exclude},
 #'  \code{nmax} are ignored. Factor levels are constructed as values from values labels + variable values  
@@ -36,23 +36,23 @@ labels_sep = "|"
 #' val_lab(mtcars$am) = c(automatic = 0, manual=1)
 #' 
 #' \dontrun{
-#' plot(factor(mtcars$am))
+#' plot(factor2(mtcars$am))
 #' }
 #' 
 #' summary(lm(mpg ~ am, data = mtcars)) # no labels  
-#' summary(lm(mpg ~ factor(am), data = mtcars)) # with labels 
-#' summary(lm(mpg ~ factor(unvr(am)), data = mtcars)) # without variable label 
-factor = function(x = character(), levels, labels = levels, exclude = NA, ordered = is.ordered(x), nmax = NA){
-    UseMethod("factor")
+#' summary(lm(mpg ~ factor2(am), data = mtcars)) # with labels 
+#' summary(lm(mpg ~ factor2(unvr(am)), data = mtcars)) # without variable label 
+factor2 = function(x = character(), levels, labels = levels, exclude = NA, ordered = is.ordered(x), nmax = NA){
+    UseMethod("factor2")
 }
 
 #' @export
-factor.default = function(...){
+factor2.default = function(...){
     base_factor(...)  
 }  
 
 #' @export
-factor.labelled = function(x,  ordered = is.ordered(x),...){
+factor2.labelled = function(x,  ordered = is.ordered(x),...){
     vallab=val_lab(x)
     varlab = var_lab(x)
     uniqs=unique(x)
@@ -65,31 +65,31 @@ factor.labelled = function(x,  ordered = is.ordered(x),...){
 
 
 #' @export
-#' @rdname factor
-as.factor=function(x){
-    UseMethod("as.factor")
+#' @rdname factor2
+as.factor2=function(x){
+    UseMethod("as.factor2")
 }
 
 
 #' @export
-as.factor.default=function(x) base_as_factor(x)
+as.factor2.default=function(x) base_as_factor(x)
 
 
 
 #' @export
-as.factor.labelled=function(x){
-    factor.labelled(x)
+as.factor2.labelled=function(x){
+    factor2.labelled(x)
 }
 
 #' @export
-#' @rdname factor
-ordered = function (x, ...) {
-    labelr::factor(x, ..., ordered = TRUE)
+#' @rdname factor2
+ordered2 = function (x, ...) {
+    labelr::factor2(x, ..., ordered = TRUE)
 }    
 
 #' @export
-#' @rdname factor
-as.ordered = function (x) {
-    if (is.ordered(x)) x else labelr::ordered(x)
+#' @rdname factor2
+as.ordered2 = function (x) {
+    if (is.ordered(x)) x else labelr::ordered2(x)
 }
 

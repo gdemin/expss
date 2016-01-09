@@ -12,14 +12,6 @@ expect_identical(var_lab(age_group),attr(age_group,"label")) # should be TRUE
 context("val_lab")
 
 
-### Common usage ###
-
-test_ds = unlab(test_ds)
-val_lab(test_ds$s2b) = c('18 - 26' = 2, '27 - 35' = 3)
-
-# head(factor(test_ds$s2b))
-
-expect_identical(levels(factor(test_ds$s2b)), names(val_lab(test_ds$s2b)))
 
 
 
