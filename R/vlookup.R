@@ -130,7 +130,13 @@ vlookup = function(lookup_value,dict,result_columns=NULL,lookup_column=1) {
             if (lookup_column=="row.names"){
                 ind = match(lookup_value,row.names(dict),incomparables = NA) 	
             } else {
-                ind = match(lookup_value,unlist(dict[,lookup_column]),incomparables = NA) 
+                if (is.matrix(dict)){
+                    # matrix
+                    ind = match(lookup_value, dict[,lookup_column],incomparables = NA) 
+                } else {
+                    # data.frame - for tbl_df from dplyr
+                    ind = match(lookup_value,dict[[lookup_column]],incomparables = NA) 
+                }    
             }
         } else {
             if (lookup_column=="row.names"){
@@ -156,7 +162,12 @@ vlookup = function(lookup_value,dict,result_columns=NULL,lookup_column=1) {
             }
         } else {
             if (is.matrix(dict) || is.data.frame(dict)) {
-                dict[ind,result_columns] # exit function
+                if((length(result_columns)>1) || is.matrix(dict)){
+                    dict[ind,result_columns] # exit function
+                } else {
+                    dict[[result_columns]][ind] # for tbl_df from dplyr 
+                }
+                    
             } else {
                 dict[ind]  # exit function
             }	
@@ -164,3 +175,11 @@ vlookup = function(lookup_value,dict,result_columns=NULL,lookup_column=1) {
         }
     }
 }
+
+
+
+
+
+
+
+
