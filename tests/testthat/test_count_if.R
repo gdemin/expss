@@ -22,6 +22,20 @@ expect_equal(count_if(crit(">",32) & crit("<",86),df1$b),2L)
 
 expect_equal(count_if(33:85,df1$b),2L)
 
+context("count_ifs")
+
+df3 = data.frame( 
+    "Sales Person" = c("Davidoski", "Burke", "Sundaram", "Levitan"),
+    "Exceeded Widgets Quota" = c("Yes", "Yes", "Yes", "No"),
+    "Exceeded Gadgets Quota" = c("No", "Yes", "Yes", "Yes"),
+    "Exceeded Doodads Quota" = c("No", "No", "Yes", "Yes")
+)
+
+expect_equal(count_if("Yes", df3[1,2:4]), 1) # Counts how many times Davidoski exceeded a sales quota for Widgets, Gadgets, and Doodads.
+
+
+
+context("complex criteria")
 # more complex criteria
 # values with letters
 expect_equal(count_if(function(x) grepl("^[A-z]+$",x),df1),4L)
