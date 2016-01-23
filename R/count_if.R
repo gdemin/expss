@@ -1,12 +1,12 @@
 #' Count values that meet a criterion that you specify
 #' 
-#' There are two flavors of this function - one works on entire dataset/matrix/vector
+#' There are two flavors of this function - one works with entire dataset/matrix/vector
 #' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise - e. g. 
 #' similar to SPSS \code{COUNT} function. 
 #'  
 #' @param criterion Vector with counted values or function (possibly constructed with \code{crit}) 
 #' @param ... Counted data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.
-#' @param FUN Function for criterion construction. In most cases it is '>','==' and so on.
+#' @param cond Function for criterion construction. In most cases it is '>','==' and so on.
 #' @param x Tested data. Vector, matrix, data.frame, list. Shorter columns in list
 #'  will be recycled.
 #' 
@@ -98,93 +98,6 @@ row_count_if=function(criterion=NULL,...){
 #' @rdname count_if
 '%has%'=function(x,criterion){
     row_count_if(criterion=criterion,x)>0
-}
-
-#' @export
-#' @rdname count_if
-crit = function(FUN,...){
-    FUN = match.fun(FUN)
-    res = function(x) FUN(x,...)
-    class(res) = unique("criterion",class(res))
-    res
-}
-
-#' @export
-'!.criterion' = function(a) {
-    res = function(x) !a(x)
-    class(res) = unique("criterion",class(res))
-    res
-}
-
-
-#' @export
-'|.criterion' = function(e1,e2) {
-    
-    if (is.function(e1)) {
-        f1 = e1
-    } else {
-        f1 = function(x) x %in% e1
-    }
-    if (is.function(e2)) {
-        f2 = e2
-    } else {
-        f2 = function(x) x %in% e2
-    }
-    res = function(x) f1(x) | f2(x)
-    class(res) = unique("criterion",class(res))
-    res
-}
-
-
-#' @export
-'&.criterion' = function(e1,e2) {
-    if (is.function(e1)) {
-        f1 = e1
-    } else {
-        f1 = function(x) x %in% e1
-    }
-    if (is.function(e2)) {
-        f2 = e2
-    } else {
-        f2 = function(x) x %in% e2
-    }
-    res = function(x) f1(x) & f2(x)
-    class(res) = unique("criterion",class(res))
-    res
-}
-
-
-# TODO Удалить
-#' @export
-build_criterion = function(criterion,dfs){
-    if (is.null(criterion)){
-        cond = !is.na(dfs)
-        return(cond)
-    }
-    UseMethod("build_criterion")
-}
-
-# TODO Удалить
-# @export
-build_criterion.function = function(criterion,dfs){
-    res = lapply(dfs,function(colmn){
-        cond = criterion(colmn)
-        stopif(length(cond)!=length(colmn),"Cells number of criterion doesn't equal cells number of argument.")
-        as.logical(cond)
-    })
-    do.call(cbind,res)
-}
-
-# TODO Удалить
-# @export
-build_criterion.default = function(criterion,dfs){
-    build_criterion.function(function(x) x %in% criterion,dfs)
-}
-
-# TODO Удалить
-# @export
-build_criterion.criterion = function(criterion,dfs){
-    build_criterion.function(criterion,dfs)
 }
 
 
