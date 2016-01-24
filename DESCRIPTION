@@ -18,4 +18,4 @@ Description: TODO TODO TODO
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1

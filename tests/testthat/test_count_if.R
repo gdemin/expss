@@ -10,15 +10,15 @@ expect_equal(count_if("apples",df1),2L)
 
 expect_equal(with(df1,count_if("apples",a,b)),2L)
 
-expect_equal(count_if(crit(">",55),df1$b),2L)
-expect_equal(count_if(crit(">",55) | 32,df1$b),3L)
-expect_equal(count_if(54 | crit(">",55),df1$b),3L)
+expect_equal(count_if(">55",df1$b),2L)
+expect_equal(count_if(function(x) x>55 | x==32,df1$b),3L)
+expect_equal(count_if(function(x) x>55 | x==54,df1$b),3L)
 
-expect_equal(count_if(crit("!=",75),df1$b),3L)
+expect_equal(count_if("!=75",df1$b),3L)
 
-expect_equal(count_if(crit(">=",32),df1$b),4L)
+expect_equal(count_if(">=32",df1$b),4L)
 
-expect_equal(count_if(crit(">",32) & crit("<",86),df1$b),2L)
+expect_equal(count_if(list(">32", "<86"),df1$b),2L)
 
 expect_equal(count_if(33:85,df1$b),2L)
 
@@ -63,7 +63,7 @@ result = data.frame(df2,
                     not_na=c(2,3,3,2,2,3,3,3,3,2)
                     )
 expect_equal(df2  %>% mutate(exact = row_count_if(8,V1,V2,V3),
-                greater = row_count_if(crit(">",8),V1,V2,V3),
+                greater = row_count_if(">8",V1,V2,V3),
                 range = row_count_if(5:8,V1,V2,V3),
                 na = row_count_if(is.na,V1,V2,V3),
                 not_na = row_count_if(,V1,V2,V3))

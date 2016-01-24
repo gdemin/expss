@@ -149,29 +149,6 @@ if_na.list = function(x, value){
     x
 }
 
-# value should be ncol(value)==1 or ncol(value) = ncol(x) 
-# value should be nrow(value)==1 or nrow(value) = nrow(x) 
-check_conformance = function(x,value){
-    UseMethod("check_conformance")
-}
-
-check_conformance.default = function(x,value){
-    stopif(length(value)==0, "'value' has zero length.")
-    stopif(NCOL(value)>1 && NCOL(x)!=NCOL(value), "Number of columns in 'value' should be 
-    1 or equals to number of columns of 'x' but NCOL(value)=",NCOL(value),", NCOL(x)=", NCOL(x))
-    stopif(NROW(value)>1 && NROW(x)!=NROW(value), "Number of rows in 'value' should be
-    1 or equals number of rows of 'x' but NROW(value)=",NROW(value),", NROW(x)=", NROW(x))
-    invisible(TRUE)
-}
-
-check_conformance.list = function(x, value){
-    if(is.list(value) && !is.data.frame(value)){
-        stopif(length(value)!=length(x), "'value' length should be equal to length of 'x' but
-               length(x)=", length(x)," and length(value)=", length(value))    
-    }
-    
-    invisible(TRUE)    
-}
 
 
 

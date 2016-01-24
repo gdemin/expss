@@ -15,12 +15,13 @@ if_na(x, value)
 x with replaced NA
 }
 \description{
-In simple case of vector if_na(x) = 99 is simplified version of x[is.na(x)] =
+In simple case of vector if_na(x) = 99 is simplified version of x[is.na(x)] = 
 99. In more complex cases when x is data.frame/matrix/list this function tries
-to replace NA recursively. If replacement value is
-vector/data.frame/matrix/list function use for replacement values from
-appropriate places, e. g. if both x and value are vectors if_na(x) = value is
-equivalent to x[is.na(x)] = value[is.na(x)]. See examples.
+to replace NA recursively. If replacement value is 
+vector/data.frame/matrix/list function use for replacement values from 
+appropriate places, e. g. if both x and value are vectors if_na(x) = value is 
+equivalent to x[is.na(x)] = value[is.na(x)]. Single column/row value recycled
+to conform with x. See examples.
 }
 \examples{
 # simple case

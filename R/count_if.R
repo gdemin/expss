@@ -4,9 +4,9 @@
 #' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise - e. g. 
 #' similar to SPSS \code{COUNT} function. 
 #'  
-#' @param criterion Vector with counted values or function (possibly constructed with \code{crit}) 
+#' @param criterion Vector with counted values, list with conditions or function.
+#'  Excel expressions such as ">5" are allowed. 
 #' @param ... Counted data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.
-#' @param cond Function for criterion construction. In most cases it is '>','==' and so on.
 #' @param x Tested data. Vector, matrix, data.frame, list. Shorter columns in list
 #'  will be recycled.
 #' 
@@ -14,8 +14,6 @@
 #' \code{count_if} return single value (vector of length 1). 
 #' \code{row_count_if} returns vector of counts for each row of supplied arguments.
 #' \code{\%has\%} returns logical vector - presense indicator of criterion in each row.
-#' \code{crit} returns function of class 'criterion' that test argument for 
-#' supplied condition. 
 #' 
 #' @details
 #' \code{count_if} counts values in entire dataset and return single 
@@ -27,8 +25,6 @@
 #' Both functions never return NA's. If criterion is missing (or is NULL) 
 #' non-NA's values will be counted. 
 #' 
-#' \code{crit(FUN,...)} translate FUN in function \code{FUN(x,...)}. Functions 
-#' returned by \code{crit} may be combined with logical operators: |, &, !.
 #' 
 #' \code{\%has\%} is simple wrapper for rather frequent case \code{row_count_if(criterion,x)>0}.
 #' 
@@ -46,13 +42,13 @@
 #' 
 #' with(df1,count_if("apples",a,b)) # 2
 #' 
-#' count_if(crit(">",55),df1$b) # 2
+#' count_if(">55",df1$b) # 2
 #' 
-#' count_if(crit("!=",75),df1$b) # 3
+#' count_if("!=75",df1$b) # 3
 #' 
-#' count_if(crit(">=",32),df1$b) # 4
+#' count_if(">=32",df1$b) # 4
 #' 
-#' count_if(crit(">",32) & crit("<",86),df1$b) # 2
+#' count_if(list(">32", "<86"),df1$b) # 2
 #' 
 #' count_if(33:85,df1$b) # 2
 #' 
@@ -74,7 +70,7 @@
 #'     matrix(sample(c(1:10,NA),30,replace = TRUE),10)
 #' )
 #' df2  %>% mutate(exact = row_count_if(8,V1,V2,V3),
-#'                 greater = row_count_if(crit(">",8),V1,V2,V3),
+#'                 greater = row_count_if(">8",V1,V2,V3),
 #'                 range = row_count_if(5:8,V1,V2,V3),
 #'                 na = row_count_if(is.na,V1,V2,V3),
 #'                 not_na = row_count_if(,V1,V2,V3)
@@ -82,7 +78,11 @@
 #' result
 count_if=function(criterion=NULL,...){
     dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame  
-    cond = build_criterion(criterion,dfs)
+    if (is.null(criterion)){
+        cond = !is.na(dfs)
+    } else {
+        cond = build_criterion(criterion,dfs)
+    }   
     sum(cond,na.rm=TRUE)
 }
 
@@ -90,7 +90,11 @@ count_if=function(criterion=NULL,...){
 #' @rdname count_if
 row_count_if=function(criterion=NULL,...){
     dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
-    cond = build_criterion(criterion,dfs)
+    if (is.null(criterion)){
+        cond = !is.na(dfs)
+    } else {
+        cond = build_criterion(criterion,dfs)
+    } 
     rowSums(cond,na.rm=TRUE)
 }
 
