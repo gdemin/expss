@@ -66,6 +66,8 @@ if_na = function(x, value){
     UseMethod("if_na")
 }
 
+# TODO add labels possibility
+
 #' @export
 'if_na<-' = function(x, value){
     if_na(x, value)

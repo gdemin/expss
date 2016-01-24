@@ -32,7 +32,7 @@ build_criterion.character = function(criterion,dfs){
         argument = gsub("^(==|!=|>=|<=|>|<)(.*)$", "\\2", criterion, perl = TRUE)
         operator = match.fun(operator)
         argument = type.convert(argument, numerals = "no.loss")
-        if (is.factor(argument)) argument = as.character(argumnet)
+        if (is.factor(argument)) argument = as.character(argument)
         build_criterion.function(function(x) operator(x, argument), dfs)
     } else {
         if (length(criterion)>1 && has_logical_operator){
@@ -45,7 +45,7 @@ build_criterion.character = function(criterion,dfs){
 # @export
 build_criterion.logical = function(criterion,dfs){
     # uncertainty if criterion is result of something is.na(dfs[,i]) 
-    # should we count NA in such case - solution - forbid logical criterion for count if
+    # should we count NA in such case - possible solution - forbid logical criterion for count if
     check_conformance(dfs, criterion)
     res = matrix(nrow = NROW(dfs), ncol = NCOL(dfs))
     if(NCOL(criterion)>1){

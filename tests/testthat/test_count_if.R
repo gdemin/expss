@@ -22,6 +22,16 @@ expect_equal(count_if(list(">32", "<86"),df1$b),2L)
 
 expect_equal(count_if(33:85,df1$b),2L)
 
+context("count_if character")
+
+expect_equal(count_if("a", letters),1L)
+expect_equal(count_if(">a", letters),25L)
+expect_equal(count_if(">=b", letters),25L)
+expect_equal(count_if("!=b", letters),25L)
+expect_equal(count_if("==b", letters),1L)
+expect_warning(count_if(c("==b","d"), letters))
+expect_equal(count_if(c("a","b"), letters),2L)
+
 context("count_ifs")
 
 df3 = data.frame( 
