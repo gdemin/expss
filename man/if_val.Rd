@@ -4,7 +4,7 @@
 \alias{if_val}
 \title{Title}
 \usage{
-if_val(x, ...)
+if_val(x, ..., from = NULL, to = NULL)
 }
 \arguments{
 \item{x}{}
