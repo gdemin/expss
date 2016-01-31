@@ -150,7 +150,8 @@ ab = list(a,b)
 val_lab(ab) = c("a"=1, "b" = 2)
 
 expect_identical(if_na(ab, 42), ab)
-expect_error(if_na(ab, list(42)))
+expect_identical(if_na(ab, list(42)), ab)
+expect_error(if_na(ab, list(42,43,44)))
 
 ab[[1]][1] = NA
 ab[[2]][4] = NA
@@ -162,12 +163,11 @@ ab_no_na[[2]][4] = 42
 expect_identical(if_na(ab, 42), ab_no_na)
 
 ab_no_na[[1]][1] = 42
-ab_no_na[[2]][4] = 43
-expect_identical(if_na(ab, list(42,43)), ab_no_na)
-expect_equal(if_na(ab, list(42:39,40:43)), ab_no_na)
+ab_no_na[[2]][4] = 42
+expect_error(if_na(ab, list(42,43)))
+expect_identical(if_na(ab, list(42)), ab_no_na)
+expect_error(if_na(ab, list(42:39,40:43)))
 expect_error(if_na(ab, data.frame(42:39,40:43)))
-expect_equal(if_na(ab, list(data.frame(42:39),40:43)),ab_no_na)
-expect_equal(if_na(ab, list(as.matrix(42:39),40:43)),ab_no_na)
 
 context("help")
 
@@ -228,7 +228,12 @@ df_test = within(df_test, {
 
 expect_identical(df, df_test)
 
-# just for curiosity - assignemnet form doesn't work inside mutate
+df = data.frame(x1, x2, x3)
+
+if_na(df) = as.list(colMeans(df, na.rm = TRUE))
+expect_identical(df, df_test)
+
+# just for curiosity - assignment form doesn't work inside mutate
 df_test2 = within(df_test2, {
     if_na(x1) = mean(x1, na.rm = TRUE)
     if_na(x2) = mean(x2, na.rm = TRUE)
@@ -237,4 +242,36 @@ df_test2 = within(df_test2, {
 })
 
 expect_identical(df, df_test2)
+
+context("if_na add_val_lab")
+
+a = 1:4
+b = a
+a[1] = NA
+b[1] = 2
+val_lab(b) = c("Hard to say" = 2)
+expect_identical(if_na(a, c("Hard to say" = 2)), b)
+
+set.seed(123)
+x1 = runif(30)
+x2 = runif(30)
+x3 = runif(30)
+x1[sample(30, 10)] = NA # place 10 NA's
+x2[sample(30, 10)] = NA # place 10 NA's
+x3[sample(30, 10)] = NA # place 10 NA's
+
+df = data.frame(x1, x2, x3)
+df_test = df
+
+if_na(df) = c("h/s" = 99)
+
+df_test = within(df_test, {
+    x1[is.na(x1)] = 99
+    x2[is.na(x2)] = 99
+    x3[is.na(x3)] = 99
+})
+
+val_lab(df_test) = c("h/s" = 99)
+
+expect_identical(df, df_test)
 
