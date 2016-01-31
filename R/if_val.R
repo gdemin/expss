@@ -13,9 +13,13 @@ if_val = function(x, ..., from = NULL, to = NULL){
     
 }
 
-"if_val<-" = function(x, value, from = NULL, to = NULL){
-    
-    
+#' @export
+"if_val<-" = function(x, value, from = NULL){
+    if (is.null(from)){
+        if_val(x, value)
+    } else {
+        if_val(x, from = from, to = value)
+    }
 }
 
 
@@ -28,8 +32,7 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
         stopif(length(from)!=length(to), 
                "length(to) should be equal to length(from) but length(from)=", length(from),
                " and length(to)=", length(to))
-        stopif(length(from)!=length(to) , 
-               "length(to) should be equal to length(from) or equal 1 but length(to)=", length(to))
+
         recoding_list = mapply(function(x,y) list(from = x, to = y), from, to, SIMPLIFY = FALSE)
     }
     recoded = rep(FALSE, length(x))
@@ -48,14 +51,26 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
         }
         to = from_to$to
         check_conformance(x, to)
-        if (NROW(to)>1) {
-            x[cond] = to[cond]
-        } else {
-            x[cond] = to
+        # dot in `to` means copy (simply doesn't change value that meet condition - "copy" from SPSS ) 
+        if(!all_other(to)){ 
+            if (NROW(to)>1) {
+                x[cond] = to[cond]
+            } else {
+                x[cond] = to
+            }
         }
         recoded = recoded | cond # we don't recode already recoded value
     }
 
+    x
+}
+
+
+#' @export
+if_val.list = function(x, value){
+    for(each in seq_along(x)){
+        if_val(x[[each]]) = value
+    }
     x
 }
 
