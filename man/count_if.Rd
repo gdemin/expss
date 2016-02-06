@@ -18,7 +18,7 @@ Excel expressions such as ">5" are allowed.}
 
 \item{...}{Counted data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.}
 
-\item{x}{Tested data. Vector, matrix, data.frame, list. Shorter columns in list
+\item{x}{Counted values or criteria for counting. Vector, matrix, data.frame, list. Shorter columns in list
 will be recycled.}
 }
 \value{

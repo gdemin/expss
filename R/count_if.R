@@ -7,7 +7,7 @@
 #' @param criterion Vector with counted values, list with conditions or function.
 #'  Excel expressions such as ">5" are allowed. 
 #' @param ... Counted data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.
-#' @param x Tested data. Vector, matrix, data.frame, list. Shorter columns in list
+#' @param x Counted values or criteria for counting. Vector, matrix, data.frame, list. Shorter columns in list
 #'  will be recycled.
 #' 
 #' @return 
@@ -81,7 +81,7 @@ count_if=function(criterion=NULL,...){
     if (is.null(criterion)){
         cond = !is.na(dfs)
     } else {
-        cond = build_criterion(criterion,dfs)
+        cond = build_criterion(criterion, dfs)
     }   
     sum(cond,na.rm=TRUE)
 }
