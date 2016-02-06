@@ -1,5 +1,5 @@
 
-
+######## build_criterion ###########
 # TODO Удалить
 # @export
 build_criterion = function(criterion,dfs){
@@ -66,7 +66,7 @@ build_criterion.logical = function(criterion,dfs){
 
 # @export
 build_criterion.data.frame = function(criterion,dfs){
-    stop("condition of type data.frame is not allowed.")
+    build_criterion(as.matrix(criterion), dfs)
 }
 
 # @export
@@ -79,6 +79,7 @@ build_criterion.list = function(criterion,dfs){
     res
 }
 
+###### check_conformance ################
 
 # value should be ncol(value)==1 or ncol(value) = ncol(x) 
 # value should be nrow(value)==1 or nrow(value) = nrow(x) 
@@ -105,6 +106,7 @@ check_conformance.list = function(x, value){
     invisible(TRUE)    
 }
 
+####### column ###########
 
 column = function(x, column_num, condition = NULL){
     UseMethod("column")
