@@ -77,7 +77,7 @@ if_na = function(x, value){
 if_na.default = function(x, value){
     check_conformance(x, value)
     if (anyNA(x)){
-        if(!is.list(value)){
+        if(!is.list(value) || is.data.frame(value)){
             nas = is.na(x)
             for (each_col in seq_len(NCOL(x))){
                 cond = column(nas, each_col)

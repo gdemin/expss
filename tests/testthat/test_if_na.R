@@ -29,11 +29,11 @@ expect_identical(if_na(a, 2), b)
 a[1,1] = NA
 b[1,1] = 2
 
-expect_identical(if_na(a, 2), b)
+expect_equal(if_na(a, 2), b)
 
 a[4,1] = NA 
 b[4,1] = 2
-expect_identical(if_na(a, 2), b)
+expect_equal(if_na(a, 2), b)
 
 b[1,1] = 4
 b[4,1] = 1
@@ -98,7 +98,7 @@ b[1,3] = -1
 expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
 expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
 
-context("tbl_df")
+context("if_na tbl_df")
 
 library(dplyr)
 a = tbl_df(data.frame(a = 1:4, b = 5:8, d = 10:13))
@@ -142,7 +142,7 @@ b[1,3] = -1
 expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
 expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
 
-context("list")
+context("if_na list")
 
 a = 1:4
 b = 4:1
@@ -169,7 +169,7 @@ expect_identical(if_na(ab, list(42)), ab_no_na)
 expect_error(if_na(ab, list(42:39,40:43)))
 expect_error(if_na(ab, data.frame(42:39,40:43)))
 
-context("help")
+context("if_na help")
 
 # simple case
 a = c(NA, 2, 3, 4, NA)
