@@ -76,85 +76,27 @@ if_na = function(x, value){
 #' @export
 if_na.default = function(x, value){
     check_conformance(x, value)
-    if(is.matrix(value)) value = value[,1]
-    if(is.list(value)) value = value[[1]]
     if (anyNA(x)){
-        nas = is.na(x)
-        if(NROW(value)>1){
-            x[nas] = value[nas]
+        if(!is.list(value)){
+            nas = is.na(x)
+            for (each_col in seq_len(NCOL(x))){
+                cond = column(nas, each_col)
+                if (any(cond)) column(x, each_col, cond) = column(value, each_col, cond)
+            }
         } else {
-            x[nas] = value
+            for (each_col in seq_len(NCOL(x))){
+                if_na(column(x, each_col)) = column(value, each_col)
+            }            
         }
         if(is.atomic(value) && length(value)==1 && !is.null(names(value))){
-                add_val_lab(x) = value
+            add_val_lab(x) = value
         }    
     }
     x
 }
 
-#' @export
-if_na.data.frame = function(x, value){
-    check_conformance(x, value)
-    if(is.list(value) && !is.data.frame(value)){
-        if(length(value)>1) {
-                 for(each in seq_along(x)){
-                    if_na(x[[each]]) = value[[each]]
-                }    
-        } else {
-            value = value[[1]]
-            for(each in seq_along(x)){
-                if_na(x[[each]]) = value
-            } 
-        }
-    } else {
-        if(NCOL(value)>1) {
-            if(is.matrix(value)){
-                for(each in seq_along(x)){
-                    if_na(x[[each]]) = unname(value[,each], force = TRUE)
-                }
-            } else {
-                for(each in seq_along(x)){
-                    if_na(x[[each]]) = unname(value[[each]], force = TRUE)
-                }    
-            }
-        } else {
-            for(each in seq_along(x)){
-                if_na(x[[each]]) = value
-            } 
-        }        
-        
-    }
-    x
-}
 
-#' @export
-if_na.matrix = function(x, value){
-    check_conformance(x, value)
-    if(anyNA(x)){
-        nas = is.na(x)
-        if(NCOL(value)>1 && NROW(value)>1) {
-            value = as.matrix(value)
-            x[nas] = value[nas]
-        }
-        if(NCOL(value)<2 && NROW(value)<2) {
-            x[nas] = value
-        }
-        if(NCOL(value)<2 && NROW(value)>1) {
-            for(each in seq_len(ncol(x))){
-                x[nas[,each],each] = value[nas[,each]]
-            }
-        }  
-        if(NCOL(value)>1 && NROW(value)<2) {
-            for(each in seq_len(ncol(x))){
-                x[nas[,each],each] = value[,each]
-            }
-        } 
-        if(is.atomic(value) && length(value)==1 && !is.null(names(value))){
-            add_val_lab(x) = value
-        }
-    }
-    x
-}
+
 
 #' @export
 if_na.list = function(x, value){

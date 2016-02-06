@@ -1,8 +1,11 @@
 
 
 # TODO Удалить
-#' @export
+# @export
 build_criterion = function(criterion,dfs){
+    # dfs should be data.frame
+    # build criterion should return logical matrix with the form of dfs (e. g. the same dimension)
+    
     UseMethod("build_criterion")
 }
 
@@ -20,6 +23,7 @@ build_criterion.function = function(criterion,dfs){
 # TODO Удалить
 # @export
 build_criterion.default = function(criterion,dfs){
+    
      build_criterion.function(function(x) x %in% criterion,dfs)
 }
 
@@ -62,7 +66,7 @@ build_criterion.logical = function(criterion,dfs){
 
 # @export
 build_criterion.data.frame = function(criterion,dfs){
-    stop("criteria of type data.frame is not allowed.")
+    stop("condition of type data.frame is not allowed.")
 }
 
 # @export
@@ -100,3 +104,102 @@ check_conformance.list = function(x, value){
 
     invisible(TRUE)    
 }
+
+
+column = function(x, column_num, condition = NULL){
+    UseMethod("column")
+}
+
+column.data.frame = function(x, column_num, condition = NULL){
+    stopif(column_num>ncol(x) && ncol(x)>1, "Too large column_num:",column_num, " only ", ncol(x), " columns in the data.frame.")
+    if (ncol(x)>1) {
+        res = x[[column_num]]
+    } else {
+        res = x[[1]]
+    }    
+    if(!is.null(condition) && nrow(x)>1){
+        res[condition]
+    } else {
+        res
+    }    
+}
+
+column.matrix = function(x, column_num, condition = NULL){
+    stopif(column_num>ncol(x) && ncol(x)>1, "Too large column_num:",column_num, " only ", ncol(x), " columns in the matrix.")
+    if (ncol(x)>1) {
+        res = x[,column_num]
+    } else {
+        res = x[,1]
+    } 
+    if(!is.null(condition) && nrow(x)>1){
+        res[condition]
+    } else {
+        res
+    } 
+}
+
+
+column.list = function(x, column_num, condition = NULL){
+    stopif(column_num>length(x) && length(x)>1, "Too large column_num:",column_num, " only ", ncol(x), " elements in the list.")
+    stopif(!is.null(condition), "Extract column from list with condition doesn't allowed.")
+    if (length(x)>1) {
+        x[[column_num]]
+    } else {
+        x[[1]]
+    }  
+}
+
+column.default = function(x, column_num, condition = NULL){
+    if(is.null(condition)){
+        x
+    } else {
+        if(length(x)>1){
+            x[condition]
+        }  else {
+            x
+        }  
+    }     
+    
+}    
+
+#######
+"column<-" = function(x, column_num, condition = NULL, value){
+    UseMethod("column<-")
+}
+
+"column<-.data.frame" = function(x, column_num, condition = NULL, value){
+    stopif(column_num>ncol(x), "Too large column_num:",column_num, " only ", ncol(x), " columns in the data.frame.")
+
+    if(!is.null(condition)){
+        x[condition, column_num] = value
+    } else {
+        x[,column_num] = value
+    }
+    x
+}
+
+"column<-.matrix" = function(x, column_num, condition = NULL, value){
+    stopif(column_num>ncol(x), "Too large column_num:",column_num, " only ", ncol(x), " columns in the matrix.")
+    if(!is.null(condition)){
+        x[condition, column_num] = value
+    } else {
+        x[,column_num] = value
+    }
+    x
+}
+
+
+"column<-.list" = function(x, column_num, condition = NULL, value){
+    stop("Assignment for list doesn't implemented.")
+
+}
+
+"column<-.default" = function(x, column_num, condition = NULL, value){
+    if(is.null(condition)){
+        x[] = value
+    } else {
+        x[condition] = value
+    }     
+    x
+}  
+
