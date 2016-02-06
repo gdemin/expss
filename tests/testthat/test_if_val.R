@@ -1,4 +1,4 @@
-context("simple vector")
+context("if_val simple vector")
 
 expect_identical(if_val(1:5, 1~-1), c(-1, 2, 3, 4, 5))
 expect_identical(if_val(1:5, 1~-1, 2 ~ NA), c(-1, NA, 3, 4, 5))
@@ -22,7 +22,7 @@ expect_identical(if_val(x, list(">2"~y, "<=2" ~ z, .~99)), c(4, 8, 4, 9, 99))
 
 expect_identical(if_val(x, (z>4)~y), c(1, 3, 1, 9, 9))
 
-context("dplyr")
+context("if_val dplyr")
 library(dplyr)
 library(magrittr)
 
@@ -53,7 +53,7 @@ expect_identical(dfs$w, c(1, 18, 1, 19, NA))
 
 ##########################
 
-context("from, to notation simple vector")
+context("if_val from, to notation simple vector")
 
 expect_identical(if_val(1:5, from = 1, to = -1), c(-1, 2, 3, 4, 5))
 expect_identical(if_val(1:5, from = 1:2, to =c(-1, NA)), c(-1, NA, 3, 4, 5))
@@ -76,7 +76,7 @@ expect_identical(if_val(x, from = list(">2", "<=2","."), to = list(y,z,99)), c(4
 
 expect_identical(if_val(x, from = list(z>4), to = list(y)), c(1, 3, 1, 9, 9))
 
-context("from, to notation dplyr")
+context("if_val from, to notation dplyr")
 library(dplyr)
 library(magrittr)
 

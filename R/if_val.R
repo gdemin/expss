@@ -45,25 +45,35 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
             # dot is considered as all other non-recoded values ("else" from SPSS)
             cond = !recoded
         } else {
+            if (identical(from, NA)) from = as.numeric(NA)
             cond = build_criterion(from, dfs_x)
             if_na(cond) = FALSE
             cond = cond & !recoded # we don't recode already recoded value
         }
         to = from_to$to
-        check_conformance(x, to)
-        # dot in `to` means copy (simply doesn't change value that meet condition - "copy" from SPSS ) 
-        if(!all_other(to)){ 
-            if (NROW(to)>1) {
-                x[cond] = to[cond]
-            } else {
-                x[cond] = to
+        check_conformance(cond, to)
+        # dot in `to` means copy (simply doesn't change values that meet condition - "copy" from SPSS ) 
+        if(!is.list(to) || is.data.frame(to)){
+            for (each_col in seq_len(NCOL(x))){
+                curr_cond = column(cond, each_col)
+                if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
             }
+        } else {
+            for (each_col in seq_len(NCOL(x))){
+                curr_cond = column(cond, each_col)
+                if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
+            }            
         }
+        if(is.atomic(to) && length(to)==1 && !is.null(names(to))){
+            add_val_lab(x) = to
+        } 
         recoded = recoded | cond # we don't recode already recoded value
     }
 
     x
 }
+
+
 
 
 #' @export
@@ -94,5 +104,8 @@ parse_formula = function(elementary_recoding){
 
 
 
-
+#### TODO
+### replace "<5" notation with functions - 
+### lt(5), and as in Fortran le, eq, ne, ge, gt()
+### more managebale - for example we can skip non-numeric values
 
