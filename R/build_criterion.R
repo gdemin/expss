@@ -27,24 +27,6 @@ build_criterion.default = function(criterion,dfs){
      build_criterion.function(function(x) x %in% criterion,dfs)
 }
 
-# @export
-build_criterion.character = function(criterion,dfs){
-    has_logical_operator =  any(grepl("^(==|!=|>=|<=|>|<)", criterion, perl = TRUE))
-    if(length(criterion)==1 && has_logical_operator){
-        operator = gsub("^(==|!=|>=|<=|>|<).*$", "\\1", criterion, perl = TRUE)
-        
-        argument = gsub("^(==|!=|>=|<=|>|<)(.*)$", "\\2", criterion, perl = TRUE)
-        operator = match.fun(operator)
-        argument = type.convert(argument, numerals = "no.loss")
-        if (is.factor(argument)) argument = as.character(argument)
-        build_criterion.function(function(x) operator(x, argument), dfs)
-    } else {
-        if (length(criterion)>1 && has_logical_operator){
-            warning('Only scalar logical operators (e. g. ">5") are allowed. Vector logical operators are ignored.')
-        }
-        build_criterion.function(function(x) x %in% criterion,dfs)
-    }
-}
 
 # @export
 build_criterion.logical = function(criterion,dfs){
@@ -78,6 +60,13 @@ build_criterion.list = function(criterion,dfs){
     }
     res
 }
+
+# TODO Удалить
+# @export
+build_criterion.criterion = function(criterion,dfs){
+    build_criterion.function(criterion,dfs) 
+}
+
 
 ###### check_conformance ################
 

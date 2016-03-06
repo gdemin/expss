@@ -10,26 +10,31 @@ expect_equal(count_if("apples",df1),2L)
 
 expect_equal(with(df1,count_if("apples",a,b)),2L)
 
-expect_equal(count_if(">55",df1$b),2L)
+expect_equal(count_if(gt(55),df1$b),2L)
+
 expect_equal(count_if(function(x) x>55 | x==32,df1$b),3L)
+expect_equal(count_if(gt(55)|32,df1$b),3L)
+
 expect_equal(count_if(function(x) x>55 | x==54,df1$b),3L)
+expect_equal(count_if(gt(55)|54,df1$b),3L)
 
-expect_equal(count_if("!=75",df1$b),3L)
+expect_equal(count_if(neq(75),df1$b),3L)
 
-expect_equal(count_if(">=32",df1$b),4L)
+expect_equal(count_if(gte(32),df1$b),4L)
 
-expect_equal(count_if(list(">32", "<86"),df1$b),2L)
+expect_equal(count_if(list(gt(32), lt(86)),df1$b),2L)
+expect_equal(count_if(gt(32) & lt(86),df1$b),2L)
 
 expect_equal(count_if(33:85,df1$b),2L)
 
 context("count_if character")
 
 expect_equal(count_if("a", letters),1L)
-expect_equal(count_if(">a", letters),25L)
-expect_equal(count_if(">=b", letters),25L)
-expect_equal(count_if("!=b", letters),25L)
-expect_equal(count_if("==b", letters),1L)
-expect_warning(count_if(c("==b","d"), letters))
+expect_equal(count_if(gt("a"), letters),25L)
+expect_equal(count_if(gte("b"), letters),25L)
+expect_equal(count_if(neq("b"), letters),25L)
+expect_equal(count_if(eq("b"), letters),1L)
+# expect_warning(count_if(c(eq(b),"d"), letters))
 expect_equal(count_if(c("a","b"), letters),2L)
 
 context("count_ifs")
@@ -73,8 +78,8 @@ result = data.frame(df2,
                     not_na=c(2,3,3,2,2,3,3,3,3,2)
                     )
 expect_equal(df2  %>% mutate(exact = row_count_if(8,V1,V2,V3),
-                greater = row_count_if(">8",V1,V2,V3),
+                greater = row_count_if(gt(8),V1,V2,V3),
                 range = row_count_if(5:8,V1,V2,V3),
                 na = row_count_if(is.na,V1,V2,V3),
-                not_na = row_count_if(,V1,V2,V3))
-                , result)
+                not_na = row_count_if(,V1,V2,V3)),
+                 result)

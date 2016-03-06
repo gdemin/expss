@@ -7,8 +7,8 @@
 #' @param criterion Vector with counted values, list with conditions or function.
 #'  Excel expressions such as ">5" are allowed. 
 #' @param ... Counted data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.
-#' @param x Counted values or criteria for counting. Vector, matrix, data.frame, list. Shorter columns in list
-#'  will be recycled.
+#' @param x Counted values or criteria for counting. Vector, matrix, data.frame, list, function. 
+#' Shorter columns in list will be recycled.
 #' 
 #' @return 
 #' \code{count_if} return single value (vector of length 1). 
@@ -42,13 +42,15 @@
 #' 
 #' with(df1,count_if("apples",a,b)) # 2
 #' 
-#' count_if(">55",df1$b) # 2
+#' count_if(gt(55),df1$b) # greater than 55 = 2
 #' 
-#' count_if("!=75",df1$b) # 3
+#' count_if(neq(75),df1$b) # not equal 75 = 3
 #' 
-#' count_if(">=32",df1$b) # 4
+#' count_if(gte(32),df1$b) # greater than or equal 32 = 4
 #' 
-#' count_if(list(">32", "<86"),df1$b) # 2
+#' count_if(list(gt(32), lt(86)),df1$b) # 2
+#' 
+#' count_if(gt(32) & lt(86),df1$b) # 2
 #' 
 #' count_if(33:85,df1$b) # 2
 #' 
@@ -65,15 +67,16 @@
 #' df1 %has% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
 #' 
 #' # example with dplyr
+#' library(dplyr)
 #' set.seed(123)
 #' df2 = as.data.frame(
 #'     matrix(sample(c(1:10,NA),30,replace = TRUE),10)
 #' )
-#' df2  %>% mutate(exact = row_count_if(8,V1,V2,V3),
-#'                 greater = row_count_if(">8",V1,V2,V3),
-#'                 range = row_count_if(5:8,V1,V2,V3),
-#'                 na = row_count_if(is.na,V1,V2,V3),
-#'                 not_na = row_count_if(,V1,V2,V3)
+#' df2  %>% mutate(exact = row_count_if(8, V1, V2, V3),
+#'                 greater = row_count_if(gt(8), V1, V2, V3),
+#'                 range = row_count_if(5:8, V1, V2, V3),
+#'                 na = row_count_if(is.na, V1, V2, V3),
+#'                 not_na = row_count_if(, V1, V2, V3)
 #'                 ) -> result
 #' result
 count_if=function(criterion=NULL,...){
