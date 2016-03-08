@@ -1,0 +1,94 @@
+context("set_na vector")
+
+a = 1:5
+
+a[a>3] = NA
+
+expect_equal(set_na(1:5, gt(3)),a)
+expect_equal(set_na(1:5, 4:5),a)
+expect_equal(set_na(1:5, c(FALSE,FALSE,FALSE,TRUE,TRUE)),a)
+
+
+context("set_na data.frame")
+a = data.frame(a=1:5,b=5:1)
+
+b = a
+b[a$a>3,"a"] = NA
+b[a$b>3,"b"] = NA
+expect_equal(set_na(a, gt(3)),b)
+expect_equal(set_na(a, 4:5),b)
+
+cond = cbind(a$a>3, a$b>3)
+expect_equal(set_na(a, cond),b)
+
+b = a
+b[3,"b"] = NA
+b[1:5,"a"] = NA
+expect_equal(set_na(a, eq(a$a)),b)
+
+
+
+b = a
+b[1:2,] = NA
+
+expect_equal(set_na(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
+expect_equal(set_na(a, as.data.frame(c(TRUE, TRUE, FALSE,FALSE,FALSE))),b)
+expect_equal(set_na(list(a,1:5), c(TRUE, TRUE, FALSE,FALSE,FALSE)),list(b,c(NA,NA,3,4,5)))
+
+b = a
+b[,1] = NA
+b$a = as.numeric(b$a)
+
+expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
+expect_equal(set_na(a, as.data.frame(t(c(TRUE, FALSE)))),b)
+
+
+
+context("set_na tbl_df")
+library(dplyr)
+a = as.tbl(data.frame(a=1:5,b=5:1))
+
+b = a
+b[a$a>3,"a"] = NA
+b[a$b>3,"b"] = NA
+expect_equal(set_na(a, gt(3)),b)
+expect_equal(set_na(a, 4:5),b)
+
+cond = cbind(a$a>3, a$b>3)
+expect_equal(set_na(a, cond),b)
+
+b = a
+b[1:2,] = NA
+
+expect_equal(set_na(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
+
+
+b = a
+b[,1] = NA
+b$a = as.integer(b$a)
+
+expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
+
+context("set_na matrix")
+
+a = cbind(a=1:5,b=5:1)
+
+b = a
+b[a[,1]>3,"a"] = NA
+b[a[,2]>3,"b"] = NA
+expect_equal(set_na(a, gt(3)),b)
+expect_equal(set_na(a, 4:5),b)
+
+cond = cbind(a[,1]>3, a[,2]>3)
+expect_equal(set_na(a, cond),b)
+
+b = a
+b[1:2,] = NA
+
+expect_equal(set_na(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
+
+b = a
+b[,1] = NA
+
+
+expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
