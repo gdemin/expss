@@ -15,14 +15,16 @@ if_na(x, value)
 x with replaced NA
 }
 \description{
-If x is vector then \code{if_na(x) = 99} is equivalent to \code{x[is.na(x)] =
-99}. In more complex cases when x is data.frame/matrix/list this function
+If x is vector then \code{if_na(x) = 99} is equivalent to \code{x[is.na(x)] = 
+99}. In more complex cases when x is data.frame/matrix/list this function 
 tries to replace NA recursively. If replacement value is 
-vector/data.frame/matrix/list then \code{if_na} uses for replacement values
-from appropriate places, e. g. if both \code{x} and \code{value} are vectors
-then \code{if_na(x) = value} is equivalent to \code{x[is.na(x)] =
-value[is.na(x)]}. Single column/row value recycled to conform with x. See
-examples.
+vector/data.frame/matrix/list then \code{if_na} uses for replacement values 
+from appropriate places, e. g. if both \code{x} and \code{value} are vectors 
+then \code{if_na(x) = value} is equivalent to \code{x[is.na(x)] = 
+value[is.na(x)]}. Single column/row value recycled to conform to x. See 
+examples. \code{value} can be supplied in the form \code{c(label = value)}. In
+this case NA will be replaced with \code{value} and \code{label} will be added
+as label to value labels of \code{x}.
 }
 \examples{
 # simple case
