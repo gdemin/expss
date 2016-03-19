@@ -101,6 +101,20 @@ row_count_if=function(criterion=NULL,...){
     rowSums(cond,na.rm=TRUE)
 }
 
+
+#' @export
+#' @rdname count_if
+col_count_if=function(criterion=NULL,...){
+    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+    if (is.null(criterion)){
+        cond = !is.na(dfs)
+    } else {
+        cond = build_criterion(criterion,dfs)
+    } 
+    colSums(cond,na.rm=TRUE)
+}
+
+
 #' @export
 #' @rdname count_if
 '%has%'=function(x,criterion){

@@ -2,6 +2,7 @@
 % Please edit documentation in R/count_if.R, R/criteria_functions.R
 \name{count_if}
 \alias{\%has\%}
+\alias{col_count_if}
 \alias{count_if}
 \alias{eq}
 \alias{gt}
@@ -15,6 +16,8 @@
 count_if(criterion = NULL, ...)
 
 row_count_if(criterion = NULL, ...)
+
+col_count_if(criterion = NULL, ...)
 
 x \%has\% criterion
 
