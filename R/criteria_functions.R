@@ -2,7 +2,10 @@
 #' @rdname count_if
 eq = function(x){
     force(x)
-    res = function(y) y %in% x
+    res = function(y) {
+        cond = y == x
+        cond
+    }
     class(res) = union("criterion",class(res))
     res
 }
@@ -11,7 +14,10 @@ eq = function(x){
 #' @rdname count_if
 neq = function(x){
     force(x)
-    res = function(y) !(y %in% x)
+    res = function(y) {
+        cond = y != x
+        cond   
+    }    
     class(res) = union("criterion",class(res))
     res
     
@@ -55,9 +61,7 @@ build_compare.default = function(x, compare){
     force(compare)
     FUN = match.fun(compare)
     res = function(y){
-       res = FUN(y,x)
-       if_na(res, FALSE)
-
+       FUN(y,x)
     }
     class(res) = union("criterion",class(res))
     res
@@ -69,8 +73,7 @@ build_compare.numeric = function(x, compare){
     FUN = match.fun(compare)
     res = function(y){
         if(is.numeric(y)){
-            res = FUN(y,x)
-            if_na(res, FALSE)
+            FUN(y,x)
         } else {
             matrix(FALSE, nrow=NROW(y), ncol=NCOL(y))
         }
