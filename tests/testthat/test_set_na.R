@@ -92,3 +92,38 @@ b[,1] = NA
 
 
 expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
+
+
+a = c(1:5,99)
+a1 = a
+a1[a1==99] = NA
+expect_identical(set_na(a, 99), a1)
+expect_identical(set_na(a, gt(5)), a1)
+
+
+set.seed(123)
+
+dfs = data.frame(
+      a = c("bad value", "bad value", "good value", "good value", "good value"),
+      b = runif(5)
+)
+
+dfs1 = dfs
+dfs1[1:2, ] = NA
+
+expect_identical(set_na(dfs, dfs$a=="bad value"), dfs1)
+
+a = rnorm(50)
+a1 = a
+a1[a1< -1 | a1>1] = NA
+
+expect_identical(set_na(a, lt(-1) | gt(1)), a1)
+
+dfs = data.frame(
+    a = rnorm(50),
+    b = rnorm(50)
+)
+
+
+
+

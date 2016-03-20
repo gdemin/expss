@@ -1,13 +1,52 @@
 
-#' Title
-#'
-#' @param x 
-#' @param value 
-#'
-#' @return
-#'
+#' Replace certain values with NA
+#' 
+#' @details 
+#' There are following options for \code{value} 
+#' \itemize{ 
+#' \item{vector/matrix/data.frame/list.}{ Most
+#' simple case - vector - all values from this vector will be replaced with
+#' NA's. If value is matrix/vector/data.frame values will be replaced from appropriate columns.} 
+#' \item{logical vector/matrix/data.frame/list.}{ NA's will be set in places where value is TRUE.}
+#' \item{function.}{ NA's will be set in places where value(x) is TRUE. You can use special functions. 
+#' For example \code{set_na(a, gt(98))} will replace all values greater 98 in \code{a} with NA.
+#' If \code{x} has many columns(rows) and \code{value} has one column(row) then it will be recycled. 
+#' List of special functions see below.}
+#' }
+#' Special functions for usage as criteria:
+#' \itemize{
+#' \item{\code{gt}}{ greater than}
+#' \item{\code{gte}}{ greater than or equal}
+#' \item{\code{eq}}{ equal} 
+#' \item{\code{neq}}{ not equal} 
+#' \item{\code{lt}}{ less than}
+#' \item{\code{lte}}{ less than or equal}
+#' } 
+#' 
+#' 
+#' @param x vector/matrix/data.frame/list
+#' @param value vector/matrix/data.frame/list/function
+#'   
+#' @return x with NA's instead of \code{value}
+#'   
 #' @examples
-#' list()
+#' a = c(1:5,99)
+#' set_na(a, 99)
+#' set_na(a, gt(5)) # same result
+#' 
+#' set.seed(123)
+#' dfs = data.frame(
+#'       a = c("bad value", "bad value", "good value", "good value", "good value"),
+#'       b = runif(5)
+#' )
+#' 
+#' set_na(dfs, dfs$a=="bad value")
+#' 
+#' a = runif(50)
+#' set_na(a, lt(-1) | gt(1))
+#' 
+#' @seealso For reverse operation see \link{if_na}, \link{if_val} for more
+#'   general recodings.
 #' @export
 set_na = function(x, value){
     if_val(x, from=list(value), to = list(NA))
