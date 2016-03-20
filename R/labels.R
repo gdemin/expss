@@ -186,7 +186,6 @@ val_lab.data.frame=function(x)
 {
     
     # TODO пересмотреть - слишком много ума тут
-    # TODO баг с add_val_lab
     res=val_lab.default(x)
     if (is.null(res)){
         all_labs=lapply(x,val_lab)
