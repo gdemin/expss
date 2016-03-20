@@ -170,3 +170,21 @@ expect_identical(labs4,make_labels(c("
                             
                             
                             ","","      \t\t"),code_position="left"))
+
+
+context("add_val_lab")
+vec = 1:5
+dfs = data.frame(a = vec, b = vec)
+
+dfs1 = set_val_lab(dfs, c(a=1, b=2, c=3, d=4, e=5))
+
+add_val_lab(dfs) = c(a=1)
+add_val_lab(dfs) = c(b=2)
+add_val_lab(dfs) = c(c=3)
+add_val_lab(dfs) = c(d=4)
+add_val_lab(dfs) = c(e=5)
+
+expect_identical(dfs, dfs1)
+
+
+

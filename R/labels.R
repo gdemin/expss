@@ -184,6 +184,9 @@ val_lab=function(x){
 #' @export
 val_lab.data.frame=function(x)
 {
+    
+    # TODO пересмотреть - слишком много ума тут
+    # TODO баг с add_val_lab
     res=val_lab.default(x)
     if (is.null(res)){
         all_labs=lapply(x,val_lab)
@@ -202,8 +205,8 @@ val_lab.default=function(x){
 
 #' @export
 #' @rdname val_lab 
-"val_lab<-"=function(x,value){
-    set_val_lab(x,value,add = FALSE)
+"val_lab<-"=function(x, value){
+    set_val_lab(x, value, add = FALSE)
 }
 
 #####################
@@ -226,13 +229,13 @@ set_val_lab.default = function(x,value, add = FALSE){
 
 #' @export
 set_val_lab.data.frame = function(x,value, add = FALSE){
-    for (each in seq_along(x)) val_lab(x[[each]]) = value
+    for (each in seq_along(x)) x[[each]] = set_val_lab(x[[each]], value, add = add)
     x
 }
 
 #' @export
 set_val_lab.list = function(x,value, add = FALSE){
-    for (each in seq_along(x)) val_lab(x[[each]]) = value
+    for (each in seq_along(x)) x[[each]] = set_val_lab(x[[each]], value, add = add)
     x
 }
 
