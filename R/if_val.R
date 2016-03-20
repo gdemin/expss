@@ -35,7 +35,7 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
 
         recoding_list = mapply(function(x,y) list(from = x, to = y), from, to, SIMPLIFY = FALSE)
     }
-    recoded = rep(FALSE, length(x))
+    recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
     dfs_x = as.data.frame(x)
     
     for (from_to in recoding_list){
@@ -47,18 +47,19 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
         } else {
             if (identical(from, NA)) from = as.numeric(NA)
             cond = build_criterion(from, dfs_x)
-            if_na(cond) = FALSE
             cond = cond & !recoded # we don't recode already recoded value
         }
         to = from_to$to
         check_conformance(cond, to)
         # dot in `to` means copy (simply doesn't change values that meet condition - "copy" from SPSS ) 
         if(!is.list(to) || is.data.frame(to)){
+            # to: matrix, data.frame, vector
             for (each_col in seq_len(NCOL(x))){
                 curr_cond = column(cond, each_col)
                 if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
             }
         } else {
+            # to: list
             for (each_col in seq_len(NCOL(x))){
                 curr_cond = column(cond, each_col)
                 if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
@@ -77,10 +78,18 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
 
 
 #' @export
-if_val.list = function(x, value){
-    for(each in seq_along(x)){
-        if_val(x[[each]]) = value
+if_val.list = function(x, ..., from = NULL, to = NULL){
+    if (is.null(from) && is.null(to)){
+        for(each in seq_along(x)){
+            if_val(x[[each]]) = list(...)
+        }
+        
+    } else {
+        for(each in seq_along(x)){
+            if_val(x[[each]], from = from) = to
+        }
     }
+
     x
 }
 
@@ -104,8 +113,5 @@ parse_formula = function(elementary_recoding){
 
 
 
-#### TODO
-### replace "<5" notation with functions - 
-### lt(5), and as in Fortran le, eq, ne, ge, gt()
-### more managebale - for example we can skip non-numeric values
+
 
