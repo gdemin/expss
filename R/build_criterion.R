@@ -15,7 +15,7 @@ build_criterion.function = function(criterion,dfs){
     res = lapply(dfs,function(colmn){
         cond = criterion(colmn)
         stopif(length(cond)!=length(colmn),"Cells number of criterion doesn't equal cells number of argument.")
-        as.logical(cond)
+        if_na(as.logical(cond), FALSE)
     })
     do.call(cbind,res)
 }
