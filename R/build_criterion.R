@@ -5,7 +5,9 @@
 build_criterion = function(criterion,dfs){
     # dfs should be data.frame
     # build criterion should return logical matrix with the form of dfs (e. g. the same dimension)
-    
+    if (is.null(criterion)){
+        return(!is.na(dfs))
+    } 
     UseMethod("build_criterion")
 }
 

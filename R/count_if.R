@@ -105,11 +105,7 @@
 #' }
 count_if=function(criterion=NULL,...){
     dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame  
-    if (is.null(criterion)){
-        cond = !is.na(dfs)
-    } else {
-        cond = build_criterion(criterion, dfs)
-    }   
+    cond = build_criterion(criterion, dfs)
     sum(cond,na.rm=TRUE)
 }
 
@@ -117,11 +113,7 @@ count_if=function(criterion=NULL,...){
 #' @rdname count_if
 row_count_if=function(criterion=NULL,...){
     dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
-    if (is.null(criterion)){
-        cond = !is.na(dfs)
-    } else {
-        cond = build_criterion(criterion,dfs)
-    } 
+    cond = build_criterion(criterion, dfs)
     rowSums(cond,na.rm=TRUE)
 }
 
@@ -130,11 +122,7 @@ row_count_if=function(criterion=NULL,...){
 #' @rdname count_if
 col_count_if=function(criterion=NULL,...){
     dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
-    if (is.null(criterion)){
-        cond = !is.na(dfs)
-    } else {
-        cond = build_criterion(criterion,dfs)
-    } 
+    cond = build_criterion(criterion, dfs)
     colSums(cond,na.rm=TRUE)
 }
 
