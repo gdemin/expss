@@ -45,7 +45,7 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
             # dot is considered as all other non-recoded values ("else" from SPSS)
             cond = !recoded
         } else {
-            if (identical(from, NA)) from = as.numeric(NA)
+            #if (identical(from, NA)) from = as.numeric(NA)
             cond = build_criterion(from, dfs_x)
             cond = cond & !recoded # we don't recode already recoded value
         }

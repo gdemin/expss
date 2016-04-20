@@ -32,6 +32,9 @@ build_criterion.default = function(criterion,dfs){
 build_criterion.logical = function(criterion,dfs){
     # uncertainty if criterion is result of something is.na(dfs[,i]) 
     # should we count NA in such case - possible solution - forbid logical criterion for count if
+    if (is.atomic(criterion) && (length(criterion)==1) && is.na(criterion)) {
+        return(build_criterion(as.numeric(criterion), dfs))
+    }
     check_conformance(dfs, criterion)
     res = matrix(nrow = NROW(dfs), ncol = NCOL(dfs))
     if(NCOL(criterion)>1){
