@@ -126,8 +126,11 @@ col_sum_if=function(criterion=NULL,..., data = NULL){
 #' @export
 #' @rdname sum_if
 mean_if=function(criterion=NULL, ..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    mean(data, na.rm = TRUE)
+    data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
+    if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
+        stop("Invalid argument type: for averagibg it should be numeric or logical")
+    }
+    mean(as.matrix(data), na.rm = TRUE)
 }
 
 #' @export
