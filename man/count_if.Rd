@@ -34,18 +34,21 @@ lte(x)
 gte(x)
 }
 \arguments{
-\item{criterion}{Vector with counted values, list with conditions or function.
-Excel expressions such as ">5" are allowed.}
+\item{criterion}{Vector with counted values, list with conditions or
+function. If criterion is missing (or is NULL) non-NA's values will be
+counted.}
 
-\item{...}{Counted data. Vector, matrix, data.frame, list. Shorter arguments will be recycled.}
+\item{...}{Counted data. Vector, matrix, data.frame, list. Shorter arguments
+will be recycled.}
 
-\item{x}{Counted values or criteria for counting. Vector, matrix, data.frame, list, function. 
-Shorter columns in list will be recycled.}
+\item{x}{Counted values or criterion for counting. Vector, matrix, data.frame,
+list, function. Shorter columns in list will be recycled.}
 }
 \value{
 \code{count_if} return single value (vector of length 1). 
 \code{row_count_if} returns vector of counts for each row of supplied arguments.
-\code{\%has\%} returns logical vector - presense indicator of criterion in each row.
+\code{col_count_if} returns vector of counts for each column of supplied arguments.
+\code{\%has\%} returns logical vector - presence indicator of criterion in each row.
 }
 \description{
 There are two flavors of this function - one works with entire dataset/matrix/vector
@@ -59,9 +62,29 @@ value (vector of length 1).
 \code{row_count_if} counts values in each row of supplied arguments and return
 vector of counts for each row of supplied arguments.
 
-Both functions never return NA's. If criterion is missing (or is NULL) 
-non-NA's values will be counted. 
+\code{col_count_if} counts values in each column of supplied arguments and return
+vector of counts for each column of supplied arguments.
 
+All functions never return NA's. 
+
+If criterion is list, then each element considered as single condition and
+they will be combined with AND.
+
+Function criterion should return logicals of same size and shape as its argument.
+This function will be applied to each column of supplied data and TRUE results will be counted.
+There is asymmetrical behavior in \code{row_count_if} and
+\code{col_count_if}: in both cases function criterion will be applied
+columnwise.
+There are special functions for usage as criteria (e. g. \code{gt(5)} is
+equivalent ">5" in spreadsheet):
+\itemize{
+\item{\code{gt}}{ greater than}
+\item{\code{gte}}{ greater than or equal}
+\item{\code{eq}}{ equal} 
+\item{\code{neq}}{ not equal} 
+\item{\code{lt}}{ less than}
+\item{\code{lte}}{ less than or equal}
+} 
 
 \code{\%has\%} is simple wrapper for rather frequent case \code{row_count_if(criterion,x)>0}.
 }
@@ -103,17 +126,18 @@ row_count_if(function(x) grepl("^a",x),df1) # c(1,0,0,1)
 df1 \%has\% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
 
 # example with dplyr
-library(dplyr)
-set.seed(123)
-df2 = as.data.frame(
-    matrix(sample(c(1:10,NA),30,replace = TRUE),10)
-)
-df2  \%>\% mutate(exact = row_count_if(8, V1, V2, V3),
-                greater = row_count_if(gt(8), V1, V2, V3),
-                range = row_count_if(5:8, V1, V2, V3),
-                na = row_count_if(is.na, V1, V2, V3),
-                not_na = row_count_if(, V1, V2, V3)
-                ) -> result
-result
+if (require(dplyr)){
+ set.seed(123)
+ df2 = as.data.frame(
+        matrix(sample(c(1:10,NA),30,replace = TRUE),10)
+ )
+ df2  \%>\% mutate(exact = row_count_if(8, V1, V2, V3),
+                    greater = row_count_if(gt(8), V1, V2, V3),
+                    range = row_count_if(5:8, V1, V2, V3),
+                    na = row_count_if(is.na, V1, V2, V3),
+                    not_na = row_count_if(, V1, V2, V3)
+                 ) -> result
+ result
+}
 }
 

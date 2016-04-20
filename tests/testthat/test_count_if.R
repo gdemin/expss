@@ -66,20 +66,108 @@ expect_equal(row_count_if(function(x) grepl("^a",x),df1),c(1,0,0,1))
 expect_equal(df1 %has% 'apples',c(TRUE,FALSE,FALSE,TRUE))
 
 # example with dplyr
+if(require(dplyr) && require(magrittr)){
+    set.seed(123)
+    df2 = as.data.frame(
+        matrix(sample(c(1:10,NA),30,replace = TRUE),10)
+    )
+    result = data.frame(df2,
+                        exact=c(0,1,2,0,1,1,0,0,0,0),
+                        greater=c(1,1,0,1,0,1,0,1,0,0),
+                        range=c(0,2,3,1,1,1,2,1,1,1),
+                        na=c(1,0,0,1,1,0,0,0,0,1),
+                        not_na=c(2,3,3,2,2,3,3,3,3,2)
+                        )
+    expect_equal(df2  %>% mutate(exact = row_count_if(8,V1,V2,V3),
+                    greater = row_count_if(gt(8),V1,V2,V3),
+                    range = row_count_if(5:8,V1,V2,V3),
+                    na = row_count_if(is.na,V1,V2,V3),
+                    not_na = row_count_if(,V1,V2,V3)),
+                     result)
+}
+
+
+context("col_count_if")
+
+
+expect_equal(col_count_if(function(x) grepl("^a",x),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
+expect_equal(col_count_if(function(x) grepl("^a",x),df1),c(a = 2, b = 0))
+
 set.seed(123)
 df2 = as.data.frame(
     matrix(sample(c(1:10,NA),30,replace = TRUE),10)
 )
-result = data.frame(df2,
-                    exact=c(0,1,2,0,1,1,0,0,0,0),
+result = data.frame(exact=c(0,1,2,0,1,1,0,0,0,0),
                     greater=c(1,1,0,1,0,1,0,1,0,0),
                     range=c(0,2,3,1,1,1,2,1,1,1),
                     na=c(1,0,0,1,1,0,0,0,0,1),
                     not_na=c(2,3,3,2,2,3,3,3,3,2)
-                    )
-expect_equal(df2  %>% mutate(exact = row_count_if(8,V1,V2,V3),
-                greater = row_count_if(gt(8),V1,V2,V3),
-                range = row_count_if(5:8,V1,V2,V3),
-                na = row_count_if(is.na,V1,V2,V3),
-                not_na = row_count_if(,V1,V2,V3)),
-                 result)
+)
+
+t_df2 = as.data.frame(t(df2))
+expect_equal(
+    with(t_df2, unname(col_count_if(8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    result$exact
+)
+
+expect_equal(
+    with(t_df2, unname(col_count_if(gt(8),V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    result$greater
+)
+
+expect_equal(
+    with(t_df2, unname(col_count_if(5:8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    result$range
+)
+
+expect_equal(
+    with(t_df2, unname(col_count_if(is.na,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    result$na
+)
+
+expect_equal(
+    with(t_df2, unname(col_count_if(NA,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    result$na
+)
+
+expect_equal(
+    with(t_df2, unname(col_count_if(,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    result$not_na
+)
+
+
+#########################
+
+expect_equal(
+    with(df2, unname(col_count_if(8,V1,V2,V3))),
+    c(0, 1, 4)
+)
+
+
+expect_equal(
+    with(df2, unname(col_count_if(gt(8),V1,V2,V3))),
+    c(3, 1, 1)
+)
+
+expect_equal(
+    with(df2, unname(col_count_if(5:8,V1,V2,V3))),
+    c(4, 3, 6)
+)
+
+expect_equal(
+    with(df2, unname(col_count_if(is.na,V1,V2,V3))),
+    c(1, 2, 1)
+)
+
+expect_equal(
+    with(df2, unname(col_count_if(NA,V1,V2,V3))),
+    c(1, 2, 1)
+)
+
+
+expect_equal(
+    with(df2, unname(col_count_if(,V1,V2,V3))),
+    c(9, 8, 9)
+)
+
+    
