@@ -57,7 +57,7 @@ dfs = data.frame(
 )
 
 # rows with 'bad value' will be filled with NA
-# logical argument and recycling by coluns
+# logical argument and recycling by columns
 set_na(dfs, dfs$a=="bad value")
 
 a = rnorm(50)

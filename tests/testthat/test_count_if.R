@@ -50,7 +50,7 @@ expect_equal(count_if("Yes", df3[1,2:4]), 1) # Counts how many times Davidoski e
 
 
 
-context("complex criteria")
+context("count_if complex criteria")
 # more complex criteria
 # values with letters
 expect_equal(count_if(function(x) grepl("^[A-z]+$",x),df1),4L)
