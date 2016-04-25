@@ -5,11 +5,14 @@
 \alias{col_count_if}
 \alias{count_if}
 \alias{eq}
+\alias{fixed}
 \alias{gt}
 \alias{gte}
 \alias{lt}
 \alias{lte}
 \alias{neq}
+\alias{perl}
+\alias{regex}
 \alias{row_count_if}
 \title{Count values that meet a criterion that you specify}
 \usage{
@@ -32,6 +35,12 @@ gt(x)
 lte(x)
 
 gte(x)
+
+perl(pattern, ignore.case = FALSE, useBytes = FALSE)
+
+regex(pattern, ignore.case = FALSE, useBytes = FALSE)
+
+fixed(pattern, ignore.case = FALSE, useBytes = FALSE)
 }
 \arguments{
 \item{criterion}{Vector with counted values, list with conditions or

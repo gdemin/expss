@@ -10,6 +10,12 @@ expect_equal(count_if("apples",df1),2L)
 
 expect_equal(with(df1,count_if("apples",a,b)),2L)
 
+expect_equal(with(df1,count_if(fixed("app"),a,b)),2L)
+expect_equal(with(df1,count_if(regex("app"),a,b)),2L)
+expect_equal(with(df1,count_if(perl("app"),a,b)),2L)
+expect_equal(with(df1,count_if(perl("^app"),a,b)),2L)
+expect_equal(with(df1,count_if(perl("app$"),a,b)),0L)
+
 expect_equal(count_if(gt(55),df1$b),2L)
 
 expect_equal(count_if(function(x) x>55 | x==32,df1$b),3L)
@@ -54,9 +60,12 @@ context("count_if complex criteria")
 # more complex criteria
 # values with letters
 expect_equal(count_if(function(x) grepl("^[A-z]+$",x),df1),4L)
+expect_equal(count_if(perl("^[A-z]+$"),df1),4L)
+expect_equal(count_if(regex("[:alpha:]"),df1),4L)
 
 # values that started on 'a'
 expect_equal(count_if(function(x) grepl("^a",x),df1),2L)
+expect_equal(count_if(perl("^a"),df1),2L)
 
 context("row_count_if")
 
@@ -91,7 +100,9 @@ context("col_count_if")
 
 
 expect_equal(col_count_if(function(x) grepl("^a",x),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
+expect_equal(col_count_if(perl("^a"),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
 expect_equal(col_count_if(function(x) grepl("^a",x),df1),c(a = 2, b = 0))
+expect_equal(col_count_if(perl("^a"),df1),c(a = 2, b = 0))
 
 set.seed(123)
 df2 = as.data.frame(

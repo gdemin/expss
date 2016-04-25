@@ -51,6 +51,34 @@ gte = function(x){
     build_compare(x,">=")       
 }
 
+#' @export
+#' @rdname count_if
+perl = function(pattern, ignore.case = FALSE, useBytes = FALSE){
+    pattern
+    function(x){
+        grepl(pattern, x, ignore.case = ignore.case, perl = TRUE, fixed = FALSE, useBytes = useBytes)
+    }
+}
+
+#' @export
+#' @rdname count_if
+regex = function(pattern, ignore.case = FALSE, useBytes = FALSE){
+    pattern
+    function(x){
+        grepl(pattern, x, ignore.case = ignore.case, perl = FALSE, fixed = FALSE, useBytes = useBytes)
+    }
+}
+
+#' @export
+#' @rdname count_if
+fixed = function(pattern, ignore.case = FALSE, useBytes = FALSE){
+    pattern
+    function(x){
+        grepl(pattern, x, ignore.case = ignore.case, perl = FALSE, fixed = TRUE, useBytes = useBytes)
+    }
+}
+
+
 build_compare = function(x, compare){
     UseMethod("build_compare")
     
