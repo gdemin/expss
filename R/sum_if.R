@@ -123,6 +123,9 @@ col_sum_if=function(criterion=NULL,..., data = NULL){
     colSums(data, na.rm=TRUE)
 }
 
+
+################################################
+
 #' @export
 #' @rdname sum_if
 mean_if=function(criterion=NULL, ..., data = NULL){
@@ -148,7 +151,69 @@ col_mean_if=function(criterion=NULL,..., data = NULL){
     colMeans(data, na.rm=TRUE)
 }
 
+###################################################
 
+#' @export
+#' @rdname sum_if
+max_if=function(criterion=NULL, ..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(max(data, na.rm = TRUE))
+    if(!is.finite(res)) res = NA
+    res
+}
+
+#' @export
+#' @rdname sum_if
+row_max_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
+    res[!is.finite(res)] = NA
+    res
+}
+
+
+#' @export
+#' @rdname sum_if
+col_max_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
+    res[!is.finite(res)] = NA
+    res
+}
+
+##########################################################
+
+#' @export
+#' @rdname sum_if
+min_if=function(criterion=NULL, ..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(min(data, na.rm = TRUE))
+    if(!is.finite(res)) res = NA
+    res
+}
+
+#' @export
+#' @rdname sum_if
+row_min_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
+    res[!is.finite(res)] = NA
+    res
+}
+
+
+#' @export
+#' @rdname sum_if
+col_min_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
+    res[!is.finite(res)] = NA
+    res
+}
+
+
+
+#########################################################
 #' @export
 fun_if_helper = function(criterion,..., data){
     dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
