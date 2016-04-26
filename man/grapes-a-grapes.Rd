@@ -44,7 +44,7 @@ elements of first argument which give TRUE will be removed }
 argument could be a function which returns logical value. In this case
 elements of first argument which give FALSE will be removed } 
 \item{\code{\%x\%}}{ x(or). Returns elements that contained only in one of argument.}
-\item{\code{\%r\%}}{ repeats first argument second argument times}
+\item{\code{\%r\%}}{ r(epeats) first argument second argument times}
 } 
 
 All these functions preserve names of vectors and doesn't remove duplicates.
