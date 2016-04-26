@@ -155,3 +155,73 @@ expect_equal(
     18589
 )
 
+
+context("excel minif/maxif")
+
+dfs = read.csv(
+    text = '
+grade,weight 
+89,1
+93,2
+96,2
+85,3
+91,1
+88,1'
+    ,stringsAsFactors = FALSE
+)
+
+expect_equal(
+    with(dfs, min_if(1, weight, data = grade)),
+    88
+)
+
+expect_equal(
+    with(dfs, max_if(1, weight, data = grade)),
+    91
+)
+
+dfs = read.csv(
+    text = '
+weight,grade 
+10,b
+11,a
+100,a
+111,b
+1,a
+1,a'
+    ,stringsAsFactors = FALSE
+)
+
+expect_equal(
+    with(dfs, min_if("a", grade[2:5], data = weight[1:4])),
+    10
+)
+
+expect_error(
+    with(dfs, min_if("a", grade[2:5], data = weight[1:5]))
+)
+
+dfs = read.csv(
+    text = '
+weight,grade 
+10,b
+1,a
+100,a
+1,b
+1,a
+1,a'
+    ,stringsAsFactors = FALSE
+)
+
+expect_equal(
+    with(dfs, max_if("a", grade[2:5], data = weight[1:4])),
+    10
+)
+
+expect_equal(
+    with(dfs, max_if("e", grade[2:5], data = weight[1:4])),
+    NA
+)
+
+
+    
