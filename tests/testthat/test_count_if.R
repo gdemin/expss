@@ -16,6 +16,9 @@ expect_equal(with(df1,count_if(perl("app"),a,b)),2L)
 expect_equal(with(df1,count_if(perl("^app"),a,b)),2L)
 expect_equal(with(df1,count_if(perl("app$"),a,b)),0L)
 
+expect_equal(with(df1,count_if(!perl("app"),a,b)),6L)
+expect_equal(with(df1,count_if(perl("app") | regex("oranges"),a,b)),3L)
+
 expect_equal(count_if(gt(55),df1$b),2L)
 
 expect_equal(count_if(function(x) x>55 | x==32,df1$b),3L)

@@ -55,27 +55,33 @@ gte = function(x){
 #' @rdname count_if
 perl = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
-    function(x){
+    res = function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = TRUE, fixed = FALSE, useBytes = useBytes)
     }
+    class(res) = union("criterion",class(res))
+    res
 }
 
 #' @export
 #' @rdname count_if
 regex = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
-    function(x){
+    res = function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = FALSE, fixed = FALSE, useBytes = useBytes)
     }
+    class(res) = union("criterion",class(res))
+    res
 }
 
 #' @export
 #' @rdname count_if
 fixed = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
-    function(x){
+    res = function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = FALSE, fixed = TRUE, useBytes = useBytes)
     }
+    class(res) = union("criterion",class(res))
+    res
 }
 
 
