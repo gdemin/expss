@@ -120,6 +120,7 @@ build_compare.numeric = function(x, compare){
 
 #' @export
 '!.criterion' = function(a) {
+    a
     res = function(x) !a(x)
     class(res) = union("criterion",class(res))
     res
@@ -129,6 +130,8 @@ build_compare.numeric = function(x, compare){
 #' @export
 '|.criterion' = function(e1,e2) {
     # one or both e1, e2 is criterion and criterion can be only logical or function
+    e1
+    e2
     if (is.function(e1)) {
         f1 = e1
     } else {
@@ -147,7 +150,8 @@ build_compare.numeric = function(x, compare){
 
 #' @export
 '&.criterion' = function(e1,e2) {
-
+    e1
+    e2
     if (is.function(e1)) {
         f1 = e1
     } else {
