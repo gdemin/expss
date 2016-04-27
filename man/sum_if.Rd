@@ -3,15 +3,21 @@
 \name{sum_if}
 \alias{col_max_if}
 \alias{col_mean_if}
+\alias{col_median_if}
 \alias{col_min_if}
+\alias{col_sd_if}
 \alias{col_sum_if}
 \alias{max_if}
 \alias{mean_if}
+\alias{median_if}
 \alias{min_if}
 \alias{row_max_if}
 \alias{row_mean_if}
+\alias{row_median_if}
 \alias{row_min_if}
+\alias{row_sd_if}
 \alias{row_sum_if}
+\alias{sd_if}
 \alias{sum_if}
 \title{Conditional sum/mean/max/min}
 \usage{
@@ -26,6 +32,18 @@ mean_if(criterion = NULL, ..., data = NULL)
 row_mean_if(criterion = NULL, ..., data = NULL)
 
 col_mean_if(criterion = NULL, ..., data = NULL)
+
+sd_if(criterion = NULL, ..., data = NULL)
+
+row_sd_if(criterion = NULL, ..., data = NULL)
+
+col_sd_if(criterion = NULL, ..., data = NULL)
+
+median_if(criterion = NULL, ..., data = NULL)
+
+row_median_if(criterion = NULL, ..., data = NULL)
+
+col_median_if(criterion = NULL, ..., data = NULL)
 
 max_if(criterion = NULL, ..., data = NULL)
 
@@ -90,9 +108,7 @@ equivalent ">5" in spreadsheet):
 \item{\code{neq}}{ not equal} 
 \item{\code{lt}}{ less than}
 \item{\code{lte}}{ less than or equal}
-} 
-
-\code{\%has\%} is simple wrapper for rather frequent case \code{row_count_if(criterion,x)>0}.
+}
 }
 \examples{
 # Examples borrowed from Microsoft Excel help for COUNTIF

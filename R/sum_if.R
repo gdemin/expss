@@ -49,8 +49,6 @@
 #' \item{\code{lte}}{ less than or equal}
 #' } 
 #' 
-#' \code{\%has\%} is simple wrapper for rather frequent case \code{row_count_if(criterion,x)>0}.
-#' 
 #' @export
 #' @examples
 #' # Examples borrowed from Microsoft Excel help for COUNTIF
@@ -150,6 +148,62 @@ col_mean_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     colMeans(data, na.rm=TRUE)
 }
+
+
+################################################
+
+#' @export
+#' @rdname sum_if
+sd_if=function(criterion=NULL, ..., data = NULL){
+    data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
+    if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
+        stop("Invalid argument type: for averaging it should be numeric or logical")
+    }
+    sd(data, na.rm = TRUE)
+}
+
+#' @export
+#' @rdname sum_if
+row_sd_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 1, sd, na.rm=TRUE)
+}
+
+
+#' @export
+#' @rdname sum_if
+col_sd_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 2, sd, na.rm=TRUE)
+}
+
+################################################
+
+#' @export
+#' @rdname sum_if
+median_if=function(criterion=NULL, ..., data = NULL){
+    data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
+    if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
+        stop("Invalid argument type: for averaging it should be numeric or logical")
+    }
+    median(data, na.rm = TRUE)
+}
+
+#' @export
+#' @rdname sum_if
+row_median_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 1, median, na.rm=TRUE)
+}
+
+
+#' @export
+#' @rdname sum_if
+col_median_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 2, median, na.rm=TRUE)
+}
+
 
 ###################################################
 
