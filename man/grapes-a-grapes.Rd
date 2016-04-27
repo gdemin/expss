@@ -3,10 +3,10 @@
 \name{\%a\%}
 \alias{\%a\%}
 \alias{\%d\%}
+\alias{\%e\%}
 \alias{\%i\%}
 \alias{\%r\%}
 \alias{\%u\%}
-\alias{\%x\%}
 \title{Infix operations on vectors - append, diff, intersection, union, replication}
 \usage{
 e1 \%a\% e2
@@ -17,7 +17,7 @@ e1 \%d\% e2
 
 e1 \%i\% e2
 
-e1 \%x\% e2
+e1 \%e\% e2
 
 e1 \%r\% e2
 }
@@ -43,7 +43,7 @@ elements of first argument which give TRUE will be removed }
 \item{\code{\%i\%}}{ i(ntersects) first argument and second argument. Second
 argument could be a function which returns logical value. In this case
 elements of first argument which give FALSE will be removed } 
-\item{\code{\%x\%}}{ x(or). Returns elements that contained only in one of argument.}
+\item{\code{\%e\%}}{ e(xclusive OR). Returns elements that contained only in one of arguments.}
 \item{\code{\%r\%}}{ r(epeats) first argument second argument times}
 } 
 
@@ -69,7 +69,7 @@ letters \%i\% perl("[a-d]") # a,b,c,d
  
 letters \%i\% (fixed("a") | fixed("z")) # a, z
 
-1:4 \%x\% 4:5   # 1, 2, 3, 5
+1:4 \%e\% 4:5   # 1, 2, 3, 5
 
 1:2 \%r\% 2     # 1, 2, 1, 2
 

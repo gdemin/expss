@@ -15,7 +15,7 @@
 #' \item{\code{\%i\%}}{ i(ntersects) first argument and second argument. Second
 #' argument could be a function which returns logical value. In this case
 #' elements of first argument which give FALSE will be removed } 
-#' \item{\code{\%x\%}}{ x(or). Returns elements that contained only in one of argument.}
+#' \item{\code{\%e\%}}{ e(xclusive OR). Returns elements that contained only in one of arguments.}
 #' \item{\code{\%r\%}}{ r(epeats) first argument second argument times}
 #' } 
 #' 
@@ -41,7 +41,7 @@
 #'  
 #' letters %i% (fixed("a") | fixed("z")) # a, z
 #' 
-#' 1:4 %x% 4:5   # 1, 2, 3, 5
+#' 1:4 %e% 4:5   # 1, 2, 3, 5
 #' 
 #' 1:2 %r% 2     # 1, 2, 1, 2
 #'
@@ -80,7 +80,7 @@
 
 #' @export
 #' @rdname grapes-a-grapes
-'%x%' = function(e1, e2){
+'%e%' = function(e1, e2){
     c(e1[!(e1 %in% e2)],e2[!(e2 %in% e1)])
 }
 
