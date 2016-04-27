@@ -8,8 +8,6 @@ Maintainer: Gregory Demin <gdemin@gmail.com>
 URL: https://github.com/gdemin/labelr
 Depends:
     R (>= 3.1.2)
-Imports:
-    foreign
 Suggests:
     knitr
 Description: TODO TODO TODO
