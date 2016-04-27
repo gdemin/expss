@@ -5,7 +5,7 @@
 \alias{read_spss_to_list}
 \title{Read an SPSS Data File}
 \usage{
-read_spss(file, reencode = NA)
+read_spss(file)
 
 read_spss_to_list(file, reencode = NA)
 }

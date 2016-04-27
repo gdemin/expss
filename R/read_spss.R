@@ -26,11 +26,41 @@
 #' list_w = read_spss_to_list("project_123.sav") # to list
 #' 
 #' }
-read_spss=function(file, reencode = NA){
-    res = read_spss_to_list(file,reencode = reencode)
-    res = do.call(data.frame,c(res,stringsAsFactors=FALSE))
-    res
+read_spss=function(file){
+    spss = haven::read_sav(file)
+    detach("package:haven", unload=TRUE)
+    for (var_name in names(spss)) {
+        # Trim whitespaces from start and end of character variables
+        val_labs = val_lab(spss[[var_name]])
+        vrl = var_lab(spss[[var_name]])
+        
+        if (!any(grepl("POSIX", class(spss[[var_name]])))){
+            if (!is.null(val_labs)) {
+                names(val_labs) = iconv(names(val_labs), to = "UTF8")
+                val_lab(spss[[var_name]]) = val_labs
+                
+            }
+            
+            if(!is.null(vrl)){
+                var_lab(spss[[var_name]]) = iconv(vrl, to = "UTF8")
+            }
+        } else {
+            if (!is.null(val_labs)) {
+                names(val_labs) = iconv(names(val_labs), to = "UTF8")
+                attr(spss[[var_name]],"labels") = val_labs
+                
+            }
+            
+            if(!is.null(vrl)){
+                attr(spss[[var_name]], "label") = iconv(vrl, to = "UTF8")
+            }    
+        }
+    }
+    as.data.frame(spss)
+    # spss
 }
+
+
 
 #' @export
 #' @rdname read_spss
