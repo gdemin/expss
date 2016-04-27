@@ -90,7 +90,7 @@
     if(length(e2)==1){
         rep(e1, e2)
     } else {
-        stop("Multiplicator should be scalar quantity.")
+        stop("Multiplicator should be scalar quantity (vector of length 1).")
     }
 }
 
