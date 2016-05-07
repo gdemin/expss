@@ -22,7 +22,7 @@ expect_identical(if_val(x, list(gt(2)~y, lte(2) ~ z, .~99)), c(4, 8, 4, 9, 99))
 
 expect_identical(if_val(x, (z>4)~y), c(1, 3, 1, 9, 9))
 
-if (require(dplyr) && require(magrittr)){
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
     context("if_val dplyr")
     
     
@@ -77,7 +77,7 @@ expect_identical(if_val(x, from = list(z>4), to = list(y)), c(1, 3, 1, 9, 9))
 
 context("if_val 'from, to' notation dplyr")
 
-if (require(dplyr) && require(magrittr)){
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     x = c(1,3,1,3,NA)
     y = c(8,8,8,9,9)

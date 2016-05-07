@@ -98,50 +98,50 @@ b[1,3] = -1
 expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
 expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
 
-context("if_na tbl_df")
-
-library(dplyr)
-a = tbl_df(data.frame(a = 1:4, b = 5:8, d = 10:13))
-
-b = a
-expect_identical(if_na(a, 2), b)
-
-a[1,1] = NA
-b[1,1] = 2
-
-expect_identical(if_na(a, 2), b)
-
-a[4,1] = NA 
-b[4,1] = 2
-expect_identical(if_na(a, 2), b)
-
-b[1,1] = 4L
-b[4,1] = 1L
-b$a = as.integer(b$a)
-expect_equal(if_na(a, 4:1), b)
-
-a[1,3] = NA
-b[1,3] = 4L
-b$d = as.integer(b$d)
-expect_equal(if_na(a, 4:1), b)
-
-b[1,1] = 3
-b[4,1] = 3
-b[1,3] = 1
-b$a = as.integer(b$a)
-b$d = as.integer(b$d)
-expect_equal(if_na(a, t(3:1)), b)
-expect_error(if_na(a, t(3:2)))
-expect_error(if_na(a, 3:2))
-
-
-b[1,1] = 4
-b[4,1] = 1
-b[1,3] = -1
-
-expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
-expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
-
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
+    context("if_na tbl_df")
+    
+    a = tbl_df(data.frame(a = 1:4, b = 5:8, d = 10:13))
+    
+    b = a
+    expect_identical(if_na(a, 2), b)
+    
+    a[1,1] = NA
+    b[1,1] = 2
+    
+    expect_identical(if_na(a, 2), b)
+    
+    a[4,1] = NA 
+    b[4,1] = 2
+    expect_identical(if_na(a, 2), b)
+    
+    b[1,1] = 4L
+    b[4,1] = 1L
+    b$a = as.integer(b$a)
+    expect_equal(if_na(a, 4:1), b)
+    
+    a[1,3] = NA
+    b[1,3] = 4L
+    b$d = as.integer(b$d)
+    expect_equal(if_na(a, 4:1), b)
+    
+    b[1,1] = 3
+    b[4,1] = 3
+    b[1,3] = 1
+    b$a = as.integer(b$a)
+    b$d = as.integer(b$d)
+    expect_equal(if_na(a, t(3:1)), b)
+    expect_error(if_na(a, t(3:2)))
+    expect_error(if_na(a, 3:2))
+    
+    
+    b[1,1] = 4
+    b[4,1] = 1
+    b[1,3] = -1
+    
+    expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
+    expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
+}
 context("if_na list")
 
 a = 1:4
@@ -190,20 +190,21 @@ param = runif(30)
 param[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(group, param)
 
-# replace NA's with group means
-df_clean = df %>% group_by(group) %>% 
-    mutate(
-        param = if_na(param, mean(param, na.rm = TRUE))
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
+    # replace NA's with group means
+    df_clean = df %>% group_by(group) %>% 
+        mutate(
+            param = if_na(param, mean(param, na.rm = TRUE))
         )
-
-df = within(df, {
-    param[group==1 & is.na(param)] = mean(param[group==1], na.rm = TRUE)
-    param[group==2 & is.na(param)] = mean(param[group==2], na.rm = TRUE)
-    param[group==3 & is.na(param)] = mean(param[group==3], na.rm = TRUE)
-})
-
-expect_identical(as.data.frame(df_clean), df)
-
+    
+    df = within(df, {
+        param[group==1 & is.na(param)] = mean(param[group==1], na.rm = TRUE)
+        param[group==2 & is.na(param)] = mean(param[group==2], na.rm = TRUE)
+        param[group==3 & is.na(param)] = mean(param[group==3], na.rm = TRUE)
+    })
+    
+    expect_identical(as.data.frame(df_clean), df)
+}
 # replacement with column means
 
 # make data.frame

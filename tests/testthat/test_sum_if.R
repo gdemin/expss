@@ -44,7 +44,7 @@ context("row_sum_if")
 expect_equal(row_sum_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,0,0,86))
 
 # example with dplyr
-if(require(dplyr) && require(magrittr)){
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
     set.seed(123)
     df2 = as.data.frame(
         matrix(sample(c(1:10,NA),30,replace = TRUE),10)

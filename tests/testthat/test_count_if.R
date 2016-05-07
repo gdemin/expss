@@ -78,7 +78,7 @@ expect_equal(row_count_if(function(x) grepl("^a",x),df1),c(1,0,0,1))
 expect_equal(df1 %has% 'apples',c(TRUE,FALSE,FALSE,TRUE))
 
 # example with dplyr
-if(require(dplyr) && require(magrittr)){
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
     set.seed(123)
     df2 = as.data.frame(
         matrix(sample(c(1:10,NA),30,replace = TRUE),10)

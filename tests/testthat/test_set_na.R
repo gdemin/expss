@@ -43,32 +43,32 @@ expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
 expect_equal(set_na(a, as.data.frame(t(c(TRUE, FALSE)))),b)
 
 
-
-context("set_na tbl_df")
-library(dplyr)
-a = as.tbl(data.frame(a=1:5,b=5:1))
-
-b = a
-b[a$a>3,"a"] = NA
-b[a$b>3,"b"] = NA
-expect_equal(set_na(a, gt(3)),b)
-expect_equal(set_na(a, 4:5),b)
-
-cond = cbind(a$a>3, a$b>3)
-expect_equal(set_na(a, cond),b)
-
-b = a
-b[1:2,] = NA
-
-expect_equal(set_na(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
-
-
-b = a
-b[,1] = NA
-b$a = as.integer(b$a)
-
-expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
-
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
+    context("set_na tbl_df")
+    
+    a = as.tbl(data.frame(a=1:5,b=5:1))
+    
+    b = a
+    b[a$a>3,"a"] = NA
+    b[a$b>3,"b"] = NA
+    expect_equal(set_na(a, gt(3)),b)
+    expect_equal(set_na(a, 4:5),b)
+    
+    cond = cbind(a$a>3, a$b>3)
+    expect_equal(set_na(a, cond),b)
+    
+    b = a
+    b[1:2,] = NA
+    
+    expect_equal(set_na(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
+    
+    
+    b = a
+    b[,1] = NA
+    b$a = as.integer(b$a)
+    
+    expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
+}
 context("set_na matrix")
 
 a = cbind(a=1:5,b=5:1)

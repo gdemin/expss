@@ -10,19 +10,19 @@ expect_identical(vlookup(c('rows1','rows5','rows2','rows2'),dict,result_columns 
                  dict[c(1,5,2,2),c("small","cap")])
 
 
-context("vlookup tbl_df")
-
-library(dplyr)
-dict = tbl_df(data.frame(num=1:26,small=letters,cap=LETTERS,stringsAsFactors = FALSE))
-rownames(dict) = paste0('rows',1:26)
-expect_identical(vlookup(1:3,dict),dict[1:3,]) 
-
-expect_identical(vlookup(c(45,1:3,58,NA),dict,result_columns='cap'),c(NA,"A", "B", "C", NA,NA))
-expect_identical(vlookup(c('z','d','f','d'),dict,lookup_column = 'small'),dict[c(26,4,6,4),])
-expect_identical(vlookup(c('rows1','rows5','rows2','rows2'),dict,result_columns = c("small","cap"),lookup_column = 'row.names'),
-                 dict[c(1,5,2,2),c("small","cap")])
-
-
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
+    context("vlookup tbl_df")
+    
+    dict = tbl_df(data.frame(num=1:26,small=letters,cap=LETTERS,stringsAsFactors = FALSE))
+    rownames(dict) = paste0('rows',1:26)
+    expect_identical(vlookup(1:3,dict),dict[1:3,]) 
+    
+    expect_identical(vlookup(c(45,1:3,58,NA),dict,result_columns='cap'),c(NA,"A", "B", "C", NA,NA))
+    expect_identical(vlookup(c('z','d','f','d'),dict,lookup_column = 'small'),dict[c(26,4,6,4),])
+    expect_identical(vlookup(c('rows1','rows5','rows2','rows2'),dict,result_columns = c("small","cap"),lookup_column = 'row.names'),
+                     dict[c(1,5,2,2),c("small","cap")])
+    
+}
 context("vlookup vector")
 # with vector
 dict=1:26
