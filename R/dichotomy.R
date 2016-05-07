@@ -59,7 +59,7 @@
 #' kmeans(dichotomy(brands),3)
 #' 
 #' # model of influence of used brands on evaluation of tested product 
-#' summary(lm(score ~ dichotomy1(brands)))
+#' summary(lm(score ~ dichotomy(brands)))
 #' 
 #' @export
 dichotomy = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
