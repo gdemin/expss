@@ -326,21 +326,16 @@ make_labels=function(text,code_position=c("left","right")){
 
 combine_labels = function(...){
     args = list(...)
-    names(args) = NULL
-    if (length(args)==0) return(NULL) 
-    new_lab = do.call(c,args)
-    if (length(new_lab)==0) return(NULL)
-    new_lab = new_lab[!duplicated(new_lab)]
+    new_lab = Reduce(`%u%`, args)
     sort(new_lab)
 }
 
 labelled_and_unlabelled = function(uniqs,vallab){
-    if (length(uniqs)>0) uniqs=uniqs[!is.na(uniqs)]
-    unlabeled=setdiff(uniqs,vallab)
-    if (length(unlabeled)>0){
-        names(unlabeled)=unlabeled
-        vallab=c(vallab,unlabeled)
-    }
+    if (length(uniqs)>0) {
+        uniqs=uniqs[!is.na(uniqs)]
+        names(uniqs) = uniqs
+    }    
+    vallab = vallab %u% uniqs
     if (length(vallab>1)) sort(vallab) else vallab
 }
 
