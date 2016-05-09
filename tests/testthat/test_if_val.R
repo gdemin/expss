@@ -37,7 +37,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
         
     ) %>% tbl_df()
     
-    dfs  %<>% mutate(
+    dfs  = dfs %>% mutate(
         w = if_val(x,gt(2)~y)
     )
     
@@ -45,7 +45,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     dfs$x = NULL
     dfs$w = NULL
-    dfs  %<>% mutate(
+    dfs  = dfs %>% mutate(
         w = if_val(x, gt(2)~y)
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))
@@ -90,7 +90,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
         
     )
     
-    dfs  %<>% mutate(
+    dfs  = dfs %>% mutate(
         w = if_val(x, from = list(gt(2)), to = list(y))
     )
     
@@ -98,7 +98,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     dfs$x = NULL
     dfs$w = NULL
-    dfs  %<>% mutate(
+    dfs  = dfs %>% mutate(
         w = if_val(x, from = list(gt(2)), to = list(y))
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))

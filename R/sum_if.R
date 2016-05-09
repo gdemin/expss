@@ -14,18 +14,18 @@
 #' 
 #' @return 
 #' \code{count_if} return single value (vector of length 1). 
-#' \code{row_count_if} returns vector of counts for each row of supplied arguments.
-#' \code{col_count_if} returns vector of counts for each column of supplied arguments.
+#' \code{count_row_if} returns vector of counts for each row of supplied arguments.
+#' \code{count_col_if} returns vector of counts for each column of supplied arguments.
 #' \code{\%has\%} returns logical vector - presence indicator of criterion in each row.
 #' 
 #' @details
 #' \code{count_if} counts values in entire dataset and return single 
 #' value (vector of length 1).
 #' 
-#' \code{row_count_if} counts values in each row of supplied arguments and return
+#' \code{count_row_if} counts values in each row of supplied arguments and return
 #' vector of counts for each row of supplied arguments.
 #' 
-#' \code{col_count_if} counts values in each column of supplied arguments and return
+#' \code{count_col_if} counts values in each column of supplied arguments and return
 #' vector of counts for each column of supplied arguments.
 #' 
 #' All functions never return NA's. 
@@ -35,8 +35,8 @@
 #' 
 #' Function criterion should return logicals of same size and shape as its argument.
 #' This function will be applied to each column of supplied data and TRUE results will be counted.
-#' There is asymmetrical behavior in \code{row_count_if} and
-#' \code{col_count_if}: in both cases function criterion will be applied
+#' There is asymmetrical behavior in \code{count_row_if} and
+#' \code{count_col_if}: in both cases function criterion will be applied
 #' columnwise.
 #' There are special functions for usage as criteria (e. g. \code{gt(5)} is
 #' equivalent ">5" in spreadsheet):
@@ -82,8 +82,8 @@
 #' # values that started on 'a'
 #' count_if(function(x) grepl("^a",x),df1) # 2
 #' 
-#' # row_count_if
-#' row_count_if(function(x) grepl("^a",x),df1) # c(1,0,0,1)
+#' # count_row_if
+#' count_row_if(function(x) grepl("^a",x),df1) # c(1,0,0,1)
 #' 
 #' df1 %has% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
 #' 
@@ -93,11 +93,11 @@
 #'  df2 = as.data.frame(
 #'         matrix(sample(c(1:10,NA),30,replace = TRUE),10)
 #'  )
-#'  df2  %>% mutate(exact = row_count_if(8, V1, V2, V3),
-#'                     greater = row_count_if(gt(8), V1, V2, V3),
-#'                     range = row_count_if(5:8, V1, V2, V3),
-#'                     na = row_count_if(is.na, V1, V2, V3),
-#'                     not_na = row_count_if(, V1, V2, V3)
+#'  df2  %>% mutate(exact = count_row_if(8, V1, V2, V3),
+#'                     greater = count_row_if(gt(8), V1, V2, V3),
+#'                     range = count_row_if(5:8, V1, V2, V3),
+#'                     na = count_row_if(is.na, V1, V2, V3),
+#'                     not_na = count_row_if(, V1, V2, V3)
 #'                  ) -> result
 #'  result
 #' }
@@ -108,7 +108,7 @@ sum_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-row_sum_if=function(criterion=NULL,..., data = NULL){
+sum_row_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     rowSums(data, na.rm=TRUE)
 }
@@ -116,7 +116,7 @@ row_sum_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-col_sum_if=function(criterion=NULL,..., data = NULL){
+sum_col_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     colSums(data, na.rm=TRUE)
 }
@@ -136,7 +136,7 @@ mean_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-row_mean_if=function(criterion=NULL,..., data = NULL){
+mean_row_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     rowMeans(data, na.rm=TRUE)
 }
@@ -144,7 +144,7 @@ row_mean_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-col_mean_if=function(criterion=NULL,..., data = NULL){
+mean_col_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     colMeans(data, na.rm=TRUE)
 }
@@ -164,7 +164,7 @@ sd_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-row_sd_if=function(criterion=NULL,..., data = NULL){
+sd_row_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     apply(data, 1, sd, na.rm=TRUE)
 }
@@ -172,7 +172,7 @@ row_sd_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-col_sd_if=function(criterion=NULL,..., data = NULL){
+sd_col_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     apply(data, 2, sd, na.rm=TRUE)
 }
@@ -191,7 +191,7 @@ median_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-row_median_if=function(criterion=NULL,..., data = NULL){
+median_row_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     apply(data, 1, median, na.rm=TRUE)
 }
@@ -199,7 +199,7 @@ row_median_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-col_median_if=function(criterion=NULL,..., data = NULL){
+median_col_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     apply(data, 2, median, na.rm=TRUE)
 }
@@ -218,7 +218,7 @@ max_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-row_max_if=function(criterion=NULL,..., data = NULL){
+max_row_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
     res[!is.finite(res)] = NA
@@ -228,7 +228,7 @@ row_max_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-col_max_if=function(criterion=NULL,..., data = NULL){
+max_col_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
     res[!is.finite(res)] = NA
@@ -248,7 +248,7 @@ min_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-row_min_if=function(criterion=NULL,..., data = NULL){
+min_row_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
     res[!is.finite(res)] = NA
@@ -258,7 +258,7 @@ row_min_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname sum_if
-col_min_if=function(criterion=NULL,..., data = NULL){
+min_col_if=function(criterion=NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
     res[!is.finite(res)] = NA

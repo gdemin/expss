@@ -70,10 +70,10 @@ expect_equal(count_if(regex("[:alpha:]"),df1),4L)
 expect_equal(count_if(function(x) grepl("^a",x),df1),2L)
 expect_equal(count_if(perl("^a"),df1),2L)
 
-context("row_count_if")
+context("count_row_if")
 
 
-expect_equal(row_count_if(function(x) grepl("^a",x),df1),c(1,0,0,1))
+expect_equal(count_row_if(function(x) grepl("^a",x),df1),c(1,0,0,1))
 
 expect_equal(df1 %has% 'apples',c(TRUE,FALSE,FALSE,TRUE))
 
@@ -90,22 +90,22 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
                         na=c(1,0,0,1,1,0,0,0,0,1),
                         not_na=c(2,3,3,2,2,3,3,3,3,2)
                         )
-    expect_equal(df2  %>% mutate(exact = row_count_if(8,V1,V2,V3),
-                    greater = row_count_if(gt(8),V1,V2,V3),
-                    range = row_count_if(5:8,V1,V2,V3),
-                    na = row_count_if(is.na,V1,V2,V3),
-                    not_na = row_count_if(,V1,V2,V3)),
+    expect_equal(df2  %>% mutate(exact = count_row_if(8,V1,V2,V3),
+                    greater = count_row_if(gt(8),V1,V2,V3),
+                    range = count_row_if(5:8,V1,V2,V3),
+                    na = count_row_if(is.na,V1,V2,V3),
+                    not_na = count_row_if(,V1,V2,V3)),
                      result)
 }
 
 
-context("col_count_if")
+context("count_col_if")
 
 
-expect_equal(col_count_if(function(x) grepl("^a",x),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
-expect_equal(col_count_if(perl("^a"),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
-expect_equal(col_count_if(function(x) grepl("^a",x),df1),c(a = 2, b = 0))
-expect_equal(col_count_if(perl("^a"),df1),c(a = 2, b = 0))
+expect_equal(count_col_if(function(x) grepl("^a",x),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
+expect_equal(count_col_if(perl("^a"),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
+expect_equal(count_col_if(function(x) grepl("^a",x),df1),c(a = 2, b = 0))
+expect_equal(count_col_if(perl("^a"),df1),c(a = 2, b = 0))
 
 set.seed(123)
 df2 = as.data.frame(
@@ -120,32 +120,32 @@ result = data.frame(exact=c(0,1,2,0,1,1,0,0,0,0),
 
 t_df2 = as.data.frame(t(df2))
 expect_equal(
-    with(t_df2, unname(col_count_if(8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(count_col_if(8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$exact
 )
 
 expect_equal(
-    with(t_df2, unname(col_count_if(gt(8),V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(count_col_if(gt(8),V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$greater
 )
 
 expect_equal(
-    with(t_df2, unname(col_count_if(5:8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(count_col_if(5:8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$range
 )
 
 expect_equal(
-    with(t_df2, unname(col_count_if(is.na,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(count_col_if(is.na,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$na
 )
 
 expect_equal(
-    with(t_df2, unname(col_count_if(NA,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(count_col_if(NA,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$na
 )
 
 expect_equal(
-    with(t_df2, unname(col_count_if(,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(count_col_if(,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$not_na
 )
 
@@ -153,34 +153,34 @@ expect_equal(
 #########################
 
 expect_equal(
-    with(df2, unname(col_count_if(8,V1,V2,V3))),
+    with(df2, unname(count_col_if(8,V1,V2,V3))),
     c(0, 1, 4)
 )
 
 
 expect_equal(
-    with(df2, unname(col_count_if(gt(8),V1,V2,V3))),
+    with(df2, unname(count_col_if(gt(8),V1,V2,V3))),
     c(3, 1, 1)
 )
 
 expect_equal(
-    with(df2, unname(col_count_if(5:8,V1,V2,V3))),
+    with(df2, unname(count_col_if(5:8,V1,V2,V3))),
     c(4, 3, 6)
 )
 
 expect_equal(
-    with(df2, unname(col_count_if(is.na,V1,V2,V3))),
+    with(df2, unname(count_col_if(is.na,V1,V2,V3))),
     c(1, 2, 1)
 )
 
 expect_equal(
-    with(df2, unname(col_count_if(NA,V1,V2,V3))),
+    with(df2, unname(count_col_if(NA,V1,V2,V3))),
     c(1, 2, 1)
 )
 
 
 expect_equal(
-    with(df2, unname(col_count_if(,V1,V2,V3))),
+    with(df2, unname(count_col_if(,V1,V2,V3))),
     c(9, 8, 9)
 )
 

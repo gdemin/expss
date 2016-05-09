@@ -38,10 +38,10 @@ expect_error(mean_if(function(x) grepl("^[A-z]+$",x),df1, data = df1))
 expect_equal(mean_if(function(x) grepl("^a",x), df1$a, data = df1$b),118/2)
 expect_error(mean_if(eq("apples"), df1, data = df1))
 
-context("row_mean_if")
+context("mean_row_if")
 
 
-expect_equal(row_mean_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,NaN,NaN,86))
+expect_equal(mean_row_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,NaN,NaN,86))
 
 
 
@@ -59,16 +59,16 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
                         na=c(0,0,0,0,0,0,0,0,0,0)/c(0,0,0,0,0,0,0,0,0,0),
                         not_na=c(14,22,21,17,10,19,15,18,15,8)/c(2,3,3,2,2,3,3,3,3,2)
                         )
-    expect_equal(df2  %>% mutate(exact = row_mean_if(8,V1,V2,V3),
-                    greater = row_mean_if(gt(8),V1,V2,V3),
-                    range = row_mean_if(5:8,V1,V2,V3),
-                    na = row_mean_if(is.na,V1,V2,V3),
-                    not_na = row_mean_if(,V1,V2,V3)),
+    expect_equal(df2  %>% mutate(exact = mean_row_if(8,V1,V2,V3),
+                    greater = mean_row_if(gt(8),V1,V2,V3),
+                    range = mean_row_if(5:8,V1,V2,V3),
+                    na = mean_row_if(is.na,V1,V2,V3),
+                    not_na = mean_row_if(,V1,V2,V3)),
                      result)
 }
 
 
-context("col_mean_if")
+context("mean_col_if")
 
 
 
@@ -87,32 +87,32 @@ result = data.frame(
 
 t_df2 = as.data.frame(t(df2))
 expect_equal(
-    with(t_df2, unname(col_mean_if(8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(mean_col_if(8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$exact
 )
 
 expect_equal(
-    with(t_df2, unname(col_mean_if(gt(8),V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(mean_col_if(gt(8),V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$greater
 )
 
 expect_equal(
-    with(t_df2, unname(col_mean_if(5:8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(mean_col_if(5:8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$range
 )
 
 expect_equal(
-    with(t_df2, unname(col_mean_if(is.na,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(mean_col_if(is.na,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$na
 )
 
 expect_equal(
-    with(t_df2, unname(col_mean_if(NA,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(mean_col_if(NA,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$na
 )
 
 expect_equal(
-    with(t_df2, unname(col_mean_if(,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(mean_col_if(,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$not_na
 )
 
@@ -120,34 +120,34 @@ expect_equal(
 #########################
 
 expect_equal(
-    with(df2, unname(col_mean_if(8,V1,V2,V3))),
+    with(df2, unname(mean_col_if(8,V1,V2,V3))),
     c(NaN, 8, 8)
 )
 
 
 expect_equal(
-    with(df2, unname(col_mean_if(gt(8),V1,V2,V3))),
+    with(df2, unname(mean_col_if(gt(8),V1,V2,V3))),
     c(29, 10, 10)/c(3, 1, 1)
 )
 
 expect_equal(
-    with(df2, unname(col_mean_if(5:8,V1,V2,V3))),
+    with(df2, unname(mean_col_if(5:8,V1,V2,V3))),
     c(24, 20, 45)/c(4, 3, 6)
 )
 
 expect_equal(
-    with(df2, unname(col_mean_if(is.na,V1,V2,V3))),
+    with(df2, unname(mean_col_if(is.na,V1,V2,V3))),
     c(NaN, NaN, NaN)
 )
 
 expect_equal(
-    with(df2, unname(col_mean_if(NA,V1,V2,V3))),
+    with(df2, unname(mean_col_if(NA,V1,V2,V3))),
     c(NaN, NaN, NaN)
 )
 
 
 expect_equal(
-    with(df2, unname(col_mean_if(,V1,V2,V3))),
+    with(df2, unname(mean_col_if(,V1,V2,V3))),
     unname(colMeans(df2, na.rm = TRUE))
 )
 

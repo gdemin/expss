@@ -14,18 +14,18 @@
 #' 
 #' @return 
 #' \code{count_if} return single value (vector of length 1). 
-#' \code{row_count_if} returns vector of counts for each row of supplied arguments.
-#' \code{col_count_if} returns vector of counts for each column of supplied arguments.
+#' \code{count_row_if} returns vector of counts for each row of supplied arguments.
+#' \code{count_col_if} returns vector of counts for each column of supplied arguments.
 #' \code{\%has\%} returns logical vector - presence indicator of criterion in each row.
 #' 
 #' @details
 #' \code{count_if} counts values in entire dataset and return single 
 #' value (vector of length 1).
 #' 
-#' \code{row_count_if} counts values in each row of supplied arguments and return
+#' \code{count_row_if} counts values in each row of supplied arguments and return
 #' vector of counts for each row of supplied arguments.
 #' 
-#' \code{col_count_if} counts values in each column of supplied arguments and return
+#' \code{count_col_if} counts values in each column of supplied arguments and return
 #' vector of counts for each column of supplied arguments.
 #' 
 #' All functions never return NA's. 
@@ -35,8 +35,8 @@
 #' 
 #' Function criterion should return logicals of same size and shape as its argument.
 #' This function will be applied to each column of supplied data and TRUE results will be counted.
-#' There is asymmetrical behavior in \code{row_count_if} and
-#' \code{col_count_if}: in both cases function criterion will be applied
+#' There is asymmetrical behavior in \code{count_row_if} and
+#' \code{count_col_if}: in both cases function criterion will be applied
 #' columnwise.
 #' There are special functions for usage as criteria (e. g. \code{gt(5)} is
 #' equivalent ">5" in spreadsheet):
@@ -49,7 +49,7 @@
 #' \item{\code{lte}}{ less than or equal}
 #' } 
 #' 
-#' \code{\%has\%} is simple wrapper for rather frequent case \code{row_count_if(criterion,x)>0}.
+#' \code{\%has\%} is simple wrapper for rather frequent case \code{count_row_if(criterion,x)>0}.
 #' 
 #' @export
 #' @examples
@@ -84,8 +84,8 @@
 #' # values that started on 'a'
 #' count_if(function(x) grepl("^a",x),df1) # 2
 #' 
-#' # row_count_if
-#' row_count_if(function(x) grepl("^a",x),df1) # c(1,0,0,1)
+#' # count_row_if
+#' count_row_if(function(x) grepl("^a",x),df1) # c(1,0,0,1)
 #' 
 #' df1 %has% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
 #' 
@@ -95,11 +95,11 @@
 #'  df2 = as.data.frame(
 #'         matrix(sample(c(1:10,NA),30,replace = TRUE),10)
 #'  )
-#'  df2  %>% mutate(exact = row_count_if(8, V1, V2, V3),
-#'                     greater = row_count_if(gt(8), V1, V2, V3),
-#'                     range = row_count_if(5:8, V1, V2, V3),
-#'                     na = row_count_if(is.na, V1, V2, V3),
-#'                     not_na = row_count_if(, V1, V2, V3)
+#'  df2  %>% mutate(exact = count_row_if(8, V1, V2, V3),
+#'                     greater = count_row_if(gt(8), V1, V2, V3),
+#'                     range = count_row_if(5:8, V1, V2, V3),
+#'                     na = count_row_if(is.na, V1, V2, V3),
+#'                     not_na = count_row_if(, V1, V2, V3)
 #'                  ) -> result
 #'  result
 #' }
@@ -111,7 +111,7 @@ count_if=function(criterion=NULL,...){
 
 #' @export
 #' @rdname count_if
-row_count_if=function(criterion=NULL,...){
+count_row_if=function(criterion=NULL,...){
     dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
     cond = build_criterion(criterion, dfs)
     rowSums(cond,na.rm=TRUE)
@@ -120,7 +120,7 @@ row_count_if=function(criterion=NULL,...){
 
 #' @export
 #' @rdname count_if
-col_count_if=function(criterion=NULL,...){
+count_col_if=function(criterion=NULL,...){
     dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
     cond = build_criterion(criterion, dfs)
     colSums(cond,na.rm=TRUE)
@@ -130,7 +130,7 @@ col_count_if=function(criterion=NULL,...){
 #' @export
 #' @rdname count_if
 '%has%'=function(x,criterion){
-    row_count_if(criterion=criterion,x)>0
+    count_row_if(criterion=criterion,x)>0
 }
 
 

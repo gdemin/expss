@@ -38,10 +38,10 @@ expect_error(sum_if(function(x) grepl("^[A-z]+$",x),df1, data = df1))
 expect_equal(sum_if(function(x) grepl("^a",x), df1$a, data = df1$b),118L)
 expect_error(sum_if(eq("apples"), df1, data = df1))
 
-context("row_sum_if")
+context("sum_row_if")
 
 
-expect_equal(row_sum_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,0,0,86))
+expect_equal(sum_row_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,0,0,86))
 
 # example with dplyr
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
@@ -56,16 +56,16 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
                         na=c(0,0,0,0,0,0,0,0,0,0),
                         not_na=c(14,22,21,17,10,19,15,18,15,8)
                         )
-    expect_equal(df2  %>% mutate(exact = row_sum_if(8,V1,V2,V3),
-                    greater = row_sum_if(gt(8),V1,V2,V3),
-                    range = row_sum_if(5:8,V1,V2,V3),
-                    na = row_sum_if(is.na,V1,V2,V3),
-                    not_na = row_sum_if(,V1,V2,V3)),
+    expect_equal(df2  %>% mutate(exact = sum_row_if(8,V1,V2,V3),
+                    greater = sum_row_if(gt(8),V1,V2,V3),
+                    range = sum_row_if(5:8,V1,V2,V3),
+                    na = sum_row_if(is.na,V1,V2,V3),
+                    not_na = sum_row_if(,V1,V2,V3)),
                      result)
 }
 
 
-context("col_sum_if")
+context("sum_col_if")
 
 
 
@@ -84,32 +84,32 @@ result = data.frame(
 
 t_df2 = as.data.frame(t(df2))
 expect_equal(
-    with(t_df2, unname(col_sum_if(8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(sum_col_if(8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$exact
 )
 
 expect_equal(
-    with(t_df2, unname(col_sum_if(gt(8),V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(sum_col_if(gt(8),V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$greater
 )
 
 expect_equal(
-    with(t_df2, unname(col_sum_if(5:8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(sum_col_if(5:8,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$range
 )
 
 expect_equal(
-    with(t_df2, unname(col_sum_if(is.na,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(sum_col_if(is.na,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$na
 )
 
 expect_equal(
-    with(t_df2, unname(col_sum_if(NA,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(sum_col_if(NA,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$na
 )
 
 expect_equal(
-    with(t_df2, unname(col_sum_if(,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(sum_col_if(,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$not_na
 )
 
@@ -117,34 +117,34 @@ expect_equal(
 #########################
 
 expect_equal(
-    with(df2, unname(col_sum_if(8,V1,V2,V3))),
+    with(df2, unname(sum_col_if(8,V1,V2,V3))),
     c(0, 8, 32)
 )
 
 
 expect_equal(
-    with(df2, unname(col_sum_if(gt(8),V1,V2,V3))),
+    with(df2, unname(sum_col_if(gt(8),V1,V2,V3))),
     c(29, 10, 10)
 )
 
 expect_equal(
-    with(df2, unname(col_sum_if(5:8,V1,V2,V3))),
+    with(df2, unname(sum_col_if(5:8,V1,V2,V3))),
     c(24, 20, 45)
 )
 
 expect_equal(
-    with(df2, unname(col_sum_if(is.na,V1,V2,V3))),
+    with(df2, unname(sum_col_if(is.na,V1,V2,V3))),
     c(0, 0, 0)
 )
 
 expect_equal(
-    with(df2, unname(col_sum_if(NA,V1,V2,V3))),
+    with(df2, unname(sum_col_if(NA,V1,V2,V3))),
     c(0, 0, 0)
 )
 
 
 expect_equal(
-    with(df2, unname(col_sum_if(,V1,V2,V3))),
+    with(df2, unname(sum_col_if(,V1,V2,V3))),
     unname(colSums(df2, na.rm = TRUE))
 )
 
