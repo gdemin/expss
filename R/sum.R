@@ -164,7 +164,7 @@ median.data.frame = function(x, ...) median(as.matrix(x), ...)
 #' @export
 #' @rdname sum_row
 median_row=function(...){
-    data = fun_helper(criterion = criterion, ..., data = data)
+    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     apply(data, 1, median, na.rm=TRUE)
 }
 
