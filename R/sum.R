@@ -109,7 +109,7 @@ sum_row=function(...){
 
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 sum_col =function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     colSums(data, na.rm=TRUE)
@@ -122,7 +122,7 @@ sum_col =function(...){
 mean.data.frame = function(x, ...) mean(as.matrix(x), ...)
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 mean_row=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     rowMeans(data, na.rm=TRUE)
@@ -130,7 +130,7 @@ mean_row=function(...){
 
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 mean_col=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     colMeans(data, na.rm=TRUE)
@@ -142,7 +142,7 @@ mean_col=function(...){
 
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 sd_row=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     apply(data, 1, sd, na.rm=TRUE)
@@ -150,7 +150,7 @@ sd_row=function(...){
 
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 sd_col=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     apply(data, 2, sd, na.rm=TRUE)
@@ -162,7 +162,7 @@ sd_col=function(...){
 median.data.frame = function(x, ...) median(as.matrix(x), ...)
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 median_row=function(...){
     data = fun_helper(criterion = criterion, ..., data = data)
     apply(data, 1, median, na.rm=TRUE)
@@ -170,7 +170,7 @@ median_row=function(...){
 
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 median_col=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     apply(data, 2, median, na.rm=TRUE)
@@ -180,7 +180,7 @@ median_col=function(...){
 ###################################################
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 max_row=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
@@ -190,7 +190,7 @@ max_row=function(...){
 
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 max_col=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
@@ -202,7 +202,7 @@ max_col=function(...){
 
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 min_row=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
@@ -212,7 +212,7 @@ min_row=function(...){
 
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 min_col=function(...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
     res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
@@ -224,14 +224,14 @@ min_col=function(...){
 #########################################################
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 apply_row = function(fun, ...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))    
     apply(data, 1, fun)
 }
 
 #' @export
-#' @rdname sum
+#' @rdname sum_row
 apply_col = function(fun, ...){
     data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))    
     apply(data, 2, fun)
