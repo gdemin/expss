@@ -1,4 +1,4 @@
-#' Conditional sum/mean/max/min
+#' Conditional sum/mean/sd/median/max/min
 #' 
 #' There are two flavors of this function - one works with entire dataset/matrix/vector
 #' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise - e. g. 
@@ -266,6 +266,24 @@ min_col_if=function(criterion=NULL,..., data = NULL){
 }
 
 
+#' @export
+#' @rdname sum_if
+apply_row_if=function(fun, criterion=NULL,..., data = NULL){
+    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+    criterion = build_criterion(criterion, dfs)
+    if (is.null(data)){
+        data = dfs
+    }
+
+}
+
+
+#' @export
+#' @rdname sum_if
+apply_col_if=function(fun, criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 2, fun)
+}
 
 #########################################################
 #' @export
