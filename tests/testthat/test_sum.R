@@ -21,7 +21,7 @@ expect_equal(min_row(a, b, d), c(1,2,1))
 expect_equal(unname(min_col(a, b, d)), c(1,1,NA))
 
 temp = cbind(a, b, NA)
-expect_equal(sd_row(a, b, d), apply(temp, 1, sd))
+expect_equal(sd_row(a, b, d), apply(temp, 1, sd, na.rm = TRUE))
 expect_equal(unname(sd_col(a, b, d)), unname(apply(temp, 2, sd)))
 
 expect_equal(apply_row(sum, a, b, d), 1*c(NA,NA,NA))
@@ -50,8 +50,8 @@ expect_equal(min_row(a, b, d), c(1,2,1))
 expect_equal(unname(min_col(a, b, d)), c(1,1,NA))
 
 temp = cbind(a, b, NA)
-expect_equal(sd_row(a, b, d), apply(temp, 1, sd))
-expect_equal(unname(sd_col(a, b, d)), unname(apply(temp, 2, sd)))
+expect_equal(sd_row(a, b, d), apply(temp, 1, sd, na.rm = TRUE))
+expect_equal(unname(sd_col(a, b, d)), unname(apply(temp, 2, sd, na.rm = TRUE)))
 
 expect_equal(apply_row(sum, a, b, d), 1*c(NA,NA,NA))
 expect_equal(unname(apply_col(sum, a, b, d)), c(6,6,NA))

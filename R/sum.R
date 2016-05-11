@@ -103,7 +103,7 @@
 #' }
 #' @export
 sum_row=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     rowSums(data, na.rm=TRUE)
 }
 
@@ -111,7 +111,7 @@ sum_row=function(...){
 #' @export
 #' @rdname sum_row
 sum_col =function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     colSums(data, na.rm=TRUE)
 }
 
@@ -124,7 +124,7 @@ mean.data.frame = function(x, ...) mean(as.matrix(x), ...)
 #' @export
 #' @rdname sum_row
 mean_row=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     rowMeans(data, na.rm=TRUE)
 }
 
@@ -132,7 +132,7 @@ mean_row=function(...){
 #' @export
 #' @rdname sum_row
 mean_col=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     colMeans(data, na.rm=TRUE)
 }
 
@@ -144,7 +144,7 @@ mean_col=function(...){
 #' @export
 #' @rdname sum_row
 sd_row=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     apply(data, 1, sd, na.rm=TRUE)
 }
 
@@ -152,7 +152,7 @@ sd_row=function(...){
 #' @export
 #' @rdname sum_row
 sd_col=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     apply(data, 2, sd, na.rm=TRUE)
 }
 
@@ -164,7 +164,7 @@ median.data.frame = function(x, ...) median(as.matrix(x), ...)
 #' @export
 #' @rdname sum_row
 median_row=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     apply(data, 1, median, na.rm=TRUE)
 }
 
@@ -172,7 +172,7 @@ median_row=function(...){
 #' @export
 #' @rdname sum_row
 median_col=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     apply(data, 2, median, na.rm=TRUE)
 }
 
@@ -182,7 +182,7 @@ median_col=function(...){
 #' @export
 #' @rdname sum_row
 max_row=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
     res[!is.finite(res)] = NA
     res
@@ -192,7 +192,7 @@ max_row=function(...){
 #' @export
 #' @rdname sum_row
 max_col=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
     res[!is.finite(res)] = NA
     res
@@ -204,7 +204,7 @@ max_col=function(...){
 #' @export
 #' @rdname sum_row
 min_row=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
     res[!is.finite(res)] = NA
     res
@@ -214,7 +214,7 @@ min_row=function(...){
 #' @export
 #' @rdname sum_row
 min_col=function(...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))
+    data = dots2data_frame(...)
     res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
     res[!is.finite(res)] = NA
     res
@@ -226,19 +226,44 @@ min_col=function(...){
 #' @export
 #' @rdname sum_row
 apply_row = function(fun, ...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))    
+    data = dots2data_frame(...)   
     apply(data, 1, fun)
 }
 
 #' @export
 #' @rdname sum_row
 apply_col = function(fun, ...){
-    data = do.call(data.frame,c(list(...),stringsAsFactors=FALSE))    
+    data = dots2data_frame(...)  
     apply(data, 2, fun)
 }
 
 
+dots2list = function(...){
+    values = as.character(substitute(c(...))[-1])
+    args = list(...)
+    curr_names = names(args)
+    has_names = sapply(args, function(x) is.data.frame(x) || is.matrix(x) || is.list(x))
+    if (is.null(curr_names)) {
+        curr_names = values
+        curr_names[has_names] = ""
+    } else {
+        
+        has_names = (!is.na(curr_names) && curr_names != "") || has_names
+        curr_names[!has_names] = values[!has_names]
+    }
+    names(args) = curr_names
+    args
+    
+}
 
+dots2data_frame = function(...){
+    args = dots2list(...)
+    zero_length = lengths(args)==0
+    args[zero_length] = NA
+    do.call(data.frame,c(args,stringsAsFactors=FALSE)) 
+    
+}
+    
 
 
 
