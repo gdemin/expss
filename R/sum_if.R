@@ -288,7 +288,7 @@ apply_col_if=function(fun, criterion=NULL,..., data = NULL){
 #########################################################
 #' @export
 fun_if_helper = function(criterion,..., data){
-    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+    dfs = dots2data_frame(...)   
     criterion = build_criterion(criterion, dfs)
     if(is.null(data)) {
         

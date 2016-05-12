@@ -104,7 +104,7 @@
 #'  result
 #' }
 count_if=function(criterion=NULL,...){
-    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame  
+    dfs = dots2data_frame(...)   
     cond = build_criterion(criterion, dfs)
     sum(cond,na.rm=TRUE)
 }
@@ -112,7 +112,7 @@ count_if=function(criterion=NULL,...){
 #' @export
 #' @rdname count_if
 count_row_if=function(criterion=NULL,...){
-    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+    dfs = dots2data_frame(...)   
     cond = build_criterion(criterion, dfs)
     rowSums(cond,na.rm=TRUE)
 }
@@ -121,7 +121,7 @@ count_row_if=function(criterion=NULL,...){
 #' @export
 #' @rdname count_if
 count_col_if=function(criterion=NULL,...){
-    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+    dfs = dots2data_frame(...)   
     cond = build_criterion(criterion, dfs)
     colSums(cond,na.rm=TRUE)
 }
