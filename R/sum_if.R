@@ -1,16 +1,11 @@
-#' Conditional sum/mean/sd/median/max/min
+#' Sum/mean/sd/median/max/min
 #' 
 #' There are two flavors of this function - one works with entire dataset/matrix/vector
 #' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise - e. g. 
 #' similar to SPSS \code{COUNT} function. 
 #'  
-#' @param criterion Vector with counted values, list with conditions or
-#'   function. If criterion is missing (or is NULL) non-NA's values will be
-#'   counted.
 #' @param ... data. Vectors, matrixes, data.frames, list. Shorter arguments
 #'   will be recycled.
-#' @param x Counted values or criterion for counting. Vector, matrix, data.frame,
-#'   list, function. Shorter columns in list will be recycled.
 #' 
 #' @return 
 #' \code{count_if} return single value (vector of length 1). 
