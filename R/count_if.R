@@ -1,21 +1,23 @@
 #' Count values that meet a criterion that you specify
 #' 
 #' There are two flavors of this function - one works with entire dataset/matrix/vector
-#' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise - e. g. 
+#' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise(columnwise) - e. g. 
 #' similar to SPSS \code{COUNT} function. 
 #'  
 #' @param criterion Vector with counted values, list with conditions or
 #'   function. If criterion is missing (or is NULL) non-NA's values will be
-#'   counted.
-#' @param ... Counted data. Vector, matrix, data.frame, list. Shorter arguments
-#'   will be recycled.
+#'   used for function.
+#' @param ... Data on which criterion will be applied. Vector, matrix,
+#'   data.frame, list. Shorter arguments will be recycled.
+#'   
 #' @param x Counted values or criterion for counting. Vector, matrix, data.frame,
 #'   list, function. Shorter columns in list will be recycled.
-#' @param data Counted values or criterion for counting. Vector, matrix, data.frame,
-#'   list, function. Shorter columns in list will be 
 #'   
-#' @param fun Counted values or criterion for counting. Vector, matrix, data.frame,
-#'   list, function. Shorter columns in list will be recycled.
+#' @param data Data on which function will be applied. Doesn't applicable to
+#'   \code{count_*_if} functions. If omitted function will be applied on the ...
+#'   argument.
+#'   
+#' @param fun Custom function that will be applied based on criterion.
 #' 
 #' @return 
 #' \code{count_if} return single value (vector of length 1). 

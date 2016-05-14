@@ -2,6 +2,9 @@
 % Please edit documentation in R/count_if.R, R/criteria_functions.R
 \name{count_if}
 \alias{\%has\%}
+\alias{apply_col_if}
+\alias{apply_if}
+\alias{apply_row_if}
 \alias{count_col_if}
 \alias{count_if}
 \alias{count_row_if}
@@ -11,9 +14,27 @@
 \alias{gte}
 \alias{lt}
 \alias{lte}
+\alias{max_col_if}
+\alias{max_if}
+\alias{max_row_if}
+\alias{mean_col_if}
+\alias{mean_if}
+\alias{mean_row_if}
+\alias{median_col_if}
+\alias{median_if}
+\alias{median_row_if}
+\alias{min_col_if}
+\alias{min_if}
+\alias{min_row_if}
 \alias{neq}
 \alias{perl}
 \alias{regex}
+\alias{sd_col_if}
+\alias{sd_if}
+\alias{sd_row_if}
+\alias{sum_col_if}
+\alias{sum_if}
+\alias{sum_row_if}
 \title{Count values that meet a criterion that you specify}
 \usage{
 count_if(criterion = NULL, ...)
@@ -23,6 +44,48 @@ count_row_if(criterion = NULL, ...)
 count_col_if(criterion = NULL, ...)
 
 x \%has\% criterion
+
+sum_if(criterion = NULL, ..., data = NULL)
+
+sum_row_if(criterion = NULL, ..., data = NULL)
+
+sum_col_if(criterion = NULL, ..., data = NULL)
+
+mean_if(criterion = NULL, ..., data = NULL)
+
+mean_row_if(criterion = NULL, ..., data = NULL)
+
+mean_col_if(criterion = NULL, ..., data = NULL)
+
+sd_if(criterion = NULL, ..., data = NULL)
+
+sd_row_if(criterion = NULL, ..., data = NULL)
+
+sd_col_if(criterion = NULL, ..., data = NULL)
+
+median_if(criterion = NULL, ..., data = NULL)
+
+median_row_if(criterion = NULL, ..., data = NULL)
+
+median_col_if(criterion = NULL, ..., data = NULL)
+
+max_if(criterion = NULL, ..., data = NULL)
+
+max_row_if(criterion = NULL, ..., data = NULL)
+
+max_col_if(criterion = NULL, ..., data = NULL)
+
+min_if(criterion = NULL, ..., data = NULL)
+
+min_row_if(criterion = NULL, ..., data = NULL)
+
+min_col_if(criterion = NULL, ..., data = NULL)
+
+apply_if(fun, criterion = NULL, ..., data = NULL)
+
+apply_row_if(fun, criterion = NULL, ..., data = NULL)
+
+apply_col_if(fun, criterion = NULL, ..., data = NULL)
 
 eq(x)
 
@@ -45,13 +108,19 @@ fixed(pattern, ignore.case = FALSE, useBytes = FALSE)
 \arguments{
 \item{criterion}{Vector with counted values, list with conditions or
 function. If criterion is missing (or is NULL) non-NA's values will be
-counted.}
+used for function.}
 
-\item{...}{Counted data. Vector, matrix, data.frame, list. Shorter arguments
-will be recycled.}
+\item{...}{Data on which criterion will be applied. Vector, matrix,
+data.frame, list. Shorter arguments will be recycled.}
 
 \item{x}{Counted values or criterion for counting. Vector, matrix, data.frame,
 list, function. Shorter columns in list will be recycled.}
+
+\item{data}{Data on which function will be applied. Doesn't applicable to
+\code{count_*_if} functions. If omitted function will be applied on the ...
+argument.}
+
+\item{fun}{Custom function that will be applied based on criterion.}
 }
 \value{
 \code{count_if} return single value (vector of length 1). 
@@ -61,7 +130,7 @@ list, function. Shorter columns in list will be recycled.}
 }
 \description{
 There are two flavors of this function - one works with entire dataset/matrix/vector
-similar to Microsoft Excel \code{COUNTIF}. The second works rowwise - e. g. 
+similar to Microsoft Excel \code{COUNTIF}. The second works rowwise(columnwise) - e. g. 
 similar to SPSS \code{COUNT} function.
 }
 \details{
