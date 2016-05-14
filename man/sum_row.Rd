@@ -15,7 +15,7 @@
 \alias{sd_row}
 \alias{sum_col}
 \alias{sum_row}
-\title{Sum/mean/sd/median/max/min on row/column}
+\title{Compute sum/mean/sd/median/max/min/custom function on rows/columns}
 \usage{
 sum_row(...)
 
@@ -49,105 +49,40 @@ apply_col(fun, ...)
 \item{...}{data. Vectors, matrixes, data.frames, list. Shorter arguments
 will be recycled.}
 
-\item{criterion}{Vector with counted values, list with conditions or
-function. If criterion is missing (or is NULL) non-NA's values will be
-counted.}
-
-\item{x}{Counted values or criterion for counting. Vector, matrix, data.frame,
-list, function. Shorter columns in list will be recycled.}
+\item{fun}{custom function that will be applied to \dots}
 }
 \value{
-\code{count} return single value (vector of length 1). 
-\code{count_row} returns vector of counts for each row of supplied arguments.
-\code{count_col} returns vector of counts for each column of supplied arguments.
-\code{\%has\%} returns logical vector - presence indicator of criterion in each row.
+All functions except \code{apply_*} return numeric vector of length 
+  equals the number of argument columns/rows. Value of \code{apply_*} depends
+  on supplied \code{fun} function.
 }
 \description{
-There are two flavors of this function - one works with entire dataset/matrix/vector
-similar to Microsoft Excel \code{COUNTIF}. The second works rowwise - e. g. 
-similar to SPSS \code{COUNT} function.
+This are convenience functions for usage inside \code{with}, \code{within}
+and \code{dplyr} \code{mutate} functions.
 }
 \details{
-\code{count} counts values in entire dataset and return single 
-value (vector of length 1).
-
-\code{count_row} counts values in each row of supplied arguments and return
-vector of counts for each row of supplied arguments.
-
-\code{count_col} counts values in each column of supplied arguments and return
-vector of counts for each column of supplied arguments.
-
-All functions never return NA's. 
-
-If criterion is list, then each element considered as single condition and
-they will be combined with AND.
-
-Function criterion should return logicals of same size and shape as its argument.
-This function will be applied to each column of supplied data and TRUE results will be counted.
-There is asymmetrical behavior in \code{count_row} and
-\code{count_col}: in both cases function criterion will be applied
-columnwise.
-There are special functions for usage as criteria (e. g. \code{gt(5)} is
-equivalent ">5" in spreadsheet):
-\itemize{
-\item{\code{gt}}{ greater than}
-\item{\code{gte}}{ greater than or equal}
-\item{\code{eq}}{ equal} 
-\item{\code{neq}}{ not equal} 
-\item{\code{lt}}{ less than}
-\item{\code{lte}}{ less than or equal}
-}
+sum/mean/sd/median/max/min always omits NA. \code{sum_*} behavior is
+  different from base \code{sum} and similar to SPSS \code{sum} behavior. It
+  always omits NA but result of column/row with all NA gives NA (instead of
+  0).
 }
 \examples{
-# Examples borrowed from Microsoft Excel help for COUNTIF
-df1 = data.frame(
-    a=c("apples",   "oranges",     "peaches",     "apples"),
-    b = c(32, 54, 75, 86)
-)
+# Examples from rowSums/colSums manual.
+## Compute row and column sums for a matrix:
+x = cbind(x1 = 3, x2 = c(4:1, 2:5))
+sum_row(x); sum_col(x)
+dimnames(x)[[1]] <- letters[1:8]
+sum_row(x); sum_col(x); mean_row(x); mean_col(x)
 
-count("apples",df1$a) # 2
+## Inside within example
+iris = within(iris,{
+  new_median = median_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+  new_mean = mean_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+  })
 
-count("apples",df1) # 2
-
-with(df1,count("apples",a,b)) # 2
-
-count(gt(55),df1$b) # greater than 55 = 2
-
-count(neq(75),df1$b) # not equal 75 = 3
-
-count(gte(32),df1$b) # greater than or equal 32 = 4
-
-count(list(gt(32), lt(86)),df1$b) # 2
-
-count(gt(32) & lt(86),df1$b) # 2
-
-count(33:85,df1$b) # 2
-
-# more complex criteria
-# values with letters
-count(function(x) grepl("^[A-z]+$",x),df1) # 4
-
-# values that started on 'a'
-count(function(x) grepl("^a",x),df1) # 2
-
-# count_row
-count_row(function(x) grepl("^a",x),df1) # c(1,0,0,1)
-
-df1 \%has\% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
-
-# example with dplyr
-if (require(dplyr)){
- set.seed(123)
- df2 = as.data.frame(
-        matrix(sample(c(1:10,NA),30,replace = TRUE),10)
- )
- df2  \%>\% mutate(exact = count_row(8, V1, V2, V3),
-                    greater = count_row(gt(8), V1, V2, V3),
-                    range = count_row(5:8, V1, V2, V3),
-                    na = count_row(is.na, V1, V2, V3),
-                    not_na = count_row(, V1, V2, V3)
-                 ) -> result
- result
 }
+\seealso{
+\link{count_if}, \link{sum_if}, \link{mean_if}, \link{median_if},
+  \link{sd_if}, \link{min_if}, \link{max_if}
 }
 
