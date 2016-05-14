@@ -11,6 +11,11 @@
 #'   will be recycled.
 #' @param x Counted values or criterion for counting. Vector, matrix, data.frame,
 #'   list, function. Shorter columns in list will be recycled.
+#' @param data Counted values or criterion for counting. Vector, matrix, data.frame,
+#'   list, function. Shorter columns in list will be 
+#'   
+#' @param fun Counted values or criterion for counting. Vector, matrix, data.frame,
+#'   list, function. Shorter columns in list will be recycled.
 #' 
 #' @return 
 #' \code{count_if} return single value (vector of length 1). 
@@ -133,5 +138,224 @@ count_col_if=function(criterion=NULL,...){
     count_row_if(criterion=criterion,x)>0
 }
 
+#' @export
+#' @rdname count_if
+sum_if=function(criterion=NULL, ..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    sum(data, na.rm = TRUE)
+}
+
+#' @export
+#' @rdname count_if
+sum_row_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    rowSums(data, na.rm=TRUE)
+}
 
 
+#' @export
+#' @rdname count_if
+sum_col_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    colSums(data, na.rm=TRUE)
+}
+
+
+################################################
+
+#' @export
+#' @rdname count_if
+mean_if=function(criterion=NULL, ..., data = NULL){
+    data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
+    if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
+        stop("Invalid argument type: for averaging it should be numeric or logical")
+    }
+    mean(data, na.rm = TRUE)
+}
+
+#' @export
+#' @rdname count_if
+mean_row_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    rowMeans(data, na.rm=TRUE)
+}
+
+
+#' @export
+#' @rdname count_if
+mean_col_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    colMeans(data, na.rm=TRUE)
+}
+
+
+################################################
+
+#' @export
+#' @rdname count_if
+sd_if=function(criterion=NULL, ..., data = NULL){
+    data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
+    if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
+        stop("Invalid argument type: for averaging it should be numeric or logical")
+    }
+    sd(data, na.rm = TRUE)
+}
+
+#' @export
+#' @rdname count_if
+sd_row_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 1, sd, na.rm=TRUE)
+}
+
+
+#' @export
+#' @rdname count_if
+sd_col_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 2, sd, na.rm=TRUE)
+}
+
+################################################
+
+#' @export
+#' @rdname count_if
+median_if=function(criterion=NULL, ..., data = NULL){
+    data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
+    if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
+        stop("Invalid argument type: for averaging it should be numeric or logical")
+    }
+    median(data, na.rm = TRUE)
+}
+
+#' @export
+#' @rdname count_if
+median_row_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 1, median, na.rm=TRUE)
+}
+
+
+#' @export
+#' @rdname count_if
+median_col_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 2, median, na.rm=TRUE)
+}
+
+
+###################################################
+
+#' @export
+#' @rdname count_if
+max_if=function(criterion=NULL, ..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(max(data, na.rm = TRUE))
+    if(!is.finite(res)) res = NA
+    res
+}
+
+#' @export
+#' @rdname count_if
+max_row_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
+    res[!is.finite(res)] = NA
+    res
+}
+
+
+#' @export
+#' @rdname count_if
+max_col_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
+    res[!is.finite(res)] = NA
+    res
+}
+
+##########################################################
+
+#' @export
+#' @rdname count_if
+min_if=function(criterion=NULL, ..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(min(data, na.rm = TRUE))
+    if(!is.finite(res)) res = NA
+    res
+}
+
+#' @export
+#' @rdname count_if
+min_row_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
+    res[!is.finite(res)] = NA
+    res
+}
+
+
+#' @export
+#' @rdname count_if
+min_col_if=function(criterion=NULL,..., data = NULL){
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
+    res[!is.finite(res)] = NA
+    res
+}
+
+
+#' @export
+#' @rdname count_if
+apply_if=function(fun, criterion=NULL,..., data = NULL){
+    stop("not implemented yet")
+    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+    criterion = build_criterion(criterion, dfs)
+    if (is.null(data)){
+        data = dfs
+    }
+    
+}
+
+#' @export
+#' @rdname count_if
+apply_row_if=function(fun, criterion=NULL,..., data = NULL){
+    stop("not implemented yet")
+    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+    criterion = build_criterion(criterion, dfs)
+    if (is.null(data)){
+        data = dfs
+    }
+    
+}
+
+
+#' @export
+#' @rdname count_if
+apply_col_if=function(fun, criterion=NULL,..., data = NULL){
+    stop("not implemented yet")
+    data = fun_if_helper(criterion = criterion, ..., data = data)
+    apply(data, 2, fun)
+}
+
+#########################################################
+fun_if_helper = function(criterion,..., data){
+    dfs = dots2data_frame(...)   
+    criterion = build_criterion(criterion, dfs)
+    if(is.null(data)) {
+        
+        return(set_na(dfs, !criterion))
+    }    
+    
+    set_na(data) = !criterion
+    if(is.list(data) && !is.data.frame(data)){
+        data = do.call(data.frame,c(data,stringsAsFactors=FALSE))        
+    }  else {
+        if (!is.data.frame(data)){
+            data = as.data.frame(data, stringsAsFactors = FALSE)
+        } else {
+            data
+        }
+    }   
+    
+}
