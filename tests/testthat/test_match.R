@@ -23,8 +23,20 @@ expect_equal(match_col(1, V1, V2, V3), c(V1 = 1, V2 = NA, V3 = NA))
 expect_equal(match_row(c(1, 5, 9), V1, V2, V3), c(1, 2, 3))
 expect_equal(match_col(c(1, 5, 9), V1, V2, V3), c(V1 = 1, V2 = 2, V3 = 3))
 
+expect_error(match_row(c(1, 5), V1, V2, V3))
+expect_error(match_col(c(1, 5), V1, V2, V3))
+
+expect_error(match_row(c(1, 5, 9, 9), V1, V2, V3))
+expect_error(match_col(c(1, 5, 9, 9), V1, V2, V3))
+
 expect_equal(match_row(gt(2), V1, V2, V3), c(2, 2, 1))
 expect_equal(match_col(gt(2), V1, V2, V3), c(V1 = 3, V2 = 1, V3 = 1))
+
+expect_error(match_row(NULL, V1, V2, V3))
+expect_error(match_col(NULL, V1, V2, V3))
+
+expect_error(match_row(numeric(0), V1, V2, V3))
+expect_error(match_col(numeric(0), V1, V2, V3))
 
 
 context("index")
@@ -61,3 +73,8 @@ expect_error(index_col(1:2,  V1, V2, V3))
 expect_error(index_row(1:5,  V1, V2, V3))
 expect_error(index_col(1:5,  V1, V2, V3))
 
+expect_error(index_row(NULL, V1, V2, V3))
+expect_error(index_col(NULL, V1, V2, V3))
+
+expect_error(index_row(numeric(0), V1, V2, V3))
+expect_error(index_col(numeric(0), V1, V2, V3))

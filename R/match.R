@@ -10,21 +10,45 @@
 #' 
 #' a = 1
 match_row = function(criterion, ...){
-    stopif(is.logical(criterion) , "Logical 'criterion' not yet implemented for match_row.")
-    dfs = dots2data_frame(...)   
-    cond = build_criterion(criterion, dfs)
-    apply(cond, 1, function(x) which(x)[1])
-
+    stopif(length(criterion)==0, "Zero-length 'criterion'.")
+    dfs = dots2data_frame(...) 
+    if(is.function(criterion)){
+        cond = build_criterion(criterion, dfs)
+        apply(cond, 1, function(x) which(x)[1])
+    } else {
+        if(length(criterion)>1){
+            stopif(length(criterion)!=nrow(dfs), "Length of 'criterion' should be
+               1 or equals number of rows of '...' but length(criterion)=",length(criterion),", NROW(...)=", NROW(dfs))
+            unname(unlist(lapply(seq_along(criterion), function(row_num) match(criterion[row_num], unlist(dfs[row_num, ])))))
+        } else {
+            res = apply(dfs, 1, function(row) match(criterion, row))
+            unname(res)
+        }    
+    } 
+    
 }
 
 
 #' @export
 #' @rdname match_row
 match_col = function(criterion, ...){
-    stopif(is.logical(criterion), "Logical 'criterion' not yet implemented for match_row.")
+    stopif(length(criterion)==0, "Zero-length 'criterion'.")
     dfs = dots2data_frame(...)   
-    cond = build_criterion(criterion, dfs)
-    apply(cond, 2, function(x) which(x)[1])
+    if(is.function(criterion)){
+        cond = build_criterion(criterion, dfs)
+        res = apply(cond, 2, function(x) which(x)[1])
+        setNames(res, colnames(dfs))
+    } else {
+        if(length(criterion)>1){
+            stopif(length(criterion)!=nrow(dfs), "Length of 'criterion' should be
+                   1 or equals number of columns of '...' but length(criterion)=",length(criterion),", NCOL(...)=", NCOL(dfs))
+            res = unlist(lapply(seq_along(criterion), function(col_num) match(criterion[col_num], dfs[[col_num]])))
+            setNames(res, colnames(dfs))
+        } else {
+            res = apply(dfs, 2, function(col) match(criterion, col))
+            setNames(res, colnames(dfs))
+        }    
+    } 
     
 }
 
@@ -36,7 +60,7 @@ index_row = function(index, ...){
     max_index = max_col(index)
     stopif(!is.na(max_index) && max(index, na.rm = TRUE)>ncol(dfs), "Max 'index' should be
                less than  or equals to number of columns in  '...' but max(index)=",max(index, na.rm = TRUE),", NCOL(...)=", ncol(dfs))
-    if(length(index)<2){
+    if(length(index)==1){
         if(!is.na(index)){
             dfs[[index]]
         } else {
@@ -60,7 +84,7 @@ index_col = function(index, ...){
     max_index = max_col(index)
     stopif(!is.na(max_index) && max_index>nrow(dfs), "Max 'index' should be
                less than or equals to number of rows in  '...' but max(index)=",max(index, na.rm = TRUE),", NROW(...)=", nrow(dfs))
-    if(length(index)<2){
+    if(length(index)==1){
         if(!is.na(index)){
             unlist(dfs[index,]) 
         } else {
