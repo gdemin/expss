@@ -9,9 +9,9 @@ expect_identical(vlookup(c('z','d','f','d'),dict,lookup_column = 'small'),dict[c
 expect_identical(vlookup(c('rows1','rows5','rows2','rows2'),dict,result_columns = c("small","cap"),lookup_column = 'row.names'),
                  dict[c(1,5,2,2),c("small","cap")])
 
-
+context("vlookup tbl_df")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    context("vlookup tbl_df")
+
     
     dict = tbl_df(data.frame(num=1:26,small=letters,cap=LETTERS,stringsAsFactors = FALSE))
     rownames(dict) = paste0('rows',1:26)
@@ -22,6 +22,8 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     expect_identical(vlookup(c('rows1','rows5','rows2','rows2'),dict,result_columns = c("small","cap"),lookup_column = 'row.names'),
                      dict[c(1,5,2,2),c("small","cap")])
     
+} else {
+	cat("dplyr not found\n")
 }
 context("vlookup vector")
 # with vector

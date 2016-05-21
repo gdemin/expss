@@ -78,6 +78,7 @@ expect_equal(count_row_if(function(x) grepl("^a",x),df1),c(1,0,0,1))
 expect_equal(df1 %has% 'apples',c(TRUE,FALSE,FALSE,TRUE))
 
 # example with dplyr
+context("dplyr count_if")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     set.seed(123)
     df2 = as.data.frame(
@@ -96,6 +97,8 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
                     na = count_row_if(is.na,V1,V2,V3),
                     not_na = count_row_if(,V1,V2,V3)),
                      result)
+} else {
+	cat("dplyr not found\n")
 }
 
 

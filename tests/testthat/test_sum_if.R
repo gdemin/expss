@@ -62,6 +62,8 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
                     na = sum_row_if(is.na,V1,V2,V3),
                     not_na = sum_row_if(,V1,V2,V3)),
                      result)
+} else {
+	cat("dplyr not found\n")
 }
 
 

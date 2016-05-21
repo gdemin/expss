@@ -42,9 +42,9 @@ b$a = as.numeric(b$a)
 expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
 expect_equal(set_na(a, as.data.frame(t(c(TRUE, FALSE)))),b)
 
-
+context("set_na tbl_df")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    context("set_na tbl_df")
+
     
     a = as.tbl(data.frame(a=1:5,b=5:1))
     
@@ -68,6 +68,8 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     b$a = as.integer(b$a)
     
     expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
+} else {
+	cat("dplyr not found\n")
 }
 context("set_na matrix")
 

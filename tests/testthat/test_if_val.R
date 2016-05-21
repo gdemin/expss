@@ -22,8 +22,9 @@ expect_identical(if_val(x, list(gt(2)~y, lte(2) ~ z, .~99)), c(4, 8, 4, 9, 99))
 
 expect_identical(if_val(x, (z>4)~y), c(1, 3, 1, 9, 9))
 
+context("if_val dplyr")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    context("if_val dplyr")
+    
     
     
     x = c(1,3,1,3,NA)
@@ -49,6 +50,8 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
         w = if_val(x, gt(2)~y)
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))
+} else {
+	cat("dplyr not found\n")
 }
 ##########################
 
@@ -102,6 +105,8 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
         w = if_val(x, from = list(gt(2)), to = list(y))
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))
+} else {
+	cat("dplyr not found\n")
 }
 
 

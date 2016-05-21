@@ -98,8 +98,9 @@ b[1,3] = -1
 expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
 expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
 
+context("if_na tbl_df")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    context("if_na tbl_df")
+
     
     a = tbl_df(data.frame(a = 1:4, b = 5:8, d = 10:13))
     
@@ -141,7 +142,10 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
     expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
+} else {
+	cat("dplyr not found\n")
 }
+
 context("if_na list")
 
 a = 1:4
@@ -190,6 +194,7 @@ param = runif(30)
 param[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(group, param)
 
+context("if_na help dplyr")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     # replace NA's with group means
     df_clean = df %>% group_by(group) %>% 
@@ -204,7 +209,10 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     })
     
     expect_identical(as.data.frame(df_clean), df)
+} else {
+	cat("dplyr not found\n")
 }
+
 # replacement with column means
 
 # make data.frame
