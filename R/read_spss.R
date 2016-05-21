@@ -60,7 +60,7 @@ read_spss_to_list=function(file, reencode = NA){
 
 # Override default load
 # so on windows machines one can open SPSS *.sav/*.csv files by 
-# draging and droping it on R Gui
+# dragging and dropping it on R Gui
 load=function(file, envir = parent.frame()){
     if(is.character(file)) {
         for (each in file){
