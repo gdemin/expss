@@ -1,0 +1,83 @@
+context("modify")
+aa = 10 %r% 5
+a_ = 20 %r% 5
+a_1 = 1 %r% 5
+a_2 = 2 %r% 5
+a_4 = 4 %r% 5
+a_5 = 5 %r% 5
+
+b_1 = -1 %r% 5
+b_2 = -2 %r% 5
+b_4 = -4 %r% 5
+b_5 = -5 %r% 5 
+
+dfs = data.frame(
+    aa = 10 %r% 5,
+    b_ = 20 %r% 5,
+    b_1 = 11 %r% 5,
+    b_2 = 12 %r% 5,
+    b_4 = 14 %r% 5,
+    b_5 = 15 %r% 5 
+)
+
+result_dfs = dfs
+result_dfs$a_total = sum_row(a_1, a_2, a_4, a_5)
+result_dfs$b_total = with(dfs, sum_row(b_1, b_2, b_4, b_5))
+
+dfs2 = dfs
+dfs2$test = 1:5
+
+result_dfs2 = dfs2
+result_dfs2$a_total = ifelse(dfs2$test %in% 2:4, sum_row(a_1, a_2, a_4, a_5), NA)
+result_dfs2$b_total = ifelse(dfs2$test %in% 2:4, with(dfs, sum_row(b_1, b_2, b_4, b_5)), NA)
+result_dfs2$aa = ifelse(dfs2$test %in% 2:4, result_dfs2$aa+1, result_dfs2$aa)
+
+expect_identical(
+    modify(dfs, {
+        a_total = sum_row(get_var_range("a_1", "a_5"))
+        b_total = sum_row(get_var_range("b_1", "b_5"))
+    }), 
+    result_dfs
+)
+
+expect_identical(
+    modify(dfs, {
+        a_total = sum_row(a_1 %to% a_5)
+        b_total = sum_row(b_1 %to% b_5)
+    }), 
+    result_dfs
+)
+
+context("modify magrittr")
+if(suppressWarnings(require(magrittr, quietly = TRUE))){
+    expect_identical(
+        dfs %>% modify( {
+            a_total = sum_row(get_var_range("a_1", "a_5"))
+            b_total = sum_row(get_var_range("b_1", "b_5"))
+        }), 
+        result_dfs
+    )
+    
+    expect_identical(
+        dfs %>% modify( {
+            a_total = sum_row(a_1 %to% a_5)
+            b_total = sum_row(b_1 %to% b_5)
+        }), 
+        result_dfs
+    )
+    
+} else {
+    cat("magrittr not found\n")
+}
+
+context("modify_if")
+
+expect_identical(
+    modify_if(dfs2, test %in% 2:4,
+           {
+        a_total = sum_row(a_1 %to% a_5)
+        b_total = sum_row(b_1 %to% b_5)
+        aa = aa + 1
+    }), 
+    result_dfs2
+)
