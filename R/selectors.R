@@ -4,13 +4,22 @@
 #' @param end character Name of start variable (e. g. a_5)
 #' @param e1 unquoted name of start variable (e. g. a_1)
 #' @param e2 unquoted name of start variable (e. g. a_5) 
+#' @param pattern character pattern of variable(-s) name
 #'
-#' @return  list of variables
+#' @return  data.frame/list with variables
 #'
 #' @examples
 #' a = 1
 #' @export
-var_range = function(start, end){
+get_var_range = function(start, end){
+    
+    as.data.frame(get_var_range_list(start, end), stringsAsFactors = FALSE)
+    
+}
+
+#' @export
+#' @rdname get_var_range
+get_var_range_list = function(start, end){
     stopif(length(start)!=1 | length(end)!=1, "Length of 'start' and 'end' arguments shoud be equal to 1. 
            But length(start)=", length(start), " and length(end) = ", length(end) )
     stopif(!all(grepl("^(.+?)([\\d]+)$", c(start, end), perl = TRUE)),
@@ -42,17 +51,45 @@ var_range = function(start, end){
 }
 
 #' @export
-#' @rdname var_range
+#' @rdname get_var_range
 '%to%' = function(e1, e2){
     e1 = as.character(substitute(e1))
     e2 = as.character(substitute(e2))
-    var_range(e1, e2)
+    get_var_range(e1, e2)
 }
 
+#' @export
+#' @rdname get_var_range
+'%to_list%' = function(e1, e2){
+    e1 = as.character(substitute(e1))
+    e2 = as.character(substitute(e2))
+    get_var_range_list(e1, e2)
+}
 
+#' @export
+#' @rdname get_var_range
+get_vars_list = function(pattern){
+    stopif(length(pattern)!=1, "Length of 'pattern' shoud be equal to 1. 
+           But length(pattern)=", length(pattern))
+    scope = 1
+    e = parent.frame(scope)
+    var_names = ls(name = e, pattern = pattern)
+    
+    while(length(var_names)==0 & !identical(e, globalenv())){
+        scope = scope + 1
+        e = parent.frame(scope)
+        var_names = ls(name = e, pattern = pattern)  
+    }  
+    
+    stopif(length(var_names)==0, "Variables not found: ", pattern)
+    mget(var_names, envir = e) 
+    
+} 
 
-
-
-
+#' @export
+#' @rdname get_var_range
+get_vars = function(pattern){
+    as.data.frame(get_vars_list(pattern), stringsAsFactors = FALSE) 
+} 
 
 

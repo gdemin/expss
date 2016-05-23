@@ -1,5 +1,5 @@
 
-context("var_range")
+context("get_var_range")
 aa = 10 %r% 5
 a_ = 20 %r% 5
 a_1 = 1 %r% 5
@@ -26,50 +26,50 @@ result_dfs$b_total = with(dfs, sum_row(b_1, b_2, b_4, b_5))
 result_dfs$a_total = sum_row(a_1, a_2, a_4, a_5)
 
 
-expect_identical(var_range("a_1", "a_5"), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+expect_identical(get_var_range("a_1", "a_5"), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(
-    with(dfs, var_range("a_1", "a_5")), 
-    list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+    with(dfs, get_var_range("a_1", "a_5")), 
+    data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(
-    with(dfs, var_range("b_1", "b_5")), 
-    with(dfs, list(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+    with(dfs, get_var_range("b_1", "b_5")), 
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
 )
 expect_identical(
-    with(dfs, var_range("b_1", "b_5")), 
-    with(dfs, list(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+    with(dfs, get_var_range("b_1", "b_5")), 
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
 )
 
 expect_identical(
     within(dfs, {
-           a_total = sum_row(var_range("a_1", "a_5"))
-           b_total = sum_row(var_range("b_1", "b_5"))
+           a_total = sum_row(get_var_range("a_1", "a_5"))
+           b_total = sum_row(get_var_range("b_1", "b_5"))
            }), 
     result_dfs
 )
 
 expect_identical(
     transform(dfs,
-        b_total = sum_row(var_range("b_1", "b_5")),
-        a_total = sum_row(var_range("a_1", "a_5"))
+        b_total = sum_row(get_var_range("b_1", "b_5")),
+        a_total = sum_row(get_var_range("a_1", "a_5"))
 
     ), 
     result_dfs
 )
 
-expect_error(var_range("b_1", "a_5"))
-expect_error(var_range("a_5", "a_1"))
-expect_error(var_range("a_1a", "a_5"))
-expect_error(var_range(rep("a_1",2), rep("a_5",2)))
-expect_error(var_range("d_1", "d_5"))
+expect_error(get_var_range("b_1", "a_5"))
+expect_error(get_var_range("a_5", "a_1"))
+expect_error(get_var_range("a_1a", "a_5"))
+expect_error(get_var_range(rep("a_1",2), rep("a_5",2)))
+expect_error(get_var_range("d_1", "d_5"))
 
 context("%to%")
-expect_identical(a_1 %to% a_5, list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+expect_identical(a_1 %to% a_5, data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(
     with(dfs, a_1 %to% a_5), 
-    list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+    data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(
     with(dfs, b_1 %to% b_5), 
-    with(dfs, list(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
 )
 expect_identical(
     within(dfs, {
@@ -100,16 +100,16 @@ context("dplyr")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     # expect_identical(
     #     dfs %>% mutate(
-    #               b_total = sum_row(var_range("b_1", "b_5")),
-    #               a_total = sum_row(var_range("a_1", "a_5"))
+    #               b_total = sum_row(get_var_range("b_1", "b_5")),
+    #               a_total = sum_row(get_var_range("a_1", "a_5"))
     #               
     #     ), 
     #     result_dfs
     # )
     # 
     # mutate(dfs, 
-    #     b_total = sum_row(var_range("b_1", "b_5")),
-    #     a_total = sum_row(var_range("a_1", "a_5"))
+    #     b_total = sum_row(get_var_range("b_1", "b_5")),
+    #     a_total = sum_row(get_var_range("a_1", "a_5"))
     #     
     # )
     
@@ -120,42 +120,42 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 context("magrittr")
 if(suppressWarnings(require(magrittr, quietly = TRUE))){
     expect_identical(
-        dfs %>% with(var_range("a_1", "a_5")), 
-        list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+        dfs %>% with(get_var_range("a_1", "a_5")), 
+        data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
     expect_identical(
-        dfs %>% with(var_range("b_1", "b_5")), 
-        with(dfs, list(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+        dfs %>% with(get_var_range("b_1", "b_5")), 
+        with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
     )
     expect_identical(
-        dfs %>% with(var_range("b_1", "b_5")), 
-        with(dfs, list(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+        dfs %>% with(get_var_range("b_1", "b_5")), 
+        with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
     )
     
     expect_identical(
         dfs %>% within( {
-            a_total = sum_row(var_range("a_1", "a_5"))
-            b_total = sum_row(var_range("b_1", "b_5"))
+            a_total = sum_row(get_var_range("a_1", "a_5"))
+            b_total = sum_row(get_var_range("b_1", "b_5"))
         }), 
         result_dfs
     )
     
     expect_identical(
         dfs %>% transform(
-            b_total = sum_row(var_range("b_1", "b_5")),
-            a_total = sum_row(var_range("a_1", "a_5"))
+            b_total = sum_row(get_var_range("b_1", "b_5")),
+            a_total = sum_row(get_var_range("a_1", "a_5"))
             
         ), 
         result_dfs
     )
     expect_identical(
         dfs %$% {
-            sum_row(var_range("a_1", "a_5"))
+            sum_row(get_var_range("a_1", "a_5"))
         }, 
         result_dfs$a_total
     )
     expect_identical(
         dfs %$% {
-            sum_row(var_range("b_1", "b_5"))
+            sum_row(get_var_range("b_1", "b_5"))
         }, 
         result_dfs$b_total
     )
@@ -163,14 +163,14 @@ if(suppressWarnings(require(magrittr, quietly = TRUE))){
     context("magrittr %to% ")
     expect_identical(
         dfs %>% with(a_1 %to% a_5), 
-        list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+        data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
     expect_identical(
         dfs %>% with(b_1 %to% b_5), 
-        with(dfs, list(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+        with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
     )
     expect_identical(
         dfs %>% with(b_1 %to% b_5), 
-        with(dfs, list(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+        with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
     )
     
     expect_identical(
@@ -212,5 +212,43 @@ if(suppressWarnings(require(magrittr, quietly = TRUE))){
 # 
 # dts = as.data.table(dfs)
 # result_dts = as.data.table(result_dfs)
-# dts[,new := sum_row(var_range("b_1", "b_5"))]
+# dts[,new := sum_row(get_var_range("b_1", "b_5"))]
 # dts
+
+
+context("get_vars")
+
+expect_identical(get_vars("a_[0-9]"), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+expect_identical(
+    with(dfs, get_vars("a_[0-9]")), 
+    data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+expect_identical(
+    with(dfs, get_vars("b_[0-9]")), 
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+)
+expect_identical(
+    with(dfs, get_vars("b_[0-9]")), 
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+)
+
+expect_identical(
+    within(dfs, {
+        a_total = sum_row(get_vars("a_[0-9]"))
+        b_total = sum_row(get_vars("b_[0-9]"))
+    }), 
+    result_dfs
+)
+
+expect_identical(
+    transform(dfs,
+              b_total = sum_row(get_vars("b_[0-9]")),
+              a_total = sum_row(get_vars("a_[0-9]"))
+              
+    ), 
+    result_dfs
+)
+
+expect_error(get_vars(rep("a_1",2)))
+expect_error(get_vars("d_[0-9]"))
+
+
