@@ -28,7 +28,7 @@ dfs2 = dfs
 dfs2$test = 1:5
 
 result_dfs2 = dfs2
-result_dfs2$a_total = ifelse(dfs2$test %in% 2:4, sum_row(a_1, a_2, a_4, a_5), NA)
+# result_dfs2$a_total = ifelse(dfs2$test %in% 2:4, sum_row(a_1, a_2, a_4, a_5), NA)
 result_dfs2$b_total = ifelse(dfs2$test %in% 2:4, with(dfs, sum_row(b_1, b_2, b_4, b_5)), NA)
 result_dfs2$aa = ifelse(dfs2$test %in% 2:4, result_dfs2$aa+1, result_dfs2$aa)
 
@@ -74,10 +74,19 @@ context("modify_if")
 
 expect_identical(
     modify_if(dfs2, test %in% 2:4,
-           {
-        a_total = sum_row(a_1 %to% a_5)
-        b_total = sum_row(b_1 %to% b_5)
-        aa = aa + 1
-    }), 
+              {
+                  b_total = sum_row(b_1 %to% b_5)
+                  aa = aa + 1
+              }), 
     result_dfs2
 )
+
+expect_error(
+    modify_if(dfs2, test %in% 2:4,
+              {
+                  a_total = sum_row(a_1 %to% a_5)
+                  b_total = sum_row(b_1 %to% b_5)
+                  aa = aa + 1
+              })
+)
+
