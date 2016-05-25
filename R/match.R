@@ -70,7 +70,7 @@ index_row = function(index, ...){
         stopif(length(index)!=nrow(dfs), "Length of 'index' should be
                1 or equals number of rows of '...' but length(index)=",length(index),", NROW(...)=", NROW(dfs))
         
-        # unlist(dfs[row_num, ])[index[row_num]] - if value of index is NA we want NA as a result
+        # unlist(dfs[row_num, ])[index[row_num]] because if value of index is NA we want NA as a result
         unname(unlist(lapply(seq_along(index), function(row_num) unlist(dfs[row_num, ])[index[row_num]])))
     }
     
