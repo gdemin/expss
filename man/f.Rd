@@ -4,36 +4,21 @@
 \alias{f}
 \title{Convert labelled variable to factor}
 \usage{
-f(x = character(), levels, labels = levels, exclude = NA,
-  ordered = is.ordered(x), nmax = NA)
+f(x, ...)
 }
 \arguments{
-\item{x}{a vector of data, usually taking a small number of distinct values.}
+\item{x}{a vector of data with labels.}
 
-\item{levels}{an optional vector of the values (as character strings) that x might have taken. The default is the unique set of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than sort(unique(x)).}
-
-\item{labels}{either an optional character vector of labels for the levels (in the same order as levels after removing those in exclude), or a character string of length 1.}
-
-\item{exclude}{a vector of values to be excluded when forming the set of levels. This should be of the same type as x, and will be coerced if necessary.}
-
-\item{ordered}{logical flag to determine if the levels should be regarded as ordered (in the order given).}
-
-\item{nmax}{an upper bound on the number of levels.}
-
-\item{...}{(in ordered(.)): any of the above, apart from ordered itself.}
+\item{...}{optional arguments for \code{\link[base]{factor}}}
 }
 \value{
-\code{f}, return an object of class factor. For details see base \code{factor} documentation.
+an object of class factor. For details see base \code{factor} documentation.
 }
 \description{
-This function provide the same functionality as original \code{\link[base]{factor}} function.
-But it is generic so that methods for variables with labels can be
-provided. The default method call the base 'factor' version.
-}
-\details{
-For variables with labels arguments \code{levels}, \code{labels}, \code{exclude},
- \code{nmax} are ignored. Factor levels are constructed as values from values labels + variable values  
- without labels (so there is no information lost). Labels are constructed as "Variable_label|Value label".
+Factor levels are constructed as values from values labels + variable values
+without labels (so there is no information lost). This levels look like as
+"Variable_label|Value label". If variable doesn't have labels usual
+\code{factor} will be applied.
 }
 \examples{
 data(mtcars)
