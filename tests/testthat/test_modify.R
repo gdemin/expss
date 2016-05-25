@@ -138,3 +138,40 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 } else {
     cat("dplyr not found\n")
 }
+
+context("modify labels")
+
+result_dfs3 = dfs
+result_dfs3$b_total = with(dfs, sum_row(b_1, b_2, b_4, b_5))
+var_lab(result_dfs3$aa) = "my label"
+val_lab(result_dfs3$aa) = c(one = 1, two = 2)
+
+expect_identical(
+    modify(dfs, {
+        b_total = sum_row(b_1, b_2, b_4, b_5)
+        var_lab(aa) = "my label"
+        val_lab(aa) = c(one = 1, two = 2)
+        
+        
+    }),
+    result_dfs3
+)
+
+# doesn't work
+# result_dfs3$b_total = NULL
+# expect_identical(
+#     modify_if(dfs, 1:5 %in% 2:4, {
+#         
+#         var_lab(aa) = "my label"
+#         val_lab(aa) = c(one = 1, two = 2)
+# 
+#     }),
+#     result_dfs3
+# )
+
+
+
+
+
+
+
