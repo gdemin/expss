@@ -70,6 +70,29 @@ if(suppressWarnings(require(magrittr, quietly = TRUE))){
     cat("magrittr not found\n")
 }
 
+# example with dplyr
+context("modify dplyr")
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
+    expect_identical(
+        tbl_df(dfs) %>% modify( {
+            a_total = sum_row(get_var_range("a_1", "a_5"))
+            b_total = sum_row(get_var_range("b_1", "b_5"))
+        }), 
+        tbl_df(result_dfs)
+    )
+    
+    expect_identical(
+        tbl_df(dfs) %>% modify( {
+            a_total = sum_row(a_1 %to% a_5)
+            b_total = sum_row(b_1 %to% b_5)
+        }), 
+        tbl_df(result_dfs)
+    )
+    
+} else {
+    cat("dplyr not found\n")
+}
+
 context("modify_if")
 
 expect_identical(
@@ -90,3 +113,28 @@ expect_error(
               })
 )
 
+
+
+context("modify_if dplyr")
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
+    expect_identical(
+        modify_if(tbl_df(dfs2), test %in% 2:4,
+                  {
+                      b_total = sum_row(b_1 %to% b_5)
+                      aa = aa + 1
+                  }), 
+        tbl_df(result_dfs2)
+    )
+    
+    expect_error(
+        modify_if(tbl_df(dfs2), test %in% 2:4,
+                  {
+                      a_total = sum_row(a_1 %to% a_5)
+                      b_total = sum_row(b_1 %to% b_5)
+                      aa = aa + 1
+                  })
+    )
+    
+} else {
+    cat("dplyr not found\n")
+}
