@@ -38,7 +38,53 @@ data.frame/list with variables
 \description{
 Get range of variables/variables by pattern
 }
+\details{
+\code{\%to\%} returns all variables in range from first argument to second 
+(similar to SPSS 'to'). Result doesn't depend from order of variables in 
+data.frame. Results are always arranged in ascending order and include all
+variables with such pattern even if these variables located in different
+parts of dataframe. \code{get_var_range} has the same functionality but
+intended for programming.
+\code{get_vars} returns all variables by pattern (regular expression).
+
+Functions with word 'list' in name return lists of variables instead of
+dataframes.
+}
 \examples{
-a = 1
+
+# In global environement
+aa = rep(10, 5)
+b = rep(20, 5)
+a_1 = rep(1, 5)
+a_2 = rep(2, 5)
+a_4 = rep(4, 5)
+a_5 = rep(5, 5)
+
+# identical results
+get_var_range("a_1", "a_5")
+a_1 \%to\% a_5
+
+# sum each row
+sum_row(a_1 \%to\% a_5)
+
+# In data.frame
+dfs = data.frame(
+    aa = rep(10, 5),
+    b_ = rep(20, 5),
+    b_1 = rep(11, 5),
+    b_2 = rep(12, 5),
+    b_4 = rep(14, 5),
+    b_5 = rep(15, 5) 
+)
+
+# all variables that starts with 'b'
+with(dfs, get_vars("^b"))
+
+# calculate sum of b_* variables
+modify(dfs,{
+    b_total = sum_row(b_1 \%to\% b_5)
+})
+
+
 }
 
