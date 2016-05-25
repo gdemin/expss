@@ -36,9 +36,6 @@ get_vars(pattern)
 data.frame/list with variables
 }
 \description{
-Get range of variables/variables by pattern
-}
-\details{
 \code{\%to\%} returns all variables in range from first argument to second 
 (similar to SPSS 'to'). Result doesn't depend from order of variables in 
 data.frame. Results are always arranged in ascending order and include all
@@ -46,7 +43,6 @@ variables with such pattern even if these variables located in different
 parts of dataframe. \code{get_var_range} has the same functionality but
 intended for programming.
 \code{get_vars} returns all variables by pattern (regular expression).
-
 Functions with word 'list' in name return lists of variables instead of
 dataframes.
 }
