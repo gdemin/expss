@@ -3,26 +3,55 @@
 \name{modify}
 \alias{modify}
 \alias{modify_if}
-\title{Modify data.frame}
+\title{Modify data.frame/conditionally modify data.frame}
 \usage{
-modify(data, expr, ...)
+modify(data, expr)
 
-modify_if(data, cond, expr, ...)
+modify_if(data, cond, expr)
 }
 \arguments{
-\item{data}{}
+\item{data}{data.frame}
 
-\item{expr}{}
+\item{expr}{expression(s) that should be evaluated in the context of data.frame \code{data}}
 
-\item{...}{}
+\item{cond}{logical vector or expression. Expression will be evaluated in the context of the data.}
 }
 \value{
-
+Both functions returns modified data.frame
 }
 \description{
-Modify data.frame
+\code{modify} evaluates expression \code{expr} in the context of data.frame
+\code{data}. It works similar to \code{\link[base]{within}} in base R but try
+to return new variables in order of their appearance in the expression. \code{modify_if} modifies only 
+rows for which \code{cond} has TRUE. Other rows remain unchanged. Newly
+created variables also will have values only in rows which \code{cond} has
+TRUE. There will be NA's in other rows. This function tries to mimic SPSS "DO
+IF(). ... END IF." statement.
 }
 \examples{
-a = 1
+dfs = data.frame(
+    test = 1:5,
+    aa = rep(10, 5),
+    b_ = rep(20, 5),
+    b_1 = rep(11, 5),
+    b_2 = rep(12, 5),
+    b_4 = rep(14, 5),
+    b_5 = rep(15, 5) 
+)
+
+
+# calculate sum of b* variables
+modify(dfs, {
+    b_total = sum_row(b_, b_1 \%to\% b_5)
+    var_lab(b_total) = "Sum of b"
+})
+
+# conditional modification
+modify_if(dfs, test \%in\% 2:4, {
+    aa = aa + 1    
+    a_b = aa + b_    
+    b_total = sum_row(b_, b_1 \%to\% b_5)
+})
+
 }
 

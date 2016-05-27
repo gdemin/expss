@@ -1,20 +1,52 @@
-#' Modify data.frame
+#' Modify data.frame/conditionally modify data.frame
+#' 
+#' \code{modify} evaluates expression \code{expr} in the context of data.frame
+#' \code{data}. It works similar to \code{\link[base]{within}} in base R but try
+#' to return new variables in order of their appearance in the expression. \code{modify_if} modifies only 
+#' rows for which \code{cond} has TRUE. Other rows remain unchanged. Newly
+#' created variables also will have values only in rows which \code{cond} has
+#' TRUE. There will be NA's in other rows. This function tries to mimic SPSS "DO
+#' IF(). ... END IF." statement.
 #'
-#' @param data 
-#' @param expr 
-#' @param ... 
+#' @param data data.frame
+#' @param expr expression(s) that should be evaluated in the context of data.frame \code{data}
+#' @param cond logical vector or expression. Expression will be evaluated in the context of the data.  
 #'
-#' @return
+#' @return Both functions returns modified data.frame
 #'
 #' @examples
-#' a = 1
+#' dfs = data.frame(
+#'     test = 1:5,
+#'     aa = rep(10, 5),
+#'     b_ = rep(20, 5),
+#'     b_1 = rep(11, 5),
+#'     b_2 = rep(12, 5),
+#'     b_4 = rep(14, 5),
+#'     b_5 = rep(15, 5) 
+#' )
+#' 
+#' 
+#' # calculate sum of b* variables
+#' modify(dfs, {
+#'     b_total = sum_row(b_, b_1 %to% b_5)
+#'     var_lab(b_total) = "Sum of b"
+#' })
+#' 
+#' # conditional modification
+#' modify_if(dfs, test %in% 2:4, {
+#'     aa = aa + 1    
+#'     a_b = aa + b_    
+#'     b_total = sum_row(b_, b_1 %to% b_5)
+#' })
+#' 
 #' @export
-modify =  function (data, expr, ...) {
+modify =  function (data, expr) {
     UseMethod("modify")
 }
 
 #' @export
-modify.data.frame = function (data, expr, ...) {
+modify.data.frame = function (data, expr) {
+    # based on 'within' from base R by R Core team
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     eval(substitute(expr), e)
@@ -28,16 +60,19 @@ modify.data.frame = function (data, expr, ...) {
     data
 }
 
+
+
 #' @export
 #' @rdname modify
-modify_if = function (data, cond, expr, ...){
+modify_if = function (data, cond, expr){
     UseMethod("modify_if")
 }
 
 
- 
+
 #' @export
-modify_if = function (data, cond, expr, ...) {
+modify_if = function (data, cond, expr) {
+    # based on 'within' from base R by R Core team
     parent = parent.frame()
     cond = substitute(cond)
     cond = eval(cond, data, parent.frame())

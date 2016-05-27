@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^tests
 \.Rhistory
 \.gitignore
 \.git
