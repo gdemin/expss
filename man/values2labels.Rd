@@ -13,7 +13,7 @@ v2l(x)
 \item{x}{vector/matrix/data.frame/list}
 }
 \value{
-Object of the same type as x but with value labels instead of values. If there are no labels for
+Object of the same form as x but with value labels instead of values. If there are no labels for
  some values they are converted to characters in most cases.
 }
 \description{
