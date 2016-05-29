@@ -1,5 +1,64 @@
+#' Criteria functions
+#' 
+#' These functions returns criteria functions which could be used in different 
+#' situation - see \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%},
+#' \link{count_if} etc. For example, \code{gt(5)} returns function which tests
+#' whether its argument greater than five.  \code{fixed("apple")} return function
+#' which tests whether its argument contains "apple". Logical operations (|, &,
+#' !, xor) defined for these functions.
+#' List of functions:
+#' \itemize{
+#' \item{\code{gt}}{ greater than}
+#' \item{\code{gte}}{ greater than or equal}
+#' \item{\code{eq}}{ equal} 
+#' \item{\code{neq}}{ not equal} 
+#' \item{\code{lt}}{ less than}
+#' \item{\code{lte}}{ less than or equal}
+#' \item{\code{regex}}{ use POSIX 1003.2 extended regular expressions. For details see \link[base]{grepl}}
+#' \item{\code{perl}}{ perl-compatible regular expressions. For details see \link[base]{grepl}}
+#' \item{\code{fixed}}{ pattern is a string to be matched as is. For details see \link[base]{grepl}}
+#' } 
+#' 
+#' @param x vector 
+#' @param pattern character string containing a regular expression (or character
+#'   string for \code{fixed}) to be matched in the given character vector.
+#'   Coerced by as.character to a character string if possible.
+#' @param ignore.case logical see \link[base]{grepl}
+#' @param useBytes logical see \link[base]{grepl}
+#'
+#' @return function of class 'criterion' which tests its argument against condition and return logical value
+#' 
+#' @seealso \link{count_if}, \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%}  
+#' @examples
+#' # operations on vector
+#' 1:6 %d% gt(4) # 1:4
+#' 
+#' letters %i% (fixed("a") | fixed("z")) # a, z
+#' 
+#' # examples with count_if
+#' df1 = data.frame(
+#'     a=c("apples",   "oranges",     "peaches",     "apples"),
+#'     b = c(32, 54, 75, 86)
+#' )
+#' 
+#' count_if(gt(55),df1$b) # greater than 55 = 2
+#' 
+#' count_if(neq(75),df1$b) # not equal 75 = 3
+#' 
+#' count_if(gte(32),df1$b) # greater than or equal 32 = 4
+#' 
+#' count_if(gt(32) & lt(86),df1$b) # greater than 32 and less than 86 = 2
+#' 
+#' # values that started on 'a'
+#' count_if(regex("^a"),df1) # 2
+#' 
+#' # count_row_if
+#' count_row_if(regex("^a"),df1) # c(1,0,0,1)
+#' 
+#' 
+#' 
+#' @name criteria
 #' @export
-#' @rdname count_if
 eq = function(x){
     force(x)
     res = function(y) {
@@ -11,7 +70,7 @@ eq = function(x){
 }
 
 #' @export
-#' @rdname count_if
+#' @rdname criteria
 neq = function(x){
     force(x)
     res = function(y) {
@@ -24,14 +83,14 @@ neq = function(x){
 }
 
 #' @export
-#' @rdname count_if
+#' @rdname criteria
 lt = function(x){
     
     build_compare(x,"<")    
 }
 
 #' @export
-#' @rdname count_if
+#' @rdname criteria
 gt = function(x){
     
     build_compare(x,">")    
@@ -39,20 +98,20 @@ gt = function(x){
 }
 
 #' @export
-#' @rdname count_if
+#' @rdname criteria
 lte = function(x){
     build_compare(x,"<=")    
 
 }
 
 #' @export
-#' @rdname count_if
+#' @rdname criteria
 gte = function(x){
     build_compare(x,">=")       
 }
 
 #' @export
-#' @rdname count_if
+#' @rdname criteria
 perl = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
     res = function(x){
@@ -63,7 +122,7 @@ perl = function(pattern, ignore.case = FALSE, useBytes = FALSE){
 }
 
 #' @export
-#' @rdname count_if
+#' @rdname criteria
 regex = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
     res = function(x){
@@ -74,7 +133,7 @@ regex = function(pattern, ignore.case = FALSE, useBytes = FALSE){
 }
 
 #' @export
-#' @rdname count_if
+#' @rdname criteria
 fixed = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
     res = function(x){
