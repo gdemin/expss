@@ -1,10 +1,5 @@
 #' Infix operations on vectors - append, diff, intersection, union, replication
-#' @param e1 vector
-#' @param e2 vector (or function for \code{\%d\%}, \code{\%i\%})
 #' 
-#' @return vector
-#' 
-#' @details 
 #' \itemize{
 #' \item{\code{\%a\%}}{ a(ppends) second argument to first argument.}
 #' \item{\code{\%u\%}}{ u(ites) first and second arguments. Remove elements from
@@ -18,10 +13,15 @@
 #' \item{\code{\%e\%}}{ e(xclusive OR). Returns elements that contained only in one of arguments.}
 #' \item{\code{\%r\%}}{ r(epeats) first argument second argument times}
 #' } 
-#' 
 #' All these functions preserve names of vectors and doesn't remove duplicates.
-#' For \code{\%d\%} and \code{\%i\%} one can use criteria functions. See \link{count_if}
+#' For \code{\%d\%} and \code{\%i\%} one can use criteria functions. See \link{criteria}
 #'  for details.
+#'  
+#' @param e1 vector
+#' @param e2 vector (or function for \code{\%d\%}, \code{\%i\%})
+#' 
+#' @name vectors
+#' @return vector
 #' 
 #' @examples 
 #' 
@@ -33,12 +33,15 @@
 #' 
 #' 1:6 %d% 5:6   # 1:4
 #' 
+#' # function as criterion
 #' 1:6 %d% gt(4) # 1:4
 #' 
 #' 1:4 %i% 4:5   # 4
 #' 
+#' # function as criterion
 #' letters %i% perl("[a-d]") # a,b,c,d
-#'  
+#' 
+#' # function as criterion 
 #' letters %i% (fixed("a") | fixed("z")) # a, z
 #' 
 #' 1:4 %e% 4:5   # 1, 2, 3, 5
@@ -51,14 +54,14 @@
 }
 
 #' @export
-#' @rdname grapes-a-grapes
+#' @rdname vectors
 '%u%' = function(e1, e2){
     c(e1, e2[!(e2 %in% e1)])
 }
 
 
 #' @export
-#' @rdname grapes-a-grapes
+#' @rdname vectors
 '%d%' = function(e1, e2){
     if (is.function(e2)){
         e1[!e2(e1)]
@@ -68,7 +71,7 @@
 }
 
 #' @export
-#' @rdname grapes-a-grapes
+#' @rdname vectors
 '%i%' = function(e1, e2){
     if (is.function(e2)){
         e1[e2(e1)]
@@ -79,13 +82,13 @@
 
 
 #' @export
-#' @rdname grapes-a-grapes
+#' @rdname vectors
 '%e%' = function(e1, e2){
     c(e1[!(e1 %in% e2)],e2[!(e2 %in% e1)])
 }
 
 #' @export
-#' @rdname grapes-a-grapes
+#' @rdname vectors
 '%r%' = function(e1, e2){
     if(length(e2)==1){
         rep(e1, e2)
