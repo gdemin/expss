@@ -1,7 +1,9 @@
 #' Replace data.frame/list names with corresponding variables labels.
 #' 
 #' @param x data.frame/list.
-#' @param keep_names logical. If TRUE original column names will be appended to labels in round brackets.
+#' @param exclude logical/integer/character columns which names should be left unchanged. Only applicable to list/data.frame.
+#' @param keep_names logical. If TRUE original column names will be appended to
+#'   labels in round brackets. Only applicable to list/data.frame.
 #' @return Object of the same type as x but with variable labels instead of names. If there are no labels for
 #'  some variables their names remain unchanged.
 #' @details \code{n2l} is just shortcut to \code{names2labels}. 
@@ -9,7 +11,7 @@
 #' @examples
 #' data(mtcars)
 #' mtcars = within(mtcars,{
-#'                 var_lab(mpg) = NULL
+#'                 var_lab(mpg) = "Miles/(US) gallon"
 #'                 var_lab(cyl) = "Number of cylinders"
 #'                 var_lab(disp) = "Displacement (cu.in.)"
 #'                 var_lab(hp) = "Gross horsepower"
@@ -23,38 +25,66 @@
 #' })
 #' 
 #' # without original names
-#' summary(lm(mpg ~ ., data = names2labels(mtcars)))
+#' # note: we exclude dependent variable 'mpg' from conversion to use its short name in formula
+#' summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg")))
 #' # with names
-#' summary(lm(mpg ~ ., data = names2labels(mtcars, keep_names = TRUE)))
+#' summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg", keep_names = TRUE)))
 #' @export
-names2labels = function(x, keep_names = FALSE){
+names2labels = function(x, exclude = NULL, keep_names = FALSE){
     UseMethod("names2labels")
     
 }
 
 #' @export
-names2labels.default = function(x, keep_names = FALSE){
+names2labels.default = function(x, exclude = NULL, keep_names = FALSE){
+    lab = var_lab(x)
+    x = as.matrix(x)
+    if (is.null(lab) || (lab=="")) return(x)
+    colnames(x) = lab
     x
 }
 
 #' @export
-names2labels.list = function(x, keep_names = FALSE){
+names2labels.list = function(x, exclude = NULL, keep_names = FALSE){
     labs = lapply(x, var_lab)
     no_labs = sapply(labs,function(each) is.null(each) || (each==""))
-    labs = unlist(labs[!no_labs])
-    if (keep_names) labs = paste0(labs," (",names(x)[!no_labs],")")
-    names(x)[!no_labs] = labs
+    if (length(exclude)>0) {
+        if(is.logical(exclude)){
+            stopif(length(exclude)!=length(x), 
+                   "Length of logical exclude should be equal length of x but length(exclude) = " ,length(exclude), " and ncol(x)=", length(x))
+            include = !exclude
+        
+            } else {
+            if (is.character(exclude)){
+                stopif(!all(exclude %in% names(x)), 
+                       "Some names in 'exclude' argument doesn't found in 'x': " , setdiff(exclude, names(x)))
+                include = !(names(x) %in% exclude)
+            } else {
+                stopif(!is.numeric(exclude), "'exclude' argument should be logical, numeric or character but: ", exclude)
+                stopif(max(exclude, na.rm = TRUE)>length(x), 
+                       "max(exclude) greater than number of elements in 'x': ", max(max(exclude, na.rm = TRUE))," vs ", length(x))
+                include = !(seq_along(x) %in% exclude)
+                
+            }
+        }
+    } else {
+        include = TRUE
+    }
+    include = !no_labs & include
+    labs = unlist(labs[include])
+    if (keep_names) labs = paste0(labs," (",names(x)[include],")")
+    names(x)[include] = labs
     x
 }
 
 #' @export
-names2labels.data.frame = function(x, keep_names = FALSE){
-    names2labels.list(x,keep_names)    
+names2labels.data.frame = function(x, exclude = NULL, keep_names = FALSE){
+    names2labels.list(x = x, exclude = exclude, keep_names = keep_names)    
     
 }
 
 #' @export
-names2labels.matrix = function(x, keep_names = FALSE){
+names2labels.matrix = function(x, exclude = NULL, keep_names = FALSE){
     lab = var_lab(x)
     if (is.null(lab) || (lab=="")) return(x)
     clm = colnames(x)

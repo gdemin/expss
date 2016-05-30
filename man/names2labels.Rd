@@ -5,14 +5,17 @@
 \alias{names2labels}
 \title{Replace data.frame/list names with corresponding variables labels.}
 \usage{
-names2labels(x, keep_names = FALSE)
+names2labels(x, exclude = NULL, keep_names = FALSE)
 
-n2l(x, keep_names = FALSE)
+n2l(x, exclude = NULL, keep_names = FALSE)
 }
 \arguments{
 \item{x}{data.frame/list.}
 
-\item{keep_names}{logical. If TRUE original column names will be appended to labels in round brackets.}
+\item{exclude}{logical/integer/character columns which names should be left unchanged. Only applicable to list/data.frame.}
+
+\item{keep_names}{logical. If TRUE original column names will be appended to
+labels in round brackets. Only applicable to list/data.frame.}
 }
 \value{
 Object of the same type as x but with variable labels instead of names. If there are no labels for
@@ -27,7 +30,7 @@ Replace data.frame/list names with corresponding variables labels.
 \examples{
 data(mtcars)
 mtcars = within(mtcars,{
-                var_lab(mpg) = NULL
+                var_lab(mpg) = "Miles/(US) gallon"
                 var_lab(cyl) = "Number of cylinders"
                 var_lab(disp) = "Displacement (cu.in.)"
                 var_lab(hp) = "Gross horsepower"
@@ -41,9 +44,10 @@ mtcars = within(mtcars,{
 })
 
 # without original names
-summary(lm(mpg ~ ., data = names2labels(mtcars)))
+# note: we exclude dependent variable 'mpg' from conversion to use its short name in formula
+summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg")))
 # with names
-summary(lm(mpg ~ ., data = names2labels(mtcars, keep_names = TRUE)))
+summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg", keep_names = TRUE)))
 }
 \seealso{
 \code{\link{values2labels}}
