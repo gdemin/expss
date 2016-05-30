@@ -19,7 +19,7 @@ datasets.}
 calculations. Levels above this value will convert to 'Other values'.}
 }
 \value{
-data.frame with following columns: Name, Class, Length, NotNA, 
+data.frame with following columns: Name, Class, Length, NotNA, NA, 
   Distincts, Label, ValueLabels, Min., 1st Qu., Median, Mean, 3rd Qu., Max., 
   Frequency.
 }
@@ -27,8 +27,8 @@ data.frame with following columns: Name, Class, Length, NotNA,
 \code{into} returns data.frame with variables info.
 }
 \details{
-Resulting data.frame of this function mainly intended to be saved as
-  csv to keep in front of eyes in RStudio viewer or spreadsheet software as 
+Resulting data.frame mainly intended to keep in front of eyes in
+  RStudio viewer or to be saved as csv to view in the spreadsheet software as
   reference about working dataset.
 }
 \examples{

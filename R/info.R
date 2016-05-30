@@ -9,12 +9,12 @@
 #'   datasets.
 #' @param max_levels Numeric. Maximum levels for using in frequency 
 #'   calculations. Levels above this value will convert to 'Other values'.
-#' @return data.frame with following columns: Name, Class, Length, NotNA, 
+#' @return data.frame with following columns: Name, Class, Length, NotNA, NA, 
 #'   Distincts, Label, ValueLabels, Min., 1st Qu., Median, Mean, 3rd Qu., Max., 
 #'   Frequency.
-#' @details Resulting data.frame of this function mainly intended to be saved as
-#'   csv to keep in front of eyes in RStudio viewer or spreadsheet software as 
-#'   reference about working dataset. 
+#' @details Resulting data.frame mainly intended to keep in front of eyes in
+#'   RStudio viewer or to be saved as csv to view in the spreadsheet software as
+#'   reference about working dataset.
 #' @examples
 #' data(mtcars)
 #' var_lab(mtcars$am) = "Transmission"
@@ -29,22 +29,27 @@ info=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
 info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
     max_levels = max(1,max_levels)
     varlab=var_lab(x)
-    if (length(varlab)==0) varlab=NA
+    if (length(varlab)==0 || is.na(varlab) || varlab=="") varlab=NA
     vallab=val_lab(x)
     if (length(vallab)==0) {
-        vallab=NA }
+        vallab=NA
+    }
     else {
         vallab=paste(paste(names(vallab),vallab,sep="="),collapse=", ")
     }
+    nas = is.na(x)
+    not_na = sum(!nas)
     res = list("Class"=paste(class(x),collapse=","),
                "Length"=length(x),
-               "NotNA"=sum(!is.na(x)),
+               "NotNA"= not_na,
+                "NA"= length(x) - not_na,
                "Distincts" = length(unique(x)),
                "Label"=varlab,
                "ValueLabels"=vallab)
     if (stats){
         if (is.numeric(x)){
-            res = c(res, summary(na.omit(x)))
+            x_not_na = x[!nas]
+            res = c(res, summary(x_not_na))
         } else {
             placeholder = rep(NA, 6) 
             names(placeholder) = c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max." )
@@ -62,7 +67,7 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
         values=paste(paste(names(values),values,sep="="),collapse=", ")
         res = c(res, Frequency =values)
     }
-    curr_name = paste(as.character(substitute(x)),collapse = "")
+    curr_name = deparse(substitute(x))
     setNames(as.data.frame(c(curr_name,res),stringsAsFactors = FALSE),c("Name",names(res)))
 }
 
