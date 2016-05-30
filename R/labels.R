@@ -327,7 +327,7 @@ make_labels=function(text,code_position=c("left","right")){
 combine_labels = function(...){
     args = list(...)
     new_lab = Reduce(`%u%`, args)
-    sort(new_lab)
+    if(length(new_lab)>0) sort(new_lab) else new_lab
 }
 
 labelled_and_unlabelled = function(uniqs,vallab){
@@ -336,7 +336,7 @@ labelled_and_unlabelled = function(uniqs,vallab){
         names(uniqs) = uniqs
     }    
     vallab = vallab %u% uniqs
-    if (length(vallab>1)) sort(vallab) else vallab
+    if (length(vallab)>1) sort(vallab) else vallab
 }
 
 as.labelled = function(x){
