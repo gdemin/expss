@@ -1,6 +1,9 @@
-#' Provides variables info for dataset.
+#' Provides variables description for dataset
 #' 
-#' \code{into} returns data.frame with variables info.
+#' \code{info} returns data.frame with variables description and some summary
+#' statistics. Resulting data.frame mainly intended to keep in front of eyes in 
+#' RStudio viewer or to be saved as csv to view in the spreadsheet software as 
+#' reference about working dataset.
 #' 
 #' @param x vector/factor/list/data.frame.
 #' @param stats Logical. Should we calculate summary for each variable?
@@ -12,9 +15,6 @@
 #' @return data.frame with following columns: Name, Class, Length, NotNA, NA, 
 #'   Distincts, Label, ValueLabels, Min., 1st Qu., Median, Mean, 3rd Qu., Max., 
 #'   Frequency.
-#' @details Resulting data.frame mainly intended to keep in front of eyes in
-#'   RStudio viewer or to be saved as csv to view in the spreadsheet software as
-#'   reference about working dataset.
 #' @examples
 #' data(mtcars)
 #' var_lab(mtcars$am) = "Transmission"

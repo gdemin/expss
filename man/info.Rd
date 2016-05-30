@@ -2,7 +2,7 @@
 % Please edit documentation in R/info.R
 \name{info}
 \alias{info}
-\title{Provides variables info for dataset.}
+\title{Provides variables description for dataset}
 \usage{
 info(x, stats = TRUE, frequencies = TRUE, max_levels = 10)
 }
@@ -24,12 +24,10 @@ data.frame with following columns: Name, Class, Length, NotNA, NA,
   Frequency.
 }
 \description{
-\code{into} returns data.frame with variables info.
-}
-\details{
-Resulting data.frame mainly intended to keep in front of eyes in
-  RStudio viewer or to be saved as csv to view in the spreadsheet software as
-  reference about working dataset.
+\code{info} returns data.frame with variables description and some summary
+statistics. Resulting data.frame mainly intended to keep in front of eyes in 
+RStudio viewer or to be saved as csv to view in the spreadsheet software as 
+reference about working dataset.
 }
 \examples{
 data(mtcars)
