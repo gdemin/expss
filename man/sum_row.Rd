@@ -57,8 +57,9 @@ All functions except \code{apply_*} return numeric vector of length
   on supplied \code{fun} function.
 }
 \description{
-This are convenience functions for usage inside \code{with}, \code{within}
-and \code{dplyr} \code{mutate} functions.
+This are convenience functions for usage inside \link{modify},
+\link{modify_if}, \link[base]{with}, \link[base]{within} and \code{dplyr}
+\code{mutate} functions.
 }
 \details{
 sum/mean/sd/median/max/min always omits NA. \code{sum_*} behavior is
@@ -67,6 +68,32 @@ sum/mean/sd/median/max/min always omits NA. \code{sum_*} behavior is
   0).
 }
 \examples{
+## Inside example
+iris = modify(iris,{
+  new_median = median_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+  new_mean = mean_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+  })
+  
+dfs = data.frame(
+    test = 1:5,
+    aa = rep(10, 5),
+    b_ = rep(20, 5),
+    b_1 = rep(11, 5),
+    b_2 = rep(12, 5),
+    b_4 = rep(14, 5),
+    b_5 = rep(15, 5) 
+)
+
+# calculate sum of b* variables
+modify(dfs, {
+    b_total = sum_row(b_, b_1 \%to\% b_5)
+})
+
+# conditional modification
+modify_if(dfs, test \%in\% 2:4, {
+    b_total = sum_row(b_, b_1 \%to\% b_5)
+})
+
 # Examples from rowSums/colSums manual.
 ## Compute row and column sums for a matrix:
 x = cbind(x1 = 3, x2 = c(4:1, 2:5))
@@ -74,15 +101,10 @@ sum_row(x); sum_col(x)
 dimnames(x)[[1]] <- letters[1:8]
 sum_row(x); sum_col(x); mean_row(x); mean_col(x)
 
-## Inside within example
-iris = within(iris,{
-  new_median = median_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
-  new_mean = mean_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
-  })
-
 }
 \seealso{
-\link{count_if}, \link{sum_if}, \link{mean_if}, \link{median_if},
-  \link{sd_if}, \link{min_if}, \link{max_if}
+\link{modify}, \link{modify_if}, \link{\%to\%}, \link{count_if},
+  \link{sum_if}, \link{mean_if}, \link{median_if}, \link{sd_if},
+  \link{min_if}, \link{max_if}
 }
 

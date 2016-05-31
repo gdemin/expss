@@ -1,7 +1,8 @@
 #' Compute sum/mean/sd/median/max/min/custom function on rows/columns 
 #' 
-#' This are convenience functions for usage inside \code{with}, \code{within}
-#' and \code{dplyr} \code{mutate} functions.
+#' This are convenience functions for usage inside \link{modify},
+#' \link{modify_if}, \link[base]{with}, \link[base]{within} and \code{dplyr}
+#' \code{mutate} functions.
 #' 
 #' @param ... data. Vectors, matrixes, data.frames, list. Shorter arguments
 #'   will be recycled.
@@ -17,11 +18,38 @@
 #'   always omits NA but result of column/row with all NA gives NA (instead of
 #'   0).
 #' 
-#' @seealso \link{count_if}, \link{sum_if}, \link{mean_if}, \link{median_if},
-#'   \link{sd_if}, \link{min_if}, \link{max_if}
+#' @seealso \link{modify}, \link{modify_if}, \link{\%to\%}, \link{count_if},
+#'   \link{sum_if}, \link{mean_if}, \link{median_if}, \link{sd_if},
+#'   \link{min_if}, \link{max_if}
 #' 
 #' @export
 #' @examples
+#' ## Inside example
+#' iris = modify(iris,{
+#'   new_median = median_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+#'   new_mean = mean_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+#'   })
+#'   
+#' dfs = data.frame(
+#'     test = 1:5,
+#'     aa = rep(10, 5),
+#'     b_ = rep(20, 5),
+#'     b_1 = rep(11, 5),
+#'     b_2 = rep(12, 5),
+#'     b_4 = rep(14, 5),
+#'     b_5 = rep(15, 5) 
+#' )
+#' 
+#' # calculate sum of b* variables
+#' modify(dfs, {
+#'     b_total = sum_row(b_, b_1 %to% b_5)
+#' })
+#' 
+#' # conditional modification
+#' modify_if(dfs, test %in% 2:4, {
+#'     b_total = sum_row(b_, b_1 %to% b_5)
+#' })
+#' 
 #' # Examples from rowSums/colSums manual.
 #' ## Compute row and column sums for a matrix:
 #' x = cbind(x1 = 3, x2 = c(4:1, 2:5))
@@ -29,16 +57,13 @@
 #' dimnames(x)[[1]] <- letters[1:8]
 #' sum_row(x); sum_col(x); mean_row(x); mean_col(x)
 #' 
-#' ## Inside within example
-#' iris = within(iris,{
-#'   new_median = median_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
-#'   new_mean = mean_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
-#'   })
-#' 
 #' @export
 sum_row=function(...){
     data = dots2data_frame(...)
-    rowSums(data, na.rm=TRUE)
+    nas = is.na(rowMeans(data, na.rm=TRUE))
+    res = rowSums(data, na.rm=TRUE)
+    res[nas] = NA
+    res
 }
 
 
@@ -46,7 +71,10 @@ sum_row=function(...){
 #' @rdname sum_row
 sum_col =function(...){
     data = dots2data_frame(...)
-    colSums(data, na.rm=TRUE)
+    nas = is.na(colMeans(data, na.rm=TRUE))
+    res = colSums(data, na.rm=TRUE)
+    res[nas] = NA
+    res
 }
 
 
