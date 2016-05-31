@@ -20,13 +20,16 @@ modify_if(data, cond, expr)
 Both functions returns modified data.frame
 }
 \description{
-\code{modify} evaluates expression \code{expr} in the context of data.frame
+\code{modify} evaluates expression \code{expr} in the context of data.frame 
 \code{data}. It works similar to \code{\link[base]{within}} in base R but try
-to return new variables in order of their appearance in the expression. \code{modify_if} modifies only 
-rows for which \code{cond} has TRUE. Other rows remain unchanged. Newly
-created variables also will have values only in rows which \code{cond} has
-TRUE. There will be NA's in other rows. This function tries to mimic SPSS "DO
-IF(). ... END IF." statement.
+to return new variables in order of their appearance in the expression.
+\code{modify_if} modifies only rows for which \code{cond} has TRUE. Other
+rows remain unchanged. Newly created variables also will have values only in
+rows for which \code{cond} has TRUE. There will be NA's in other rows. This
+function tries to mimic SPSS "DO IF(). ... END IF." statement. There is a
+special constant \code{.n} which equals to number of cases in \code{data} for
+usage in expression inside \code{modify}. Inside \code{modify_if} \code{.n}
+gives number of rows which will be affected by expressions.
 }
 \examples{
 dfs = data.frame(
@@ -44,6 +47,7 @@ dfs = data.frame(
 modify(dfs, {
     b_total = sum_row(b_, b_1 \%to\% b_5)
     var_lab(b_total) = "Sum of b"
+    random_numbers = runif(.n) # .n usage
 })
 
 # conditional modification
@@ -51,6 +55,7 @@ modify_if(dfs, test \%in\% 2:4, {
     aa = aa + 1    
     a_b = aa + b_    
     b_total = sum_row(b_, b_1 \%to\% b_5)
+    random_numbers = runif(.n) # .n usage
 })
 
 }
