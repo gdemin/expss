@@ -2,51 +2,59 @@
 % Please edit documentation in R/vlookup.R
 \name{vlookup}
 \alias{vlookup}
+\alias{vlookup_df}
 \title{Look up values in dictionary.}
 \usage{
-vlookup(lookup_value, dict, result_columns = NULL, lookup_column = 1)
+vlookup(lookup_value, dict, result_column, lookup_column = 1)
+
+vlookup_df(lookup_value, dict, result_column = NULL, lookup_column = 1)
 }
 \arguments{
 \item{lookup_value}{Vector of looked up values}
 
 \item{dict}{Dictionary. Should be vector/matrix or data.frame}
 
-\item{result_columns}{Resulting columns of dict. Should be numeric or 
-character vector. There is a special value 'row.names'. If result_columns =
-'row.names' and dict is matrix/data.frame then row names of dict will be 
-returned. If result_columns = 'row.names' and dict is vector then names of 
-vector will be returned. If result_columns is NULL (default) then result 
-will be entire rows.}
+\item{result_column}{Resulting columns of dict. Should be numeric or 
+character vector. There are special values:
+'row.names', 'rownames', 'names'. If result_column equals to one of these
+special values and dict is matrix/data.frame then row names of dict will be
+returned. If dict is vector then names of 
+vector will be returned. For \code{vlookup_df} default result_column is NULL and result 
+will be entire rows. For \code{vlookup} result_column = NULL gives error.}
 
-\item{lookup_column}{Column of dict in which lookup value will be searched.
-By default it is the first column of the dict. There is a special value
-'row.names'. If lookup_columns = 'row.names' and dict is matrix/data.frame
-then values will be searched in the row names of dict. If lookup_columns =
-'row.names' and dict is vector then values will be searched in names of the
-dict.}
+\item{lookup_column}{Column of dict in which lookup value will be searched. 
+By default it is the first column of the dict. There are special values: 
+'row.names', 'rownames', 'names'. If lookup_column equals to one of these 
+special values and dict is matrix/data.frame then values will be searched
+in the row names of dict. If dict is vector then values will be searched in
+names of the dict.}
 }
 \value{
-Vector (if result_columns length is 1) or matrix/data.frame.
+vlookup always return vector, vlookup_df always returns data.frame.
 }
 \description{
 This function is inspired by VLOOKUP spreadsheet function. Looks for a
 lookup_value in the lookup_column of the dict, and then returns values in the
-same rows from result_columns.
+same rows from result_column.
 }
 \examples{
 # with data.frame
-dict = data.frame(num=1:26,small=letters,cap=LETTERS,stringsAsFactors = FALSE)
-rownames(dict) = paste0('rows',1:26)
-identical(vlookup(1:3,dict),dict[1:3,]) # should be TRUE
-vlookup(c(45,1:3,58),dict,result_columns='cap')
-vlookup(c('z','d','f'),dict,lookup_column = 'small')
-vlookup(c('rows7','rows2','rows5'),dict,lookup_column = 'row.names')
+dict = data.frame(num=1:26, small=letters, cap=LETTERS, stringsAsFactors = FALSE)
+rownames(dict) = paste0('rows', 1:26)
+identical(vlookup_df(1:3, dict), dict[1:3,]) # should be TRUE
+vlookup(c(45,1:3,58), dict, result_column='cap')
+vlookup_df(c('z','d','f'), dict, lookup_column = 'small')
+vlookup_df(c('rows7', 'rows2', 'rows5'), dict, lookup_column = 'row.names')
 
 # with vector
 dict=1:26
 names(dict) = letters
 
-vlookup(c(2,4,6),dict,result_columns='row.names')
+vlookup(c(2,4,6), dict, result_column='row.names')
+
+# The same results
+vlookup(c(2,4,6), dict, result_column='rownames')
+vlookup(c(2,4,6), dict, result_column='names')
 
 # Just for fun. Examples borrowed from Microsoft Excel.
 # It is not the R way of doing things.
@@ -69,8 +77,8 @@ vlookup("DI-328", ex2, 3) * (1 + vlookup("DI-328", ex2, 4)) # 28.9575
 # the retail price.
 (vlookup("WI-989", ex2, "Cost") * (1 + vlookup("WI-989", ex2, "Markup"))) * (1 - 0.2)  # 5.7344
 
-A2 = ex2[1,1]
-A3 = ex2[2,1]
+A2 = ex2[1, "Item_ID"]
+A3 = ex2[2, "Item_ID"]
 
 # If the cost of an item is greater than or equal to $20.00, displays the string
 # "Markup is nn\%"; otherwise, displays the string "Cost is under $20.00".
@@ -100,17 +108,15 @@ ex3 = read.table(header = TRUE, text = "
 
 # If there is an employee with an ID of 5, displays the employee's last name;
 # otherwise, displays the message "Employee not found".
-ifelse(is.na(vlookup(5,ex3,"Last_name")),
-       "Employee not found", 
-       vlookup(5,ex3,"Last_name"))  # Burke 
-ifelse(is.na(vlookup(15,ex3,"Last_name")),
-       "Employee not found",
-       vlookup(15,ex3,"Last_name")) # Employee not found 
+if_na(vlookup(5, ex3, "Last_name"), "Employee not found") # Burke
+
+# Many employees
+if_na(vlookup(1:10, ex3, "Last_name"), "Employee not found") 
 
 # For the employee with an ID of 4, concatenates the values of three cells into
 # a complete sentence.
-paste0(vlookup(4,ex3,"First_name"), " ",
-       vlookup(4,ex3,"Last_name"), " is a ", 
-       vlookup(4,ex3,"Title")) # Michael Patten is a Sales Rep.
+paste0(vlookup(4, ex3, "First_name"), " ",
+       vlookup(4, ex3, "Last_name"), " is a ", 
+       vlookup(4, ex3, "Title")) # Michael Patten is a Sales Rep.
 }
 

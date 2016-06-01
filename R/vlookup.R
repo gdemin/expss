@@ -1,42 +1,49 @@
+SPECIALS = c('row.names', 'rownames', 'names')
+
 #' Look up values in dictionary.
 #' 
 #' This function is inspired by VLOOKUP spreadsheet function. Looks for a
 #' lookup_value in the lookup_column of the dict, and then returns values in the
-#' same rows from result_columns.
+#' same rows from result_column.
 #' 
 #' @param lookup_value Vector of looked up values
 #' @param dict Dictionary. Should be vector/matrix or data.frame
-#' @param result_columns Resulting columns of dict. Should be numeric or 
-#'   character vector. There is a special value 'row.names'. If result_columns =
-#'   'row.names' and dict is matrix/data.frame then row names of dict will be 
-#'   returned. If result_columns = 'row.names' and dict is vector then names of 
-#'   vector will be returned. If result_columns is NULL (default) then result 
-#'   will be entire rows.
-#' @param lookup_column Column of dict in which lookup value will be searched.
-#'   By default it is the first column of the dict. There is a special value
-#'   'row.names'. If lookup_columns = 'row.names' and dict is matrix/data.frame
-#'   then values will be searched in the row names of dict. If lookup_columns =
-#'   'row.names' and dict is vector then values will be searched in names of the
-#'   dict.
+#' @param result_column Resulting columns of dict. Should be numeric or 
+#'   character vector. There are special values:
+#'   'row.names', 'rownames', 'names'. If result_column equals to one of these
+#'   special values and dict is matrix/data.frame then row names of dict will be
+#'   returned. If dict is vector then names of 
+#'   vector will be returned. For \code{vlookup_df} default result_column is NULL and result 
+#'   will be entire rows. For \code{vlookup} result_column = NULL gives error.
+#' @param lookup_column Column of dict in which lookup value will be searched. 
+#'   By default it is the first column of the dict. There are special values: 
+#'   'row.names', 'rownames', 'names'. If lookup_column equals to one of these 
+#'   special values and dict is matrix/data.frame then values will be searched
+#'   in the row names of dict. If dict is vector then values will be searched in
+#'   names of the dict.
 #'   
-#' @return Vector (if result_columns length is 1) or matrix/data.frame.
+#' @return vlookup always return vector, vlookup_df always returns data.frame.
 #'   
 #' @export
 #' @examples
 #' # with data.frame
-#' dict = data.frame(num=1:26,small=letters,cap=LETTERS,stringsAsFactors = FALSE)
-#' rownames(dict) = paste0('rows',1:26)
-#' identical(vlookup(1:3,dict),dict[1:3,]) # should be TRUE
+#' dict = data.frame(num=1:26, small=letters, cap=LETTERS, stringsAsFactors = FALSE)
+#' rownames(dict) = paste0('rows', 1:26)
+#' identical(vlookup_df(1:3, dict), dict[1:3,]) # should be TRUE
 
-#' vlookup(c(45,1:3,58),dict,result_columns='cap')
-#' vlookup(c('z','d','f'),dict,lookup_column = 'small')
-#' vlookup(c('rows7','rows2','rows5'),dict,lookup_column = 'row.names')
+#' vlookup(c(45,1:3,58), dict, result_column='cap')
+#' vlookup_df(c('z','d','f'), dict, lookup_column = 'small')
+#' vlookup_df(c('rows7', 'rows2', 'rows5'), dict, lookup_column = 'row.names')
 #' 
 #' # with vector
 #' dict=1:26
 #' names(dict) = letters
 #' 
-#' vlookup(c(2,4,6),dict,result_columns='row.names')
+#' vlookup(c(2,4,6), dict, result_column='row.names')
+#' 
+#' # The same results
+#' vlookup(c(2,4,6), dict, result_column='rownames')
+#' vlookup(c(2,4,6), dict, result_column='names')
 #' 
 #' # Just for fun. Examples borrowed from Microsoft Excel.
 #' # It is not the R way of doing things.
@@ -59,8 +66,8 @@
 #' # the retail price.
 #' (vlookup("WI-989", ex2, "Cost") * (1 + vlookup("WI-989", ex2, "Markup"))) * (1 - 0.2)  # 5.7344
 #' 
-#' A2 = ex2[1,1]
-#' A3 = ex2[2,1]
+#' A2 = ex2[1, "Item_ID"]
+#' A3 = ex2[2, "Item_ID"]
 #' 
 #' # If the cost of an item is greater than or equal to $20.00, displays the string
 #' # "Markup is nn%"; otherwise, displays the string "Cost is under $20.00".
@@ -90,19 +97,25 @@
 #' 
 #' # If there is an employee with an ID of 5, displays the employee's last name;
 #' # otherwise, displays the message "Employee not found".
-#' ifelse(is.na(vlookup(5,ex3,"Last_name")),
-#'        "Employee not found", 
-#'        vlookup(5,ex3,"Last_name"))  # Burke 
-#' ifelse(is.na(vlookup(15,ex3,"Last_name")),
-#'        "Employee not found",
-#'        vlookup(15,ex3,"Last_name")) # Employee not found 
+#' if_na(vlookup(5, ex3, "Last_name"), "Employee not found") # Burke
+#'
+#' # Many employees
+#' if_na(vlookup(1:10, ex3, "Last_name"), "Employee not found") 
 #' 
 #' # For the employee with an ID of 4, concatenates the values of three cells into
 #' # a complete sentence.
-#' paste0(vlookup(4,ex3,"First_name"), " ",
-#'        vlookup(4,ex3,"Last_name"), " is a ", 
-#'        vlookup(4,ex3,"Title")) # Michael Patten is a Sales Rep.
-vlookup = function(lookup_value,dict,result_columns=NULL,lookup_column=1) {
+#' paste0(vlookup(4, ex3, "First_name"), " ",
+#'        vlookup(4, ex3, "Last_name"), " is a ", 
+#'        vlookup(4, ex3, "Title")) # Michael Patten is a Sales Rep.
+vlookup = function(lookup_value, dict, result_column, lookup_column=1){
+    stopif(length(result_column)>1, "result_column shoud be vector of length 1.")
+    vlookup_df(lookup_value = lookup_value, dict = dict, result_column = result_column, lookup_column=lookup_column)[[1]]
+}
+
+
+#' @export
+#' @rdname vlookup
+vlookup_df = function(lookup_value, dict, result_column=NULL, lookup_column=1) {
     
     # validate lookup_column
     stopif(length(lookup_column)!=1L,"lookup_column shoud be vector of length 1.")
@@ -110,36 +123,37 @@ vlookup = function(lookup_value,dict,result_columns=NULL,lookup_column=1) {
            "lookup_column is greater than number of columns in the dict.")
     stopif(is.numeric(lookup_column) && any(lookup_column <= 0),
            "lookup_column should be positive.")
-    stopif(is.character(lookup_column) && lookup_column!="row.names" &&
+    stopif(is.character(lookup_column) && !(lookup_column %in% SPECIALS) &&
                (is.matrix(dict) || is.data.frame(dict)) && !all(lookup_column %in% colnames(dict)),
            "lookup_column doesn't exists in column names of the dict.")
     
     
     # validate result_column
-    stopif(!is.null(result_columns) && any(is.na(result_columns)), "NA's in result_columns")
-    
-    stopif(is.numeric(result_columns) && max(result_columns,na.rm = TRUE)>NCOL(dict),
-           "result_columns is greater than number of columns in the dict.")
-    stopif(is.character(result_columns) && result_columns!="row.names" &&
-               (is.matrix(dict) || is.data.frame(dict)) && !all(result_columns %in% colnames(dict)),
-           "some names in result_columns doesn't exists in column names of the dict.")
+    stopif(!is.null(result_column) && any(is.na(result_column)), "NA's in result_column")
+    stopif(any(result_column %in% SPECIALS) && length(result_column)!=1,
+           "when use 'row.names', 'rownames', 'names' as result_column, result_column should be vector of length 1.")
+    stopif(is.numeric(result_column) && max(result_column,na.rm = TRUE)>NCOL(dict),
+           "result_column is greater than number of columns in the dict.")
+    stopif(is.character(result_column) && !(result_column %in% SPECIALS) &&
+               (is.matrix(dict) || is.data.frame(dict)) && !all(result_column %in% colnames(dict)),
+           "some names in result_column doesn't exists in column names of the dict.")
     
     # calculate index
     if (is.numeric(lookup_column) || is.character(lookup_column)){
         if (is.matrix(dict) || is.data.frame(dict)) {
-            if (lookup_column=="row.names"){
+            if (lookup_column %in% SPECIALS){
                 ind = match(lookup_value,row.names(dict),incomparables = NA) 	
             } else {
                 if (is.matrix(dict)){
                     # matrix
-                    ind = match(lookup_value, dict[,lookup_column],incomparables = NA) 
+                    ind = match(lookup_value, dict[, lookup_column],incomparables = NA) 
                 } else {
                     # data.frame - for tbl_df from dplyr
                     ind = match(lookup_value,dict[[lookup_column]],incomparables = NA) 
                 }    
             }
         } else {
-            if (lookup_column=="row.names"){
+            if (lookup_column %in% SPECIALS){
                 ind = match(lookup_value,names(dict),incomparables = NA) 	
             } else {
                 ind = match(lookup_value,dict,incomparables = NA)
@@ -147,32 +161,33 @@ vlookup = function(lookup_value,dict,result_columns=NULL,lookup_column=1) {
         }
     } else stop("lookup_column shoud be character or numeric.")
     ### caclulate result
-    if (is.null(result_columns)){
+    if (is.null(result_column)){
         if (is.matrix(dict) || is.data.frame(dict)) {
-            dict[ind,] # exit function
+            result = dict[ind, , drop = FALSE]
         } else {
-            dict[ind]  # exit function
+            result = dict[ind]
         }
     } else {
-        if (length(result_columns) == 1 && result_columns == "row.names"){
+        if (length(result_column) == 1 && result_column %in% SPECIALS){
             if (is.matrix(dict) || is.data.frame(dict)) {
-                rownames(dict)[ind] # exit function
+               result = rownames(dict)[ind]
             } else {
-                names(dict)[ind]  # exit function
+               result = names(dict)[ind]
             }
         } else {
             if (is.matrix(dict) || is.data.frame(dict)) {
-                if((length(result_columns)>1) || is.matrix(dict)){
-                    dict[ind,result_columns] # exit function
-                } else {
-                    dict[[result_columns]][ind] # for tbl_df from dplyr 
-                }
-                    
+                result = dict[ind,result_column, drop = FALSE]
             } else {
-                dict[ind]  # exit function
+                result = dict[ind]
             }	
             
         }
+    }
+    if(is.data.frame(result)){
+        result
+    
+    } else {
+        data.frame(result = result, stringsAsFactors = FALSE)
     }
 }
 
