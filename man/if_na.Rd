@@ -15,22 +15,32 @@ if_na(x, value)
 x with replaced NA
 }
 \description{
-If x is vector then \code{if_na(x) = 99} is equivalent to \code{x[is.na(x)] = 
-99}. In more complex cases when x is data.frame/matrix/list this function 
-tries to replace NA recursively. If replacement value is 
-vector/data.frame/matrix/list then \code{if_na} uses for replacement values 
-from appropriate places, e. g. if both \code{x} and \code{value} are vectors 
-then \code{if_na(x) = value} is equivalent to \code{x[is.na(x)] = 
-value[is.na(x)]}. Single column/row value recycled to conform to x. See 
-examples. \code{value} can be supplied in the form \code{c(label = value)}. In
-this case NA will be replaced with \code{value} and \code{label} will be added
-as label to value labels of \code{x}.
+Function replaces NA values in vector/data.frame/matrix/list with supplied
+value. If x is vector then \code{if_na(x) = 99} is equivalent to
+\code{x[is.na(x)] = 99}. In more complex cases when x is
+data.frame/matrix/list this function tries to replace NA recursively. If
+replacement value is vector/data.frame/matrix/list then \code{if_na} uses for
+replacement values from appropriate places. For example if both \code{x} and
+\code{value} are vectors then \code{if_na(x) = value} is equivalent to
+\code{x[is.na(x)] = value[is.na(x)]}. Single column/row value recycled to
+conform to x. See examples. \code{value} can be supplied in the form
+\code{c(label = value)}. In this case NA will be replaced with \code{value}
+and \code{label} will be added as label to value labels of \code{x}.
 }
 \examples{
 # simple case
 a = c(NA, 2, 3, 4, NA)
-if_na(a) = 1
-a # c(1, 2, 3, 4, 1)
+if_na(a, 99)
+# the same thing
+if_na(a) = 99 
+a # c(99, 2, 3, 4, 99)
+
+# with label
+a = c(NA, 2, 3, 4, NA)
+if_na(a, c('Hard to say' = 99))
+# the same thing
+if_na(a) = c('Hard to say' = 99)
+a
 
 # replacement with values from other variable
 a = c(NA, 2, 3, 4, NA)
@@ -47,10 +57,9 @@ param[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(group, param)
 
 # replace NA's with group means
-df \%<>\% group_by(group) \%>\% 
-    mutate(
-        param = if_na(param, mean(param, na.rm = TRUE))
-    )
+df = modify(df, {
+        if_na(param) = ave(param, group, FUN = mean_col)
+    })
 
 df
 
@@ -67,7 +76,7 @@ x3[sample(30, 10)] = NA # place 10 NA's
 
 df = data.frame(x1, x2, x3)
 
-# replaceme NA's with column means
+# replace NA's with column means
 if_na(df) = t(colMeans(df, na.rm = TRUE))
 
 df

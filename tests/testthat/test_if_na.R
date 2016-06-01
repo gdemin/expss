@@ -7,6 +7,18 @@ a[1] = NA
 b[1] = 2
 expect_identical(if_na(a, 2), b)
 
+a[1] = NA
+val_lab(a) = c(one = 1)
+b = a
+b[1] = 2
+add_val_lab(b) = c(two = 2)
+expect_identical(if_na(a, c(two = 2)), b)
+
+a = 1:4
+b = a
+a[1] = NA
+b[1] = 2
+
 a[3] = NA
 b[3] = 2
 expect_identical(if_na(a, 2), b)
