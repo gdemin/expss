@@ -34,6 +34,8 @@ bb[bb[,1] == max(bb[,1]),1] = NA
 bb[bb[,2] == max(bb[,2]),2] = NA
 # we set to NA maximum values in each column
 expect_identical(set_na(aa, as.list(max_col(aa))), bb)
+expect_error(set_na(aa, aa))
+expect_error(set_na(aa, as.data.frame(aa)))
 
 b = a
 b[1:2,] = NA

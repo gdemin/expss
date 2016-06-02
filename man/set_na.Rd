@@ -21,20 +21,18 @@ x with NA's instead of \code{value}
 There are following options for \code{value}: 
 \itemize{ 
 \item{\code{vector}}{ Vector of values which should be
-replaced with \code{NA} in \code{x}. If value is matrix/vector/data.frame then for
-each column of \code{x} will be used appropriate column of \code{value}.}
-\item{\code{list}}{ Each element of list will be applied to approriate 
+replaced with \code{NA} in \code{x}. }
+\item{\code{list}}{ Each element of \code{value} will be applied to appropriate 
 column/element of \code{x}, e. g. \code{set_na(x[i], value[i])} for each
 \code{i}. See example.}
 \item{\code{logical vector/matrix/data.frame}}{ NA's will be set in places
-where \code{value} is TRUE.}
-\item{\code{function}}{ NA's will be set in places where \code{value(x)} is
-TRUE. Additionally, there are special functions for common cases of
-comparison with value. For example \code{set_na(my_var, gt(98))} will replace
-all values greater 98 in \code{my_var} with NA. If \code{x} has many
-columns(rows) and \code{value} has one column(row) then it will be recycled.
-For detailed description of special functions see \link{criteria}}
-}
+where \code{value} is TRUE. \code{value} will be recycled if needed.}
+\item{\code{function}}{ NA's will be set in places where \code{value(x)} is 
+TRUE. Function will be applied columnwise. Additionally, there are special
+functions for common cases of comparison. For example
+\code{set_na(my_var, gt(98))} will replace all values greater 98 in
+\code{my_var} with NA. For detailed description of
+special functions see \link{criteria}} }
 }
 \examples{
 a = c(1:5, 99)
