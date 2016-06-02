@@ -80,7 +80,7 @@ quantity_sold,product,salesperson
 ### too complex and useless
 expect_equal(
     with(dfs, 
-         sum_if(list(grepl("^A",product),salesperson==1), quantity_sold)
+         sum_if(grepl("^A",product) & salesperson==1, quantity_sold)
          ),
     20
 )
@@ -101,7 +101,7 @@ daily_measurements,first_day,second_day,third_day,fourth_day
 
 
 expect_equal(
-    sum_if(list(dfs[2, -1]>=40, dfs[3, -1]<10), dfs[1, -1]),
+    sum_if(dfs[2, -1]>=40 & dfs[3, -1]<10, dfs[1, -1]),
     8.8
 )
 

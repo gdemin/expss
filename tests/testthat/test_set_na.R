@@ -26,7 +26,14 @@ b[3,"b"] = NA
 b[1:5,"a"] = NA
 expect_equal(set_na(a, eq(a$a)),b)
 
+set.seed(123)
 
+aa = matrix(rnorm(50), ncol = 2)
+bb = aa
+bb[bb[,1] == max(bb[,1]),1] = NA
+bb[bb[,2] == max(bb[,2]),2] = NA
+# we set to NA maximum values in each column
+expect_identical(set_na(aa, as.list(max_col(aa))), bb)
 
 b = a
 b[1:2,] = NA
@@ -40,6 +47,7 @@ b[,1] = NA
 b$a = as.numeric(b$a)
 
 expect_equal(set_na(a, t(c(TRUE, FALSE))),b)
+# expect_equal(set_na(a, list(TRUE, FALSE)),b)
 expect_equal(set_na(a, as.data.frame(t(c(TRUE, FALSE)))),b)
 
 context("set_na tbl_df")

@@ -31,7 +31,7 @@ expect_equal(count_if(neq(75),df1$b),3L)
 
 expect_equal(count_if(gte(32),df1$b),4L)
 
-expect_equal(count_if(list(gt(32), lt(86)),df1$b),2L)
+expect_equal(count_if(list("apples", gt(32)), df1), 5L)
 expect_equal(count_if(gt(32) & lt(86),df1$b),2L)
 
 expect_equal(count_if(33:85,df1$b),2L)

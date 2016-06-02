@@ -18,36 +18,31 @@ set_na(x) <- value
 x with NA's instead of \code{value}
 }
 \description{
-Replace certain values with NA
-}
-\details{
 There are following options for \code{value}: 
 \itemize{ 
-\item{vector/matrix/data.frame/list.}{ Vector of values which should be
+\item{\code{vector}}{ Vector of values which should be
 replaced with \code{NA} in \code{x}. If value is matrix/vector/data.frame then for
 each column of \code{x} will be used appropriate column of \code{value}.}
-\item{logical vector/matrix/data.frame/list.}{ NA's will be set in places
+\item{\code{list}}{ Each element of list will be applied to approriate 
+column/element of \code{x}, e. g. \code{set_na(x[i], value[i])} for each
+\code{i}. See example.}
+\item{\code{logical vector/matrix/data.frame}}{ NA's will be set in places
 where \code{value} is TRUE.}
-\item{function.}{ NA's will be set in places where \code{value(x)} is TRUE.
-Additionaly there are special functions for common cases of comparison with
-value. For example \code{set_na(my_var, gt(98))} will replace all values greater
-98 in \code{my_var} with NA. If \code{x} has many columns(rows) and \code{value}
-has one column(row) then it will be recycled. List of special functions see
-below.}
-}
-Special functions for usage as criteria:
-\itemize{
-\item{\code{gt}}{ greater than}
-\item{\code{gte}}{ greater than or equal}
-\item{\code{eq}}{ equal} 
-\item{\code{neq}}{ not equal} 
-\item{\code{lt}}{ less than}
-\item{\code{lte}}{ less than or equal}
+\item{\code{function}}{ NA's will be set in places where \code{value(x)} is
+TRUE. Additionally, there are special functions for common cases of
+comparison with value. For example \code{set_na(my_var, gt(98))} will replace
+all values greater 98 in \code{my_var} with NA. If \code{x} has many
+columns(rows) and \code{value} has one column(row) then it will be recycled.
+For detailed description of special functions see \link{criteria}}
 }
 }
 \examples{
-a = c(1:5,99)
-set_na(a, 99)
+a = c(1:5, 99)
+
+# 99 to NA
+set_na(a, 99)    # c(1:5, NA)
+
+# values which greater than 5 to NA
 set_na(a, gt(5)) # same result
 
 set.seed(123)
@@ -64,6 +59,11 @@ a = rnorm(50)
 # values greater than 1 or less than -1 will be set to NA
 # special functions usage
 set_na(a, lt(-1) | gt(1))
+
+aa = matrix(a, ncol = 2)
+
+# we set to NA maximum values in each column
+set_na(aa, as.list(max_col(aa)))
 
 }
 \seealso{

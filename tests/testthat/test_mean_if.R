@@ -19,7 +19,7 @@ expect_equal(mean_if(neq(75),df1$b),172/3)
 
 expect_equal(mean_if(gte(32),df1$b),247/4)
 
-expect_equal(mean_if(list(gt(32), lt(86)),df1$b),(54L + 75L)/2)
+
 expect_equal(mean_if(gt(32) & lt(86),df1$b),(54L + 75L)/2)
 
 expect_equal(mean_if(33:85,df1$b), (54L + 75L)/2)
