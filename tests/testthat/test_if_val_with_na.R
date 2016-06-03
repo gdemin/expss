@@ -198,7 +198,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     # replace NA's with group means
     df_clean = df %>% group_by(group) %>% 
         mutate(
-            param = if_val(param, NA ~ mean(param, na.rm = TRUE))
+            param = if_val(param, NA ~ mean_col(param))
         )
     
     df = within(df, {
@@ -241,7 +241,7 @@ if_val(df, from = NA) = list(as.list(colMeans(df, na.rm = TRUE)))
 expect_identical(df, df_test)
 
 # just for curiosity - assignment form doesn't work inside mutate
-df_test2 = within(df_test2, {
+df_test2 = modify(df_test2, {
     if_val(x1, NA) = mean(x1, na.rm = TRUE)
     if_val(x2) = NA ~ mean(x2, na.rm = TRUE)
     if_val(x3) = NA ~ mean(x3, na.rm = TRUE)
@@ -256,7 +256,6 @@ a = 1:4
 b = a
 a[1] = NA
 b[1] = 2
-val_lab(b) = c("Hard to say" = 2)
 expect_identical(if_val(a, NA ~ c("Hard to say" = 2)), b)
 
 set.seed(123)
@@ -278,7 +277,7 @@ df_test = within(df_test, {
     x3[is.na(x3)] = 99
 })
 
-val_lab(df_test) = c("h/s" = 99)
+
 
 expect_identical(df, df_test)
 

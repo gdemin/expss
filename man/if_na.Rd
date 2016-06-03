@@ -23,9 +23,7 @@ replacement value is vector/data.frame/matrix/list then \code{if_na} uses for
 replacement values from appropriate places. For example if both \code{x} and
 \code{value} are vectors then \code{if_na(x) = value} is equivalent to
 \code{x[is.na(x)] = value[is.na(x)]}. Single column/row value recycled to
-conform to x. See examples. \code{value} can be supplied in the form
-\code{c(label = value)}. In this case NA will be replaced with \code{value}
-and \code{label} will be added as label to value labels of \code{x}.
+conform to x. See examples.
 }
 \examples{
 # simple case
@@ -35,12 +33,6 @@ if_na(a, 99)
 if_na(a) = 99 
 a # c(99, 2, 3, 4, 99)
 
-# with label
-a = c(NA, 2, 3, 4, NA)
-if_na(a, c('Hard to say' = 99))
-# the same thing
-if_na(a) = c('Hard to say' = 99)
-a
 
 # replacement with values from other variable
 a = c(NA, 2, 3, 4, NA)
@@ -77,7 +69,7 @@ x3[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(x1, x2, x3)
 
 # replace NA's with column means
-if_na(df) = t(colMeans(df, na.rm = TRUE))
+if_na(df) = t(mean_col(df))
 
 df
 

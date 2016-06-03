@@ -65,9 +65,6 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
                 if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
             }            
         }
-        if(is.atomic(to) && length(to)==1 && !is.null(names(to))){
-            add_val_lab(x) = to
-        } 
         recoded = recoded | cond # we don't recode already recoded value
     }
 

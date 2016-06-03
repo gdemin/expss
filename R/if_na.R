@@ -9,9 +9,7 @@
 #'replacement values from appropriate places. For example if both \code{x} and
 #'\code{value} are vectors then \code{if_na(x) = value} is equivalent to
 #'\code{x[is.na(x)] = value[is.na(x)]}. Single column/row value recycled to
-#'conform to x. See examples. \code{value} can be supplied in the form
-#'\code{c(label = value)}. In this case NA will be replaced with \code{value}
-#'and \code{label} will be added as label to value labels of \code{x}.
+#'conform to x. See examples. 
 #'
 #'@param x vector/matrix/data.frame/list
 #'@param value vector/matrix/data.frame/list
@@ -27,12 +25,6 @@
 #' if_na(a) = 99 
 #' a # c(99, 2, 3, 4, 99)
 #' 
-#' # with label
-#' a = c(NA, 2, 3, 4, NA)
-#' if_na(a, c('Hard to say' = 99))
-#' # the same thing
-#' if_na(a) = c('Hard to say' = 99)
-#' a
 #' 
 #' # replacement with values from other variable
 #' a = c(NA, 2, 3, 4, NA)
@@ -69,7 +61,7 @@
 #' df = data.frame(x1, x2, x3)
 #' 
 #' # replace NA's with column means
-#' if_na(df) = t(colMeans(df, na.rm = TRUE))
+#' if_na(df) = t(mean_col(df))
 #' 
 #' df
 #' 
@@ -100,9 +92,6 @@ if_na.default = function(x, value){
                 if_na(column(x, each_col)) = column(value, each_col)
             }            
         }
-        if(is.atomic(value) && length(value)==1 && !is.null(names(value))){
-            add_val_lab(x) = value
-        }    
     }
     x
 }

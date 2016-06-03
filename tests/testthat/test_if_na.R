@@ -11,7 +11,6 @@ a[1] = NA
 val_lab(a) = c(one = 1)
 b = a
 b[1] = 2
-add_val_lab(b) = c(two = 2)
 expect_identical(if_na(a, c(two = 2)), b)
 
 a = 1:4
@@ -255,10 +254,10 @@ if_na(df) = as.list(colMeans(df, na.rm = TRUE))
 expect_identical(df, df_test)
 
 # just for curiosity - assignment form doesn't work inside mutate
-df_test2 = within(df_test2, {
-    if_na(x1) = mean(x1, na.rm = TRUE)
-    if_na(x2) = mean(x2, na.rm = TRUE)
-    if_na(x3) = mean(x3, na.rm = TRUE)
+df_test2 = modify(df_test2, {
+    if_na(x1) = mean_col(x1)
+    if_na(x2) = mean_col(x2)
+    if_na(x3) = mean_col(x3)
     
 })
 
@@ -266,12 +265,6 @@ expect_identical(df, df_test2)
 
 context("if_na add_val_lab")
 
-a = 1:4
-b = a
-a[1] = NA
-b[1] = 2
-val_lab(b) = c("Hard to say" = 2)
-expect_identical(if_na(a, c("Hard to say" = 2)), b)
 
 set.seed(123)
 x1 = runif(30)
@@ -292,7 +285,7 @@ df_test = within(df_test, {
     x3[is.na(x3)] = 99
 })
 
-val_lab(df_test) = c("h/s" = 99)
+
 
 expect_identical(df, df_test)
 
