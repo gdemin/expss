@@ -3,12 +3,16 @@
 \name{dichotomy}
 \alias{dichotomy}
 \alias{dichotomy1}
+\alias{dummy}
 \title{Convert variable (possibly multiple choice question) to matrix of dummy variables.}
 \usage{
 dichotomy(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
   keep_labels = NULL, drop_values = NULL, drop_labels = NULL)
 
 dichotomy1(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+  keep_labels = NULL, drop_values = NULL, drop_labels = NULL)
+
+dummy(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
   keep_labels = NULL, drop_values = NULL, drop_labels = NULL)
 }
 \arguments{
@@ -38,10 +42,13 @@ particular value then this value will be used as column name.
 This function converts variable/multiple response variable(matrix/data.frame)
  with category encoding into matrix with dichotomy encoding (0/1) 
 suited for most statistical analysis, e. g. clustering, factor analysis, 
-linear regression and so on.  
-\code{dichotomy} returns matrix with 0,1 and possibly NA. 
-\code{dichotomy1} drops last column in dichotomy matrix. It is useful in many cases
-because any column of such matrix usually is linear combinations of other columns.
+linear regression and so on. 
+\itemize{ 
+\item{\code{dichotomy}}{ returns matrix with 0, 1 and possibly NA.} 
+\item{\code{dichotomy1}}{ drops last column in dichotomy matrix. It is useful in many cases
+because any column of such matrix usually is linear combinations of other columns.}
+\item{\code{dummy}}{ is another shortcut for \code{dichotomy}.}
+}
 }
 \examples{
 # toy example
@@ -71,10 +78,10 @@ val_lab(score) = make_labels("
 colMeans(dichotomy(brands))
 
 # percentage of brands within each score
-aggregate(dichotomy(brands) ~ factor(score), FUN = mean)
+aggregate(dichotomy(brands) ~ f(score), FUN = mean)
 
 # or, same result in another form
-by(dichotomy(brands), factor(score), FUN = colMeans)
+by(dichotomy(brands), f(score), FUN = colMeans)
 
 # customer segmentation by used brands
 kmeans(dichotomy(brands),3)
