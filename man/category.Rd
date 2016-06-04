@@ -10,7 +10,7 @@ category(x, counted_value = 1, compress = TRUE)
 \item{x}{Dichotomy matrix (usually with 0,1 coding).}
 
 \item{counted_value}{Vector. Values that should be considered as indicator 
-of category presence. By default it is 1.}
+of category presence. By default it equals to 1.}
 
 \item{compress}{Logical. Should we drop columns with all NA?}
 }

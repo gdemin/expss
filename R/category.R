@@ -2,7 +2,7 @@
 #' 
 #' @param x Dichotomy matrix (usually with 0,1 coding).
 #' @param counted_value Vector. Values that should be considered as indicator 
-#' of category presence. By default it is 1.
+#' of category presence. By default it equals to 1.
 #' @param compress Logical. Should we drop columns with all NA?
 #' @return Matrix with numeric values that correspond to column numbers of counted values. 
 #' Column names of x are added as value labels.
