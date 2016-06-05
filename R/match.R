@@ -1,14 +1,18 @@
-#' Match
+#' Match finds value in row or column/index returns value by index from row or column
 #'
-#' @param criterion 
-#' @param ... 
+#' @param criterion Vector with values to be matched, or
+#'   function. 
+#' @param index vector of positions in rows/columns from which values should be returned.
+#' @param ... data. Vectors, matrixes, data.frames, list. Shorter arguments
+#'   will be recycled.
 #'
-#' @return vector
-#' @export
+#' @return vector with length equals to number of rows for *_row and equals to
+#'   number of columns for *_col.
 #'
 #' @examples
 #' 
 #' a = 1
+#' @export
 match_row = function(criterion, ...){
     stopif(length(criterion)==0, "Zero-length 'criterion'.")
     dfs = dots2data_frame(...) 
