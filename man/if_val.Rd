@@ -10,12 +10,40 @@ if_val(x, ..., from = NULL, to = NULL)
 \item{x}{}
 
 \item{...}{}
+
+\item{from}{}
+
+\item{to}{}
+
+\item{value}{}
 }
 \value{
-x
+object of same form as \code{x} with recoded values
 }
 \description{
 Title
+}
+\details{
+Left hand side (LHS) of formula or element of \code{from} list:
+\itemize{
+\item{vector/single value}{ All values in \code{x} which equal to elements of vector in LHS will be replaced with RHS.}
+\item{function}{}
+\item{logical vector/matrix/data.frame}{ values for which LHS equals to TRUE
+will be recoded. Logical vector will be recycled across all columns of
+\code{x}. If LHS is matrix/data.frame}
+\item{.}{ dot in LHS/\code{from} means all other unrecoded values. So all
+other unrecoded values will be changed to RHS of formula or appropriate
+element of \code{to}.}
+}
+Right hand side (RHS) of formula or element of \code{to} list:
+\itemize{
+\item{value}{}
+\item{vector}{}
+\item{list/matrix/data.frame}{}
+\item{.}{ dot in LHS/\code{from} means all other unrecoded values. So all
+other unrecoded values will be changed to RHS of formula or appropriate
+element of \code{to}.}
+}
 }
 \examples{
 list()
