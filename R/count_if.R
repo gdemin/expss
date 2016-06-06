@@ -46,15 +46,7 @@
 #' \code{count_col_if}: in both cases function criterion will be applied
 #' columnwise.
 #' There are special functions for usage as criteria (e. g. \code{gt(5)} is
-#' equivalent ">5" in spreadsheet):
-#' \itemize{
-#' \item{\code{gt}}{ greater than}
-#' \item{\code{gte}}{ greater than or equal}
-#' \item{\code{eq}}{ equal} 
-#' \item{\code{neq}}{ not equal} 
-#' \item{\code{lt}}{ less than}
-#' \item{\code{lte}}{ less than or equal}
-#' } 
+#' equivalent ">5" in spreadsheet) - see \link{eq}:
 #' 
 #' \code{\%has\%} is simple wrapper for rather frequent case \code{count_row_if(criterion,x)>0}.
 #' 
@@ -82,17 +74,17 @@
 #' 
 #' count_if(gt(32) & lt(86),df1$b) # 2
 #' 
+#' # count only integer values between 33 and 85
 #' count_if(33:85,df1$b) # 2
 #' 
-#' # more complex criteria
 #' # values with letters
-#' count_if(function(x) grepl("^[A-z]+$",x),df1) # 4
+#' count_if(regex("^[A-z]+$"),df1) # 4
 #' 
 #' # values that started on 'a'
-#' count_if(function(x) grepl("^a",x),df1) # 2
+#' count_if(regex("^a"),df1) # 2
 #' 
 #' # count_row_if
-#' count_row_if(function(x) grepl("^a",x),df1) # c(1,0,0,1)
+#' count_row_if(regex("^a"),df1) # c(1,0,0,1)
 #' 
 #' df1 %has% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
 #' 
