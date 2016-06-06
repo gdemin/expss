@@ -15,12 +15,18 @@
 #' \item{\code{neq}}{ not equal} 
 #' \item{\code{lt}}{ less than}
 #' \item{\code{lte}}{ less than or equal}
+#' \item{\code{thru}}{ checks whether value is inside interval.
+#' \code{thru(0,1)} is equivalent of \code{x>=0 & x<=1} or \code{gte(0) &
+#' lte(1)}}
+#' \item{\code{\%thru\%}}{ infix version of \code{thru}, e. g. \code{0 \%thru\% 1}}
 #' \item{\code{regex}}{ use POSIX 1003.2 extended regular expressions. For details see \link[base]{grepl}}
 #' \item{\code{perl}}{ perl-compatible regular expressions. For details see \link[base]{grepl}}
 #' \item{\code{fixed}}{ pattern is a string to be matched as is. For details see \link[base]{grepl}}
 #' } 
 #' 
 #' @param x vector 
+#' @param lower vector numeric value - lower bound of interval 
+#' @param upper vector numeric value - upper bound of interval 
 #' @param pattern character string containing a regular expression (or character
 #'   string for \code{fixed}) to be matched in the given character vector.
 #'   Coerced by as.character to a character string if possible.
@@ -42,13 +48,18 @@
 #'     b = c(32, 54, 75, 86)
 #' )
 #' 
-#' count_if(gt(55),df1$b) # greater than 55 = 2
+#' count_if(gt(55), df1$b) # greater than 55 = 2
 #' 
-#' count_if(neq(75),df1$b) # not equal 75 = 3
+#' count_if(neq(75), df1$b) # not equal 75 = 3
 #' 
-#' count_if(gte(32),df1$b) # greater than or equal 32 = 4
+#' count_if(gte(32), df1$b) # greater than or equal 32 = 4
 #' 
-#' count_if(gt(32) & lt(86),df1$b) # greater than 32 and less than 86 = 2
+#' count_if(gt(32) & lt(86), df1$b) # greater than 32 and less than 86 = 2
+#' 
+#' # via different kinds of 'thru'
+#' count_if(thru(35, 80), df1$b) # greater than or equals to 35 and less than or equals to 80 = 2
+#' # infix version
+#' count_if(35 %thru% 80, df1$b) # greater than or equals to 35 and less than or equals to 80 = 2
 #' 
 #' # values that started on 'a'
 #' count_if(regex("^a"),df1) # 2
@@ -144,6 +155,19 @@ fixed = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     res
 }
 
+#' @export
+#' @rdname criteria
+thru = function(lower, upper){
+    stopif(is.function(lower) | is.function(upper),
+           "'thru' not defined for functions but 'lower' = ", lower, " and 'upper' = ", upper)
+    force(lower)
+    force(upper)
+    gte(lower) & lte(upper)
+}
+
+#' @export
+#' @rdname criteria
+'%thru%' = function(lower, upper) thru(lower, upper)
 
 build_compare = function(x, compare){
     UseMethod("build_compare")
