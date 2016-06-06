@@ -47,11 +47,12 @@ function of class 'criterion' which tests its argument against condition and ret
 }
 \description{
 These functions returns criteria functions which could be used in different 
-situation - see \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%},
-\link{count_if} etc. For example, \code{gt(5)} returns function which tests
-whether its argument greater than five.  \code{fixed("apple")} return function
-which tests whether its argument contains "apple". Logical operations (|, &,
-!, xor) defined for these functions.
+situation - see \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%}, 
+\link{count_if}, \link{match_row} etc. For example, \code{gt(5)} returns
+function which tests whether its argument greater than five. 
+\code{fixed("apple")} return function which tests whether its argument
+contains "apple". Logical operations (|, &, !, xor) defined for these
+functions.
 List of functions:
 \itemize{
 \item{\code{gt}}{ greater than}
@@ -95,6 +96,6 @@ count_row_if(regex("^a"),df1) # c(1,0,0,1)
 
 }
 \seealso{
-\link{count_if}, \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%}
+\link{count_if}, \link{match_row}, \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%}
 }
 

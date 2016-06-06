@@ -1,11 +1,12 @@
 #' Criteria functions
 #' 
 #' These functions returns criteria functions which could be used in different 
-#' situation - see \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%},
-#' \link{count_if} etc. For example, \code{gt(5)} returns function which tests
-#' whether its argument greater than five.  \code{fixed("apple")} return function
-#' which tests whether its argument contains "apple". Logical operations (|, &,
-#' !, xor) defined for these functions.
+#' situation - see \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%}, 
+#' \link{count_if}, \link{match_row} etc. For example, \code{gt(5)} returns
+#' function which tests whether its argument greater than five. 
+#' \code{fixed("apple")} return function which tests whether its argument
+#' contains "apple". Logical operations (|, &, !, xor) defined for these
+#' functions.
 #' List of functions:
 #' \itemize{
 #' \item{\code{gt}}{ greater than}
@@ -28,7 +29,7 @@
 #'
 #' @return function of class 'criterion' which tests its argument against condition and return logical value
 #' 
-#' @seealso \link{count_if}, \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%}  
+#' @seealso \link{count_if}, \link{match_row}, \link{if_val}, \link{set_na}, \link{\%i\%}, \link{\%d\%}  
 #' @examples
 #' # operations on vector
 #' 1:6 %d% gt(4) # 1:4

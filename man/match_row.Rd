@@ -5,7 +5,7 @@
 \alias{index_row}
 \alias{match_col}
 \alias{match_row}
-\title{Match}
+\title{Match finds value in rows or columns/index returns value by index from rows or columns}
 \usage{
 match_row(criterion, ...)
 
@@ -16,18 +16,54 @@ index_row(index, ...)
 index_col(index, ...)
 }
 \arguments{
-\item{criterion}{}
+\item{criterion}{Vector of values to be matched, or
+function.}
 
-\item{...}{}
+\item{...}{data. Vectors, matrixes, data.frames, lists. Shorter arguments
+will be recycled.}
+
+\item{index}{vector of positions in rows/columns from which values should be returned.}
 }
 \value{
-vector
+vector with length equals to number of rows for *_row and equals to
+  number of columns for *_col.
 }
 \description{
-Match
+\code{match} finds value in rows or columns. \code{index} returns value by index
+from row or column. One can use functions as criteria for \code{match}. In 
+this case position of first value on which function equals to TRUE will be 
+returned. For convenience there are special predefined functions - see
+\link{criteria}. If value doesn't found NA will be returned.
 }
 \examples{
+# toy data
+v1 = 1:3
+v2 = 2:4
+v3 = 7:5
 
-a = 1
+# postions of 1,3,5 in rows
+match_row(c(1, 3, 5), v1, v2, v3) # 1:3
+# postions of 1,3,5 in columnss
+match_col(1, v1, v2, v3) # c(v1 = 1, v2 = NA, v3 = NA)
+
+# postion of first value greater than 2
+ix = match_row(gt(2), v1, v2, v3) 
+ix # c(3,2,1)
+# return values by result of previous 
+index_row(ix, v1, v2, v3) # c(7,3,3)
+
+# the same actions with data.frame
+dfs = data.frame(v1, v2, v3)
+
+# postions of 1,3,5 in rows
+match_row(c(1, 3, 5), dfs) # 1:3
+# postions of 1,3,5 in columnss
+match_col(1, dfs) # c(v1 = 1, v2 = NA, v3 = NA)
+
+# postion of first value greater than 2
+ix = match_row(gt(2), dfs) 
+ix # c(3,2,1)
+# return values by result of previous 
+index_row(ix, dfs) # c(7,3,3)
 }
 
