@@ -3,7 +3,7 @@
 #' 
 #' 
 #' @details 
-#' Left hand side (LHS) of formula or element of \code{from} list:
+#' Possible values for left hand side (LHS) of formula or element of \code{from} list:
 #' \itemize{
 #' \item{vector/single value}{ All values in \code{x} which equal to elements of vector in LHS will be replaced with RHS.}
 #' \item{function}{ Values for which function gives TRUE will be replaced
@@ -17,7 +17,7 @@
 #' other unrecoded values will be changed to RHS of formula or appropriate
 #' element of \code{to}.}
 #' }
-#' Right hand side (RHS) of formula or element of \code{to} list:
+#' Possible values for right hand side (RHS) of formula or element of \code{to} list:
 #' \itemize{
 #' \item{value}{ value which replace elements of \code{x}. This value will be
 #' recycled across rows and columns of \code{x}.}
@@ -27,6 +27,7 @@
 #' \item{list/matrix/data.frame}{ Element of list/column of matrix/data.frame
 #' will be used as a replacement value for corresponding column/element of
 #' \code{x}.}
+#' \item{function}{ This function will be applied to values of \code{x} which satisfy recoding condition.}
 #' \item{.}{ Dot in RHS/\code{to} means copy old value (COPY in SPSS RECODE).
 #' In most cases there is no need for this option because by default
 #' \code{if_val} doesn't modify values which don't satisfy any of conditions.}
@@ -68,7 +69,7 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
         stopif(length(from)!=length(to), 
                "length(to) should be equal to length(from) but length(from)=", length(from),
                " and length(to)=", length(to))
-
+        
         recoding_list = mapply(function(x,y) list(from = x, to = y), from, to, SIMPLIFY = FALSE)
     }
     recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
@@ -86,24 +87,35 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
             cond = cond & !recoded # we don't recode already recoded value
         }
         to = from_to$to
-        check_conformance(cond, to)
+        if (!is.function(to)) check_conformance(cond, to)
         # dot in `to` means copy (simply doesn't change values that meet condition - "copy" from SPSS ) 
-        if(!is.list(to) || is.data.frame(to)){
-            # to: matrix, data.frame, vector
-            for (each_col in seq_len(NCOL(x))){
-                curr_cond = column(cond, each_col)
-                if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
+        if(!is.list(to) || is.data.frame(to) || is.function(to)){
+            if(is.function(to)){
+                # to: function
+                for (each_col in seq_len(NCOL(x))){
+                    curr_cond = column(cond, each_col)
+                    if (any(curr_cond)) column(x, each_col, curr_cond) = to(column(x, each_col, curr_cond))
+                }
+                
+                
+            } else {
+                # to: matrix, data.frame, vector
+                for (each_col in seq_len(NCOL(x))){
+                    curr_cond = column(cond, each_col)
+                    if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
+                }
             }
         } else {
             # to: list
             for (each_col in seq_len(NCOL(x))){
                 curr_cond = column(cond, each_col)
                 if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
-            }            
+            }     
+            
         }
         recoded = recoded | cond # we don't recode already recoded value
     }
-
+    
     x
 }
 
