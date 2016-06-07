@@ -4,9 +4,6 @@
 #' \itemize{ 
 #' \item{\code{vector}}{ Vector of values which should be
 #' replaced with \code{NA} in \code{x}. }
-#' \item{\code{list}}{ Each element of \code{value} will be applied to appropriate 
-#' column/element of \code{x}, e. g. \code{set_na(x[i], value[i])} for each
-#' \code{i}. See example.}
 #' \item{\code{logical vector/matrix/data.frame}}{ NA's will be set in places
 #' where \code{value} is TRUE. \code{value} will be recycled if needed.}
 #' \item{\code{function}}{ NA's will be set in places where \code{value(x)} is 
@@ -17,7 +14,7 @@
 #' special functions see \link{criteria}} }
 #' 
 #' @param x vector/matrix/data.frame/list
-#' @param value vector/matrix/data.frame/list/function
+#' @param value vector/matrix/data.frame/function
 #'   
 #' @return x with NA's instead of \code{value}
 #' 
@@ -48,11 +45,8 @@
 #' # special functions usage
 #' set_na(a, lt(-1) | gt(1))
 #' 
-#' aa = matrix(a, ncol = 2)
-#' 
-#' # we set to NA maximum values in each column
-#' set_na(aa, as.list(max_col(aa)))
-#' 
+#' # values inside [-1, 1] to NA
+#' set_na(a, -1 %thru% 1)
 #' @export
 set_na = function(x, value){
     if_val(x, from=list(value), to = list(NA))

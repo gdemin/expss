@@ -12,7 +12,7 @@ set_na(x) <- value
 \arguments{
 \item{x}{vector/matrix/data.frame/list}
 
-\item{value}{vector/matrix/data.frame/list/function}
+\item{value}{vector/matrix/data.frame/function}
 }
 \value{
 x with NA's instead of \code{value}
@@ -22,9 +22,6 @@ There are following options for \code{value}:
 \itemize{ 
 \item{\code{vector}}{ Vector of values which should be
 replaced with \code{NA} in \code{x}. }
-\item{\code{list}}{ Each element of \code{value} will be applied to appropriate 
-column/element of \code{x}, e. g. \code{set_na(x[i], value[i])} for each
-\code{i}. See example.}
 \item{\code{logical vector/matrix/data.frame}}{ NA's will be set in places
 where \code{value} is TRUE. \code{value} will be recycled if needed.}
 \item{\code{function}}{ NA's will be set in places where \code{value(x)} is 
@@ -58,11 +55,8 @@ a = rnorm(50)
 # special functions usage
 set_na(a, lt(-1) | gt(1))
 
-aa = matrix(a, ncol = 2)
-
-# we set to NA maximum values in each column
-set_na(aa, as.list(max_col(aa)))
-
+# values inside [-1, 1] to NA
+set_na(a, -1 \%thru\% 1)
 }
 \seealso{
 For reverse operation see \link{if_na}, \link{if_val} for more

@@ -7,15 +7,15 @@
 if_val(x, ..., from = NULL, to = NULL)
 }
 \arguments{
-\item{x}{}
+\item{x}{vector/matrix/data.frame/list}
 
-\item{...}{}
+\item{...}{sequence of formulas which describe recodings. Only used when \code{from}/\code{to} arguments are not provided.}
 
-\item{from}{}
+\item{from}{list of conditions for values which should be recoded (in the same format as LHS's of formulas).}
 
-\item{to}{}
+\item{to}{list of values into which old values should be recoded (in the same format as RHS's of formulas).}
 
-\item{value}{}
+\item{value}{list with formulas which describe recodings in assignment form of function.}
 }
 \value{
 object of same form as \code{x} with recoded values
@@ -27,25 +27,34 @@ Title
 Left hand side (LHS) of formula or element of \code{from} list:
 \itemize{
 \item{vector/single value}{ All values in \code{x} which equal to elements of vector in LHS will be replaced with RHS.}
-\item{function}{}
-\item{logical vector/matrix/data.frame}{ values for which LHS equals to TRUE
-will be recoded. Logical vector will be recycled across all columns of
-\code{x}. If LHS is matrix/data.frame}
-\item{.}{ dot in LHS/\code{from} means all other unrecoded values. So all
+\item{function}{ Values for which function gives TRUE will be replaced
+with RHS. There are some special functions for convenience - see
+\link{criteria}.}
+\item{logical vector/matrix/data.frame}{ Values for which LHS equals to TRUE 
+will be recoded. Logical vector will be recycled across all columns of 
+\code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
+will be used for correpsonding column/element of \code{x}.}
+\item{.}{ Dot in LHS/\code{from} means all other unrecoded values (ELSE in SPSS RECODE). So all
 other unrecoded values will be changed to RHS of formula or appropriate
 element of \code{to}.}
 }
 Right hand side (RHS) of formula or element of \code{to} list:
 \itemize{
-\item{value}{}
-\item{vector}{}
-\item{list/matrix/data.frame}{}
-\item{.}{ dot in LHS/\code{from} means all other unrecoded values. So all
-other unrecoded values will be changed to RHS of formula or appropriate
-element of \code{to}.}
+\item{value}{ value which replace elements of \code{x}. This value will be
+recycled across rows and columns of \code{x}.}
+\item{vector}{ values of this vector will be replace values in corresponding
+position in rows of \code{x}. Vector will be recycled across columns of
+\code{x}.}
+\item{list/matrix/data.frame}{ Element of list/column of matrix/data.frame
+will be used as a replacement value for corresponding column/element of
+\code{x}.}
+\item{.}{ Dot in RHS/\code{to} means copy old value (COPY in SPSS RECODE).
+In most cases there is no need for this option because by default
+\code{if_val} doesn't modify values which don't satisfy any of conditions.}
 }
 }
 \examples{
-list()
+# RECODE V1 TO V3 (0=1) (1=0) (2,3=-1) (9=9) (ELSE=SYSMIS).
+# RECODE STRNGVAR (’A’,’B’,’C’=’A’)(’D’,’E’,’F’=’B’)(ELSE=’ ’).
 }
 

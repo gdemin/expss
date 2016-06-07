@@ -66,15 +66,16 @@ build_criterion.data.frame = function(criterion,dfs){
 
 #' @export
 build_criterion.matrix = function(criterion,dfs){
-    stopif(!is.logical(criterion), "matrix criterion should be logical.")
+    stopif(!is.logical(criterion), "matrix/data.frame criterion should be logical.")
     build_criterion.logical(criterion, dfs)
 }
 
 #' @export
 build_criterion.list = function(criterion,dfs){
-    stopif(length(criterion)==0, "Zero-length list is provided as argument.")
-    res = lapply(seq_along(criterion), function(i) build_criterion(column(criterion, i), as.data.frame(column(dfs, i))))
-    do.call(cbind, res)
+    stop("Condition of type 'list' doesn't supported.")
+    #stopif(length(criterion)==0, "Zero-length list is provided as argument.")
+    #res = lapply(seq_along(criterion), function(i) build_criterion(column(criterion, i), as.data.frame(column(dfs, i))))
+    #do.call(cbind, res)
 }
 
 # TODO Удалить
