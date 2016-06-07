@@ -5,9 +5,9 @@
 \alias{read_spss_to_list}
 \title{Read an SPSS Data File}
 \usage{
-read_spss(file, reencode = NA)
+read_spss(file, reencode = "UTF8")
 
-read_spss_to_list(file, reencode = NA)
+read_spss_to_list(file, reencode = "UTF8")
 }
 \arguments{
 \item{file}{Character string: the name of the file or URL to read.}

@@ -26,8 +26,8 @@
 #' list_w = read_spss_to_list("project_123.sav") # to list
 #' 
 #' }
-read_spss=function(file, reencode = NA){
-    res = read_spss_to_list(file,reencode = reencode)
+read_spss=function(file, reencode = "UTF8"){
+    res = read_spss_to_list(file, reencode = reencode)
     res = do.call(data.frame,c(res,stringsAsFactors=FALSE))
     res
 }
@@ -36,8 +36,8 @@ read_spss=function(file, reencode = NA){
 
 #' @export
 #' @rdname read_spss
-read_spss_to_list=function(file, reencode = NA){
-    spss = foreign::read.spss(enc2native(file),use.value.labels=FALSE,to.data.frame=FALSE,reencode = reencode, use.missings = FALSE)
+read_spss_to_list=function(file, reencode = "UTF8"){
+    spss = foreign::read.spss(enc2native(file),use.value.labels=FALSE,to.data.frame=FALSE, reencode = reencode, use.missings = FALSE)
     var_labs = attr(spss,'variable.labels')
     attr(spss,'label.table') = NULL
     for (var_name in names(var_labs)) {
