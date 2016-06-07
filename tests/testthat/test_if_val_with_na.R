@@ -223,6 +223,40 @@ x2[sample(30, 10)] = NA # place 10 NA's
 x3[sample(30, 10)] = NA # place 10 NA's
 
 df = data.frame(x1, x2, x3)
+
+df_res1 = df
+
+mins = sapply(df, min, na.rm = TRUE)
+maxs = sapply(df, max, na.rm = TRUE)
+means = sapply(df, mean, na.rm = TRUE)
+
+for(i in seq_along(df_res1)){
+    df_res1[df_res1[,i]<0.25 & !is.na(df_res1[,i]),i] = mins[i]
+    df_res1[df_res1[,i]>0.75 & !is.na(df_res1[,i]),i] = maxs[i]
+    df_res1[is.na(df_res1[,i]),i] = means[i]
+}
+
+expect_identical(
+    if_val(df, lt(0.25) ~ t(min_col(df)), gt(0.75) ~ t(max_col(df)), NA ~ t(mean_col(df))), 
+    df_res1
+)
+
+df_res2 = df
+means = rowMeans(df, na.rm = TRUE)
+for(i in seq_along(df_res2)){
+    df_res2[is.na(df_res2[,i]),i] = means[is.na(df_res2[,i])]
+}
+expect_identical(
+    if_val(df, NA ~ mean_row(df)), df_res2
+)
+
+
+
+
+
+
+
+
 df_test = df
 df_test2 = df
 if_val(df) = NA ~ t(colMeans(df, na.rm = TRUE))
