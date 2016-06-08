@@ -1,6 +1,6 @@
 #' Set or get variable label
 #' 
-#' This functions set/get/drop variable labels. For utilizing labels in base R 
+#' These functions set/get/drop variable labels. For utilizing labels in base R 
 #' see \link{f}, \link{names2labels}, \link{values2labels}, \link{unlab}. For
 #' value labels see \link{val_lab}.
 #' \itemize{
@@ -23,7 +23,7 @@
 #' @export  
 #' @examples
 #' data(mtcars)
-#' mtcars = within(mtcars,{
+#' mtcars = modify(mtcars,{
 #'                 var_lab(mpg) = "Miles/(US) gallon"
 #'                 var_lab(cyl) = "Number of cylinders"
 #'                 var_lab(disp) = "Displacement (cu.in.)"
@@ -39,6 +39,17 @@
 #' 
 #' # note: we exclude dependent variable 'mpg' from conversion to use its short name in formula
 #' summary(lm(mpg ~ ., data = n2l(mtcars, exclude = "mpg")))
+#' 
+#' data(mtcars)
+#' 
+#' var_lab(mtcars$am) = "Transmission"
+#' val_lab(mtcars$am) = c(automatic = 0, manual=1)
+#' 
+#' \dontrun{
+#' plot(f(mtcars$am))
+#' }
+#' 
+#' table(f(mtcars$am))
 #' 
 var_lab=function(x){
     UseMethod("var_lab")
@@ -133,73 +144,102 @@ unvr.list=function(x){
 
 #' Set or get value labels
 #' 
-#' \code{val_lab} returns value labels or NULL if labels doesn't 
-#' exist. 
-#' \code{val_lab<-} set value labels.
-#' \code{set_val_lab} returns variable with value labels. 
-#' \code{add_val_lab<-} add value labels to already existing value labels. 
-#' \code{unvl} drops value labels.
-#' \code{make_labels} return named vector for usage as value labels.
-#' 
+#' These functions set/get/drop value labels. Duplicated values are not allowed.
+#' If argument \code{x} is data.frame or list then labels applied to all 
+#' elements of data.frame/list. To drop value labels, use \code{val_lab(var) <- 
+#' NULL} or \code{unvl(var)}. \code{make_labels} converts text from the form 
+#' that usually used in questionnaires to named vector. See examples. For 
+#' utilizing labels in base R see \link{f}, \link{names2labels}, 
+#' \link{values2labels}, \link{unlab}, \link{dichotomy}. For variable labels see
+#' \link{var_lab}.
+#' \itemize{
+#' \item{\code{val_lab}}{ returns value labels or NULL if labels doesn't 
+#' exist.} 
+#' \item{\code{val_lab<-}}{ set value labels.}
+#' \item{\code{set_val_lab}}{ returns variable with value labels.} 
+#' \item{\code{add_val_lab<-}}{ add value labels to already existing value labels.} 
+#' \item{\code{unvl}}{ drops value labels.}
+#' \item{\code{make_labels}}{ makes named vector from text for usage as value labels.}
+#' \item{\code{ml_left} and \code{ml_right}}{ are shortcuts for \code{make_labels}
+#' with \code{code_postion} 'left' and 'right' accordingly.}
+#' }
 #' @param x Variable(s). Vector/data.frame/list.
-#' @param value Named vector. Names of vector values are labels for the
+#' @param value Named vector. Names of vector are labels for the
 #'   appropriate values of variable x.
-#' @param add Logical. Should value labels replace old labels? Deafult is FALSE. If TRUE
-#' new value lables will be combined with old value labels.
+#' @param add Logical. Should we add value labels to old labels or replace it?
+#'   Deafult is FALSE - we completely replace old values. If TRUE new value
+#'   labels will be combined with old value labels.
 #' @param text text that should be converted to named vector
 #' @param code_position Possible values "left" or "right" - position of numeric code in
 #' \code{text}.
-#' @return \code{val_lab} return value labels (named vector). If labels doesn't
-#'   exist it return NULL . \code{val_lab<-} and \code{set_val_lab} return
-#'   variable (vector x) of class "labelled" with attribute "labels"
-#'   which contains value labels. \code{make_labels} return named vector for usage as value labels.
+#' @return \code{val_lab} return value labels (named vector). If labels doesn't 
+#'   exist it return NULL . \code{val_lab<-} and \code{set_val_lab} return 
+#'   variable (vector x) of class "labelled" with attribute "labels" which
+#'   contains value labels. \code{make_labels} return named vector for usage as
+#'   value labels.
 #' @details Value labels are stored in attribute "labels" 
-#'   (\code{attr(x,"labels")}). Duplicated values are not allowed. If
-#'   argument \code{x} is data.frame or list then labels applied to all elements
-#'   of data.frame/list. We set variable class to "labelled" for preserving
-#'   labels from dropping during some operations (such as \code{c} and \code{[}).
+#'   (\code{attr(x,"labels")}). We set variable class to "labelled" for preserving
+#'   labels from dropping during some operations (such as \code{c} and \code{`[`}).
 #'   There are special methods of subsetting and concatenation for this class.
-#'   To drop value labels use \code{val_lab(var) <- NULL} or \code{unvl(var)}.
-#'   \code{make_labels} converts text in the form that used in questionnaires 
-#'   to named vector. See examples.
 #' @export
 #' @examples
-#' test_ds = data.frame(total = 1, 
-#'                      s2b = sample(2:3,100,replace = TRUE),
-#'                      s8_1 = sample(1:8,100,replace = TRUE))
+#' # toy example
+#' set.seed(123)
+#' # score - evaluation of tested product
 #' 
-#' ### Common usage ###
-#' val_lab(test_ds$s2b) = c('18 - 26' = 2, '27 - 35' = 3)
+#' score = sample(-1:1,20,replace = TRUE)
+#' var_lab(score) = "Evaluation of tested brand"
+#' val_lab(score) = c("Dislike it" = -1,
+#'                    "So-so" = 0,
+#'                    "Like it" = 1    
+#'                    )
 #' 
-#' head(factor(test_ds$s2b))
+#' # frequency of product scores                                      
+#' table(f(score)) 
 #' 
-#' identical(levels(factor(test_ds$s2b)), names(val_lab(test_ds$s2b)))
+#' # brands - multiple response question
+#' # Which brands do you use during last three months? 
 #' 
-#' test_ds = unlab(test_ds) # drop all labels
+#' brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))
+#'
+#' var_lab(brands) = "Used brands"
+#' val_lab(brands) = make_labels("
+#'                               1 Brand A
+#'                               2 Brand B
+#'                               3 Brand C
+#'                               4 Brand D
+#'                               5 Brand E
+#'                               ")
 #' 
-#' ### Add labels ###
 #' 
-#' age_groups = c('18 - 26' = 2, '27 - 35' = 3)
+#' # percentage of used brands
+#' colMeans(dichotomy(brands))
 #' 
-#' add_val_lab(test_ds$s2b) = age_groups[1]
-#' add_val_lab(test_ds$s2b) = age_groups[2]
+#' # percentage of brands within each score
+#' aggregate(dichotomy(brands) ~ f(score), FUN = mean)
 #' 
-#' identical(test_ds$s2b, set_val_lab(test_ds$s2b,age_groups))
+#' # customer segmentation by used brands
+#' kmeans(dichotomy(brands),3)
 #' 
-#' test_ds$s2b = unlab(test_ds$s2b)
+#' # model of influence of used brands on evaluation of tested product 
+#' summary(lm(score ~ dichotomy(brands)))
 #' 
 #' ## make labels from text copied from questionnaire
 #' 
-#' val_lab(test_ds$s2b) = make_labels("
+#' age = c(1, 2, 1, 2)
+#' 
+#' val_lab(age) = make_labels("
 #'  1. 18 - 26
 #'  2. 27 - 35
 #' ")
 #' 
-#' head(factor(test_ds$s2b))
+#' f(age)
 #' 
 #' # or, if in original codes is on the right side
 #' 
-#' val_lab(test_ds$s8_1) = make_labels("
+#' products = 1:8
+#' 
+#' val_lab(products) = ml_right("
 #'  Chocolate bars    1
 #'  Chocolate sweets (bulk)	2
 #'  Slab chocolate(packed)	3
@@ -208,9 +248,9 @@ unvr.list=function(x){
 #'  Marshmallow/pastilles in chocolate coating	6
 #'  Marmalade in chocolate coating	7
 #'  Other	8
-#' ", code_position = "right")
+#' ")
 #' 
-#' head(factor(test_ds$s8_1))
+#' f(products)
 val_lab=function(x){
     UseMethod("val_lab")
 }
@@ -219,12 +259,12 @@ val_lab=function(x){
 val_lab.data.frame=function(x)
 {
     
-    # TODO пересмотреть - слишком много ума тут
     res=val_lab.default(x)
+    # strange code below for case when we consider data.frame as multiple response question
     if (is.null(res)){
-        all_labs=lapply(x,val_lab)
+        all_labs=lapply(x, val_lab)
         all_labs=all_labs[!sapply(all_labs,is.null)]
-        if (length(all_labs)>0) res=do.call(combine_labels,all_labs) else res=NULL
+        if (length(all_labs)>0) res=do.call(combine_labels, all_labs) else res=NULL
     }
     res
 }
@@ -290,6 +330,39 @@ unvl=function(x){
 }
 
 
+#' @export
+#' @rdname val_lab
+make_labels=function(text, code_position=c("left","right")){
+    split="\n"
+    if (length(text)>1) text = paste(text,collapse=split) 
+    res = unlist(strsplit(text,split=split))
+    res = res[!is.na(res)]
+    res = gsub("^([\\s\\t]+)|([\\s\\t]+)$","",res,perl = TRUE)
+    res = res[res!=""]
+    code_position = match.arg(code_position)
+    if (code_position == "left") {
+        pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]*)(.+?)$"
+        code_pattern = "\\1\\2"
+        label_pattern = "\\4"
+    } else {
+        pattern = "^(.+?)([\\s\\t]+)(-*)([\\d\\.]+)$"
+        code_pattern = "\\3\\4"
+        label_pattern = "\\1"
+        
+    }
+    code=as.numeric(gsub(pattern,code_pattern,res,perl=TRUE))
+    #     if (!any(abs(floor(code)-code)>0)) code = as.integer(code)
+    lab=gsub(pattern,label_pattern,res,perl=TRUE)
+    structure(code,names=lab)
+}
+
+#' @export
+#' @rdname val_lab
+ml_left = function(text) make_labels(text = text, code_position = "left")
+#' @export
+#' @rdname val_lab
+ml_right = function(text) make_labels(text = text, code_position = "right")
+
 #' Drop variable label and value labels
 #' 
 #' \code{unlab} returns variable x without variable labels and value labels
@@ -329,33 +402,6 @@ unlab.list=function(x){
 
 ########
 
-
-
-#' @export
-#' @rdname val_lab
-make_labels=function(text,code_position=c("left","right")){
-    split="\n"
-    if (length(text)>1) text = paste(text,collapse=split) 
-    res = unlist(strsplit(text,split=split))
-    res = res[!is.na(res)]
-    res = gsub("^([\\s\\t]+)|([\\s\\t]+)$","",res,perl = TRUE)
-    res = res[res!=""]
-    code_position = match.arg(code_position)
-    if (code_position == "left") {
-        pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]*)(.+?)$"
-        code_pattern = "\\1\\2"
-        label_pattern = "\\4"
-    } else {
-        pattern = "^(.+?)([\\s\\t]+)(-*)([\\d\\.]+)$"
-        code_pattern = "\\3\\4"
-        label_pattern = "\\1"
-        
-    }
-    code=as.numeric(gsub(pattern,code_pattern,res,perl=TRUE))
-#     if (!any(abs(floor(code)-code)>0)) code = as.integer(code)
-    lab=gsub(pattern,label_pattern,res,perl=TRUE)
-    structure(code,names=lab)
-}
 
 
 combine_labels = function(...){

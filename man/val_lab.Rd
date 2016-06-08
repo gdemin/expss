@@ -3,8 +3,9 @@
 \name{val_lab}
 \alias{add_val_lab<-}
 \alias{make_labels}
+\alias{ml_left}
+\alias{ml_right}
 \alias{set_val_lab}
-\alias{unvl}
 \alias{val_lab}
 \alias{val_lab<-}
 \title{Set or get value labels}
@@ -18,15 +19,20 @@ set_val_lab(x, value, add = FALSE)
 add_val_lab(x) <- value
 
 make_labels(text, code_position = c("left", "right"))
+
+ml_left(text)
+
+ml_right(text)
 }
 \arguments{
 \item{x}{Variable(s). Vector/data.frame/list.}
 
-\item{value}{Named vector. Names of vector values are labels for the
+\item{value}{Named vector. Names of vector are labels for the
 appropriate values of variable x.}
 
-\item{add}{Logical. Should value labels replace old labels? Deafult is FALSE. If TRUE
-new value lables will be combined with old value labels.}
+\item{add}{Logical. Should we add value labels to old labels or replace it?
+Deafult is FALSE - we completely replace old values. If TRUE new value
+labels will be combined with old value labels.}
 
 \item{text}{text that should be converted to named vector}
 
@@ -34,68 +40,97 @@ new value lables will be combined with old value labels.}
 \code{text}.}
 }
 \value{
-\code{val_lab} return value labels (named vector). If labels doesn't
-  exist it return NULL . \code{val_lab<-} and \code{set_val_lab} return
-  variable (vector x) of class "labelled" with attribute "labels"
-  which contains value labels. \code{make_labels} return named vector for usage as value labels.
+\code{val_lab} return value labels (named vector). If labels doesn't 
+  exist it return NULL . \code{val_lab<-} and \code{set_val_lab} return 
+  variable (vector x) of class "labelled" with attribute "labels" which
+  contains value labels. \code{make_labels} return named vector for usage as
+  value labels.
 }
 \description{
-\code{val_lab} returns value labels or NULL if labels doesn't 
-exist. 
-\code{val_lab<-} set value labels.
-\code{set_val_lab} returns variable with value labels. 
-\code{add_val_lab<-} add value labels to already existing value labels. 
-\code{unvl} drops value labels.
-\code{make_labels} return named vector for usage as value labels.
+These functions set/get/drop value labels. Duplicated values are not allowed.
+If argument \code{x} is data.frame or list then labels applied to all 
+elements of data.frame/list. To drop value labels, use \code{val_lab(var) <- 
+NULL} or \code{unvl(var)}. \code{make_labels} converts text from the form 
+that usually used in questionnaires to named vector. See examples. For 
+utilizing labels in base R see \link{f}, \link{names2labels}, 
+\link{values2labels}, \link{unlab}, \link{dichotomy}. For variable labels see
+\link{var_lab}.
+\itemize{
+\item{\code{val_lab}}{ returns value labels or NULL if labels doesn't 
+exist.} 
+\item{\code{val_lab<-}}{ set value labels.}
+\item{\code{set_val_lab}}{ returns variable with value labels.} 
+\item{\code{add_val_lab<-}}{ add value labels to already existing value labels.} 
+\item{\code{unvl}}{ drops value labels.}
+\item{\code{make_labels}}{ makes named vector from text for usage as value labels.}
+\item{\code{ml_left} and \code{ml_right}}{ are shortcuts for \code{make_labels}
+with \code{code_postion} 'left' and 'right' accordingly.}
+}
 }
 \details{
 Value labels are stored in attribute "labels" 
-  (\code{attr(x,"labels")}). Duplicated values are not allowed. If
-  argument \code{x} is data.frame or list then labels applied to all elements
-  of data.frame/list. We set variable class to "labelled" for preserving
-  labels from dropping during some operations (such as \code{c} and \code{[}).
+  (\code{attr(x,"labels")}). We set variable class to "labelled" for preserving
+  labels from dropping during some operations (such as \code{c} and \code{`[`}).
   There are special methods of subsetting and concatenation for this class.
-  To drop value labels use \code{val_lab(var) <- NULL} or \code{unvl(var)}.
-  \code{make_labels} converts text in the form that used in questionnaires 
-  to named vector. See examples.
 }
 \examples{
-test_ds = data.frame(total = 1, 
-                     s2b = sample(2:3,100,replace = TRUE),
-                     s8_1 = sample(1:8,100,replace = TRUE))
+# toy example
+set.seed(123)
+# score - evaluation of tested product
 
-### Common usage ###
-val_lab(test_ds$s2b) = c('18 - 26' = 2, '27 - 35' = 3)
+score = sample(-1:1,20,replace = TRUE)
+var_lab(score) = "Evaluation of tested brand"
+val_lab(score) = c("Dislike it" = -1,
+                   "So-so" = 0,
+                   "Like it" = 1    
+                   )
 
-head(factor(test_ds$s2b))
+# frequency of product scores                                      
+table(f(score)) 
 
-identical(levels(factor(test_ds$s2b)), names(val_lab(test_ds$s2b)))
+# brands - multiple response question
+# Which brands do you use during last three months? 
 
-test_ds = unlab(test_ds) # drop all labels
+brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))
 
-### Add labels ###
+var_lab(brands) = "Used brands"
+val_lab(brands) = make_labels("
+                              1 Brand A
+                              2 Brand B
+                              3 Brand C
+                              4 Brand D
+                              5 Brand E
+                              ")
 
-age_groups = c('18 - 26' = 2, '27 - 35' = 3)
 
-add_val_lab(test_ds$s2b) = age_groups[1]
-add_val_lab(test_ds$s2b) = age_groups[2]
+# percentage of used brands
+colMeans(dichotomy(brands))
 
-identical(test_ds$s2b, set_val_lab(test_ds$s2b,age_groups))
+# percentage of brands within each score
+aggregate(dichotomy(brands) ~ f(score), FUN = mean)
 
-test_ds$s2b = unlab(test_ds$s2b)
+# customer segmentation by used brands
+kmeans(dichotomy(brands),3)
+
+# model of influence of used brands on evaluation of tested product 
+summary(lm(score ~ dichotomy(brands)))
 
 ## make labels from text copied from questionnaire
 
-val_lab(test_ds$s2b) = make_labels("
+age = c(1, 2, 1, 2)
+
+val_lab(age) = make_labels("
  1. 18 - 26
  2. 27 - 35
 ")
 
-head(factor(test_ds$s2b))
+f(age)
 
 # or, if in original codes is on the right side
 
-val_lab(test_ds$s8_1) = make_labels("
+products = 1:8
+
+val_lab(products) = ml_right("
  Chocolate bars    1
  Chocolate sweets (bulk)	2
  Slab chocolate(packed)	3
@@ -104,8 +139,8 @@ val_lab(test_ds$s8_1) = make_labels("
  Marshmallow/pastilles in chocolate coating	6
  Marmalade in chocolate coating	7
  Other	8
-", code_position = "right")
+")
 
-head(factor(test_ds$s8_1))
+f(products)
 }
 

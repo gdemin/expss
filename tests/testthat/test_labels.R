@@ -96,7 +96,19 @@ expect_identical(labs2,make_labels("
 
 "))
 
-expect_identical(labs2,make_labels("
+expect_identical(labs2,ml_left("
+    1\tBrand1
+
+\t\t2.    Brand2    
+
+3.\t\t    Brand3\t\t
+
+
+4    Brand4
+
+"))
+
+expect_identical(labs2,ml_right("
     Brand1\t      1
 
 \t\t    Brand2   2 
@@ -106,7 +118,7 @@ expect_identical(labs2,make_labels("
 
 Brand4              4
 
-",code_position="right"))
+"))
 
 
 expect_identical(labs2_1,make_labels("

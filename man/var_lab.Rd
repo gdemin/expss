@@ -26,7 +26,7 @@ unvr(x)
   of class "labelled" with attribute "label" which equals submitted value.
 }
 \description{
-This functions set/get/drop variable labels. For utilizing labels in base R 
+These functions set/get/drop variable labels. For utilizing labels in base R 
 see \link{f}, \link{names2labels}, \link{values2labels}, \link{unlab}. For
 value labels see \link{val_lab}.
 \itemize{
@@ -46,7 +46,7 @@ Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
 }
 \examples{
 data(mtcars)
-mtcars = within(mtcars,{
+mtcars = modify(mtcars,{
                 var_lab(mpg) = "Miles/(US) gallon"
                 var_lab(cyl) = "Number of cylinders"
                 var_lab(disp) = "Displacement (cu.in.)"
@@ -62,6 +62,17 @@ mtcars = within(mtcars,{
 
 # note: we exclude dependent variable 'mpg' from conversion to use its short name in formula
 summary(lm(mpg ~ ., data = n2l(mtcars, exclude = "mpg")))
+
+data(mtcars)
+
+var_lab(mtcars$am) = "Transmission"
+val_lab(mtcars$am) = c(automatic = 0, manual=1)
+
+\dontrun{
+plot(f(mtcars$am))
+}
+
+table(f(mtcars$am))
 
 }
 
