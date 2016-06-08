@@ -325,6 +325,7 @@ set_val_lab.list = function(x,value, add = FALSE){
 
 
 #' @export
+#' @rdname val_lab
 unvl=function(x){
     set_val_lab(x,NULL)
 }

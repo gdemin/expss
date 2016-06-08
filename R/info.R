@@ -58,7 +58,7 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
     } 
     if (frequencies){
         values=sort(table(x,useNA="ifany"),na.last = TRUE,decreasing = TRUE)
-        if (NA %in% names(values)) values=c(tail(values,1),head(values,-1))
+        if (NA %in% names(values)) values=c(values[length(values)], values[-length(values)])
         if (length(values)>max_levels) {
             other=sum(values[-(1:max_levels)])
             values=values[1:max_levels]
@@ -68,7 +68,7 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
         res = c(res, Frequency =values)
     }
     curr_name = deparse(substitute(x))
-    setNames(as.data.frame(c(curr_name,res),stringsAsFactors = FALSE),c("Name",names(res)))
+    stats::setNames(as.data.frame(c(curr_name,res),stringsAsFactors = FALSE),c("Name",names(res)))
 }
 
 #' @export

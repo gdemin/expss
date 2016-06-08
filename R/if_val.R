@@ -138,7 +138,7 @@ if_val = function(x, ..., from = NULL, to = NULL){
 
 #' @export
 #' @rdname if_val
-"if_val<-" = function(x, value, from = NULL){
+"if_val<-" = function(x, from = NULL, value){
     if (is.null(from)){
         if_val(x, value)
     } else {

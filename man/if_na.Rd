@@ -2,9 +2,12 @@
 % Please edit documentation in R/if_na.R
 \name{if_na}
 \alias{if_na}
+\alias{if_na<-}
 \title{Replace NA values in vector/data.frame/matrix/list with supplied value}
 \usage{
 if_na(x, value)
+
+if_na(x) <- value
 }
 \arguments{
 \item{x}{vector/matrix/data.frame/list}

@@ -6,6 +6,7 @@
 \alias{ml_left}
 \alias{ml_right}
 \alias{set_val_lab}
+\alias{unvl}
 \alias{val_lab}
 \alias{val_lab<-}
 \title{Set or get value labels}
@@ -17,6 +18,8 @@ val_lab(x) <- value
 set_val_lab(x, value, add = FALSE)
 
 add_val_lab(x) <- value
+
+unvl(x)
 
 make_labels(text, code_position = c("left", "right"))
 

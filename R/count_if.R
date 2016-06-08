@@ -70,8 +70,6 @@
 #' 
 #' count_if(gte(32),df1$b) # greater than or equal 32 = 4
 #' 
-#' count_if(list(gt(32), lt(86)),df1$b) # 2
-#' 
 #' count_if(gt(32) & lt(86),df1$b) # 2
 #' 
 #' # count only integer values between 33 and 85
@@ -86,22 +84,20 @@
 #' # count_row_if
 #' count_row_if(regex("^a"),df1) # c(1,0,0,1)
 #' 
-#' df1 %has% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
+#' 'apples' %in_row% df1  # c(TRUE,FALSE,FALSE,TRUE)
 #' 
-#' # example with dplyr
-#' if (require(dplyr)){
 #'  set.seed(123)
 #'  df2 = as.data.frame(
 #'         matrix(sample(c(1:10,NA),30,replace = TRUE),10)
 #'  )
-#'  df2  %>% mutate(exact = count_row_if(8, V1, V2, V3),
-#'                     greater = count_row_if(gt(8), V1, V2, V3),
-#'                     range = count_row_if(5:8, V1, V2, V3),
-#'                     na = count_row_if(is.na, V1, V2, V3),
+#'  result  = modify(df2, {
+#'                     exact = count_row_if(8, V1, V2, V3)
+#'                     greater = count_row_if(gt(8), V1, V2, V3)
+#'                     range = count_row_if(5:8, V1, V2, V3)
+#'                     na = count_row_if(is.na, V1, V2, V3)
 #'                     not_na = count_row_if(, V1, V2, V3)
-#'                  ) -> result
+#'                  })  
 #'  result
-#' }
 count_if=function(criterion = NULL,...){
     dfs = dots2data_frame(...)   
     cond = build_criterion(criterion, dfs)
@@ -198,14 +194,14 @@ sd_if=function(criterion = NULL, ..., data = NULL){
     if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
         stop("Invalid argument type: for averaging it should be numeric or logical")
     }
-    sd(data, na.rm = TRUE)
+    stats::sd(data, na.rm = TRUE)
 }
 
 #' @export
 #' @rdname count_if
 sd_row_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
-    apply(data, 1, sd, na.rm=TRUE)
+    apply(data, 1, stats::sd, na.rm=TRUE)
 }
 
 
@@ -213,7 +209,7 @@ sd_row_if=function(criterion = NULL,..., data = NULL){
 #' @rdname count_if
 sd_col_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
-    apply(data, 2, sd, na.rm=TRUE)
+    apply(data, 2, stats::sd, na.rm=TRUE)
 }
 
 ################################################
@@ -225,14 +221,14 @@ median_if=function(criterion = NULL, ..., data = NULL){
     if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
         stop("Invalid argument type: for averaging it should be numeric or logical")
     }
-    median(data, na.rm = TRUE)
+    stats::median(data, na.rm = TRUE)
 }
 
 #' @export
 #' @rdname count_if
 median_row_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
-    apply(data, 1, median, na.rm=TRUE)
+    apply(data, 1, stats::median, na.rm=TRUE)
 }
 
 
@@ -240,7 +236,7 @@ median_row_if=function(criterion = NULL,..., data = NULL){
 #' @rdname count_if
 median_col_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
-    apply(data, 2, median, na.rm=TRUE)
+    apply(data, 2, stats::median, na.rm=TRUE)
 }
 
 
@@ -354,7 +350,7 @@ apply_col_if=function(fun, criterion = NULL,..., data = NULL){
         }
         
     })
-    setNames(unlist(res), colnames(data))
+    stats::setNames(unlist(res), colnames(data))
 }
 
 #########################################################

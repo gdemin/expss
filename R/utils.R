@@ -8,8 +8,6 @@ stopif = function(cond,...){
 
 
 ######## build_criterion ###########
-# TODO Удалить
-#' @export
 build_criterion = function(criterion,dfs){
     # dfs should be data.frame
     # build criterion should return logical matrix with the form of dfs (e. g. the same dimension)
@@ -19,8 +17,7 @@ build_criterion = function(criterion,dfs){
     UseMethod("build_criterion")
 }
 
-# TODO Удалить
-#' @export
+
 build_criterion.function = function(criterion,dfs){
     res = lapply(dfs,function(colmn){
         cond = criterion(colmn)
@@ -30,15 +27,14 @@ build_criterion.function = function(criterion,dfs){
     do.call(cbind,res)
 }
 
-# TODO Удалить
-#' @export
+
 build_criterion.default = function(criterion,dfs){
     
     build_criterion.function(function(x) x %in% criterion,dfs)
 }
 
 
-#' @export
+
 build_criterion.logical = function(criterion,dfs){
     # uncertainty if criterion is result of something is.na(dfs[,i]) 
     # should we count NA in such case - possible solution - forbid logical criterion for count if
@@ -59,18 +55,18 @@ build_criterion.logical = function(criterion,dfs){
     res
 }
 
-#' @export
+
 build_criterion.data.frame = function(criterion,dfs){
     build_criterion(as.matrix(criterion), dfs)
 }
 
-#' @export
+
 build_criterion.matrix = function(criterion,dfs){
     stopif(!is.logical(criterion), "matrix/data.frame criterion should be logical.")
     build_criterion.logical(criterion, dfs)
 }
 
-#' @export
+
 build_criterion.list = function(criterion,dfs){
     stop("Condition of type 'list' doesn't supported.")
     #stopif(length(criterion)==0, "Zero-length list is provided as argument.")
@@ -78,8 +74,7 @@ build_criterion.list = function(criterion,dfs){
     #do.call(cbind, res)
 }
 
-# TODO Удалить
-#' @export
+
 build_criterion.criterion = function(criterion,dfs){
     build_criterion.function(criterion,dfs) 
 }

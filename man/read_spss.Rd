@@ -12,7 +12,7 @@ read_spss_to_list(file, reencode = TRUE)
 \arguments{
 \item{file}{Character string: the name of the file or URL to read.}
 
-\item{logical:}{should character strings be re-encoded to the current locale.
+\item{reencode}{logical: should character strings be re-encoded to the current locale.
 The default is TRUE. NA means to do so in a UTF-8 locale, only. Alternatively, a
 character string specifying an encoding to assume for the file.}
 }

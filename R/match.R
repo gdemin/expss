@@ -74,16 +74,16 @@ match_col = function(criterion, ...){
     if(is.function(criterion)){
         cond = build_criterion(criterion, dfs)
         res = apply(cond, 2, function(x) which(x)[1])
-        setNames(res, colnames(dfs))
+        stats::setNames(res, colnames(dfs))
     } else {
         if(length(criterion)>1){
             stopif(length(criterion)!=nrow(dfs), "Length of 'criterion' should be
                    1 or equals number of columns of '...' but length(criterion)=",length(criterion),", NCOL(...)=", NCOL(dfs))
             res = unlist(lapply(seq_along(criterion), function(col_num) match(criterion[col_num], dfs[[col_num]])))
-            setNames(res, colnames(dfs))
+            stats::setNames(res, colnames(dfs))
         } else {
             res = apply(dfs, 2, function(col) match(criterion, col))
-            setNames(res, colnames(dfs))
+            stats::setNames(res, colnames(dfs))
         }    
     } 
     
@@ -125,13 +125,13 @@ index_col = function(index, ...){
         if(!is.na(index)){
             unlist(dfs[index,]) 
         } else {
-            setNames(rep(NA, NROW(dfs)), colnames(dfs))
+            stats::setNames(rep(NA, NROW(dfs)), colnames(dfs))
         }    
     } else {
         stopif(length(index)!=ncol(dfs), "Length of 'index' should be
                1 or equals number of columns of '...' but length(index)=",length(index),", NCOL(...)=", NCOL(dfs))
         res = unlist(lapply(seq_along(index), function(col_num) dfs[[col_num]][index[col_num]]))
-        setNames(res, colnames(dfs))
+        stats::setNames(res, colnames(dfs))
     }
     
 }

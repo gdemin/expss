@@ -73,6 +73,7 @@ if_na = function(x, value){
 
 
 #' @export
+#' @rdname if_na
 'if_na<-' = function(x, value){
     if_na(x, value)
 }

@@ -8,7 +8,7 @@
 #' package \code{foreign}.
 #' 
 #' @param file Character string: the name of the file or URL to read.
-#' @param logical: should character strings be re-encoded to the current locale.
+#' @param reencode logical: should character strings be re-encoded to the current locale.
 #'   The default is TRUE. NA means to do so in a UTF-8 locale, only. Alternatively, a
 #'   character string specifying an encoding to assume for the file.
 #' 
@@ -67,7 +67,7 @@ load=function(file, envir = parent.frame()){
         for (each in file){
             dat=NULL
             if(any(grepl("\\.sav$",file,ignore.case=TRUE,perl=TRUE))) dat=read_spss(file)
-            if(any(grepl("\\.csv$",file,ignore.case=TRUE,perl=TRUE))) dat=read.table(file,header=TRUE,sep=",")
+            if(any(grepl("\\.csv$",file,ignore.case=TRUE,perl=TRUE))) dat=utils::read.table(file,header=TRUE,sep=",")
             if (!is.null(dat)){
                 base.name=readline("Enter name for data.frame (if empty file will be loaded into global environement):")
                 if (base.name!=""){

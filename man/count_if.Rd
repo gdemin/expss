@@ -150,8 +150,6 @@ count_if(neq(75),df1$b) # not equal 75 = 3
 
 count_if(gte(32),df1$b) # greater than or equal 32 = 4
 
-count_if(list(gt(32), lt(86)),df1$b) # 2
-
 count_if(gt(32) & lt(86),df1$b) # 2
 
 # count only integer values between 33 and 85
@@ -166,21 +164,19 @@ count_if(regex("^a"),df1) # 2
 # count_row_if
 count_row_if(regex("^a"),df1) # c(1,0,0,1)
 
-df1 \%has\% 'apples' # c(TRUE,FALSE,FALSE,TRUE)
+'apples' \%in_row\% df1  # c(TRUE,FALSE,FALSE,TRUE)
 
-# example with dplyr
-if (require(dplyr)){
  set.seed(123)
  df2 = as.data.frame(
         matrix(sample(c(1:10,NA),30,replace = TRUE),10)
  )
- df2  \%>\% mutate(exact = count_row_if(8, V1, V2, V3),
-                    greater = count_row_if(gt(8), V1, V2, V3),
-                    range = count_row_if(5:8, V1, V2, V3),
-                    na = count_row_if(is.na, V1, V2, V3),
+ result  = modify(df2, {
+                    exact = count_row_if(8, V1, V2, V3)
+                    greater = count_row_if(gt(8), V1, V2, V3)
+                    range = count_row_if(5:8, V1, V2, V3)
+                    na = count_row_if(is.na, V1, V2, V3)
                     not_na = count_row_if(, V1, V2, V3)
-                 ) -> result
+                 })  
  result
-}
 }
 

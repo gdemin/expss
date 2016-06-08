@@ -61,7 +61,7 @@ vlookup(c(2,4,6), dict, result_column='names')
 
 # Example 2
 
-ex2 = read.table(header = TRUE, text = "
+ex2 = utils::read.table(header = TRUE, text = "
     Item_ID Item Cost Markup 
     ST-340 Stroller 145.67  0.30  
     BI-567 Bib 3.56  0.40  
@@ -96,7 +96,7 @@ ifelse(vlookup(A3, ex2, "Cost") >= 20,
 
 # Example 3
 
-ex3 = read.table(header = TRUE, text = "
+ex3 = utils::read.table(header = TRUE, text = "
     ID  Last_name  First_name  Title Birth_date  
     1 Davis Sara 'Sales Rep.'  12/8/1968 
     2 Fontana Olivier 'V.P. of Sales' 2/19/1952 

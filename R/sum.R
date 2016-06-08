@@ -107,7 +107,7 @@ mean_col=function(...){
 #' @rdname sum_row
 sd_row=function(...){
     data = dots2data_frame(...)
-    apply(data, 1, sd, na.rm=TRUE)
+    apply(data, 1, stats::sd, na.rm=TRUE)
 }
 
 
@@ -115,19 +115,19 @@ sd_row=function(...){
 #' @rdname sum_row
 sd_col=function(...){
     data = dots2data_frame(...)
-    apply(data, 2, sd, na.rm=TRUE)
+    apply(data, 2, stats::sd, na.rm=TRUE)
 }
 
 ################################################
 
-#' @export
-median.data.frame = function(x, ...) median(as.matrix(x), ...)
+# @export
+# median.data.frame = function(x, ...) stats::median(as.matrix(x), ...)
 
 #' @export
 #' @rdname sum_row
 median_row=function(...){
     data = dots2data_frame(...)
-    apply(data, 1, median, na.rm=TRUE)
+    apply(data, 1, stats::median, na.rm=TRUE)
 }
 
 
@@ -135,7 +135,7 @@ median_row=function(...){
 #' @rdname sum_row
 median_col=function(...){
     data = dots2data_frame(...)
-    apply(data, 2, median, na.rm=TRUE)
+    apply(data, 2, stats::median, na.rm=TRUE)
 }
 
 

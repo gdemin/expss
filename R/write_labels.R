@@ -76,7 +76,7 @@ apply_labels_from_file = function(x, filename, fileEncoding = ""){
 }
 
 read_labelled = function(filename, colClasses = NA,fileEncoding = ""){
-    w = read.table(file = paste0(filename,".csv"),
+    w = utils::read.table(file = paste0(filename,".csv"),
                    header = TRUE,
                    sep = ",",
                    colClasses = colClasses,
