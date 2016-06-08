@@ -48,9 +48,9 @@ Coerced by as.character to a character string if possible.}
 
 \item{useBytes}{logical see \link[base]{grepl}}
 
-\item{lower}{vector numeric value - lower bound of interval}
+\item{lower}{vector/single value - lower bound of interval}
 
-\item{upper}{vector numeric value - upper bound of interval}
+\item{upper}{vector/single value - upper bound of interval}
 }
 \value{
 function of class 'criterion' which tests its argument against condition and return logical value
@@ -83,6 +83,8 @@ lte(1)}}
 \examples{
 # operations on vector
 1:6 \%d\% gt(4) # 1:4
+
+1:6 \%d\% (1 | gt(4)) # 2:4
 
 letters \%i\% (fixed("a") | fixed("z")) # a, z
 

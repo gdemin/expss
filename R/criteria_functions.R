@@ -25,8 +25,8 @@
 #' } 
 #' 
 #' @param x vector 
-#' @param lower vector numeric value - lower bound of interval 
-#' @param upper vector numeric value - upper bound of interval 
+#' @param lower vector/single value - lower bound of interval 
+#' @param upper vector/single value - upper bound of interval 
 #' @param pattern character string containing a regular expression (or character
 #'   string for \code{fixed}) to be matched in the given character vector.
 #'   Coerced by as.character to a character string if possible.
@@ -39,6 +39,8 @@
 #' @examples
 #' # operations on vector
 #' 1:6 %d% gt(4) # 1:4
+#' 
+#' 1:6 %d% (1 | gt(4)) # 2:4
 #' 
 #' letters %i% (fixed("a") | fixed("z")) # a, z
 #' 
