@@ -26,11 +26,16 @@ unvr(x)
   of class "labelled" with attribute "label" which equals submitted value.
 }
 \description{
-\code{var_lab} returns variable label or NULL if label doesn't 
-exist. 
-\code{var_lab<-} set variable label. 
-\code{set_var_lab} returns variable with label.
-\code{unvr} drops variable label.
+This functions set/get/drop variable labels. For utilizing labels in base R 
+see \link{f}, \link{names2labels}, \link{values2labels}, \link{unlab}. For
+value labels see \link{val_lab}.
+\itemize{
+\item{\code{var_lab}}{ returns variable label or NULL if label doesn't 
+exist.} 
+\item{\code{var_lab<-}}{ set variable label.} 
+\item{\code{set_var_lab}}{ returns variable with label.}
+\item{\code{unvr}}{ drops variable label.} 
+}
 }
 \details{
 Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
@@ -40,13 +45,23 @@ Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
   \code{var_lab(var) <- NULL} or \code{unvr(var)}.
 }
 \examples{
-test_ds = data.frame(total = 1, s2b = sample(2:3,100,replace = TRUE))
-age_group = test_ds$s2b
-var_lab(test_ds$s2b) = "Age group"
-age_group = set_var_lab(age_group,"Age group")
-identical(age_group,test_ds$s2b) # should be TRUE
+data(mtcars)
+mtcars = within(mtcars,{
+                var_lab(mpg) = "Miles/(US) gallon"
+                var_lab(cyl) = "Number of cylinders"
+                var_lab(disp) = "Displacement (cu.in.)"
+                var_lab(hp) = "Gross horsepower"
+                var_lab(drat) = "Rear axle ratio"
+                var_lab(wt) = "Weight (lb/1000)"
+                var_lab(qsec) = "1/4 mile time"
+                var_lab(vs) = "V/S"
+                var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
+                var_lab(gear) = "Number of forward gears"
+                var_lab(carb) = "Number of carburetors"
+})
 
-identical(var_lab(age_group),attr(age_group,"label")) # should be TRUE
+# note: we exclude dependent variable 'mpg' from conversion to use its short name in formula
+summary(lm(mpg ~ ., data = n2l(mtcars, exclude = "mpg")))
 
 }
 

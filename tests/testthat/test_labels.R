@@ -9,6 +9,21 @@ expect_identical(age_group,test_ds$s2b) # should be TRUE
 expect_identical(var_lab(age_group),attr(age_group,"label")) # should be TRUE
 
 
+test_ds = unvr(test_ds)
+test_test_ds = test_ds
+
+for (each in seq_along(test_test_ds)) var_lab(test_test_ds[[each]]) = "Age group"
+
+expect_identical(set_var_lab(test_ds, "Age group"), test_test_ds)
+
+
+test_ds = as.list(unvr(test_ds))
+test_test_ds = test_ds
+
+for (each in seq_along(test_test_ds)) var_lab(test_test_ds[[each]]) = "Age group"
+
+expect_identical(set_var_lab(test_ds, "Age group"), test_test_ds)
+
 context("val_lab")
 
 
