@@ -23,7 +23,7 @@
 #' \code{count_if} return single value (vector of length 1). 
 #' \code{count_row_if} returns vector of counts for each row of supplied arguments.
 #' \code{count_col_if} returns vector of counts for each column of supplied arguments.
-#' \code{\%has\%} returns logical vector - presence indicator of criterion in each row.
+#' \code{\%in_row\%}/\code{\%in_col\%} return logical vector - presence indicator of criterion in each row/column.
 #' 
 #' @details
 #' \code{count_if} counts values in entire dataset and return single 
@@ -102,7 +102,7 @@
 #'                  ) -> result
 #'  result
 #' }
-count_if=function(criterion=NULL,...){
+count_if=function(criterion = NULL,...){
     dfs = dots2data_frame(...)   
     cond = build_criterion(criterion, dfs)
     sum(cond,na.rm=TRUE)
@@ -110,7 +110,7 @@ count_if=function(criterion=NULL,...){
 
 #' @export
 #' @rdname count_if
-count_row_if=function(criterion=NULL,...){
+count_row_if=function(criterion = NULL,...){
     dfs = dots2data_frame(...)   
     cond = build_criterion(criterion, dfs)
     rowSums(cond,na.rm=TRUE)
@@ -119,7 +119,7 @@ count_row_if=function(criterion=NULL,...){
 
 #' @export
 #' @rdname count_if
-count_col_if=function(criterion=NULL,...){
+count_col_if=function(criterion = NULL,...){
     dfs = dots2data_frame(...)   
     cond = build_criterion(criterion, dfs)
     colSums(cond,na.rm=TRUE)
@@ -128,20 +128,26 @@ count_col_if=function(criterion=NULL,...){
 
 #' @export
 #' @rdname count_if
-'%has%'=function(x,criterion){
-    count_row_if(criterion=criterion,x)>0
+'%in_row%'=function(criterion, x){
+    count_row_if(criterion=criterion, x)>0
 }
 
 #' @export
 #' @rdname count_if
-sum_if=function(criterion=NULL, ..., data = NULL){
+'%in_col%'=function(criterion, x){
+    count_col_if(criterion=criterion, x)>0
+}
+
+#' @export
+#' @rdname count_if
+sum_if=function(criterion = NULL, ..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     sum(data, na.rm = TRUE)
 }
 
 #' @export
 #' @rdname count_if
-sum_row_if=function(criterion=NULL,..., data = NULL){
+sum_row_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     rowSums(data, na.rm=TRUE)
 }
@@ -149,7 +155,7 @@ sum_row_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-sum_col_if=function(criterion=NULL,..., data = NULL){
+sum_col_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     colSums(data, na.rm=TRUE)
 }
@@ -159,7 +165,7 @@ sum_col_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-mean_if=function(criterion=NULL, ..., data = NULL){
+mean_if=function(criterion = NULL, ..., data = NULL){
     data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
     if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
         stop("Invalid argument type: for averaging it should be numeric or logical")
@@ -169,7 +175,7 @@ mean_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname count_if
-mean_row_if=function(criterion=NULL,..., data = NULL){
+mean_row_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     rowMeans(data, na.rm=TRUE)
 }
@@ -177,7 +183,7 @@ mean_row_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-mean_col_if=function(criterion=NULL,..., data = NULL){
+mean_col_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     colMeans(data, na.rm=TRUE)
 }
@@ -187,7 +193,7 @@ mean_col_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-sd_if=function(criterion=NULL, ..., data = NULL){
+sd_if=function(criterion = NULL, ..., data = NULL){
     data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
     if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
         stop("Invalid argument type: for averaging it should be numeric or logical")
@@ -197,7 +203,7 @@ sd_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname count_if
-sd_row_if=function(criterion=NULL,..., data = NULL){
+sd_row_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     apply(data, 1, sd, na.rm=TRUE)
 }
@@ -205,7 +211,7 @@ sd_row_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-sd_col_if=function(criterion=NULL,..., data = NULL){
+sd_col_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     apply(data, 2, sd, na.rm=TRUE)
 }
@@ -214,7 +220,7 @@ sd_col_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-median_if=function(criterion=NULL, ..., data = NULL){
+median_if=function(criterion = NULL, ..., data = NULL){
     data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
     if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
         stop("Invalid argument type: for averaging it should be numeric or logical")
@@ -224,7 +230,7 @@ median_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname count_if
-median_row_if=function(criterion=NULL,..., data = NULL){
+median_row_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     apply(data, 1, median, na.rm=TRUE)
 }
@@ -232,7 +238,7 @@ median_row_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-median_col_if=function(criterion=NULL,..., data = NULL){
+median_col_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     apply(data, 2, median, na.rm=TRUE)
 }
@@ -242,7 +248,7 @@ median_col_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-max_if=function(criterion=NULL, ..., data = NULL){
+max_if=function(criterion = NULL, ..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(max(data, na.rm = TRUE))
     if(!is.finite(res)) res = NA
@@ -251,7 +257,7 @@ max_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname count_if
-max_row_if=function(criterion=NULL,..., data = NULL){
+max_row_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
     res[!is.finite(res)] = NA
@@ -261,7 +267,7 @@ max_row_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-max_col_if=function(criterion=NULL,..., data = NULL){
+max_col_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
     res[!is.finite(res)] = NA
@@ -272,7 +278,7 @@ max_col_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-min_if=function(criterion=NULL, ..., data = NULL){
+min_if=function(criterion = NULL, ..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(min(data, na.rm = TRUE))
     if(!is.finite(res)) res = NA
@@ -281,7 +287,7 @@ min_if=function(criterion=NULL, ..., data = NULL){
 
 #' @export
 #' @rdname count_if
-min_row_if=function(criterion=NULL,..., data = NULL){
+min_row_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
     res[!is.finite(res)] = NA
@@ -291,7 +297,7 @@ min_row_if=function(criterion=NULL,..., data = NULL){
 
 #' @export
 #' @rdname count_if
-min_col_if=function(criterion=NULL,..., data = NULL){
+min_col_if=function(criterion = NULL,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
     res[!is.finite(res)] = NA
@@ -299,37 +305,56 @@ min_col_if=function(criterion=NULL,..., data = NULL){
 }
 
 
+
+
 #' @export
 #' @rdname count_if
-apply_if=function(fun, criterion=NULL,..., data = NULL){
-    stop("not implemented yet")
-    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+apply_row_if=function(fun, criterion = NULL,..., data = NULL){
+    dfs = dots2data_frame(...) # form data.frame 
     criterion = build_criterion(criterion, dfs)
     if (is.null(data)){
         data = dfs
     }
-    
+    data = as.matrix(data)
+    rows = 1:nrow(dfs)
+    res = lapply(rows, function(each_row){
+        filtered_row = data[each_row,][criterion[each_row,]]
+        if(length(filtered_row) > 0){
+            res_row = fun(filtered_row)
+            stopif(length(res_row)!=1, "Incorrect result from function 'fun' - length of result is not equal to 1") 
+            res_row
+        } else {
+            NA
+        }
+        
+    })
+    unlist(res)
 }
+
+
+
 
 #' @export
 #' @rdname count_if
-apply_row_if=function(fun, criterion=NULL,..., data = NULL){
-    stop("not implemented yet")
-    dfs = do.call(data.frame,c(list(...),stringsAsFactors=FALSE)) # form data.frame 
+apply_col_if=function(fun, criterion = NULL,..., data = NULL){
+    dfs = dots2data_frame(...) # form data.frame 
     criterion = build_criterion(criterion, dfs)
     if (is.null(data)){
         data = dfs
     }
-    
-}
-
-
-#' @export
-#' @rdname count_if
-apply_col_if=function(fun, criterion=NULL,..., data = NULL){
-    stop("not implemented yet")
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    apply(data, 2, fun)
+    cols = 1:ncol(dfs)
+    res = lapply(cols, function(each_col){
+        filtered_col = data[[each_col]][criterion[, each_col]]
+        if(length(filtered_col) > 0){
+            res_col = fun(filtered_col)
+            stopif(length(res_col)!=1, "Incorrect result from function 'fun' - length of result is not equal to 1") 
+            res_col
+        } else {
+            NA
+        }
+        
+    })
+    setNames(unlist(res), colnames(data))
 }
 
 #########################################################

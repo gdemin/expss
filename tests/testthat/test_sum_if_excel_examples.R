@@ -223,5 +223,117 @@ expect_equal(
     NA
 )
 
+context("median/sd if")
+
+dfs = read.csv(
+    text = "
+    property_value,commission,data
+    100000,7005,250045
+    200000,14000,	
+    300000,21001,	
+    400001,28001,"
+)
+
+mat_dfs = as.matrix(dfs)
+expect_equal(
+    with(dfs, median_if(lt(23000), commission)),
+    median(mat_dfs[mat_dfs<23000], na.rm = TRUE)
+)
+
+expect_equal(
+    with(dfs, median_if(lt(95000), property_value)),
+    as.integer(NA)
+)
+
+expect_equal(
+    with(dfs, median_if(gt(250000), property_value, data = commission)),
+    median(mat_dfs[mat_dfs[,1]>250000, 2], na.rm = TRUE)
+)
+
+expect_equal(
+    with(dfs, sd_if(lt(23000), commission)),
+    sd(mat_dfs[mat_dfs<23000], na.rm = TRUE)
+)
+
+expect_equal(
+    with(dfs, sd_if(lt(95000), property_value)),
+    as.integer(NA)
+)
+
+expect_equal(
+    with(dfs, sd_if(gt(250000), property_value, data = commission)),
+    sd(mat_dfs[mat_dfs[,1]>250000, 2], na.rm = TRUE)
+)
+
+data(iris)
+
+test_iris = as.matrix(iris[,-5])
+expect_identical(
+    median_row_if(1:150<75, test_iris),
+    ifelse(1:150<75, apply(test_iris, 1, median, na.rm = TRUE), NA)
+)
+
+expect_identical(
+   sd_row_if(1:150<75, test_iris),
+    ifelse(1:150<75, apply(test_iris, 1, sd, na.rm = TRUE), NA)
+)
+
+test_iris2 = test_iris
+test_iris2[1:150>74, ] = NA
+expect_identical(
+    median_col_if(1:150<75, test_iris),
+    apply(test_iris2, 2, median, na.rm = TRUE)
+)
+
+expect_identical(
+    sd_col_if(1:150<75, test_iris),
+    apply(test_iris2, 2, sd, na.rm = TRUE)
+)
+
+
+context("apply_if")
+
+m_med = function(x) median(x, na.rm = TRUE)
+m_sd = function(x) sd(x, na.rm = TRUE)
+data(iris)
+
+test_iris = as.matrix(iris[,-5])
+expect_identical(
+    apply_row_if(m_med, 1:150<75, test_iris),
+    ifelse(1:150<75, apply(test_iris, 1, median, na.rm = TRUE), NA)
+)
+
+expect_identical(
+    apply_row_if(m_sd, 1:150<75, test_iris),
+    ifelse(1:150<75, apply(test_iris, 1, sd, na.rm = TRUE), NA)
+)
+
+test_iris2 = test_iris
+test_iris2[1:150>74, ] = NA
+expect_identical(
+    apply_col_if(m_med, 1:150<75, test_iris),
+    apply(test_iris2, 2, median, na.rm = TRUE)
+)
+
+expect_identical(
+    apply_col_if(m_sd, 1:150<75, test_iris),
+    apply(test_iris2, 2, sd, na.rm = TRUE)
+)
+
+
+bad_function = function(x) c(m_med(x), m_sd(x))
+
+expect_error(
+    apply_row_if(bad_function, 1:150<75, test_iris)
+)
+
+expect_error(
+    apply_col_if(bad_function, 1:150<75, test_iris)
+)
+
+
+
+
+
 
     
