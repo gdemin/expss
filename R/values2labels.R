@@ -1,13 +1,17 @@
 #' Replace vector/matrix/data.frame/list values with corresponding value labels.
 #' 
+#' \code{values2labels} replaces vector/matrix/data.frame/list values with
+#' corresponding value labels. If there are no labels for some values they are
+#' converted to characters in most cases. If there are no labels at all for
+#' variable it remains unchanged. \code{v2l} is just shortcut to \code{values2labels}.
+#' 
 #' @param x vector/matrix/data.frame/list
-#' @return Object of the same form as x but with value labels instead of values. If there are no labels for
-#'  some values they are converted to characters in most cases.
-#' @details \code{v2l} is just shortcut to \code{values2labels}.  
-#' @seealso \code{\link{names2labels}}
+#' @return Object of the same form as x but with value labels instead of values.
+#'  
+#' @seealso \link{f}, \link{names2labels}, \link{val_lab},  \link{var_lab}
 #' @examples
 #' data(mtcars)
-#' mtcars = within(mtcars,{
+#' mtcars = modify(mtcars,{
 #'                 var_lab(mpg) = NULL
 #'                 val_lab(am) = c(" automatic" = 0, " manual" =  1)
 #' })

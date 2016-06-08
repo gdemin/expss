@@ -13,18 +13,17 @@ v2l(x)
 \item{x}{vector/matrix/data.frame/list}
 }
 \value{
-Object of the same form as x but with value labels instead of values. If there are no labels for
- some values they are converted to characters in most cases.
+Object of the same form as x but with value labels instead of values.
 }
 \description{
-Replace vector/matrix/data.frame/list values with corresponding value labels.
-}
-\details{
-\code{v2l} is just shortcut to \code{values2labels}.
+\code{values2labels} replaces vector/matrix/data.frame/list values with
+corresponding value labels. If there are no labels for some values they are
+converted to characters in most cases. If there are no labels at all for
+variable it remains unchanged. \code{v2l} is just shortcut to \code{values2labels}.
 }
 \examples{
 data(mtcars)
-mtcars = within(mtcars,{
+mtcars = modify(mtcars,{
                 var_lab(mpg) = NULL
                 val_lab(am) = c(" automatic" = 0, " manual" =  1)
 })
@@ -32,6 +31,6 @@ mtcars = within(mtcars,{
 summary(lm(mpg ~ ., data = values2labels(mtcars[,c("mpg","am")])))
 }
 \seealso{
-\code{\link{names2labels}}
+\link{f}, \link{names2labels}, \link{val_lab},  \link{var_lab}
 }
 
