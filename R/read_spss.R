@@ -1,22 +1,23 @@
 #' Read an SPSS Data File
 #' 
-#' read_spss reads data from a file stored in SPSS *.sav format.
-#'  
+#' \code{read_spss} reads data from a file stored in SPSS *.sav format. It
+#' returns data.frame and never converts string variables to factors. Also it
+#' prepares SPSS values/variables labels for working with
+#' \code{val_lab}/\code{var_lab} functions. User-missings values are ignored.
+#' \code{read_spss} is simple wrapper around \code{read.spss} function from
+#' package \code{foreign}.
+#' 
 #' @param file Character string: the name of the file or URL to read.
-#' @param reencode logical: should character strings be re-encoded to the current locale. The default, NA, means to do so in a UTF-8 locale, only. Alternatively a character string specifying an encoding to assume for the file.
+#' @param logical: should character strings be re-encoded to the current locale.
+#'   The default is TRUE. NA means to do so in a UTF-8 locale, only. Alternatively, a
+#'   character string specifying an encoding to assume for the file.
 #' 
 #' @return 
 #' \code{read_spss} returns data.frame. 
 #' 
 #' \code{read_spss_to_list} returns list of variables from SPSS files.
 #' 
-#' @details
-#' This is simple wrapper around \code{read.spss} function from package \code{foreign}.
-#' It never converts string variables to factors. Also it prepares SPSS values/variables labels
-#' for working with \code{val_lab}/\code{var_lab} functions. User-missings values are ignored.
-#' 
-#'  @seealso
-#'  \code{\link[foreign]{read.spss}} in package \code{foreign}, \code{\link{val_lab}}, \code{\link{var_lab}} 
+#' @seealso \link[foreign]{read.spss} in package \code{foreign}, \link{val_lab}, \link{var_lab} 
 #' 
 #' @export
 #' @examples
@@ -26,7 +27,7 @@
 #' list_w = read_spss_to_list("project_123.sav") # to list
 #' 
 #' }
-read_spss=function(file, reencode = "UTF8"){
+read_spss=function(file, reencode = TRUE){
     res = read_spss_to_list(file, reencode = reencode)
     res = do.call(data.frame,c(res,stringsAsFactors=FALSE))
     res
@@ -36,19 +37,19 @@ read_spss=function(file, reencode = "UTF8"){
 
 #' @export
 #' @rdname read_spss
-read_spss_to_list=function(file, reencode = "UTF8"){
-    spss = foreign::read.spss(enc2native(file),use.value.labels=FALSE,to.data.frame=FALSE, reencode = reencode, use.missings = FALSE)
+read_spss_to_list=function(file, reencode = TRUE){
+    spss = foreign::read.spss(enc2native(file), use.value.labels=FALSE, to.data.frame=FALSE, reencode = reencode, use.missings = FALSE)
     var_labs = attr(spss,'variable.labels')
     attr(spss,'label.table') = NULL
     for (var_name in names(var_labs)) {
         curr_lab = var_labs[[var_name]]
-        if (!is.null(curr_lab) && (curr_lab!="")) var_lab(spss[[var_name]]) = curr_lab
+        if (length(curr_lab)>0 && (curr_lab!="") && !is.na(curr_lab)) var_lab(spss[[var_name]]) = curr_lab
     }
     for (var_name in names(spss)) {
         # Trim whitespaces from start and end of character variables
         if (is.character(spss[[var_name]])) spss[[var_name]] = gsub("^\\s+|\\s+$","",spss[[var_name]],perl=TRUE)
         val_labs = attr(spss[[var_name]],"value.labels")
-        if (!is.null(val_labs)) {
+        if (length(val_labs)>0) {
             attr(spss[[var_name]],"value.labels") = NULL
             val_lab(spss[[var_name]]) = sort(val_labs)
             

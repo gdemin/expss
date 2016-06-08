@@ -5,14 +5,16 @@
 \alias{read_spss_to_list}
 \title{Read an SPSS Data File}
 \usage{
-read_spss(file, reencode = "UTF8")
+read_spss(file, reencode = TRUE)
 
-read_spss_to_list(file, reencode = "UTF8")
+read_spss_to_list(file, reencode = TRUE)
 }
 \arguments{
 \item{file}{Character string: the name of the file or URL to read.}
 
-\item{reencode}{logical: should character strings be re-encoded to the current locale. The default, NA, means to do so in a UTF-8 locale, only. Alternatively a character string specifying an encoding to assume for the file.}
+\item{logical:}{should character strings be re-encoded to the current locale.
+The default is TRUE. NA means to do so in a UTF-8 locale, only. Alternatively, a
+character string specifying an encoding to assume for the file.}
 }
 \value{
 \code{read_spss} returns data.frame. 
@@ -20,15 +22,12 @@ read_spss_to_list(file, reencode = "UTF8")
 \code{read_spss_to_list} returns list of variables from SPSS files.
 }
 \description{
-read_spss reads data from a file stored in SPSS *.sav format.
-}
-\details{
-This is simple wrapper around \code{read.spss} function from package \code{foreign}.
-It never converts string variables to factors. Also it prepares SPSS values/variables labels
-for working with \code{val_lab}/\code{var_lab} functions. User-missings values are ignored.
-
- @seealso
- \code{\link[foreign]{read.spss}} in package \code{foreign}, \code{\link{val_lab}}, \code{\link{var_lab}}
+\code{read_spss} reads data from a file stored in SPSS *.sav format. It
+returns data.frame and never converts string variables to factors. Also it
+prepares SPSS values/variables labels for working with
+\code{val_lab}/\code{var_lab} functions. User-missings values are ignored.
+\code{read_spss} is simple wrapper around \code{read.spss} function from
+package \code{foreign}.
 }
 \examples{
 \dontrun{
@@ -37,5 +36,8 @@ w = read_spss("project_123.sav") # to data.frame
 list_w = read_spss_to_list("project_123.sav") # to list
 
 }
+}
+\seealso{
+\link[foreign]{read.spss} in package \code{foreign}, \link{val_lab}, \link{var_lab}
 }
 
