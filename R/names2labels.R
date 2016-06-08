@@ -1,16 +1,19 @@
 #' Replace data.frame/list names with corresponding variables labels.
 #' 
+#' \code{names2labels} replaces data.frame/list names with corresponding 
+#' variables labels. If there are no labels for some variables their names
+#' remain unchanged. \code{n2l} is just shortcut for \code{names2labels}.
 #' @param x data.frame/list.
-#' @param exclude logical/integer/character columns which names should be left unchanged. Only applicable to list/data.frame.
+#' @param exclude logical/integer/character columns which names should be left
+#'   unchanged. Only applicable to list/data.frame.
 #' @param keep_names logical. If TRUE original column names will be appended to
 #'   labels in round brackets. Only applicable to list/data.frame.
-#' @return Object of the same type as x but with variable labels instead of names. If there are no labels for
-#'  some variables their names remain unchanged.
-#' @details \code{n2l} is just shortcut to \code{names2labels}. 
-#' @seealso \code{\link{values2labels}}
+#' @return Object of the same type as x but with variable labels instead of
+#'   names. 
+#' @seealso \link{values2labels}, \link{f}, \link{val_lab},  \link{var_lab}
 #' @examples
 #' data(mtcars)
-#' mtcars = within(mtcars,{
+#' mtcars = modify(mtcars,{
 #'                 var_lab(mpg) = "Miles/(US) gallon"
 #'                 var_lab(cyl) = "Number of cylinders"
 #'                 var_lab(disp) = "Displacement (cu.in.)"

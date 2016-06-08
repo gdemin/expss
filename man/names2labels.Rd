@@ -12,24 +12,24 @@ n2l(x, exclude = NULL, keep_names = FALSE)
 \arguments{
 \item{x}{data.frame/list.}
 
-\item{exclude}{logical/integer/character columns which names should be left unchanged. Only applicable to list/data.frame.}
+\item{exclude}{logical/integer/character columns which names should be left
+unchanged. Only applicable to list/data.frame.}
 
 \item{keep_names}{logical. If TRUE original column names will be appended to
 labels in round brackets. Only applicable to list/data.frame.}
 }
 \value{
-Object of the same type as x but with variable labels instead of names. If there are no labels for
- some variables their names remain unchanged.
+Object of the same type as x but with variable labels instead of
+  names.
 }
 \description{
-Replace data.frame/list names with corresponding variables labels.
-}
-\details{
-\code{n2l} is just shortcut to \code{names2labels}.
+\code{names2labels} replaces data.frame/list names with corresponding 
+variables labels. If there are no labels for some variables their names
+remain unchanged. \code{n2l} is just shortcut for \code{names2labels}.
 }
 \examples{
 data(mtcars)
-mtcars = within(mtcars,{
+mtcars = modify(mtcars,{
                 var_lab(mpg) = "Miles/(US) gallon"
                 var_lab(cyl) = "Number of cylinders"
                 var_lab(disp) = "Displacement (cu.in.)"
@@ -50,6 +50,6 @@ summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg")))
 summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg", keep_names = TRUE)))
 }
 \seealso{
-\code{\link{values2labels}}
+\link{values2labels}, \link{f}, \link{val_lab},  \link{var_lab}
 }
 
