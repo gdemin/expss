@@ -6,17 +6,20 @@ labels_sep = "|"
 
 #' Convert labelled variable to factor
 #' 
-#' Factor levels are constructed as values from values labels + variable values
-#' without labels (so there is no information lost). This levels look like as
-#' "Variable_label|Value label". If variable doesn't have labels usual
+#' \code{f} converts labelled variable to factor. Factor levels are constructed
+#' as values labels. If label doesn't exist for particular value then this value
+#' remain as is - so there is no information lost. This levels look like as
+#' "Variable_label|Value label". If variable doesn't have labels then usual
 #' \code{factor} will be applied.
-#'
+#' 
 #' @param x a vector of data with labels.
 #' @param ... optional arguments for \code{\link[base]{factor}} 
 #' @return an object of class factor. For details see base \code{factor} documentation.
 #'  
-#' @seealso Materials for base functions: \code{\link[base]{factor}}, \code{\link[base]{as.factor}}, 
-#'  \code{\link[base]{ordered}}, \code{\link[base]{as.ordered}}
+#' @seealso \link{values2labels}, \link{names2labels}, \link{val_lab}, 
+#'   \link{var_lab}. Materials for base functions: \code{\link[base]{factor}},
+#'   \code{\link[base]{as.factor}}, \code{\link[base]{ordered}},
+#'   \code{\link[base]{as.ordered}}
 #' @export  
 #' @examples
 #' data(mtcars)
@@ -27,6 +30,8 @@ labels_sep = "|"
 #' \dontrun{
 #' plot(f(mtcars$am))
 #' }
+#' 
+#' table(f(mtcars$am))
 #' 
 #' summary(lm(mpg ~ am, data = mtcars)) # no labels  
 #' summary(lm(mpg ~ f(am), data = mtcars)) # with labels 
