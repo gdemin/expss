@@ -67,6 +67,13 @@
 #' # count_row_if
 #' count_row_if(regex("^a"),df1) # c(1,0,0,1)
 #' 
+#' # if_val examples
+#' # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
+#' set.seed(123)
+#' qvar = sample((-5):20, 50, replace = TRUE)
+#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% Inf ~ 3, . ~ 0)
+#' # the same result
+#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, gte(11) ~ 3, . ~ 0)
 #' 
 #' 
 #' @name criteria
