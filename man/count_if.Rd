@@ -26,7 +26,7 @@
 \alias{sum_col_if}
 \alias{sum_if}
 \alias{sum_row_if}
-\title{Count values that meet a criterion that you specify}
+\title{Count/sum/average/other functions on values that meet a criterion that you specify}
 \usage{
 count_if(criterion = NULL, ...)
 
@@ -99,7 +99,8 @@ argument.}
 \code{count_if} return single value (vector of length 1). 
 \code{count_row_if} returns vector of counts for each row of supplied arguments.
 \code{count_col_if} returns vector of counts for each column of supplied arguments.
-\code{\%in_row\%}/\code{\%in_col\%} return logical vector - presence indicator of criterion in each row/column.
+\code{\%in_row\%}/\code{\%in_col\%} return logical vector - presence
+indicator of criterion in each row/column.
 }
 \description{
 There are two flavors of this function - one works with entire dataset/matrix/vector
@@ -128,10 +129,32 @@ There is asymmetrical behavior in \code{count_row_if} and
 columnwise.
 There are special functions for usage as criteria (e. g. \code{gt(5)} is
 equivalent ">5" in spreadsheet) - see \link{eq}:
-
-\code{\%has\%} is simple wrapper for rather frequent case \code{count_row_if(criterion,x)>0}.
 }
 \examples{
+set.seed(123)
+dfs = as.data.frame(
+       matrix(sample(c(1:10,NA),30,replace = TRUE),10)
+)
+
+result  = modify(dfs, {
+                   exact = count_row_if(8, V1, V2, V3)
+                   greater = count_row_if(gt(8), V1, V2, V3)
+                   range = count_row_if(5:8, V1, V2, V3)
+                   na = count_row_if(is.na, V1, V2, V3)
+                   not_na = count_row_if(, V1, V2, V3)
+                })  
+result
+ 
+mean_row_if(6, dfs$V1, data = dfs)
+median_row_if(gt(2), dfs$V1, dfs$V2, dfs$V3) 
+sd_row_if(5 \%thru\% 8, dfs$V1, dfs$V2, dfs$V3)
+ 
+if_na(dfs) = 5 # replace NA 
+
+# custom apply
+apply_col_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements by columns
+apply_row_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements by rows
+ 
 # Examples borrowed from Microsoft Excel help for COUNTIF
 df1 = data.frame(
     a=c("apples",   "oranges",     "peaches",     "apples"),
@@ -166,17 +189,5 @@ count_row_if(regex("^a"),df1) # c(1,0,0,1)
 
 'apples' \%in_row\% df1  # c(TRUE,FALSE,FALSE,TRUE)
 
- set.seed(123)
- df2 = as.data.frame(
-        matrix(sample(c(1:10,NA),30,replace = TRUE),10)
- )
- result  = modify(df2, {
-                    exact = count_row_if(8, V1, V2, V3)
-                    greater = count_row_if(gt(8), V1, V2, V3)
-                    range = count_row_if(5:8, V1, V2, V3)
-                    na = count_row_if(is.na, V1, V2, V3)
-                    not_na = count_row_if(, V1, V2, V3)
-                 })  
- result
 }
 

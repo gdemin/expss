@@ -189,4 +189,53 @@ expect_equal(
     c(9, 8, 9)
 )
 
-    
+context("count_if new examples")
+set.seed(123)
+dfs = as.data.frame(
+       matrix(sample(c(1:10,NA),30,replace = TRUE),10)
+)
+
+result  = modify(dfs, {
+                   exact = count_row_if(8, V1, V2, V3)
+                   greater = count_row_if(gt(8), V1, V2, V3)
+                   range = count_row_if(5:8, V1, V2, V3)
+                   na = count_row_if(is.na, V1, V2, V3)
+                   not_na = count_row_if(, V1, V2, V3)
+                })  
+result
+ 
+expect_equal(
+    mean_row_if(6, dfs$V1, data = dfs),
+    ifelse(dfs$V1==6, apply(dfs, 1, mean, na.rm = TRUE), NaN)
+)
+expect_identical(
+    median_row_if(gt(2), dfs$V1, dfs$V2, dfs$V3),
+    apply(ifelse(as.matrix(dfs)>2, as.matrix(dfs), NA) , 1, median, na.rm = TRUE)
+)
+expect_identical(
+    sd_row_if(5 %thru% 8, dfs$V1, dfs$V2, dfs$V3),
+    apply(ifelse((5 %thru% 8)(as.matrix(dfs)), as.matrix(dfs), NA) , 1, sd, na.rm = TRUE)
+)
+
+if_na(dfs) = 5 # replace NA 
+
+# custom apply
+expect_identical(
+    apply_col_if(prod, gt(2), dfs$V1, data = dfs),
+    apply(set_na(dfs, dfs$V1<3), 2, prod, na.rm = TRUE)
+)
+expect_identical(
+    apply_row_if(prod, gt(2), dfs$V1, data = dfs),
+    ifelse(dfs$V1>2, apply(dfs, 1, prod, na.rm = TRUE), NA)
+)
+# apply_row_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements
+
+
+
+
+
+
+
+
+
+

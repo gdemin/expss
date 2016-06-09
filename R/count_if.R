@@ -1,4 +1,4 @@
-#' Count values that meet a criterion that you specify
+#' Count/sum/average/other functions on values that meet a criterion that you specify
 #' 
 #' There are two flavors of this function - one works with entire dataset/matrix/vector
 #' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise(columnwise) - e. g. 
@@ -23,7 +23,8 @@
 #' \code{count_if} return single value (vector of length 1). 
 #' \code{count_row_if} returns vector of counts for each row of supplied arguments.
 #' \code{count_col_if} returns vector of counts for each column of supplied arguments.
-#' \code{\%in_row\%}/\code{\%in_col\%} return logical vector - presence indicator of criterion in each row/column.
+#' \code{\%in_row\%}/\code{\%in_col\%} return logical vector - presence
+#' indicator of criterion in each row/column.
 #' 
 #' @details
 #' \code{count_if} counts values in entire dataset and return single 
@@ -48,10 +49,33 @@
 #' There are special functions for usage as criteria (e. g. \code{gt(5)} is
 #' equivalent ">5" in spreadsheet) - see \link{eq}:
 #' 
-#' \code{\%has\%} is simple wrapper for rather frequent case \code{count_row_if(criterion,x)>0}.
 #' 
 #' @export
 #' @examples
+#' set.seed(123)
+#' dfs = as.data.frame(
+#'        matrix(sample(c(1:10,NA),30,replace = TRUE),10)
+#' )
+#' 
+#' result  = modify(dfs, {
+#'                    exact = count_row_if(8, V1, V2, V3)
+#'                    greater = count_row_if(gt(8), V1, V2, V3)
+#'                    range = count_row_if(5:8, V1, V2, V3)
+#'                    na = count_row_if(is.na, V1, V2, V3)
+#'                    not_na = count_row_if(, V1, V2, V3)
+#'                 })  
+#' result
+#'  
+#' mean_row_if(6, dfs$V1, data = dfs)
+#' median_row_if(gt(2), dfs$V1, dfs$V2, dfs$V3) 
+#' sd_row_if(5 %thru% 8, dfs$V1, dfs$V2, dfs$V3)
+#'  
+#' if_na(dfs) = 5 # replace NA 
+#' 
+#' # custom apply
+#' apply_col_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements by columns
+#' apply_row_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements by rows
+#'  
 #' # Examples borrowed from Microsoft Excel help for COUNTIF
 #' df1 = data.frame(
 #'     a=c("apples",   "oranges",     "peaches",     "apples"),
@@ -86,18 +110,7 @@
 #' 
 #' 'apples' %in_row% df1  # c(TRUE,FALSE,FALSE,TRUE)
 #' 
-#'  set.seed(123)
-#'  df2 = as.data.frame(
-#'         matrix(sample(c(1:10,NA),30,replace = TRUE),10)
-#'  )
-#'  result  = modify(df2, {
-#'                     exact = count_row_if(8, V1, V2, V3)
-#'                     greater = count_row_if(gt(8), V1, V2, V3)
-#'                     range = count_row_if(5:8, V1, V2, V3)
-#'                     na = count_row_if(is.na, V1, V2, V3)
-#'                     not_na = count_row_if(, V1, V2, V3)
-#'                  })  
-#'  result
+
 count_if=function(criterion = NULL,...){
     dfs = dots2data_frame(...)   
     cond = build_criterion(criterion, dfs)
@@ -308,11 +321,20 @@ min_col_if=function(criterion = NULL,..., data = NULL){
 apply_row_if=function(fun, criterion = NULL,..., data = NULL){
     dfs = dots2data_frame(...) # form data.frame 
     criterion = build_criterion(criterion, dfs)
+    
     if (is.null(data)){
-        data = dfs
+        data = as.matrix(dfs)
+    } else {
+        data = as.matrix(data)
+        criterion = if_val(
+            matrix(TRUE, ncol = NCOL(data), nrow = NROW(data)), 
+            criterion ~ TRUE, 
+            !criterion ~ FALSE,
+            . ~ FALSE
+        )
     }
-    data = as.matrix(data)
-    rows = 1:nrow(dfs)
+    
+    rows = 1:nrow(data)
     res = lapply(rows, function(each_row){
         filtered_row = data[each_row,][criterion[each_row,]]
         if(length(filtered_row) > 0){
@@ -337,10 +359,10 @@ apply_col_if=function(fun, criterion = NULL,..., data = NULL){
     criterion = build_criterion(criterion, dfs)
     if (is.null(data)){
         data = dfs
-    }
-    cols = 1:ncol(dfs)
+    } 
+    cols = 1:ncol(data)
     res = lapply(cols, function(each_col){
-        filtered_col = data[[each_col]][criterion[, each_col]]
+        filtered_col = column(data, each_col)[column(criterion, each_col)]
         if(length(filtered_col) > 0){
             res_col = fun(filtered_col)
             stopif(length(res_col)!=1, "Incorrect result from function 'fun' - length of result is not equal to 1") 
