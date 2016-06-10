@@ -35,6 +35,16 @@
 #' 
 #' \code{count_col_if} counts values in each column of supplied arguments and return
 #' vector of counts for each column of supplied arguments.
+#' Input conditions: possible values for left hand side (LHS) of formula or element of \code{from} list:
+#' \itemize{
+#' \item{vector/single value}{ All values in \code{x} which equal to elements of vector in LHS will be replaced with RHS.}
+#' \item{function}{ Values for which function gives TRUE will be replaced
+#' with RHS. There are some special functions for convenience - see
+#' \link{criteria}.}
+#' \item{logical vector/matrix/data.frame}{ Values for which LHS equals to TRUE 
+#' will be recoded. Logical vector will be recycled across all columns of 
+#' \code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
+#' will be used for corresponding column/element of \code{x}.}
 #' 
 #' All functions never return NA's. 
 #' 
