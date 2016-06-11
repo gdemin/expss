@@ -4,9 +4,9 @@
 #' similar to Microsoft Excel \code{COUNTIF}. The second works rowwise(columnwise) - e. g. 
 #' similar to SPSS \code{COUNT} function. 
 #'  
-#' @param criterion Vector with counted values, list with conditions or
-#'   function. If criterion is missing (or is NULL) non-NA's values will be
-#'   used for function.
+#' @param criterion Vector with counted values, logical vector/matrix or
+#'   function. See details and examples.
+#'   
 #' @param ... Data on which criterion will be applied. Vector, matrix,
 #'   data.frame, list. Shorter arguments will be recycled.
 #'   
@@ -20,13 +20,27 @@
 #' @param fun Custom function that will be applied based on criterion.
 #' 
 #' @return 
-#' \code{count_if} return single value (vector of length 1). 
-#' \code{count_row_if} returns vector of counts for each row of supplied arguments.
-#' \code{count_col_if} returns vector of counts for each column of supplied arguments.
-#' \code{\%in_row\%}/\code{\%in_col\%} return logical vector - presence
-#' indicator of criterion in each row/column.
+#' \code{*_if} return single value (vector of length 1). 
+#' \code{*_row_if} returns vector of counts for each row of supplied arguments.
+#' \code{*_col_if} returns vector of counts for each column of supplied arguments.
+#' \code{\%in_row\%}/\code{\%in_col\%} return logical vector - indicator of
+#' presence of criterion in each row/column.
 #' 
 #' @details
+#' Possible values for left hand side (LHS) of formula or element of \code{from} list:
+#' \itemize{
+#' \item{vector/single value}{ All values in \code{x} which equal to elements of
+#' vector in criteria will be replaced with RHS.}
+#' \item{function}{ Values for which function gives TRUE will be replaced
+#' with RHS. There are some special functions for convenience - see
+#' \link{criteria}.}
+#' \item{logical vector/matrix/data.frame}{ Values which equals to TRUE 
+#' will be recoded. Logical vector will be recycled across all columns of 
+#' \code{x}. If criteria is logiacl matrix/data.frame then column from this matrix/data.frame
+#' will be used for corresponding column/element of \code{x}.}
+#' 
+#' For \code{count_*} family if criterion is missing (or is NULL) non-NA's values will be
+#'   ued for function.
 #' \code{count_if} counts values in entire dataset and return single 
 #' value (vector of length 1).
 #' 
@@ -35,29 +49,16 @@
 #' 
 #' \code{count_col_if} counts values in each column of supplied arguments and return
 #' vector of counts for each column of supplied arguments.
-#' Input conditions: possible values for left hand side (LHS) of formula or element of \code{from} list:
-#' \itemize{
-#' \item{vector/single value}{ All values in \code{x} which equal to elements of vector in LHS will be replaced with RHS.}
-#' \item{function}{ Values for which function gives TRUE will be replaced
-#' with RHS. There are some special functions for convenience - see
-#' \link{criteria}.}
-#' \item{logical vector/matrix/data.frame}{ Values for which LHS equals to TRUE 
-#' will be recoded. Logical vector will be recycled across all columns of 
-#' \code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
-#' will be used for corresponding column/element of \code{x}.}
 #' 
 #' All functions never return NA's. 
 #' 
-#' If criterion is list, then each element considered as single condition and
-#' they will be combined with AND.
-#' 
 #' Function criterion should return logicals of same size and shape as its argument.
 #' This function will be applied to each column of supplied data and TRUE results will be counted.
-#' There is asymmetrical behavior in \code{count_row_if} and
-#' \code{count_col_if}: in both cases function criterion will be applied
+#' There is asymmetrical behavior in \code{*_row_if} and
+#' \code{*_col_if}: in both cases function criterion will be applied
 #' columnwise.
 #' There are special functions for usage as criteria (e. g. \code{gt(5)} is
-#' equivalent ">5" in spreadsheet) - see \link{eq}:
+#' equivalent ">5" in spreadsheet) - see \link{criteria}:
 #' 
 #' 
 #' @export
