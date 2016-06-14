@@ -102,7 +102,7 @@ if_val(a, lt(-0.5) ~ abs)
 if_val(a, a<(-.5) ~ abs) 
 
 # replace with specific value for each column
-# we replace values greater than 0.75 with column max and values less than 0.25 with column mean
+# we replace values greater than 0.75 with column max and values less than 0.25 with column min
 # and NA with column means
 # make data.frame
 set.seed(123)

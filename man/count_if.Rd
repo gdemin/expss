@@ -26,7 +26,7 @@
 \alias{sum_col_if}
 \alias{sum_if}
 \alias{sum_row_if}
-\title{Count/sum/average/other functions on values that meet a criterion that you specify}
+\title{Count/sum/average/other functions on values that meet a criterion}
 \usage{
 count_if(criterion = NULL, ...)
 
@@ -79,9 +79,8 @@ apply_row_if(fun, criterion = NULL, ..., data = NULL)
 apply_col_if(fun, criterion = NULL, ..., data = NULL)
 }
 \arguments{
-\item{criterion}{Vector with counted values, list with conditions or
-function. If criterion is missing (or is NULL) non-NA's values will be
-used for function.}
+\item{criterion}{Vector with counted values, logical vector/matrix or
+function. See details and examples.}
 
 \item{...}{Data on which criterion will be applied. Vector, matrix,
 data.frame, list. Shorter arguments will be recycled.}
@@ -89,46 +88,53 @@ data.frame, list. Shorter arguments will be recycled.}
 \item{x}{Counted values or criterion for counting. Vector, matrix, data.frame,
 list, function. Shorter columns in list will be recycled.}
 
-\item{data}{Data on which function will be applied. Doesn't applicable to
-\code{count_*_if} functions. If omitted function will be applied on the ...
-argument.}
+\item{data}{Data on which function will be applied. Doesn't applicable to 
+\code{count_*_if} functions. If omitted then function will be applied on
+the ... argument.}
 
 \item{fun}{Custom function that will be applied based on criterion.}
 }
 \value{
-\code{count_if} return single value (vector of length 1). 
-\code{count_row_if} returns vector of counts for each row of supplied arguments.
-\code{count_col_if} returns vector of counts for each column of supplied arguments.
-\code{\%in_row\%}/\code{\%in_col\%} return logical vector - presence
-indicator of criterion in each row/column.
+\code{*_if} return single value (vector of length 1). 
+\code{*_row_if} returns vector for each row of supplied arguments.
+\code{*_col_if} returns vector for each column of supplied arguments.
+\code{\%in_row\%}/\code{\%in_col\%} return logical vector - indicator of
+presence of criterion in each row/column.
 }
 \description{
-There are two flavors of this function - one works with entire dataset/matrix/vector
-similar to Microsoft Excel \code{COUNTIF}. The second works rowwise(columnwise) - e. g. 
-similar to SPSS \code{COUNT} function.
+These functions calculate count/sum/average/etc on values that meet a 
+criterion that you specify. \code{apply_if_*} apply custom functions. There
+are different flavors of these functions: \code{*_if} work on entire
+dataset/matrix/vector, \code{*_row_if} works on each row and \code{*_col_if}
+works on each column.
 }
 \details{
-\code{count_if} counts values in entire dataset and return single 
-value (vector of length 1).
+Possible type for criterion argument:
+\itemize{
+\item{vector/single value}{ All values in \code{...} which equal to elements of
+vector in criteria will be used as function argument.}
+\item{function}{ Values for which function gives TRUE will be used as 
+function argument. There are some special functions for convenience (e. g.
+\code{gt(5)} is equivalent ">5" in spreadsheet) - see \link{criteria}.}
+\item{logical vector/matrix/data.frame}{ Values for which element of
+criterion equals to TRUE will be used as function argument. Logical vector
+will be recycled across all columns of \code{...}\code{data}. If criteria is
+logical matrix/data.frame then column from this matrix/data.frame will be
+used for corresponding column/element of \code{...}\code{data}. Note that
+this kind of criterion doesn't use \code{...} so \code{...} can be used
+instead of \code{data} argument.}}
 
-\code{count_row_if} counts values in each row of supplied arguments and return
-vector of counts for each row of supplied arguments.
+If criterion is missing (or is NULL) then non-NA's values will be
+  used for function.
 
-\code{count_col_if} counts values in each column of supplied arguments and return
-vector of counts for each column of supplied arguments.
+\code{count*} and \code{\%in*\%} never returns NA's. Other functions remove
+NA's before calculations (as \code{na.rm = TRUE} in base R functions).
 
-All functions never return NA's. 
-
-If criterion is list, then each element considered as single condition and
-they will be combined with AND.
-
-Function criterion should return logicals of same size and shape as its argument.
-This function will be applied to each column of supplied data and TRUE results will be counted.
-There is asymmetrical behavior in \code{count_row_if} and
-\code{count_col_if}: in both cases function criterion will be applied
-columnwise.
-There are special functions for usage as criteria (e. g. \code{gt(5)} is
-equivalent ">5" in spreadsheet) - see \link{eq}:
+Function criterion should return logical vector of same size and shape as its
+argument. This function will be applied to each column of supplied data and
+TRUE results will be used. There is asymmetrical behavior in \code{*_row_if}
+and \code{*_col_if} for function criterion: in both cases function criterion
+will be applied columnwise.
 }
 \examples{
 set.seed(123)
@@ -137,12 +143,14 @@ dfs = as.data.frame(
 )
 
 result  = modify(dfs, {
-                   exact = count_row_if(8, V1, V2, V3)
-                   greater = count_row_if(gt(8), V1, V2, V3)
-                   range = count_row_if(5:8, V1, V2, V3)
-                   na = count_row_if(is.na, V1, V2, V3)
-                   not_na = count_row_if(, V1, V2, V3)
-                })  
+             exact = count_row_if(8, V1, V2, V3) # count 8
+             greater = count_row_if(gt(8), V1, V2, V3) # count values greater than 8
+             integer_range = count_row_if(5:8, V1, V2, V3) # count integer values between 5 and 8, e. g. 5, 6, 7, 8
+             range = count_row_if(5 \%thru\% 8, V1, V2, V3) # count values between 5 and 8
+             na = count_row_if(is.na, V1, V2, V3) # count NA
+             not_na = count_row_if(, V1, V2, V3) # count not-NA
+             has_five = 5 \%in_row\% cbind(V1, V2, V3)  # are there any 5 in each row?
+         })  
 result
  
 mean_row_if(6, dfs$V1, data = dfs)
@@ -188,6 +196,120 @@ count_if(regex("^a"),df1) # 2
 count_row_if(regex("^a"),df1) # c(1,0,0,1)
 
 'apples' \%in_row\% df1  # c(TRUE,FALSE,FALSE,TRUE)
+
+# Some of Microsoft Excel examples for SUMIF/AVERAGEIF/etc 
+dfs = read.csv(
+    text = "
+    property_value,commission,data
+    100000,7000,250000
+    200000,14000,	
+    300000,21000,	
+    400000,28000,"
+)
+
+# Sum of commision for property value greater than 160000
+with(dfs, sum_if(gt(160000), property_value, data = commission)) # 63000
+    
+# Sum of property value greater than 160000
+with(dfs, sum_if(gt(160000), property_value)) # 900000
+
+# Sum of commision for property value equals to 300000
+with(dfs, sum_if(300000, property_value, data = commission)) # 21000
+    
+# Sum of commision for property value greater than first value of data
+with(dfs, sum_if(gt(data[1]), property_value, data = commission)) # 49000
+    
+
+dfs = data.frame(
+    category = c("Vegetables", "Vegetables", "Fruits", "", "Vegetables", "Fruits"),
+    food = c("Tomatoes", "Celery", "Oranges", "Butter", "Carrots", "Apples"),
+    sales = c(2300, 5500, 800, 400, 4200, 1200),
+    stringsAsFactors = FALSE
+)
+
+# Sum of sales for Fruits
+with(dfs, sum_if("Fruits", category, data = sales)) # 2000
+
+# Sum of sales for Vegetables    
+with(dfs, sum_if("Vegetables", category, data = sales)) # 12000
+
+# Sum of sales for food which is ending on 'es' 
+with(dfs, sum_if(perl("es$"), food, data = sales)) # 4300
+
+# Sum of sales for empty category
+with(dfs, sum_if("", category, data = sales))  # 400
+
+
+dfs = read.csv(
+    text = "
+    property_value,commission,data
+    100000,7000,250000
+    200000,14000,	
+    300000,21000,	
+    400000,28000,"
+)
+
+# Commision average for comission less than 23000
+with(dfs, mean_if(lt(23000), commission)) # 14000
+
+
+# Property value average for property value less than 95000
+with(dfs, mean_if(lt(95000), property_value)) #  NaN
+
+# Commision average for property value greater than 250000
+with(dfs, mean_if(gt(250000), property_value, data = commission)) # 24500
+
+
+dfs = data.frame(
+    region = c("East", "West", "North", "South (New Office)",  "MidWest"),
+    profits = c(45678, 23789, -4789, 0, 9678),
+    stringsAsFactors = FALSE
+)
+
+
+# Mean profits for 'west' regions
+with(dfs, mean_if(fixed("West"), region, data = profits)) # 16733.5
+
+
+# Mean profits for regions wich doesn't contain New Office
+with(dfs, mean_if(!fixed("(New Office)"), region, data = profits))  # 18589
+
+
+dfs = read.csv(
+    text = '
+    grade,weight 
+    89,1
+    93,2
+    96,2
+    85,3
+    91,1
+    88,1'
+    ,stringsAsFactors = FALSE
+)
+
+# Minimum gade for weight equals to 1
+with(dfs, min_if(1, weight, data = grade)) # 88
+
+
+# Maximum gade for weight equals to 1
+with(dfs, max_if(1, weight, data = grade)) #91
+
+
+# Example with offset
+dfs = read.csv(
+    text = '
+    weight,grade 
+    10,b
+    11,a
+    100,a
+    111,b
+    1,a
+    1,a'
+    ,stringsAsFactors = FALSE
+)
+
+with(dfs, min_if("a", grade[2:5], data = weight[1:4])) # 10
+
 
 }
 
