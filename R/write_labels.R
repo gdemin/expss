@@ -72,7 +72,7 @@ read_dictionary_csv = function(filename, fileEncoding = ""){
 #' @export
 #' @rdname write_labels
 read_labelled_csv = function(filename, fileEncoding = "", ...){
-    w = utils::read.table(file = paste0(filename,".csv"),
+    w = utils::read.table(file = filename,
                    header = TRUE,
                    sep = ",",
                    stringsAsFactors = FALSE,
@@ -101,14 +101,20 @@ write_labelled_csv = function(x, filename, fileEncoding = "", ...){
         }
         if (is.character(x[[each]])){
             x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
-            x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
+            # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
         }
     }
-    utils::write.table(x = x, file = paste0(filename,".csv"),
+    if(grepl("\\.gz$", filename)) {
+        file2 = gzfile(filename)
+    } else {
+        file2 = filename
+    }
+    utils::write.table(x = x, file = file2,
                           col.names = TRUE,
                           row.names = FALSE,
                           sep = ",",
                           na = "",
+                          qmethod = "double",
                           quote = TRUE,
                           fileEncoding = fileEncoding,
                           ...
@@ -177,7 +183,7 @@ write_labels_spss = function(x, filename, fileEncoding = ""){
 }
 
 
-make_make_labs = function(vars,named_vec){
+make_make_labs = function(vars, named_vec){
     if (is.null(named_vec) || is.null(names(named_vec)) || (length(vars)==0)) return(NULL)
     if (length(vars)>1) {
         vars = paste0("val_lab(w[,c(",paste(paste0('"',vars,'"'),collapse = ", "),")])")
@@ -186,8 +192,17 @@ make_make_labs = function(vars,named_vec){
     }
     labs = gsub('"','\\\\"',names(named_vec))
     vallab = paste0("    ",named_vec,' ',labs,'')#[labs!=""]
-    vallab = paste(vallab, collapse = "\n")
-    sprintf('%s = make_labels("\n%s\n")',vars,vallab)
+    pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]+)(.+?)$"
+    if(all(grepl(pattern, gsub("^([\\s\\t]+)|([\\s\\t]+)$","",vallab,perl = TRUE), perl = TRUE))){
+        vallab = paste(vallab, collapse = "\n")
+        sprintf('%s = make_labels("\n%s\n")',vars,vallab) 
+    } else {
+        con = textConnection("store", "w")
+        dput(named_vec, con)
+        close(con)
+        sprintf('%s = %s',vars,paste(store, collapse = "\n"))
+    }   
+    
     
 }
 
