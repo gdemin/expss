@@ -5,7 +5,7 @@ b = 3:1
 d = NA
 
 expect_equal(sum_row(a, b, d), c(4,4,4))
-expect_equal(sum_col(a, b, d), c(a = 6, b=6, d = NA))
+expect_equal(sum_col(a, b, d), c(a = 6, b=6, d = 0))
 
 
 expect_equal(mean_row(a, b, d), c(2,2,2))
@@ -34,7 +34,7 @@ b = 3:1
 d = numeric(0)
 
 expect_equal(sum_row(a, b, d), c(4,4,4))
-expect_equal(unname(sum_col(a, b, d)), c(6,6,NA))
+expect_equal(unname(sum_col(a, b, d)), c(6,6,0))
 
 
 expect_equal(mean_row(a, b, d), c(2,2,2))

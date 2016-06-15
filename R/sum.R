@@ -2,7 +2,7 @@
 #' 
 #' This are convenience functions for usage inside \link{modify},
 #' \link{modify_if}, \link[base]{with}, \link[base]{within} and \code{dplyr}
-#' \code{mutate} functions.
+#' \code{mutate} functions. sum/mean/sd/median/max/min always omits NA.
 #' 
 #' @param ... data. Vectors, matrixes, data.frames, list. Shorter arguments
 #'   will be recycled.
@@ -12,11 +12,6 @@
 #' @return All functions except \code{apply_*} return numeric vector of length 
 #'   equals the number of argument columns/rows. Value of \code{apply_*} depends
 #'   on supplied \code{fun} function.
-#' 
-#' @details sum/mean/sd/median/max/min always omits NA. \code{sum_*} behavior is
-#'   different from base \code{sum} and similar to SPSS \code{sum} behavior. It
-#'   always omits NA but result of column/row with all NA gives NA (instead of
-#'   0).
 #' 
 #' @seealso \link{modify}, \link{modify_if}, \link{\%to\%}, \link{count_if},
 #'   \link{sum_if}, \link{mean_if}, \link{median_if}, \link{sd_if},
@@ -60,9 +55,9 @@
 #' @export
 sum_row=function(...){
     data = dots2data_frame(...)
-    nas = is.na(rowMeans(data, na.rm=TRUE))
+    #nas = is.na(rowMeans(data, na.rm=TRUE))
     res = rowSums(data, na.rm=TRUE)
-    res[nas] = NA
+    #res[nas] = NA
     res
 }
 
@@ -71,9 +66,9 @@ sum_row=function(...){
 #' @rdname sum_row
 sum_col =function(...){
     data = dots2data_frame(...)
-    nas = is.na(colMeans(data, na.rm=TRUE))
+    #nas = is.na(colMeans(data, na.rm=TRUE))
     res = colSums(data, na.rm=TRUE)
-    res[nas] = NA
+    #res[nas] = NA
     res
 }
 

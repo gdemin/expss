@@ -59,13 +59,7 @@ All functions except \code{apply_*} return numeric vector of length
 \description{
 This are convenience functions for usage inside \link{modify},
 \link{modify_if}, \link[base]{with}, \link[base]{within} and \code{dplyr}
-\code{mutate} functions.
-}
-\details{
-sum/mean/sd/median/max/min always omits NA. \code{sum_*} behavior is
-  different from base \code{sum} and similar to SPSS \code{sum} behavior. It
-  always omits NA but result of column/row with all NA gives NA (instead of
-  0).
+\code{mutate} functions. sum/mean/sd/median/max/min always omits NA.
 }
 \examples{
 ## Inside example
