@@ -199,6 +199,19 @@ expect_identical(labs4,make_labels(c("
                             ","","      \t\t"),code_position="left"))
 
 
+expect_error(make_labels("
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+"))
+
 context("add_val_lab")
 vec = 1:5
 dfs = data.frame(a = vec, b = vec)

@@ -342,7 +342,7 @@ make_labels=function(text, code_position=c("left","right")){
     res = res[res!=""]
     code_position = match.arg(code_position)
     if (code_position == "left") {
-        pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]*)(.+?)$"
+        pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]+)(.+?)$"
         code_pattern = "\\1\\2"
         label_pattern = "\\4"
     } else {
@@ -351,6 +351,7 @@ make_labels=function(text, code_position=c("left","right")){
         label_pattern = "\\1"
         
     }
+    stopif(!all(grepl(pattern, res,perl=TRUE)), "Incorrect pattern for labels:\n", paste(res[!grepl(pattern, res,perl=TRUE)], collapse = "\n"))
     code=as.numeric(gsub(pattern,code_pattern,res,perl=TRUE))
     #     if (!any(abs(floor(code)-code)>0)) code = as.integer(code)
     lab=gsub(pattern,label_pattern,res,perl=TRUE)
