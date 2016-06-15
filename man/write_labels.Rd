@@ -14,9 +14,9 @@ read_labelled_csv(filename, fileEncoding = "", ...)
 
 write_labelled_csv(x, filename, fileEncoding = "", ...)
 
-write_labelled_spss(x, filename, fileEncoding = "")
+write_labelled_spss(x, filename, fileEncoding = "", ...)
 
-write_labels_spss(x, filename, fileEncoding = "")
+write_labels_spss(x, filename)
 }
 \arguments{
 \item{x}{data.frame to be written/data.frame whose labels to be written}

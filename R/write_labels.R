@@ -127,14 +127,84 @@ write_labelled_csv = function(x, filename, fileEncoding = "", ...){
 
 #' @export
 #' @rdname write_labels
-write_labelled_spss = function(x, filename, fileEncoding = ""){
+write_labelled_spss = function(x, filename, fileEncoding = "", ...){
+    if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE)
+    for(each in seq_along(x)){
+        if (is.factor(x[[each]])){
+            x[[each]] = as.character(x[[each]])
+        }
+        if (is.character(x[[each]])){
+            x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
+            # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
+        }
+        if(is.logical(x[[each]])){
+            x[[each]] = 1*x[[each]]
+        }
+    }
+    utils::write.table(x = x, file = filename,
+                       col.names = TRUE,
+                       row.names = FALSE,
+                       sep = ",",
+                       na = "",
+                       qmethod = "double",
+                       quote = TRUE,
+                       fileEncoding = fileEncoding,
+                       ...
+    )
+    #dic_file = paste0(filename,".dic.R")
+    #write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
+    syntax = "GET DATA  /TYPE = TXT
+         /FILE = '%s'
+         /DELCASE = LINE
+         /DELIMITERS = \",\"
+         /QUALIFIER = '\"'
+         /ARRANGEMENT = DELIMITED
+         /FIRSTCASE = 2
+         /IMPORTCASE = ALL
+         /VARIABLES ="
+    syntax = sprintf(syntax, normalizePath(filename, mustWork = FALSE))
+    vars = lapply(colnames(x), function(col){
+        
+        if(is.numeric(x[[col]])){
+            if (all(is.na(x[[col]]))){
+                paste0(col, " F1.0")    
+            } else {
+                resid = max(abs(trunc(x[[col]]) - x[[col]]), na.rm = TRUE)
+                if (resid ==0 ){
+                    paste0(col, " F8.0")
+                } else {
+                    paste0(col, " F8.3")
+                }
+            }
+            
+        }       
+        else {
+            if (all(is.na(x[[col]]))){
+                paste0(col, " A1")    
+            } else {
+                paste0(col, " A", max(nchar(x[[col]]), na.rm = TRUE)) 
+            }    
+        }
+        
+        
+        
+    })
+    vars = paste(unlist(vars), collapse = "\n")
+    syntax = paste0(syntax, "\n", vars,
+                    " .\nCACHE.\nEXECUTE.\n")
     
-    
+    file.create(paste0(filename, ".sps"))
+    conn = file(paste0(filename, ".sps"), encoding = fileEncoding, open = "at")
+    on.exit(close(conn))
+    writeLines(text = syntax, con = conn)
+    writeLines(text = "\n\n\n\n", con = conn)
+    write_labels_spss(x, filename = conn)
+    invisible(NULL) 
 }
 
 #' @export
 #' @rdname write_labels
-write_labels_spss = function(x, filename, fileEncoding = ""){
+write_labels_spss = function(x, filename){
     var_labs = lapply(x,var_lab)
     val_labs = lapply(x,val_lab)
     var_num = ncol(x)
@@ -163,7 +233,7 @@ write_labels_spss = function(x, filename, fileEncoding = ""){
         curr_var_lab = var_labs[[each]]
         if (!is.null(curr_var_lab) && (curr_var_lab!="")){
             code = paste0(code,
-                          'var lab ',x_names[each],' "', gsub('"', "'", curr_var_lab),'".\n')
+                          'VAR LAB ',x_names[each],' "', gsub('"', "'", curr_var_lab),'".\n')
             
         }
         
@@ -175,9 +245,8 @@ write_labels_spss = function(x, filename, fileEncoding = ""){
                       "\n")       
         
     }
-    conn = file(paste0(filename,".sps"),encoding = fileEncoding)
-    on.exit(close(conn))
-    writeLines(text= code,con = conn)
+
+    writeLines(text= code, con = filename)
     invisible(NULL)
     
 }
@@ -213,9 +282,9 @@ make_make_labs_spss = function(vars,named_vec){
     named_vec = named_vec[sorted]
     
     if (length(vars)>1) {
-        vars = paste0("val lab ",paste(vars,collapse = " "))
+        vars = paste0("VAL LAB ",paste(vars,collapse = " "))
     } else {
-        vars = paste0("val lab ",vars)
+        vars = paste0("VAL LAB ",vars)
     }
     labs = paste0('"', gsub('"',"'",names(named_vec)), '"')
     vallab = paste0("    ",named_vec,' ',labs,'')[labs!=""]
