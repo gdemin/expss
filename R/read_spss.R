@@ -47,7 +47,7 @@ read_spss_to_list=function(file, reencode = TRUE){
     }
     for (var_name in names(spss)) {
         # Trim whitespaces from start and end of character variables
-        if (is.character(spss[[var_name]])) spss[[var_name]] = gsub("^\\s+|\\s+$","",spss[[var_name]],perl=TRUE)
+        if (is.character(spss[[var_name]])) spss[[var_name]] = trimws(spss[[var_name]])
         val_labs = attr(spss[[var_name]],"value.labels")
         if (length(val_labs)>0) {
             attr(spss[[var_name]],"value.labels") = NULL
