@@ -1,5 +1,18 @@
+#' Write data labels to file in R code or in SPSS syntax. 
+#'
+#' @param x data.frame to be written/data.frame whose labels to be written
+#' @param filename the name of the file which the data are to be read from/write to.
+#' @param fileEncoding character string: if non-empty declares the encoding to
+#'   be used on a file (not a connection) so the character data can be
+#'   re-encoded as they are written. See \link[base]{file}.
+#' @param ... additional arguments for \link[utils]{read.table}/\link[utils]{write.table}  
+#'
+#' @return Functions for writing invisibly return NULL. Functions for reading return labelled data.frame.
 #' @export
-write_labels_r = function(x, filename, fileEncoding = ""){
+#'
+#' @examples
+#' a = 2
+write_labels = function(x, filename, fileEncoding = ""){
     var_labs = lapply(x,var_lab)
     val_labs = lapply(x,val_lab)
     var_num = ncol(x)
@@ -41,65 +54,80 @@ write_labels_r = function(x, filename, fileEncoding = ""){
                       "\n")       
         
     }
-    conn = file(paste0(filename,".R"),encoding = fileEncoding)
+    conn = file(filename, encoding = fileEncoding)
     on.exit(close(conn))
     writeLines(text= code,con = conn)
     invisible(NULL)
     
 }
 
-
-
-make_make_labs = function(vars,named_vec){
-    if (is.null(named_vec) || is.null(names(named_vec)) || (length(vars)==0)) return(NULL)
-    if (length(vars)>1) {
-        vars = paste0("val_lab(w[,c(",paste(paste0('"',vars,'"'),collapse = ","),"])")
-    } else {
-        vars = paste0("val_lab(w[,",'"',vars,'"',"])")
-    }
-    labs = gsub('"','\\\\"',names(named_vec))
-    vallab = paste0("    ",named_vec,' ',labs,'')[labs!=""]
-    vallab = paste(vallab, collapse = "\n")
-    sprintf('%s = make_labels("\n%s\n")',vars,vallab)
+write_dictionary_csv = function(x, filename, fileEncoding = ""){
     
 }
 
-apply_labels_from_file = function(x, filename, fileEncoding = ""){
-
-    if (file.exists(filename)){
-        source(filename, local = TRUE, encoding = fileEncoding, verbose = FALSE)
-    } else {
-        warning(paste(filename,"file doesn't exists. Labels will not be applied to data."))
-    }
-    x
+read_dictionary_csv = function(filename, fileEncoding = ""){
     
 }
 
-read_labelled = function(filename, colClasses = NA,fileEncoding = ""){
+#' @export
+#' @rdname write_labels
+read_labelled_csv = function(filename, fileEncoding = "", ...){
     w = utils::read.table(file = paste0(filename,".csv"),
                    header = TRUE,
                    sep = ",",
-                   colClasses = colClasses,
                    stringsAsFactors = FALSE,
-                   fileEncoding = fileEncoding
+                   na.strings = "",
+                   fileEncoding = fileEncoding,
+                   check.names = FALSE,
+                   ...
                    )
-#     w = read_delim(file = paste0(filename,".csv"),
-#                    delim = ",",
-#                    col_names = TRUE,
-#                    na=""
-#     )
     dic_file = paste0(filename,".dic.R")
     if (file.exists(dic_file)){
         source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
     } else {
         warning(".dic.R file doesn't exists. Labels will not be applied to data.")
     }
+    w
+  
+}
+
+#' @export
+#' @rdname write_labels
+write_labelled_csv = function(x, filename, fileEncoding = "", ...){
+    if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE)
+    for(each in seq_along(x)){
+        if (is.factor(x[[each]])){
+            x[[each]] = as.character(x[[each]])
+        }
+        if (is.character(x[[each]])){
+            x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
+            x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
+        }
+    }
+    utils::write.table(x = x, file = paste0(filename,".csv"),
+                          col.names = TRUE,
+                          row.names = FALSE,
+                          sep = ",",
+                          na = "",
+                          quote = TRUE,
+                          fileEncoding = fileEncoding,
+                          ...
+    )
+    dic_file = paste0(filename,".dic.R")
+    write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
+    invisible(NULL)
+    
+}
+
+#' @export
+#' @rdname write_labels
+write_labelled_spss = function(x, filename, fileEncoding = ""){
     
     
 }
 
-
 #' @export
+#' @rdname write_labels
 write_labels_spss = function(x, filename, fileEncoding = ""){
     var_labs = lapply(x,var_lab)
     val_labs = lapply(x,val_lab)
@@ -149,6 +177,20 @@ write_labels_spss = function(x, filename, fileEncoding = ""){
 }
 
 
+make_make_labs = function(vars,named_vec){
+    if (is.null(named_vec) || is.null(names(named_vec)) || (length(vars)==0)) return(NULL)
+    if (length(vars)>1) {
+        vars = paste0("val_lab(w[,c(",paste(paste0('"',vars,'"'),collapse = ", "),")])")
+    } else {
+        vars = paste0("val_lab(w$",vars,")")
+    }
+    labs = gsub('"','\\\\"',names(named_vec))
+    vallab = paste0("    ",named_vec,' ',labs,'')#[labs!=""]
+    vallab = paste(vallab, collapse = "\n")
+    sprintf('%s = make_labels("\n%s\n")',vars,vallab)
+    
+}
+
 
 make_make_labs_spss = function(vars,named_vec){
     if (is.null(named_vec) || is.null(names(named_vec)) || (length(vars)==0)) return(NULL)
@@ -164,5 +206,16 @@ make_make_labs_spss = function(vars,named_vec){
     vallab = paste0("    ",named_vec,' ',labs,'')[labs!=""]
     vallab = paste(vallab, collapse = "\n")
     sprintf('%s\n%s.\n',vars,vallab)
+    
+}
+
+apply_labels_from_file = function(x, filename, fileEncoding = ""){
+    
+    if (file.exists(filename)){
+        source(filename, local = TRUE, encoding = fileEncoding, verbose = FALSE)
+    } else {
+        warning(paste(filename,"file doesn't exists. Labels will not be applied to data."))
+    }
+    x
     
 }
