@@ -1,4 +1,12 @@
-#' Write data labels to file in R code or in SPSS syntax. 
+#' Write data with labels to file in R code or in SPSS syntax.
+#' 
+#' \code{write_labelled_*} functions write data in the CSV format and file with 
+#' R code/SPSS syntax for labelling data.  SPSS syntax also contains code for 
+#' reading data in SPSS. \code{write_labelled_*} doesn't save rownames of
+#' data.frame. \code{write_labels_*} functions write R code/SPSS syntax for
+#' labelling data. It allows to extract labels from *.sav files that come
+#' without accompanying syntax. \code{read_labelled_csv} reads data file in CSV
+#' format and apply labels from accompanying file with R code.
 #'
 #' @param x data.frame to be written/data.frame whose labels to be written
 #' @param filename the name of the file which the data are to be read from/write to.
@@ -7,11 +15,40 @@
 #'   re-encoded as they are written. See \link[base]{file}.
 #' @param ... additional arguments for \link[utils]{read.table}/\link[utils]{write.table}  
 #'
-#' @return Functions for writing invisibly return NULL. Functions for reading return labelled data.frame.
+#' @return Functions for writing invisibly return NULL. Functions for reading
+#'   return labelled data.frame.
 #' @export
 #'
 #' @examples
-#' a = 2
+#' \dontrun{
+#' data(mtcars)
+#' mtcars = modify(mtcars,{
+#'                 var_lab(mpg) = "Miles/(US) gallon"
+#'                 var_lab(cyl) = "Number of cylinders"
+#'                 var_lab(disp) = "Displacement (cu.in.)"
+#'                 var_lab(hp) = "Gross horsepower"
+#'                 var_lab(drat) = "Rear axle ratio"
+#'                 var_lab(wt) = "Weight (lb/1000)"
+#'                 var_lab(qsec) = "1/4 mile time"
+#'                 var_lab(vs) = "Engine"
+#'                 val_lab(vs) = c("V-engine" = 0, 
+#'                                 "Straight engine" = 1) 
+#'                 var_lab(am) = "Transmission"
+#'                 val_lab(am) = c(automatic = 0, 
+#'                                 manual=1)
+#'                 var_lab(gear) = "Number of forward gears"
+#'                 var_lab(carb) = "Number of carburetors"
+#' })
+#' 
+#' # to R code
+#' # rownames are not preserved
+#' write_labelled_csv(mtcars, "mtcars.csv")
+#' new_mtcars = read_labelled_csv("mtcars.csv")
+#' 
+#' # to SPSS syntax
+#' write_labelled_spss(mtcars, "mtcars.csv")
+#' 
+#' }
 write_labels = function(x, filename, fileEncoding = ""){
     var_labs = lapply(x,var_lab)
     val_labs = lapply(x,val_lab)
