@@ -1,0 +1,48 @@
+---
+title: "Small transition guide"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic SPSS labels support in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+---
+
+| Excel                 | R                                                          |
+|-----------------------|------------------------------------------------------------|
+|`IF(A1>0, 1, 0)`       | ifelse(A>0, 1, 0)                                          |
+|                       |                                                            |       
+| E1 = COUNTIF(A1:D1, 0)| `modify(w, {                                               |
+|                       |           E = count_row_if(0, A %to% D)                    |
+|                       |           }) `                                             |
+|                       |         or                                                 |
+|                       |         count_row_if(0, A, B, C, D)                        |
+|                       |                                                            |
+
+```{r, eval = FALSE}
+
+E1 = IF(A1>0, 1, 0)                 modify(w, { E = ifelse(A>0, 1, 0)})
+
+```
+
+```{r, eval = FALSE}
+
+COUNTIF(A:D, 0)                     with(w, count_if(0, A %to% D)) or with(w, count_if(0, A, B, C, D)) 
+
+```
+
+```{r, eval = FALSE}
+
+E1 = COUNTIF(A1:D1, 0)              modify(w, { 
+                                              E = count_row_if(0, A %to% D)
+                                              }) 
+                                            or 
+                                            count_row_if(0, A, B, C, D) 
+
+```
+
+```{r, eval = FALSE}
+
+COUNTIF(A1:D1, ">0")                count_row_if(gt(0), A %to% D) or count_row_if(gt(0), A, B, C, D) 
+
+```
