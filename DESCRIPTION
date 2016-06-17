@@ -11,13 +11,7 @@ Depends:
 Imports: foreign, utils, stats
 Suggests:
     knitr
-Description: Package implements several popular functions from Excel and SPSS Statistics to R. 
-It aimed to help people to move data processing workflow from.
-Пакет должен помочь в переносе процесса обработки данных из Excel/SPSS в R. Для этого в пакет включены несколько 
-распространенных функций из Эксель и СПСС. В частности, это VLOOKUP, COUNTIF, SUMIF и т. д. из Excel 
-и DO IF (modify_if), RECODE(if_val), COUNT(count_row_if) из SPSS.
-Так же из SPSS перенесены несколько функций для удобной работы с метками значений и метками переменных. 
-Есть transaltion guide, где показан как делать типовые Excel/SPSS преобразования данных в R.
+Description: Package implements several popular functions from Excel and SPSS Statistics to R. It aimed to help people to move data processing workflow from.
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
