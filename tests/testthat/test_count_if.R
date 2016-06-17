@@ -107,8 +107,8 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 context("count_col_if")
 
 
-expect_equal(count_col_if(function(x) grepl("^a",x),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
-expect_equal(count_col_if(perl("^a"),t(df1)),c(X1 = 1, X2 = 0, X3 = 0, X4 = 1))
+expect_equal(count_col_if(function(x) grepl("^a",x),t(df1)),c('1' = 1, '2' = 0, '3' = 0, '4' = 1))
+expect_equal(count_col_if(perl("^a"),t(df1)),c('1' = 1, '2' = 0, '3' = 0, '4' = 1))
 expect_equal(count_col_if(function(x) grepl("^a",x),df1),c(a = 2, b = 0))
 expect_equal(count_col_if(perl("^a"),df1),c(a = 2, b = 0))
 
