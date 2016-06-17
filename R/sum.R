@@ -217,7 +217,7 @@ dots2data_frame = function(...){
     args = dots2list(...)
     zero_length = lengths(args)==0
     args[zero_length] = NA
-    do.call(data.frame,c(args,stringsAsFactors=FALSE)) 
+    do.call(data.frame,c(args,stringsAsFactors=FALSE, check.names = FALSE)) 
     
 }
     
