@@ -3,6 +3,10 @@
 #' This are convenience functions for usage inside \link{modify},
 #' \link{modify_if}, \link[base]{with}, \link[base]{within} and \code{dplyr}
 #' \code{mutate} functions. sum/mean/sd/median/max/min always omits NA.
+#' \code{any_in_*} checks existence of any TRUE in each row/column. It is 
+#' equivalent of \link[base]{any} applied to each row/column. \code{all_in_*} is
+#' equivalent of \link[base]{all} applied to each row/column. They don't
+#' remove NA.
 #' 
 #' @param ... data. Vectors, matrixes, data.frames, list. Shorter arguments
 #'   will be recycled.
@@ -222,5 +226,39 @@ dots2data_frame = function(...){
 }
     
 
+#################
+#' @export
+#' @rdname sum_row
+any_in_row =function(...){
+    data = dots2data_frame(...)
+    
+    res = Reduce(`|`, data)
+    res
+}
 
+#' @export
+#' @rdname sum_row
+any_in_col =function(...){
+    data = dots2data_frame(...)
+    
+    res = vapply(data, any, logical(1))
+    res
+}
 
+#' @export
+#' @rdname sum_row
+all_in_row =function(...){
+    data = dots2data_frame(...)
+    
+    res = Reduce(`&`, data)
+    res
+}
+
+#' @export
+#' @rdname sum_row
+all_in_col =function(...){
+    data = dots2data_frame(...)
+    
+    res = vapply(data, all, logical(1))
+    res
+}

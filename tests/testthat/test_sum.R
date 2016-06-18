@@ -63,4 +63,35 @@ expect_equal(new_median, apply(iris[,-5], 1, median))
 expect_equal(new_mean, apply(iris[,-5], 1, mean))
 
 
+context("any/all")
+
+a = c(T, NA, F, T, NA, F, T, NA, F)
+b = c(T, T, T, F, F, F, NA, NA, NA)
+
+expect_identical(any_in_row(a, b),
+                 c(TRUE,  TRUE,  TRUE,  TRUE, NA, FALSE, TRUE, NA, NA))
+
+expect_identical(any_in_row(data.frame(a, b)),
+                 c(TRUE,  TRUE,  TRUE,  TRUE, NA, FALSE, TRUE, NA, NA))
+
+expect_identical(any_in_col(rbind(a, b)),
+                 c('1' = TRUE,  '2' = TRUE,  '3'=TRUE,  '4'=TRUE, '5' = NA, '6' = FALSE, '7' = TRUE, '8' = NA, '9' = NA))
+
+expect_identical(any_in_col(a, b),
+                 c(a = TRUE,  b = TRUE))
+
+####
+expect_identical(all_in_row(a, b),
+                 c(TRUE, NA, FALSE, FALSE, FALSE, FALSE,    NA,    NA, FALSE))
+
+expect_identical(all_in_row(data.frame(a, b)),
+                 c(TRUE, NA, FALSE, FALSE, FALSE, FALSE,    NA,    NA, FALSE))
+
+expect_identical(all_in_col(rbind(a, b)),
+                 c('1' = TRUE, '2' = NA, '3' = FALSE, '4' = FALSE, '5' = FALSE, '6' = FALSE, '7' = NA, '8' = NA, '9' = FALSE))
+
+expect_identical(all_in_col(a, b),
+                 c(a = FALSE,  b = FALSE))
+
+
 
