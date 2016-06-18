@@ -9,7 +9,7 @@
 #' functions. There are several special functions for usage as criteria - for
 #' details see \link{criteria}. Simple common usage looks like: \code{if_val(x,
 #' 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}. For more information, see details and
-#' examples.
+#' examples. 
 #' 
 #' @details 
 #' Input conditions: possible values for left hand side (LHS) of formula or element of \code{from} list:
@@ -41,6 +41,8 @@
 #' In most cases there is no need for this option because by default
 #' \code{if_val} doesn't modify values which don't satisfy any of conditions.}
 #' }
+#' \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
+#' can be useful in expressions with \code{\%thru\%}, e. g. \code{1 %thru% hi}.
 #' 
 #' @param x vector/matrix/data.frame/list
 #' @param ... sequence of formulas which describe recodings. Only used when \code{from}/\code{to} arguments are not provided. 
@@ -61,7 +63,7 @@
 #' # RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 #' set.seed(123)
 #' qvar = sample((-5):20, 50, replace = TRUE)
-#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% Inf ~ 3, . ~ 0)
+#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, . ~ 0)
 #' # the same result
 #' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, gte(11) ~ 3, . ~ 0)
 #'
@@ -72,7 +74,7 @@
 #' # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
 #' set.seed(123)
 #' age = sample(c(sample(5:30, 40, replace = TRUE), rep(9, 10)))
-#' voter = if_val(age, 9 ~ NA, 18 %thru% Inf ~ 1, 0 %thru% 18 ~ 0)
+#' voter = if_val(age, 9 ~ NA, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 #' voter
 #' 
 #' # example with function in RHS
@@ -125,7 +127,7 @@
 #' if_val(strngvar, from = fr, to = to)
 #' 
 #' # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER.
-#' fr = list(9, 18 %thru% Inf, 0 %thru% 18)
+#' fr = list(9, 18 %thru% hi, 0 %thru% 18)
 #' to = list(NA, 1, 0)
 #' voter = if_val(age, from = fr, to = to)
 #' voter
@@ -243,7 +245,13 @@ parse_formula = function(elementary_recoding){
 }
 
 
-    
+#' @export
+#' @rdname if_val
+lo = -Inf
+
+#' @export
+#' @rdname if_val
+hi = Inf
 
 
 
