@@ -1,31 +1,6 @@
 # experimental functions for working with default dataset
 
 
-# aaa = mtcars
-
-# default_dataset(aaa)
-
-".val_lab<-" = function(x, value){
-    
-    
-}
-
-bbb = function(x, expr, ...) within(x, expr)
-
-# bbb(aaa, {new = 5})
-
-temp = function(x) {
-    res = match.call()
-    res
-}
-
-'temp<-' = function(x, value) {
-    res = match.call()
-    print(res)
-    x
-}
-
-
 
 #' @export
 .modify = function (expr) {
@@ -87,13 +62,65 @@ temp = function(x) {
 .compute = .modify
 
 
-#' @export
-.set_val_lab = function(x, value){
+
+
+# doesn't create new variables
+modify_default_dataset_light = function(x, ...){
+    expr = as.character(as.expression(sys.call()))
+    expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
+    for_names = as.expression(substitute(x))
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    ref(reference) = modify(data, {
-        
-        list2env(set_val_lab(x, value))   
-    })
+    parent = parent.frame()
+    e = evalq(environment(), data, parent)
+    e$.n = nrow(data)
+    if (length(all.vars(for_names, functions = TRUE))==1){
+        for_names = as.character(for_names) 
+    } else {
+        for_names = names(eval(for_names, e))
+    }
+    res = eval(expr, e)
+    data[, for_names] = res
+    ref(reference) = data
     invisible(NULL)
 }
+
+# doesn't modify dataset, just evaluate expression
+eval_in_default_dataset = function(...){
+    expr = as.character(as.expression(sys.call()))
+    expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
+    reference = suppressMessages(default_dataset() )
+    data = ref(reference)
+    parent = parent.frame()
+    e = evalq(environment(), data, parent)
+    e$.n = nrow(data)
+    eval(expr, e)
+}
+
+#' @export
+.val_lab = eval_in_default_dataset
+
+#' @export
+.var_lab = eval_in_default_dataset
+
+#' @export
+.set_var_lab = modify_default_dataset_light
+
+
+#' @export
+.set_val_lab = modify_default_dataset_light
+
+#' @export
+add_val_lab = function(x, value) set_val_lab(x, value, add = TRUE) 
+
+#' @export
+.add_val_lab = modify_default_dataset_light
+
+#' @export
+.if_val = modify_default_dataset_light
+
+#' @export
+recode = if_val
+
+#' @export
+.recode = modify_default_dataset_light
