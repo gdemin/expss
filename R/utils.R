@@ -52,7 +52,7 @@ build_criterion.logical = function(criterion,dfs){
             res[,i] = criterion 
         }
     }
-    res
+    if_na(res, FALSE)
 }
 
 

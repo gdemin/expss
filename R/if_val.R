@@ -1,4 +1,4 @@
-#' Change, rearrange or consolidate the values of an existing variable. Inspired by RECODE command from SPSS.
+#' Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.
 #' 
 #' \code{if_val} change, rearrange or consolidate the values of an existing 
 #' variable based on conditions. Design of this function inspired by RECODE from
@@ -9,7 +9,10 @@
 #' functions. There are several special functions for usage as criteria - for
 #' details see \link{criteria}. Simple common usage looks like: \code{if_val(x,
 #' 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}. For more information, see details and
-#' examples. 
+#' examples. \code{ifs} is version of \link[base]{ifelse} with multiple 'else'.
+#' \code{ifs} works in the same manner as \code{if_val} - e. g. with formula or
+#' from/to notation. But conditions should be only logical and it doesn't
+#' operate on multicolumn objects.
 #' 
 #' @details 
 #' Input conditions: possible values for left hand side (LHS) of formula or element of \code{from} list:
@@ -50,9 +53,18 @@
 #'   of function/\code{to} list if \code{from}/\code{to} notation is used.
 #' @param from list of conditions for values which should be recoded (in the same format as LHS of formulas). 
 #' @param to list of values into which old values should be recoded (in the same format as RHS of formulas). 
+#' @param other single value or vector. Default value - NA. This value will be
+#'   used for values of result with all conditions FALSE/NA.
 #'
 #' @return object of same form as \code{x} with recoded values
 #' @examples
+#' # `ifs` examples
+#' a = 1:5
+#' b = 5:1
+#' ifs(b>3 ~ 1)                     # c(1, 1, NA, NA, NA)
+#' ifs(b>3 ~ 1, other = 3)          # c(1, 1, 3, 3, 3)
+#' ifs(b>3 ~ 1, a>4 ~ 7, other = 3) # c(1, 1, 3, 3, 7)
+#' ifs(b>3 ~ a, other = 42)         # c(1, 2, 42, 42, 42)
 #' # some examples from SPSS manual
 #' # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 #' set.seed(123)
@@ -202,7 +214,7 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
             }     
             
         }
-        recoded = recoded | cond # we don't recode already recoded value
+        recoded = recoded | (cond & !is.na(cond)) # we don't recode already recoded value
     }
     
     x
@@ -244,6 +256,35 @@ parse_formula = function(elementary_recoding){
     list(from = from, to = to)
 }
 
+#' @export
+#' @rdname if_val
+ifs = function(... , from = NULL, to = NULL, other = NA){
+    if (is.null(from) && is.null(to)){
+        recoding_list = lapply(unlist(list(...)), parse_formula)
+        from = lapply(recoding_list, "[[", "from")
+        to = lapply(recoding_list, "[[", "to")
+    } else {
+        stopif(is.null(from) || is.null(to), "Both 'from' and 'to' arguments should be not NULL.")
+        stopif(length(from)!=length(to), 
+               "length(to) should be equal to length(from) but length(from)=", length(from),
+               " and length(to)=", length(to))
+        
+        
+    } 
+    from = lapply(from, as.matrix)
+    test = vapply(from, is.logical, logical(1))
+    stopif(!all(test), "All conditions should be logical")
+    from_rows = unique(vapply(from, nrow, numeric(1)))
+    from_cols = unique(vapply(from, ncol, numeric(1)))
+    stopif(!all(from_cols %in% 1), "All conditions should be single column objects.")
+    max_rows = max(from_rows, na.rm = TRUE)
+    stopif(!all(from_rows %in% c(1, max_rows)), "All values should have the same number of rows or have length 1.")
+    res = rep(NA, max_rows)
+    if_na(from) = FALSE
+    from = c(from, ".")
+    to = c(to, other)
+    if_val(res, from = from, to = to)
+}
 
 #' @export
 #' @rdname if_val

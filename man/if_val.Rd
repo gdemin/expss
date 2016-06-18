@@ -5,13 +5,16 @@
 \alias{hi}
 \alias{if_val}
 \alias{if_val<-}
+\alias{ifs}
 \alias{lo}
-\title{Change, rearrange or consolidate the values of an existing variable. Inspired by RECODE command from SPSS.}
+\title{Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
 \usage{
 if_val(x, ..., from = NULL, to = NULL)
 
 if_val(x, from = NULL) <- value
+
+ifs(..., from = NULL, to = NULL, other = NA)
 
 lo
 
@@ -28,6 +31,9 @@ hi
 
 \item{value}{list with formulas which describe recodings in assignment form
 of function/\code{to} list if \code{from}/\code{to} notation is used.}
+
+\item{other}{single value or vector. Default value - NA. This value will be
+used for values of result with all conditions FALSE/NA.}
 }
 \value{
 object of same form as \code{x} with recoded values
@@ -42,7 +48,10 @@ condition one can use just values or more sophisticated logical values and
 functions. There are several special functions for usage as criteria - for
 details see \link{criteria}. Simple common usage looks like: \code{if_val(x,
 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}. For more information, see details and
-examples.
+examples. \code{ifs} is version of \link[base]{ifelse} with multiple 'else'.
+\code{ifs} works in the same manner as \code{if_val} - e. g. with formula or
+from/to notation. But conditions should be only logical and it doesn't
+operate on multicolumn objects.
 }
 \details{
 Input conditions: possible values for left hand side (LHS) of formula or element of \code{from} list:
@@ -78,6 +87,13 @@ In most cases there is no need for this option because by default
 can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 }
 \examples{
+# `ifs` examples
+a = 1:5
+b = 5:1
+ifs(b>3 ~ 1)                     # c(1, 1, NA, NA, NA)
+ifs(b>3 ~ 1, other = 3)          # c(1, 1, 3, 3, 3)
+ifs(b>3 ~ 1, a>4 ~ 7, other = 3) # c(1, 1, 3, 3, 7)
+ifs(b>3 ~ a, other = 42)         # c(1, 2, 42, 42, 42)
 # some examples from SPSS manual
 # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 set.seed(123)

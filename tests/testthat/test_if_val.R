@@ -51,7 +51,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))
 } else {
-	cat("dplyr not found\n")
+    cat("dplyr not found\n")
 }
 ##########################
 
@@ -106,7 +106,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))
 } else {
-	cat("dplyr not found\n")
+    cat("dplyr not found\n")
 }
 
 context("if_val examples")
@@ -226,4 +226,52 @@ expect_identical(
     if_val(age, from = fr, to = to),
     voter_test
 )
+
+context("ifs")
+a = 1:5
+b = 5:1
+expect_identical(
+    ifs(b>3 ~ 1), 
+    c(1,1,NA, NA, NA)
+)
+expect_identical(
+    ifs(b>3 ~ 1, other = 3),
+    c(1,1,3, 3, 3)
+)
+expect_identical(
+    ifs(c(b, NA)>3 ~ 1, other = 3),
+    c(1,1,3, 3, 3, 3)
+)
+expect_identical(
+    ifs(b>3 ~ 1, a>4 ~ 7, other = 3),
+    c(1,1,3, 3, 7)
+    
+)
+
+expect_identical(
+    ifs(b>3 ~ a),
+    as.integer(c(1,2,NA,NA, NA))
+)
+expect_identical(
+    ifs(b>3 ~ a, other = "wah"),
+    c("1","2","wah","wah", "wah")
+)
+
+expect_error(
+    ifs(b>3 ~ cbind(a,b))
+)
+
+expect_error(
+    ifs(b>3 ~ t(a))
+)
+
+expect_error(
+    ifs(45 ~ 1)
+)
+
+expect_error(
+    ifs(cbind(c(T,T), c(F,F)) ~ 1)
+)
+
+
 
