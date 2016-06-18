@@ -42,7 +42,7 @@
 #' \code{if_val} doesn't modify values which don't satisfy any of conditions.}
 #' }
 #' \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
-#' can be useful in expressions with \code{\%thru\%}, e. g. \code{1 %thru% hi}.
+#' can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 #' 
 #' @param x vector/matrix/data.frame/list
 #' @param ... sequence of formulas which describe recodings. Only used when \code{from}/\code{to} arguments are not provided. 
@@ -74,7 +74,7 @@
 #' # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
 #' set.seed(123)
 #' age = sample(c(sample(5:30, 40, replace = TRUE), rep(9, 10)))
-#' voter = if_val(age, 9 ~ NA, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
+#' voter = if_val(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 #' voter
 #' 
 #' # example with function in RHS
@@ -127,8 +127,8 @@
 #' if_val(strngvar, from = fr, to = to)
 #' 
 #' # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER.
-#' fr = list(9, 18 %thru% hi, 0 %thru% 18)
-#' to = list(NA, 1, 0)
+#' fr = list(NA, 18 %thru% hi, 0 %thru% 18)
+#' to = list(9, 1, 0)
 #' voter = if_val(age, from = fr, to = to)
 #' voter
 #' 

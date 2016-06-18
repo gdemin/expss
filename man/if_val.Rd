@@ -44,6 +44,39 @@ details see \link{criteria}. Simple common usage looks like: \code{if_val(x,
 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}. For more information, see details and
 examples.
 }
+\details{
+Input conditions: possible values for left hand side (LHS) of formula or element of \code{from} list:
+\itemize{
+\item{vector/single value}{ All values in \code{x} which equal to elements of vector in LHS will be replaced with RHS.}
+\item{function}{ Values for which function gives TRUE will be replaced
+with RHS. There are some special functions for convenience - see
+\link{criteria}.}
+\item{logical vector/matrix/data.frame}{ Values for which LHS equals to TRUE 
+will be recoded. Logical vector will be recycled across all columns of 
+\code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
+will be used for corresponding column/element of \code{x}.}
+\item{.}{ Dot in LHS/\code{from} means all other unrecoded values (ELSE in SPSS RECODE). So all
+other unrecoded values will be changed to RHS of formula or appropriate
+element of \code{to}.}
+}
+Output values: possible values for right hand side (RHS) of formula or element of \code{to} list:
+\itemize{
+\item{value}{ replace elements of \code{x}. This value will be
+recycled across rows and columns of \code{x}.}
+\item{vector}{ values of this vector will be replace values in corresponding
+position in rows of \code{x}. Vector will be recycled across columns of
+\code{x}.}
+\item{list/matrix/data.frame}{ Element of list/column of matrix/data.frame
+will be used as a replacement value for corresponding column/element of
+\code{x}.}
+\item{function}{ This function will be applied to values of \code{x} which satisfy recoding condition.}
+\item{.}{ Dot in RHS/\code{to} means copy old value (COPY in SPSS RECODE).
+In most cases there is no need for this option because by default
+\code{if_val} doesn't modify values which don't satisfy any of conditions.}
+}
+\code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
+can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
+}
 \examples{
 # some examples from SPSS manual
 # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
@@ -66,7 +99,7 @@ if_val(strngvar, c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', . ~ ' ')
 # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
 set.seed(123)
 age = sample(c(sample(5:30, 40, replace = TRUE), rep(9, 10)))
-voter = if_val(age, 9 ~ NA, 18 \%thru\% hi ~ 1, 0 \%thru\% 18 ~ 0)
+voter = if_val(age, NA ~ 9, 18 \%thru\% hi ~ 1, 0 \%thru\% 18 ~ 0)
 voter
 
 # example with function in RHS
@@ -119,8 +152,8 @@ to = list("A", "B", " ")
 if_val(strngvar, from = fr, to = to)
 
 # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER.
-fr = list(9, 18 \%thru\% hi, 0 \%thru\% 18)
-to = list(NA, 1, 0)
+fr = list(NA, 18 \%thru\% hi, 0 \%thru\% 18)
+to = list(9, 1, 0)
 voter = if_val(age, from = fr, to = to)
 voter
 
