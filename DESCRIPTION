@@ -1,11 +1,11 @@
-Package: labelr
+Package: expss
 Type: Package
 Title: Some Useful Functions from Spreadsheets and SPSS Statistics
 Version: 0.5
 Date: 2016-06-24
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
-URL: https://github.com/gdemin/labelr
+URL: https://github.com/gdemin/expss
 Depends:
     R (>= 3.3)
 Imports: foreign, utils, stats

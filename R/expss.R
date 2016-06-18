@@ -4,7 +4,7 @@
 #' is for transferring data/graphics to running instance of Excel, another part
 #' - work with data table in Excel in similar way as with usual data.frame.
 #' @docType package
-#' @name labelr
+#' @name expss
 NULL
 
 
