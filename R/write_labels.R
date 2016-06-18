@@ -303,7 +303,8 @@ make_make_labs = function(vars, named_vec){
         vallab = paste(vallab, collapse = "\n")
         sprintf('%s = make_labels("\n%s\n")',vars,vallab) 
     } else {
-        con = textConnection("store", "w")
+        store = ""
+        con = textConnection("store", "w", local = TRUE)
         dput(named_vec, con)
         close(con)
         sprintf('%s = %s',vars,paste(store, collapse = "\n"))

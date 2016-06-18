@@ -66,13 +66,20 @@
 #' )
 #' 
 #' result  = modify(dfs, {
-#'              exact = count_row_if(8, V1, V2, V3) # count 8
-#'              greater = count_row_if(gt(8), V1, V2, V3) # count values greater than 8
-#'              integer_range = count_row_if(5:8, V1, V2, V3) # count integer values between 5 and 8, e. g. 5, 6, 7, 8
-#'              range = count_row_if(5 %thru% 8, V1, V2, V3) # count values between 5 and 8
-#'              na = count_row_if(is.na, V1, V2, V3) # count NA
-#'              not_na = count_row_if(, V1, V2, V3) # count not-NA
-#'              has_five = 5 %in_row% cbind(V1, V2, V3)  # are there any 5 in each row?
+#'              # count 8
+#'              exact = count_row_if(8, V1, V2, V3)
+#'              # count values greater than 8
+#'              greater = count_row_if(gt(8), V1, V2, V3)
+#'              # count integer values between 5 and 8, e. g. 5, 6, 7, 8
+#'              integer_range = count_row_if(5:8, V1, V2, V3)
+#'              # count values between 5 and 8 
+#'              range = count_row_if(5 %thru% 8, V1, V2, V3)
+#'              # count NA 
+#'              na = count_row_if(is.na, V1, V2, V3)
+#'              # count not-NA 
+#'              not_na = count_row_if(, V1, V2, V3) 
+#'              # are there any 5 in each row?
+#'              has_five = 5 %in_row% cbind(V1, V2, V3)  
 #'          })  
 #' result
 #'  
