@@ -124,3 +124,7 @@ recode = if_val
 
 #' @export
 .recode = modify_default_dataset_light
+
+#' @export
+.fre = eval_in_default_dataset
+

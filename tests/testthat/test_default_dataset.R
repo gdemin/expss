@@ -1,15 +1,16 @@
 context("default_dataset")
 
 data(iris)
-default_dataset(iris)
+aaa = iris
+default_dataset(aaa)
 
-expect_identical(ref(default_dataset()),iris)
+expect_identical(ref(default_dataset()),aaa)
 
 def = default_dataset()
 ref(def)[,1] = NA
 
-expect_identical(ref(default_dataset()),iris)
-expect_identical(all(is.na(iris[,1])),TRUE)
+expect_identical(ref(default_dataset()),aaa)
+expect_identical(all(is.na(aaa[,1])),TRUE)
 
 default_dataset(NULL)
 expect_error(default_dataset())

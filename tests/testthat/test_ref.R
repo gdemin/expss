@@ -37,9 +37,10 @@ head10 = function(x){
 }
 
 data(iris)
-ref_to_iris = ~iris
+aaa = iris
+ref_to_iris = ~aaa
 head10(ref_to_iris)
-expect_identical(nrow(iris),10L)
+expect_identical(nrow(aaa),10L)
 
 # however
 
