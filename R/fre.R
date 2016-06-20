@@ -27,9 +27,18 @@ fre = function(x, weight = NULL){
     vallab = val_lab(x)
     x = unlab(x)
     weight = rep(weight, NCOL(x))
+    if(is.data.frame(x)){
+        for(each in seq_along(x)){
+            if(is.factor(x[[each]])) x[[each]] = as.character(x[[each]])
+        }
+    } else {
+        if(is.factor(x)) x = as.character(x)
+    }
     x = c(x, recursive = TRUE)
     val_lab(x) = vallab
     res = tapply(weight, list(f(x)), FUN = sum, na.rm = TRUE)
+    res = res[!is.na(res)]
+    # if_na(res) = 0
     labels = rownames(res)
     res = data.frame(labels = labels, res = res, stringsAsFactors = FALSE, check.names = FALSE)
     if(not_nas>0) {

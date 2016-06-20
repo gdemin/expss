@@ -8,38 +8,38 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
-It is possible to add support for SPSS value labels for such R functions as `table`, `xtabs`, `by` and so on by replacing base R function `factor` by function (`labelr::factor`) that aware about variables with labels. This function will use value labels as factor levels. So all R functions that use internally `factor` and `as.factor` will take advantages of value labels. For variables without labels original `factor` will be called.
+It is possible to add support for SPSS value labels for such R functions as `table`, `xtabs`, `by` and so on by replacing base R function `factor` by function (`expss::factor`) that aware about variables with labels. This function will use value labels as factor levels. So all R functions that use internally `factor` and `as.factor` will take advantages of value labels. For variables without labels original `factor` will be called.
 It is not good practice to interfere with internal structure of packages so use this hack ON YOUR OWN RISK AND WITHOUT ANY WARRANTY. Hack will be active until the end of your R session.  If you plan to use it on constant bases you can put code below in your `{R_home}/etc/Rprofile.site` file. Then it will be executed automatically at the beginning of the each session.
 
 
 ```{r, eval = FALSE}
 
 # hack begin
-library(labelr)
+library(expss)
 
 # replace `factor`
 unlockBinding("factor", as.environment("package:base"))
-assignInNamespace("factor", labelr::factor, ns="base", envir=as.environment("package:base"))
-assign("factor", labelr::factor, as.environment("package:base"))
+assignInNamespace("factor", expss::factor, ns="base", envir=as.environment("package:base"))
+assign("factor", expss::factor, as.environment("package:base"))
 lockBinding("factor", as.environment("package:base"))
 
 # replace `as.factor`
 unlockBinding("as.factor", as.environment("package:base"))
-assignInNamespace("as.factor", labelr::as.factor, ns="base", envir=as.environment("package:base"))
-assign("as.factor", labelr::as.factor, as.environment("package:base"))
+assignInNamespace("as.factor", expss::as.factor, ns="base", envir=as.environment("package:base"))
+assign("as.factor", expss::as.factor, as.environment("package:base"))
 lockBinding("as.factor", as.environment("package:base"))
 
 
 # replace `ordered`
 unlockBinding("ordered", as.environment("package:base"))
-assignInNamespace("ordered", labelr::ordered, ns="base", envir=as.environment("package:base"))
-assign("ordered", labelr::ordered, as.environment("package:base"))
+assignInNamespace("ordered", expss::ordered, ns="base", envir=as.environment("package:base"))
+assign("ordered", expss::ordered, as.environment("package:base"))
 lockBinding("ordered", as.environment("package:base"))
 
 # replace `as.ordered`
 unlockBinding("as.ordered", as.environment("package:base"))
-assignInNamespace("as.ordered", labelr::as.ordered, ns="base", envir=as.environment("package:base"))
-assign("as.ordered", labelr::as.ordered, as.environment("package:base"))
+assignInNamespace("as.ordered", expss::as.ordered, ns="base", envir=as.environment("package:base"))
+assign("as.ordered", expss::as.ordered, as.environment("package:base"))
 lockBinding("as.ordered", as.environment("package:base"))
 # end of hack
 

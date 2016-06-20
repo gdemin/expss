@@ -7,42 +7,138 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\usepackage[utf8]{inputenc}
 ---
+## Excel functions
+##### IF
 
-| Excel                 | R                                                          |
-|-----------------------|------------------------------------------------------------|
-|`IF(A1>0, 1, 0)`       | ifelse(A>0, 1, 0)                                          |
-|                       |                                                            |       
-| E1 = COUNTIF(A1:D1, 0)| `modify(w, {                                               |
-|                       |           E = count_row_if(0, A %to% D)                    |
-|                       |           }) `                                             |
-|                       |         or                                                 |
-|                       |         count_row_if(0, A, B, C, D)                        |
-|                       |                                                            |
+**Excel**:
 
-```{r, eval = FALSE}
+IF(A1>0, 1, 0)
 
-E1 = IF(A1>0, 1, 0)                 modify(w, { E = ifelse(A>0, 1, 0)})
+**R**: 
+```
+ifelse(A>0, 1, 0)
+```
+    
+##### COUNTIF
 
+Count 1's in entire dataset.
+
+**Excel**:
+```
+COUNTIF(A1:D4, 1)
+```
+**R**: 
+```
+count_if(1, w)
+```
+or
+```
+count_if(1, a, b, c, d)
+```    
+Count values greater than 1 in each row of dataset.
+
+**Excel**:
+```
+COUNTIF(A1:D1, ">1")
+```
+**R**: 
+```
+count_row_if(gt(1), w)  
 ```
 
-```{r, eval = FALSE}
+Count values less than or equal to 1 in column of dataset.
 
-COUNTIF(A:D, 0)                     with(w, count_if(0, A %to% D)) or with(w, count_if(0, A, B, C, D)) 
-
+**Excel**:
+```
+COUNTIF(A1:A4, "<=1")
+```
+**R**: 
+```
+count_col_if(lte(1), a)
 ```
 
-```{r, eval = FALSE}
+##### SUMIF
 
-E1 = COUNTIF(A1:D1, 0)              modify(w, { 
-                                              E = count_row_if(0, A %to% D)
-                                              }) 
-                                            or 
-                                            count_row_if(0, A, B, C, D) 
 
-```
 
-```{r, eval = FALSE}
+## SPSS functions
 
-COUNTIF(A1:D1, ">0")                count_row_if(gt(0), A %to% D) or count_row_if(gt(0), A, B, C, D) 
+##### COMPUTE
 
-```
+COMPUTE a = 1
+a = 1
+or, in specific data.frame
+
+w = modify(w, {
+    a = 1
+})
+There are can be arbitrary number of statements inside `modify`.
+
+##### IF
+
+IF(a = 3) b = 2.
+
+b = ifelse(a == 3, 2, NA)
+
+##### DO IF
+DO IF (a>3).
+    COMPUTE b = 4.
+END IF.
+
+w = modify_if(w, a>3, {
+    b = 4
+})
+
+
+##### COUNT
+COUNT cnt = a1 TO a5 (LO THRU HI).
+cnt = count_row_if(lo %thru% hi, a1 %to% a5)
+
+COUNT cnt = a1 TO a5 (SYSMIS).
+cnt = count_row_if(NA, a1 %to% a5)
+
+COUNT cnt = a1 TO a5 (1 THRU 5).
+cnt = count_row_if(1 %thru% 5, a1 %to% a5)
+
+COUNT cnt = a1 TO a5 (1 THRU 5).
+cnt = count_row_if(1 %thru% 5, a1 %to% a5)
+
+COUNT cnt = a1 TO a5 (1 THRU HI).
+cnt = count_row_if(1 %thru% hi, a1 %to% a5)
+or
+cnt = count_row_if(gte(1), a1 %to% a5)
+
+COUNT cnt = a1 TO a5 (LO THRU 1).
+cnt = count_row_if(lo %thru% 1, a1 %to% a5)
+or
+cnt = count_row_if (lte(1), a1 %to% a5)
+
+COUNT cnt = a1 TO a5 (1 THRU 5, 99).
+cnt = count_row_if(1 %thru% 5 | 99, a1 %to% a5)
+
+
+COUNT cnt = a1 TO a5(1,2,3,4,5, SYSMIS).
+cnt = count_row_if(c(1:5, NA), a1 %to% a5)
+
+#### RECODE
+
+RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
+
+if_val(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, . ~ NA)
+
+
+RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
+
+if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, . ~ 0)
+
+RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). 
+
+if_val(strngvar, c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', . ~ ' ')
+
+RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
+
+voter = if_val(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
+
+
+
+
