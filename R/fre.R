@@ -122,7 +122,11 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
     stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
     if (is.matrix(x)) {
+        vallab0 = val_lab(x)
+        varlab0 = var_lab(x)
         x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
+        val_lab(x) = vallab0
+        var_lab(x) = varlab0
     }
     if (is.null(weight)) {
         weight = rep(1, NROW(x))
