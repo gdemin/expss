@@ -49,7 +49,7 @@
 #' plot(f(mtcars$am))
 #' }
 #' 
-#' table(f(mtcars$am))
+#' fre(mtcars$am)
 #' 
 var_lab=function(x){
     UseMethod("var_lab")
@@ -195,7 +195,7 @@ unvr.list=function(x){
 #'                    )
 #' 
 #' # frequency of product scores                                      
-#' table(f(score)) 
+#' fre(score)
 #' 
 #' # brands - multiple response question
 #' # Which brands do you use during last three months? 
@@ -213,9 +213,12 @@ unvr.list=function(x){
 #' 
 #' 
 #' # percentage of used brands
-#' colMeans(dichotomy(brands))
+#' fre(brands)
 #' 
 #' # percentage of brands within each score
+#' cro(brands, score)
+#' 
+#' 
 #' aggregate(dichotomy(brands) ~ f(score), FUN = mean)
 #' 
 #' # customer segmentation by used brands

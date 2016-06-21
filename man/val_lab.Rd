@@ -89,7 +89,7 @@ val_lab(score) = c("Dislike it" = -1,
                    )
 
 # frequency of product scores                                      
-table(f(score)) 
+fre(score)
 
 # brands - multiple response question
 # Which brands do you use during last three months? 
@@ -107,9 +107,12 @@ val_lab(brands) = make_labels("
 
 
 # percentage of used brands
-colMeans(dichotomy(brands))
+fre(brands)
 
 # percentage of brands within each score
+cro(brands, score)
+
+
 aggregate(dichotomy(brands) ~ f(score), FUN = mean)
 
 # customer segmentation by used brands

@@ -72,7 +72,7 @@ val_lab(mtcars$am) = c(automatic = 0, manual=1)
 plot(f(mtcars$am))
 }
 
-table(f(mtcars$am))
+fre(mtcars$am)
 
 }
 
