@@ -1,8 +1,18 @@
-#' Title
+#' Simple frequencies and crosstabs with support of labels, weight and multiple response variables.
+#' 
+#' \code{fre} returns data.frame with six columns: labels or values, counts, 
+#' valid percent (excluding NA), percent (with NA), percent of responses(for
+#' single-column \code{x} it equals to valid percent) and cumulative percent of
+#' responses.
+#' \code{cro} returns data.frame with counts (possibly weighted) with column and row totals. 
+#' \code{cro_cpct} returns data.frame with column percent with column and row
+#' totals. Column totals are always weighted counts.
+#' Empty labels/factor levels are removed from results of these functions. 
 #'
-#' @param x 
-#' @param predictor 
-#' @param weight 
+#' @param x vector/data.frame. data.frames are considered as multiple response variables.
+#' @param predictor vector. By now multiple-response predictor is not supported.
+#' @param weight numeric vector. Optional case weights. NA's and negative weights
+#'   treated as zero weights.
 #'
 #' @return data.frame
 #'
@@ -19,7 +29,7 @@
 #' 
 #' fre(mtcars$vs)
 #' with(mtcars, cro(am, vs))
-#' with(mtcars, cro_pct(am, vs))
+#' with(mtcars, cro_cpct(am, vs))
 #' 
 #' # multiple-choise variable
 #' # brands - multiple response question
@@ -46,7 +56,7 @@
 #' 
 #' fre(brands)
 #' cro(brands, score)
-#' cro_pct(brands, score)
+#' cro_cpct(brands, score)
 #' @export
 fre = function(x, weight = NULL){
     raw = elementary_freq(x = x, weight = weight)
@@ -203,7 +213,7 @@ cro = function(x, predictor, weight = NULL){
 
 #' @export
 #' @rdname fre
-cro_pct = function(x, predictor, weight = NULL){
+cro_cpct = function(x, predictor, weight = NULL){
     res = cro(x = x, predictor = predictor, weight = weight)
     last_row = NROW(res)
     if(NCOL(res)>1 & last_row>1){

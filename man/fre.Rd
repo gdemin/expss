@@ -2,28 +2,36 @@
 % Please edit documentation in R/fre.R
 \name{fre}
 \alias{cro}
-\alias{cro_pct}
+\alias{cro_cpct}
 \alias{fre}
-\title{Title}
+\title{Simple frequencies and crosstabs with support of labels, weight and multiple response variables.}
 \usage{
 fre(x, weight = NULL)
 
 cro(x, predictor, weight = NULL)
 
-cro_pct(x, predictor, weight = NULL)
+cro_cpct(x, predictor, weight = NULL)
 }
 \arguments{
-\item{x}{}
+\item{x}{vector/data.frame. data.frames are considered as multiple response variables.}
 
-\item{weight}{}
+\item{weight}{numeric vector. Optional case weights. NA's and negative weights
+treated as zero weights.}
 
-\item{predictor}{}
+\item{predictor}{vector. By now multiple-response predictor is not supported.}
 }
 \value{
 data.frame
 }
 \description{
-Title
+\code{fre} returns data.frame with six columns: labels or values, counts, 
+valid percent (excluding NA), percent (with NA), percent of responses(for
+single-column \code{x} it equals to valid percent) and cumulative percent of
+responses.
+\code{cro} returns data.frame with counts (possibly weighted) with column and row totals. 
+\code{cro_cpct} returns data.frame with column percent with column and row
+totals. Column totals are always weighted counts.
+Empty labels/factor levels are removed from results of these functions.
 }
 \examples{
 data(mtcars)
@@ -38,7 +46,7 @@ mtcars = modify(mtcars,{
 
 fre(mtcars$vs)
 with(mtcars, cro(am, vs))
-with(mtcars, cro_pct(am, vs))
+with(mtcars, cro_cpct(am, vs))
 
 # multiple-choise variable
 # brands - multiple response question
@@ -65,6 +73,6 @@ val_lab(score) = make_labels("
 
 fre(brands)
 cro(brands, score)
-cro_pct(brands, score)
+cro_cpct(brands, score)
 }
 
