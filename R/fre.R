@@ -54,31 +54,41 @@ fre = function(x, weight = NULL){
     nas = raw$nas
     res = raw$freq
     res = res[!is.na(res$res), ]
-
+    # percent without missing
     if(not_nas>0) {
         res$valid_percent =  res$res/not_nas*100    
     } else {
-        res$valid_percent = 0
+        res$valid_percent = rep(0, nrow(res))
     }    
+    # percent with missings
     base = not_nas + nas
     if(base>0) {
         res$percent =  res[[2]]/base*100    
     } else {
-        res$percent = 0
-    }   
-    total = sum_col(res[,-1])
+        res$percent =  rep(0, nrow(res))
+    }  
+    # response percent - differs from valid percent only for multiples
+    r_base = sum(res$valid_percent, na.rm = TRUE)
+    if(r_base>0) {
+        res$rpercent =  res$valid_percent/r_base*100    
+    } else {
+        res$rpercent =  rep(0, nrow(res))
+    }  
+    total = sum_col(res[[2]])
     dfs_total = data.frame(
         labels = "#Total",
-        res = total[1],
-        valid_percent = total[2], 
-        percent = total[3],
+        res = not_nas,
+        valid_percent = ifelse(total>0, 100,0), 
+        percent = ifelse(base>0, not_nas/base*100, 0),
+        rpercent = ifelse(total>0, 100, 0),
         cum = NA
     )
-    res$cum = cumsum(res$valid_percent)
+    res$cum = cumsum(res$rpercent)
     dfs_na = data.frame(labels = "<NA>", 
                         res = nas, 
                         valid_percent = NA, 
                         percent = ifelse(base>0, nas/base*100, 0),
+                        rpercent = NA,
                         cum = NA
                         )
     res = rbind(res, dfs_total, dfs_na)
@@ -89,10 +99,9 @@ fre = function(x, weight = NULL){
         varlab = deparse(substitute(x))
     }
 
-    colnames(res) = c(varlab, "Count", "Valid percent", "Percent", "Cumulative percent")
-    if(NCOL(x)>1) {
-        res = res[, - NCOL(res), drop = FALSE]
-    }
+    colnames(res) = c(varlab, "Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %")
+    
+
     res
     
 }
@@ -150,6 +159,7 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
         res = tapply(weight, list(f(x), f(predictor)), FUN = sum, na.rm = TRUE)
     }
     labels = rownames(res)
+    if(is.null(labels)) labels = character(0)
     res = data.frame(labels = labels, res, stringsAsFactors = FALSE, check.names = FALSE)
     row.names(res) = NULL
     list(freq = res, not_nas = not_nas, nas = nas, total = total) 
@@ -178,7 +188,7 @@ cro = function(x, predictor, weight = NULL){
     res = rbind(res, column_total)
     row_total = sum_row(res[,-1])
     res[,"#row_total"] = row_total
-    res = res[row_total>0,, drop = FALSE]
+    res = res[(row_total>0) | (seq_len(NROW(res)) == NROW(res)),, drop = FALSE]
     
     varlab = var_lab(x)
     if (is.null(varlab)){
