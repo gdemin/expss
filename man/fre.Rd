@@ -2,12 +2,15 @@
 % Please edit documentation in R/fre.R
 \name{fre}
 \alias{cro}
+\alias{cro_pct}
 \alias{fre}
 \title{Title}
 \usage{
 fre(x, weight = NULL)
 
 cro(x, predictor, weight = NULL)
+
+cro_pct(x, predictor, weight = NULL)
 }
 \arguments{
 \item{x}{}
@@ -23,6 +26,45 @@ data.frame
 Title
 }
 \examples{
-a = a + 1
+data(mtcars)
+mtcars = modify(mtcars,{
+    var_lab(vs) = "Engine"
+    val_lab(vs) = c("V-engine" = 0, 
+                    "Straight engine" = 1) 
+    var_lab(am) = "Transmission"
+    val_lab(am) = c(automatic = 0, 
+                    manual=1)
+})
+
+fre(mtcars$vs)
+with(mtcars, cro(am, vs))
+with(mtcars, cro_pct(am, vs))
+
+# multiple-choise variable
+# brands - multiple response question
+# Which brands do you use during last three months? 
+set.seed(123)
+brands = data.frame(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
+# score - evaluation of tested product
+score = sample(-1:1,20,replace = TRUE)
+var_lab(brands) = "Used brands"
+val_lab(brands) = make_labels("
+                              1 Brand A
+                              2 Brand B
+                              3 Brand C
+                              4 Brand D
+                              5 Brand E
+                              ")
+
+var_lab(score) = "Evaluation of tested brand"
+val_lab(score) = make_labels("
+                             -1 Dislike it
+                             0 So-so
+                             1 Like it    
+                             ")
+
+fre(brands)
+cro(brands, score)
+cro_pct(brands, score)
 }
 
