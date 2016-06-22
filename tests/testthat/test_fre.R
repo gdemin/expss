@@ -227,11 +227,15 @@ a = c(1,1,1, NA, NA)
 b = c(NA, NA, NA, 1, 1)
 expect_equal_to_reference(cro(a, b), "rds/cro3.rds")
 expect_equal_to_reference(cro_cpct(a, b), "rds/cro4.rds")
+expect_equal_to_reference(cro_rpct(a, b), "rds/cro4r.rds")
+expect_equal_to_reference(cro_tpct(a, b), "rds/cro4t.rds")
 a = c(1,1,1, 1, 1)
 b = c(1, 1, 1, 1, 1)
 weight = rep(NA, 5)
 expect_equal_to_reference(cro(a, b, weight), "rds/cro5.rds")
 expect_equal_to_reference(cro_cpct(a, b, weight), "rds/cro5.rds")
+expect_equal_to_reference(cro_rpct(a, b, weight), "rds/cro4r.rds")
+expect_equal_to_reference(cro_tpct(a, b, weight), "rds/cro4t.rds")
 
 context("fre and cro from real life")
 
@@ -250,6 +254,8 @@ expect_equal_to_reference(cro(data$reg, data$s1), "rds/cro_real1.rds")
 expect_equal_to_reference(cro_cpct(data$reg, data$s1), "rds/cro_real2.rds")
 expect_equal_to_reference(with(data, cro(q8r_1 %to% q8r_99, reg)), "rds/cro_real3.rds")
 expect_equal_to_reference(with(data, cro_cpct(q8r_1 %to% q8r_99, reg)), "rds/cro_real4.rds")
+expect_equal_to_reference(with(data, cro_rpct(q8r_1 %to% q8r_99, reg)), "rds/cro_real4r.rds")
+expect_equal_to_reference(with(data, cro_tpct(q8r_1 %to% q8r_99, reg)), "rds/cro_real4t.rds")
 expect_equal_to_reference(with(data, cro(q8r_1 %to% q8r_99, s1)), "rds/cro_real5.rds")
 expect_equal_to_reference(with(data, cro_cpct(q8r_1 %to% q8r_99, s1)), "rds/cro_real6.rds")
 
@@ -265,6 +271,8 @@ expect_equal_to_reference(with(data, cro(q8r_1 %to% q8r_99, reg, weight = weight
 expect_equal_to_reference(with(data, cro_cpct(q8r_1 %to% q8r_99, reg, weight = weight1)), "rds/cro_real4w.rds")
 expect_equal_to_reference(with(data, cro(q8r_1 %to% q8r_99, s1, weight = weight1)), "rds/cro_real5w.rds")
 expect_equal_to_reference(with(data, cro_cpct(q8r_1 %to% q8r_99, s1, weight = weight1)), "rds/cro_real6w.rds")
+expect_equal_to_reference(with(data, cro_rpct(q8r_1 %to% q8r_99, s1, weight = weight1)), "rds/cro_real6wr.rds")
+expect_equal_to_reference(with(data, cro_tpct(q8r_1 %to% q8r_99, s1, weight = weight1)), "rds/cro_real6wt.rds")
 
 
 

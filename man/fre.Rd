@@ -3,17 +3,24 @@
 \name{fre}
 \alias{cro}
 \alias{cro_cpct}
+\alias{cro_rpct}
+\alias{cro_tpct}
 \alias{fre}
-\title{Simple frequencies and crosstabs with support of labels, weight and multiple response variables.}
+\title{Simple frequencies and crosstabs with support of labels, weights and multiple response variables.}
 \usage{
 fre(x, weight = NULL)
 
 cro(x, predictor, weight = NULL)
 
 cro_cpct(x, predictor, weight = NULL)
+
+cro_rpct(x, predictor, weight = NULL)
+
+cro_tpct(x, predictor, weight = NULL)
 }
 \arguments{
-\item{x}{vector/data.frame. data.frames are considered as multiple response variables.}
+\item{x}{vector/data.frame. data.frames are considered as multiple response
+variables.}
 
 \item{weight}{numeric vector. Optional case weights. NA's and negative weights
 treated as zero weights.}
@@ -25,13 +32,18 @@ data.frame
 }
 \description{
 \code{fre} returns data.frame with six columns: labels or values, counts, 
-valid percent (excluding NA), percent (with NA), percent of responses(for
-single-column \code{x} it equals to valid percent) and cumulative percent of
+valid percent (excluding NA), percent (with NA), percent of responses(for 
+single-column \code{x} it equals to valid percent) and cumulative percent of 
 responses.
-\code{cro} returns data.frame with counts (possibly weighted) with column and row totals. 
-\code{cro_cpct} returns data.frame with column percent with column and row
-totals. Column totals are always weighted counts.
-Empty labels/factor levels are removed from results of these functions.
+\code{cro} returns data.frame with counts (possibly weighted) with column and
+row totals.
+\code{cro_pct}, \code{cro_cpct}, \code{cro_rpct} return data.frame with 
+table/column/row percent with column and row totals. There are always 
+weighted counts instead of margin with 100\%. Empty labels/factor levels are 
+removed from results of these functions. Base for multiple response (x is 
+data.frame) percent is number of valid cases (not sum of responses) so sum of
+percent may be greater than 100. Case is considered as valid if it has at
+least one non-NA value.
 }
 \examples{
 data(mtcars)

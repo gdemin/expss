@@ -1,15 +1,21 @@
-#' Simple frequencies and crosstabs with support of labels, weight and multiple response variables.
+#' Simple frequencies and crosstabs with support of labels, weights and multiple response variables.
 #' 
 #' \code{fre} returns data.frame with six columns: labels or values, counts, 
-#' valid percent (excluding NA), percent (with NA), percent of responses(for
-#' single-column \code{x} it equals to valid percent) and cumulative percent of
+#' valid percent (excluding NA), percent (with NA), percent of responses(for 
+#' single-column \code{x} it equals to valid percent) and cumulative percent of 
 #' responses.
-#' \code{cro} returns data.frame with counts (possibly weighted) with column and row totals. 
-#' \code{cro_cpct} returns data.frame with column percent with column and row
-#' totals. Column totals are always weighted counts.
-#' Empty labels/factor levels are removed from results of these functions. 
+#' \code{cro} returns data.frame with counts (possibly weighted) with column and
+#' row totals.
+#' \code{cro_pct}, \code{cro_cpct}, \code{cro_rpct} return data.frame with 
+#' table/column/row percent with column and row totals. There are always 
+#' weighted counts instead of margin with 100\%. Empty labels/factor levels are 
+#' removed from results of these functions. Base for multiple response (x is 
+#' data.frame) percent is number of valid cases (not sum of responses) so sum of
+#' percent may be greater than 100. Case is considered as valid if it has at
+#' least one non-NA value.
 #'
-#' @param x vector/data.frame. data.frames are considered as multiple response variables.
+#' @param x vector/data.frame. data.frames are considered as multiple response
+#'   variables.
 #' @param predictor vector. By now multiple-response predictor is not supported.
 #' @param weight numeric vector. Optional case weights. NA's and negative weights
 #'   treated as zero weights.
@@ -194,7 +200,7 @@ cro = function(x, predictor, weight = NULL){
     res = res[, c(TRUE, column_total>0), drop = FALSE]
     column_total = column_total[column_total>0]
 
-    column_total = data.frame(labels = "#Total(counts)", 
+    column_total = data.frame(labels = "#Total", 
                               t(column_total), 
                               stringsAsFactors = FALSE,
                               check.names = FALSE
@@ -220,7 +226,7 @@ cro = function(x, predictor, weight = NULL){
 cro_cpct = function(x, predictor, weight = NULL){
     res = cro(x = x, predictor = predictor, weight = weight)
     last_row = NROW(res)
-    if(NCOL(res)>1 & last_row>1){
+    if(NCOL(res)>2 & last_row>1){
         total_row = res[last_row, ]
         for (i in seq_along(res)[-1]){
             res[[i]][-last_row] = res[[i]][-last_row]/total_row[[i]]*100 
@@ -236,5 +242,50 @@ cro_cpct = function(x, predictor, weight = NULL){
     
     
 }
+
+#' @export
+#' @rdname fre
+cro_rpct = function(x, predictor, weight = NULL){
+    res = cro(x = x, predictor = predictor, weight = weight)
+    last_col = NCOL(res)
+    if(NROW(res)>1 & last_col>2){
+        total_col = res[[last_col]]
+        for (i in seq_len(last_col)[c(-1,-last_col)]){
+            res[[i]] = res[[i]]/total_col*100 
+        }    
+        
+    }
+    varlab = var_lab(x)
+    if (is.null(varlab)){
+        varlab = deparse(substitute(x))
+    }
+    colnames(res)[1] = varlab
+    res
+    
+    
+}
+
+#' @export
+#' @rdname fre
+cro_tpct = function(x, predictor, weight = NULL){
+    res = cro(x = x, predictor = predictor, weight = weight)
+    last_row = NROW(res)
+    last_col = NCOL(res)
+    if(last_col>2 & last_row>1){
+        total = res[[last_col]][last_row]
+        res[,-1] = res[,-1]/total*100 
+        res[last_row, last_col] = total
+    }
+    varlab = var_lab(x)
+    if (is.null(varlab)){
+        varlab = deparse(substitute(x))
+    }
+    colnames(res)[1] = varlab
+    res
+    
+    
+}
+
+
 
 
