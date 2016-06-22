@@ -289,9 +289,13 @@ val_lab.default=function(x){
 
 #' @export
 #' @rdname val_lab 
-set_val_lab = function(x,value,add = FALSE){
+set_val_lab = function(x, value, add = FALSE){
     UseMethod("set_val_lab")
 }
+
+#' @export
+#' @rdname val_lab
+add_val_lab = function(x, value) set_val_lab(x, value, add = TRUE) 
 
 #' @export
 set_val_lab.default = function(x,value, add = FALSE){
