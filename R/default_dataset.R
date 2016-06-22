@@ -1,6 +1,32 @@
-
-
-
+#' Get or set reference to default dataset. Experimental feature.
+#' 
+#' Use data.frame or data.frame name to set it as default. Use NULL as an
+#' argument to disable default dataset. If argument is missing then function
+#' will return reference to default dataset. Use \link{ref} to modify it. Also
+#' see \link{.compute} for usage patterns.
+#' 
+#' @param x data.frame or data.frame name which we want to make default for some operations. 
+#' @return formula reference to default dataset or NULL
+#' @seealso \link{ref} 
+#' @examples
+#' 
+#' data(iris)
+#' default_iris = iris
+#' default_dataset(default_iris) # set default dataset
+#' 
+#' .compute({
+#'     new_col = 1
+#'     Sepal.Length = Sepal.Length*2 
+#' })
+#' 
+#' # for comparison
+#' 
+#' iris$new_col = 1
+#' iris$Sepal.Length = iris$Sepal.Length*2 
+#' identical(iris, default_iris) # should be TRUE
+#' 
+#' default_dataset(NULL) # disable default dataset
+#' 
 #' @export
 default_dataset = local({
     dataset = NULL
