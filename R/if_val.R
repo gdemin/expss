@@ -2,17 +2,20 @@
 #' 
 #' \code{if_val} change, rearrange or consolidate the values of an existing 
 #' variable based on conditions. Design of this function inspired by RECODE from
-#' SPSS. Sequence of recodings provided in the form of formulas. For example,
-#' 1:2 ~ 1 means that all 1 and 2 will be replaced with 1. Each value recoded
-#' only once. Values which doesn't meet any condition remain unchanged. As a
-#' condition one can use just values or more sophisticated logical values and
-#' functions. There are several special functions for usage as criteria - for
-#' details see \link{criteria}. Simple common usage looks like: \code{if_val(x,
-#' 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}. For more information, see details and
-#' examples. \code{ifs} is version of \link[base]{ifelse} with multiple 'else'.
-#' \code{ifs} works in the same manner as \code{if_val} - e. g. with formula or
-#' from/to notation. But conditions should be only logical and it doesn't
-#' operate on multicolumn objects.
+#' SPSS. Sequence of recodings provided in the form of formulas. For example, 
+#' 1:2 ~ 1 means that all 1 and 2 will be replaced with 1. Each value recoded 
+#' only once. Values which doesn't meet any condition remain unchanged. As a 
+#' condition one can use just values or more sophisticated logical values and 
+#' functions. There are several special functions for usage as criteria - for 
+#' details see \link{criteria}. Simple common usage looks like: \code{if_val(x, 
+#' 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}. For more information, see details and 
+#' examples. 
+#' The \code{ifs} function checks whether one or more conditions are met and
+#' returns a value that corresponds to the first TRUE condition. \code{ifs} can
+#' take the place of multiple nested \code{ifelse} statements, and is much
+#' easier to read with multiple conditions. \code{ifs} works in the same manner
+#' as \code{if_val} - e. g. with formula or from/to notation. But conditions
+#' should be only logical and it doesn't operate on multicolumn objects.
 #' 
 #' @details 
 #' Input conditions: possible values for left hand side (LHS) of formula or element of \code{from} list:
@@ -174,7 +177,9 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
         recoding_list = mapply(function(x,y) list(from = x, to = y), from, to, SIMPLIFY = FALSE)
     }
     recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
-    dfs_x = as.data.frame(x)
+    dfs_x = as.data.frame(x,
+                          stringsAsFactors = FALSE,
+                          check.names = FALSE)
     
     for (from_to in recoding_list){
         if (all(recoded)) break # if all values were recoded

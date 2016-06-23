@@ -131,7 +131,7 @@ read_labelled_csv = function(filename, fileEncoding = "", ...){
 #' @export
 #' @rdname write_labels
 write_labelled_csv = function(x, filename, fileEncoding = "", ...){
-    if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE)
+    if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
     for(each in seq_along(x)){
         if (is.factor(x[[each]])){
             x[[each]] = as.character(x[[each]])
@@ -165,7 +165,7 @@ write_labelled_csv = function(x, filename, fileEncoding = "", ...){
 #' @export
 #' @rdname write_labels
 write_labelled_spss = function(x, filename, fileEncoding = "", ...){
-    if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE)
+    if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
     for(each in seq_along(x)){
         if (is.factor(x[[each]])){
             x[[each]] = as.character(x[[each]])

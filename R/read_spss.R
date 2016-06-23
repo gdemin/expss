@@ -29,7 +29,7 @@
 #' }
 read_spss=function(file, reencode = TRUE){
     res = read_spss_to_list(file, reencode = reencode)
-    res = do.call(data.frame,c(res,stringsAsFactors=FALSE))
+    res = do.call(data.frame,c(res,stringsAsFactors=FALSE, check.names = FALSE))
     res
 }
 

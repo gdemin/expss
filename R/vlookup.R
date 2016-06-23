@@ -187,7 +187,7 @@ vlookup_df = function(lookup_value, dict, result_column=NULL, lookup_column=1) {
         result
     
     } else {
-        data.frame(result = result, stringsAsFactors = FALSE)
+        data.frame(result = result, stringsAsFactors = FALSE, check.names = FALSE)
     }
 }
 

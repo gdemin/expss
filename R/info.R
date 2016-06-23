@@ -68,7 +68,7 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
         res = c(res, Frequency =values)
     }
     curr_name = deparse(substitute(x))
-    stats::setNames(as.data.frame(c(curr_name,res),stringsAsFactors = FALSE),c("Name",names(res)))
+    stats::setNames(as.data.frame(c(curr_name,res),stringsAsFactors = FALSE, check.names = FALSE),c("Name",names(res)))
 }
 
 #' @export
@@ -77,7 +77,7 @@ info.data.frame=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
 }
 
 info.matrix=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
-    info.list(as.data.frame(x,stringsAsFactors = FALSE), stats, frequencies, max_levels)
+    info.list(as.data.frame(x,stringsAsFactors = FALSE, check.names = FALSE), stats, frequencies, max_levels)
 }
 
 #' @export

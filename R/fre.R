@@ -98,7 +98,9 @@ fre = function(x, weight = NULL){
         valid_percent = ifelse(total>0, 100,0), 
         percent = ifelse(base>0, not_nas/base*100, 0),
         rpercent = ifelse(total>0, 100, 0),
-        cum = NA
+        cum = NA,
+        stringsAsFactors = FALSE,
+        check.names = FALSE
     )
     res$cum = cumsum(res$rpercent)
     dfs_na = data.frame(labels = "<NA>", 
@@ -106,7 +108,9 @@ fre = function(x, weight = NULL){
                         valid_percent = NA, 
                         percent = ifelse(base>0, nas/base*100, 0),
                         rpercent = NA,
-                        cum = NA
+                        cum = NA,
+                        stringsAsFactors = FALSE,
+                        check.names = FALSE
                         )
     res = rbind(res, dfs_total, dfs_na)
     rownames(res) = NULL

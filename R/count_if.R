@@ -516,10 +516,10 @@ fun_if_helper = function(criterion,..., data){
     
     set_na(data) = !criterion
     if(is.list(data) && !is.data.frame(data)){
-        data = do.call(data.frame,c(data,stringsAsFactors=FALSE))        
+        data = do.call(data.frame,c(data,stringsAsFactors=FALSE, check.names = FALSE))        
     }  else {
         if (!is.data.frame(data)){
-            data = as.data.frame(data, stringsAsFactors = FALSE)
+            data = as.data.frame(data, stringsAsFactors = FALSE, check.names = FALSE)
         } else {
             data
         }

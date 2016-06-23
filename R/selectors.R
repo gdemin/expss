@@ -57,7 +57,7 @@
 #' @export
 get_var_range = function(start, end){
     
-    as.data.frame(get_var_range_list(start, end), stringsAsFactors = FALSE)
+    as.data.frame(get_var_range_list(start, end), stringsAsFactors = FALSE, check.names = FALSE)
     
 }
 
@@ -133,7 +133,7 @@ get_vars_list = function(pattern){
 #' @export
 #' @rdname get_var_range
 get_vars = function(pattern){
-    as.data.frame(get_vars_list(pattern), stringsAsFactors = FALSE) 
+    as.data.frame(get_vars_list(pattern), stringsAsFactors = FALSE, check.names = FALSE) 
 } 
 
 
