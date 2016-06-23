@@ -1,13 +1,16 @@
-# Experimental functions for working with default dataset
-#
-#
-#
-#' @param expr 
-#' @param cond
+#' Experimental functions for working with default dataset
+#'
+#'
+#'
+#' @param x dsfs
+#' @param expr dfsdf
+#' @param cond sdfsdf
+#' @param ... dsfsdf
 #'
 #' @examples 
-#' a = a+1
+#' a = 1
 #' @export
+#' @name compute
 ..modify = function (expr) {
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
@@ -31,7 +34,7 @@
 
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 ..modify_if = function (cond, expr) {
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset() )
@@ -94,43 +97,43 @@ eval_in_default_dataset = function(...){
 
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 ..do_if = ..modify_if
 
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 ..compute = ..modify
 
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 .val_lab = eval_in_default_dataset
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 .var_lab = eval_in_default_dataset
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 ..set_var_lab = modify_default_dataset_light
 
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 ..set_val_lab = modify_default_dataset_light
 
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 ..add_val_lab = modify_default_dataset_light
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 ..if_val = modify_default_dataset_light
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 ..recode = function(x, ...){
     expr = as.character(as.expression(sys.call()))
     expr = parse(text = gsub("^\\.\\.recode","if_val", expr, perl = TRUE))
@@ -152,23 +155,23 @@ eval_in_default_dataset = function(...){
 }
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 .fre = eval_in_default_dataset
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 .cro = eval_in_default_dataset
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 .cro_cpct = eval_in_default_dataset
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 .cro_rpct = eval_in_default_dataset
 
 #' @export
-#' @rdname .modify
+#' @rdname compute
 .cro_tpct = eval_in_default_dataset
 
 
