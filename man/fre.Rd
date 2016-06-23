@@ -28,7 +28,8 @@ treated as zero weights.}
 \item{predictor}{vector. By now multiple-response predictor is not supported.}
 }
 \value{
-data.frame
+object of class 'simple_table'. Basically it's a data.frame but class
+  is needed for custom print method.
 }
 \description{
 \code{fre} returns data.frame with six columns: labels or values, counts, 

@@ -20,7 +20,8 @@
 #' @param weight numeric vector. Optional case weights. NA's and negative weights
 #'   treated as zero weights.
 #'
-#' @return data.frame
+#' @return object of class 'simple_table'. Basically it's a data.frame but class
+#'   is needed for custom print method.
 #'
 #' @examples
 #' data(mtcars)
@@ -117,7 +118,7 @@ fre = function(x, weight = NULL){
 
     colnames(res) = c(varlab, "Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %")
     
-
+    class(res) = union("simple_table", class(res))
     res
     
 }
@@ -217,6 +218,7 @@ cro = function(x, predictor, weight = NULL){
     
     colnames(res)[1] = varlab
     colnames(res)[NCOL(res)] = "#Total"
+    class(res) = union("simple_table", class(res))
     res
     
 }
@@ -286,6 +288,14 @@ cro_tpct = function(x, predictor, weight = NULL){
     
 }
 
-
-
+#' @export
+print.simple_table = function(x, round_digits = 2, ...,  row.names = FALSE){
+    class(x) = class(x) %d% "simple_table"
+    if(!is.null(round_digits)){
+        for (each in seq_along(x)){
+            if(is.numeric(x[[each]])) x[[each]] = round(x[[each]], round_digits)
+        }
+    }
+    print(x, ..., row.names = row.names)
+}
 
