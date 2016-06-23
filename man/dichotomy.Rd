@@ -3,20 +3,40 @@
 \name{dichotomy}
 \alias{dichotomy}
 \alias{dichotomy1}
+\alias{dichotomy1_df}
+\alias{dichotomy_df}
 \alias{dummy}
+\alias{dummy_df}
 \title{Convert variable (possibly multiple choice question) to matrix of dummy variables.}
 \usage{
-dichotomy(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-  keep_labels = NULL, drop_values = NULL, drop_labels = NULL)
+dichotomy(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE,
+  keep_values = NULL, keep_labels = NULL, drop_values = NULL,
+  drop_labels = NULL)
 
-dichotomy1(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-  keep_labels = NULL, drop_values = NULL, drop_labels = NULL)
+dichotomy1(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE,
+  keep_values = NULL, keep_labels = NULL, drop_values = NULL,
+  drop_labels = NULL)
 
-dummy(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-  keep_labels = NULL, drop_values = NULL, drop_labels = NULL)
+dichotomy1_df(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE,
+  keep_values = NULL, keep_labels = NULL, drop_values = NULL,
+  drop_labels = NULL)
+
+dichotomy_df(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE,
+  keep_values = NULL, keep_labels = NULL, drop_values = NULL,
+  drop_labels = NULL)
+
+dummy(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE,
+  keep_values = NULL, keep_labels = NULL, drop_values = NULL,
+  drop_labels = NULL)
+
+dummy_df(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE,
+  keep_values = NULL, keep_labels = NULL, drop_values = NULL,
+  drop_labels = NULL)
 }
 \arguments{
 \item{x}{vector/factor/matrix/data.frame.}
+
+\item{prefix}{character. If it is not NULL it instead of labels will be used prefix+values.}
 
 \item{keep_unused}{Logical. Should we create columns for unused value labels/factor levels.}
 
@@ -35,8 +55,9 @@ all values will be kept. Ignored if keep_values/keep_labels are provided.}
 default all labels/levels will be kept. Ignored if keep_values/keep_labels are provided.}
 }
 \value{
-matrix with 0,1 which column names are value labels. If label doesn't exist for 
-particular value then this value will be used as column name.
+matrix or data.frame with 0,1 which column names are value labels or
+  values with prefix. If label doesn't exist for particular value then this
+  value will be used as column name.
 }
 \description{
 This function converts variable/multiple response variable(matrix/data.frame)
@@ -48,6 +69,8 @@ linear regression and so on.
 \item{\code{dichotomy1}}{ drops last column in dichotomy matrix. It is useful in many cases
 because any column of such matrix usually is linear combinations of other columns.}
 \item{\code{dummy}}{ is another shortcut for \code{dichotomy}.}
+\item{\code{*_df}}{ are the same functions as \code{dichotomy} etc. but return
+data.frame instead of matrix.}
 }
 }
 \examples{
@@ -88,6 +111,9 @@ kmeans(dichotomy(brands),3)
 
 # model of influence of used brands on evaluation of tested product 
 summary(lm(score ~ dichotomy(brands)))
+
+# prefixed data.frame 
+dichotomy_df(brands, prefix = "brand_")
 
 }
 \seealso{

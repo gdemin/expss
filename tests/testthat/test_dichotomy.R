@@ -4,7 +4,15 @@ context("dichotomy.default")
 expect_identical(dichotomy(numeric(0)),
     structure(numeric(0), .Dim = c(0L, 0L), class = c("dichotomy", 
                                                   "matrix")))
+
+expect_identical(dichotomy(numeric(0), prefix = "nas"),
+                 structure(numeric(0), .Dim = c(0L, 0L), class = c("dichotomy", 
+                                                                   "matrix")))
 expect_identical(dichotomy(c(NA,NA,NA)),
+                 structure(numeric(0), .Dim = c(3L, 0L), class = c("dichotomy", 
+                                                                   "matrix")))
+
+expect_identical(dichotomy(c(NA,NA,NA), prefix = "nas"),
                  structure(numeric(0), .Dim = c(3L, 0L), class = c("dichotomy", 
                                                                    "matrix")))
 
@@ -12,11 +20,17 @@ vec = 1
 
 expect_identical(dichotomy(vec),
                  structure(1, .Dim = c(1L, 1L), .Dimnames = list(NULL, "1"), class = c("dichotomy", "matrix")))
+expect_identical(dichotomy(vec, prefix = "nas"),
+                 structure(1, .Dim = c(1L, 1L), .Dimnames = list(NULL, "nas1"), class = c("dichotomy", "matrix")))
+
+
 vec = 1:3
 expect_identical(dichotomy(vec),
                  structure(c(1, 0, 0, 0, 1, 0, 0, 0, 1), .Dim = c(3L, 3L), .Dimnames = list(
                      NULL, c("1", "2", "3")), class = c("dichotomy", "matrix")))
-
+expect_identical(dichotomy(vec, prefix = "nas"),
+                 structure(c(1, 0, 0, 0, 1, 0, 0, 0, 1), .Dim = c(3L, 3L), .Dimnames = list(
+                     NULL, c("nas1", "nas2", "nas3")), class = c("dichotomy", "matrix")))
 
 vec = c(1:2,NA)
 expect_identical(dichotomy(vec),
@@ -34,6 +48,10 @@ val_lab(vec) = c(a=1,b=2,d=45)
 expect_identical(dichotomy(vec),
                  structure(c(1, 0, NA, 0, 1, NA), .Dim = c(3L, 2L), .Dimnames = list(
                      NULL, c("a", "b")), class = c("dichotomy", "matrix")))
+
+expect_identical(dichotomy(vec, prefix = "nas"),
+                 structure(c(1, 0, NA, 0, 1, NA), .Dim = c(3L, 2L), .Dimnames = list(
+                     NULL, c("nas1", "nas2")), class = c("dichotomy", "matrix")))
 
 expect_identical(dichotomy(vec,use_na = FALSE),
                  structure(c(1, 0, 0, 0, 1, 0), .Dim = c(3L, 2L), .Dimnames = list(
@@ -351,6 +369,15 @@ expect_error(dichotomy(vec, keep_unused = TRUE,keep_labels="unknown label"))
 set.seed(123)
 brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))
 expect_equal_to_reference(dichotomy(brands[,1]),"rds/brands.rds")
+var_lab(brands) = "Used brands"
+val_lab(brands) = make_labels("
+                              1 Brand A
+                              2 Brand B
+                              3 Brand C
+                              4 Brand D
+                              5 Brand E
+                              ")
+expect_equal_to_reference(dichotomy_df(brands, prefix = "brand_"),"rds/brands_df.rds")
 
 ###########
 
