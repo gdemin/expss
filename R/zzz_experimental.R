@@ -1,9 +1,14 @@
-# experimental functions for working with default dataset
-
-
-
+# Experimental functions for working with default dataset
+#
+#
+#
+#' @param expr 
+#' @param cond
+#'
+#' @examples 
+#' a = a+1
 #' @export
-.modify = function (expr) {
+..modify = function (expr) {
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
     data = ref(reference)
@@ -26,7 +31,8 @@
 
 
 #' @export
-.modify_if = function (cond, expr) {
+#' @rdname .modify
+..modify_if = function (cond, expr) {
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
@@ -53,21 +59,10 @@
     invisible(NULL)
 }
 
-
-#' @export
-.do_if = .modify_if
-
-
-#' @export
-.compute = .modify
-
-
-
-
 # doesn't create new variables
 modify_default_dataset_light = function(x, ...){
     expr = as.character(as.expression(sys.call()))
-    expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
+    expr = parse(text = gsub("^\\.\\.","", expr, perl = TRUE))
     for_names = as.expression(substitute(x))
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
@@ -97,34 +92,84 @@ eval_in_default_dataset = function(...){
     eval(expr, e)
 }
 
+
 #' @export
+#' @rdname .modify
+..do_if = ..modify_if
+
+
+#' @export
+#' @rdname .modify
+..compute = ..modify
+
+
+#' @export
+#' @rdname .modify
 .val_lab = eval_in_default_dataset
 
 #' @export
+#' @rdname .modify
 .var_lab = eval_in_default_dataset
 
 #' @export
-.set_var_lab = modify_default_dataset_light
+#' @rdname .modify
+..set_var_lab = modify_default_dataset_light
 
 
 #' @export
-.set_val_lab = modify_default_dataset_light
+#' @rdname .modify
+..set_val_lab = modify_default_dataset_light
+
 
 #' @export
-add_val_lab = function(x, value) set_val_lab(x, value, add = TRUE) 
+#' @rdname .modify
+..add_val_lab = modify_default_dataset_light
 
 #' @export
-.add_val_lab = modify_default_dataset_light
+#' @rdname .modify
+..if_val = modify_default_dataset_light
 
 #' @export
-.if_val = modify_default_dataset_light
+#' @rdname .modify
+..recode = function(x, ...){
+    expr = as.character(as.expression(sys.call()))
+    expr = parse(text = gsub("^\\.\\.recode","if_val", expr, perl = TRUE))
+    for_names = as.expression(substitute(x))
+    reference = suppressMessages(default_dataset() )
+    data = ref(reference)
+    parent = parent.frame()
+    e = evalq(environment(), data, parent)
+    e$.n = nrow(data)
+    if (length(all.vars(for_names, functions = TRUE))==1){
+        for_names = as.character(for_names) 
+    } else {
+        for_names = names(eval(for_names, e))
+    }
+    res = eval(expr, e)
+    data[, for_names] = res
+    ref(reference) = data
+    invisible(NULL)
+}
 
 #' @export
-recode = if_val
-
-#' @export
-.recode = modify_default_dataset_light
-
-#' @export
+#' @rdname .modify
 .fre = eval_in_default_dataset
+
+#' @export
+#' @rdname .modify
+.cro = eval_in_default_dataset
+
+#' @export
+#' @rdname .modify
+.cro_cpct = eval_in_default_dataset
+
+#' @export
+#' @rdname .modify
+.cro_rpct = eval_in_default_dataset
+
+#' @export
+#' @rdname .modify
+.cro_tpct = eval_in_default_dataset
+
+
 
