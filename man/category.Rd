@@ -2,12 +2,19 @@
 % Please edit documentation in R/category.R
 \name{category}
 \alias{category}
-\title{Convert dichotomy matrix to matrix with category encoding.}
+\title{Convert dichotomy matrix/data.frame to matrix/data.frame with category encoding}
 \usage{
-category(x, counted_value = 1, compress = TRUE)
+category(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
+  compress = TRUE)
 }
 \arguments{
 \item{x}{Dichotomy matrix (usually with 0,1 coding).}
+
+\item{prefix}{If not is NULL then column names will be added in the form
+prefix+column number.}
+
+\item{use_var_lab}{logical If TRUE then we will try to use variable labels as
+value labels instead of column names.}
 
 \item{counted_value}{Vector. Values that should be considered as indicator 
 of category presence. By default it equals to 1.}
@@ -15,11 +22,11 @@ of category presence. By default it equals to 1.}
 \item{compress}{Logical. Should we drop columns with all NA?}
 }
 \value{
-Matrix with numeric values that correspond to column numbers of counted values. 
-Column names of x are added as value labels.
+Matrix or data.frame with numeric values that correspond to column
+  numbers of counted values. Column names of x or variable labels are added as value labels.
 }
 \description{
-Convert dichotomy matrix to matrix with category encoding.
+Convert dichotomy matrix/data.frame to matrix/data.frame with category encoding
 }
 \examples{
 set.seed(123)
@@ -33,6 +40,19 @@ category_matrix=category(dichotomy_matrix)
  # should be TRUE
 identical(val_lab(category_matrix),c(Milk = 1L,Sugar = 2L,Tea = 3L,Coffee = 4L))
 all(dichotomy(category_matrix,use_na = FALSE)==dichotomy_matrix)
+
+# with prefix
+category(dichotomy_matrix, prefix = "products_")
+
+# data.frame with variable labels
+dichotomy_dataframe = as.data.frame(dichotomy_matrix)
+colnames(dichotomy_dataframe) = paste0("product_", 1:4)
+var_lab(dichotomy_dataframe[[1]]) = "Milk"
+var_lab(dichotomy_dataframe[[2]]) = "Sugar"
+var_lab(dichotomy_dataframe[[3]]) = "Tea"
+var_lab(dichotomy_dataframe[[4]]) = "Coffee"
+
+category_df(dichotomy_dataframe, prefix = "products_")
 
 }
 \seealso{

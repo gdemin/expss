@@ -1,11 +1,15 @@
-#' Convert dichotomy matrix to matrix with category encoding.
+#' Convert dichotomy matrix/data.frame to matrix/data.frame with category encoding
 #' 
 #' @param x Dichotomy matrix (usually with 0,1 coding).
+#' @param prefix If not is NULL then column names will be added in the form
+#'   prefix+column number.
+#' @param use_var_lab logical If TRUE then we will try to use variable labels as
+#'   value labels instead of column names.
 #' @param counted_value Vector. Values that should be considered as indicator 
 #' of category presence. By default it equals to 1.
 #' @param compress Logical. Should we drop columns with all NA?
-#' @return Matrix with numeric values that correspond to column numbers of counted values. 
-#' Column names of x are added as value labels.
+#' @return Matrix or data.frame with numeric values that correspond to column
+#'   numbers of counted values. Column names of x or variable labels are added as value labels.
 #' @seealso \code{\link{dichotomy}} for reverse conversion.
 #' @examples
 #' set.seed(123)
@@ -20,13 +24,26 @@
 #' identical(val_lab(category_matrix),c(Milk = 1L,Sugar = 2L,Tea = 3L,Coffee = 4L))
 #' all(dichotomy(category_matrix,use_na = FALSE)==dichotomy_matrix)
 #' 
+#' # with prefix
+#' category(dichotomy_matrix, prefix = "products_")
+#' 
+#' # data.frame with variable labels
+#' dichotomy_dataframe = as.data.frame(dichotomy_matrix)
+#' colnames(dichotomy_dataframe) = paste0("product_", 1:4)
+#' var_lab(dichotomy_dataframe[[1]]) = "Milk"
+#' var_lab(dichotomy_dataframe[[2]]) = "Sugar"
+#' var_lab(dichotomy_dataframe[[3]]) = "Tea"
+#' var_lab(dichotomy_dataframe[[4]]) = "Coffee"
+#' 
+#' category_df(dichotomy_dataframe, prefix = "products_")
+#' 
 #' @export
-category = function(x, counted_value=1, compress = TRUE){
+category = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
     UseMethod("category")    
 }
 
 #' @export
-category.matrix = function(x, counted_value=1, compress = TRUE){
+category.matrix = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
    vallab = colnames(x)
    res = col(x)
    res[!(x %in% counted_value)] = NA
@@ -39,16 +56,51 @@ category.matrix = function(x, counted_value=1, compress = TRUE){
        val_lab(res) = structure(seq_len(ncol(x)),names = vallab) 
        
    } 
+   if(!is.null(prefix) && NCOL(res)>0){
+       colnames(res) = paste0(prefix, seq_len(NCOL(res)))
+   }
    class(res) = setdiff(class(res),"dichotomy")
    res
 }
 
 #' @export
-category.data.frame = function(x, counted_value=1, compress = TRUE){
-    category.matrix(as.matrix(x),counted_value,compress)
+category.data.frame = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
+    if (use_var_lab){
+        for (i in seq_along(x)){
+            varlab = var_lab(x[[i]])
+            if(!is.null(varlab)){
+                colnames(x)[i] = varlab
+            }
+        }
+    }    
+    category.matrix(x = as.matrix(x), 
+                    prefix = prefix, 
+                    use_var_lab = use_var_lab, 
+                    counted_value, 
+                    compress)
 }
 
 #' @export
-category.default = function(x, counted_value=1, compress = TRUE){
-    category.matrix(as.matrix(x),counted_value,compress)
+category.default = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
+    category.matrix(x = as.matrix(x), 
+                    prefix = prefix, 
+                    use_var_lab = use_var_lab, 
+                    counted_value, 
+                    compress)
 }
+
+#' @export
+category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
+    res =    category(x = x, 
+                      prefix = prefix, 
+                      use_var_lab = use_var_lab, 
+                      counted_value, 
+                      compress) 
+    vallab = val_lab(res)
+    res = as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
+    set_val_lab(res, vallab)
+}
+
+
+
+
