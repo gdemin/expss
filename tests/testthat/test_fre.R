@@ -275,6 +275,76 @@ expect_equal_to_reference(with(data, cro_rpct(q8r_1 %to% q8r_99, s1, weight = we
 expect_equal_to_reference(with(data, cro_tpct(q8r_1 %to% q8r_99, s1, weight = weight1)), "rds/cro_real6wt.rds")
 
 
+context("cro_fun")
+
+a = c(1,1,1, NA, NA)
+b = c(NA, NA, NA, 1, 1)
+expect_error(cro_fun(a, b))
+expect_equal_to_reference(cro_fun(a, b, fun = length), "rds/cro_fun1.rds")
+
+a = c(1,1,1, 1, 1)
+b = c(1, 1, 2, 2, 2)
+
+
+expect_equal_to_reference(cro_fun(b, a, fun = mean), "rds/cro_fun2.rds")
+
+weight = rep(1, 5)
+expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weight){
+    weighted.mean(x, w = weight)
+    
+}), "rds/cro_fun3.rds")
+
+weight = rep(NA, 5)
+expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weight){
+    weighted.mean(x, w = weight)
+    
+}), "rds/cro_fun4.rds")
+
+weight = c(0, 0, 1, 1, 1)
+
+expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weight){
+    weighted.mean(x, w = weight)
+    
+}), "rds/cro_fun5.rds")
+
+a = c(1,1,1, 1, 1)
+b = c(0, 1, 2, 2, NA)
+weight = c(0, 0, 1, 1, 1)
+expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weight){
+    weighted.mean(x, w = weight)
+    
+}), "rds/cro_fun6.rds")
+
+expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weight, na.rm){
+    weighted.mean(x, w = weight, na.rm = na.rm)
+    
+}, na.rm = TRUE), "rds/cro_fun7.rds")
+
+expect_error(cro_fun(b, a, weight = weight, fun = function(x, w, na.rm){
+    weighted.mean(x, w = w, na.rm = na.rm)
+    
+}, na.rm = TRUE))
+
+
+expect_equal_to_reference(cro_fun(iris[,-5], iris$Species, fun = median), "rds/cro_fun8.rds")
+
+data(mtcars)
+mtcars = modify(mtcars,{
+    var_lab(vs) = "Engine"
+    val_lab(vs) = c("V-engine" = 0, 
+                    "Straight engine" = 1) 
+    var_lab(hp) = "Gross horsepower"
+    var_lab(mpg) = "Miles/(US) gallon"
+    var_lab(am) = "Transmission"
+    val_lab(am) = c(automatic = 0, 
+                    manual=1)
+})
+
+
+expect_equal_to_reference(with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = mean)), "rds/cro_fun9.rds")
+expect_equal_to_reference(with(mtcars, cro_fun(data.frame(hp, mpg, disp), f(am):f(vs), fun = mean)), "rds/cro_fun10.rds")
+
+
 
 
 

@@ -3,6 +3,7 @@
 \name{fre}
 \alias{cro}
 \alias{cro_cpct}
+\alias{cro_fun}
 \alias{cro_rpct}
 \alias{cro_tpct}
 \alias{fre}
@@ -17,6 +18,8 @@ cro_cpct(x, predictor, weight = NULL)
 cro_rpct(x, predictor, weight = NULL)
 
 cro_tpct(x, predictor, weight = NULL)
+
+cro_fun(x, predictor, fun, ..., weight = NULL)
 }
 \arguments{
 \item{x}{vector/data.frame. data.frames are considered as multiple response
@@ -26,9 +29,13 @@ variables.}
 treated as zero weights.}
 
 \item{predictor}{vector. By now multiple-response predictor is not supported.}
+
+\item{fun}{custom summary function. It should return scalar.}
+
+\item{...}{further arguments for \code{fun}}
 }
 \value{
-object of class 'simple_table'. Basically it's a data.frame but class
+object of class 'simple_table'/'summary_table'. Basically it's a data.frame but class
   is needed for custom print method.
 }
 \description{

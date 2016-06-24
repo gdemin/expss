@@ -19,8 +19,10 @@
 #' @param predictor vector. By now multiple-response predictor is not supported.
 #' @param weight numeric vector. Optional case weights. NA's and negative weights
 #'   treated as zero weights.
+#' @param fun custom summary function. It should return scalar.
+#' @param ... further arguments for \code{fun}   
 #'
-#' @return object of class 'simple_table'. Basically it's a data.frame but class
+#' @return object of class 'simple_table'/'summary_table'. Basically it's a data.frame but class
 #'   is needed for custom print method.
 #'
 #' @examples
@@ -303,3 +305,124 @@ print.simple_table = function(x, round_digits = 2, ...,  row.names = FALSE){
     print(x, ..., row.names = row.names)
 }
 
+#' @export
+print.summary_table = function(x, ...,  row.names = FALSE){
+    class(x) = class(x) %d% "summary_table"
+    print(x, ..., row.names = row.names)
+}
+
+#' @export
+#' @rdname fre
+cro_fun = function(x, predictor, fun, ..., weight = NULL){
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    fun = match.fun(fun)
+    if(!is.data.frame(x)){
+        if (is.matrix(x)) {
+            varlab0 = var_lab(x)
+            x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
+            if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP,colnames(x))
+        } else {
+            x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+        }
+    }
+    for(each in seq_along(x)){
+        if(is.factor(x[[each]])) x[[each]] = as.character(x[[each]])
+    }
+    
+    test_result = function(each){
+        stopif(length(each)>1, "Length of result of 'fun' should be equals to 1")
+        if (length(each)==0){
+            NA
+        } else {
+            each
+        }
+    }
+    
+    if (!is.null(weight)) {
+        # change negative and NA weights to 0 
+        if_val(weight) = list(lo %thru% 0 ~ 0, NA ~ 0)
+        splitted_weight = split(weight, predictor, drop = TRUE)
+        column_total = lapply(x, FUN = function(each) fun(each, weight = weight, ...))
+        
+    } else {
+        column_total = lapply(x, FUN = fun, ...)
+
+    }
+    column_total = unlist(lapply(column_total, test_result))
+
+    labels = vapply(colnames(x), function(each) {
+            varlab = var_lab(x[[each]])
+            if(is.null(varlab)) varlab = each
+            varlab
+        }, 
+        FUN.VALUE = character(1)
+    )
+
+    predictor = f(unvr(predictor))
+    if(is.null(weight)){
+        result = lapply(x, function(col){
+            res = lapply(split(col, predictor, drop = TRUE), FUN = fun, ...)
+            unlist(lapply(res, test_result))
+        })
+    } else {
+        result = lapply(x, function(col){
+            splitted_col = split(col, predictor, drop = TRUE)
+            res = lapply(seq_along(splitted_col), 
+                         function(each) 
+                             fun(splitted_col[[each]],
+                                 weight = splitted_weight[[each]],
+                                 ...)
+                         )
+            unlist(lapply(res, test_result))
+        }) 
+    }
+    res = do.call(rbind, result)
+    res = data.frame(" " = labels, res, "#Total" = column_total, stringsAsFactors = FALSE, check.names = FALSE)
+    
+    class(res) = union("summary_table", class(res))
+    res
+    
+}
+
+#' @export
+#' @rdname fre
+cro_mean = function(x, predictor, weight = NULL){
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    set_na(x) = is.na(predictor)
+    if (is.null(weight)){
+        cro_fun(x = x, predictor = predictor, fun = mean, na.rm = TRUE)
+    } else {
+        cro_fun(x = x, predictor = predictor, weight = weight, fun = function(x, weight, na.rm){
+            weighted.mean(x = x, w = weight, na.rm = TRUE)
+        })
+    }
+}
+
+#' @export
+#' @rdname fre
+cro_sum = function(x, predictor, weight = NULL){
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    set_na(x) = is.na(predictor)
+    if (is.null(weight)){
+        cro_fun(x = x, predictor = predictor, fun = sum, na.rm = TRUE)
+    } else {
+        cro_fun(x = x, predictor = predictor, weight = weight, fun = function(x, weight, na.rm){
+            sum(x*weight, na.rm = TRUE)
+        })
+    }
+}
+
+#' @export
+#' @rdname fre
+cro_median = function(x, predictor){
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    set_na(x) = is.na(predictor)
+    cro_fun(x = x, predictor = predictor, fun = median, na.rm = TRUE)
+}
