@@ -92,7 +92,7 @@ names2labels.matrix = function(x, exclude = NULL, keep_names = FALSE){
     if (is.null(lab) || (lab=="")) return(x)
     clm = colnames(x)
     if (is.null(clm)) clm = seq_len(ncol(x))
-    colnames(x) = paste0(lab,labels_sep,clm)
+    colnames(x) = paste0(lab,LABELS_SEP,clm)
     x
 
 }

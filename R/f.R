@@ -2,7 +2,7 @@ base_factor = base::factor
 base_as_factor = base::as.factor
 base_ordered = base::ordered
 base_as_ordered = base::as.ordered
-labels_sep = "|"
+LABELS_SEP = "|"
 
 #' Convert labelled variable to factor
 #' 
@@ -51,7 +51,7 @@ f.labelled = function(x, ...){
     varlab = var_lab(x)
     uniqs=unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 
-    if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = labels_sep)
+    if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = LABELS_SEP)
     res=base_factor(x = x, levels=vallab, labels=names(vallab), ...)
     res 
     
