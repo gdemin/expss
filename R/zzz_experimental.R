@@ -42,6 +42,9 @@
 #' data.frame.  See \link{fre}.}
 #' \item{\code{.cro}/\code{.cro_cpct}/\code{.cro_rpct}/\code{.cro_tpct}}{ Simple
 #' crosstabulations of variable in the default data.frame.  See \link{cro}.}
+#' \item{\code{.cro_mean}/\code{.cro_sum}/\code{.cro_median}/\code{.cro_fun}/\code{.cro_fun_df}}{
+#' Simple crosstabulations of variable in the default data.frame.  See 
+#' \link{cro_fun}.}
 #' \item{\code{.with}}{ Evaluate arbitrary expression in the context of
 #' data.frame.  See \link[base]{with}.}
 #' }
@@ -63,6 +66,10 @@
 #' })
 #' 
 #' # set labels
+#' ..set_var_lab(mpg, "Miles/(US) gallon")
+#' ..set_var_lab(cyl, "Number of cylinders")
+#' ..set_var_lab(disp, "Displacement (cu.in.)")
+#' ..set_var_lab(hp, "Gross horsepower")
 #' ..set_var_lab(mpg_by_am, "Average mpg for transimission type")
 #' ..set_var_lab(hi_low_mpg, "Miles per gallon")
 #' ..set_val_lab(hi_low_mpg, ml_left("
@@ -84,8 +91,9 @@
 #' 
 #' # calculate frequencies
 #' .fre(hi_low_mpg)
-#' .cro(mpg_by_am, am)
 #' .cro(cyl, hi_low_mpg)
+#' .cro_mean(mpg, am)
+#' .cro_mean(data.frame(mpg, disp, hp), vs)
 #' 
 #' # disable default dataset
 #' default_dataset(NULL)
@@ -98,7 +106,6 @@
 #' 
 #' ..recode(Sepal.Length, lo %thru% median(Sepal.Length) ~ "small", . ~ "large")
 #' 
-#' head(iris)
 #' .fre(Sepal.Length)
 #' 
 #' # example of ..do_if
@@ -108,7 +115,7 @@
 #'      Petal.Width = NA
 #' })
 #' 
-#' .cro(Petal.Width, Species)
+#' .cro_mean(data.frame(Petal.Length, Petal.Width), Species)
 #' 
 #' # disable default dataset
 #' default_dataset(NULL)
@@ -319,5 +326,22 @@ eval_in_default_dataset = function(...){
 #' @rdname compute
 .cro_tpct = eval_in_default_dataset
 
+#' @export
+#' @rdname compute
+.cro_mean = eval_in_default_dataset
 
+#' @export
+#' @rdname compute
+.cro_sum = eval_in_default_dataset
 
+#' @export
+#' @rdname compute
+.cro_median = eval_in_default_dataset
+
+#' @export
+#' @rdname compute
+.cro_fun = eval_in_default_dataset
+
+#' @export
+#' @rdname compute
+.cro_fun_df = eval_in_default_dataset

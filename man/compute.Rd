@@ -13,7 +13,12 @@
 \alias{..set_var_lab}
 \alias{.cro}
 \alias{.cro_cpct}
+\alias{.cro_fun}
+\alias{.cro_fun_df}
+\alias{.cro_mean}
+\alias{.cro_median}
 \alias{.cro_rpct}
+\alias{.cro_sum}
 \alias{.cro_tpct}
 \alias{.fre}
 \alias{.val_lab}
@@ -57,6 +62,16 @@
 .cro_rpct(...)
 
 .cro_tpct(...)
+
+.cro_mean(...)
+
+.cro_sum(...)
+
+.cro_median(...)
+
+.cro_fun(...)
+
+.cro_fun_df(...)
 }
 \arguments{
 \item{expr}{set of expressions  in curly brackets which will be evaluated in
@@ -111,6 +126,9 @@ Single dot functions:
 data.frame.  See \link{fre}.}
 \item{\code{.cro}/\code{.cro_cpct}/\code{.cro_rpct}/\code{.cro_tpct}}{ Simple
 crosstabulations of variable in the default data.frame.  See \link{cro}.}
+\item{\code{.cro_mean}/\code{.cro_sum}/\code{.cro_median}/\code{.cro_fun}/\code{.cro_fun_df}}{
+Simple crosstabulations of variable in the default data.frame.  See 
+\link{cro_fun}.}
 \item{\code{.with}}{ Evaluate arbitrary expression in the context of
 data.frame.  See \link[base]{with}.}
 }
@@ -127,6 +145,10 @@ default_dataset(mtcars) # set mtcars as default dataset
 })
 
 # set labels
+..set_var_lab(mpg, "Miles/(US) gallon")
+..set_var_lab(cyl, "Number of cylinders")
+..set_var_lab(disp, "Displacement (cu.in.)")
+..set_var_lab(hp, "Gross horsepower")
 ..set_var_lab(mpg_by_am, "Average mpg for transimission type")
 ..set_var_lab(hi_low_mpg, "Miles per gallon")
 ..set_val_lab(hi_low_mpg, ml_left("
@@ -148,8 +170,9 @@ default_dataset(mtcars) # set mtcars as default dataset
 
 # calculate frequencies
 .fre(hi_low_mpg)
-.cro(mpg_by_am, am)
 .cro(cyl, hi_low_mpg)
+.cro_mean(mpg, am)
+.cro_mean(data.frame(mpg, disp, hp), vs)
 
 # disable default dataset
 default_dataset(NULL)
@@ -162,7 +185,6 @@ default_dataset(iris) # set iris as default dataset
 
 ..recode(Sepal.Length, lo \%thru\% median(Sepal.Length) ~ "small", . ~ "large")
 
-head(iris)
 .fre(Sepal.Length)
 
 # example of ..do_if
@@ -172,7 +194,7 @@ head(iris)
      Petal.Width = NA
 })
 
-.cro(Petal.Width, Species)
+.cro_mean(data.frame(Petal.Length, Petal.Width), Species)
 
 # disable default dataset
 default_dataset(NULL)
