@@ -16,7 +16,7 @@ formula reference to default dataset or NULL
 Use data.frame or data.frame name to set it as default. Use NULL as an
 argument to disable default dataset. If argument is missing then function
 will return reference to default dataset. Use \link{ref} to modify it. Also
-see \link{..compute} for usage patterns.
+see \link{.compute} for usage patterns.
 }
 \examples{
 
@@ -24,7 +24,7 @@ data(iris)
 default_iris = iris
 default_dataset(default_iris) # set default dataset
 
-..compute({
+.compute({
     new_col = 1
     Sepal.Length = Sepal.Length*2 
 })

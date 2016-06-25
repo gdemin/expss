@@ -3,14 +3,14 @@ data = readRDS("rds/data.rds")
 
 default_dataset(data)
 
-..compute({
+.compute({
     reg[1:10] = NA
 })
 
 expect_error(.recode(q8_1 %to% q8_99, (1:NROW(data)<11) ~ NA))
-..recode(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
+.recode(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
 
-..set_var_lab(q8r_1, "Используемые услуги")
+.set_var_lab(q8r_1, "Используемые услуги")
 expect_equal_to_reference(.fre(reg), "rds/fre_real1.rds")
 expect_equal_to_reference(.fre(s1), "rds/fre_real2.rds")
 # expect_equal_to_reference(.fre(q8r_1 %to% q8r_99), "rds/fre_real3.rds")
@@ -29,9 +29,9 @@ data(iris)
 default_iris = iris
 default_dataset(default_iris)
 
-expect_error(..recode(colnames(iris), . ~ tolower))
+expect_error(.recode(colnames(iris), . ~ tolower))
 
-..filter(Species == "setosa")
+.filter(Species == "setosa")
 expect_identical(default_iris, iris[iris$Species == "setosa", ])
 
 
@@ -40,7 +40,7 @@ data("mtcars")
 default_mtcars = mtcars
 default_dataset(default_mtcars)
 
-..compute({
+.compute({
     mpg_by_am = ave(mpg, am, FUN = mean)
     hi_low_mpg = ifs(mpg<mean(mpg) ~ 0, mpg>mean(mpg) ~ 1)
     var_lab(hi_low_mpg) = "Miles per gallon"
@@ -50,12 +50,12 @@ default_dataset(default_mtcars)
                                  ")
 })
 
-..set_var_lab(vs, "Engine")
-..set_val_lab(vs, c("V-engine" = 0)) 
-..add_val_lab(vs, c("Straight engine" = 1))
+.set_var_lab(vs, "Engine")
+.set_val_lab(vs, c("V-engine" = 0)) 
+.add_val_lab(vs, c("Straight engine" = 1))
 
-..set_var_lab(am, "Transmission")
-..set_val_lab(am, c(automatic = 0,  manual=1))
+.set_var_lab(am, "Transmission")
+.set_val_lab(am, c(automatic = 0,  manual=1))
 
 mtcars = within(mtcars,{
     mpg_by_am = ave(mpg, am, FUN = mean)
@@ -92,7 +92,7 @@ data("mtcars")
 default_mtcars = mtcars
 default_dataset(default_mtcars)
 
-..do_if(vs == 0, {
+.do_if(vs == 0, {
     mean_mpg = mean(mpg)
     vs_0 = 1
     mpg_by_am = ave(mpg, am, FUN = mean)

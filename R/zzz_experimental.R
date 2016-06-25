@@ -1,40 +1,39 @@
 #' Experimental functions for operations with default dataset
 #'
-#' Workflow for this functions is rather simple. You should set up default 
+#' Workflow for these functions is rather simple. You should set up default 
 #' data.frame with \link{default_dataset} and then operate with it without any 
 #' reference to your data.frame. There are to kind of operations. The first kind
-#' modify default dataset - their names start with double dots. Functions of the
-#' second kind will be evaluated in the context of the default dataset but 
-#' doesn't modify it. Their names start with single dot. It is not recommended 
-#' to use one of these functions in the scope of another of these functions. By 
-#' now their performance is not so high, especially
-#' \code{..do_if}/\code{..modify_if} can be very slow.
+#' modify default dataset, the second kind will be evaluated in the context of
+#' the default dataset but doesn't modify it. It is not recommended to use one
+#' of these functions in the scope of another of these functions. By now their
+#' performance is not so high, especially \code{.do_if}/\code{.modify_if} can be
+#' very slow.
 #' 
 #' @details 
-#' Double dot functions:
+#' Functions which modify default dataset:
 #' \itemize{
-#' \item{\code{..modify}}{ Add and modify variables inside default data.frame. See
+#' \item{\code{.modify}}{ Add and modify variables inside default data.frame. See
 #' \link{modify}.}
-#' \item{\code{..compute}}{ Shortcut for \code{..modify}. Name is inspired by
+#' \item{\code{.compute}}{ Shortcut for \code{.modify}. Name is inspired by
 #' SPSS COMPUTE operator. See \link{modify}.}
-#' \item{\code{..modify_if}}{ Add and modify variables inside subset of default
+#' \item{\code{.modify_if}}{ Add and modify variables inside subset of default
 #' data.frame. See \link{modify_if}.}
-#' \item{\code{..do_if}}{ Shortcut for \code{..modify_if}. Name is inspired by
+#' \item{\code{.do_if}}{ Shortcut for \code{.modify_if}. Name is inspired by
 #' SPSS DO IF operator. See \link{modify_if}.}
-#' \item{\code{..filter}}{ Leave subset of default data.frame which meet
+#' \item{\code{.filter}}{ Leave subset of default data.frame which meet
 #' condition. See \link[base]{subset}.}
-#' \item{\code{..set_var_lab}}{ Set variable label in the default data.frame. See
+#' \item{\code{.set_var_lab}}{ Set variable label in the default data.frame. See
 #' \link{set_var_lab}.}
-#' \item{\code{..set_val_lab}}{ Set value labels for variable in the default
+#' \item{\code{.set_val_lab}}{ Set value labels for variable in the default
 #' data.frame. See \link{set_val_lab}.}
-#' \item{\code{..add_val_lab}}{ Add value labels for variable in the default
+#' \item{\code{.add_val_lab}}{ Add value labels for variable in the default
 #' data.frame. See \link{add_val_lab}.}
-#' \item{\code{..if_val}}{ Change, rearrange or consolidate the values of an existing
+#' \item{\code{.if_val}}{ Change, rearrange or consolidate the values of an existing
 #' variable inside default data.frame. See \link{if_val}.}
-#' \item{\code{..recode}}{ Shortcut for \code{..if_val}. Name is inspired by
+#' \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
 #' SPSS RECODE. See \link{if_val}.}
 #' }
-#' Single dot functions:
+#' Other functions:
 #' \itemize{
 #' \item{\code{.var_lab}}{ Return variable label from default dataset. See \link{var_lab}.}
 #' \item{\code{.val_lab}}{ Return value labels from default dataset. See \link{val_lab}.}
@@ -60,31 +59,31 @@
 #' default_dataset(mtcars) # set mtcars as default dataset
 #' 
 #' # calculate new variables
-#' ..compute({
+#' .compute({
 #'     mpg_by_am = ave(mpg, am, FUN = mean)
 #'     hi_low_mpg = ifs(mpg<mean(mpg) ~ 0, other = 1)    
 #' })
 #' 
 #' # set labels
-#' ..set_var_lab(mpg, "Miles/(US) gallon")
-#' ..set_var_lab(cyl, "Number of cylinders")
-#' ..set_var_lab(disp, "Displacement (cu.in.)")
-#' ..set_var_lab(hp, "Gross horsepower")
-#' ..set_var_lab(mpg_by_am, "Average mpg for transimission type")
-#' ..set_var_lab(hi_low_mpg, "Miles per gallon")
-#' ..set_val_lab(hi_low_mpg, ml_left("
+#' .set_var_lab(mpg, "Miles/(US) gallon")
+#' .set_var_lab(cyl, "Number of cylinders")
+#' .set_var_lab(disp, "Displacement (cu.in.)")
+#' .set_var_lab(hp, "Gross horsepower")
+#' .set_var_lab(mpg_by_am, "Average mpg for transimission type")
+#' .set_var_lab(hi_low_mpg, "Miles per gallon")
+#' .set_val_lab(hi_low_mpg, ml_left("
 #'                                   0 Low
 #'                                   1 High
 #'                                   "))
 #' 
-#' ..set_var_lab(vs, "Engine")
-#' ..set_val_lab(vs, ml_left(" 
+#' .set_var_lab(vs, "Engine")
+#' .set_val_lab(vs, ml_left(" 
 #'                           0 V-engine
 #'                           1 Straight engine
 #'                           "))
 #' 
-#' ..set_var_lab(am, "Transmission")
-#' ..set_val_lab(am, ml_left(" 
+#' .set_var_lab(am, "Transmission")
+#' .set_val_lab(am, ml_left(" 
 #'                           0 automatic
 #'                           1 manual
 #'                           "))
@@ -98,19 +97,19 @@
 #' # disable default dataset
 #' default_dataset(NULL)
 #' 
-#' # Example of ..recode
+#' # Example of .recode
 #' 
 #' data(iris)
 #' 
 #' default_dataset(iris) # set iris as default dataset
 #' 
-#' ..recode(Sepal.Length, lo %thru% median(Sepal.Length) ~ "small", . ~ "large")
+#' .recode(Sepal.Length, lo %thru% median(Sepal.Length) ~ "small", . ~ "large")
 #' 
 #' .fre(Sepal.Length)
 #' 
-#' # example of ..do_if
+#' # example of .do_if
 #'  
-#' ..do_if(Species == "setosa",{
+#' .do_if(Species == "setosa",{
 #'      Petal.Length = NA
 #'      Petal.Width = NA
 #' })
@@ -121,7 +120,7 @@
 #' default_dataset(NULL)
 #' @export
 #' @name compute
-..modify = function (expr) {
+.modify = function (expr) {
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
     data = ref(reference)
@@ -145,7 +144,7 @@
 
 #' @export
 #' @rdname compute
-..modify_if = function (cond, expr) {
+.modify_if = function (cond, expr) {
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
@@ -175,7 +174,7 @@
 # doesn't create new variables
 modify_default_dataset_light = function(x, ...){
     expr = as.character(as.expression(sys.call()))
-    expr = parse(text = gsub("^\\.\\.","", expr, perl = TRUE))
+    expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
     for_names = as.expression(substitute(x))
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
@@ -209,16 +208,16 @@ eval_in_default_dataset = function(...){
 
 #' @export
 #' @rdname compute
-..do_if = ..modify_if
+.do_if = .modify_if
 
 
 #' @export
 #' @rdname compute
-..compute = ..modify
+.compute = .modify
 
 #' @export
 #' @rdname compute
-..filter = function (cond) {
+.filter = function (cond) {
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
@@ -235,7 +234,7 @@ eval_in_default_dataset = function(...){
 
 # #' @export
 # #' @rdname compute
-# ..select = function (...) {
+# .select = function (...) {
 #     # based on 'within' from base R by R Core team
 #     reference = suppressMessages(default_dataset())
 #     data = ref(reference)
@@ -267,27 +266,27 @@ eval_in_default_dataset = function(...){
 
 #' @export
 #' @rdname compute
-..set_var_lab = modify_default_dataset_light
+.set_var_lab = modify_default_dataset_light
 
 
 #' @export
 #' @rdname compute
-..set_val_lab = modify_default_dataset_light
+.set_val_lab = modify_default_dataset_light
 
 
 #' @export
 #' @rdname compute
-..add_val_lab = modify_default_dataset_light
+.add_val_lab = modify_default_dataset_light
 
 #' @export
 #' @rdname compute
-..if_val = modify_default_dataset_light
+.if_val = modify_default_dataset_light
 
 #' @export
 #' @rdname compute
-..recode = function(x, ...){
+.recode = function(x, ...){
     expr = as.character(as.expression(sys.call()))
-    expr = parse(text = gsub("^\\.\\.recode","if_val", expr, perl = TRUE))
+    expr = parse(text = gsub("^\\.recode","if_val", expr, perl = TRUE))
     for_names = as.expression(substitute(x))
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
