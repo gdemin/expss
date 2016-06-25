@@ -381,20 +381,25 @@ print.summary_table = function(x, ...,  row.names = FALSE){
 #' @export
 #' @rdname fre
 cro_mean = function(x, predictor, weight = NULL){
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     if(!is.data.frame(x)){
         if (is.matrix(x)) {
             varlab0 = var_lab(x)
             x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
             if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP,colnames(x))
         } else {
-            possible_name = deparse(substitute(x))
-            x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
-            colnames(x) = possible_name
+            if (is.list(x)){
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+            } else {
+                possible_name = deparse(substitute(x))
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+                colnames(x) = possible_name    
+            }
         }
     }
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    
     set_na(x) = is.na(predictor)
     if (is.null(weight)){
         cro_fun(x = x, predictor = predictor, fun = mean, na.rm = TRUE)
@@ -408,20 +413,25 @@ cro_mean = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_sum = function(x, predictor, weight = NULL){
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     if(!is.data.frame(x)){
         if (is.matrix(x)) {
             varlab0 = var_lab(x)
             x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
             if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP,colnames(x))
         } else {
-            possible_name = deparse(substitute(x))
-            x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
-            colnames(x) = possible_name
+            if (is.list(x)){
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+            } else {
+                possible_name = deparse(substitute(x))
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+                colnames(x) = possible_name    
+            }
         }
     }
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    
     set_na(x) = is.na(predictor)
     if (is.null(weight)){
         cro_fun(x = x, predictor = predictor, fun = function(x) {
@@ -445,19 +455,24 @@ cro_sum = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_median = function(x, predictor){
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
     if(!is.data.frame(x)){
         if (is.matrix(x)) {
             varlab0 = var_lab(x)
             x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
             if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP,colnames(x))
         } else {
-            possible_name = deparse(substitute(x))
-            x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
-            colnames(x) = possible_name
+            if (is.list(x)){
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+            } else {
+                possible_name = deparse(substitute(x))
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+                colnames(x) = possible_name    
+            }
         }
     }
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    
     set_na(x) = is.na(predictor)
     cro_fun(x = x, predictor = predictor, fun = median, na.rm = TRUE)
 }
@@ -497,9 +512,6 @@ prepare_result = function(list_of_results){
 #' @export
 #' @rdname fre
 cro_fun = function(x, predictor, fun, ..., weight = NULL){
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     fun = match.fun(fun)
     if(!is.data.frame(x)){
         if (is.matrix(x)) {
@@ -507,11 +519,19 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
             x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
             if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP,colnames(x))
         } else {
-            possible_name = deparse(substitute(x))
-            x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
-            colnames(x) = possible_name
+            if (is.list(x)){
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+            } else {
+                possible_name = deparse(substitute(x))
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+                colnames(x) = possible_name    
+            }
         }
     }
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    
     for(each in seq_along(x)){
         if(is.factor(x[[each]])) x[[each]] = as.character(x[[each]])
     }
@@ -569,9 +589,6 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
 #' @export
 #' @rdname fre
 cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     fun = match.fun(fun)
     if(!is.data.frame(x)){
         if (is.matrix(x)) {
@@ -579,11 +596,19 @@ cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
             x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
             if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP,colnames(x))
         } else {
-            possible_name = deparse(substitute(x))
-            x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
-            colnames(x) = possible_name
+            if (is.list(x)){
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+            } else {
+                possible_name = deparse(substitute(x))
+                x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+                colnames(x) = possible_name    
+            }
         }
     }
+    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    
     x = names2labels(x)
     if (!is.null(weight)) {
         # change negative and NA weights to 0 
