@@ -341,12 +341,96 @@ mtcars = modify(mtcars,{
 })
 
 
-expect_equal_to_reference(with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = mean)), "rds/cro_fun9.rds")
-expect_equal_to_reference(with(mtcars, cro_fun(data.frame(hp, mpg, disp), f(am):f(vs), fun = mean)), "rds/cro_fun10.rds")
+expect_equal_to_reference(
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = mean)),
+    "rds/cro_fun9.rds")
+
+expect_equal_to_reference(
+    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), am, fun = mean_col)),
+    "rds/cro_fun9.rds")
+
+expect_equal_to_reference(
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), f(am):f(vs), fun = mean)), 
+    "rds/cro_fun10.rds")
+
+expect_equal_to_reference(
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = summary)), 
+                          "rds/cro_fun11.rds")
+expect_equal_to_reference(
+    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), am, fun = colMeans)), 
+    "rds/cro_fun_df11.rds")
+
+expect_equal_to_reference(
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = function(x) t(summary(x)))),
+    "rds/cro_fun12.rds")
+expect_equal_to_reference(
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = function(x) matrix(summary(x),2))), 
+    "rds/cro_fun13.rds")
+
+expect_equal_to_reference(
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = function(x) {
+        res = matrix(summary(x),2)
+        rownames(res) = c("a","b")
+        colnames(res) = c("c","d","e")
+        res
+        })), 
+    "rds/cro_fun14.rds")
+
+expect_equal_to_reference(
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = function(x) {
+       c(mean = mean(x, na.rm = TRUE), stdev = sd(x, na.rm = TRUE), valid = sum(!is.na(x)))
+    })), 
+    "rds/cro_fun15.rds")
+
+expect_error(with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = function(x) x)))
+expect_error(with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = function(x) t(x))))
 
 
 
+context("cro_mean")
+
+a = c(1,1,1, NA, NA)
+b = c(NA, NA, NA, 1, 1)
+expect_equal_to_reference(cro_mean(a, b), "rds/cro_mean1.rds")
+expect_equal_to_reference(cro_sum(a, b), "rds/cro_sum1.rds")
+expect_equal_to_reference(cro_median(a, b), "rds/cro_median1.rds")
+
+a = c(1,1,1, 1, 1)
+b = c(1, 1, 2, 2, 2)
+
+
+expect_equal_to_reference(cro_mean(b, a), "rds/cro_mean2.rds")
+expect_equal_to_reference(cro_median(b, a), "rds/cro_median2.rds")
+
+weight = rep(1, 5)
+expect_equal_to_reference(cro_mean(b, a, weight = weight), "rds/cro_mean3.rds")
+expect_equal_to_reference(cro_sum(b, a, weight = weight), "rds/cro_sum3.rds")
+
+weight = rep(NA, 5)
+expect_equal_to_reference(cro_mean(b, a, weight = weight), "rds/cro_mean4.rds")
+expect_equal_to_reference(cro_sum(b, a, weight = weight), "rds/cro_sum4.rds")
+
+weight = c(0, 0, 1, 1, 1)
+
+expect_equal_to_reference(cro_mean(b, a, weight = weight), "rds/cro_mean5.rds")
+expect_equal_to_reference(cro_sum(b, a, weight = weight), "rds/cro_sum5.rds")
+
+a = c(1,1,1, 1, 1)
+b = c(0, 1, 2, 2, NA)
+weight = c(0, 0, 1, 1, 1)
+expect_equal_to_reference(cro_mean(b, a, weight = weight), "rds/cro_mean6.rds")
+expect_equal_to_reference(cro_sum(b, a, weight = weight), "rds/cro_sum6.rds")
 
 
 
+expect_equal_to_reference(cro_median(iris[,-5], iris$Species), "rds/cro_median8.rds")
+expect_equal_to_reference(cro_mean(iris[,-5], iris$Species), "rds/cro_mean8.rds")
+expect_equal_to_reference(cro_sum(iris[,-5], iris$Species), "rds/cro_sum8.rds")
+
+expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = mean_col), "rds/cro_mean8.rds")
+
+expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = mean_col), "rds/cro_mean8.rds")
+
+expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = function(x) cor(x)[,1]), "rds/cro_fun_df1.rds")
+expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = summary), "rds/cro_fun_df2.rds")
 
