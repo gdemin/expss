@@ -2,9 +2,13 @@
 % Please edit documentation in R/category.R
 \name{category}
 \alias{category}
+\alias{category_df}
 \title{Convert dichotomy matrix/data.frame to matrix/data.frame with category encoding}
 \usage{
 category(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
+  compress = TRUE)
+
+category_df(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
   compress = TRUE)
 }
 \arguments{

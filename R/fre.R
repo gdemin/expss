@@ -405,7 +405,7 @@ cro_mean = function(x, predictor, weight = NULL){
         cro_fun(x = x, predictor = predictor, fun = mean, na.rm = TRUE)
     } else {
         cro_fun(x = x, predictor = predictor, weight = weight, fun = function(x, weight, na.rm){
-            weighted.mean(x = x, w = weight, na.rm = TRUE)
+            stats::weighted.mean(x = x, w = weight, na.rm = TRUE)
         })
     }
 }
@@ -474,7 +474,7 @@ cro_median = function(x, predictor){
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
     
     set_na(x) = is.na(predictor)
-    cro_fun(x = x, predictor = predictor, fun = median, na.rm = TRUE)
+    cro_fun(x = x, predictor = predictor, fun = stats::median, na.rm = TRUE)
 }
 
 # used only in cro_fun
