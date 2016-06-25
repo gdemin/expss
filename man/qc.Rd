@@ -2,12 +2,17 @@
 % Please edit documentation in R/qc.R
 \name{qc}
 \alias{qc}
+\alias{subst}
 \title{Create vector of characters from unquoted strings (variable names)}
 \usage{
 qc(...)
+
+subst(x)
 }
 \arguments{
 \item{...}{unquoted names of variables}
+
+\item{x}{character of length 1}
 }
 \value{
 Vector of characters
@@ -17,12 +22,27 @@ In many cases one need to address variables in list/data.frame in such
 manner: \code{dfs[ , c("var1", "var2", "var3")]}. \code{qc} ("quoted c") is a
 shortcut for the such cases to reduce keystrokes. With \code{qc} you can write:
 \code{dfs[ , qc(var1, var2, var3)]}.
+\code{subst} is simple string interpolation function. It searches in \code{x}
+expressions in backticks (`), evaluate it and substitute it with result of
+evaluation. See examples.
 }
 \examples{
+
+## qc
 qc(a, b, c)
 identical(qc(a, b, c), c("a", "b", "c"))
 
 mtcars[, qc(am, mpg, gear)]
 
+## subst
+i = 1:5
+subst("q`i`")
+
+i = 1:3
+j = 1:3
+subst("q1_`i`_`j`")
+
+data(iris)
+subst("'iris' has `nrow(iris)` rows.")
 }
 
