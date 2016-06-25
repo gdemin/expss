@@ -90,6 +90,7 @@ category.default = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=
 }
 
 #' @export
+#' @rdname category
 category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
     res =    category(x = x, 
                       prefix = prefix, 

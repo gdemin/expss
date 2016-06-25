@@ -101,6 +101,11 @@ val_lab(score) = make_labels("
 colMeans(dichotomy(brands))
 
 # percentage of brands within each score
+cro_mean(dichotomy(brands), score)
+# the same as
+cro_cpct(brands, score)
+
+# percentage of brands within each score - same numbers
 aggregate(dichotomy(brands) ~ f(score), FUN = mean)
 
 # or, same result in another form

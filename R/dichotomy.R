@@ -56,6 +56,11 @@
 #' colMeans(dichotomy(brands))
 #' 
 #' # percentage of brands within each score
+#' cro_mean(dichotomy(brands), score)
+#' # the same as
+#' cro_cpct(brands, score)
+#' 
+#' # percentage of brands within each score - same numbers
 #' aggregate(dichotomy(brands) ~ f(score), FUN = mean)
 #' 
 #' # or, same result in another form
@@ -73,11 +78,29 @@
 #' @export
 dichotomy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                      keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    UseMethod("dichotomy")    
+    res = dichotomy_dispatcher(x = x,
+                           prefix = prefix, 
+                           keep_unused = keep_unused,
+                           use_na = use_na,
+                           keep_values = keep_values, 
+                           keep_labels = keep_labels, 
+                           drop_values = drop_values, 
+                           drop_labels = drop_labels)
+    res = do.call(prefix_helper, res)
+    class(res) = union("dichotomy",class(res)) # for future usage. by now there is no methods for this class
+    res 
+      
 }
 
-#' @export
-dichotomy.default = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+# so unnessasary complex because we need return dihotomy_df with labels from original data
+
+dichotomy_dispatcher = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                     keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    UseMethod("dichotomy_dispatcher")    
+}
+
+
+dichotomy_dispatcher.default = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                              keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     vallab = dichotomy_helper(x = x,
                               keep_unused = keep_unused,
@@ -93,15 +116,13 @@ dichotomy.default = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRU
         for (i in seq_along(vallab)) res[,i] = x %in% vallab[i]
     }
     res[] = res*1
-    res = prefix_helper(res, vallab, prefix)
-    class(res) = union("dichotomy",class(res)) # for future usage. by now there is no methods for this class
-    res
+    list(res = res, vallab = vallab, prefix = prefix)
 }
 
-#' @export
-dichotomy.factor = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+
+dichotomy_dispatcher.factor = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                             keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    dichotomy.default(as.labelled(x),
+    dichotomy_dispatcher.default(as.labelled(x),
                       prefix = prefix,
                       keep_unused = keep_unused,
                       use_na = use_na,
@@ -111,11 +132,11 @@ dichotomy.factor = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE
                       drop_labels = drop_labels)
 }
 
-#' @export
-dichotomy.matrix = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+
+dichotomy_dispatcher.matrix = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                             keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     if (NCOL(x)<2) {
-        dichotomy.default(x, 
+        dichotomy_dispatcher.default(x, 
                           prefix = prefix,
                           keep_unused = keep_unused,
                           use_na = use_na,
@@ -124,7 +145,7 @@ dichotomy.matrix = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE
                           drop_values = drop_values, 
                           drop_labels = drop_labels)
     } else {
-        dichotomy.data.frame(x,
+        dichotomy_dispatcher.data.frame(x,
                              prefix = prefix,
                              keep_unused = keep_unused,
                              use_na = use_na,
@@ -136,8 +157,8 @@ dichotomy.matrix = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE
     
 }
 
-#' @export
-dichotomy.data.frame = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+
+dichotomy_dispatcher.data.frame = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                                 keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     vallab = dichotomy_helper(x = x,
                               keep_unused = keep_unused,
@@ -156,9 +177,7 @@ dichotomy.data.frame = function(x, prefix = NULL, keep_unused = FALSE, use_na = 
         nas = rowSums(!is.na(x))==0
         res[nas,] = NA
     }
-    res = prefix_helper(res, vallab, prefix)
-    class(res) = union("dichotomy",class(res)) # for future usage. by now there is no methods for this class
-    res    
+    list(res = res, vallab = vallab, prefix = prefix)   
     
 }
 
@@ -196,7 +215,7 @@ dichotomy_helper = function(x, keep_unused = FALSE, keep_values = NULL,
         }
     }
     if (!is.null(varlab) && (varlab!="")) {
-        names(vallab) = paste(varlab,names(vallab),sep = labels_sep) 
+        names(vallab) = paste(varlab,names(vallab),sep = LABELS_SEP) 
     }    
 
     vallab    
@@ -225,7 +244,7 @@ dichotomy1 = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep
 #' @rdname dichotomy
 dichotomy1_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                       keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    res = dichotomy1(x,
+    res = dichotomy_df(x,
                     prefix = prefix,
                     keep_unused = keep_unused,
                     use_na = use_na,
@@ -233,7 +252,10 @@ dichotomy1_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, k
                     keep_labels = keep_labels, 
                     drop_values = drop_values, 
                     drop_labels = drop_labels)
-    as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
+    if (ncol(res)>0){
+        res = res[,-ncol(res),drop = FALSE]
+    }
+    res
         
 }
 
@@ -241,15 +263,23 @@ dichotomy1_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, k
 #' @rdname dichotomy
 dichotomy_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                          keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    res = dichotomy(x,
-                     prefix = prefix,
-                     keep_unused = keep_unused,
-                     use_na = use_na,
-                     keep_values = keep_values, 
-                     keep_labels = keep_labels, 
-                     drop_values = drop_values, 
-                     drop_labels = drop_labels)
-    as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
+    res = dichotomy_dispatcher(x = x,
+                               prefix = prefix, 
+                               keep_unused = keep_unused,
+                               use_na = use_na,
+                               keep_values = keep_values, 
+                               keep_labels = keep_labels, 
+                               drop_values = drop_values, 
+                               drop_labels = drop_labels)
+    n_vallab = names(res$vallab)
+    res = do.call(prefix_helper, res)
+    res = as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
+    if(length(n_vallab)>0 && !is.null(prefix)){
+        for (each in seq_along(res)){
+            var_lab(res[[each]]) = n_vallab[each]
+        }
+    } 
+    res
 }
 
 prefix_helper = function(res, vallab, prefix){
