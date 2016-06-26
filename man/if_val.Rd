@@ -14,7 +14,7 @@ if_val(x, ..., from = NULL, to = NULL)
 
 if_val(x, from = NULL) <- value
 
-ifs(..., from = NULL, to = NULL, other = NA)
+ifs(..., from = NULL, to = NULL, default = NA)
 
 lo
 
@@ -32,7 +32,7 @@ hi
 \item{value}{list with formulas which describe recodings in assignment form
 of function/\code{to} list if \code{from}/\code{to} notation is used.}
 
-\item{other}{single value or vector. Default value - NA. This value will be
+\item{default}{single value or vector. Default value - NA. This value will be
 used for values of result with all conditions FALSE/NA.}
 }
 \value{
@@ -94,9 +94,9 @@ can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 a = 1:5
 b = 5:1
 ifs(b>3 ~ 1)                     # c(1, 1, NA, NA, NA)
-ifs(b>3 ~ 1, other = 3)          # c(1, 1, 3, 3, 3)
-ifs(b>3 ~ 1, a>4 ~ 7, other = 3) # c(1, 1, 3, 3, 7)
-ifs(b>3 ~ a, other = 42)         # c(1, 2, 42, 42, 42)
+ifs(b>3 ~ 1, default = 3)          # c(1, 1, 3, 3, 3)
+ifs(b>3 ~ 1, a>4 ~ 7, default = 3) # c(1, 1, 3, 3, 7)
+ifs(b>3 ~ a, default = 42)         # c(1, 2, 42, 42, 42)
 # some examples from SPSS manual
 # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 set.seed(123)

@@ -56,7 +56,7 @@
 #'   of function/\code{to} list if \code{from}/\code{to} notation is used.
 #' @param from list of conditions for values which should be recoded (in the same format as LHS of formulas). 
 #' @param to list of values into which old values should be recoded (in the same format as RHS of formulas). 
-#' @param other single value or vector. Default value - NA. This value will be
+#' @param default single value or vector. Default value - NA. This value will be
 #'   used for values of result with all conditions FALSE/NA.
 #'
 #' @return object of same form as \code{x} with recoded values
@@ -65,9 +65,9 @@
 #' a = 1:5
 #' b = 5:1
 #' ifs(b>3 ~ 1)                     # c(1, 1, NA, NA, NA)
-#' ifs(b>3 ~ 1, other = 3)          # c(1, 1, 3, 3, 3)
-#' ifs(b>3 ~ 1, a>4 ~ 7, other = 3) # c(1, 1, 3, 3, 7)
-#' ifs(b>3 ~ a, other = 42)         # c(1, 2, 42, 42, 42)
+#' ifs(b>3 ~ 1, default = 3)          # c(1, 1, 3, 3, 3)
+#' ifs(b>3 ~ 1, a>4 ~ 7, default = 3) # c(1, 1, 3, 3, 7)
+#' ifs(b>3 ~ a, default = 42)         # c(1, 2, 42, 42, 42)
 #' # some examples from SPSS manual
 #' # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 #' set.seed(123)
@@ -263,7 +263,7 @@ parse_formula = function(elementary_recoding){
 
 #' @export
 #' @rdname if_val
-ifs = function(... , from = NULL, to = NULL, other = NA){
+ifs = function(... , from = NULL, to = NULL, default = NA){
     if (is.null(from) && is.null(to)){
         recoding_list = lapply(unlist(list(...)), parse_formula)
         from = lapply(recoding_list, "[[", "from")
@@ -287,7 +287,7 @@ ifs = function(... , from = NULL, to = NULL, other = NA){
     res = rep(NA, max_rows)
     if_na(from) = FALSE
     from = c(from, ".")
-    to = c(to, other)
+    to = c(to, default)
     if_val(res, from = from, to = to)
 }
 
