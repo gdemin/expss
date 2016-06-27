@@ -30,14 +30,14 @@
 #' str(list2)
 #' 
 dfrm = function(...){
-    data.frame(..., check.names = FALSE, fix.empty.names = FALSE, stringsAsFactors = FALSE)
+    data.frame(..., check.names = FALSE, stringsAsFactors = FALSE)
 }
 
 #' @export
 #' @rdname dfrm
 as.dfrm = function(x, ...) {
     as.data.frame(x, optional = FALSE, check.names = FALSE, ...,
-                  cut.names = FALSE, col.names = names(x), fix.empty.names = FALSE,
+                  cut.names = FALSE, col.names = names(x),
                   stringsAsFactors = FALSE)
     
 }
