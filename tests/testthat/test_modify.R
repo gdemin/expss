@@ -38,8 +38,8 @@ result_dfs2$aa = ifelse(dfs2$test %in% 2:4, result_dfs2$aa+1, result_dfs2$aa)
 set.seed(1)
 expect_identical(
     modify(dfs, {
-        a_total = sum_row(get_var_range("a_1", "a_5"))
-        b_total = sum_row(get_var_range("b_1", "b_5"))
+        a_total = sum_row(vars_range("a_1", "a_5"))
+        b_total = sum_row(vars_range("b_1", "b_5"))
         random_numer = runif(.n)
     }), 
     result_dfs
@@ -59,8 +59,8 @@ context("modify magrittr")
 if(suppressWarnings(require(magrittr, quietly = TRUE))){
     expect_identical(
         dfs %>% modify( {
-            a_total = sum_row(get_var_range("a_1", "a_5"))
-            b_total = sum_row(get_var_range("b_1", "b_5"))
+            a_total = sum_row(vars_range("a_1", "a_5"))
+            b_total = sum_row(vars_range("b_1", "b_5"))
         }), 
         result_dfs
     )
@@ -82,8 +82,8 @@ context("modify dplyr")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     expect_identical(
         tbl_df(dfs) %>% modify( {
-            a_total = sum_row(get_var_range("a_1", "a_5"))
-            b_total = sum_row(get_var_range("b_1", "b_5"))
+            a_total = sum_row(vars_range("a_1", "a_5"))
+            b_total = sum_row(vars_range("b_1", "b_5"))
         }), 
         tbl_df(result_dfs)
     )
