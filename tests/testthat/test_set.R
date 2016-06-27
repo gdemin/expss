@@ -1,4 +1,4 @@
-context("create")
+context("set")
 
 data(iris)
 ir = iris
@@ -8,14 +8,14 @@ ir_test[,c("var1", "var2", "var3")] = NA
 
 default_dataset(ir)
 
-.create(subst("var`1:3`"))
+.set(subst("var`1:3`"))
 
 expect_identical(ir, ir_test)
 
 w = iris
 
 w = modify(w, 
-           create(subst("var`1:3`"))
+           set(subst("var`1:3`"))
             )
 
 expect_identical(w, ir_test)
@@ -36,7 +36,7 @@ w_test$good = as.character(w_test$Species)
 
 expect_identical(
     modify(w, {
-        create("short")
+        set("short")
         good = if_val(short, NA ~ as.character(Species))
     }
     ), w_test)
@@ -51,7 +51,7 @@ ir_test[,subst("v`1:4`r")] = ir[,subst("v`1:4`")]
 
 default_dataset(ir)
 
-.create(subst("v`1:4`r"), v1 %to% v4)
+.set(subst("v`1:4`r"), v1 %to% v4)
 
 expect_identical(ir, ir_test)
 ###########
@@ -63,7 +63,7 @@ ir_test = ir
 ir_test[,subst("v`1:4`r")] = ir[,subst("v`1:4`")]
 
 ir = modify(ir, {
-    create(subst("v`1:4`r"), v1 %to% v4)
+    set(subst("v`1:4`r"), v1 %to% v4)
     
 }
 )
@@ -81,7 +81,7 @@ ir_test[,subst("v`1:4`r")] = NA
 ir_test[ir_test$Species == "setosa",subst("v`1:4`r")] = ir[ir_test$Species == "setosa",subst("v`1:4`")]
 
 ir = modify_if(ir, Species == "setosa", {
-    create(subst("v`1:4`r"), v1 %to% v4)
+    set(subst("v`1:4`r"), v1 %to% v4)
     
     }
 )
@@ -99,7 +99,7 @@ ir_test[,subst("v`1:4`r")] = NA
 ir_test[ir_test$Species == "setosa",subst("v`1:4`r")] = ir[ir_test$Species == "setosa",subst("v`1:4`")]
 
 .modify_if(Species == "setosa", {
-    create(subst("v`1:4`r"), v1 %to% v4)
+    set(subst("v`1:4`r"), v1 %to% v4)
     
 }
 )
@@ -118,7 +118,7 @@ ir_test[,subst("v`1:4`r")] = NA
 ir_test[ir_test$Species == "setosa",subst("v`1:4`r")] = ir[ir_test$Species == "setosa",subst("v`1:4`")]
 
 .do_if(Species == "setosa", {
-    create(subst("v`1:4`r"), v1 %to% v4)
+    set(subst("v`1:4`r"), v1 %to% v4)
     
 }
 )
@@ -134,7 +134,7 @@ default_dataset(ir)
 ir_test[,subst("v`1:4`r")] = ir[,subst("v`1:4`")]
 
 .compute({
-    create(subst("v`1:4`r"), v1 %to% v4)
+    set(subst("v`1:4`r"), v1 %to% v4)
     
 }
 )
@@ -153,7 +153,7 @@ ir_test[,subst("v`3`r")] = 3L
 ir_test[,subst("v`4`r")] = 4L
 
 .compute({
-    create(subst("v`1:4`r"), t(1:4))
+    set(subst("v`1:4`r"), t(1:4))
     
 }
 )
@@ -170,7 +170,7 @@ ir_test[,subst("v`1:4`r")] = 1L:150L
 
 
 .compute({
-    create(subst("v`1:4`r"), 1:150)
+    set(subst("v`1:4`r"), 1:150)
     
 }
 )
@@ -187,7 +187,7 @@ default_dataset(ir)
 
 expect_error(
 .compute({
-    create(subst("v`1:4`r"), 1:2)
+    set(subst("v`1:4`r"), 1:2)
     
 }
 )
@@ -203,7 +203,7 @@ default_dataset(ir)
 
 expect_error(
     .compute({
-        create(subst("v`1:4`r"), t(1:2))
+        set(subst("v`1:4`r"), t(1:2))
         
     }
     )

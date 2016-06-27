@@ -3,7 +3,6 @@
 \name{compute}
 \alias{.add_val_lab}
 \alias{.compute}
-\alias{.create}
 \alias{.cro}
 \alias{.cro_cpct}
 \alias{.cro_fun}
@@ -20,6 +19,7 @@
 \alias{.modify}
 \alias{.modify_if}
 \alias{.recode}
+\alias{.set}
 \alias{.set_val_lab}
 \alias{.set_var_lab}
 \alias{.val_lab}
@@ -74,7 +74,7 @@
 
 .cro_fun_df(...)
 
-.create(varnames, init = NA)
+.set(varnames, value = NA)
 }
 \arguments{
 \item{expr}{set of expressions  in curly brackets which will be evaluated in
@@ -88,7 +88,7 @@ the context of default dataset}
 
 \item{varnames}{character vector. Names of variables which should be created in the d.d.}
 
-\item{init}{value/vector/matrix/data.frame. Initial value for newly created variables.}
+\item{value}{value/vector/matrix/data.frame. Value for newly created/existing variables.}
 }
 \description{
 Workflow for these functions is rather simple. You should set up default 
@@ -123,10 +123,11 @@ data.frame. See \link{add_val_lab}.}
 variable inside default data.frame. See \link{if_val}.}
 \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
 SPSS RECODE. See \link{if_val}.}
-\item{\code{.create}}{ Create variables in default dataset with given names
-filled with \code{init}. It is also available as \code{create} (without dot) inside
-\code{.compute}, \code{.modify}, \code{.modify_if}, \code{.do_if},
-\link{modify}, \link{modify_if}.}
+\item{\code{.set}}{ Set variables values in the default dataset with given
+names filled with \code{value}. Variables will be created if they don't
+exist. It is possible to set multiple variables at once. It is also available
+as \code{set} (without dot) inside \code{.compute}, \code{.modify},
+\code{.modify_if}, \code{.do_if}, \link{modify}, \link{modify_if}.}
 }
 Other functions:
 \itemize{
