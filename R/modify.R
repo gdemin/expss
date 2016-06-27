@@ -9,7 +9,9 @@
 #' function tries to mimic SPSS "DO IF(). ... END IF." statement. There is a
 #' special constant \code{.n} which equals to number of cases in \code{data} for
 #' usage in expression inside \code{modify}. Inside \code{modify_if} \code{.n}
-#' gives number of rows which will be affected by expressions.
+#' gives number of rows which will be affected by expressions. Inside this
+#' functions you can use \code{create} function which creates variables with
+#' given name.
 #'
 #' @param data data.frame
 #' @param expr expression(s) that should be evaluated in the context of data.frame \code{data}
@@ -36,6 +38,11 @@
 #'     random_numbers = runif(.n) # .n usage
 #' })
 #' 
+#' # 'create' function
+#' modify(dfs, {
+#'     create(subst('new_b`1:5`'))
+#' })
+#' 
 #' # conditional modification
 #' modify_if(dfs, test %in% 2:4, {
 #'     aa = aa + 1    
@@ -55,8 +62,9 @@ modify.data.frame = function (data, expr) {
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     e$.n = nrow(data)
+    e$create = create_generator(e$.n)
     eval(substitute(expr), e)
-    rm(".n", envir = e)
+    rm(".n", "create", envir = e)
     l = as.list(e, all.names = TRUE)
     
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
@@ -89,8 +97,9 @@ modify_if = function (data, cond, expr) {
     new_data = data[cond,, drop = FALSE]
     e = evalq(environment(), new_data, parent)
     e$.n = nrow(new_data)
+    e$create = create_generator(e$.n)
     eval(substitute(expr), e)
-    rm(".n", envir = e)
+    rm(".n", "create", envir = e)
     l = as.list(e, all.names = TRUE)
     
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)

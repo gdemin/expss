@@ -3,6 +3,7 @@
 \name{compute}
 \alias{.add_val_lab}
 \alias{.compute}
+\alias{.create}
 \alias{.cro}
 \alias{.cro_cpct}
 \alias{.cro_fun}
@@ -72,6 +73,8 @@
 .cro_fun(...)
 
 .cro_fun_df(...)
+
+.create(varnames)
 }
 \arguments{
 \item{expr}{set of expressions  in curly brackets which will be evaluated in
@@ -82,6 +85,8 @@ the context of default dataset}
 \item{...}{further arguments}
 
 \item{x}{vector/data.frame - variable names in the scope of default dataset}
+
+\item{varnames}{character vector. Names of variables which should be created in the d.d.}
 }
 \description{
 Workflow for these functions is rather simple. You should set up default 
@@ -116,6 +121,10 @@ data.frame. See \link{add_val_lab}.}
 variable inside default data.frame. See \link{if_val}.}
 \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
 SPSS RECODE. See \link{if_val}.}
+\item{\code{.create}}{ Create variables in default dataset with given names
+filled with NA. It is also available as \code{create} (without dot) inside
+\code{.compute}, \code{.modify}, \code{.modify_if}, \code{.do_if},
+\link{modify}, \link{modify_if}.}
 }
 Other functions:
 \itemize{

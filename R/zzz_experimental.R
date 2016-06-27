@@ -32,6 +32,10 @@
 #' variable inside default data.frame. See \link{if_val}.}
 #' \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
 #' SPSS RECODE. See \link{if_val}.}
+#' \item{\code{.create}}{ Create variables in default dataset with given names
+#' filled with NA. It is also available as \code{create} (without dot) inside
+#' \code{.compute}, \code{.modify}, \code{.modify_if}, \code{.do_if},
+#' \link{modify}, \link{modify_if}.}
 #' }
 #' Other functions:
 #' \itemize{
@@ -51,6 +55,7 @@
 #' @param expr set of expressions  in curly brackets which will be evaluated in
 #'   the context of default dataset
 #' @param cond logical vector/expression
+#' @param varnames character vector. Names of variables which should be created in the d.d.
 #' @param ... further arguments 
 #'
 #' @examples 
@@ -127,8 +132,9 @@
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     e$.n = nrow(data)
+    e$create = create_generator(e$.n)
     eval(substitute(expr), e)
-    rm(".n", envir = e)
+    rm(".n", "create", envir = e)
     l = as.list(e, all.names = TRUE)
     
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
@@ -157,8 +163,9 @@
     new_data = data[cond,, drop = FALSE]
     e = evalq(environment(), new_data, parent)
     e$.n = nrow(new_data)
+    e$create = create_generator(e$.n)
     eval(substitute(expr), e)
-    rm(".n", envir = e)
+    rm(".n", "create", envir = e)
     l = as.list(e, all.names = TRUE)
     
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
@@ -344,3 +351,28 @@ eval_in_default_dataset = function(...){
 #' @export
 #' @rdname compute
 .cro_fun_df = eval_in_default_dataset
+
+
+
+#' @export
+#' @rdname compute
+.create = function(varnames){
+    curr_formula = suppressMessages(default_dataset())
+    varname = all.vars(curr_formula)
+    stopif(length(varname)!=1,"Reference should have only one variable name, e. g. ref_var = ~a")
+    envir = environment(curr_formula)
+    envir[[varname]][, varnames] = NA
+    invisible(NULL)
+}
+
+create_generator = function(number_of_rows){
+    force(number_of_rows)
+    function(varnames){
+        for (each in varnames){
+            assign(each, rep(NA, number_of_rows), pos = parent.frame())
+        }
+        invisible(NULL)
+    }
+}
+
+ 

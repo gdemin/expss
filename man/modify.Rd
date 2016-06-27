@@ -29,7 +29,9 @@ rows for which \code{cond} has TRUE. There will be NA's in other rows. This
 function tries to mimic SPSS "DO IF(). ... END IF." statement. There is a
 special constant \code{.n} which equals to number of cases in \code{data} for
 usage in expression inside \code{modify}. Inside \code{modify_if} \code{.n}
-gives number of rows which will be affected by expressions.
+gives number of rows which will be affected by expressions. Inside this
+functions you can use \code{create} function which creates variables with
+given name.
 }
 \examples{
 dfs = data.frame(
@@ -48,6 +50,11 @@ modify(dfs, {
     b_total = sum_row(b_, b_1 \%to\% b_5)
     var_lab(b_total) = "Sum of b"
     random_numbers = runif(.n) # .n usage
+})
+
+# 'create' function
+modify(dfs, {
+    create(subst('new_b`1:5`'))
 })
 
 # conditional modification
