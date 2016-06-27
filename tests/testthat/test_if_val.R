@@ -23,7 +23,7 @@ expect_identical(if_val(x, list(gt(2)~y, lte(2) ~ z, .~99)), c(4, 8, 4, 9, 99))
 expect_identical(if_val(x, (z>4)~y), c(1, 3, 1, 9, 9))
 
 context("if_val dplyr")
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
+if(FALSE & suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
     
@@ -36,10 +36,11 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
         y = c(18,18,18,19,19),
         z = c(14,14,14,15,15)
         
-    ) %>% tbl_df()
+    )  %>% tbl_df()
     
     dfs  = dfs %>% mutate(
-        w = if_val(x,gt(2)~y)
+        w = if_val(x, gt(2) ~ y)
+        #w = ifelse(x>2, y , x)
     )
     
     expect_identical(dfs$w, c(2, 18, 2, 19, NA))
@@ -53,6 +54,39 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 } else {
     cat("dplyr not found\n")
 }
+
+context("modify")
+x = c(1,3,1,3,NA)
+y = c(8,8,8,9,9)
+z = c(4,4,4,5,5)
+
+dfs = data.frame(
+    x = c(2,4,2,4,NA),
+    y = c(18,18,18,19,19),
+    z = c(14,14,14,15,15)
+    
+) 
+
+dfs  =  modify(dfs, {
+    w = if_val(x, gt(2) ~ y)
+})
+
+expect_identical(dfs$w, c(2, 18, 2, 19, NA))
+
+dfs$x = NULL
+dfs$w = NULL
+dfs  =  modify(dfs, { 
+    w = if_val(x, gt(2)~y)
+})
+expect_identical(dfs$w, c(1, 18, 1, 19, NA))
+
+dfs$x = NULL
+dfs$y = NULL
+dfs$w = NULL
+dfs  = modify(dfs, { 
+    w = if_val(x, gt(2)~y)
+})
+expect_identical(dfs$w, c(1, 8, 1, 9, NA))
 ##########################
 
 context("if_val 'from, to' notation simple vector")

@@ -194,7 +194,7 @@ param = runif(30)
 param[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(group, param)
 
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
+if(FALSE & suppressWarnings(require(dplyr, quietly = TRUE))){
     # replace NA's with group means
     df_clean = df %>% group_by(group) %>% 
         mutate(
@@ -211,6 +211,18 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 } else {
 	cat("dplyr not found\n")
 }
+
+df_clean =  modify(df, {
+        param = if_val(param, NA ~ ave(param, group, FUN = mean_col))
+    })
+
+df = within(df, {
+    param[group==1 & is.na(param)] = mean(param[group==1], na.rm = TRUE)
+    param[group==2 & is.na(param)] = mean(param[group==2], na.rm = TRUE)
+    param[group==3 & is.na(param)] = mean(param[group==3], na.rm = TRUE)
+})
+
+expect_identical(as.data.frame(df_clean), df)
 # replacement with column means
 
 # make data.frame
