@@ -57,6 +57,17 @@ COUNTIF(A1:A4, "<=1")
 count_col_if(lte(1), a)
 ```
 
+VLOOKUP.
+
+**Excel**:
+```
+COUNTIF(A1:A4, "<=1")
+```
+**R**: 
+```
+count_col_if(lte(1), a)
+```
+
 ##### SUMIF
 
 
@@ -69,7 +80,9 @@ COMPUTE a = 1
 a = 1
 or, in specific data.frame
 
-w = modify(w, {
+default_dataset(w)
+
+.compute({
     a = 1
 })
 There are can be arbitrary number of statements inside `modify`.
@@ -78,19 +91,23 @@ There are can be arbitrary number of statements inside `modify`.
 
 IF(a = 3) b = 2.
 
-b = ifelse(a == 3, 2, NA)
+.compute({
+    b = ifelse(a == 3, 2, NA)
+})
+
 
 ##### DO IF
 DO IF (a>3).
     COMPUTE b = 4.
 END IF.
 
-w = modify_if(w, a>3, {
+.do_if(a>3, {
     b = 4
 })
 
 
 ##### COUNT
+
 COUNT cnt = a1 TO a5 (LO THRU HI).
 cnt = count_row_if(lo %thru% hi, a1 %to% a5)
 
@@ -138,6 +155,32 @@ if_val(strngvar, c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', . ~ ' ')
 RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
 
 voter = if_val(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
+
+#### Some functions
+
+MISSING  is.na()
+
+SYSMIS NA
+
+LO lo
+HI hi
+THRU %thru%
+
+ANY any_in_row()
+ALL all_in_row()
+
+#### VARIABLE LABELS
+
+
+#### VALUE LABELS
+
+#### Simple tables
+
+
+
+
+#### Session example
+
 
 
 
