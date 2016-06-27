@@ -40,3 +40,177 @@ expect_identical(
         good = if_val(short, NA ~ as.character(Species))
     }
     ), w_test)
+
+
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+
+ir_test[,subst("v`1:4`r")] = ir[,subst("v`1:4`")]
+
+default_dataset(ir)
+
+.create(subst("v`1:4`r"), v1 %to% v4)
+
+expect_identical(ir, ir_test)
+###########
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+
+ir_test[,subst("v`1:4`r")] = ir[,subst("v`1:4`")]
+
+ir = modify(ir, {
+    create(subst("v`1:4`r"), v1 %to% v4)
+    
+}
+)
+
+expect_identical(ir, ir_test)
+
+#########
+
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+
+ir_test[,subst("v`1:4`r")] = NA
+ir_test[ir_test$Species == "setosa",subst("v`1:4`r")] = ir[ir_test$Species == "setosa",subst("v`1:4`")]
+
+ir = modify_if(ir, Species == "setosa", {
+    create(subst("v`1:4`r"), v1 %to% v4)
+    
+    }
+)
+
+expect_identical(ir, ir_test)
+
+#########
+
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+default_dataset(ir)
+ir_test[,subst("v`1:4`r")] = NA
+ir_test[ir_test$Species == "setosa",subst("v`1:4`r")] = ir[ir_test$Species == "setosa",subst("v`1:4`")]
+
+.modify_if(Species == "setosa", {
+    create(subst("v`1:4`r"), v1 %to% v4)
+    
+}
+)
+
+expect_identical(ir, ir_test)
+
+
+#########
+
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+default_dataset(ir)
+ir_test[,subst("v`1:4`r")] = NA
+ir_test[ir_test$Species == "setosa",subst("v`1:4`r")] = ir[ir_test$Species == "setosa",subst("v`1:4`")]
+
+.do_if(Species == "setosa", {
+    create(subst("v`1:4`r"), v1 %to% v4)
+    
+}
+)
+
+expect_identical(ir, ir_test)
+
+###########
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+default_dataset(ir)
+ir_test[,subst("v`1:4`r")] = ir[,subst("v`1:4`")]
+
+.compute({
+    create(subst("v`1:4`r"), v1 %to% v4)
+    
+}
+)
+
+expect_identical(ir, ir_test)
+
+###########
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+default_dataset(ir)
+ir_test[,subst("v`1`r")] = 1L 
+ir_test[,subst("v`2`r")] = 2L
+ir_test[,subst("v`3`r")] = 3L
+ir_test[,subst("v`4`r")] = 4L
+
+.compute({
+    create(subst("v`1:4`r"), t(1:4))
+    
+}
+)
+
+expect_identical(ir, ir_test)
+
+###########
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+default_dataset(ir)
+ir_test[,subst("v`1:4`r")] = 1L:150L 
+
+
+.compute({
+    create(subst("v`1:4`r"), 1:150)
+    
+}
+)
+
+expect_identical(ir, ir_test)
+
+###########
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+default_dataset(ir)
+
+
+expect_error(
+.compute({
+    create(subst("v`1:4`r"), 1:2)
+    
+}
+)
+)
+
+###########
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+default_dataset(ir)
+
+
+expect_error(
+    .compute({
+        create(subst("v`1:4`r"), t(1:2))
+        
+    }
+    )
+)
+
+
+
+
+
+

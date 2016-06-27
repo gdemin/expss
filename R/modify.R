@@ -11,7 +11,7 @@
 #' usage in expression inside \code{modify}. Inside \code{modify_if} \code{.n}
 #' gives number of rows which will be affected by expressions. Inside this
 #' functions you can use \code{create} function which creates variables with
-#' given name.
+#' given name - \link{.create}.
 #'
 #' @param data data.frame
 #' @param expr expression(s) that should be evaluated in the context of data.frame \code{data}

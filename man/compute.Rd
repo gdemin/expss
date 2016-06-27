@@ -74,7 +74,7 @@
 
 .cro_fun_df(...)
 
-.create(varnames)
+.create(varnames, init = NA)
 }
 \arguments{
 \item{expr}{set of expressions  in curly brackets which will be evaluated in
@@ -87,6 +87,8 @@ the context of default dataset}
 \item{x}{vector/data.frame - variable names in the scope of default dataset}
 
 \item{varnames}{character vector. Names of variables which should be created in the d.d.}
+
+\item{init}{value/vector/matrix/data.frame. Initial value for newly created variables.}
 }
 \description{
 Workflow for these functions is rather simple. You should set up default 
@@ -122,7 +124,7 @@ variable inside default data.frame. See \link{if_val}.}
 \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
 SPSS RECODE. See \link{if_val}.}
 \item{\code{.create}}{ Create variables in default dataset with given names
-filled with NA. It is also available as \code{create} (without dot) inside
+filled with \code{init}. It is also available as \code{create} (without dot) inside
 \code{.compute}, \code{.modify}, \code{.modify_if}, \code{.do_if},
 \link{modify}, \link{modify_if}.}
 }

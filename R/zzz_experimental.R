@@ -33,7 +33,7 @@
 #' \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
 #' SPSS RECODE. See \link{if_val}.}
 #' \item{\code{.create}}{ Create variables in default dataset with given names
-#' filled with NA. It is also available as \code{create} (without dot) inside
+#' filled with \code{init}. It is also available as \code{create} (without dot) inside
 #' \code{.compute}, \code{.modify}, \code{.modify_if}, \code{.do_if},
 #' \link{modify}, \link{modify_if}.}
 #' }
@@ -56,6 +56,7 @@
 #'   the context of default dataset
 #' @param cond logical vector/expression
 #' @param varnames character vector. Names of variables which should be created in the d.d.
+#' @param init value/vector/matrix/data.frame. Initial value for newly created variables.
 #' @param ... further arguments 
 #'
 #' @examples 
@@ -356,20 +357,47 @@ eval_in_default_dataset = function(...){
 
 #' @export
 #' @rdname compute
-.create = function(varnames){
-    curr_formula = suppressMessages(default_dataset())
-    varname = all.vars(curr_formula)
-    stopif(length(varname)!=1,"Reference should have only one variable name, e. g. ref_var = ~a")
-    envir = environment(curr_formula)
-    envir[[varname]][, varnames] = NA
+.create = function(varnames, init = NA){
+    reference = suppressMessages(default_dataset() )
+    def_set_name = all.vars(reference)
+    stopif(length(def_set_name)!=1,"Reference should have only one variable name, e. g. ref_var = ~a")
+    envir = environment(reference)
+    init = eval(substitute(init), envir[[def_set_name]], enclos = parent.frame())
+    num_of_vars = length(varnames)
+    d_nrows = NROW(envir[[def_set_name]])
+    init_nrows = NROW(init)
+    init_ncols = NCOL(init)
+    stopif(init_nrows!=1 & init_nrows!= d_nrows, "Incorrect number of rows in 'init': ", init_nrows, 
+           " There are ", d_nrows, " rows in default dataset.")
+    stopif(init_ncols!=1 & init_ncols!= num_of_vars, "Incorrect number of columns in 'init': ", init_ncols, 
+           " There are ", num_of_vars, " names in 'varnames'.")
+    for (each in seq_along(varnames)){
+        envir[[def_set_name]][, varnames[[each]]] = column(init, each)
+    }
     invisible(NULL)
 }
 
 create_generator = function(number_of_rows){
     force(number_of_rows)
-    function(varnames){
-        for (each in varnames){
-            assign(each, rep(NA, number_of_rows), pos = parent.frame())
+    function(varnames, init = NA){
+        init = eval(substitute(init), envir = parent.frame(), enclos = baseenv())
+        num_of_vars = length(varnames)
+        init_nrows = NROW(init)
+        init_ncols = NCOL(init)
+        stopif(init_nrows!=1 & init_nrows!= number_of_rows, "Incorrect number of rows in 'init': ", init_nrows, 
+               " There are ", number_of_rows, " rows in dataset.")
+        stopif(init_ncols!=1 & init_ncols!= num_of_vars, "Incorrect number of columns in 'init': ", init_ncols, 
+               " There are ", num_of_vars, " names in 'varnames'.")
+        if(init_nrows==1){
+        for (each in seq_along(varnames)){
+            for (each in seq_along(varnames)){
+                assign(varnames[[each]], rep(column(init, each), number_of_rows) , pos = parent.frame())
+            } 
+        }
+        } else {
+            for (each in seq_along(varnames)){
+                assign(varnames[[each]], column(init, each), pos = parent.frame())
+            }   
         }
         invisible(NULL)
     }
