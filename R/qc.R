@@ -63,7 +63,9 @@ subst = function(...){
             for(.each_ in seq_along(.var_names_)){
                 .curr_ = paste0("`",.var_names_[.each_],"`")
                 x = gsub(.curr_, "%s", x, fixed = TRUE)
-                .res_ = eval(parse(text = .var_names_[.each_]))
+                .res_ = eval(parse(text = .var_names_[.each_]),
+                             envir = parent.frame(), 
+                             enclos = globalenv())
                 if(length(x)>1 && length(.res_)>1){
                     x = unlist(lapply(x, function(.x_){
                         sprintf2(.x_, .res_)
