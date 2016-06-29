@@ -173,6 +173,6 @@ vars = function(...){
     for(.each_ in seq_along(.var_names_)){
         .res_[[.each_]] = get(.var_names_[.each_], pos = parent.frame(), inherits = TRUE)
     }
-    as.dfrm(stats::setNames(.res_, .var_names_))
+    as.dtfrm(stats::setNames(.res_, .var_names_))
 }
 
