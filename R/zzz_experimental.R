@@ -32,16 +32,18 @@
 #' variable inside default data.frame. See \link{if_val}.}
 #' \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
 #' SPSS RECODE. See \link{if_val}.}
-#' \item{\code{.set}}{ Set variables values in the default dataset with given
-#' names filled with \code{value}. Variables will be created if they don't
-#' exist. It is possible to set multiple variables at once. It is also available
-#' as \code{set} (without dot) inside \code{.compute}, \code{.modify},
-#' \code{.modify_if}, \code{.do_if}, \link{modify}, \link{modify_if}.}
-#' }
+#' \item{\code{.set}}{ Set variables values in the default dataset with given 
+#' names filled with \code{value}. It is possible to set multiple variables at 
+#' once. Expressions inside backticks in \code{varnames} will be expanded as
+#' with \link{subst}. \code{set} (without dot) is also available inside
+#' \code{.compute}, \code{.modify}, \code{.modify_if}, \code{.do_if},
+#' \link{modify}, \link{modify_if}.} }
 #' Other functions:
 #' \itemize{
-#' \item{\code{.var_lab}}{ Return variable label from default dataset. See \link{var_lab}.}
-#' \item{\code{.val_lab}}{ Return value labels from default dataset. See \link{val_lab}.}
+#' \item{\code{.var_lab}}{ Return variable label from default dataset. See
+#' \link{var_lab}.}
+#' \item{\code{.val_lab}}{ Return value labels from default dataset. See
+#' \link{val_lab}.}
 #' \item{\code{.fre }}{ Simple frequencies of variable in the default
 #' data.frame.  See \link{fre}.}
 #' \item{\code{.cro}/\code{.cro_cpct}/\code{.cro_rpct}/\code{.cro_tpct}}{ Simple
@@ -56,8 +58,11 @@
 #' @param expr set of expressions  in curly brackets which will be evaluated in
 #'   the context of default dataset
 #' @param cond logical vector/expression
-#' @param varnames character vector. Names of variables which should be created in the d.d.
-#' @param value value/vector/matrix/data.frame. Value for newly created/existing variables.
+#' @param varnames character vector. Names of variables which should be created
+#'   in the default dataset. Expressions inside backticks in \code{varnames}
+#'   will be expanded as with \link{subst}.
+#' @param value value/vector/matrix/data.frame. Value for newly created/existing
+#'   variables.
 #' @param ... further arguments 
 #'
 #' @examples 
@@ -364,6 +369,7 @@ eval_in_default_dataset = function(...){
     stopif(length(def_set_name)!=1,"Reference should have only one variable name, e. g. ref_var = ~a")
     envir = environment(reference)
     value = eval(substitute(value), envir[[def_set_name]], enclos = parent.frame())
+    varnames = subst(varnames)
     num_of_vars = length(varnames)
     d_nrows = NROW(envir[[def_set_name]])
     value_nrows = NROW(value)
@@ -382,6 +388,7 @@ set_generator = function(number_of_rows){
     force(number_of_rows)
     function(varnames, value = NA){
         value = eval(substitute(value), envir = parent.frame(), enclos = baseenv())
+        varnames = subst(varnames)
         num_of_vars = length(varnames)
         value_nrows = NROW(value)
         value_ncols = NCOL(value)

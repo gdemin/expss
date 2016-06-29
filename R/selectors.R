@@ -152,7 +152,12 @@ vars_pattern = function(pattern){
 #' @export
 #' @rdname vars_range
 vars_list = function(...){
-    .var_names_ = c(lapply(c(list(...), recursive = TRUE), subst), recursive = TRUE)
+    .var_names_ = subst(...)
+    .vars_ = vector(mode = "list", length(.var_names_ ))
+    for(.each_ in seq_along(.vars_ )){
+        .vars_ [[.each_]] = subst(.var_names_[[.each_]]) 
+    }  
+    .var_names_ = c(.vars_, recursive = TRUE)
     .res_ = vector(mode = "list", length = length(.var_names_))
     for(.each_ in seq_along(.var_names_)){
         .res_[[.each_]] = get(.var_names_[.each_], pos = parent.frame(), inherits = TRUE)
@@ -163,7 +168,7 @@ vars_list = function(...){
 #' @export
 #' @rdname vars_range
 vars = function(...){
-    .var_names_ = c(lapply(c(list(...), recursive = TRUE), subst), recursive = TRUE)
+    .var_names_ = subst(...)
     .res_ = vector(mode = "list", length = length(.var_names_))
     for(.each_ in seq_along(.var_names_)){
         .res_[[.each_]] = get(.var_names_[.each_], pos = parent.frame(), inherits = TRUE)

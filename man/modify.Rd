@@ -29,7 +29,7 @@ rows for which \code{cond} has TRUE. There will be NA's in other rows. This
 function tries to mimic SPSS "DO IF(). ... END IF." statement. There is a 
 special constant \code{.n} which equals to number of cases in \code{data} for
 usage in expression inside \code{modify}. Inside \code{modify_if} \code{.n} 
-gives number of rows which will be affected by expressions. Inside this 
+gives number of rows which will be affected by expressions. Inside these 
 functions you can use \code{set} function which creates variables with given
 name/set values to existing variables - \link{.set}. It is possible with
 \code{set} to assign values to multiple variables at once.
@@ -57,13 +57,14 @@ modify(dfs, {
 # 'set' function
 # new variables filled with NA
 modify(dfs, {
-    set(subst('new_b`1:5`'))
+    set('new_b`1:5`')
 })
 
 # 'set' function
 # set values to existing/new variables
+# expression in backticks will be expanded - see ?subst
 modify(dfs, {
-    set(subst('new_b`1:5`'), b_1 \%to\% b_5)
+    set('new_b`1:5`', b_1 \%to\% b_5)
 })
 
 

@@ -86,9 +86,12 @@ the context of default dataset}
 
 \item{x}{vector/data.frame - variable names in the scope of default dataset}
 
-\item{varnames}{character vector. Names of variables which should be created in the d.d.}
+\item{varnames}{character vector. Names of variables which should be created
+in the default dataset. Expressions inside backticks in \code{varnames}
+will be expanded as with \link{subst}.}
 
-\item{value}{value/vector/matrix/data.frame. Value for newly created/existing variables.}
+\item{value}{value/vector/matrix/data.frame. Value for newly created/existing
+variables.}
 }
 \description{
 Workflow for these functions is rather simple. You should set up default 
@@ -123,16 +126,18 @@ data.frame. See \link{add_val_lab}.}
 variable inside default data.frame. See \link{if_val}.}
 \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
 SPSS RECODE. See \link{if_val}.}
-\item{\code{.set}}{ Set variables values in the default dataset with given
-names filled with \code{value}. Variables will be created if they don't
-exist. It is possible to set multiple variables at once. It is also available
-as \code{set} (without dot) inside \code{.compute}, \code{.modify},
-\code{.modify_if}, \code{.do_if}, \link{modify}, \link{modify_if}.}
-}
+\item{\code{.set}}{ Set variables values in the default dataset with given 
+names filled with \code{value}. It is possible to set multiple variables at 
+once. Expressions inside backticks in \code{varnames} will be expanded as
+with \link{subst}. \code{set} (without dot) is also available inside
+\code{.compute}, \code{.modify}, \code{.modify_if}, \code{.do_if},
+\link{modify}, \link{modify_if}.} }
 Other functions:
 \itemize{
-\item{\code{.var_lab}}{ Return variable label from default dataset. See \link{var_lab}.}
-\item{\code{.val_lab}}{ Return value labels from default dataset. See \link{val_lab}.}
+\item{\code{.var_lab}}{ Return variable label from default dataset. See
+\link{var_lab}.}
+\item{\code{.val_lab}}{ Return value labels from default dataset. See
+\link{val_lab}.}
 \item{\code{.fre }}{ Simple frequencies of variable in the default
 data.frame.  See \link{fre}.}
 \item{\code{.cro}/\code{.cro_cpct}/\code{.cro_rpct}/\code{.cro_tpct}}{ Simple
