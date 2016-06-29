@@ -365,13 +365,13 @@ eval_in_default_dataset = function(...){
 #' @rdname compute
 .set = function(varnames, value = NA){
     reference = suppressMessages(default_dataset() )
-    def_set_name = all.vars(reference)
-    stopif(length(def_set_name)!=1,"Reference should have only one variable name, e. g. ref_var = ~a")
+    dd_name = all.vars(reference)
+    stopif(length(dd_name)!=1,"Reference should have only one variable name, e. g. ref_var = ~a")
     envir = environment(reference)
-    value = eval(substitute(value), envir[[def_set_name]], enclos = parent.frame())
+    value = eval(substitute(value), envir[[dd_name]], enclos = parent.frame())
     varnames = subst(varnames)
     num_of_vars = length(varnames)
-    d_nrows = NROW(envir[[def_set_name]])
+    d_nrows = NROW(envir[[dd_name]])
     value_nrows = NROW(value)
     value_ncols = NCOL(value)
     stopif(value_nrows!=1 & value_nrows!= d_nrows, "Incorrect number of rows in 'value': ", value_nrows, 
@@ -379,7 +379,7 @@ eval_in_default_dataset = function(...){
     stopif(value_ncols!=1 & value_ncols!= num_of_vars, "Incorrect number of columns in 'value': ", value_ncols, 
            " There are ", num_of_vars, " names in 'varnames'.")
     for (each in seq_along(varnames)){
-        envir[[def_set_name]][, varnames[[each]]] = column(value, each)
+        envir[[dd_name]][, varnames[[each]]] = column(value, each)
     }
     invisible(NULL)
 }

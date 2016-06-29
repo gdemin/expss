@@ -30,26 +30,26 @@
 #' @export
 default_dataset = local({
     dataset = NULL
-    dataset_name = NULL
+    dataframe_name = NULL
     function(x){
         if(missing(x)){
-            stopif(is.null(dataset),"Default dataset isn't defined. Use 'default_dataset(dataset_name)'.")
-            message(paste0("Default dataset: '",dataset_name,"'\n"))
+            stopif(is.null(dataset),"Default dataset isn't defined. Use 'default_dataset(dataframe_name)'.")
+            message(paste0("Default dataset: '",dataframe_name,"'\n"))
             return(dataset)
         } else {
             
             if (!is.null(x)){
                 if("formula" %in% class(x)){
                     dataset <<- x
-                    dataset_name <<- all.vars(x)[1]
+                    dataframe_name <<- all.vars(x)[1]
                 } else {
-                    dataset_name <<- as.character(substitute(x))
-                    dataset <<- stats::as.formula(paste0("~",dataset_name),env = parent.frame())
+                    dataframe_name <<- as.character(substitute(x))
+                    dataset <<- stats::as.formula(paste0("~",dataframe_name),env = parent.frame())
                 }
-                cat(paste0("Set default dataset to '",dataset_name,"'\n"))
+                cat(paste0("Set default dataset to '",dataframe_name,"'\n"))
                 return(invisible(dataset))
             } else {
-                dataset_name <<- NULL
+                dataframe_name <<- NULL
                 dataset <<- NULL
                 cat("Default dataset disabled.\n")
                 return(invisible(NULL))

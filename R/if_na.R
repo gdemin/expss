@@ -16,7 +16,7 @@
 #'  
 #'@return x with replaced NA
 #'  
-#'@seealso For reverse operation see \link{set_na}.
+#'@seealso For reverse operation see \link{na_if}.
 #' @examples
 #' # simple case
 #' a = c(NA, 2, 3, 4, NA)

@@ -78,6 +78,6 @@ df
 
 }
 \seealso{
-For reverse operation see \link{set_na}.
+For reverse operation see \link{na_if}.
 }
 

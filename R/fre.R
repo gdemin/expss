@@ -400,7 +400,7 @@ cro_mean = function(x, predictor, weight = NULL){
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
     stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     
-    set_na(x) = is.na(predictor)
+    na_if(x) = is.na(predictor)
     if (is.null(weight)){
         cro_fun(x = x, predictor = predictor, fun = mean, na.rm = TRUE)
     } else {
@@ -432,7 +432,7 @@ cro_sum = function(x, predictor, weight = NULL){
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
     stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     
-    set_na(x) = is.na(predictor)
+    na_if(x) = is.na(predictor)
     if (is.null(weight)){
         cro_fun(x = x, predictor = predictor, fun = function(x) {
             if(all(is.na(x))){
@@ -473,7 +473,7 @@ cro_median = function(x, predictor){
     stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
     
-    set_na(x) = is.na(predictor)
+    na_if(x) = is.na(predictor)
     cro_fun(x = x, predictor = predictor, fun = stats::median, na.rm = TRUE)
 }
 

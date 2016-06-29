@@ -9,7 +9,7 @@
 #' \item{\code{function}}{ NA's will be set in places where \code{value(x)} is 
 #' TRUE. Function will be applied columnwise. Additionally, there are special
 #' functions for common cases of comparison. For example
-#' \code{set_na(my_var, gt(98))} will replace all values greater 98 in
+#' \code{na_if(my_var, gt(98))} will replace all values greater 98 in
 #' \code{my_var} with NA. For detailed description of
 #' special functions see \link{criteria}} }
 #' 
@@ -25,10 +25,10 @@
 #' a = c(1:5, 99)
 #' 
 #' # 99 to NA
-#' set_na(a, 99)    # c(1:5, NA)
+#' na_if(a, 99)    # c(1:5, NA)
 #' 
 #' # values which greater than 5 to NA
-#' set_na(a, gt(5)) # same result
+#' na_if(a, gt(5)) # same result
 #' 
 #' set.seed(123)
 #' dfs = data.frame(
@@ -38,22 +38,22 @@
 #' 
 #' # rows with 'bad value' will be filled with NA
 #' # logical argument and recycling by columns
-#' set_na(dfs, dfs$a=="bad value")
+#' na_if(dfs, dfs$a=="bad value")
 #' 
 #' a = rnorm(50)
 #' # values greater than 1 or less than -1 will be set to NA
 #' # special functions usage
-#' set_na(a, lt(-1) | gt(1))
+#' na_if(a, lt(-1) | gt(1))
 #' 
 #' # values inside [-1, 1] to NA
-#' set_na(a, -1 %thru% 1)
+#' na_if(a, -1 %thru% 1)
 #' @export
-set_na = function(x, value){
+na_if = function(x, value){
     if_val(x, from=list(value), to = list(NA))
 }
 
-#' @rdname set_na
+#' @rdname na_if
 #' @export
-'set_na<-' = function(x, value){
-    set_na(x, value)
+'na_if<-' = function(x, value){
+    na_if(x, value)
 }

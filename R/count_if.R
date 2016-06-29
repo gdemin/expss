@@ -511,10 +511,10 @@ fun_if_helper = function(criterion,..., data){
     criterion = build_criterion(criterion, dfs)
     if(is.null(data)) {
         
-        return(set_na(dfs, !criterion))
+        return(na_if(dfs, !criterion))
     }    
     
-    set_na(data) = !criterion
+    na_if(data) = !criterion
     if(is.list(data) && !is.data.frame(data)){
         data = do.call(data.frame,c(data,stringsAsFactors=FALSE, check.names = FALSE))        
     }  else {
