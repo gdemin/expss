@@ -299,7 +299,12 @@ add_val_lab = function(x, value) set_val_lab(x, value, add = TRUE)
 
 #' @export
 set_val_lab.default = function(x,value, add = FALSE){
-    stopif(anyDuplicated(value),"Duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
+    stopif(anyDuplicated(value),"duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
+    names_vallab = names(value)
+    if (anyDuplicated(names_vallab)){
+        duplicates = duplicated(names_vallab)
+        warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ",")))
+    }
     if (add) value = combine_labels(value,val_lab(x))
     if (length(value)==0) value=NULL else value=sort(value)
     attr(x,"labels")=value

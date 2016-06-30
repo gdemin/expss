@@ -26,8 +26,9 @@ expect_identical(set_var_lab(test_ds, "Age group"), test_test_ds)
 
 context("val_lab")
 
-
-
+a = 1
+expect_error({val_lab(a) = c(a = 1, b = 1)})
+expect_warning({val_lab(a) = c(a = 1, a = 2, b = 3, b = 4)})
 
 
 ## data.frame
