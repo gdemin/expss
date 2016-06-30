@@ -1,12 +1,12 @@
 #' Get range of variables/variables by pattern/by name
 #' 
 #' \itemize{
-#' \item{\code{\%to\%}}{ returns all variables in range from first argument to second 
-#' (similar to SPSS 'to'). Result doesn't depend from order of variables in 
-#' data.frame. Results are always arranged in ascending order and include all
-#' variables with such pattern even if these variables located in different
-#' parts of dataframe. \code{vars_range} has the same functionality but
-#' intended for programming.}
+#' \item{\code{\%to\%}}{ returns all variables with names  in range from
+#' pattern_num1 to pattern_num2 (similar to SPSS 'to'). Result doesn't depend
+#' from order of variables in data.frame. 'num1' and 'num2' should be numbers.
+#' Results are always arranged in ascending order and include all variables with
+#' such pattern even if these variables located in different parts of dataframe.
+#' \code{vars_range} has the same functionality but intended for programming.}
 #' \item{\code{vars_pattern}}{ returns all variables by pattern (regular expression).
 #' Functions with word 'list' in name return lists of variables instead of
 #' dataframes.}
@@ -30,20 +30,20 @@
 #' # In global environement
 #' aa = rep(10, 5)
 #' b = rep(20, 5)
-#' a_1 = rep(1, 5)
-#' a_2 = rep(2, 5)
-#' a_3 = rep(3, 5)
-#' a_4 = rep(4, 5)
-#' a_5 = rep(5, 5)
+#' a1 = rep(1, 5)
+#' a2 = rep(2, 5)
+#' a3 = rep(3, 5)
+#' a4 = rep(4, 5)
+#' a5 = rep(5, 5)
 #' 
 #' # identical results
-#' vars_range("a_1", "a_5")
-#' a_1 %to% a_5
-#' vars("a_`1:5`")
-#' vars_pattern("^a_[0-9]$")
+#' vars_range("a1", "a5")
+#' a1 %to% a5
+#' vars("a`1:5`")
+#' vars_pattern("^a[0-9]$")
 #' 
 #' # sum each row
-#' sum_row(a_1 %to% a_5)
+#' sum_row(a1 %to% a5)
 #' 
 #' # In data.frame
 #' dfs = data.frame(
