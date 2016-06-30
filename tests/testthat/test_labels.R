@@ -200,7 +200,7 @@ expect_identical(labs4,make_labels(c("
                             ","","      \t\t"),code_position="left"))
 
 
-expect_error(make_labels("
+expect_identical(make_labels("
     1
     2
     3
@@ -211,7 +211,33 @@ expect_error(make_labels("
     8
     9
     10
-"))
+"), NULL)
+
+expect_identical(make_labels("
+    1  hi
+                             2
+                             3
+                             4
+                             5
+                             6
+                             7
+                             8
+                             9
+                             10 lo
+                             "), c(hi=1, lo = 10))
+
+expect_error(make_labels("
+    1
+                         2
+                         3
+                         wdwddde
+                         5
+                         6
+                         7
+                         8
+                         9
+                         10
+                         "))
 
 context("add_val_lab")
 vec = 1:5

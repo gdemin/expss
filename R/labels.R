@@ -354,11 +354,11 @@ make_labels=function(text, code_position=c("left","right")){
     res = res[res!=""]
     code_position = match.arg(code_position)
     if (code_position == "left") {
-        pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]+)(.+?)$"
+        pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]*)(.*?)$"
         code_pattern = "\\1\\2"
         label_pattern = "\\4"
     } else {
-        pattern = "^(.+?)([\\s\\t]+)(-*)([\\d\\.]+)$"
+        pattern = "^(.*?)([\\s\\t]*)(-*)([\\d\\.]+)$"
         code_pattern = "\\3\\4"
         label_pattern = "\\1"
         
@@ -367,7 +367,13 @@ make_labels=function(text, code_position=c("left","right")){
     code=as.numeric(gsub(pattern,code_pattern,res,perl=TRUE))
     #     if (!any(abs(floor(code)-code)>0)) code = as.integer(code)
     lab=gsub(pattern,label_pattern,res,perl=TRUE)
-    structure(code,names=lab)
+    code = code[!(lab %in% "")]
+    lab = lab[!(lab %in% "")]
+    if(length(lab)>0){
+        structure(code,names=lab)
+    } else {
+        NULL
+    }   
 }
 
 #' @export
