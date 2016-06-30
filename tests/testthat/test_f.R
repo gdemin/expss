@@ -35,3 +35,14 @@ expect_identical(f(unvl(vec_with_lab)),
                 factor(no_lab,levels =  c(1:2,5:6),labels= c("Fruits|1","Fruits|2","Fruits|5","Fruits|6")))
 
 
+context( "f - errors and warnings")
+
+a = 1
+class(a) = "labelled"
+attr(a, "labels") = c(a = 1, b = 1)
+expect_error(f(a))
+attr(a, "labels") = c(a = 1, a = 2)
+expect_warning(f(a))
+expect_identical(suppressWarnings(f(a)), factor(1, levels = 1:2, labels = c("a","a1")))
+attr(a, "labels") = c(a = 1, a = 2, a = 3)
+expect_identical(suppressWarnings(f(a)), factor(1, levels = 1:3, labels = c("a","a1","a2")))
