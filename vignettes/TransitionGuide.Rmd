@@ -1,187 +1,543 @@
 ---
-title: "Small transition guide"
+title: "Some examples"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Basic SPSS labels support in R}
+  %\VignetteIndexEntry{Some examples}
   %\VignetteEngine{knitr::rmarkdown}
   %\usepackage[utf8]{inputenc}
 ---
 ## Excel functions
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+library(expss)
+```
+
+Excel toy table:
+
+|       | A   | B   | C    |
+|:------|----:|----:|-----:|
+| **1** |  2  | 15  |  50  |
+| **2** |  1  | 70  |  80  |
+| **3** |  3  | 30  |  40  |
+| **4** |  2  | 30  |  40  |
+
+Code for creating the same table in R:
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+w = read.csv(text = "
+a,b,c
+2,15,50
+1,70,80
+3,30,40
+2,30,40"
+)
+
+```
+`w` is the name of our table.
+
 ##### IF
 
-**Excel**:
+**Excel: `IF(B1>60, 1, 0)`**
 
-IF(A1>0, 1, 0)
+**R:**
+Here we create new column with name `d` with results.
+```{r, eval=FALSE}
+w$d = ifelse(w$b>60, 1, 0)
+```
+If we need to use multiple transformations it is often convenient to use `modify` function. Inside `modify` we can put arbitrary number of statements.
 
-**R**: 
+```{r, eval=FALSE}
+w = modify(w, {
+    d = ifelse(b>60, 1, 0)
+})
 ```
-ifelse(A>0, 1, 0)
-```
-    
+
 ##### COUNTIF
 
 Count 1's in entire dataset.
 
-**Excel**:
-```
-COUNTIF(A1:D4, 1)
-```
-**R**: 
-```
+**Excel: `COUNTIF(A1:С4, 1)`**
+
+**R:**
+```{r, eval=FALSE}
 count_if(1, w)
 ```
 or
-```
-count_if(1, a, b, c, d)
+```{r, eval=FALSE}
+with(w, count_if(1, a, b, c))
 ```    
 Count values greater than 1 in each row of dataset.
 
-**Excel**:
-```
-COUNTIF(A1:D1, ">1")
-```
+**Excel: `COUNTIF(A1:C1, ">1")`**
+
 **R**: 
+```{r, eval=FALSE}
+w$d = count_row_if(gt(1), w)  
 ```
-count_row_if(gt(1), w)  
+or
+
+```{r, eval=FALSE}
+w = modify(w, {
+    d = count_row_if(gt(1), a, b, c) 
+})
+
 ```
 
-Count values less than or equal to 1 in column of dataset.
+Count values less than or equal to 1 in column A of dataset.
 
-**Excel**:
-```
-COUNTIF(A1:A4, "<=1")
-```
+**Excel: `COUNTIF(A1:A4, "<=1")`**
+
 **R**: 
-```
-count_col_if(lte(1), a)
+```{r, eval=FALSE}
+count_col_if(lte(1), w$a)
 ```
 
-VLOOKUP.
+Table of criteria:
 
-**Excel**:
+| Excel   |   R       |
+|---------|-----------|
+| "<1"    |   lt(1)   |
+| "<=1"   |   lte(1)  |
+| "<>1"	  |   neq(1)  |
+| "=1"    |   eq(1)   |
+| ">=1"   |   gte(1)  |
+| ">1"    |   gt(1)   |
+
+
+
+##### SUM/AVERAGE
+Sum all values in dataset.
+
+**Excel: `SUM(A1:С4)`**
+
+**R:**
+```{r, eval=FALSE}
+sum(w, na.rm = TRUE)
 ```
-COUNTIF(A1:A4, "<=1")
-```
+
+Calculate average of each row of dataset.
+
+**Excel: `AVERAGE(A1:C1)`**
+
 **R**: 
+```{r, eval=FALSE}
+w$d = mean_row(w)  
 ```
-count_col_if(lte(1), a)
+or
+
+```{r, eval=FALSE}
+w = modify(w, {
+    d = mean_row(a, b, c) 
+})
+
 ```
 
-##### SUMIF
+Sum values of column `A` of dataset.
+
+**Excel: `SUM(A1:A4)`**
+
+**R**: 
+```{r, eval=FALSE}
+sum_col(w$a)
+```
+
+##### SUMIF/AVERAGE_IF
+Sum values greater than 40 in entire dataset.
+
+**Excel: `SUMIF(A1:С4, ">40")`**
+
+**R:**
+```{r, eval=FALSE}
+sum_if(gt(40), w)
+```
+or
+```{r, eval=FALSE}
+with(w, sum_if(gt(40), a, b, c))
+```    
+Sum values less than 40 in each row of dataset.
+
+**Excel: `SUMIF(A1:C1, "<40")`**
+
+**R**: 
+```{r, eval=FALSE}
+w$d = sum_row_if(lt(40), w)  
+```
+or
+
+```{r, eval=FALSE}
+w = modify(w, {
+    d = sum_row_if(lt(40), a, b, c) 
+})
+
+```
+
+Calculate average of `B` column with column `A` values less than 3.
+
+**Excel: `AVERAGEIF(A1:A4, "<3", B1:B4)`**
+
+**R**: 
+```{r, eval=FALSE}
+mean_col_if(lt(3), w$a, data = w$b)
+```
+or, if we want calculate means for both `b` and `c` columns:
+```{r, eval=FALSE}
+with(w, mean_col_if(lt(3), a, data = dtfrm(b, c)))
+```
+
+##### VLOOKUP
+
+Our dictionary for lookup:
+
+|       | X   | Y        |
+|:------|----:|:---------|
+| **1** |  1  | apples   |
+| **2** |  2  | oranges  |
+| **3** |  3  | peaches  |
 
 
+Code for creating the same dictionary in R:
+
+```{r, eval=FALSE}
+dict = read.csv(text = "
+x,y
+1,apples
+2,oranges
+3,peaches",
+stringsAsFactors = FALSE
+)
+```
+
+**Excel: `VLOOKUP(A1, $X$1:$Y$3, 2, FALSE)`**
+
+**R**: 
+```{r, eval=FALSE}
+w$d = vlookup(w$a, dict, 2)
+```
+or, we can use column names:
+```{r, eval=FALSE}
+w$d = vlookup(w$a, dict, "y")
+```
 
 ## SPSS functions
 
 ##### COMPUTE
 
-COMPUTE a = 1
-a = 1
+**SPSS**:
+```
+COMPUTE d = 1.
+```
+
+**R**:
+```{r, eval=FALSE}
+w$d = 1
+```
 or, in specific data.frame
 
+```{r, results='hide', message=FALSE, warning=FALSE}
 default_dataset(w)
 
 .compute({
-    a = 1
+    d = 1
 })
-There are can be arbitrary number of statements inside `modify`.
+```
+There are can be arbitrary number of statements inside `.compute`.
 
 ##### IF
 
-IF(a = 3) b = 2.
+**SPSS**:
+```
+IF(a = 3) d = 2.
+```
 
+**R**:
+
+Default dataset should be already predefined as in previous example.
+```{r, eval=FALSE}
 .compute({
-    b = ifelse(a == 3, 2, NA)
+    d = ifelse(a == 3, 2, NA)
 })
+```
+or,
 
+```{r, eval=FALSE}
+.compute({
+    d = ifs(a == 3 ~ 2)
+})
+```
 
 ##### DO IF
-DO IF (a>3).
-    COMPUTE b = 4.
+
+**SPSS**:
+```
+DO IF (a>1).
+    COMPUTE d = 4.
 END IF.
+```
 
-.do_if(a>3, {
-    b = 4
+**R**:
+```{r, eval=FALSE}
+.do_if(a>1, {
+    d = 4
 })
+```
 
+There are can be arbitrary number of statements inside `.do_if`.
 
 ##### COUNT
 
+**SPSS**:
+```
 COUNT cnt = a1 TO a5 (LO THRU HI).
+```
+**R**:
+```{r, eval=FALSE}
 cnt = count_row_if(lo %thru% hi, a1 %to% a5)
+```
 
+**SPSS**:
+```
 COUNT cnt = a1 TO a5 (SYSMIS).
+```
+**R**:
+```{r, eval=FALSE}
 cnt = count_row_if(NA, a1 %to% a5)
+```
 
+**SPSS**:
+```
 COUNT cnt = a1 TO a5 (1 THRU 5).
+```
+**R**:
+```{r, eval=FALSE}
 cnt = count_row_if(1 %thru% 5, a1 %to% a5)
+```
 
-COUNT cnt = a1 TO a5 (1 THRU 5).
-cnt = count_row_if(1 %thru% 5, a1 %to% a5)
-
+**SPSS**:
+```
 COUNT cnt = a1 TO a5 (1 THRU HI).
+```
+**R**:
+```{r, eval=FALSE}
 cnt = count_row_if(1 %thru% hi, a1 %to% a5)
-or
+```
+or,
+```{r, eval=FALSE}
 cnt = count_row_if(gte(1), a1 %to% a5)
+```
 
+**SPSS**:
+```
 COUNT cnt = a1 TO a5 (LO THRU 1).
+```
+**R**:
+```{r, eval=FALSE}
 cnt = count_row_if(lo %thru% 1, a1 %to% a5)
-or
+```
+or,
+```{r, eval=FALSE}
 cnt = count_row_if (lte(1), a1 %to% a5)
+```
 
+**SPSS**:
+```
 COUNT cnt = a1 TO a5 (1 THRU 5, 99).
+```
+**R**:
+```{r, eval=FALSE}
 cnt = count_row_if(1 %thru% 5 | 99, a1 %to% a5)
+```
 
-
+**SPSS**:
+```
 COUNT cnt = a1 TO a5(1,2,3,4,5, SYSMIS).
+```
+
+**R**:
+```{r, eval=FALSE}
 cnt = count_row_if(c(1:5, NA), a1 %to% a5)
+```
 
-#### RECODE
+`count_row_if` can be used with default dataset inside the `.compute`.
 
-RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
+##### RECODE
 
+**SPSS**:
+```
+RECODE V1 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
+```
+**R**:
+```{r, eval=FALSE}
 if_val(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, . ~ NA)
-
-
+```
+**SPSS**:
+```
 RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
-
-if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, . ~ 0)
-
+```
+**R**:
+```{r, eval=FALSE}
+if_val(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, . ~ 0)
+```
+**SPSS**:
+```
 RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). 
-
-if_val(strngvar, c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', . ~ ' ')
-
+```
+**R**:
+```{r, eval=FALSE}
+if_val(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', . ~ ' ')
+```
+**SPSS**:
+```
 RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
-
+```
+**R**:
+```{r, eval=FALSE}
 voter = if_val(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
+```
 
-#### Some functions
+`if_val` can be used with default dataset inside the `.compute`.
 
-MISSING  is.na()
+##### VARIABLE LABELS
+**SPSS**:
+```
+VARIABLE LABELS a "Fruits"
+                b "Cost"
+                c "Price".
+```
+**R**:
+```{r, results='hide'}
+.compute({
+    var_lab(a) = "Fruits"
+    var_lab(b) = "Cost"
+    var_lab(c) = "Price"
+})
+```
 
-SYSMIS NA
+##### VALUE LABELS
+**SPSS**:
+```
+VALUE LABELS a
+    1 "apples"
+    2 "oranges"
+    3 "peaches". 
+```
 
-LO lo
-HI hi
-THRU %thru%
+**R**:
+```{r, results='hide'}
+.compute({
+    val_lab(a) = ml_left("
+        1 apples
+        2 oranges
+        3 peaches 
+    ")
+})
+```
+or, without using default dataset:
+```{r, eval=FALSE}
+val_lab(w$a) = ml_left("
+    1 apples
+    2 oranges
+    3 peaches 
+")
 
-ANY any_in_row()
-ALL all_in_row()
+```
+##### Simple tables
+**R**:
+```{r}
+fre(w$a) # Frequency of fruits
+cro_cpct(w$b, w$a) # Column percent of cost by fruits
+cro_mean(dtfrm(w$b, w$c), w$a) # Mean cost and price by fruits
+```
+or, the same with default dataset:
+```{r, eval=FALSE}
+.fre(a) # Frequency of fruits
+.cro_cpct(b, a) # Column percent of cost by fruits
+.cro_mean(dtfrm(b, c), a) # Mean cost and price by fruits
+```
 
-#### VARIABLE LABELS
+
+## Session example
+
+Rather artificial dataset is containing raw data from product test of two 
+samples of chocolate sweets. 150 respondents tested two kinds of sweets 
+(codenames: VSX123 and SDF546). Sample was divided into two groups (cells) of 75
+respondents in each group. In cell 1 product VSX123 was presented first and then
+SDF546. In cell 2 sweets were presented in reversed order. There are screening
+questions at the beginning of the questionnaire.  Questions about respondent
+impressions about first product are in the block A (and about second tested
+product in the block B). At the end of the questionnaire  there are questions
+about preferences between sweets.
+
+List of variables:
+
+- `id` Respondent Id
+- `cell` First tested product (cell number)
+- `s2a` Age
+- `a1_1-a1_6` What did you like in these sweets? Multiple response. First tested product
+- `a22` Overall liking. First tested product
+- `b1_1-b1_6` What did you like in these sweets? Multiple response. Second tested product
+- `b22` Overall liking. Second tested product
+- `c1` Preferences
+
+```{r}
+library(expss)
+data(product_test)
+
+default_dataset(product_test)
+
+## here we recode variables from first/second tested product to separate variables for each product
+
+# create empty variables - 'h' variables for VSX123 and 'p' variables for 'SDF456'
+.set(c("h1_`1:6`","h22", "p1_`1:6`", "p22"))
+
+# recode variables according to their cells
+.recode(vars("h1_`1:6`","h22", "p1_`1:6`", "p22"), 
+        cell == 1 ~ vars("a1_`1:6`","a22", "b1_`1:6`", "b22"),
+        cell == 2 ~ vars("b1_`1:6`","b22", "a1_`1:6`", "a22")
+)
+
+# here we prepare codeframe for future usage
+codeframe_likes = ml_left("
+1 Liked everything
+2 Disliked everything
+3 Chocolate
+4 Appearance
+5 Taste
+6 Stuffing
+7 Nuts
+8 Consistency
+98 Other
+99 Hard to answer
+")
+
+.compute({
+    # recode age by groups
+    age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
+    var_lab(age_cat) = "Age"
+    val_lab(age_cat) = c("18 - 25" = 1, "26 - 35" = 2)
+    # recode preferences from first/second product to TRUE names
+    # for first cell there are no changes, for second cell we should change 1 and 2.
+    c1r = if_val(c1, cell == 1 ~ c1, 1 ~ 2, 2 ~ 1)
+    var_lab(c1r) = "Preferences"
+    val_lab(c1r) = ml_left("
+        1 VSX123 
+        2 SDF456
+        3 Hard to say
+    ")
+    
+    
+    
+})
 
 
-#### VALUE LABELS
 
-#### Simple tables
-
-
-
-
-#### Session example
-
-
+```
+загрузка
+групировка возраста
+перекодировка 
+метки
+подсчет лайков и дислайков
+разбивка по возрасту предпочтений, лайков и дислайков
+средние оценки и кол-во лайков/дислайков
 
 
 
