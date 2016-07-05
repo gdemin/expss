@@ -253,7 +253,7 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
     labels = rownames(res)
     if(is.null(labels)) labels = character(0)
     res = data.frame(labels = labels, res, stringsAsFactors = FALSE, check.names = FALSE)
-    row.names(res) = NULL
+    rownames(res) = NULL
     list(freq = res, not_nas = not_nas, nas = nas, total = total) 
     
 }
@@ -290,6 +290,7 @@ cro = function(x, predictor, weight = NULL){
     colnames(res)[1] = varlab
     colnames(res)[NCOL(res)] = "#Total"
     class(res) = union("simple_table", class(res))
+    rownames(res) = NULL
     res
     
 }
