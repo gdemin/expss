@@ -5,7 +5,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Some examples}
   %\VignetteEngine{knitr::rmarkdown}
-  %\usepackage[utf8]{inputenc}
+  %\VignetteEncoding{cp1251}
 ---
 ## Excel functions
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
@@ -56,7 +56,7 @@ w = modify(w, {
 
 Count 1's in entire dataset.
 
-**Excel: `COUNTIF(A1:С4, 1)`**
+**Excel: `COUNTIF(A1:C4, 1)`**
 
 **R:**
 ```{r, eval=FALSE}
@@ -108,7 +108,7 @@ Table of criteria:
 ##### SUM/AVERAGE
 Sum all values in dataset.
 
-**Excel: `SUM(A1:С4)`**
+**Excel: `SUM(A1:C4)`**
 
 **R:**
 ```{r, eval=FALSE}
@@ -144,7 +144,7 @@ sum_col(w$a)
 ##### SUMIF/AVERAGE_IF
 Sum values greater than 40 in entire dataset.
 
-**Excel: `SUMIF(A1:С4, ">40")`**
+**Excel: `SUMIF(A1:C4, ">40")`**
 
 **R:**
 ```{r, eval=FALSE}
@@ -457,15 +457,14 @@ or, the same with default dataset:
 
 ## Session example
 
-Rather artificial dataset is containing raw data from product test of two 
-samples of chocolate sweets. 150 respondents tested two kinds of sweets 
-(codenames: VSX123 and SDF546). Sample was divided into two groups (cells) of 75
-respondents in each group. In cell 1 product VSX123 was presented first and then
-SDF546. In cell 2 sweets were presented in reversed order. There are screening
-questions at the beginning of the questionnaire.  Questions about respondent
-impressions about first product are in the block A (and about second tested
-product in the block B). At the end of the questionnaire  there are questions
-about preferences between sweets.
+It is rather artificial dataset with data from product test of two samples of
+chocolate sweets. 150 respondents tested two kinds of sweets (codenames:
+VSX123 and SDF546). Sample was divided into two groups (cells) of 75
+respondents in each group. In cell 1 product VSX123 was presented first and
+then SDF546. In cell 2 sweets were presented in reversed order. Questions
+about respondent impressions about first product are in the block A (and
+about second tested product in the block B). At the end of the questionnaire 
+there is a question about preferences between sweets.
 
 List of variables:
 
@@ -473,13 +472,15 @@ List of variables:
 - `cell` First tested product (cell number)
 - `s2a` Age
 - `a1_1-a1_6` What did you like in these sweets? Multiple response. First tested product
-- `a22` Overall liking. First tested product
+- `a22` Overall quality. First tested product
 - `b1_1-b1_6` What did you like in these sweets? Multiple response. Second tested product
-- `b22` Overall liking. Second tested product
+- `b22` Overall quality. Second tested product
 - `c1` Preferences
 
 ```{r}
 library(expss)
+library(knitr)
+options(digits = 2) # for pretty printing
 data(product_test)
 
 default_dataset(product_test)
@@ -495,7 +496,7 @@ default_dataset(product_test)
         cell == 2 ~ vars("b1_`1:6`","b22", "a1_`1:6`", "a22")
 )
 
-# here we prepare codeframe for future usage
+# here we prepare likes codeframe for future usage
 codeframe_likes = ml_left("
 1 Liked everything
 2 Disliked everything
@@ -509,14 +510,24 @@ codeframe_likes = ml_left("
 99 Hard to answer
 ")
 
+# recode preferences from first/second product to true names
+# for first cell there are no changes, for second cell we should change 1 and 2.
+.do_if(cell == 1, {
+    c1r = c1
+})
+.do_if(cell == 2, {
+    c1r = if_val(c1, 1 ~ 2, 2 ~ 1)
+})
 .compute({
     # recode age by groups
     age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
-    var_lab(age_cat) = "Age"
-    val_lab(age_cat) = c("18 - 25" = 1, "26 - 35" = 2)
-    # recode preferences from first/second product to TRUE names
-    # for first cell there are no changes, for second cell we should change 1 and 2.
-    c1r = if_val(c1, cell == 1 ~ c1, 1 ~ 2, 2 ~ 1)
+    # counter number of likes
+    # codes 1, 3-98. 2 and 9 are ignored.
+    h_likes = count_row_if(1 | 3 %thru% 98, h1_1 %to% h1_6) 
+    p_likes = count_row_if(1 | 3 %thru% 98, p1_1 %to% p1_6) 
+    
+    # Apply labels
+
     var_lab(c1r) = "Preferences"
     val_lab(c1r) = ml_left("
         1 VSX123 
@@ -524,20 +535,44 @@ codeframe_likes = ml_left("
         3 Hard to say
     ")
     
+    var_lab(age_cat) = "Age"
+    val_lab(age_cat) = c("18 - 25" = 1, "26 - 35" = 2)
     
+    var_lab(h1_1) = "Likes. VSX123"
+    var_lab(p1_1) = "Likes. SDF456"
+    val_lab(h1_1) = codeframe_likes
+    val_lab(p1_1) = codeframe_likes
     
+    var_lab(h_likes) = "Number of likes. VSX123"
+    var_lab(p_likes) = "Number of likes. SDF456"
+    
+    var_lab(h22) = "Overall quality. VSX123"
+    var_lab(p22) = "Overall quality. SDF456"
+    val_lab(h22) = ml_left("
+                           1 Extremely poor 
+                           2 Very poor
+                           3 Quite poor
+                           4 Neither good, nor poor
+                           5 Quite good
+                           6 Very good
+                           7 Excellent
+                           ")
+    val_lab(p22) = val_lab(h22)
 })
 
-
+# Tables. 
+# 'kable' function just makes tables prettier in this document.   
+# column percents.
+kable(.fre(c1r))
+# is there signifincant difference between preferences?
+# '... %d% 3' remove 'hard to say' from vector 
+.with(chisq.test(table(c1r %d% 3))) # yes, it is significant
+kable(.cro_cpct(c1r, age_cat))
+kable(.cro_cpct(h22, age_cat))
+kable(.cro_cpct(p22, age_cat))
+kable(.cro_cpct(h1_1 %to% h1_6, age_cat))
+kable(.cro_cpct(p1_1 %to% p1_6, age_cat))
+# means
+kable(.cro_mean(dtfrm(h22, p22, h_likes, p_likes), age_cat))
 
 ```
-загрузка
-групировка возраста
-перекодировка 
-метки
-подсчет лайков и дислайков
-разбивка по возрасту предпочтений, лайков и дислайков
-средние оценки и кол-во лайков/дислайков
-
-
-
