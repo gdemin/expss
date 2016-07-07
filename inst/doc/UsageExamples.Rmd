@@ -45,7 +45,7 @@ a,b,c
 **Excel: `IF(B1>60, 1, 0)`**
 
 **R:**
-Here we create new column with name `d` with results.
+Here we create new column with name `d` with results. `ifelse` function is from base R not from 'expss' package but included here for completeness.
 ```{r, eval=FALSE}
 w$d = ifelse(w$b>60, 1, 0)
 ```
@@ -149,7 +149,7 @@ Sum values of column `A` of dataset.
 sum_col(w$a)
 ```
 
-##### SUMIF/AVERAGE_IF
+##### SUMIF/AVERAGEIF
 Sum values greater than 40 in entire dataset.
 
 **Excel: `SUMIF(A1:C4, ">40")`**

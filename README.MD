@@ -33,7 +33,7 @@ _____
 **Excel: `IF(B1>60, 1, 0)`**
 
 **R:**
-Here we create new column with name `d` with results.
+Here we create new column with name `d` with results. `ifelse` function is from base R not from 'expss' package but included here for completeness.
 ```
 w$d = ifelse(w$b>60, 1, 0)
 ```

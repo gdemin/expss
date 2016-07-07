@@ -127,7 +127,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="if" class="section level5">
 <h5>IF</h5>
 <p><strong>Excel: <code>IF(B1&gt;60, 1, 0)</code></strong></p>
-<p><strong>R:</strong> Here we create new column with name <code>d</code> with results.</p>
+<p><strong>R:</strong> Here we create new column with name <code>d</code> with results. <code>ifelse</code> function is from base R not from ‘expss’ package but included here for completeness.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">ifelse</span>(w$b&gt;<span class="dv">60</span>, <span class="dv">1</span>, <span class="dv">0</span>)</code></pre></div>
 <p>If we need to use multiple transformations it is often convenient to use <code>modify</code> function. Inside <code>modify</code> we can put arbitrary number of statements:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">modify</span>(w, {
@@ -212,8 +212,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p><strong>R</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_col</span>(w$a)</code></pre></div>
 </div>
-<div id="sumifaverage_if" class="section level5">
-<h5>SUMIF/AVERAGE_IF</h5>
+<div id="sumifaverageif" class="section level5">
+<h5>SUMIF/AVERAGEIF</h5>
 <p>Sum values greater than 40 in entire dataset.</p>
 <p><strong>Excel: <code>SUMIF(A1:C4, &quot;&gt;40&quot;)</code></strong></p>
 <p><strong>R:</strong></p>
