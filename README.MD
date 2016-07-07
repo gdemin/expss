@@ -1,11 +1,8 @@
 ﻿# Introduction
 
-*expss* package implements some popular functions from spreadsheets and SPSS Statistics software. Implementations are not complete copies of their originals. I try to make them consistent with other R functions. See examples below. You can get help about any function by typing `?function_name` in the R console.
+*expss* package implements in R some popular functions from spreadsheets and SPSS Statistics software. See examples below. Package can be installed by typing `install.packages("expss")` in R/RStudio console. You can get help about any function by typing `?function_name` in the R console.
 
 # Excel functions
-```
-library(expss)
-```
 
 Excel toy table:
 
