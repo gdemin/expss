@@ -27,7 +27,8 @@ a,b,c
 ```
 `w` is the name of our table.
 
-### IF
+##### IF
+_____
 
 **Excel: `IF(B1>60, 1, 0)`**
 
@@ -47,7 +48,9 @@ w = modify(w, {
 })
 ```
 
-### COUNTIF
+##### COUNTIF
+
+_______
 
 Count 1's in entire dataset.
 
@@ -100,7 +103,7 @@ count_col_if(lte(1), w$a)
 
 
 
-### SUM/AVERAGE
+##### SUM/AVERAGE
 Sum all values in dataset.
 
 **Excel: `SUM(A1:C4)`**
@@ -136,7 +139,7 @@ Sum values of column `A` of dataset.
 sum_col(w$a)
 ```
 
-### SUMIF/AVERAGE_IF
+##### SUMIF/AVERAGE_IF
 Sum values greater than 40 in entire dataset.
 
 **Excel: `SUMIF(A1:C4, ">40")`**
@@ -179,7 +182,7 @@ or, if we want calculate means for both `b` and `c` columns:
 with(w, mean_col_if(lt(3), a, data = dtfrm(b, c)))
 ```
 
-### VLOOKUP
+##### VLOOKUP
 
 Our dictionary for lookup:
 
@@ -215,7 +218,7 @@ w$d = vlookup(w$a, dict, "y")
 
 # SPSS functions
 
-### COMPUTE
+##### COMPUTE
 
 **SPSS**:
 ```
@@ -237,7 +240,7 @@ default_dataset(w)
 ```
 There can be arbitrary number of statements inside `.compute`.
 
-### IF
+##### IF
 
 **SPSS**:
 ```
@@ -260,7 +263,7 @@ or,
 })
 ```
 
-### DO IF
+##### DO IF
 
 **SPSS**:
 ```
@@ -278,7 +281,7 @@ END IF.
 
 There can be arbitrary number of statements inside `.do_if`.
 
-### COUNT
+##### COUNT
 
 **SPSS**:
 ```
@@ -354,7 +357,7 @@ cnt = count_row_if(c(1:5, NA), a1 %to% a5)
 
 `count_row_if` can be used with default dataset inside the `.compute`.
 
-### RECODE
+##### RECODE
 
 **SPSS**:
 ```
@@ -391,7 +394,7 @@ voter = if_val(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 
 `if_val` can be used with default dataset inside the `.compute`.
 
-### VARIABLE LABELS
+##### VARIABLE LABELS
 **SPSS**:
 ```
 VARIABLE LABELS a "Fruits"
@@ -407,7 +410,7 @@ VARIABLE LABELS a "Fruits"
 })
 ```
 
-### VALUE LABELS
+##### VALUE LABELS
 **SPSS**:
 ```
 VALUE LABELS a
@@ -435,7 +438,7 @@ val_lab(w$a) = ml_left("
 ")
 
 ```
-### Simple tables
+##### Simple tables
 **R**:
 ```{r}
 fre(w$a) # Frequency of fruits
