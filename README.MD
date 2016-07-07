@@ -1,4 +1,11 @@
-﻿## Excel functions
+﻿# Introduction
+
+*expss* package implements some popular functions from spreadsheets and SPSS Statistics software. Implementations are not complete copies of their originals. I try to make them consistent with other R functions. See examples below. You can get help about any function by typing `?function_name` in the R console.
+
+# Excel functions
+```
+library(expss)
+```
 
 Excel toy table:
 
@@ -23,7 +30,7 @@ a,b,c
 ```
 `w` is the name of our table.
 
-##### IF
+## IF
 
 **Excel: `IF(B1>60, 1, 0)`**
 
@@ -32,19 +39,22 @@ Here we create new column with name `d` with results.
 ```
 w$d = ifelse(w$b>60, 1, 0)
 ```
-If we need to use multiple transformations it is often convenient to use `modify` function. Inside `modify` we can put arbitrary number of statements.
+If we need to use multiple transformations it is often convenient to use `modify` function. Inside `modify` we can put arbitrary number of statements:
 
 ```
 w = modify(w, {
     d = ifelse(b>60, 1, 0)
+    e = 42
+    abc_sum = sum_row(a, b, c)
+    abc_mean = mean_row(a, b, c)
 })
 ```
 
-##### COUNTIF
+## COUNTIF
 
 Count 1's in entire dataset.
 
-**Excel: `COUNTIF(A1:С4, 1)`**
+**Excel: `COUNTIF(A1:C4, 1)`**
 
 **R:**
 ```
@@ -53,7 +63,7 @@ count_if(1, w)
 or
 ```
 with(w, count_if(1, a, b, c))
-```
+```    
 Count values greater than 1 in each row of dataset.
 
 **Excel: `COUNTIF(A1:C1, ">1")`**
@@ -80,7 +90,7 @@ Count values less than or equal to 1 in column A of dataset.
 count_col_if(lte(1), w$a)
 ```
 
-Table of criteria:
+**Table of criteria:**
 
 | Excel   |   R       |
 |---------|-----------|
@@ -93,10 +103,10 @@ Table of criteria:
 
 
 
-##### SUM/AVERAGE
+## SUM/AVERAGE
 Sum all values in dataset.
 
-**Excel: `SUM(A1:С4)`**
+**Excel: `SUM(A1:C4)`**
 
 **R:**
 ```
@@ -129,10 +139,10 @@ Sum values of column `A` of dataset.
 sum_col(w$a)
 ```
 
-##### SUMIF/AVERAGE_IF
+## SUMIF/AVERAGE_IF
 Sum values greater than 40 in entire dataset.
 
-**Excel: `SUMIF(A1:С4, ">40")`**
+**Excel: `SUMIF(A1:C4, ">40")`**
 
 **R:**
 ```
@@ -141,7 +151,7 @@ sum_if(gt(40), w)
 or
 ```
 with(w, sum_if(gt(40), a, b, c))
-```
+```    
 Sum values less than 40 in each row of dataset.
 
 **Excel: `SUMIF(A1:C1, "<40")`**
@@ -172,7 +182,7 @@ or, if we want calculate means for both `b` and `c` columns:
 with(w, mean_col_if(lt(3), a, data = dtfrm(b, c)))
 ```
 
-##### VLOOKUP
+## VLOOKUP
 
 Our dictionary for lookup:
 
@@ -206,9 +216,9 @@ or, we can use column names:
 w$d = vlookup(w$a, dict, "y")
 ```
 
-## SPSS functions
+# SPSS functions
 
-##### COMPUTE
+## COMPUTE
 
 **SPSS**:
 ```
@@ -228,9 +238,9 @@ default_dataset(w)
     d = 1
 })
 ```
-There are can be arbitrary number of statements inside `.compute`.
+There can be arbitrary number of statements inside `.compute`.
 
-##### IF
+## IF
 
 **SPSS**:
 ```
@@ -253,7 +263,7 @@ or,
 })
 ```
 
-##### DO IF
+## DO IF
 
 **SPSS**:
 ```
@@ -269,9 +279,9 @@ END IF.
 })
 ```
 
-There are can be arbitrary number of statements inside `.do_if`.
+There can be arbitrary number of statements inside `.do_if`.
 
-##### COUNT
+## COUNT
 
 **SPSS**:
 ```
@@ -347,7 +357,7 @@ cnt = count_row_if(c(1:5, NA), a1 %to% a5)
 
 `count_row_if` can be used with default dataset inside the `.compute`.
 
-##### RECODE
+## RECODE
 
 **SPSS**:
 ```
@@ -384,7 +394,7 @@ voter = if_val(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 
 `if_val` can be used with default dataset inside the `.compute`.
 
-##### VARIABLE LABELS
+## VARIABLE LABELS
 **SPSS**:
 ```
 VARIABLE LABELS a "Fruits"
@@ -400,7 +410,7 @@ VARIABLE LABELS a "Fruits"
 })
 ```
 
-##### VALUE LABELS
+## VALUE LABELS
 **SPSS**:
 ```
 VALUE LABELS a
@@ -428,9 +438,9 @@ val_lab(w$a) = ml_left("
 ")
 
 ```
-##### Simple tables
+## Simple tables
 **R**:
-```
+```{r}
 fre(w$a) # Frequency of fruits
 cro_cpct(w$b, w$a) # Column percent of cost by fruits
 cro_mean(dtfrm(w$b, w$c), w$a) # Mean cost and price by fruits
@@ -440,11 +450,147 @@ or, the same with default dataset:
 .fre(a) # Frequency of fruits
 .cro_cpct(b, a) # Column percent of cost by fruits
 .cro_mean(dtfrm(b, c), a) # Mean cost and price by fruits
-
 ```
 
 
-## Session example
+# Session example
+
+It is rather artificial dataset with data from product test of two samples of
+chocolate sweets. 150 respondents tested two kinds of sweets (codenames:
+VSX123 and SDF546). Sample was divided into two groups (cells) of 75
+respondents in each group. In cell 1 product VSX123 was presented first and
+then SDF546. In cell 2 sweets were presented in reversed order. Questions
+about respondent impressions about first product are in the block A (and
+about second tested product in the block B). At the end of the questionnaire 
+there is a question about preferences between sweets.
+
+List of variables:
+
+- `id` Respondent Id
+- `cell` First tested product (cell number)
+- `s2a` Age
+- `a1_1-a1_6` What did you like in these sweets? Multiple response. First tested product
+- `a22` Overall quality. First tested product
+- `b1_1-b1_6` What did you like in these sweets? Multiple response. Second tested product
+- `b22` Overall quality. Second tested product
+- `c1` Preferences
+
+```{r}
+library(expss)
+library(knitr)
+options(digits = 2) # for pretty printing
+data(product_test)
+
+default_dataset(product_test)
+
+## here we recode variables from first/second tested product to separate variables for each product
+
+# create empty variables - 'h' variables for VSX123 and 'p' variables for 'SDF456'
+.set(c("h1_`1:6`","h22", "p1_`1:6`", "p22"))
+
+# recode variables according to their cells
+.recode(vars("h1_`1:6`","h22", "p1_`1:6`", "p22"), 
+        cell == 1 ~ vars("a1_`1:6`","a22", "b1_`1:6`", "b22"),
+        cell == 2 ~ vars("b1_`1:6`","b22", "a1_`1:6`", "a22")
+)
+
+# here we prepare likes codeframe for future usage
+codeframe_likes = ml_left("
+1 Liked everything
+2 Disliked everything
+3 Chocolate
+4 Appearance
+5 Taste
+6 Stuffing
+7 Nuts
+8 Consistency
+98 Other
+99 Hard to answer
+")
+
+# recode preferences from first/second product to true names
+# for first cell there are no changes, for second cell we should change 1 and 2.
+.do_if(cell == 1, {
+    c1r = c1
+})
+.do_if(cell == 2, {
+    c1r = if_val(c1, 1 ~ 2, 2 ~ 1)
+})
+.compute({
+    # recode age by groups
+    age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
+    # counter number of likes
+    # codes 1, 3-98. 2 and 9 are ignored.
+    h_likes = count_row_if(1 | 3 %thru% 98, h1_1 %to% h1_6) 
+    p_likes = count_row_if(1 | 3 %thru% 98, p1_1 %to% p1_6) 
+    
+    # Apply labels
+
+    var_lab(c1r) = "Preferences"
+    val_lab(c1r) = ml_left("
+        1 VSX123 
+        2 SDF456
+        3 Hard to say
+    ")
+    
+    var_lab(age_cat) = "Age"
+    val_lab(age_cat) = c("18 - 25" = 1, "26 - 35" = 2)
+    
+    var_lab(h1_1) = "Likes. VSX123"
+    var_lab(p1_1) = "Likes. SDF456"
+    val_lab(h1_1) = codeframe_likes
+    val_lab(p1_1) = codeframe_likes
+    
+    var_lab(h_likes) = "Number of likes. VSX123"
+    var_lab(p_likes) = "Number of likes. SDF456"
+    
+    var_lab(h22) = "Overall quality. VSX123"
+    var_lab(p22) = "Overall quality. SDF456"
+    val_lab(h22) = ml_left("
+                           1 Extremely poor 
+                           2 Very poor
+                           3 Quite poor
+                           4 Neither good, nor poor
+                           5 Quite good
+                           6 Very good
+                           7 Excellent
+                           ")
+    val_lab(p22) = val_lab(h22)
+})
+
+# Tables. 
+# 'kable' function just makes tables prettier in this document. 
+
+# column percents.
+kable(.fre(c1r))
+# is there significant difference between preferences?
+# '... %d% 3' remove 'hard to say' from vector 
+.with(chisq.test(table(c1r %d% 3))) # yes, it is significant
+kable(.cro_cpct(c1r, age_cat))
+kable(.cro_cpct(h22, age_cat))
+kable(.cro_cpct(p22, age_cat))
+kable(.cro_cpct(h1_1 %to% h1_6, age_cat))
+kable(.cro_cpct(p1_1 %to% p1_6, age_cat))
+# means
+kable(.cro_mean(dtfrm(h22, p22, h_likes, p_likes), age_cat))
+
+```
+
+We can save labelled dataset as *.csv file with accompanying R code for labelling.
+
+```
+write_labelled_csv(product_test, file  filename = "product_test.csv")
+```
+
+Or, we can save dataset as *.csv file with SPSS syntax to read data and apply labels.
+
+```
+write_labelled_spss(product_test, file  filename = "product_test.csv")
+```
+
+
+
+
 
 
 
