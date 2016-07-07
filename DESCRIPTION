@@ -2,7 +2,7 @@ Package: expss
 Type: Package
 Title: Some Useful Functions from Spreadsheets and SPSS Statistics
 Version: 0.5
-Date: 2016-06-24
+Date: 2016-07-07
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
 URL: https://github.com/gdemin/expss
@@ -11,7 +11,7 @@ Depends:
 Imports: foreign, utils, stats
 Suggests:
     knitr
-Description: Package implements several popular functions from Excel and SPSS Statistics. It aimed to help people to move data processing workflow from.
+Description: Package implements several popular functions from Excel (COUNTIF, VLOOKUP, etc.) and SPSS Statistics (RECODE, COUNT, etc.). Also there are functions for basic tables with value labels/variable labels support. Package aimed to help people to move data processing workflow from Excel/SPSS to R.
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
