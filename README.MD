@@ -139,7 +139,7 @@ Sum values of column `A` of dataset.
 sum_col(w$a)
 ```
 
-##### SUMIF/AVERAGE_IF
+##### SUMIF/AVERAGEIF
 _______
 Sum values greater than 40 in entire dataset.
 
