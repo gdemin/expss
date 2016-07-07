@@ -11,7 +11,7 @@ Depends:
 Imports: foreign, utils, stats
 Suggests:
     knitr
-Description: Package implements several popular functions from Excel (COUNTIF, VLOOKUP, etc.) and SPSS Statistics (RECODE, COUNT, etc.). Also there are functions for basic tables with value labels/variable labels support. Package aimed to help people to move data processing workflow from Excel/SPSS to R.
+Description: Package implements several popular functions from Excel ('COUNTIF', 'VLOOKUP', etc.) and 'SPSS Statistics' ('RECODE', 'COUNT', etc.). Also there are functions for basic tables with value labels/variable labels support. Package aimed to help people to move data processing from Excel/SPSS to R.
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
