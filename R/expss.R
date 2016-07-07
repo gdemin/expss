@@ -1,8 +1,41 @@
-#' excel.link: convenient data exchange with Microsoft Excel
+#' expss: Some Useful Functions from Spreadsheets and SPSS Statistics
 #' 
-#' The excel.link package mainly consists of two rather independent parts: one
-#' is for transferring data/graphics to running instance of Excel, another part
-#' - work with data table in Excel in similar way as with usual data.frame.
+#' 'expss' package implements some popular functions from spreadsheets and SPSS
+#' Statistics software. Implementations are not complete copies of their
+#' originals. I try to make them consistent with other R functions. See examples in vignette and in help.
+#' 
+#' @section Excel:
+#' \itemize{
+#' \item{IF }{\link[base]{ifelse}}
+#' \item{AVERAGE }{\link{mean_row}}
+#' \item{SUM }{\link{sum_row}}
+#' \item{MIN }{\link{min_row}}
+#' \item{MAX }{\link{max_row}}
+#' \item{VLOOKUP }{\link{vlookup}}
+#' \item{COUNTIF }{\link{count_if}}
+#' \item{AVERAGEIF }{\link{mean_row_if}}
+#' \item{SUMIF }{\link{sum_row_if}}
+#' \item{MINIF }{\link{min_row_if}}
+#' \item{MAXIF }{\link{max_row_if}}
+#' \item{IFS }{\link{ifs}}
+#' \item{IFNA }{\link{if_na}}
+#' \item{MATCH }{\link{match_row}}
+#' \item{INDEX }{\link{index_row}}
+#' }
+#' @section SPSS:
+#' \itemize{
+#' \item{COMPUTE }{\link{modify}}
+#' \item{DO IF }{\link{modify_if}}
+#' \item{RECODE }{\link{if_val}}
+#' \item{COUNT }{\link{count_row_if}}
+#' \item{VARIABLE LABELS }{\link{var_lab}}
+#' \item{VALUE LABELS }{\link{val_lab}}
+#' \item{ANY }{\link{any_in_row}}
+#' \item{FREQUENCIES }{\link{fre}}
+#' \item{CROSSTABS }{\link{cro}}
+#' }
+#' 
+#' 
 #' @docType package
 #' @name expss
 NULL
