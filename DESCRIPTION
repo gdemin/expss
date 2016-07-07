@@ -11,7 +11,7 @@ Depends:
 Imports: foreign, utils, stats
 Suggests:
     knitr
-Description: Package implements several popular functions from Excel and SPSS Statistics to R. It aimed to help people to move data processing workflow from.
+Description: Package implements several popular functions from Excel and SPSS Statistics. It aimed to help people to move data processing workflow from.
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)

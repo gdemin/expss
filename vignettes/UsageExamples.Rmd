@@ -1,12 +1,17 @@
 ---
-title: "Some examples"
+title: "Usage Examples"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Some examples}
+  %\VignetteIndexEntry{Usage Examples}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{cp1251}
 ---
+
+## Introduction
+
+*expss* package implements some popular functions from spreadsheets and SPSS Statistics software. Implementations are not complete copies of their originals. I try to make them consistent with other R functions. See examples below. You can get help about any function by typing `?function_name` in the R console.
+
 ## Excel functions
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 library(expss)
@@ -44,11 +49,14 @@ Here we create new column with name `d` with results.
 ```{r, eval=FALSE}
 w$d = ifelse(w$b>60, 1, 0)
 ```
-If we need to use multiple transformations it is often convenient to use `modify` function. Inside `modify` we can put arbitrary number of statements.
+If we need to use multiple transformations it is often convenient to use `modify` function. Inside `modify` we can put arbitrary number of statements:
 
 ```{r, eval=FALSE}
 w = modify(w, {
     d = ifelse(b>60, 1, 0)
+    e = 42
+    abc_sum = sum_row(a, b, c)
+    abc_mean = mean_row(a, b, c)
 })
 ```
 
@@ -92,7 +100,7 @@ Count values less than or equal to 1 in column A of dataset.
 count_col_if(lte(1), w$a)
 ```
 
-Table of criteria:
+**Table of criteria:**
 
 | Excel   |   R       |
 |---------|-----------|
@@ -240,7 +248,7 @@ default_dataset(w)
     d = 1
 })
 ```
-There are can be arbitrary number of statements inside `.compute`.
+There can be arbitrary number of statements inside `.compute`.
 
 ##### IF
 
@@ -281,7 +289,7 @@ END IF.
 })
 ```
 
-There are can be arbitrary number of statements inside `.do_if`.
+There can be arbitrary number of statements inside `.do_if`.
 
 ##### COUNT
 
@@ -561,10 +569,11 @@ codeframe_likes = ml_left("
 })
 
 # Tables. 
-# 'kable' function just makes tables prettier in this document.   
+# 'kable' function just makes tables prettier in this document. 
+
 # column percents.
 kable(.fre(c1r))
-# is there signifincant difference between preferences?
+# is there significant difference between preferences?
 # '... %d% 3' remove 'hard to say' from vector 
 .with(chisq.test(table(c1r %d% 3))) # yes, it is significant
 kable(.cro_cpct(c1r, age_cat))
@@ -576,3 +585,23 @@ kable(.cro_cpct(p1_1 %to% p1_6, age_cat))
 kable(.cro_mean(dtfrm(h22, p22, h_likes, p_likes), age_cat))
 
 ```
+
+We can save labelled dataset as *.csv file with accompanying R code for labelling.
+
+```{r, eval=FALSE}
+write_labelled_csv(product_test, file  filename = "product_test.csv")
+```
+
+Or, we can save dataset as *.csv file with SPSS syntax to read data and apply labels.
+
+```{r, eval=FALSE}
+write_labelled_spss(product_test, file  filename = "product_test.csv")
+```
+
+
+
+
+
+
+
+
