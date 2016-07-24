@@ -1,4 +1,4 @@
-﻿# Introduction
+# Introduction
 
 *expss* package implements in R some popular functions from spreadsheets and SPSS Statistics software. See examples below. Package can be installed by typing `install.packages("expss")` in R/RStudio console. You can get help about any function by typing `?function_name` in the R console.
 
@@ -481,7 +481,6 @@ List of variables:
 
 ```{r}
 library(expss)
-library(knitr)
 options(digits = 2) # for pretty printing
 data(product_test)
 
@@ -563,20 +562,22 @@ codeframe_likes = ml_left("
 })
 
 # Tables. 
-# 'kable' function just makes tables prettier in this document. 
 
 # column percents.
-kable(.fre(c1r))
+.fre(c1r)
+
 # is there significant difference between preferences?
-# '... %d% 3' remove 'hard to say' from vector 
-.with(chisq.test(table(c1r %d% 3))) # yes, it is significant
-kable(.cro_cpct(c1r, age_cat))
-kable(.cro_cpct(h22, age_cat))
-kable(.cro_cpct(p22, age_cat))
-kable(.cro_cpct(h1_1 %to% h1_6, age_cat))
-kable(.cro_cpct(p1_1 %to% p1_6, age_cat))
+# 'na_if(c1r, 3)' remove 'hard to say' from vector 
+.with(chisq.test(table(na_if(c1r, 3)))) # yes, it is significant
+
+.cro_cpct(c1r, age_cat)
+.cro_cpct(h22, age_cat)
+.cro_cpct(p22, age_cat)
+.cro_cpct(h1_1 %to% h1_6, age_cat)
+.cro_cpct(p1_1 %to% p1_6, age_cat)
+
 # means
-kable(.cro_mean(dtfrm(h22, p22, h_likes, p_likes), age_cat))
+.cro_mean(dtfrm(h22, p22, h_likes, p_likes), age_cat)
 
 ```
 
