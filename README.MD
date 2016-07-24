@@ -523,7 +523,7 @@ codeframe_likes = ml_left("
     # recode age by groups
     age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
     # counter number of likes
-    # codes 1, 3-98. 2 and 9 are ignored.
+    # codes 1, 3-98. 2 and 99 are ignored.
     h_likes = count_row_if(1 | 3 %thru% 98, h1_1 %to% h1_6) 
     p_likes = count_row_if(1 | 3 %thru% 98, p1_1 %to% p1_6) 
     
