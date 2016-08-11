@@ -1,11 +1,12 @@
 Package: expss
 Type: Package
 Title: Some Useful Functions from Spreadsheets and 'SPSS' Statistics
-Version: 0.5.1
-Date: 2016-07-07
+Version: 0.5.5
+Date: 2016-08-30
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
 URL: https://github.com/gdemin/expss
+BugReports: https://github.com/gdemin/expss/issues
 Depends:
     R (>= 3.3)
 Imports: foreign, utils, stats
