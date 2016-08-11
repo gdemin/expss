@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2016-07-07" />
+<meta name="date" content="2016-08-12" />
 
 <title>Usage Examples</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Usage Examples</h1>
-<h4 class="date"><em>2016-07-07</em></h4>
+<h4 class="date"><em>2016-08-12</em></h4>
 
 
 
@@ -496,7 +496,7 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
     <span class="co"># recode age by groups</span>
     age_cat =<span class="st"> </span><span class="kw">if_val</span>(s2a, lo %thru%<span class="st"> </span><span class="dv">25</span> ~<span class="st"> </span><span class="dv">1</span>, lo %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">2</span>)
     <span class="co"># counter number of likes</span>
-    <span class="co"># codes 1, 3-98. 2 and 9 are ignored.</span>
+    <span class="co"># codes 1, 3-98. 2 and 99 are ignored.</span>
     h_likes =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> |<span class="st"> </span><span class="dv">3</span> %thru%<span class="st"> </span><span class="dv">98</span>, h1_1 %to%<span class="st"> </span>h1_6) 
     p_likes =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> |<span class="st"> </span><span class="dv">3</span> %thru%<span class="st"> </span><span class="dv">98</span>, p1_1 %to%<span class="st"> </span>p1_6) 
     
@@ -594,12 +594,12 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># is there significant difference between preferences?</span>
-<span class="co"># '... %d% 3' remove 'hard to say' from vector </span>
-<span class="kw">.with</span>(<span class="kw">chisq.test</span>(<span class="kw">table</span>(c1r %d%<span class="st"> </span><span class="dv">3</span>))) <span class="co"># yes, it is significant</span></code></pre></div>
+<span class="co"># 'na_if(c1r, 3)' remove 'hard to say' from vector </span>
+<span class="kw">.with</span>(<span class="kw">chisq.test</span>(<span class="kw">table</span>(<span class="kw">na_if</span>(c1r, <span class="dv">3</span>)))) <span class="co"># yes, it is significant</span></code></pre></div>
 <pre><code>## 
 ##  Chi-squared test for given probabilities
 ## 
-## data:  table(c1r %d% 3)
+## data:  table(na_if(c1r, 3))
 ## X-squared = 10, df = 1, p-value = 2e-04</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">.cro_cpct</span>(c1r, age_cat))</code></pre></div>
 <table>

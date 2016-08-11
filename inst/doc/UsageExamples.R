@@ -234,7 +234,7 @@ codeframe_likes = ml_left("
     # recode age by groups
     age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
     # counter number of likes
-    # codes 1, 3-98. 2 and 9 are ignored.
+    # codes 1, 3-98. 2 and 99 are ignored.
     h_likes = count_row_if(1 | 3 %thru% 98, h1_1 %to% h1_6) 
     p_likes = count_row_if(1 | 3 %thru% 98, p1_1 %to% p1_6) 
     
@@ -278,8 +278,8 @@ codeframe_likes = ml_left("
 # column percents.
 kable(.fre(c1r))
 # is there significant difference between preferences?
-# '... %d% 3' remove 'hard to say' from vector 
-.with(chisq.test(table(c1r %d% 3))) # yes, it is significant
+# 'na_if(c1r, 3)' remove 'hard to say' from vector 
+.with(chisq.test(table(na_if(c1r, 3)))) # yes, it is significant
 kable(.cro_cpct(c1r, age_cat))
 kable(.cro_cpct(h22, age_cat))
 kable(.cro_cpct(p22, age_cat))
