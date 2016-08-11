@@ -39,7 +39,7 @@ vector (possibly data.frame/matrix/list for \code{\%n_d\%}, \code{\%n_i\%})
 \description{
 \itemize{
 \item{\code{\%a\%}}{ a(ppends) second argument to first argument.}
-\item{\code{\%u\%}}{ u(ites) first and second arguments. Remove elements from
+\item{\code{\%u\%}}{ u(nites) first and second arguments. Remove elements from
 second argument that exist in first argument. }
 \item{\code{\%d\%}}{ d(iffs) second argument from first argument. Second
 argument could be a function which returns logical value. In this case
@@ -88,11 +88,14 @@ letters \%i\% (fixed("a") | fixed("z")) # a, z
 
 # \%n_i\%, \%n_d\%
 
-iris \%n_d\% "Species" # remove column Species
+# remove column Species
+iris \%n_d\% "Species" 
 
-iris \%n_i\% perl("^Sepal") # leave only columns which start with "Sepal"
+# leave only columns which names start with "Sepal"
+iris \%n_i\% perl("^Sepal") 
 
-iris \%n_i\% (perl("^Sepal")|"Species") # leave column "Species" and columns which start with "Sepal" 
+# leave column "Species" and columns which names start with "Sepal" 
+iris \%n_i\% (perl("^Sepal")|"Species") 
 
 }
 
