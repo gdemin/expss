@@ -16,3 +16,12 @@ names(list1) = c("a", "b")
 list2 = lst(a, b)
 
 expect_identical(list1, list2)
+
+data(iris)
+ir = iris
+default_dataset(ir)
+ 
+res1 = .dtfrm(Sepal.Width,  Sepal.Length)
+expect_identical(res1, with(iris, dtfrm(Sepal.Width,  Sepal.Length)))
+res2 = .lst(Sepal.Width,  Sepal.Length)
+expect_identical(res2, with(iris, lst(Sepal.Width,  Sepal.Length)))

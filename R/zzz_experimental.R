@@ -207,17 +207,7 @@ modify_default_dataset_light = function(x, ...){
     invisible(NULL)
 }
 
-# doesn't modify dataset, just evaluate expression
-eval_in_default_dataset = function(...){
-    expr = as.character(as.expression(sys.call()))
-    expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    parent = parent.frame()
-    e = evalq(environment(), data, parent)
-    e$.n = nrow(data)
-    eval(expr, e)
-}
+
 
 
 #' @export

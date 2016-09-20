@@ -3,13 +3,16 @@
 #' \code{dtfrm} and \code{as.dtfrm} are shortcuts to \code{data.frame} and 
 #' \code{as.data.frame} with stringsAsFactors = FALSE, check.names = FALSE.
 #' \code{lst} creates list with names.
+#' \code{.dtfrm}, \code{.lst} the same as above but work in the scope of default
+#' dataset.
 #'
 #' @param ... objects, possibly named
 #' @param x object to be coerced 
 #'
 #' @return data.frame/list
 #' @export
-#' @seealso \link[base]{data.frame}, \link[base]{as.data.frame},  \link[base]{list}
+#' @seealso \link{default_dataset}, \link[base]{data.frame}, \link[base]{as.data.frame}, 
+#'  \link[base]{list}
 #' @examples
 #' 
 #' # see the difference
@@ -28,6 +31,12 @@
 #' 
 #' str(list1)
 #' str(list2)
+#' 
+#' data(iris)
+#' default_dataset(iris)
+#' 
+#' .dtfrm(Sepal.Width,  Sepal.Length)
+#' .lst(Sepal.Width,  Sepal.Length)
 #' 
 dtfrm = function(...){
     data.frame(..., check.names = FALSE, stringsAsFactors = FALSE)
@@ -50,3 +59,23 @@ lst = function(...){
     res
  
 }
+
+# doesn't modify dataset, just evaluate expression
+eval_in_default_dataset = function(...){
+    expr = as.character(as.expression(sys.call()))
+    expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
+    reference = suppressMessages(default_dataset() )
+    data = ref(reference)
+    parent = parent.frame()
+    e = evalq(environment(), data, parent)
+    e$.n = nrow(data)
+    eval(expr, e)
+}
+
+#' @export
+#' @rdname dtfrm
+.dtfrm = eval_in_default_dataset
+
+#' @export
+#' @rdname dtfrm
+.lst =  eval_in_default_dataset
