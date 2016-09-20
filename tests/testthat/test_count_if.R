@@ -43,7 +43,9 @@ context("count_if character")
 expect_equal(count_if("a", letters),1L)
 expect_equal(count_if(gt("a"), letters),25L)
 expect_equal(count_if(gte("b"), letters),25L)
+expect_equal(count_if(ge("b"), letters),25L)
 expect_equal(count_if(neq("b"), letters),25L)
+expect_equal(count_if(ne("b"), letters),25L)
 expect_equal(count_if(eq("b"), letters),1L)
 # expect_warning(count_if(c(eq(b),"d"), letters))
 expect_equal(count_if(c("a","b"), letters),2L)
@@ -99,6 +101,18 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
                     na = count_row_if(is.na,V1,V2,V3),
                     not_na = count_row_if(,V1,V2,V3)),
                      result)
+    expect_equal(df2  %>% mutate(exact = count_row_if(8,V1,V2,V3),
+                                 greater = count_row_if(gt(8),V1,V2,V3),
+                                 range = count_row_if(5:8,V1,V2,V3),
+                                 na = count_row_if(is.na,V1,V2,V3),
+                                 not_na = count_row_if(other,V1,V2,V3)),
+                 result)
+    expect_equal(df2  %>% mutate(exact = count_row_if(8,V1,V2,V3),
+                                 greater = count_row_if(gt(8),V1,V2,V3),
+                                 range = count_row_if(5:8,V1,V2,V3),
+                                 na = count_row_if(is.na,V1,V2,V3),
+                                 not_na = count_row_if(not_na,V1,V2,V3)),
+                 result)
 } else {
 	cat("dplyr not found\n")
 }

@@ -10,11 +10,11 @@
 #' List of functions:
 #' \itemize{
 #' \item{\code{gt}}{ greater than}
-#' \item{\code{gte}}{ greater than or equal}
+#' \item{\code{gte}/\code{ge}}{ greater than or equal}
 #' \item{\code{eq}}{ equal} 
-#' \item{\code{neq}}{ not equal} 
+#' \item{\code{neq}/\code{ne}}{ not equal} 
 #' \item{\code{lt}}{ less than}
-#' \item{\code{lte}}{ less than or equal}
+#' \item{\code{lte}/\code{le}}{ less than or equal}
 #' \item{\code{thru}}{ checks whether value is inside interval.
 #' \code{thru(0,1)} is equivalent of \code{x>=0 & x<=1} or \code{gte(0) &
 #' lte(1)}}
@@ -22,6 +22,7 @@
 #' \item{\code{regex}}{ use POSIX 1003.2 extended regular expressions. For details see \link[base]{grepl}}
 #' \item{\code{perl}}{ perl-compatible regular expressions. For details see \link[base]{grepl}}
 #' \item{\code{fixed}}{ pattern is a string to be matched as is. For details see \link[base]{grepl}}
+#' \item{\code{not_na}, \code{other}}{ return TRUE for all elements of vector} 
 #' } 
 #' 
 #' @param x vector 
@@ -43,6 +44,8 @@
 #' 1:6 %d% (1 | gt(4)) # 2:4
 #' 
 #' letters %i% (fixed("a") | fixed("z")) # a, z
+#' 
+#' c(1, 2, NA, 3) %i% other # c(1, 2, 3)
 #' 
 #' # examples with count_if
 #' df1 = data.frame(
@@ -73,7 +76,7 @@
 #' # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 #' set.seed(123)
 #' qvar = sample((-5):20, 50, replace = TRUE)
-#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% Inf ~ 3, . ~ 0)
+#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, . ~ 0)
 #' # the same result
 #' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, gte(11) ~ 3, . ~ 0)
 #' 
@@ -105,6 +108,10 @@ neq = function(x){
 
 #' @export
 #' @rdname criteria
+ne = neq
+
+#' @export
+#' @rdname criteria
 lt = function(x){
     
     build_compare(x,"<")    
@@ -127,9 +134,17 @@ lte = function(x){
 
 #' @export
 #' @rdname criteria
+le = lte
+
+#' @export
+#' @rdname criteria
 gte = function(x){
     build_compare(x,">=")       
 }
+
+#' @export
+#' @rdname criteria
+ge = gte
 
 #' @export
 #' @rdname criteria
@@ -174,9 +189,22 @@ thru = function(lower, upper){
     gte(lower) & lte(upper)
 }
 
+
 #' @export
 #' @rdname criteria
 '%thru%' = function(lower, upper) thru(lower, upper)
+
+#' @export
+#' @rdname criteria
+other = function(x){
+   !is.na(x) 
+}
+
+class(other) = union("criterion",class(other))
+
+#' @export
+#' @rdname criteria
+not_na = other
 
 build_compare = function(x, compare){
     UseMethod("build_compare")

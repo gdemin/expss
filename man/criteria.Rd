@@ -5,11 +5,16 @@
 \alias{criteria}
 \alias{eq}
 \alias{fixed}
+\alias{ge}
 \alias{gt}
 \alias{gte}
+\alias{le}
 \alias{lt}
 \alias{lte}
+\alias{ne}
 \alias{neq}
+\alias{not_na}
+\alias{other}
 \alias{perl}
 \alias{regex}
 \alias{thru}
@@ -19,13 +24,19 @@ eq(x)
 
 neq(x)
 
+ne(x)
+
 lt(x)
 
 gt(x)
 
 lte(x)
 
+le(x)
+
 gte(x)
+
+ge(x)
 
 perl(pattern, ignore.case = FALSE, useBytes = FALSE)
 
@@ -36,6 +47,10 @@ fixed(pattern, ignore.case = FALSE, useBytes = FALSE)
 thru(lower, upper)
 
 lower \%thru\% upper
+
+other(x)
+
+not_na(x)
 }
 \arguments{
 \item{x}{vector}
@@ -66,11 +81,11 @@ functions.
 List of functions:
 \itemize{
 \item{\code{gt}}{ greater than}
-\item{\code{gte}}{ greater than or equal}
+\item{\code{gte}/\code{ge}}{ greater than or equal}
 \item{\code{eq}}{ equal} 
-\item{\code{neq}}{ not equal} 
+\item{\code{neq}/\code{ne}}{ not equal} 
 \item{\code{lt}}{ less than}
-\item{\code{lte}}{ less than or equal}
+\item{\code{lte}/\code{le}}{ less than or equal}
 \item{\code{thru}}{ checks whether value is inside interval.
 \code{thru(0,1)} is equivalent of \code{x>=0 & x<=1} or \code{gte(0) &
 lte(1)}}
@@ -78,6 +93,7 @@ lte(1)}}
 \item{\code{regex}}{ use POSIX 1003.2 extended regular expressions. For details see \link[base]{grepl}}
 \item{\code{perl}}{ perl-compatible regular expressions. For details see \link[base]{grepl}}
 \item{\code{fixed}}{ pattern is a string to be matched as is. For details see \link[base]{grepl}}
+\item{\code{not_na}, \code{other}}{ return TRUE for all elements of vector} 
 }
 }
 \examples{
@@ -87,6 +103,8 @@ lte(1)}}
 1:6 \%d\% (1 | gt(4)) # 2:4
 
 letters \%i\% (fixed("a") | fixed("z")) # a, z
+
+c(1, 2, NA, 3) \%i\% other # c(1, 2, 3)
 
 # examples with count_if
 df1 = data.frame(
@@ -117,7 +135,7 @@ count_row_if(regex("^a"),df1) # c(1,0,0,1)
 # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 set.seed(123)
 qvar = sample((-5):20, 50, replace = TRUE)
-if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% Inf ~ 3, . ~ 0)
+if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, . ~ 0)
 # the same result
 if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, gte(11) ~ 3, . ~ 0)
 
