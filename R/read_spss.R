@@ -39,11 +39,17 @@ read_spss=function(file, reencode = TRUE){
 #' @rdname read_spss
 read_spss_to_list=function(file, reencode = TRUE){
     spss = foreign::read.spss(enc2native(file), use.value.labels=FALSE, to.data.frame=FALSE, reencode = reencode, use.missings = FALSE)
+    var_names = names(spss)
     var_labs = attr(spss,'variable.labels')
     attr(spss,'label.table') = NULL
+    if(anyNA(var_names)){
+        var_names = make.names(var_names, unique = TRUE)
+        names(spss) = var_names
+        names(var_labs) = var_names
+    }
     for (var_name in names(var_labs)) {
-        curr_lab = var_labs[[var_name]]
-        if (length(curr_lab)>0 && (curr_lab!="") && !is.na(curr_lab)) var_lab(spss[[var_name]]) = curr_lab
+            curr_lab = var_labs[[var_name]]
+            if (length(curr_lab)>0 && (curr_lab!="") && !is.na(curr_lab)) var_lab(spss[[var_name]]) = curr_lab
     }
     for (var_name in names(spss)) {
         # Trim whitespaces from start and end of character variables
