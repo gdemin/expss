@@ -254,4 +254,19 @@ add_val_lab(dfs) = c(e=5)
 expect_identical(dfs, dfs1)
 
 
+context("labels NULL")
+a = 1:3
+b = a
+val_lab(b) = c(a=1)
+expect_identical(set_val_lab(b, NULL), a)
+
+var_lab(b) = "bbb"
+expect_identical(set_val_lab(b, NULL), set_var_lab(a, "bbb"))
+expect_identical(set_var_lab(b, NULL), set_val_lab(a, c(a=1)))
+expect_identical(set_val_lab(set_var_lab(b, NULL), NULL), a)
+val_lab(b) = NULL
+expect_identical(b, set_var_lab(a, "bbb"))
+var_lab(b) = NULL
+expect_identical(b, a)
+
 

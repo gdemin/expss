@@ -443,11 +443,7 @@ labelled_and_unlabelled = function(uniqs,vallab){
         uniqs=uniqs[!is.na(uniqs)]
         names(uniqs) = uniqs
     }
-    if(length(vallab)>0){
-        vallab = vallab %u% uniqs
-    } else {
-        vallab = uniqs
-    }
+    vallab = vallab %u% uniqs
     if (length(vallab)>1) sort(vallab) else vallab
 }
 
