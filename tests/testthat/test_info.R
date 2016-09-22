@@ -29,3 +29,7 @@ expect_equal_to_reference(info(vec),"rds/info11.rds")
 
 lst = list(a = c(1:5,NA), b = c(45,NA))
 expect_equal_to_reference(info(lst),"rds/info12.rds")
+
+vec = c(2, 2, 2, 1, NA, NA, NA, 3, 3)
+expect_equal_to_reference(info(vec), "rds/info13.rds")
+

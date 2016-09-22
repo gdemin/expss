@@ -58,7 +58,9 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
     } 
     if (frequencies){
         values=sort(table(x,useNA="ifany"),na.last = TRUE,decreasing = TRUE)
-        if (NA %in% names(values)) values=c(values[length(values)], values[-length(values)])
+        if (NA %in% names(values)) {
+            values=c(values[is.na(names(values))], values[!is.na(names(values))])
+        }    
         if (length(values)>max_levels) {
             other=sum(values[-(1:max_levels)])
             values=values[1:max_levels]
