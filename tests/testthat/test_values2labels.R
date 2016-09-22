@@ -48,3 +48,9 @@ out_df$d[3] = "e"
 out_df$e = as.character(out_df$e)
 
 expect_identical(values2labels(df),out_df)
+
+aaa = c(1:3, 3.5)
+val_lab(aaa) = c(a=1, b = 2)
+
+expect_identical(class(values2labels(aaa)), "character") 
+
