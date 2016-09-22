@@ -105,6 +105,9 @@ set_var_lab.data.frame = function(x,value){
 set_var_lab.default = function(x,value){
     if (length(value)==0){
         attr(x,"label")=NULL
+        if(length(val_lab(x))==0){
+            class(x)=setdiff(class(x), "labelled")
+        }
         return(x)
     }
     attr(x,"label")=value
@@ -309,7 +312,11 @@ set_val_lab.default = function(x,value, add = FALSE){
     if (add) value = combine_labels(value,val_lab(x))
     if (length(value)==0) value=NULL else value=sort(value)
     attr(x,"labels")=value
-    class(x)=union("labelled",class(x))
+    if(is.null(value) && is.null(var_lab(x))){
+        class(x)=setdiff(class(x), "labelled")
+    } else {
+        class(x)=union("labelled",class(x))
+    }
     x
 }
 
@@ -435,8 +442,12 @@ labelled_and_unlabelled = function(uniqs,vallab){
     if (length(uniqs)>0) {
         uniqs=uniqs[!is.na(uniqs)]
         names(uniqs) = uniqs
-    }    
-    vallab = vallab %u% uniqs
+    }
+    if(length(vallab)>0){
+        vallab = vallab %u% uniqs
+    } else {
+        vallab = uniqs
+    }
     if (length(vallab)>1) sort(vallab) else vallab
 }
 

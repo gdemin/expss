@@ -196,7 +196,7 @@ dichotomy_helper = function(x, keep_unused = FALSE, keep_values = NULL,
                    " doesn't exist in value labels, e. g. '", setdiff(keep_labels, names(vallab))[1],"'")
     }
     if (length(uniqs)>0) uniqs = uniqs[!is.na(uniqs)]
-    vallab = labelled_and_unlabelled(uniqs,vallab)
+    vallab = labelled_and_unlabelled(uniqs, vallab)
     if (!keep_unused) {
         vallab = vallab[vallab %in% uniqs]        
     } 

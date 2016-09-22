@@ -22,7 +22,10 @@ mat[,3] = NA
 out_mat[,3] = NA
 expect_identical(values2labels(mat),out_mat)
 expect_identical(values2labels(numeric(0)),numeric(0))
-expect_identical(values2labels(mat[,FALSE]),unvl(mat[,FALSE]))
+str_mat = mat
+str_mat[] = "a"
+str_mat = unvl(str_mat[, FALSE])
+expect_identical(values2labels(mat[,FALSE]), str_mat)
 
 
 df = data.frame(a=1:3,b = 3:1,d=letters[1:3],e=NA,stringsAsFactors = FALSE)
@@ -38,7 +41,10 @@ out_df = unvl(df)
 
 out_df$a[1] = "a"
 out_df$a[2] = "b"
+out_df$b = as.character(out_df$b)
+var_lab(out_df$b) = "Column b"
 out_df$d[2] = "a"
 out_df$d[3] = "e"
+out_df$e = as.character(out_df$e)
 
 expect_identical(values2labels(df),out_df)
