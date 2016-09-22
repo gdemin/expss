@@ -59,7 +59,7 @@ f.labelled = function(x, ...){
     uniqs=unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 
     if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = LABELS_SEP)
-    res=base_factor(x = x, levels=vallab, labels=names(vallab), ...)
+    res=base_factor(x = x, levels=as.character(vallab), labels=names(vallab), ...)
     res 
     
 }

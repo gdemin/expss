@@ -434,3 +434,25 @@ expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = mean_col), "
 expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = function(x) cor(x)[,1]), "rds/cro_fun_df1.rds")
 expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = summary), "rds/cro_fun_df2.rds")
 
+context("datetime")
+
+aaa = rep(c(as.POSIXct("2016-09-22 02:28:39"), as.POSIXct("2016-09-22 03:28:39")), 10)
+bbb = rep(c(as.POSIXct("2016-09-22 03:28:39"), as.POSIXct("2016-09-22 02:28:39")), 10)
+total = rep("total", 20)
+
+aaa_str = as.character(aaa)
+var_lab(aaa_str) = "aaa"
+bbb_str = as.character(bbb)
+var_lab(bbb_str) = "bbb"
+
+expect_identical(fre(aaa), fre(aaa_str))
+
+expect_identical(cro(aaa, bbb), cro(aaa_str, bbb_str))
+expect_identical(cro_cpct(aaa, bbb), cro_cpct(aaa_str, bbb_str)) 
+expect_identical(cro_rpct(aaa, total),cro_rpct(aaa_str, total)) 
+expect_identical(cro_tpct(total, bbb), cro_tpct(total, bbb_str)) 
+
+
+
+
+
