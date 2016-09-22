@@ -74,6 +74,7 @@
 #' @export
 #' @rdname vectors
 '%u%' = function(e1, e2){
+    if(is.null(e1)) return(e2)
     c(e1, e2[!(e2 %in% e1)])
 }
 
@@ -102,6 +103,7 @@
 #' @export
 #' @rdname vectors
 '%e%' = function(e1, e2){
+    if(is.null(e1)) return(e2)
     c(e1[!(e1 %in% e2)],e2[!(e2 %in% e1)])
 }
 

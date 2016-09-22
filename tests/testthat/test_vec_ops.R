@@ -36,6 +36,19 @@ expect_equal(c(a=1, b=4, 5) %e% c(d = 5), c(a=1, b=4))
 expect_equal(1:4 %a% 5:6   , 1:6)
 expect_equal(1:4 %a% 4:5   , c(1,2,3,4,4,5))
 expect_equal(1:4 %u% 4:5   , c(1,2,3,4,5))
+
+
+
+expect_equal(NULL %d% as.POSIXct("2016-09-23"), NULL)
+expect_equal(NULL %i% as.POSIXct("2016-09-23"), NULL)
+expect_equal(NULL %e% as.POSIXct("2016-09-23"), as.POSIXct("2016-09-23"))
+expect_equal(as.POSIXct("2016-09-23") %e% NULL, as.POSIXct("2016-09-23"))
+expect_equal(NULL %a% as.POSIXct("2016-09-23"), as.POSIXct("2016-09-23"))
+expect_equal(as.POSIXct("2016-09-23") %a% NULL, as.POSIXct("2016-09-23"))
+expect_equal(NULL %u% as.POSIXct("2016-09-23"), as.POSIXct("2016-09-23"))
+expect_equal(as.POSIXct("2016-09-23") %u% NULL, as.POSIXct("2016-09-23"))
+
+
 expect_equal(1:6 %d% 5:6   , 1:4)
 expect_equal(1:6 %d% gt(4) , 1:4)
 expect_equal(1:4 %i% 4:5   , 4)
