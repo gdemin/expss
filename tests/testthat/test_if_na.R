@@ -289,3 +289,16 @@ df_test = within(df_test, {
 
 expect_identical(df, df_test)
 
+context("if_na factor")
+
+fac = factor(c("a","b",NA))
+
+# expect_identical(if_na(fac, "c"), factor(c("a","b","c")))
+expect_identical(if_na(fac, "a"), factor(c("a","b","a")))
+
+context("if_na POSIXct")
+
+ct = c(as.POSIXct("2016-09-24"), NA)
+expect_equal(if_na(ct, "2016-09-25"), as.POSIXct(c("2016-09-24", "2016-09-25")))
+
+
