@@ -143,8 +143,8 @@ column.matrix = function(x, column_num, condition = NULL){
 
 
 column.list = function(x, column_num, condition = NULL){
-    stopif(column_num>length(x) && length(x)>1, "Too large column_num:",column_num, " but only ", ncol(x), " elements in the list.")
-    stopif(!is.null(condition), "Extract column from list with condition doesn't allowed.")
+    stopif(column_num>length(x) && length(x)>1, "Too large column_num:",column_num, " but only ", length(x), " elements in the list.")
+    # stopif(!is.null(condition), "Extract column from list with condition doesn't allowed.")
     if (length(x)>1) {
         x[[column_num]]
     } else {
