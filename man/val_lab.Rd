@@ -4,6 +4,7 @@
 \alias{add_val_lab}
 \alias{add_val_lab<-}
 \alias{make_labels}
+\alias{ml_autonum}
 \alias{ml_left}
 \alias{ml_right}
 \alias{set_val_lab}
@@ -24,11 +25,13 @@ add_val_lab(x) <- value
 
 unvl(x)
 
-make_labels(text, code_position = c("left", "right"))
+make_labels(text, code_position = c("left", "right", "autonum"))
 
 ml_left(text)
 
 ml_right(text)
+
+ml_autonum(text)
 }
 \arguments{
 \item{x}{Variable(s). Vector/data.frame/list.}
@@ -42,8 +45,8 @@ labels will be combined with old value labels.}
 
 \item{text}{text that should be converted to named vector}
 
-\item{code_position}{Possible values "left" or "right" - position of numeric code in
-\code{text}.}
+\item{code_position}{Possible values "left", "right" - position of numeric code in
+\code{text}. "autonum" - makes codes by autonumbering lines of \code{text}.}
 }
 \value{
 \code{val_lab} return value labels (named vector). If labels doesn't 
@@ -69,8 +72,8 @@ exist.}
 \item{\code{add_val_lab<-}}{ add value labels to already existing value labels.} 
 \item{\code{unvl}}{ drops value labels.}
 \item{\code{make_labels}}{ makes named vector from text for usage as value labels.}
-\item{\code{ml_left} and \code{ml_right}}{ are shortcuts for \code{make_labels}
-with \code{code_postion} 'left' and 'right' accordingly.}
+\item{\code{ml_left}, \code{ml_right} and  \code{ml_autonum}}{ are shortcuts for \code{make_labels}
+with \code{code_postion} 'left', 'right' and 'autonum' accordingly.}
 }
 }
 \details{

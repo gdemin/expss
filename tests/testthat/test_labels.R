@@ -269,4 +269,49 @@ expect_identical(b, set_var_lab(a, "bbb"))
 var_lab(b) = NULL
 expect_identical(b, a)
 
+context("make_labels autonum")
 
+expect_identical(
+ make_labels(
+"
+male
+
+
+female
+             ", code_position = "autonum"),
+c(male = 1L, female = 2L)
+)
+
+expect_identical(
+    make_labels(
+        "male
+        female      ", code_position = "autonum"),
+    c(male = 1L, female = 2L)
+    )
+
+expect_identical(
+    make_labels(
+        "
+
+        female      ", code_position = "autonum"),
+    c(female = 1L)
+    )
+
+expect_identical(
+    make_labels(
+        "
+        
+              ", code_position = "autonum"),
+    NULL
+    )
+
+expect_identical(
+    ml_autonum(
+        "
+        male
+        
+        
+        female
+        "),
+    c(male = 1L, female = 2L)
+    )
