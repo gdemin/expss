@@ -293,7 +293,7 @@ context("if_na factor")
 
 fac = factor(c("a","b",NA))
 
-# expect_identical(if_na(fac, "c"), factor(c("a","b","c")))
+expect_identical(if_na(fac, "c"), factor(c("a","b","c")))
 expect_identical(if_na(fac, "a"), factor(c("a","b","a")))
 
 context("if_na POSIXct")

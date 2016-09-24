@@ -206,3 +206,17 @@ column.default = function(x, column_num, condition = NULL){
     x
 }  
 
+"column<-.factor" = function(x, column_num, condition = NULL, value){
+    fac_levels = levels(x)
+    if(!all(value %in% fac_levels)){
+        fac_levels = union(fac_levels, value)
+        levels(x) = fac_levels
+    }
+    if(is.null(condition)){
+        x[] = value
+    } else {
+        x[condition] = value
+    }     
+    x
+}  
+

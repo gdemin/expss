@@ -89,6 +89,7 @@ if_na.default = function(x, value){
                 if (any(cond)) column(x, each_col, cond) = column(value, each_col, cond)
             }
         } else {
+            # if 'value' is list - we don't know what is inside element thats why we cannot subset it
             for (each_col in seq_len(NCOL(x))){
                 if_na(column(x, each_col)) = column(value, each_col)
             }            
