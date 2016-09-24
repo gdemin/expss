@@ -3,6 +3,7 @@
 S3method("!",criterion)
 S3method("&",criterion)
 S3method("[",labelled)
+S3method("[",simple_table)
 S3method("ref<-",default)
 S3method("ref<-",formula)
 S3method("|",criterion)

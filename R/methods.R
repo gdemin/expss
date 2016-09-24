@@ -42,3 +42,13 @@ var_attr = function(x){
     val_lab(x)=value$labels
     x
 }
+
+#' @export
+"[.simple_table" = function(x, i, j, ...){
+    res = `[.data.frame`(x, i, j, drop = FALSE)  
+    class(res) = class(x)
+    res
+}
+
+
+

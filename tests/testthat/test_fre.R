@@ -30,6 +30,10 @@ mtcars$am[1:2] = NA
 
 expect_equal_to_reference(fre(mtcars$am), "rds/fre2.5.rds")
 
+
+expect_equal_to_reference(fre(mtcars$am)[,"Count"], "rds/fre2.6.rds")
+expect_equal_to_reference(fre(mtcars$am)[2, ], "rds/fre2.7.rds")
+
 expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, am)), "rds/elem_fre3.rds")
 
 expect_equal_to_reference(with(mtcars, expss:::elementary_freq(am)), "rds/elem_fre4.rds")
@@ -184,6 +188,9 @@ mtcars = modify(mtcars,{
 expect_equal_to_reference(fre(mtcars$vs), "rds/fre_ex1.rds")
 expect_equal_to_reference(with(mtcars, cro(am, vs)), "rds/fre_ex2.rds")
 expect_equal_to_reference(with(mtcars, cro_cpct(am, vs)), "rds/fre_ex3.rds")
+expect_equal_to_reference(with(mtcars, cro_cpct(am, vs))[, '#Total'], "rds/fre_ex3.1.rds")
+expect_equal_to_reference(with(mtcars, cro_cpct(am, vs))[3, ], "rds/fre_ex3.2.rds")
+expect_equal_to_reference(with(mtcars, cro_cpct(am, vs))[['#Total']], "rds/fre_ex3.3.rds")
 
 # multiple-choise variable
 # brands - multiple response question
