@@ -2,7 +2,7 @@
 #'
 #' Workflow for these functions is rather simple. You should set up default 
 #' data.frame with \link{default_dataset} and then operate with it without any 
-#' reference to your data.frame. There are to kind of operations. The first kind
+#' reference to your data.frame. There are two kinds of operations. The first kind
 #' modify default dataset, the second kind will be evaluated in the context of
 #' the default dataset but doesn't modify it. It is not recommended to use one
 #' of these functions in the scope of another of these functions. By now their
