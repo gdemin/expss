@@ -21,7 +21,11 @@
 #' # simple case
 #' a = c(NA, 2, 3, 4, NA)
 #' if_na(a, 99)
-#' # the same thing
+#' 
+#' # the same result
+#' a %if_na% 99
+#' 
+#' # the same result
 #' if_na(a) = 99 
 #' a # c(99, 2, 3, 4, 99)
 #' 
@@ -75,6 +79,13 @@ if_na = function(x, value){
 #' @export
 #' @rdname if_na
 'if_na<-' = function(x, value){
+    if_na(x, value)
+}
+
+
+#' @export
+#' @rdname if_na
+'%if_na%' = function(x, value){
     if_na(x, value)
 }
 
