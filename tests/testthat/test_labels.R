@@ -315,3 +315,34 @@ expect_identical(
         "),
     c(male = 1L, female = 2L)
     )
+
+
+context("as.labelled")
+
+expect_error()
+
+character_vector = c("one", "two",  "two", "three")
+res = c(1L, 3L, 3L, 2L)
+
+expect_error(set_val_lab(res, character_vector))
+
+val_lab(res) = c("one" = 1L, "three" = 2L, "two" = 3L)
+var_lab(res) = "Numbers"
+expect_identical(
+    as.labelled(character_vector, label = "Numbers"),
+    res
+)
+
+data(iris)
+species = rep(1:3, each = 50) * 1.0
+val_lab(species) = c("setosa" = 1L, "versicolor" = 2L, "virginica" = 3L) 
+
+expect_identical(as.labelled(iris$Species), species)
+
+
+dat = as.POSIXct(c("2016-09-25", "2016-09-26"))
+
+res = 1:2
+val_lab(res) = setNames(1:2, as.character(dat))
+expect_identical(as.labelled(dat), res)
+

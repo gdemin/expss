@@ -302,6 +302,7 @@ add_val_lab = function(x, value) set_val_lab(x, value, add = TRUE)
 
 #' @export
 set_val_lab.default = function(x,value, add = FALSE){
+    stopif(!is.null(value) && is.null(names(value)), "Labels should be named vector.")
     stopif(anyDuplicated(value),"duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
     names_vallab = names(value)
     # This warning was removed because it was generated too often for third party *.sav files.
@@ -442,6 +443,51 @@ unlab.list=function(x){
 
 
 
+
+
+
+
+#' Recode vector into integer vector with value labels 
+#'
+#' @param x numeric vector/character vector/factor 
+#' @param label optional variable label
+#'
+#' @return integer vector with labels
+#' @export
+#' @examples
+#' character_vector = c("one", "two",  "two", "three")
+#' as.labelled(character_vector, label = "Numbers")
+#' 
+#'
+as.labelled = function(x, label = NULL){
+    UseMethod("as.labelled")
+}
+
+#' @export
+as.labelled.default = function(x, label = NULL){
+    labels = sort(unique(x), na.last = NA)
+    values = seq_along(labels)
+    res = match(x, labels)
+    names(values) = as.character(labels)
+    val_lab(res) = values
+    var_lab(res) = label
+    res
+}
+
+#' @export
+as.labelled.factor = function(x, label = NULL){
+    values = seq_along(levels(x))
+    names(values) = levels(x)
+    x = as.numeric(x)
+    val_lab(x) = values
+    var_lab(x) = label
+    x
+    
+}
+
+
+################
+
 combine_labels = function(...){
     args = list(...)
     new_lab = Reduce(`%u%`, args)
@@ -455,21 +501,4 @@ labelled_and_unlabelled = function(uniqs,vallab){
     }
     vallab = vallab %u% uniqs
     if (length(vallab)>1) sort(vallab) else vallab
-}
-
-as.labelled = function(x){
-    UseMethod("as.labelled")
-}
-
-as.labelled.default = function(x){
-    x
-}
-
-as.labelled.factor = function(x){
-    labels = seq_along(levels(x))
-    names(labels) = levels(x)
-    x = as.numeric(x)
-    val_lab(x) = labels
-    x
-    
 }
