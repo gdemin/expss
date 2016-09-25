@@ -115,6 +115,9 @@ expect_identical(
     result_dfs2
 )
 
+
+
+
 expect_error(
     modify_if(dfs2, test %in% 2:4,
               {
@@ -150,6 +153,17 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     cat("dplyr not found\n")
 }
 
+
+result_dfs2$b_total = NULL
+expect_identical(
+    modify_if(dfs2, test %in% 2:4,
+              {
+                  b_total = NULL
+                  aa = aa + 1
+              }), 
+    result_dfs2
+)
+
 context("modify labels")
 
 result_dfs3 = dfs
@@ -162,6 +176,18 @@ expect_identical(
         b_total = sum_row(b_1, b_2, b_4, b_5)
         var_lab(aa) = "my label"
         val_lab(aa) = c(one = 1, two = 2)
+        
+        
+    }),
+    result_dfs3
+)
+
+result_dfs3$b_total = NULL
+result_dfs3$aa = 1
+expect_identical(
+    modify(dfs, {
+        b_total = NULL
+        aa = 1
         
         
     }),

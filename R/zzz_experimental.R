@@ -144,6 +144,11 @@
     rm(".n", "set", envir = e)
     l = as.list(e, all.names = TRUE)
     
+    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
+    del = setdiff(names(data), names(l))
+    if(length(del)){
+        data[, del] = NULL
+    }
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
     stopif(any(nrows!=1L & nrows!=nrow(data)),"Bad number of rows")
     new_vars = rev(names(l)[!(names(l) %in% names(data))])
@@ -174,6 +179,11 @@
     eval(substitute(expr), e)
     rm(".n", "set", envir = e)
     l = as.list(e, all.names = TRUE)
+    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
+    del = setdiff(names(data), names(l))
+    if(length(del)){
+        data[, del] = NULL
+    }
     
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
     stopif(any(nrows!=1L & nrows!=nrow(new_data)),"Bad number of rows")

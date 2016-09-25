@@ -115,8 +115,29 @@ mtcars = within(mtcars,{
 expect_identical(mtcars, default_mtcars)
 
 
+.modify({
+    am = NULL
+    hi_low_mpg = NULL
+})
 
 
+mtcars$am = NULL
+mtcars$hi_low_mpg = NULL
 
+expect_identical(mtcars, default_mtcars)
 
+.modify_if(vs == 0, {
+    vs_0 = NULL
 
+})
+
+mtcars$vs_0 = NULL
+
+expect_identical(mtcars, default_mtcars)
+
+.modify({
+    sxsxs = NULL
+    ggttt = NULL
+})
+
+expect_identical(mtcars, default_mtcars)
