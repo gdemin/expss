@@ -8,6 +8,10 @@ expect_equal(na_if(1:5, gt(3)),a)
 expect_equal(na_if(1:5, 4:5),a)
 expect_equal(na_if(1:5, c(FALSE,FALSE,FALSE,TRUE,TRUE)),a)
 
+expect_equal(1:5 %na_if% gt(3),a)
+expect_equal(1:5 %na_if% 4:5,a)
+expect_equal(1:5 %na_if% c(FALSE,FALSE,FALSE,TRUE,TRUE),a)
+
 
 context("na_if data.frame")
 a = data.frame(a=1:5,b=5:1)
