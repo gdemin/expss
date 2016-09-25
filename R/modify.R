@@ -97,7 +97,7 @@ modify_if = function (data, cond, expr){
 
 
 #' @export
-modify_if = function (data, cond, expr) {
+modify_if.data.frame = function (data, cond, expr) {
     # based on 'within' from base R by R Core team
     parent = parent.frame()
     cond = substitute(cond)
