@@ -1,4 +1,6 @@
 
+# this entire method for compatibility with other packages where 
+# "labelled' is single class rather than c("labelled", "numeric") etc.
 #' @export
 as.data.frame.labelled = function(x, ..., nm = paste(deparse(substitute(x), width.cutoff = 500L)) ){
     if(length(class(x))>1){
@@ -6,7 +8,7 @@ as.data.frame.labelled = function(x, ..., nm = paste(deparse(substitute(x), widt
         NextMethod("as.data.frame", ..., nm = nm)
         
     } else {
-        # exclusively for other packages where "labelled' is single class rather than c("labelled", "numeric") etc.
+        # this branch for other packages where "labelled' is single class rather than c("labelled", "numeric") etc.
         
         as.data.frame.vector(x, ..., nm = nm)
     }
