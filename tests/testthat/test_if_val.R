@@ -23,7 +23,7 @@ expect_identical(if_val(x, list(gt(2)~y, lte(2) ~ z, .~99)), c(4, 8, 4, 9, 99))
 expect_identical(if_val(x, (z>4)~y), c(1, 3, 1, 9, 9))
 
 context("if_val dplyr")
-if(FALSE & suppressWarnings(require(dplyr, quietly = TRUE))){
+if(FALSE && suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
     
@@ -40,7 +40,8 @@ if(FALSE & suppressWarnings(require(dplyr, quietly = TRUE))){
     
     dfs  = dfs %>% mutate(
         w = if_val(x, gt(2) ~ y)
-        #w = ifelse(x>2, y , x)
+        # zzz = predict(lm(x ~ y))
+        # w = ifelse(x>2, y , x)
     )
     
     expect_identical(dfs$w, c(2, 18, 2, 19, NA))
