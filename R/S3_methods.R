@@ -1,3 +1,17 @@
+
+#' @export
+as.data.frame.labelled = function(x, ..., nm = paste(deparse(substitute(x), width.cutoff = 500L)) ){
+    if(length(class(x))>1){
+        # because we can have labelled matrices or factors with variable label
+        NextMethod("as.data.frame", ..., nm = nm)
+        
+    } else {
+        # exclusively for other packages where "labelled' is single class rather than c("labelled", "numeric") etc.
+        
+        as.data.frame.vector(x, ..., nm = nm)
+    }
+}
+
 #' @export
 c.labelled = function(..., recursive = FALSE)
     ### concatenate vectors of class 'labelled' and preserve labels
@@ -29,6 +43,17 @@ rep.labelled = function (x, ...){
     y = NextMethod("[")
     var_attr(y)=var_attr(x)
     class(y) = class(x)
+    y
+}
+
+
+# it is needed to prevent state with inconsistent class and mode
+# (such as 'numeric' in class but mode is character)
+#' @export
+'[<-.labelled' = function (x, ..., value){
+    class(x) = setdiff(class(x), "labelled")
+    y = NextMethod("[")
+    class(y) = c("labelled", class(y))
     y
 }
 

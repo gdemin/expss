@@ -33,4 +33,25 @@ expect_identical(var_lab(new_vec),var_lab(vec_with_lab))
 expect_identical(val_lab(new_vec),val_lab(vec_with_lab))
 
 
+context("as.data.frame")
 
+a = 1:3
+
+class(a) = "labelled"
+
+expect_identical(as.data.frame(a), as.data.frame.vector(a))
+
+expect_identical(as.data.frame(a, nm="xx"), as.data.frame.vector(a, nm="xx"))
+
+b = 4:5
+var_lab(b) = "lab"
+
+expect_identical(as.data.frame(b), as.data.frame.vector(b))
+
+expect_identical(as.data.frame(b, nm="xx"), as.data.frame.vector(b, nm="xx"))
+
+
+# a = matrix(1:9, 3)
+# var_lab(a) = "sdfsf"
+# 
+# as.data.frame(a)

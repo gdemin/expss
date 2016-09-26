@@ -38,16 +38,16 @@ expect_equal(if_val(a, NA ~ 2), b)
 b[1,1] = 4
 b[4,1] = 1
 
-expect_equal(if_val(a, NA ~ 4:1), b)
+expect_equal(if_val(a, NA ~ (4:1)*1.0), b)
 
 a[1,3] = NA
 b[1,3] = 4
-expect_equal(if_val(a, NA ~ 4:1), b)
+expect_equal(if_val(a, NA ~ (4:1)*1.0), b)
 
 b[1,1] = 3
 b[4,1] = 3
 b[1,3] = 1
-expect_equal(if_val(a, NA ~ t(3:1)), b)
+expect_equal(if_val(a, NA ~ t(3:1)*1.0), b)
 expect_error(if_val(a, NA ~ t(3:2)))
 expect_error(if_val(a, NA ~ 3:2))
 
@@ -87,7 +87,7 @@ expect_equal(if_val(a, NA ~ 4:1), b)
 b[1,1] = 3
 b[4,1] = 3
 b[1,3] = 1
-expect_equal(if_val(a, NA ~ t(3:1)), b)
+expect_equal(if_val(a, NA ~ t(3:1)*1.0), b)
 expect_error(if_val(a, NA ~ t(3:2)))
 expect_error(if_val(a, NA ~ 3:2))
 
