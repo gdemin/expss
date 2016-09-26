@@ -308,4 +308,22 @@ expect_error(
 )
 
 
+context("if_val type")
+
+a = 1:3
+var_lab(a) = "aadad"
+if_val(a) = 1 ~ "bah"
+expect_identical(class(a), c("labelled", "character"))
+
+a = factor(letters[1:4])
+if_val(a) = "a" ~ "z"
+res = factor(c("z", "b", "c", "d"), levels = c("a", "b", "c", "d", "z"))
+expect_identical(a, res)
+
+a = factor(letters[1:4])
+var_lab(a) = "factor"
+if_val(a) = "a" ~ "z"
+var_lab(res) = "factor"
+expect_identical(a, res)
+
 
