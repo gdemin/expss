@@ -17,7 +17,7 @@ z = c(4,4,4,5,5)
 expect_identical(if_val(x, gt(2)~y), c(1, 8, 1, 9, NA))
 expect_identical(if_val(x, list(gt(2)~y)), c(1, 8, 1, 9, NA))
 expect_identical(if_val(x, gt(2)~y, lte(2) ~ z), c(4, 8, 4, 9, NA))
-expect_identical(if_val(x, gt(2)~y, lte(2) ~ z, .~99), c(4, 8, 4, 9, 99))
+expect_identical(if_val(x, gt(2)~y, lte(2) ~ z, . ~ 99), c(4, 8, 4, 9, 99))
 expect_identical(if_val(x, list(gt(2)~y, lte(2) ~ z, .~99)), c(4, 8, 4, 9, 99))
 
 expect_identical(if_val(x, (z>4)~y), c(1, 3, 1, 9, 9))

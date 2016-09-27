@@ -254,10 +254,9 @@ parse_formula = function(elementary_recoding){
     # strange behavior with parse_formula.formula - it doesn't work with formulas so we use default method and check argument type
     stopif(!inherits(elementary_recoding, what = "formula"),"All recodings should be formula but:",elementary_recoding)
     formula_envir = environment(elementary_recoding)
-    formula_list = as.list(elementary_recoding)
-    from = formula_list[[2]]
+    from = elementary_recoding[[2]]
     if (!all_other(from)) from = eval(from, envir = formula_envir)
-    to = eval(formula_list[[3]], envir = formula_envir)
+    to = eval(elementary_recoding[[3]], envir = formula_envir)
     list(from = from, to = to)
 }
 
