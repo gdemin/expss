@@ -346,3 +346,17 @@ res = 1:2
 val_lab(res) = setNames(1:2, as.character(dat))
 expect_identical(as.labelled(dat), res)
 
+a = 1:2
+val_lab(a) = c("a"=1, "b" = 2)
+expect_identical(as.labelled(a), a)
+var_lab(a) = "ssdds"
+expect_identical(as.labelled(a), a)
+expect_identical(as.labelled(a, "new"), set_var_lab(a, "new"))
+a = 1:2
+var_lab(a) = "ssdds"
+expect_identical(as.labelled(a), set_val_lab(a, c("1" = 1L, "2" = 2L)))
+
+
+
+
+

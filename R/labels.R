@@ -470,7 +470,7 @@ as.labelled.default = function(x, label = NULL){
     res = match(x, labels)
     names(values) = as.character(labels)
     val_lab(res) = values
-    var_lab(res) = label
+    if(!is.null(label)) var_lab(res) = label
     res
 }
 
@@ -481,6 +481,18 @@ as.labelled.factor = function(x, label = NULL){
     x = as.numeric(x)
     val_lab(x) = values
     var_lab(x) = label
+    x
+    
+}
+
+#' @export
+as.labelled.labelled = function(x, label = NULL){
+    if(is.null(val_lab(x))){
+        labels = sort(unique(x), na.last = NA)
+        names(labels) = as.character(labels)
+        val_lab(x) = labels
+    } 
+    if(!is.null(label)) var_lab(x) = label
     x
     
 }
