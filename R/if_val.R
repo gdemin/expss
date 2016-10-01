@@ -193,32 +193,34 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
             cond = cond & !recoded # we don't recode already recoded value
         }
         to = from_to$to
-        if (!is.function(to)) check_conformance(cond, to)
-        # dot in `to` means copy (simply doesn't change values that meet condition - "copy" from SPSS ) 
-        if(!is.list(to) || is.data.frame(to) || is.function(to)){
-            if(is.function(to)){
-                # to: function
-                for (each_col in seq_len(NCOL(x))){
-                    curr_cond = column(cond, each_col)
-                    if (any(curr_cond)) column(x, each_col, curr_cond) = to(column(x, each_col, curr_cond))
+        if(!all_other(to)){
+            if (!is.function(to)) check_conformance(cond, to)
+            # dot in `to` means copy (simply doesn't change values that meet condition - "copy" from SPSS ) 
+            if(!is.list(to) || is.data.frame(to) || is.function(to)){
+                if(is.function(to)){
+                    # to: function
+                    for (each_col in seq_len(NCOL(x))){
+                        curr_cond = column(cond, each_col)
+                        if (any(curr_cond)) column(x, each_col, curr_cond) = to(column(x, each_col, curr_cond))
+                    }
+                    
+                    
+                } else {
+                    # to: matrix, data.frame, vector
+                    for (each_col in seq_len(NCOL(x))){
+                        curr_cond = column(cond, each_col)
+                        if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
+                    }
                 }
-                
-                
             } else {
-                # to: matrix, data.frame, vector
+                # to: list
                 for (each_col in seq_len(NCOL(x))){
                     curr_cond = column(cond, each_col)
-                    if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
-                }
+                    if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
+                }     
+                
             }
-        } else {
-            # to: list
-            for (each_col in seq_len(NCOL(x))){
-                curr_cond = column(cond, each_col)
-                if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
-            }     
-            
-        }
+        }    
         recoded = recoded | (cond & !is.na(cond)) # we don't recode already recoded value
     }
     
@@ -255,8 +257,9 @@ parse_formula = function(elementary_recoding){
     stopif(!inherits(elementary_recoding, what = "formula"),"All recodings should be formula but:",elementary_recoding)
     formula_envir = environment(elementary_recoding)
     from = elementary_recoding[[2]]
+    to = elementary_recoding[[3]]
     if (!all_other(from)) from = eval(from, envir = formula_envir)
-    to = eval(elementary_recoding[[3]], envir = formula_envir)
+    if (!all_other(to)) to = eval(to, envir = formula_envir)
     list(from = from, to = to)
 }
 
