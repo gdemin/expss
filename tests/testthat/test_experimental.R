@@ -9,6 +9,7 @@ default_dataset(data)
 
 expect_error(.recode(q8_1 %to% q8_99, (1:NROW(data)<11) ~ NA))
 .recode(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
+.if_val(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
 
 .set_var_lab(q8r_1, "Используемые услуги")
 expect_equal_to_reference(.fre(reg), "rds/fre_real1.rds")

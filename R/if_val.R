@@ -162,6 +162,8 @@ if_val = function(x, ..., from = NULL, to = NULL){
 #' @export
 "if_val<-.default" = function(x, from = NULL, value){
     if (!is.null(from)){
+        if(is.function(from)) from = list(from)
+        if(is.function(value)) value = list(value)
         stopif(length(from)!=length(value), 
                "length(value) should be equal to length(from) but length(from) = ", length(from),
                " and length(value) = ", length(value))
@@ -308,19 +310,9 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
 
 #' @export
 if_val.list = function(x, ..., from = NULL, to = NULL){
-    if (is.null(from) && is.null(to)){
-        for(each in seq_along(x)){
-            if_val(x[[each]]) = list(...)
-        }
-        
-    } else {
-        for(each in seq_along(x)){
-            if_val(x[[each]], from = from) = to
-        }
-    }
-    
-    x
+    lapply(x, if_val, ..., from = from, to = to)
 }
+
 
 all_other = function(cond){
     identical(cond, as.symbol(".")) || identical(cond, ".")
@@ -381,46 +373,35 @@ hi = Inf
 
 
 # make object with the same shape as its argument but filled with NA and logical type
+# for unknown reasons methods don't work when unexported
 make_empty_object = function(x){
-    UseMethod("make_empty_object")
-}
-
-make_empty_object.default = function(x){
-    res = rep(NA, length(x))
-    names(res) = names(x)
+    if(is.data.frame(x)){
+        res = as.data.frame(lapply(x, make_empty_object))
+        row.names(res) = row.names(x)
+        colnames(res) = colnames(x)
+    } else {
+        if(is.list(x)){
+            res = lapply(x, make_empty_object)
+            names(res) = names(x)
+        } else {
+            if(is.matrix(x)){
+                res = matrix(NA, nrow = nrow(x), ncol = ncol(x))
+                rownames(res) = rownames(x) 
+                colnames(res) = colnames(x)
+            }   else {
+                if("POSIXct" %in% class(x)){
+                    res = as.POSIXct(rep(NA, length(x)))
+                    names(res) = names(x)
+                } else {
+                    res = rep(NA, length(x))
+                    names(res) = names(x)
+                }
+            } 
+        }
+    }
     res
-}
-
-make_empty_object.POSIXct = function(x){
-    res = as.POSIXct(rep(NA, length(x)))
-    names(res) = names(x)
-    res
+    
 }
 
 
-make_empty_object.matrix = function(x){
-    res = matrix(NA, nrow = nrow(x), ncol = ncol(x))
-    rownames(res) = rownames(x) 
-    colnames(res) = colnames(x)
-    res
-}
-
-make_empty_object.list = function(x){
-    res = lapply(x, make_empty_object)
-    names(res) = names(x)
-    res
-}
-
-make_empty_object.data.frame = function(x){
-    res = as.data.frame(lapply(x, make_empty_object))
-    rownames(res) = rownames(x) 
-    colnames(res) = colnames(x)
-    res
-}
-
-make_empty_object.tbl_df = function(x){
-    res = as.data.frame(lapply(x, make_empty_object))
-    colnames(res) = colnames(x)
-    res
-}
 

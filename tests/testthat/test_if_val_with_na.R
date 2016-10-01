@@ -2,61 +2,64 @@ context("if_val with NA.vector")
 
 a = 1:4
 b = a
-expect_equal(if_val(a, NA ~ 2), b)
+
+expect_equal(if_val(a, NA ~ 2, . ~ .), b)
 a[1] = NA
 b[1] = 2
-expect_equal(if_val(a, NA ~ 2), b)
+expect_equal(if_val(a, NA ~ 2, . ~ .), b)
 
 a[3] = NA
 b[3] = 2
-expect_identical(if_val(a, NA ~ 2), b)
+expect_identical(if_val(a, NA ~ 2, . ~ .), b)
 
 b[1] = 4
 b[3] = 2
-expect_identical(if_val(a, NA ~ 4:1), as.integer(b))
+expect_identical(if_val(a, NA ~ 4:1, . ~ .), as.integer(b))
 
-expect_error(if_val(a, NA ~ 1:2))
-expect_error(if_val(a, NA ~ t(1:2)))
-expect_identical(if_val(numeric(0), NA ~ 1),numeric(0))
+expect_error(if_val(a, NA ~ 1:2, . ~ .))
+expect_error(if_val(a, NA ~ t(1:2), . ~ .))
+expect_identical(if_val(numeric(0), NA ~ 1, . ~ .),logical(0))
 
 context("if_val with NA.data.frame")
 
 a = data.frame(a = 1:4, b = 5:8, d = 10:13)
-val_lab(a$a) = c('aaa' = 1)
 b = a
-expect_equal(if_val(a, NA ~ 2), b)
+rownames(b) = rownames(a)
+val_lab(a$a) = c('aaa' = 1)
+
+expect_identical(if_val(a, NA ~ 2, . ~ .), b)
 
 a[1,1] = NA
 b[1,1] = 2
 
-expect_equal(if_val(a, NA ~ 2), b)
+expect_equal(if_val(a, NA ~ 2, . ~ .), b)
 
 a[4,1] = NA 
 b[4,1] = 2
-expect_equal(if_val(a, NA ~ 2), b)
+expect_equal(if_val(a, NA ~ 2, . ~ .), b)
 
 b[1,1] = 4
 b[4,1] = 1
 
-expect_equal(if_val(a, NA ~ (4:1)*1.0), b)
+expect_equal(if_val(a, NA ~ (4:1)*1.0,  . ~ .), b)
 
 a[1,3] = NA
 b[1,3] = 4
-expect_equal(if_val(a, NA ~ (4:1)*1.0), b)
+expect_equal(if_val(a, NA ~ (4:1)*1.0, . ~ .), b)
 
 b[1,1] = 3
 b[4,1] = 3
 b[1,3] = 1
-expect_equal(if_val(a, NA ~ t(3:1)*1.0), b)
-expect_error(if_val(a, NA ~ t(3:2)))
-expect_error(if_val(a, NA ~ 3:2))
+expect_equal(if_val(a, NA ~ t(3:1)*1.0, . ~ .), b)
+expect_error(if_val(a, NA ~ t(3:2), . ~ .))
+expect_error(if_val(a, NA ~ 3:2, . ~ .))
 
 
 b[1,1] = 4
 b[4,1] = 1
 b[1,3] = -1
-expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4))), b)
-expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4)))), b)
+expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4)), . ~ .), b)
+expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), . ~ .), b)
 
 
 context("if_val with NA.matrix")
@@ -64,30 +67,30 @@ context("if_val with NA.matrix")
 a = as.matrix(data.frame(a = 1:4, b = 5:8, d = 10:13))
 
 b = a
-expect_equal(if_val(a, NA ~ 2), b)
+expect_equal(if_val(a, NA ~ 2, . ~ .), b)
 
 a[1,1] = NA
 b[1,1] = 2
 
-expect_identical(if_val(a, NA ~ 2), b)
+expect_identical(if_val(a, NA ~ 2, . ~ .), b)
 
 a[4,1] = NA 
 b[4,1] = 2
-expect_identical(if_val(a, NA ~ 2), b)
+expect_identical(if_val(a, NA ~ 2, . ~ .), b)
 
 b[1,1] = 4
 b[4,1] = 1
 
-expect_equal(if_val(a, NA ~ 4:1), b)
+expect_equal(if_val(a, NA ~ 4:1, . ~ .), b)
 
 a[1,3] = NA
 b[1,3] = 4
-expect_equal(if_val(a, NA ~ 4:1), b)
+expect_equal(if_val(a, NA ~ 4:1, . ~ .), b)
 
 b[1,1] = 3
 b[4,1] = 3
 b[1,3] = 1
-expect_equal(if_val(a, NA ~ t(3:1)*1.0), b)
+expect_equal(if_val(a, NA ~ t(3:1)*1.0, . ~ .), b)
 expect_error(if_val(a, NA ~ t(3:2)))
 expect_error(if_val(a, NA ~ 3:2))
 
@@ -95,8 +98,8 @@ expect_error(if_val(a, NA ~ 3:2))
 b[1,1] = 4
 b[4,1] = 1
 b[1,3] = -1
-expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4))), b)
-expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4)))), b)
+expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4)), . ~ .), b)
+expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), . ~ .), b)
 
 
 context("if_val with NA tbl_df")
@@ -105,44 +108,45 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     a = tbl_df(data.frame(a = 1:4, b = 5:8, d = 10:13))
     
-    b = a
-    expect_identical(if_val(a, NA ~ 2), b)
+    b = as.data.frame(a)
+    rownames(b) = rownames(data.frame(a = 1:4, b = 5:8, d = 10:13))
+    expect_identical(if_val(a, NA ~ 2, . ~ .), b)
     
     a[1,1] = NA
     b[1,1] = 2
     
-    expect_identical(if_val(a, NA ~ 2), b)
+    expect_identical(if_val(a, NA ~ 2, . ~ .), b)
     
     a[4,1] = NA 
     b[4,1] = 2
-    expect_identical(if_val(a, NA ~ 2), b)
+    expect_identical(if_val(a, NA ~ 2, . ~ .), b)
     
     b[1,1] = 4L
     b[4,1] = 1L
     b$a = as.integer(b$a)
-    expect_equal(if_val(a, NA ~ 4:1), b)
+    expect_equal(if_val(a, NA ~ 4:1, . ~ .), b)
     
     a[1,3] = NA
     b[1,3] = 4L
     b$d = as.integer(b$d)
-    expect_equal(if_val(a, NA ~ 4:1), b)
+    expect_equal(if_val(a, NA ~ 4:1, . ~ .), b)
     
     b[1,1] = 3
     b[4,1] = 3
     b[1,3] = 1
     b$a = as.integer(b$a)
     b$d = as.integer(b$d)
-    expect_equal(if_val(a, NA ~ t(3:1)), b)
-    expect_error(if_val(a, NA ~ t(3:2)))
-    expect_error(if_val(a, NA ~ 3:2))
+    expect_equal(if_val(a, NA ~ t(3:1), . ~ .), b)
+    expect_error(if_val(a, NA ~ t(3:2), . ~ .))
+    expect_error(if_val(a, NA ~ 3:2, . ~ .))
     
     
     b[1,1] = 4
     b[4,1] = 1
     b[1,3] = -1
     
-    expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4))), b)
-    expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4)))), b)
+    expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4)), . ~ .), b)
+    expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), . ~ .), b)
 } else {
 	cat("dplyr not found\n")
 }
@@ -153,9 +157,9 @@ b = 4:1
 ab = list(a,b)
 val_lab(ab) = c("a"=1, "b" = 2)
 
-expect_identical(if_val(ab, NA ~ 42), ab)
-expect_identical(if_val(ab, NA ~ list(42)), ab)
-expect_error(if_val(ab, NA ~ list(42,43,44)))
+expect_identical(if_val(ab, NA ~ 42,  . ~ .), unlab(ab))
+expect_identical(if_val(ab, NA ~ list(42), . ~ .), unlab(ab))
+expect_error(if_val(ab, NA ~ list(42,43,44), . ~ .))
 
 ab[[1]][1] = NA
 ab[[2]][4] = NA
@@ -164,12 +168,12 @@ ab_no_na = ab
 
 ab_no_na[[1]][1] = 42
 ab_no_na[[2]][4] = 42
-expect_identical(if_val(ab, NA ~ 42), ab_no_na)
+expect_identical(if_val(ab, NA ~ 42, . ~ .), unlab(ab_no_na))
 
 ab_no_na[[1]][1] = 42
 ab_no_na[[2]][4] = 42
 expect_error(if_val(ab, NA ~ list(42,43)))
-expect_identical(if_val(ab, NA ~ list(42)), ab_no_na)
+expect_identical(if_val(ab, NA ~ list(42), . ~ .), unlab(ab_no_na))
 expect_error(if_val(ab, NA ~ list(42:39,40:43)))
 expect_error(if_val(ab, NA ~ data.frame(42:39,40:43)))
 
@@ -213,7 +217,7 @@ if(FALSE & suppressWarnings(require(dplyr, quietly = TRUE))){
 }
 
 df_clean =  modify(df, {
-        param = if_val(param, NA ~ ave(param, group, FUN = mean_col))
+        param = if_val(param, NA ~ ave(param, group, FUN = mean_col), . ~ .)
     })
 
 df = within(df, {
@@ -248,18 +252,20 @@ for(i in seq_along(df_res1)){
     df_res1[is.na(df_res1[,i]),i] = means[i]
 }
 
+rownames(df_res1) = rownames(df)
 expect_identical(
-    if_val(df, lt(0.25) ~ t(min_col(df)), gt(0.75) ~ t(max_col(df)), NA ~ t(mean_col(df))), 
+    if_val(df, lt(0.25) ~ t(min_col(df)), gt(0.75) ~ t(max_col(df)), NA ~ t(mean_col(df)), . ~ .), 
     df_res1
 )
 
 df_res2 = df
+rownames(df_res2) = rownames(df)
 means = rowMeans(df, na.rm = TRUE)
 for(i in seq_along(df_res2)){
     df_res2[is.na(df_res2[,i]),i] = means[is.na(df_res2[,i])]
 }
 expect_identical(
-    if_val(df, NA ~ mean_row(df)), df_res2
+    if_val(df, NA ~ mean_row(df), . ~ .), df_res2
 )
 
 
@@ -302,7 +308,7 @@ a = 1:4
 b = a
 a[1] = NA
 b[1] = 2
-expect_identical(if_val(a, NA ~ c("Hard to say" = 2)), b)
+expect_identical(if_val(a, NA ~ c("Hard to say" = 2), . ~ .), unlab(b))
 
 set.seed(123)
 x1 = runif(30)
