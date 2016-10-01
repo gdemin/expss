@@ -29,8 +29,14 @@ build_criterion.function = function(criterion,dfs){
 
 
 build_criterion.default = function(criterion,dfs){
-    
-    build_criterion.function(function(x) x %in% criterion,dfs)
+    criterion
+    build_criterion.function(function(x) {
+        if(("POSIXct" %in% class(x)) & !("POSIXct" %in% class(criterion))){
+            criterion = as.POSIXct(criterion)
+        }
+        x %in% criterion
+        },
+        dfs)
 }
 
 

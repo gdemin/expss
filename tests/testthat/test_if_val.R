@@ -328,3 +328,14 @@ var_lab(res) = "factor"
 expect_identical(a, res)
 
 
+a = as.POSIXct("2016-10-01")
+
+if_val(a) = c("2016-10-01" ~ "2016-10-02")
+
+expect_identical(a, as.POSIXct("2016-10-02"))
+
+context("dot notation")
+
+a = 1:5
+
+expect_identical(if_val(a, 1:4 ~ NA, 5 ~ .), c(NA, NA, NA, NA, 5L))
