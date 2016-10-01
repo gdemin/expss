@@ -156,13 +156,80 @@ if_val = function(x, ..., from = NULL, to = NULL){
 #' @export
 #' @rdname if_val
 "if_val<-" = function(x, from = NULL, value){
-    if (is.null(from)){
-        if_val(x, value)
-    } else {
-        if_val(x, from = from, to = value)
-    }
+    UseMethod("if_val<-")
 }
 
+#' @export
+"if_val<-.default" = function(x, from = NULL, value){
+    if (!is.null(from)){
+        stopif(length(from)!=length(value), 
+               "length(value) should be equal to length(from) but length(from) = ", length(from),
+               " and length(value) = ", length(value))
+        recoding_list = mapply(function(x,y) list(from = x, to = y), from, value, SIMPLIFY = FALSE)
+    } else {
+        if(inherits(value, what = "formula")) value = list(value)
+        recoding_list = lapply(value, parse_formula)
+    }
+    
+    recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
+    dfs_x = as.data.frame(x,
+                          stringsAsFactors = FALSE,
+                          check.names = FALSE)
+    
+    for (from_to in recoding_list){
+        if (all(recoded)) break # if all values were recoded
+        from = from_to$from
+        if (all_other(from)){
+            # dot is considered as all other non-recoded values ("else" from SPSS)
+            cond = !recoded
+        } else {
+            #if (identical(from, NA)) from = as.numeric(NA)
+            cond = build_criterion(from, dfs_x)
+            cond = cond & !recoded # we don't recode already recoded value
+        }
+        to = from_to$to
+        if(!all_other(to)){
+            if (!is.function(to)) check_conformance(cond, to)
+            # dot in `to` means copy (simply doesn't change values that meet condition - "copy" from SPSS ) 
+            if(!is.list(to) || is.data.frame(to) || is.function(to)){
+                if(is.function(to)){
+                    # to: function
+                    for (each_col in seq_len(NCOL(x))){
+                        curr_cond = column(cond, each_col)
+                        if (any(curr_cond)) column(x, each_col, curr_cond) = to(column(x, each_col, curr_cond))
+                    }
+                    
+                    
+                } else {
+                    # to: matrix, data.frame, vector
+                    for (each_col in seq_len(NCOL(x))){
+                        curr_cond = column(cond, each_col)
+                        if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
+                    }
+                }
+            } else {
+                # to: list
+                for (each_col in seq_len(NCOL(x))){
+                    curr_cond = column(cond, each_col)
+                    if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
+                }     
+                
+            }
+        }    
+        recoded = recoded | (cond & !is.na(cond)) # we don't recode already recoded value
+    }
+    
+    x
+}
+
+#' @export
+"if_val<-.list" = function(x, from = NULL, value){
+    
+    for(each in seq_along(x)){
+        if_val(x[[each]], from = from) = value
+    }
+    x
+}
 
 #' @export
 if_val.default = function(x, ..., from = NULL, to = NULL){
@@ -230,6 +297,8 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
 
 
 
+
+
 #' @export
 if_val.list = function(x, ..., from = NULL, to = NULL){
     if (is.null(from) && is.null(to)){
@@ -242,7 +311,7 @@ if_val.list = function(x, ..., from = NULL, to = NULL){
             if_val(x[[each]], from = from) = to
         }
     }
-
+    
     x
 }
 
@@ -254,7 +323,9 @@ all_other = function(cond){
 
 parse_formula = function(elementary_recoding){
     # strange behavior with parse_formula.formula - it doesn't work with formulas so we use default method and check argument type
-    stopif(!inherits(elementary_recoding, what = "formula"),"All recodings should be formula but:",elementary_recoding)
+    stopif(!inherits(elementary_recoding, what = "formula"),"All recodings should be formula but: ", elementary_recoding)
+    stopif(length(elementary_recoding)!=3,"All formulas should have left and right parts but: ",
+           paste(elementary_recoding, collapse = " "))
     formula_envir = environment(elementary_recoding)
     from = elementary_recoding[[2]]
     to = elementary_recoding[[3]]

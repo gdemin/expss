@@ -1,5 +1,10 @@
 context("if_val simple vector")
 
+
+expect_error(if_val(1, 42))
+expect_error(if_val(1, ~ 42))
+
+
 expect_identical(if_val(1:5, 1~-1), c(-1, 2, 3, 4, 5))
 expect_identical(if_val(1:5, 1~-1, 2 ~ NA), c(-1, NA, 3, 4, 5))
 expect_identical(if_val(1:5, gt(2)~99), c(1, 2, 99, 99, 99))
@@ -339,3 +344,9 @@ context("dot notation")
 a = 1:5
 
 expect_identical(if_val(a, 1:4 ~ NA, 5 ~ .), c(NA, NA, NA, NA, 5L))
+
+context("type conversion")
+
+if_val(c("a"), "a" ~ 1)
+
+
