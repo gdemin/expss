@@ -5,24 +5,87 @@ expect_error(if_val(1, 42))
 expect_error(if_val(1, ~ 42))
 
 
-expect_identical(if_val(1:5, 1~-1), c(-1, 2, 3, 4, 5))
-expect_identical(if_val(1:5, 1~-1, 2 ~ NA), c(-1, NA, 3, 4, 5))
-expect_identical(if_val(1:5, gt(2)~99), c(1, 2, 99, 99, 99))
+expect_identical(if_val(1:5, 1~-1), c(-1, NA, NA, NA, NA))
+expect_identical(if_val(1:5, 1~-1, . ~ .), c(-1, 2, 3, 4, 5))
+b = 1:5
+if_val(b) = 1~-1
+expect_identical(b, c(-1, 2, 3, 4, 5))
+
+expect_identical(if_val(1:5, 1~-1, 2 ~ NA), c(-1, NA, NA, NA, NA))
+expect_identical(if_val(1:5, 1~-1, 2 ~ NA, . ~ .), c(-1, NA, 3, 4, 5))
+
+b = 1:5
+if_val(b) = c(1~-1, 2 ~ NA)
+expect_identical(b, c(-1, NA, 3, 4, 5))
+
+expect_identical(if_val(1:5, gt(2)~99, . ~ .), c(1, 2, 99, 99, 99))
+expect_identical(if_val(1:5, gt(2)~99), c(NA, NA, 99, 99, 99))
+
+b = 1:5
+if_val(b) = gt(2)~99
+expect_identical(b, c(1, 2, 99, 99, 99))
+
 expect_identical(if_val(1:5, gt(2)~99, . ~ 0), c(0, 0, 99, 99, 99))
+
 expect_identical(if_val(1:5, 1:3 ~ 1, . ~ NA), c(1, 1, 1, NA, NA))
+
 expect_identical(if_val(1:5, 1:3 ~ 1, 2:5 ~ 2), c(1, 1, 1, 2, 2))
+
 expect_identical(if_val(1:5, lt(2) ~ 10, lt(3) ~ 11, lt(4) ~ 12, . ~ NA), c(10, 11, 12, NA, NA))
 
-expect_identical(if_val(1:5, 4 ~ "four", (function(x) (x-1)<2) ~-1), c(-1, -1, 3, "four", 5) )
+expect_identical(if_val(1:5, 4 ~ "four", (function(x) (x-1)<2) ~-1, . ~ .), c(-1, -1, 3, "four", 5) )
+expect_identical(if_val(1:5, 4 ~ "four", (function(x) (x-1)<2) ~-1), c(-1, -1, NA, "four", NA) )
+
+b = 1:5
+if_val(b) = c(4 ~ "four", (function(x) (x-1)<2) ~-1)
+expect_identical(b, c(-1, -1, 3, "four", 5) )
 
 x = c(1,3,1,3,NA)
 y = c(8,8,8,9,9)
 z = c(4,4,4,5,5)
 
-expect_identical(if_val(x, gt(2)~y), c(1, 8, 1, 9, NA))
-expect_identical(if_val(x, list(gt(2)~y)), c(1, 8, 1, 9, NA))
+expect_identical(if_val(x, gt(2)~y, . ~ .), c(1, 8, 1, 9, NA))
+expect_identical(if_val(x, gt(2) ~ y), c(NA, 8, NA, 9, NA))
+if_val(x) = gt(2)~y
+expect_identical(x, c(1, 8, 1, 9, NA))
+
+
+
+x = c(1,3,1,3,NA)
+y = c(8,8,8,9,9)
+z = c(4,4,4,5,5)
+
+expect_identical(if_val(x, list(gt(2)~y), . ~ .), c(1, 8, 1, 9, NA))
+expect_identical(if_val(x, list(gt(2)~y, . ~ .)), c(1, 8, 1, 9, NA))
+
+expect_identical(if_val(x, list(gt(2)~y)), c(NA, 8, NA, 9, NA))
+if_val(x) = list(gt(2)~y)
+expect_identical(x, c(1, 8, 1, 9, NA))
+
+
+x = c(1,3,1,3,NA)
+y = c(8,8,8,9,9)
+z = c(4,4,4,5,5)
+
+
+expect_identical(if_val(x, gt(2)~y, lte(2) ~ z, . ~ .), c(4, 8, 4, 9, NA))
 expect_identical(if_val(x, gt(2)~y, lte(2) ~ z), c(4, 8, 4, 9, NA))
+
+if_val(x) = c(gt(2)~y, lte(2) ~ z)
+expect_identical(x, c(4, 8, 4, 9, NA))
+
+
+
+x = c(1,3,1,3,NA)
+y = c(8,8,8,9,9)
+z = c(4,4,4,5,5)
+
 expect_identical(if_val(x, gt(2)~y, lte(2) ~ z, . ~ 99), c(4, 8, 4, 9, 99))
+
+if_val(x) = list(gt(2)~y, lte(2) ~ z, . ~ 99)
+expect_identical(x, c(4, 8, 4, 9, 99))
+
+
 expect_identical(if_val(x, list(gt(2)~y, lte(2) ~ z, .~99)), c(4, 8, 4, 9, 99))
 
 expect_identical(if_val(x, (z>4)~y), c(1, 3, 1, 9, 9))

@@ -244,7 +244,8 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
         recoding_list = mapply(function(x,y) list(from = x, to = y), from, to, SIMPLIFY = FALSE)
     }
     recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
-    dfs_x = as.data.frame(x,
+    res = make_empty_object(x)
+    x = as.data.frame(x,
                           stringsAsFactors = FALSE,
                           check.names = FALSE)
     
@@ -256,7 +257,7 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
             cond = !recoded
         } else {
             #if (identical(from, NA)) from = as.numeric(NA)
-            cond = build_criterion(from, dfs_x)
+            cond = build_criterion(from, x)
             cond = cond & !recoded # we don't recode already recoded value
         }
         to = from_to$to
@@ -268,7 +269,7 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
                     # to: function
                     for (each_col in seq_len(NCOL(x))){
                         curr_cond = column(cond, each_col)
-                        if (any(curr_cond)) column(x, each_col, curr_cond) = to(column(x, each_col, curr_cond))
+                        if (any(curr_cond)) column(res, each_col, curr_cond) = to(column(x, each_col, curr_cond))
                     }
                     
                     
@@ -276,22 +277,28 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
                     # to: matrix, data.frame, vector
                     for (each_col in seq_len(NCOL(x))){
                         curr_cond = column(cond, each_col)
-                        if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
+                        if (any(curr_cond)) column(res, each_col, curr_cond) = column(to, each_col, curr_cond)
                     }
                 }
             } else {
                 # to: list
                 for (each_col in seq_len(NCOL(x))){
                     curr_cond = column(cond, each_col)
-                    if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
+                    if (any(curr_cond))  if_val(column(res, each_col), from = list(curr_cond)) = list(column(to, each_col))
                 }     
                 
+            }
+        } else {
+            # copy old values
+            for (each_col in seq_len(NCOL(x))){
+                curr_cond = column(cond, each_col)
+                if (any(curr_cond)) column(res, each_col, curr_cond) = column(x, each_col, curr_cond)
             }
         }    
         recoded = recoded | (cond & !is.na(cond)) # we don't recode already recoded value
     }
     
-    x
+    res
 }
 
 
@@ -373,5 +380,47 @@ lo = -Inf
 hi = Inf
 
 
+# make object with the same shape as its argument but filled with NA and logical type
+make_empty_object = function(x){
+    UseMethod("make_empty_object")
+}
 
+make_empty_object.default = function(x){
+    res = rep(NA, length(x))
+    names(res) = names(x)
+    res
+}
+
+make_empty_object.POSIXct = function(x){
+    res = as.POSIXct(rep(NA, length(x)))
+    names(res) = names(x)
+    res
+}
+
+
+make_empty_object.matrix = function(x){
+    res = matrix(NA, nrow = nrow(x), ncol = ncol(x))
+    rownames(res) = rownames(x) 
+    colnames(res) = colnames(x)
+    res
+}
+
+make_empty_object.list = function(x){
+    res = lapply(x, make_empty_object)
+    names(res) = names(x)
+    res
+}
+
+make_empty_object.data.frame = function(x){
+    res = as.data.frame(lapply(x, make_empty_object))
+    rownames(res) = rownames(x) 
+    colnames(res) = colnames(x)
+    res
+}
+
+make_empty_object.tbl_df = function(x){
+    res = as.data.frame(lapply(x, make_empty_object))
+    colnames(res) = colnames(x)
+    res
+}
 
