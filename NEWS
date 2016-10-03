@@ -1,6 +1,7 @@
 0.5.5 (08.30.2016)
 ================
 * bugfixes
+* change behavior of `if_val()` - now it dowsn't copies old values by default.
 * add %n_i%, %n_d% - names intersection and diffs
 
 0.5.1 (07.07.2016)

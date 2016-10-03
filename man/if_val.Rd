@@ -42,27 +42,30 @@ object of same form as \code{x} with recoded values
 \code{if_val} change, rearrange or consolidate the values of an existing 
 variable based on conditions. Design of this function inspired by RECODE from
 SPSS. Sequence of recodings provided in the form of formulas. For example, 
-1:2 ~ 1 means that all 1 and 2 will be replaced with 1. Each value recoded 
-only once. Values which doesn't meet any condition remain unchanged. As a 
-condition one can use just values or more sophisticated logical values and 
-functions. There are several special functions for usage as criteria - for 
-details see \link{criteria}. Simple common usage looks like: \code{if_val(x, 
-1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}. For more information, see details and 
-examples. 
+1:2 ~ 1 means that all 1's and 2's will be replaced with 1. Each value will
+recoded only once. In the assignment form \code{if_val(...) = ...} of this
+function values which doesn't meet any condition remain unchanged. In case of
+the usual form \code{... = if_val(...)} values which doesn't meet any
+condition will be replaced with NA. As a condition one can use just values or
+more sophisticated logical values and functions. There are several special
+functions for usage as criteria - for details see \link{criteria}. Simple
+common usage looks like: \code{if_val(x, 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}.
+For more information, see details and examples.
 The \code{ifs} function checks whether one or more conditions are met and
 returns a value that corresponds to the first TRUE condition. \code{ifs} can
-take the place of multiple nested \code{ifelse} statements, and is much
+take the place of multiple nested \code{ifelse} statements and is much
 easier to read with multiple conditions. \code{ifs} works in the same manner
-as \code{if_val} - e. g. with formula or from/to notation. But conditions
+as \code{if_val} - e. g. with formulas or with from/to notation. But conditions
 should be only logical and it doesn't operate on multicolumn objects.
 }
 \details{
-Input conditions: possible values for left hand side (LHS) of formula or element of \code{from} list:
+Input conditions - possible values for left hand side (LHS) of formula or
+element of \code{from} list:
 \itemize{
-\item{vector/single value}{ All values in \code{x} which equal to elements of vector in LHS will be replaced with RHS.}
-\item{function}{ Values for which function gives TRUE will be replaced
-with RHS. There are some special functions for convenience - see
-\link{criteria}.}
+\item{vector/single value}{ All values in \code{x} which equal to elements of
+vector in LHS will be replaced with RHS.}
+\item{function}{ Values for which function gives TRUE will be replaced with
+RHS. There are some special functions for convenience - see \link{criteria}.}
 \item{logical vector/matrix/data.frame}{ Values for which LHS equals to TRUE 
 will be recoded. Logical vector will be recycled across all columns of 
 \code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
@@ -71,7 +74,7 @@ will be used for corresponding column/element of \code{x}.}
 other unrecoded values will be changed to RHS of formula or appropriate
 element of \code{to}.}
 }
-Output values: possible values for right hand side (RHS) of formula or element of \code{to} list:
+Output values - possible values for right hand side (RHS) of formula or element of \code{to} list:
 \itemize{
 \item{value}{ replace elements of \code{x}. This value will be
 recycled across rows and columns of \code{x}.}
@@ -81,11 +84,12 @@ position in rows of \code{x}. Vector will be recycled across columns of
 \item{list/matrix/data.frame}{ Element of list/column of matrix/data.frame
 will be used as a replacement value for corresponding column/element of
 \code{x}.}
-\item{function}{ This function will be applied to values of \code{x} which satisfy recoding condition.}
-\item{.}{ Dot in RHS/\code{to} means copy old value (COPY in SPSS RECODE).
-In most cases there is no need for this option because by default
-\code{if_val} doesn't modify values which don't satisfy any of conditions.}
-}
+\item{function}{ This function will be applied to values of \code{x} which
+satisfy recoding condition.}
+\item{.}{ Dot in RHS/\code{to} means copy old value (COPY in SPSS RECODE). It
+is useful in the usual form of \code{if_val} and doesn't do anything in the
+case of the assignment form \code{if_val() = ...} because this form don't
+modify values which are not satisfying any of the conditions.} }
 \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 }
@@ -125,10 +129,10 @@ voter
 set.seed(123)
 a = rnorm(20)
 # if a<(-0.5) we change it to absolute value of a (abs function)
-if_val(a, lt(-0.5) ~ abs) 
+if_val(a, lt(-0.5) ~ abs, . ~ .) 
 
 # the same example with logical criteria
-if_val(a, a<(-.5) ~ abs) 
+if_val(a, a<(-.5) ~ abs, . ~ .) 
 
 # replace with specific value for each column
 # we replace values greater than 0.75 with column max and values less than 0.25 with column min
@@ -144,11 +148,11 @@ x3[sample(30, 10)] = NA # place 10 NA's
 dfs = data.frame(x1, x2, x3)
 
 #replacement. Note the necessary transpose operation
-if_val(dfs, lt(0.25) ~ t(min_col(dfs)), gt(0.75) ~ t(max_col(dfs)), NA ~ t(mean_col(dfs)))
+if_val(dfs, lt(0.25) ~ t(min_col(dfs)), gt(0.75) ~ t(max_col(dfs)), NA ~ t(mean_col(dfs)), . ~ .)
 
 # replace NA with row means
-# some row which contain all NaN remain unchanged because mean_row for them also is NaN
-if_val(dfs, NA ~ mean_row(dfs)) 
+# some rows which contain all NaN remain unchanged because mean_row for them also is NaN
+if_val(dfs, NA ~ mean_row(dfs), . ~ .) 
 
 # some of the above examples with from/to notation
 
