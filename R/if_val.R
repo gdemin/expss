@@ -380,7 +380,7 @@ hi = Inf
 # for unknown reasons methods don't work when unexported
 make_empty_object = function(x){
     if(is.data.frame(x)){
-        res = as.data.frame(lapply(x, make_empty_object))
+        res = as.dtfrm(lapply(x, make_empty_object))
         row.names(res) = row.names(x)
         colnames(res) = colnames(x)
     } else {
