@@ -1,9 +1,10 @@
 #' Criteria functions
 #' 
 #' These functions returns criteria functions which could be used in different 
-#' situation - see \link{if_val}, \link{na_if}, \link{\%i\%}, \link{\%d\%}, 
-#' \link{count_if}, \link{match_row} etc. For example, \code{gt(5)} returns
-#' function which tests whether its argument greater than five. 
+#' situation - see \link{keep}, \link{except}, \link{if_val}, \link{na_if},
+#' \link{\%i\%}, \link{\%d\%}, \link{count_if}, \link{match_row} etc. For
+#' example, \code{gt(5)} returns function which tests whether its argument
+#' greater than five.
 #' \code{fixed("apple")} return function which tests whether its argument
 #' contains "apple". Logical operations (|, &, !, xor) defined for these
 #' functions.
