@@ -1,8 +1,10 @@
 #' Add rows to data.frame/matrix/table
 #'
 #' \code{add_rows} is similar to \link[base]{rbind} but it handles non-matching 
-#' column names. \code{\%add_rows\%} is an infix version of \code{add_rows}.
-#' There is also special method for the results of \code{cro_*}/\code{fre}.
+#' column names. \code{\%add_rows\%} is an infix version of \code{add_rows}. 
+#' There is also special method for the results of \code{cro_*}/\code{fre}. 
+#' \code{.add_rows} is version for addding rows to default dataset. See
+#' \link{default_dataset}.
 #'
 #' @param ... data.frame/matrix/table for binding
 #' @param x data.frame/matrix/table for binding
@@ -115,4 +117,13 @@ add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
 #' @export
 '%add_rows%' = function(x,y){
     add_rows(x, y)
+}
+
+#' @rdname add_rows
+#' @export
+.add_rows = function(..., nomatch_columns = c("add", "drop", "stop")){
+    reference = suppressMessages(default_dataset() )
+    data = ref(reference)
+    ref(reference) = add_rows(data, ..., nomatch_columns = nomatch_columns)
+    invisible(NULL)
 }

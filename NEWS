@@ -3,6 +3,7 @@
 * bugfixes
 * change behavior of `if_val()` - now it dowsn't copies old values by default.
 * add %n_i%, %n_d% - names intersection and diffs
+* add `add_rows` function
 
 0.5.1 (07.07.2016)
 ================

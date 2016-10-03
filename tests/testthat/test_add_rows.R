@@ -16,6 +16,40 @@ expect_equal_to_reference(add_rows(a, b, d, e, nomatch_columns = "drop"), "rds/a
 expect_equal_to_reference(add_rows(a, NA), "rds/add_rows6a.rds")
 expect_equal_to_reference(add_rows(a, 1:2), "rds/add_rows6b.rds")
 
+context("add_rows default dataset")
+a = data.frame(x = 1:5, y = 6:10)
+default_dataset(a)
+.add_rows(b)
+expect_equal_to_reference(a, "rds/add_rows1.rds")
+
+a = data.frame(x = 1:5, y = 6:10)
+.add_rows(b, d)
+expect_equal_to_reference(a, "rds/add_rows2.rds")
+
+a = data.frame(x = 1:5, y = 6:10)
+.add_rows(b, d, e)
+expect_equal_to_reference(a, "rds/add_rows3.rds")
+
+a = data.frame(x = 1:5, y = 6:10)
+.add_rows(b, nomatch_columns = "drop")
+expect_equal_to_reference(a, "rds/add_rows4.rds")
+
+a = data.frame(x = 1:5, y = 6:10)
+.add_rows(b, d, nomatch_columns = "drop")
+expect_equal_to_reference(a, "rds/add_rows5.rds")
+
+a = data.frame(x = 1:5, y = 6:10)
+.add_rows(b, d, e, nomatch_columns = "drop")
+expect_equal_to_reference(a, "rds/add_rows6.rds")
+
+a = data.frame(x = 1:5, y = 6:10)
+.add_rows(NA)
+expect_equal_to_reference(a, "rds/add_rows6a.rds")
+
+a = data.frame(x = 1:5, y = 6:10)
+.add_rows(1:2)
+expect_equal_to_reference(a, "rds/add_rows6b.rds")
+
 expect_error(add_rows(a, b, nomatch_columns = "stop"))
 
 class(a) = union(c("table_cases", "ctable"), class(a))
