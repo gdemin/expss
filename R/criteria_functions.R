@@ -46,6 +46,12 @@
 #' 
 #' letters %i% (fixed("a") | fixed("z")) # a, z
 #' 
+#' letters %i% from("w")  # w, x, y, z
+#' 
+#' letters %i% to("c")  # a, b, c
+#' 
+#' letters %i% (from("b") & to("e"))  # b, d, e
+#' 
 #' c(1, 2, NA, 3) %i% other # c(1, 2, 3)
 #' 
 #' # examples with count_if
@@ -72,6 +78,13 @@
 #' 
 #' # count_row_if
 #' count_row_if(regex("^a"),df1) # c(1,0,0,1)
+#' 
+#' # examples with 'keep' and 'except'
+#' 
+#' data(iris)
+#' iris %keep% to("Petal.Width")
+#'  
+#' iris %except% from("Petal.Length") 
 #' 
 #' # if_val examples
 #' # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
@@ -189,6 +202,38 @@ thru = function(lower, upper){
     force(upper)
     gte(lower) & lte(upper)
 }
+
+
+#' @export
+#' @rdname criteria
+from = function(x){
+    x
+    res = function(y){
+        first = match_col(x, y)[1]
+        stopif(is.na(first), "'",x, "' not found." )
+        positions = seq_along(y)
+        positions>=first
+        
+    } 
+    class(res) = union("criterion",class(res))
+    res
+}
+
+#' @export
+#' @rdname criteria
+to = function(x){
+    x
+    res = function(y){
+        last = match_col(x, y)[1]
+        stopif(is.na(last), "'",x, "' not found." )
+        positions = seq_along(y)
+        positions<=last
+        
+    } 
+    class(res) = union("criterion", class(res))
+    res
+}
+
 
 
 #' @export

@@ -5,6 +5,7 @@
 \alias{criteria}
 \alias{eq}
 \alias{fixed}
+\alias{from}
 \alias{ge}
 \alias{gt}
 \alias{gte}
@@ -18,6 +19,7 @@
 \alias{perl}
 \alias{regex}
 \alias{thru}
+\alias{to}
 \title{Criteria functions}
 \usage{
 eq(x)
@@ -45,6 +47,10 @@ regex(pattern, ignore.case = FALSE, useBytes = FALSE)
 fixed(pattern, ignore.case = FALSE, useBytes = FALSE)
 
 thru(lower, upper)
+
+from(x)
+
+to(x)
 
 lower \%thru\% upper
 
@@ -105,6 +111,12 @@ lte(1)}}
 
 letters \%i\% (fixed("a") | fixed("z")) # a, z
 
+letters \%i\% from("w")  # w, x, y, z
+
+letters \%i\% to("c")  # a, b, c
+
+letters \%i\% (from("b") & to("e"))  # b, d, e
+
 c(1, 2, NA, 3) \%i\% other # c(1, 2, 3)
 
 # examples with count_if
@@ -131,6 +143,13 @@ count_if(regex("^a"),df1) # 2
 
 # count_row_if
 count_row_if(regex("^a"),df1) # c(1,0,0,1)
+
+# examples with 'keep' and 'except'
+
+data(iris)
+iris \%keep\% to("Petal.Width")
+ 
+iris \%except\% from("Petal.Length") 
 
 # if_val examples
 # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
