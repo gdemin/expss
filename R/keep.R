@@ -6,7 +6,7 @@
 #' in these functions by design so use quotes for names of your variables or use
 #' \link{qc}. \code{\%keep\%}/\code{\%except\%} are infix versions of these 
 #' functions. \code{.keep}/\code{.except} are versions which works with 
-#' \link{deafult_dataset}.
+#' \link{default_dataset}.
 #'
 #' @param data data.frame/matrix/list/vector
 #' @param ... column names/element names of type character or criteria/logical functions
@@ -101,7 +101,7 @@ keep_helper = function(x, ...){
 #' @export
 #' @rdname keep
 '%except%' = function(data, variables){
-    keep(data, variables)
+    except(data, variables)
 }
 
 #' @export
@@ -113,5 +113,5 @@ keep_helper = function(x, ...){
 #' @export
 #' @rdname keep
 .except = function(...){
-    keep(data, variables)
+    except(data, variables)
 }

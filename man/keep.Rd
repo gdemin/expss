@@ -35,10 +35,10 @@ object of the same type as \code{data}
 \code{keep} selects variables/elements from data.frame by their names or by 
 criteria (see \link{criteria}). \code{except} drops  variables/elements from 
 data.frame by their names or by criteria. There is no non-standard evaluation
-in these functions by design so quote names of your variables or use
+in these functions by design so use quotes for names of your variables or use
 \link{qc}. \code{\%keep\%}/\code{\%except\%} are infix versions of these 
 functions. \code{.keep}/\code{.except} are versions which works with 
-\link{deafult_dataset}.
+\link{default_dataset}.
 }
 \examples{
 1
