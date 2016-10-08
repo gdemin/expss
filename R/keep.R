@@ -16,7 +16,28 @@
 #' @export
 #'
 #' @examples
-#' 1
+#' keep(iris, "Sepal.Length", "Sepal.Width") 
+#' except(iris, "Species")
+#' 
+#' keep(iris, "Species", other) # move 'Species' to the first position
+#' keep(iris, to("Petal.Width")) # keep all columns except 'Species'
+#' 
+#' except(iris, perl("^Petal")) # remove columns which names starts with 'Petal'
+#' 
+#' keep(airquality, (from("Ozone") & to("Wind"))) # keep columns from 'Ozone' to 'Wind'
+#' 
+#' # the same examples with infix operators
+#' 
+#' iris %keep% c("Sepal.Length", "Sepal.Width") 
+#' iris %except% "Species"
+#' 
+#' iris %keep% c("Species", other) # move 'Species' to the first position
+#' iris %keep% to("Petal.Width")   # keep all columns except 'Species'
+#' 
+#' iris %except% perl("^Petal")    # remove columns which names starts with 'Petal'
+#' 
+#' airquality %keep% (from("Ozone") & to("Wind")) # keep columns from 'Ozone' to 'Wind'
+#'     
 keep = function(data, ...){
     UseMethod("keep")
 }
@@ -107,11 +128,17 @@ keep_helper = function(x, ...){
 #' @export
 #' @rdname keep
 .keep = function(...){
-    keep(data, variables)
+    reference = suppressMessages(default_dataset() )
+    data = ref(reference)
+    ref(reference) = keep(data, ...)
+    invisible(NULL)
 }
 
 #' @export
 #' @rdname keep
 .except = function(...){
-    except(data, variables)
+    reference = suppressMessages(default_dataset() )
+    data = ref(reference)
+    ref(reference) = except(data, ...)
+    invisible(NULL)
 }

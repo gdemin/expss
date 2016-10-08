@@ -23,6 +23,11 @@
 #' \item{\code{regex}}{ use POSIX 1003.2 extended regular expressions. For details see \link[base]{grepl}}
 #' \item{\code{perl}}{ perl-compatible regular expressions. For details see \link[base]{grepl}}
 #' \item{\code{fixed}}{ pattern is a string to be matched as is. For details see \link[base]{grepl}}
+#' \item{\code{to}}{ returns function which gives TRUE for all elements of
+#' vector before the first occurrence of \code{x} and for  \code{x}.}
+#' \item{\code{from}}{ returns function which gives TRUE for all elements of 
+#' vector after the first occurrence of \code{x} and for \code{x}. \code{from} and
+#' \code{to} are intended for usage with \link{keep} and \link{except}.}
 #' \item{\code{not_na}, \code{other}}{ return TRUE for all elements of vector} 
 #' } 
 #' 
@@ -37,7 +42,8 @@
 #'
 #' @return function of class 'criterion' which tests its argument against condition and return logical value
 #' 
-#' @seealso \link{count_if}, \link{match_row}, \link{if_val}, \link{na_if}, \link{\%i\%}, \link{\%d\%}  
+#' @seealso \link{keep}, \link{except}, \link{count_if}, \link{match_row},
+#'   \link{if_val}, \link{na_if}, \link{\%i\%}, \link{\%d\%}
 #' @examples
 #' # operations on vector
 #' 1:6 %d% gt(4) # 1:4
@@ -82,8 +88,9 @@
 #' # examples with 'keep' and 'except'
 #' 
 #' data(iris)
-#' iris %keep% to("Petal.Width")
+#' iris %keep% to("Petal.Width") # column 'Species' will be removed 
 #'  
+#' # 'Sepal.Length', 'Sepal.Width' will be left 
 #' iris %except% from("Petal.Length") 
 #' 
 #' # if_val examples
@@ -206,6 +213,11 @@ thru = function(lower, upper){
 
 #' @export
 #' @rdname criteria
+'%thru%' = function(lower, upper) thru(lower, upper)
+
+
+#' @export
+#' @rdname criteria
 from = function(x){
     x
     res = function(y){
@@ -234,11 +246,6 @@ to = function(x){
     res
 }
 
-
-
-#' @export
-#' @rdname criteria
-'%thru%' = function(lower, upper) thru(lower, upper)
 
 #' @export
 #' @rdname criteria

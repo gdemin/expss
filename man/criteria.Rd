@@ -48,11 +48,11 @@ fixed(pattern, ignore.case = FALSE, useBytes = FALSE)
 
 thru(lower, upper)
 
+lower \%thru\% upper
+
 from(x)
 
 to(x)
-
-lower \%thru\% upper
 
 other(x)
 
@@ -100,6 +100,11 @@ lte(1)}}
 \item{\code{regex}}{ use POSIX 1003.2 extended regular expressions. For details see \link[base]{grepl}}
 \item{\code{perl}}{ perl-compatible regular expressions. For details see \link[base]{grepl}}
 \item{\code{fixed}}{ pattern is a string to be matched as is. For details see \link[base]{grepl}}
+\item{\code{to}}{ returns function which gives TRUE for all elements of
+vector before the first occurrence of \code{x} and for  \code{x}.}
+\item{\code{from}}{ returns function which gives TRUE for all elements of 
+vector after the first occurrence of \code{x} and for \code{x}. \code{from} and
+\code{to} are intended for usage with \link{keep} and \link{except}.}
 \item{\code{not_na}, \code{other}}{ return TRUE for all elements of vector} 
 }
 }
@@ -147,8 +152,9 @@ count_row_if(regex("^a"),df1) # c(1,0,0,1)
 # examples with 'keep' and 'except'
 
 data(iris)
-iris \%keep\% to("Petal.Width")
+iris \%keep\% to("Petal.Width") # column 'Species' will be removed 
  
+# 'Sepal.Length', 'Sepal.Width' will be left 
 iris \%except\% from("Petal.Length") 
 
 # if_val examples
@@ -162,6 +168,7 @@ if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, gte(11) ~ 3, . ~ 0)
 
 }
 \seealso{
-\link{count_if}, \link{match_row}, \link{if_val}, \link{na_if}, \link{\%i\%}, \link{\%d\%}
+\link{keep}, \link{except}, \link{count_if}, \link{match_row},
+  \link{if_val}, \link{na_if}, \link{\%i\%}, \link{\%d\%}
 }
 

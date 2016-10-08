@@ -41,6 +41,27 @@ functions. \code{.keep}/\code{.except} are versions which works with
 \link{default_dataset}.
 }
 \examples{
-1
+keep(iris, "Sepal.Length", "Sepal.Width") 
+except(iris, "Species")
+
+keep(iris, "Species", other) # move 'Species' to the first position
+keep(iris, to("Petal.Width")) # keep all columns except 'Species'
+
+except(iris, perl("^Petal")) # remove columns which names starts with 'Petal'
+
+keep(airquality, (from("Ozone") & to("Wind"))) # keep columns from 'Ozone' to 'Wind'
+
+# the same examples with infix operators
+
+iris \%keep\% c("Sepal.Length", "Sepal.Width") 
+iris \%except\% "Species"
+
+iris \%keep\% c("Species", other) # move 'Species' to the first position
+iris \%keep\% to("Petal.Width")   # keep all columns except 'Species'
+
+iris \%except\% perl("^Petal")    # remove columns which names starts with 'Petal'
+
+airquality \%keep\% (from("Ozone") & to("Wind")) # keep columns from 'Ozone' to 'Wind'
+    
 }
 

@@ -43,4 +43,18 @@ expect_identical(airquality %except% to("Wind"), airquality[, c("Temp", "Month",
 expect_identical(airquality %keep% (from("Ozone") & to("Wind")), airquality[, c("Ozone", "Solar.R", "Wind")])
 
 
+context("keep default_dataset")
+data(iris)
+aaa = iris
+default_dataset(aaa)
+.keep("Species", other)
+expect_identical(aaa, iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+
+aaa = iris
+.except("Species", other)
+expect_identical(aaa, iris[, FALSE, drop = FALSE])
+
+aaa = iris
+.except("Species")
+expect_identical(aaa, iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 
