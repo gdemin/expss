@@ -16,7 +16,8 @@
 #' @export
 #'
 #' @examples
-#' keep(iris, "Sepal.Length", "Sepal.Width") 
+#' keep(iris, "Sepal.Length", "Sepal.Width")  
+#' keep(iris, qc(Sepal.Length, Sepal.Width)) # same result with non-standard eval 
 #' except(iris, "Species")
 #' 
 #' keep(iris, "Species", other) # move 'Species' to the first position
@@ -29,6 +30,7 @@
 #' # the same examples with infix operators
 #' 
 #' iris %keep% c("Sepal.Length", "Sepal.Width") 
+#' iris %keep% qc(Sepal.Length, Sepal.Width) # same result with non-standard eval
 #' iris %except% "Species"
 #' 
 #' iris %keep% c("Species", other) # move 'Species' to the first position
