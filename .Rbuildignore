@@ -4,7 +4,6 @@
 \.gitignore
 \.git
 ^SupplementaryMaterials
-русский с пробелами
 README.MD
 tests/testthat/data
 

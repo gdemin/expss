@@ -53,7 +53,7 @@ keep.default = function(data, ...){
 }
 
 #' @export
-keep.dataframe = function(data, ...){
+keep.data.frame = function(data, ...){
     vars = colnames(data)
     new_vars = keep_helper(vars, ...)
     data[ , new_vars, drop = FALSE]
@@ -82,7 +82,7 @@ except.default = function(data, ...){
 }
 
 #' @export
-except.dataframe = function(data, ...){
+except.data.frame = function(data, ...){
     vars = colnames(data)
     new_vars = vars %d% keep_helper(vars, ...)
     data[ , new_vars, drop = FALSE]
