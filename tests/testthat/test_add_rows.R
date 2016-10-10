@@ -107,7 +107,8 @@ expect_error(add_rows(tab1, tab3, nomatch_columns = "stop"))
 
 expect_equal_to_reference(with(mtcars, fre(am) %add_rows% fre(vs)), "rds/add_rows10.rds")
 
-
+a = matrix(1:9, 3)
+expect_identical(add_rows(a, NA), rbind(a, NA))
 
 
 

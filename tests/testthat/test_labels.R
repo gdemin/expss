@@ -23,6 +23,7 @@ test_test_ds = test_ds
 for (each in seq_along(test_test_ds)) var_lab(test_test_ds[[each]]) = "Age group"
 
 expect_identical(set_var_lab(test_ds, "Age group"), test_test_ds)
+expect_identical(test_ds, unvr(test_test_ds))
 
 context("val_lab")
 
