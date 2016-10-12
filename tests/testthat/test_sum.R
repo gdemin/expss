@@ -3,11 +3,17 @@ context("common case")
 a = 1:3
 b = 3:1
 d = NA
+data(iris)
 
 expect_equal(sum_row(a, b, d), c(4,4,4))
 expect_equal(sum_col(a, b, d), c(a = 6, b=6, d = 0))
+expect_equal(sum_col(iris[,-5], iris[,-c(1,5)]), c(colSums(iris[,-5]), colSums(iris[,-c(1,5)])))
 
+expect_equal(sum_col(x1 = a, x2 = b, x3= d), c(x1 = 6, x2 = 6, x3 = 0))
+expect_equal(sum_col(x1 = a, x2 = b, d), c(x1 = 6, x2 = 6, d = 0))
 
+data(iris)
+expect_equal(mean(iris[,-5]), mean(unlist(iris[,-5])))
 expect_equal(mean_row(a, b, d), c(2,2,2))
 expect_equal(mean_col(a, b, d), c(a = 2, b = 2, d = NA))
 

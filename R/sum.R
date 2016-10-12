@@ -80,7 +80,7 @@ sum_col =function(...){
 ################################################
 
 #' @export
-mean.data.frame = function(x, ...) mean(as.matrix(x), ...)
+mean.data.frame = function(x, ...) mean(unlist(x), ...)
 
 #' @export
 #' @rdname sum_row
@@ -203,14 +203,15 @@ dots2list = function(...){
     values = as.character(substitute(c(...))[-1])
     args = list(...)
     curr_names = names(args)
-    has_names = sapply(args, function(x) is.data.frame(x) || is.matrix(x) || is.list(x))
+    has_names = vapply(args, FUN = function(x) is.data.frame(x) || is.matrix(x) || is.list(x), FUN.VALUE = TRUE)
     if (is.null(curr_names)) {
         curr_names = values
         curr_names[has_names] = ""
     } else {
         
-        has_names = (!is.na(curr_names) && curr_names != "") || has_names
-        curr_names[!has_names] = values[!has_names]
+        no_names = (is.na(curr_names) | curr_names == "") & (!has_names)
+        curr_names[no_names] = values[no_names]
+        
     }
     names(args) = curr_names
     args

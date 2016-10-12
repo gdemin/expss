@@ -206,8 +206,19 @@ expect_identical(
 #     result_dfs3
 # )
 
+data(iris)
 
+iris2 = iris
 
+iris2 = modify(iris2, {Species = NULL})
+
+expect_identical(iris2, iris[,-5])
+
+iris2 = iris
+
+iris2 = modify_if(iris2, Sepal.Length<5, {Species = NULL})
+
+expect_identical(iris2, iris[,-5])
 
 
 

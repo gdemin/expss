@@ -87,3 +87,5 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 } else {
     cat("dplyr not found\n")
 }
+
+expect_error(5 %r% 1:2)
