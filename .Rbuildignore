@@ -6,4 +6,5 @@
 ^SupplementaryMaterials
 README.MD
 tests/testthat/data
+tests/test_all.R
 
