@@ -107,7 +107,7 @@ SPECIALS = c('row.names', 'rownames', 'names')
 #' paste0(vlookup(4, ex3, "First_name"), " ",
 #'        vlookup(4, ex3, "Last_name"), " is a ", 
 #'        vlookup(4, ex3, "Title")) # Michael Patten is a Sales Rep.
-vlookup = function(lookup_value, dict, result_column, lookup_column=1){
+vlookup = function(lookup_value, dict, result_column, lookup_column = 1){
     stopif(length(result_column)>1, "result_column shoud be vector of length 1.")
     vlookup_df(lookup_value = lookup_value, dict = dict, result_column = result_column, lookup_column=lookup_column)[[1]]
 }
@@ -115,80 +115,61 @@ vlookup = function(lookup_value, dict, result_column, lookup_column=1){
 
 #' @export
 #' @rdname vlookup
-vlookup_df = function(lookup_value, dict, result_column=NULL, lookup_column=1) {
-    
-    # validate lookup_column
+vlookup_df = function(lookup_value, dict, result_column = NULL, lookup_column = 1) {
+     # validate lookup_column
     stopif(length(lookup_column)!=1L,"lookup_column shoud be vector of length 1.")
     stopif(is.numeric(lookup_column) && max(lookup_column,na.rm = TRUE)>NCOL(dict),
            "lookup_column is greater than number of columns in the dict.")
     stopif(is.numeric(lookup_column) && any(lookup_column <= 0),
            "lookup_column should be positive.")
-    stopif(is.character(lookup_column) && !(lookup_column %in% SPECIALS) &&
-               (is.matrix(dict) || is.data.frame(dict)) && !all(lookup_column %in% colnames(dict)),
+    stopif(is.character(lookup_column) && (is.data.frame(dict) || is.matrix(dict)) && 
+               !all(setdiff(lookup_column, SPECIALS) %in% colnames(dict)),
            "lookup_column doesn't exists in column names of the dict.")
     
     
     # validate result_column
     stopif(!is.null(result_column) && any(is.na(result_column)), "NA's in result_column")
-    stopif(any(result_column %in% SPECIALS) && length(result_column)!=1,
-           "when use 'row.names', 'rownames', 'names' as result_column, result_column should be vector of length 1.")
+  
     stopif(is.numeric(result_column) && max(result_column,na.rm = TRUE)>NCOL(dict),
            "result_column is greater than number of columns in the dict.")
-    stopif(is.character(result_column) && !(result_column %in% SPECIALS) &&
-               (is.matrix(dict) || is.data.frame(dict)) && !all(result_column %in% colnames(dict)),
+    stopif(is.character(result_column) && (is.data.frame(dict) || is.matrix(dict)) && 
+               !all(setdiff(result_column, SPECIALS) %in% colnames(dict)),
            "some names in result_column doesn't exists in column names of the dict.")
     
-    # calculate index
-    if (is.numeric(lookup_column) || is.character(lookup_column)){
-        if (is.matrix(dict) || is.data.frame(dict)) {
-            if (lookup_column %in% SPECIALS){
-                ind = match(lookup_value,row.names(dict),incomparables = NA) 	
-            } else {
-                if (is.matrix(dict)){
-                    # matrix
-                    ind = match(lookup_value, dict[, lookup_column],incomparables = NA) 
-                } else {
-                    # data.frame - for tbl_df from dplyr
-                    ind = match(lookup_value,dict[[lookup_column]],incomparables = NA) 
-                }    
-            }
+    if(is.matrix(dict) || is.data.frame(dict)){
+        dict_was_vector = FALSE    
+    } else {
+        dict_was_vector = TRUE    
+    }    
+    if(any(SPECIALS %in% result_column) || any(SPECIALS %in% lookup_column)){
+        if(is.matrix(dict) || is.data.frame(dict)){
+            curr_rowlabs = rownames(dict)
+            
         } else {
-            if (lookup_column %in% SPECIALS){
-                ind = match(lookup_value,names(dict),incomparables = NA) 	
-            } else {
-                ind = match(lookup_value,dict,incomparables = NA)
-            }
+            curr_rowlabs = names(dict)
+
         }
+    }
+    if(!is.data.frame(dict)) dict = as.dtfrm(dict)
+    if(any(SPECIALS %in% result_column) || any(SPECIALS %in% lookup_column)){
+        dict[["...RRRLLL..."]] = curr_rowlabs
+        if(any(SPECIALS %in% result_column)) result_column[result_column %in% SPECIALS] = "...RRRLLL..."
+        if(any(SPECIALS %in% lookup_column)) lookup_column[lookup_column %in% SPECIALS] = "...RRRLLL..."
+    }
+     # calculate index
+    if (is.numeric(lookup_column) || is.character(lookup_column)){
+            # data.frame - for tbl_df from dplyr
+          ind = match(lookup_value,dict[[lookup_column]],incomparables = NA) 
     } else stop("lookup_column shoud be character or numeric.")
     ### caclulate result
     if (is.null(result_column)){
-        if (is.matrix(dict) || is.data.frame(dict)) {
-            result = dict[ind, , drop = FALSE]
-        } else {
-            result = dict[ind]
-        }
+        result = dict[ind, , drop = FALSE]
     } else {
-        if (length(result_column) == 1 && result_column %in% SPECIALS){
-            if (is.matrix(dict) || is.data.frame(dict)) {
-               result = rownames(dict)[ind]
-            } else {
-               result = names(dict)[ind]
-            }
-        } else {
-            if (is.matrix(dict) || is.data.frame(dict)) {
-                result = dict[ind,result_column, drop = FALSE]
-            } else {
-                result = dict[ind]
-            }	
-            
-        }
+        result = dict[ind, result_column, drop = FALSE]
     }
-    if(is.data.frame(result)){
-        result
-    
-    } else {
-        data.frame(result = result, stringsAsFactors = FALSE, check.names = FALSE)
-    }
+    colnames(result)[colnames(result) %in% "...RRRLLL..."] = "row_names"
+    if(dict_was_vector) rownames(result) = NULL
+    result
 }
 
 
