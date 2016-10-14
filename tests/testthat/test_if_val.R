@@ -460,4 +460,38 @@ context("type conversion")
 
 expect_identical(if_val("a", "a" ~ 1), 1)
 
+context("if_val to function")
+expect_identical(if_val(letters, . ~ toupper), LETTERS)
+
+letters2 = letters
+if_val(letters2) = c(. ~ toupper)
+expect_identical(letters2, LETTERS)
+
+context("ifs incorrect from to")
+
+expect_error(ifs(letters, from= c("a", "b")))
+expect_error(ifs(letters, from= c("a", "b"), to = c("aa")))
+
+
+context("if_val list")
+
+mk_emtpy_obj = expss:::make_empty_object
+data(iris)
+a = 1:4
+b = 4:1
+ab = list(a,b, iris)
+names(ab) = c("a", "b", "c")
+empty_iris = iris
+
+empty_iris[[1]] = NA
+empty_iris[[2]] = NA
+empty_iris[[3]] = NA
+empty_iris[[4]] = NA
+empty_iris[[5]] = NA
+rownames(empty_iris) = as.character(1:150)
+res = list(rep(NA, 4), rep(NA, 4), empty_iris)
+names(res) = c("a", "b", "c")
+
+expect_identical(mk_emtpy_obj(ab), res)
+
 
