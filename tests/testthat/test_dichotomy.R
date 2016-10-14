@@ -45,7 +45,14 @@ expect_identical(dichotomy(vec,use_na = FALSE),
 vec = c(1:2,NA)
 val_lab(vec) = c(a=1,b=2,d=45)
 
+vec_mat = as.matrix(c(1:2,NA))
+val_lab(vec_mat) = c(a=1,b=2,d=45)
+
 expect_identical(dichotomy(vec),
+                 structure(c(1, 0, NA, 0, 1, NA), .Dim = c(3L, 2L), .Dimnames = list(
+                     NULL, c("a", "b")), class = c("dichotomy", "matrix")))
+
+expect_identical(dichotomy(vec_mat),
                  structure(c(1, 0, NA, 0, 1, NA), .Dim = c(3L, 2L), .Dimnames = list(
                      NULL, c("a", "b")), class = c("dichotomy", "matrix")))
 
@@ -153,6 +160,8 @@ vec = data.frame(1:3)
 expect_identical(dichotomy(vec),
                  structure(c(1, 0, 0, 0, 1, 0, 0, 0, 1), .Dim = c(3L, 3L), .Dimnames = list(
                      NULL, c("1", "2", "3")), class = c("dichotomy", "matrix")))
+
+
 
 
 vec = data.frame(c(1:2,NA))
@@ -378,6 +387,7 @@ val_lab(brands) = make_labels("
                               5 Brand E
                               ")
 expect_equal_to_reference(dichotomy_df(brands, prefix = "brand_"),"rds/brands_df.rds")
+expect_identical(dichotomy1_df(brands, prefix = "brand_"),dichotomy_df(brands, prefix = "brand_")[,-5])
 expect_equal_to_reference(category(dichotomy_df(brands, prefix = "brand_")),"rds/brands_df_cat.rds")
 expect_equal_to_reference(category_df(dichotomy_df(brands, prefix = "brand_")),"rds/brands_df_cat2.rds")
 

@@ -9,12 +9,12 @@ default_dataset(data)
 
 expect_error(.recode(q8_1 %to% q8_99, (1:NROW(data)<11) ~ NA))
 .recode(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
-.if_val(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
+# .if_val(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
 
 .set_var_lab(q8r_1, "Используемые услуги")
 expect_equal_to_reference(.fre(reg), "rds/fre_real1.rds")
 expect_equal_to_reference(.fre(s1), "rds/fre_real2.rds")
-# expect_equal_to_reference(.fre(q8r_1 %to% q8r_99), "rds/fre_real3.rds")
+expect_equal_to_reference(.fre(q8r_1 %to% q8r_99), "rds/fre_real3.rds")
 
 
 expect_equal_to_reference(.cro(reg, s1), "rds/cro_real1.rds")
@@ -34,7 +34,24 @@ expect_error(.recode(colnames(iris), . ~ tolower))
 
 .filter(Species == "setosa")
 expect_identical(default_iris, iris[iris$Species == "setosa", ])
+expect_error(.filter(1))
 
+data(iris)
+default_iris = iris
+default_dataset(default_iris)
+
+.if_val(Species, from = "setosa", to = "versicolor")
+.recode(Species, from = "virginica", to = "versicolor")
+iris$Species[iris$Species == "setosa"] = "versicolor"
+iris$Species[iris$Species == "virginica"] = "versicolor"
+expect_identical(default_iris, iris)
+.set_val_lab(vars_pattern("^Sepal"), c("Hard to say"=99))
+.if_val(vars_pattern("^Sepal"), 4 %thru% hi ~ 1)
+val_lab(iris$Sepal.Length) = c("Hard to say"=99)
+iris$Sepal.Length[iris$Sepal.Length>=4] = 1
+val_lab(iris$Sepal.Width) = c("Hard to say"=99)
+iris$Sepal.Width[iris$Sepal.Width>=4] = 1
+expect_identical(default_iris, iris)
 
 data("mtcars")
 
@@ -126,6 +143,10 @@ mtcars$am = NULL
 mtcars$hi_low_mpg = NULL
 
 expect_identical(mtcars, default_mtcars)
+expect_error({.modify_if(1, {
+    vs_0 = NULL
+    
+})})
 
 .modify_if(vs == 0, {
     vs_0 = NULL
