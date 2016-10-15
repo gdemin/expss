@@ -198,11 +198,11 @@ param = runif(30)
 param[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(group, param)
 
-if(FALSE & suppressWarnings(require(dplyr, quietly = TRUE))){
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
     # replace NA's with group means
     df_clean = df %>% group_by(group) %>% 
         mutate(
-            param = if_val(param, NA ~ mean_col(param))
+            param = if_val(param, from = list(NA, "."), to = list(mean_col(param), "."))
         )
     
     df = within(df, {

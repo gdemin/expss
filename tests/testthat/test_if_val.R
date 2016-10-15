@@ -103,14 +103,14 @@ if_val(x) = (z>4)~y
 expect_identical(x, c(1, 3, 1, 9, 9))
 
 context("if_val dplyr")
-if(FALSE && suppressWarnings(require(dplyr, quietly = TRUE))){
+if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
     
     x = c(1,3,1,3,NA)
     y = c(8,8,8,9,9)
     z = c(4,4,4,5,5)
-    
+    # 
     dfs = data.frame(
         x = c(2,4,2,4,NA),
         y = c(18,18,18,19,19),
@@ -119,7 +119,7 @@ if(FALSE && suppressWarnings(require(dplyr, quietly = TRUE))){
     )  %>% tbl_df()
     
     dfs  = dfs %>% mutate(
-        w = if_val(x, gt(2) ~ y, . ~ .)
+        w = if_val(x, from = c(gt(2), "."), to = list(y, "."))
         # zzz = predict(lm(x ~ y))
         # w = ifelse(x>2, y , x)
     )
@@ -129,9 +129,13 @@ if(FALSE && suppressWarnings(require(dplyr, quietly = TRUE))){
     dfs$x = NULL
     dfs$w = NULL
     dfs  = dfs %>% mutate(
-        w = if_val(x, gt(2)~y, . ~ .)
+        w = if_val(x, from = c(gt(2), "."), to = list(y, "."))
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))
+    dfs  = dfs %>% mutate(
+        w = if_val(y, 18 ~ 1, 19 ~ 2)
+    )
+    expect_identical(dfs$w, c(1, 1, 1, 2, 2))
 } else {
     cat("dplyr not found\n")
 }
