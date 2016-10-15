@@ -97,7 +97,7 @@ can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 # `ifs` examples
 a = 1:5
 b = 5:1
-ifs(b>3 ~ 1)                     # c(1, 1, NA, NA, NA)
+ifs(b>3 ~ 1)                       # c(1, 1, NA, NA, NA)
 ifs(b>3 ~ 1, default = 3)          # c(1, 1, 3, 3, 3)
 ifs(b>3 ~ 1, a>4 ~ 7, default = 3) # c(1, 1, 3, 3, 7)
 ifs(b>3 ~ a, default = 42)         # c(1, 2, 42, 42, 42)

@@ -75,24 +75,24 @@ read_spss_to_list=function(file, reencode = TRUE){
 # Override default load
 # so on windows machines one can open SPSS *.sav/*.csv files by 
 # dragging and dropping it on R Gui
-load=function(file, envir = parent.frame()){
-    if(is.character(file)) {
-        for (each in file){
-            dat=NULL
-            if(any(grepl("\\.sav$",file,ignore.case=TRUE,perl=TRUE))) dat=read_spss(file)
-            if(any(grepl("\\.csv$",file,ignore.case=TRUE,perl=TRUE))) dat=utils::read.table(file,header=TRUE,sep=",")
-            if (!is.null(dat)){
-                base.name=readline("Enter name for data.frame (if empty file will be loaded into global environement):")
-                if (base.name!=""){
-                    base.name=make.names(base.name)
-                    assign(base.name,dat,envir=envir)
-                    message("File '",basename(file),"' loaded into data.frame '",base.name,"'.\n",sep="")
-                } else {
-                    envir=list2env(dat,envir=envir)
-                    message("File '",basename(file),"' loaded into parent frame.\n",sep="")
-                } 
-            }  else  base::load(file,envir)
-        }
-    } else base::load(file,envir)
-    
-}
+# load=function(file, envir = parent.frame()){
+#     if(is.character(file)) {
+#         for (each in file){
+#             dat=NULL
+#             if(any(grepl("\\.sav$",file,ignore.case=TRUE,perl=TRUE))) dat=read_spss(file)
+#             if(any(grepl("\\.csv$",file,ignore.case=TRUE,perl=TRUE))) dat=utils::read.table(file,header=TRUE,sep=",")
+#             if (!is.null(dat)){
+#                 base.name=readline("Enter name for data.frame (if empty file will be loaded into global environement):")
+#                 if (base.name!=""){
+#                     base.name=make.names(base.name)
+#                     assign(base.name,dat,envir=envir)
+#                     message("File '",basename(file),"' loaded into data.frame '",base.name,"'.\n",sep="")
+#                 } else {
+#                     envir=list2env(dat,envir=envir)
+#                     message("File '",basename(file),"' loaded into parent frame.\n",sep="")
+#                 } 
+#             }  else  base::load(file,envir)
+#         }
+#     } else base::load(file,envir)
+#     
+# }

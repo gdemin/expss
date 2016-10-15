@@ -153,4 +153,26 @@ expect_equal(
     unname(colMeans(df2, na.rm = TRUE))
 )
 
-    
+context("max_if/min_if")
+
+set.seed(123)
+df2 = as.data.frame(
+    matrix(sample(c(1:10,NA),30,replace = TRUE),10)
+)
+
+
+
+expect_identical(max_row_if(gt(0), df2), do.call(pmax, c(df2, list(na.rm = TRUE))))
+expect_identical(min_row_if(gt(0), df2), do.call(pmin, c(df2, list(na.rm = TRUE))))
+
+expect_identical(unname(max_col_if(gt(0), df2)), do.call(pmax, c(as.dtfrm(t(df2)), list(na.rm = TRUE))))
+expect_identical(unname(min_col_if(gt(0), df2)), do.call(pmin, c(as.dtfrm(t(df2)), list(na.rm = TRUE))))
+
+context("errors")
+data(iris)
+expect_error(sd_if(gt(0), iris))
+expect_error(median_if(gt(0), iris))
+
+expect_identical(mean_col_if(gt(5), iris[,-5], data = as.list(iris)[-5]), 
+             colMeans(na_if(iris[,-5], le(5)), na.rm = TRUE))
+

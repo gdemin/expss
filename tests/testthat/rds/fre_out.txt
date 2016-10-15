@@ -1,0 +1,8 @@
+ Used brands Count Valid percent Percent Responses, % Cumulative responses, %
+     Brand A    14            70      70        20.90                   20.90
+     Brand B    15            75      75        22.39                   43.28
+     Brand C    13            65      65        19.40                   62.69
+     Brand D    13            65      65        19.40                   82.09
+     Brand E    12            60      60        17.91                  100.00
+      #Total    20           100     100       100.00                      NA
+        <NA>     0            NA       0           NA                      NA

@@ -4,6 +4,7 @@ library(stats)
 library(utils)  
 library(foreign)  
 library(expss) 
+options(covr = TRUE)
 lapply(dir("testthat/", full.names = TRUE, pattern = "\\.R$"), function(path) {
     data("iris")
     data("mtcars")

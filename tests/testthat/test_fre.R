@@ -216,8 +216,18 @@ val_lab(score) = make_labels("
                              ")
 
 expect_equal_to_reference(fre(brands), "rds/fre_ex4.rds")
+mat_brands = as.matrix(brands)
+var_lab(mat_brands) = var_lab(brands)
+val_lab(mat_brands) = val_lab(brands)
+
+expect_equal_to_reference(fre(mat_brands), "rds/fre_ex4.rds")
 expect_equal_to_reference(cro(brands, score), "rds/fre_ex5.rds")
 expect_equal_to_reference(cro_cpct(brands, score), "rds/fre_ex6.rds")
+
+expect_output_file(print(fre(brands)), "rds/fre_out.txt")
+expect_output_file(print(fre(brands), round_digits = NULL), "rds/fre_out_unrounded.txt")
+expect_equal_to_reference(cro(brands, score), "rds/fre_ex5.rds")
+
 
 context("fre and cro some special cases")
 
@@ -298,6 +308,11 @@ expect_equal_to_reference(cro_fun(b, a, fun = mean), "rds/cro_fun2.rds")
 weight = rep(1, 5)
 expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weight){
     weighted.mean(x, w = weight)
+    
+}), "rds/cro_fun3.rds")
+
+expect_equal_to_reference(cro_fun_df(b, a, weight = weight, fun = function(x, weight){
+    setNames(weighted.mean(x[[1]], w = weight), names(x))
     
 }), "rds/cro_fun3.rds")
 
@@ -432,11 +447,34 @@ expect_equal_to_reference(cro_sum(b, a, weight = weight), "rds/cro_sum6.rds")
 
 expect_equal_to_reference(cro_median(iris[,-5], iris$Species), "rds/cro_median8.rds")
 expect_equal_to_reference(cro_mean(iris[,-5], iris$Species), "rds/cro_mean8.rds")
+
+expect_output_file(print(cro_mean(iris[,-5], iris$Species)), "rds/cro_mean_out.txt")
+
 expect_equal_to_reference(cro_sum(iris[,-5], iris$Species), "rds/cro_sum8.rds")
 
-expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = mean_col), "rds/cro_mean8.rds")
+expect_equal_to_reference(cro_fun(iris[,-5], iris$Species, fun = mean), "rds/cro_mean8.rds")
 
 expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = mean_col), "rds/cro_mean8.rds")
+
+#####
+expect_equal_to_reference(cro_median(as.list(iris[,-5]), iris$Species), "rds/cro_median8.rds")
+expect_equal_to_reference(cro_mean(as.list(iris[,-5]), iris$Species), "rds/cro_mean8.rds")
+expect_equal_to_reference(cro_sum(as.list(iris[,-5]), iris$Species), "rds/cro_sum8.rds")
+
+expect_equal_to_reference(cro_fun(as.list(iris[,-5]), iris$Species, fun = mean), "rds/cro_mean8.rds")
+
+expect_equal_to_reference(cro_fun_df(as.list(iris[,-5]), iris$Species, fun = mean_col), "rds/cro_mean8.rds")
+
+#####
+expect_equal_to_reference(cro_median(as.matrix(iris[,-5]), iris$Species), "rds/cro_median8.rds")
+expect_equal_to_reference(cro_mean(as.matrix(iris[,-5]), iris$Species), "rds/cro_mean8.rds")
+expect_equal_to_reference(cro_sum(as.matrix(iris[,-5]), iris$Species), "rds/cro_sum8.rds")
+
+expect_equal_to_reference(cro_fun(as.matrix(iris[,-5]), iris$Species, fun = mean), "rds/cro_mean8.rds")
+
+expect_equal_to_reference(cro_fun_df(as.list(iris[,-5]), iris$Species, fun = mean_col), "rds/cro_mean8.rds")
+
+############
 
 expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = function(x) cor(x)[,1]), "rds/cro_fun_df1.rds")
 expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = summary), "rds/cro_fun_df2.rds")

@@ -335,7 +335,7 @@ mean_col_if=function(criterion = NULL,..., data = NULL){
 sd_if=function(criterion = NULL, ..., data = NULL){
     data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
     if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
-        stop("Invalid argument type: for averaging it should be numeric or logical")
+        stop("Invalid argument type: for standard deviation it should be numeric or logical")
     }
     stats::sd(data, na.rm = TRUE)
 }
@@ -362,7 +362,7 @@ sd_col_if=function(criterion = NULL,..., data = NULL){
 median_if=function(criterion = NULL, ..., data = NULL){
     data = as.matrix(fun_if_helper(criterion = criterion, ..., data = data))
     if(!(is.numeric(data) | is.logical(data) | is.complex(data))) {
-        stop("Invalid argument type: for averaging it should be numeric or logical")
+        stop("Invalid argument type: for median it should be numeric or logical")
     }
     stats::median(data, na.rm = TRUE)
 }
@@ -510,19 +510,15 @@ fun_if_helper = function(criterion,..., data){
     dfs = dots2data_frame(...)   
     criterion = build_criterion(criterion, dfs)
     if(is.null(data)) {
-        
         return(na_if(dfs, !criterion))
     }    
     
-    na_if(data) = !criterion
-    if(is.list(data) && !is.data.frame(data)){
-        data = do.call(data.frame,c(data,stringsAsFactors=FALSE, check.names = FALSE))        
-    }  else {
-        if (!is.data.frame(data)){
+    if(!is.data.frame(data)){
+        if(is.list(data)) {
+            data = do.call(data.frame,c(data,stringsAsFactors=FALSE, check.names = FALSE))        
+        }  else {
             data = as.data.frame(data, stringsAsFactors = FALSE, check.names = FALSE)
-        } else {
-            data
-        }
-    }   
-    
+        } 
+    }    
+    na_if(data, !criterion) 
 }

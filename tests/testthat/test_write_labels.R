@@ -1,9 +1,30 @@
 context("write_labels")
 
-if(FALSE){
+if(isTRUE(options("covr")[[1]])){
+# if(TRUE){
     aaa = suppressWarnings(read_spss("data/7556w2_4Client_prelaunch.sav"))
     bbb = suppressWarnings(read_spss("data/2014-2016final.sav"))
+    nsk = suppressWarnings(read_spss("data/NSK_all.sav"))
+    expect_equal_to_reference(nsk, "rds/nsk.rds")
+    aaa2 = cbind(aaa, empty = NA, fac = factor("a"), fractional = 1.2345)
+    write_labelled_spss(aaa2, "data/prelaunch.csv")
+    dat = readLines("data/prelaunch.csv")
+    sps = readLines("data/prelaunch.csv.sps")
+    etalon_dat = readLines("data/etalon_prelaunch.csv")
+    etalon_sps = readLines("data/etalon_prelaunch.csv.sps")
+    # expect_identical(dat, etalon_dat)
+    # expect_identical(sps, etalon_sps)
+
+    
     raw_data = readRDS("data/raw.RDS")
+    data(iris)
+    write_labelled_csv(iris, "data/iris.csv")
+    iris2 = iris
+    iris2$Species = as.character(iris2$Species)
+    read_iris = read_labelled_csv("data/iris.csv")
+    expect_equal(read_iris, iris2)
+    unlink("data/iris.csv")
+    unlink("data/iris.csv.dic.R")
     
     write_labelled_csv(aaa, "data/aaa.csv")
     write_labelled_csv(bbb, "data/bbb.csv")
@@ -81,8 +102,12 @@ if(FALSE){
     res = sapply(colnames(obj1), function(col) all(var_lab(obj1[[col]]) == var_lab(obj2[[col]]), na.rm = TRUE)) %d% TRUE
     expect_equal(length(res), 0 )
     
-    unlink("data/aaa.csv")
     unlink("data/aaa.csv.dic.R")
+    expect_warning(read_labelled_csv("data/aaa.csv"))
+    
+    unlink("data/prelaunch.csv")
+    unlink("data/prelaunch.csv.sps")
+    unlink("data/aaa.csv")
     unlink("data/bbb.csv")
     unlink("data/bbb.csv.dic.R")
     unlink("data/raw.csv.gz")

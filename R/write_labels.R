@@ -331,13 +331,13 @@ make_make_labs_spss = function(vars,named_vec){
     
 }
 
-apply_labels_from_file = function(x, filename, fileEncoding = ""){
-    
-    if (file.exists(filename)){
-        source(filename, local = TRUE, encoding = fileEncoding, verbose = FALSE)
-    } else {
-        warning(paste(filename,"file doesn't exists. Labels will not be applied to data."))
-    }
-    x
-    
-}
+# apply_labels_from_file = function(x, filename, fileEncoding = ""){
+#     
+#     if (file.exists(filename)){
+#         source(filename, local = TRUE, encoding = fileEncoding, verbose = FALSE)
+#     } else {
+#         warning(paste(filename,"file doesn't exists. Labels will not be applied to data."))
+#     }
+#     x
+#     
+# }

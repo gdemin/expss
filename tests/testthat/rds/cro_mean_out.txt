@@ -1,0 +1,5 @@
+              setosa versicolor virginica   #Total
+ Sepal.Length  5.006      5.936     6.588 5.843333
+  Sepal.Width  3.428      2.770     2.974 3.057333
+ Petal.Length  1.462      4.260     5.552 3.758000
+  Petal.Width  0.246      1.326     2.026 1.199333
