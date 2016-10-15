@@ -115,7 +115,7 @@
 #' 
 #' default_dataset(iris) # set iris as default dataset
 #' 
-#' .recode(Sepal.Length, lo %thru% median(Sepal.Length) ~ "small", . ~ "large")
+#' .recode(Sepal.Length, lo %thru% median(Sepal.Length) ~ "small", other ~ "large")
 #' 
 #' .fre(Sepal.Length)
 #' 

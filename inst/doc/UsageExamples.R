@@ -144,13 +144,13 @@ default_dataset(w)
 #  cnt = count_row_if(c(1:5, NA), a1 %to% a5)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  if_val(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, . ~ NA)
+#  if_val(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, other ~ NA)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  if_val(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, . ~ 0)
+#  if_val(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  if_val(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', . ~ ' ')
+#  if_val(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', other ~ ' ')
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  voter = if_val(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)

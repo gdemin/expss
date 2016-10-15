@@ -460,7 +460,7 @@ apply_row_if=function(fun, criterion = NULL,..., data = NULL){
             matrix(TRUE, ncol = NCOL(data), nrow = NROW(data)), 
             criterion ~ TRUE, 
             !criterion ~ FALSE,
-            . ~ FALSE
+            other ~ FALSE
         )
     }
     

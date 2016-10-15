@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2016-08-12" />
+<meta name="date" content="2016-10-16" />
 
 <title>Usage Examples</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Usage Examples</h1>
-<h4 class="date"><em>2016-08-12</em></h4>
+<h4 class="date"><em>2016-10-16</em></h4>
 
 
 
@@ -362,15 +362,15 @@ END IF.</code></pre>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE V1 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">if_val</span>(v1) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span> ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span> ~<span class="st"> </span><span class="dv">0</span>, <span class="dv">2</span>:<span class="dv">3</span> ~<span class="st"> </span>-<span class="dv">1</span>, <span class="dv">9</span> ~<span class="st"> </span><span class="dv">9</span>, . ~<span class="st"> </span><span class="ot">NA</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">if_val</span>(v1) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span> ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span> ~<span class="st"> </span><span class="dv">0</span>, <span class="dv">2</span>:<span class="dv">3</span> ~<span class="st"> </span>-<span class="dv">1</span>, <span class="dv">9</span> ~<span class="st"> </span><span class="dv">9</span>, other ~<span class="st"> </span><span class="ot">NA</span>)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">if_val</span>(qvar) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span> %thru%<span class="st"> </span><span class="dv">5</span> ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">6</span> %thru%<span class="st"> </span><span class="dv">10</span> ~<span class="st"> </span><span class="dv">2</span>, <span class="dv">11</span> %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">3</span>, . ~<span class="st"> </span><span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">if_val</span>(qvar) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span> %thru%<span class="st"> </span><span class="dv">5</span> ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">6</span> %thru%<span class="st"> </span><span class="dv">10</span> ~<span class="st"> </span><span class="dv">2</span>, <span class="dv">11</span> %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">3</span>, other ~<span class="st"> </span><span class="dv">0</span>)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). </code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">if_val</span>(strngvar) =<span class="st"> </span><span class="kw">c</span>(<span class="kw">c</span>(<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>) ~<span class="st"> 'A'</span>, <span class="kw">c</span>(<span class="st">'D'</span>, <span class="st">'E'</span>, <span class="st">'F'</span>) ~<span class="st"> 'B'</span>, . ~<span class="st"> ' '</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">if_val</span>(strngvar) =<span class="st"> </span><span class="kw">c</span>(<span class="kw">c</span>(<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>) ~<span class="st"> 'A'</span>, <span class="kw">c</span>(<span class="st">'D'</span>, <span class="st">'E'</span>, <span class="st">'F'</span>) ~<span class="st"> 'B'</span>, other ~<span class="st"> ' '</span>)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. </code></pre>
 <p><strong>R</strong>:</p>
@@ -554,40 +554,40 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
 <tr class="odd">
 <td align="left">VSX123</td>
 <td align="right">94</td>
+<td align="right">64</td>
 <td align="right">63</td>
-<td align="right">63</td>
-<td align="right">63</td>
-<td align="right">63</td>
+<td align="right">64</td>
+<td align="right">64</td>
 </tr>
 <tr class="even">
 <td align="left">SDF456</td>
 <td align="right">50</td>
+<td align="right">34</td>
 <td align="right">33</td>
-<td align="right">33</td>
-<td align="right">33</td>
-<td align="right">96</td>
+<td align="right">34</td>
+<td align="right">98</td>
 </tr>
 <tr class="odd">
 <td align="left">Hard to say</td>
-<td align="right">6</td>
-<td align="right">4</td>
-<td align="right">4</td>
-<td align="right">4</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">2</td>
 <td align="right">100</td>
 </tr>
 <tr class="even">
 <td align="left">#Total</td>
-<td align="right">150</td>
+<td align="right">147</td>
 <td align="right">100</td>
-<td align="right">100</td>
+<td align="right">98</td>
 <td align="right">100</td>
 <td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left"><NA></td>
-<td align="right">0</td>
+<td align="right">3</td>
 <td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">2</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 </tr>
@@ -615,26 +615,26 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
 <tr class="odd">
 <td align="left">VSX123</td>
 <td align="right">65.7</td>
-<td align="right">60</td>
-<td align="right">63</td>
+<td align="right">62.3</td>
+<td align="right">64</td>
 </tr>
 <tr class="even">
 <td align="left">SDF456</td>
 <td align="right">31.4</td>
-<td align="right">35</td>
-<td align="right">33</td>
+<td align="right">36.4</td>
+<td align="right">34</td>
 </tr>
 <tr class="odd">
 <td align="left">Hard to say</td>
 <td align="right">2.9</td>
-<td align="right">5</td>
-<td align="right">4</td>
+<td align="right">1.3</td>
+<td align="right">2</td>
 </tr>
 <tr class="even">
 <td align="left">#Total</td>
 <td align="right">70.0</td>
-<td align="right">80</td>
-<td align="right">150</td>
+<td align="right">77.0</td>
+<td align="right">147</td>
 </tr>
 </tbody>
 </table>

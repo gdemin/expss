@@ -54,9 +54,9 @@ from(x)
 
 to(x)
 
-other(x)
-
 not_na(x)
+
+other(x)
 }
 \arguments{
 \item{x}{vector}
@@ -105,7 +105,9 @@ vector before the first occurrence of \code{x} and for  \code{x}.}
 \item{\code{from}}{ returns function which gives TRUE for all elements of 
 vector after the first occurrence of \code{x} and for \code{x}. \code{from} and
 \code{to} are intended for usage with \link{keep} and \link{except}.}
-\item{\code{not_na}, \code{other}}{ return TRUE for all elements of vector} 
+\item{\code{not_na}}{ return TRUE for all non-NA elements of vector.} 
+\item{\code{other}}{ return TRUE for all elements of vector. It is intended
+for usage with \code{if_val}, \code{keep}, \code{except}}
 }
 }
 \examples{
@@ -161,9 +163,9 @@ iris \%except\% from("Petal.Length")
 # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 set.seed(123)
 qvar = sample((-5):20, 50, replace = TRUE)
-if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, . ~ 0)
+if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, other ~ 0)
 # the same result
-if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, gte(11) ~ 3, . ~ 0)
+if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, gte(11) ~ 3, other ~ 0)
 
 
 }

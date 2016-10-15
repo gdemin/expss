@@ -102,12 +102,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
                     na = count_row_if(is.na,V1,V2,V3),
                     not_na = count_row_if(,V1,V2,V3)),
                      result)
-    expect_equal(df2  %>% mutate(exact = count_row_if(8,V1,V2,V3),
-                                 greater = count_row_if(gt(8),V1,V2,V3),
-                                 range = count_row_if(5:8,V1,V2,V3),
-                                 na = count_row_if(is.na,V1,V2,V3),
-                                 not_na = count_row_if(other,V1,V2,V3)),
-                 result)
+
     expect_equal(df2  %>% mutate(exact = count_row_if(8,V1,V2,V3),
                                  greater = count_row_if(gt(8),V1,V2,V3),
                                  range = count_row_if(5:8,V1,V2,V3),

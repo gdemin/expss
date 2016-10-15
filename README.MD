@@ -366,7 +366,7 @@ RECODE V1 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 ```
 **R**:
 ```
-if_val(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, . ~ NA)
+if_val(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, other ~ NA)
 ```
 **SPSS**:
 ```
@@ -374,7 +374,7 @@ RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 ```
 **R**:
 ```
-if_val(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, . ~ 0)
+if_val(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)
 ```
 **SPSS**:
 ```
@@ -382,7 +382,7 @@ RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' ').
 ```
 **R**:
 ```
-if_val(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', . ~ ' ')
+if_val(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', other ~ ' ')
 ```
 **SPSS**:
 ```
@@ -522,8 +522,8 @@ codeframe_likes = ml_left("
 .compute({
     # recode age by groups
     age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
-    # counter number of likes
-    # codes 1, 3-98. 2 and 99 are ignored.
+    # count number of likes (codes 1, 3-98)
+    # 2 and 99 are ignored.
     h_likes = count_row_if(1 | 3 %thru% 98, h1_1 %to% h1_6) 
     p_likes = count_row_if(1 | 3 %thru% 98, p1_1 %to% p1_6) 
     

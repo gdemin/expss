@@ -30,7 +30,7 @@ data(iris)
 default_iris = iris
 default_dataset(default_iris)
 
-expect_error(.recode(colnames(iris), . ~ tolower))
+expect_error(.recode(colnames(iris), other ~ tolower))
 
 .filter(Species == "setosa")
 expect_identical(default_iris, iris[iris$Species == "setosa", ])
