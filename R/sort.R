@@ -73,7 +73,7 @@ sort_internal = function(data, ..., decreasing, na.last){
         }
     }
     numeric_args = unlist(numeric_args)
-    
+    stopif(length(args)==0, "Column name or column number should be provided for data.frame/matrix.")
     stopif(max(numeric_args, na.rm = TRUE) > colnum,
         "some column numbers are larger than number of columns in 'data': ", numeric_args[numeric_args>colnum])
     if(is.matrix(data)){
