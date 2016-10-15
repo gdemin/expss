@@ -15,6 +15,9 @@
 #' @param na.last for controlling the treatment of NAs. If TRUE, missing values
 #'   in the data are put last; if FALSE, they are put first; if NA, they are
 #'   removed.
+#' @param value character/numeric. Column names/numbers for data.frame/matrix by
+#'   which object will be sorted. The same as \code{...} but for assignment
+#'   versions of functions.
 #'
 #' @return sorted \code{data}
 #' @export
@@ -105,6 +108,13 @@ sort_asc.list= function(data, ..., na.last = FALSE){
     ref(reference) = sort_asc(data, ..., na.last = na.last)
     invisible(NULL)
 }
+
+#' @rdname sort_asc
+#' @export
+"sort_asc<-" = function(data, value){
+    if(!is.list(value)) value = as.list(value)
+    do.call(sort_asc, c(list(data), value))
+}
 ######### sort_desc ##############
 
 #' @rdname sort_asc
@@ -148,7 +158,12 @@ sort_desc.list= function(data, ..., na.last = TRUE){
     sort_desc(data, variables)
 }
 
-
+#' @rdname sort_asc
+#' @export
+"sort_desc<-" = function(data, value){
+    if(!is.list(value)) value = as.list(value)
+    do.call(sort_desc, c(list(data), value))
+}
 
 
 

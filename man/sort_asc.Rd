@@ -6,7 +6,9 @@
 \alias{\%sort_asc\%}
 \alias{\%sort_desc\%}
 \alias{sort_asc}
+\alias{sort_asc<-}
 \alias{sort_desc}
+\alias{sort_desc<-}
 \title{Sort data.frames/matrices/vectors}
 \usage{
 sort_asc(data, ..., na.last = FALSE)
@@ -15,11 +17,15 @@ data \%sort_asc\% variables
 
 .sort_asc(..., na.last = FALSE)
 
+sort_asc(data) <- value
+
 sort_desc(data, ..., na.last = TRUE)
 
 .sort_desc(..., na.last = TRUE)
 
 data \%sort_desc\% variables
+
+sort_desc(data) <- value
 }
 \arguments{
 \item{data}{data.frame/matrix/vector}
@@ -33,6 +39,10 @@ removed.}
 
 \item{variables}{character/numeric. Column names/numbers for data.frame/matrix by
 which object will be sorted for infix functions. Ignored for vectors.}
+
+\item{value}{character/numeric. Column names/numbers for data.frame/matrix by
+which object will be sorted. The same as \code{...} but for assignment
+versions of functions.}
 }
 \value{
 sorted \code{data}
