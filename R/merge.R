@@ -68,7 +68,7 @@ merge.simple_table = function(x, y,
     # below we try to preserve order in rows in y for rows which doesn't exists in x
     order.x = seq_len(nrow(x))
     x[['..order..x']] = order.x
-    order.y = order.x[match(y[[by.y]], x[[by.x]])]
+    order.y = order.x[match(y[[1]], x[[1]])]
     # fill NA.
     need_sort = anyNA(order.y) & !all(is.na(order.y))
     if(need_sort){
@@ -96,7 +96,7 @@ merge.simple_table = function(x, y,
         res = res[order(res[['..order..x']]), , drop = FALSE]
         
     }
-    res = res[, colnames(res) %d% c('..order..y','..order..x'), drop = FALSE]
+    res = res %n_d% c('..order..y','..order..x')
     colnames(res) = preserve_colnames
     class(res) = intersect(class_x, class_y)
     if(!("simple_table" %in% class(res))) class(res) = c("simple_table", class(res))

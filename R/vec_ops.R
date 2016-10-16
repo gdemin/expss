@@ -135,16 +135,17 @@ n_i = function(e1, e2){
 }
 
 
+# names %in% .... for duplicated names
 n_i.default = function(e1, e2){
-    e1[names(e1) %i% e2]    
+    e1[names(e1) %in% (names(e1) %i% e2)]    
 }
 
 n_i.data.frame = function(e1, e2){
-    e1[ , names(e1) %i% e2, drop = FALSE]    
+    e1[ , names(e1) %in% (names(e1) %i% e2), drop = FALSE]    
 }
 
 n_i.matrix = function(e1, e2){
-    e1[ , colnames(e1) %i% e2, drop = FALSE]    
+    e1[ , colnames(e1) %in% (colnames(e1) %i% e2), drop = FALSE]    
 }
 
 n_d = function(e1, e2){
@@ -152,14 +153,14 @@ n_d = function(e1, e2){
 }
 
 n_d.default = function(e1, e2){
-    e1[names(e1) %d% e2]    
+    e1[names(e1) %in% (names(e1) %d% e2)]    
 }
 
 n_d.data.frame = function(e1, e2){
-    e1[ , names(e1) %d% e2, drop = FALSE]    
+    e1[ , names(e1) %in% (names(e1) %d% e2), drop = FALSE]    
 }
 
 n_d.matrix = function(e1, e2){
-    e1[ , colnames(e1) %d% e2, drop = FALSE]    
+    e1[ , colnames(e1) %in% (colnames(e1) %d% e2), drop = FALSE]    
 }
 

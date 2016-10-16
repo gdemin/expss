@@ -60,5 +60,9 @@ b = dtfrm(x = 3:7, z = 13:17)
 expect_identical(a %merge% b, merge(a, b, all.x = TRUE, all.y = FALSE))
 
 
+context("merge duplicated columns")
 
+data(mtcars)
+expect_equal_to_reference(fre(mtcars$cyl[mtcars$mpg<20]) %merge% fre(mtcars$cyl) ,
+                           "rds/merge12.rds")
 

@@ -113,14 +113,11 @@ keep_helper = function(old_names, ...){
     keep_names = numeric(0)
     new_names = c(list(...), recursive = TRUE)
     characters_names = character(0) # for checking non-existing names
-    not_character_indexes = 
     for (each in new_names){
         if(is.character(each)){
             next_names = which(old_names %in% each)
             characters_names = c(characters_names, each)
         } else {
-            # we can duplicate variable by mention it more than one time
-            # but its only possible for character name
             next_names = which(old_names %in% (old_names %i% each))
         }
         keep_names = c(keep_names, next_names %d% keep_names)
