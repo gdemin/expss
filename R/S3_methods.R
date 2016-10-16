@@ -78,4 +78,34 @@ var_attr = function(x){
 }
 
 
+#' @export
+as.double.labelled = function (x, ...){
+    y = NextMethod("as.double")
+    var_attr(y)=var_attr(x)
+    class(y) = union("labelled", class(y))
+    y	
+}
 
+#' @export
+as.integer.labelled = function (x, ...){
+    y = NextMethod("as.integer")
+    var_attr(y)=var_attr(x)
+    class(y) = union("labelled", class(y))
+    y	
+}
+
+#' @export
+as.character.labelled = function (x, ...){
+    y = NextMethod("as.character")
+    var_attr(y)=var_attr(x)
+    class(y) = union("labelled", class(y))
+    y	
+}
+
+#' @export
+as.logical.labelled = function (x, ...){
+    y = NextMethod("as.logical")
+    var_attr(y)=var_attr(x)
+    class(y) = union("labelled", class(y))
+    y	
+}

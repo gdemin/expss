@@ -80,4 +80,27 @@ f2[] = "a"
 tested(fff) = "a"
 expect_identical(fff, f2)
 
+context("type conversion")
+a = 1:0
+a_str = as.character(a)
+a_log = c(TRUE, FALSE)
+var_lab(a) = "Lab"
+var_lab(a_str) = "Lab"
+var_lab(a_log) = "Lab"
+val_lab(a) = c("Lab" = 1)
+val_lab(a_str) = c("Lab" = 1)
+val_lab(a_log) = c("Lab" = 1)
+
+a_numeric = a + 0.5 - 0.5
+class(a_numeric) = c("labelled", "numeric")
+expect_identical(as.numeric(a_str), a_numeric)
+expect_identical(as.integer(a_str), a)
+expect_identical(as.character(a), a_str)
+expect_identical(as.logical(a), a_log)
+expect_identical(as.integer(a_log), a)
+
+
+
+
+
 
