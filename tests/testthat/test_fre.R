@@ -497,6 +497,27 @@ expect_identical(cro_cpct(aaa, bbb), cro_cpct(aaa_str, bbb_str))
 expect_identical(cro_rpct(aaa, total),cro_rpct(aaa_str, total)) 
 expect_identical(cro_tpct(total, bbb), cro_tpct(total, bbb_str)) 
 
+context("cro duplicated names")
+
+data(iris)
+ex_iris = iris[,-5]
+correct_iris = iris[,-5]
+colnames(ex_iris) = c("a", "a", "a", "a")
+colnames(correct_iris) = c("v1", "v2", "v3", "v4")
+
+var_lab(ex_iris[[1]]) = "v1"
+var_lab(ex_iris[[2]]) = "v2"
+var_lab(ex_iris[[3]]) = "v3"
+var_lab(ex_iris[[4]]) = "v4"
+
+expect_identical(cro_mean(ex_iris, iris$Species), cro_mean(correct_iris, iris$Species))
+expect_identical(cro_sum(ex_iris, iris$Species), cro_sum(correct_iris, iris$Species))
+expect_identical(cro_median(ex_iris, iris$Species), cro_median(correct_iris, iris$Species))
+expect_identical(cro_fun(ex_iris, iris$Species, fun = mean), cro_fun(correct_iris, iris$Species, fun = mean))
+expect_identical(cro_fun_df(ex_iris, iris$Species, fun = mean_col), 
+                 cro_fun_df(correct_iris, iris$Species, fun = mean_col))
+
+
 
 
 

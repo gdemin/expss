@@ -506,13 +506,14 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
     column_total = lapply(column_total, function(each) prepare_result(list("#Total" = each)))
     column_total = do.call(rbind, column_total)
     if (colnames(column_total)[1] == "#stat") column_total = column_total[,-1, drop = FALSE]
-    labels = vapply(colnames(x), function(each) {
-        varlab = var_lab(x[[each]])
-        if(is.null(varlab)) varlab = each
+    labels = vapply(x, function(each) {
+        varlab = var_lab(each)
+        if(is.null(varlab)) varlab = NA_character_
         varlab
     }, 
     FUN.VALUE = character(1)
     )
+    if_na(labels) = colnames(x)
     
     predictor = f(unvr(predictor))
     if(is.null(weight)){
