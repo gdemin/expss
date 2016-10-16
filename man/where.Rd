@@ -25,7 +25,9 @@ data.frame which contains just selected rows.
 \code{cond} will be evaluated in the context of the data frame, so columns can be referred to (by
 name) as variables in the expression (see the examples).
 \code{.where} is version for working with default dataset. See \link{default_dataset}.
- \code{\%where\%} is infix function with the same functional. See examples.
+ \code{\%where\%} is infix function with the same functional. See examples. There is a 
+special constant \code{.n} which equals to number of cases in \code{data} for
+usage in \code{cond} expression.
 }
 \examples{
 # leave only 'setosa'
@@ -40,5 +42,13 @@ iris \%where\% (Species == "setosa")
 
 iris \%where\% 1:5
 
+# example of .n usage. Very artificial examples
+set.seed(42)
+train = iris \%where\% sample(.n, 100)
+str(train)
+
+set.seed(42)
+test = iris \%where\% -sample(.n, 100)
+str(test)
 }
 

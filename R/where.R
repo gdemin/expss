@@ -3,7 +3,9 @@
 #' \code{cond} will be evaluated in the context of the data frame, so columns can be referred to (by
 #' name) as variables in the expression (see the examples).
 #' \code{.where} is version for working with default dataset. See \link{default_dataset}.
-#'  \code{\%where\%} is infix function with the same functional. See examples.
+#'  \code{\%where\%} is infix function with the same functional. See examples. There is a 
+#' special constant \code{.n} which equals to number of cases in \code{data} for
+#' usage in \code{cond} expression.
 #' 
 #' @param data data.frame to be subsetted
 #' @param cond logical or numeric expression indicating elements or rows to
@@ -25,15 +27,24 @@
 #' 
 #' iris %where% 1:5
 #' 
+#' # example of .n usage. Very artificial examples
+#' set.seed(42)
+#' train = iris %where% sample(.n, 100)
+#' str(train)
+#' 
+#' set.seed(42)
+#' test = iris %where% -sample(.n, 100)
+#' str(test)
 where = function (data, cond) {
     UseMethod("where")
 }
 
 #' @export
 where.data.frame = function (data, cond) {
-    parent = parent.frame()
+    e = evalq(environment(), data, parent.frame())
+    e$.n = nrow(data)
     cond = substitute(cond)
-    cond = eval(cond, data, parent.frame())
+    cond = eval(cond, e)
     if (!is.logical(cond) && !is.numeric(cond)){ 
         stop("'cond' must be logical or numeric.")
     }    
@@ -44,9 +55,10 @@ where.data.frame = function (data, cond) {
 #' @rdname where
 #' @export
 '%where%' = function(data, cond){
-    parent = parent.frame()
+    e = evalq(environment(), data, parent.frame())
+    e$.n = nrow(data)
     cond = substitute(cond)
-    cond = eval(cond, data, parent.frame())
+    cond = eval(cond, e)
     if (!is.logical(cond) && !is.numeric(cond)){ 
         stop("'cond' must be logical or numeric.")
     }    
@@ -60,9 +72,10 @@ where.data.frame = function (data, cond) {
 .where = function (cond) {
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    parent = parent.frame()
+    e = evalq(environment(), data, parent.frame())
+    e$.n = nrow(data)
     cond = substitute(cond)
-    cond = eval(cond, data, parent.frame())
+    cond = eval(cond, e)
     if (!is.logical(cond) && !is.numeric(cond)){ 
         stop("'cond' must be logical or numeric.")
     }    
@@ -71,4 +84,5 @@ where.data.frame = function (data, cond) {
     ref(reference) = new_data
     invisible(NULL)
 }
+
 
