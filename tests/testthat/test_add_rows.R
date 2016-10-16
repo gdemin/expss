@@ -111,4 +111,27 @@ a = matrix(1:9, 3)
 expect_identical(add_rows(a, NA), rbind(a, NA))
 
 
+context("add_rows duplicated column names")
+
+
+data(iris)
+
+iris1 = iris
+iris2 = iris
+
+var_lab(iris1[[1]]) = "1"
+var_lab(iris2[[1]]) = "2"
+
+colnames(iris1)[1:5] = "a"
+colnames(iris2)[1:5] = "b"
+
+res = rbind(cbind(iris1, b = NA, b = NA, b = NA, b = NA, b = NA),
+            cbind(a = NA, a = NA, a = NA, a = NA, a = NA, iris2)
+)
+
+var_lab(res[[1]]) = "1"
+var_lab(res[[6]]) = "2"
+
+expect_identical(add_rows(iris1, iris2), res)
+
 

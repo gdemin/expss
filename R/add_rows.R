@@ -73,9 +73,10 @@ add_rows.simple_table = function(..., nomatch_columns = c("add", "drop", "stop")
     }
     classes = lapply(args, class)
     new_class = Reduce('%i%', classes)
+    res = do.call(add_rows.data.frame, c(args, list(nomatch_columns = nomatch_columns)))
     if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
     if (!("simple_table" %in% new_class)) new_class = union("simple_table", new_class)
-    res = do.call(add_rows.data.frame, c(args, list(nomatch_columns = nomatch_columns)))
+    
     class(res) = new_class
     res
 }
@@ -87,6 +88,17 @@ add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
     nomatch_columns = match.arg(nomatch_columns)
     if(is.matrix(y)) y = as.dtfrm(y)
     if(is.data.frame(y)){
+        true_names_x = colnames(x)
+        true_names_y = colnames(y)
+
+        colnames(x) = make.names(colnames(x), unique = TRUE)
+        colnames(y) = make.names(colnames(y), unique = TRUE)
+        temp_names_x = colnames(x)
+        temp_names_y = colnames(y)
+        temp_names = c(temp_names_x, temp_names_y)
+        true_names = c(true_names_x, true_names_y)[!duplicated(temp_names)]
+        temp_names = temp_names[!duplicated(temp_names)]
+        
         new_in_y = colnames(x) %d% colnames(y)
         new_in_x = colnames(y) %d% colnames(x)
         if(length(new_in_y)>0 | length(new_in_x)>0){
@@ -106,8 +118,9 @@ add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
             }
             stopif(nomatch_columns == "stop", "Different column names in 'x' and 'y'.")
         }
-        rbind(x, y, stringsAsFactors = FALSE)
-
+        res = rbind(x, y, stringsAsFactors = FALSE)
+        if_val(colnames(res), from = temp_names) = true_names
+        res
     } else {
         rbind(x, y, stringsAsFactors = FALSE)
     }
