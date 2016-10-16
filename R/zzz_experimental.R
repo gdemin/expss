@@ -20,8 +20,8 @@
 #' data.frame. See \link{modify_if}.}
 #' \item{\code{.do_if}}{ Shortcut for \code{.modify_if}. Name is inspired by
 #' SPSS DO IF operator. See \link{modify_if}.}
-#' \item{\code{.filter}}{ Leave subset of default data.frame which meet
-#' condition. See \link[base]{subset}.}
+#' \item{\code{.where}}{ Leave subset of default data.frame which meet
+#' condition. See \link{where}, \link[base]{subset}.}
 #' \item{\code{.set_var_lab}}{ Set variable label in the default data.frame. See
 #' \link{set_var_lab}.}
 #' \item{\code{.set_val_lab}}{ Set value labels for variable in the default
@@ -239,37 +239,6 @@ modify_default_dataset_light = function(x, ...){
 #' @export
 #' @rdname compute
 .compute = .modify
-
-#' @export
-#' @rdname compute
-.filter = function (cond) {
-    # based on 'within' from base R by R Core team
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    parent = parent.frame()
-    cond = substitute(cond)
-    cond = eval(cond, data, parent.frame())
-    if (!is.logical(cond)) 
-        stop("'cond' must be logical")
-    cond = cond & !is.na(cond)
-    new_data = data[cond,, drop = FALSE]
-    ref(reference) = new_data
-    invisible(NULL)
-}
-
-# #' @export
-# #' @rdname compute
-# .select = function (...) {
-#     # based on 'within' from base R by R Core team
-#     reference = suppressMessages(default_dataset())
-#     data = ref(reference)
-#     parent = parent.frame()
-#     e = evalq(environment(), data, parent)
-#     res = eval(substitute(list(...)), e)
-# 
-#     ref(reference) = as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
-#     invisible(NULL)
-# }
 
 
 

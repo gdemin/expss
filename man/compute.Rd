@@ -13,7 +13,6 @@
 \alias{.cro_sum}
 \alias{.cro_tpct}
 \alias{.do_if}
-\alias{.filter}
 \alias{.fre}
 \alias{.if_val}
 \alias{.modify}
@@ -35,8 +34,6 @@
 .do_if(cond, expr)
 
 .compute(expr)
-
-.filter(cond)
 
 .with(expr, ...)
 
@@ -114,8 +111,8 @@ SPSS COMPUTE operator. See \link{modify}.}
 data.frame. See \link{modify_if}.}
 \item{\code{.do_if}}{ Shortcut for \code{.modify_if}. Name is inspired by
 SPSS DO IF operator. See \link{modify_if}.}
-\item{\code{.filter}}{ Leave subset of default data.frame which meet
-condition. See \link[base]{subset}.}
+\item{\code{.where}}{ Leave subset of default data.frame which meet
+condition. See \link{where}, \link[base]{subset}.}
 \item{\code{.set_var_lab}}{ Set variable label in the default data.frame. See
 \link{set_var_lab}.}
 \item{\code{.set_val_lab}}{ Set value labels for variable in the default
