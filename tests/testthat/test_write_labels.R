@@ -14,7 +14,22 @@ if(isTRUE(options("covr")[[1]])){
     etalon_sps = readLines("data/etalon_prelaunch.csv.sps")
     # expect_identical(dat, etalon_dat)
     # expect_identical(sps, etalon_sps)
+    data(iris)
+    ex_iris = iris[,-5]
 
+    colnames(ex_iris) = c("a", "a", "a", "a")
+
+    var_lab(ex_iris[[1]]) = "v1"
+    var_lab(ex_iris[[2]]) = "v2"
+    var_lab(ex_iris[[3]]) = "v3"
+    var_lab(ex_iris[[4]]) = "v4"
+    write_labelled_spss(ex_iris, "data/labelled_iris.csv")
+    dat = readLines("data/labelled_iris.csv")
+    sps = readLines("data/labelled_iris.csv.sps")
+    etalon_dat = readLines("data/etalon_labelled_iris.csv")
+    etalon_sps = readLines("data/etalon_labelled_iris.csv.sps")
+    # expect_identical(dat, etalon_dat)
+    # expect_identical(sps, etalon_sps)
     
     raw_data = readRDS("data/raw.RDS")
     data(iris)
@@ -25,6 +40,8 @@ if(isTRUE(options("covr")[[1]])){
     expect_equal(read_iris, iris2)
     unlink("data/iris.csv")
     unlink("data/iris.csv.dic.R")
+    unlink("data/labelled_iris.csv")
+    unlink("data/labelled_iris.csv.sps")
     
     write_labelled_csv(aaa, "data/aaa.csv")
     write_labelled_csv(bbb, "data/bbb.csv")
