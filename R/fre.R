@@ -602,7 +602,11 @@ prepare_dataframe = function(x, possible_name){
         if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP,colnames(x))
     } else {
         if (is.list(x)){
+            if(is.null(names(x))){
+                names(x) = paste0("V", seq_along(x))
+            }
             x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 
+            
         } else {
             
             x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE) 

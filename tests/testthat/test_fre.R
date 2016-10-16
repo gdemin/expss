@@ -517,8 +517,28 @@ expect_identical(cro_fun(ex_iris, iris$Species, fun = mean), cro_fun(correct_iri
 expect_identical(cro_fun_df(ex_iris, iris$Species, fun = mean_col), 
                  cro_fun_df(correct_iris, iris$Species, fun = mean_col))
 
+data(iris)
+# ex_iris = iris[,-5]
+lst_iris = as.list(ex_iris)
+names(lst_iris) = NULL
+
+expect_identical(cro_mean(lst_iris, iris$Species), cro_mean(correct_iris, iris$Species))
+expect_identical(cro_sum(lst_iris, iris$Species), cro_sum(correct_iris, iris$Species))
+expect_identical(cro_median(lst_iris, iris$Species), cro_median(correct_iris, iris$Species))
+expect_identical(cro_fun(lst_iris, iris$Species, fun = mean), cro_fun(correct_iris, iris$Species, fun = mean))
+expect_identical(cro_fun_df(lst_iris, iris$Species, fun = mean_col), 
+                 cro_fun_df(correct_iris, iris$Species, fun = mean_col))
 
 
-
+data(iris)
+lst_iris = as.list(iris[,-5])
+names(lst_iris) = NULL
+colnames(correct_iris) = c("V1", "V2", "V3", "V4")
+expect_identical(cro_mean(lst_iris, iris$Species), cro_mean(correct_iris, iris$Species))
+expect_identical(cro_sum(lst_iris, iris$Species), cro_sum(correct_iris, iris$Species))
+expect_identical(cro_median(lst_iris, iris$Species), cro_median(correct_iris, iris$Species))
+expect_identical(cro_fun(lst_iris, iris$Species, fun = mean), cro_fun(correct_iris, iris$Species, fun = mean))
+expect_identical(cro_fun_df(lst_iris, iris$Species, fun = mean_col), 
+                 cro_fun_df(correct_iris, iris$Species, fun = mean_col))
 
 
