@@ -48,7 +48,9 @@ keep = function(data, ...){
 keep.default = function(data, ...){
     vars = names(data)
     new_vars = keep_helper(vars, ...)
-    data[new_vars]
+    res = data[new_vars]
+    names(res) = vars[new_vars] # prevents names correction
+    res
     
 }
 
@@ -56,7 +58,9 @@ keep.default = function(data, ...){
 keep.data.frame = function(data, ...){
     vars = colnames(data)
     new_vars = keep_helper(vars, ...)
-    data[ , new_vars, drop = FALSE]
+    res = data[ , new_vars, drop = FALSE]
+    colnames(res) = vars[new_vars] # prevents names correction
+    res
     
 }
 
@@ -64,7 +68,9 @@ keep.data.frame = function(data, ...){
 keep.matrix = function(data, ...){
     vars = colnames(data)
     new_vars = keep_helper(vars, ...)
-    data[ , new_vars, drop = FALSE]
+    res = data[ , new_vars, drop = FALSE]
+    colnames(res) = vars[new_vars] # prevents names correction
+    res
 }
 
 #' @export
@@ -76,41 +82,58 @@ except = function(data, ...){
 #' @export
 except.default = function(data, ...){
     vars = names(data)
-    new_vars = vars %d% keep_helper(vars, ...)
-    data[new_vars]
-    
+    new_vars = -unique(keep_helper(vars, ...))
+    res = data[new_vars]
+    names(res) = vars[new_vars] # prevents names correction
+    res
 }
 
 #' @export
 except.data.frame = function(data, ...){
     vars = colnames(data)
-    new_vars = vars %d% keep_helper(vars, ...)
-    data[ , new_vars, drop = FALSE]
+    new_vars = -unique(keep_helper(vars, ...))
+    res = data[ , new_vars, drop = FALSE]
+    colnames(res) = vars[new_vars] # prevents names correction
+    res
     
 }
 
 #' @export
 except.matrix = function(data, ...){
     vars = colnames(data)
-    new_vars = vars %d% keep_helper(vars, ...)
-    data[ , new_vars, drop = FALSE]
+    new_vars = -unique(keep_helper(vars, ...))
+    res = data[ , new_vars, drop = FALSE]
+    colnames(res) = vars[new_vars] # prevents names correction
+    res
 }
 
 
 
-keep_helper = function(x, ...){
-    keep_names = character(0)
-    old_names = x
+keep_helper = function(old_names, ...){
+    keep_names = numeric(0)
     new_names = c(list(...), recursive = TRUE)
+    characters_names = character(0) # for checking non-existing names
+    not_character_indexes = 
     for (each in new_names){
         if(is.character(each)){
-            keep_names = c(keep_names, each)
+            next_names = which(old_names %in% each)
+            characters_names = c(characters_names, each)
         } else {
-            keep_names = c(keep_names, old_names %i% each)
+            # we can duplicate variable by mention it more than one time
+            # but its only possible for character name
+            next_names = which(old_names %in% (old_names %i% each))
         }
-        old_names = old_names %d% each
+        keep_names = c(keep_names, next_names %d% keep_names)
     }
-    stopif(any(!(keep_names %in% x)), "names not found: ", paste(keep_names %d% x, collapse = ", "))
+    if(anyDuplicated(characters_names)){
+        warning("duplicated names: ", 
+                paste(characters_names[duplicated(characters_names)], collapse = ","),
+                ". Repeated names are ignored."
+                
+                )
+    }
+    stopif(any(!(characters_names %in% old_names)), 
+           "names not found: '", paste(characters_names %d% old_names, collapse = "', '"),"'")
     keep_names
     
 }

@@ -4,6 +4,7 @@ context("keep")
 
 data(iris)
 expect_identical(keep(iris, "Species", other), iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_warning(keep(iris, "Species", other, "Species"))
 expect_identical(keep(iris, "Species", perl("^Sepal")), iris[, c("Species", "Sepal.Length", "Sepal.Width")])
 expect_identical(keep(iris, "Species", perl("Length$")), iris[, c("Species", "Sepal.Length", "Petal.Length")])
 expect_identical(keep(iris, "Species", fixed("Length")), iris[, c("Species", "Sepal.Length", "Petal.Length")])
@@ -57,4 +58,15 @@ expect_identical(aaa, iris[, FALSE, drop = FALSE])
 aaa = iris
 .except("Species")
 expect_identical(aaa, iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+
+context("keep duplicted names")
+data(iris)
+ex_iris = iris[,-5]
+colnames(ex_iris) = c("a", "a", "a", "a")
+
+expect_identical(ex_iris %keep% "a", ex_iris)
+expect_identical(ex_iris %except% "a", ex_iris[, FALSE, drop = FALSE])
+
+
+
 
