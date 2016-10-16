@@ -45,6 +45,15 @@ expect_identical(
     result_dfs
 )
 
+set.seed(1)
+expect_identical(
+    dfs %modify% {
+        a_total = sum_row(vars_range("a_1", "a_5"))
+        b_total = sum_row(vars_range("b_1", "b_5"))
+        random_numer = runif(.n)
+    }, 
+    result_dfs
+)
 
 result_dfs$random_numer = NULL
 expect_identical(
@@ -52,6 +61,15 @@ expect_identical(
         a_total = sum_row(a_1 %to% a_5)
         b_total = sum_row(b_1 %to% b_5)
     }), 
+    result_dfs
+)
+
+result_dfs$random_numer = NULL
+expect_identical(
+    dfs %modify% {
+        a_total = sum_row(a_1 %to% a_5)
+        b_total = sum_row(b_1 %to% b_5)
+    }, 
     result_dfs
 )
 
@@ -182,6 +200,18 @@ expect_identical(
     result_dfs3
 )
 
+expect_identical(
+    dfs %modify% {
+        b_total = sum_row(b_1, b_2, b_4, b_5)
+        var_lab(aa) = "my label"
+        val_lab(aa) = c(one = 1, two = 2)
+        
+        
+    },
+    result_dfs3
+)
+
+
 result_dfs3$b_total = NULL
 result_dfs3$aa = 1
 expect_identical(
@@ -211,6 +241,12 @@ data(iris)
 iris2 = iris
 
 iris2 = modify(iris2, {Species = NULL})
+
+expect_identical(iris2, iris[,-5])
+
+iris2 = iris
+
+iris2 = iris2 %modify% {Species = NULL}
 
 expect_identical(iris2, iris[,-5])
 
