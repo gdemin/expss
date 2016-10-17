@@ -1,4 +1,4 @@
-0.5.5 (08.30.2016)
+0.5.5 (19.10.2016)
 ================
 * numerous bugfixes
 * change behavior of `if_val()` - now it dowsn't copies old values by default. There are 'other' and 'copy' instead of dots.
