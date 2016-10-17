@@ -228,7 +228,7 @@ codeframe_likes = ml_left("
     c1r = c1
 })
 .do_if(cell == 2, {
-    c1r = if_val(c1, 1 ~ 2, 2 ~ 1)
+    c1r = if_val(c1, 1 ~ 2, 2 ~ 1, other ~ copy)
 })
 .compute({
     # recode age by groups

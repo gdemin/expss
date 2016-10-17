@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2016-10-16" />
+<meta name="date" content="2016-10-18" />
 
 <title>Usage Examples</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Usage Examples</h1>
-<h4 class="date"><em>2016-10-16</em></h4>
+<h4 class="date"><em>2016-10-18</em></h4>
 
 
 
@@ -490,7 +490,7 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
     c1r =<span class="st"> </span>c1
 })
 <span class="kw">.do_if</span>(cell ==<span class="st"> </span><span class="dv">2</span>, {
-    c1r =<span class="st"> </span><span class="kw">if_val</span>(c1, <span class="dv">1</span> ~<span class="st"> </span><span class="dv">2</span>, <span class="dv">2</span> ~<span class="st"> </span><span class="dv">1</span>)
+    c1r =<span class="st"> </span><span class="kw">if_val</span>(c1, <span class="dv">1</span> ~<span class="st"> </span><span class="dv">2</span>, <span class="dv">2</span> ~<span class="st"> </span><span class="dv">1</span>, other ~<span class="st"> </span>copy)
 })
 <span class="kw">.compute</span>({
     <span class="co"># recode age by groups</span>
@@ -554,40 +554,40 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
 <tr class="odd">
 <td align="left">VSX123</td>
 <td align="right">94</td>
-<td align="right">64</td>
 <td align="right">63</td>
-<td align="right">64</td>
-<td align="right">64</td>
+<td align="right">63</td>
+<td align="right">63</td>
+<td align="right">63</td>
 </tr>
 <tr class="even">
 <td align="left">SDF456</td>
 <td align="right">50</td>
-<td align="right">34</td>
 <td align="right">33</td>
-<td align="right">34</td>
-<td align="right">98</td>
+<td align="right">33</td>
+<td align="right">33</td>
+<td align="right">96</td>
 </tr>
 <tr class="odd">
 <td align="left">Hard to say</td>
-<td align="right">3</td>
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="right">2</td>
+<td align="right">6</td>
+<td align="right">4</td>
+<td align="right">4</td>
+<td align="right">4</td>
 <td align="right">100</td>
 </tr>
 <tr class="even">
 <td align="left">#Total</td>
-<td align="right">147</td>
+<td align="right">150</td>
 <td align="right">100</td>
-<td align="right">98</td>
+<td align="right">100</td>
 <td align="right">100</td>
 <td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left"><NA></td>
-<td align="right">3</td>
+<td align="right">0</td>
 <td align="right">NA</td>
-<td align="right">2</td>
+<td align="right">0</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 </tr>
@@ -615,26 +615,26 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
 <tr class="odd">
 <td align="left">VSX123</td>
 <td align="right">65.7</td>
-<td align="right">62.3</td>
-<td align="right">64</td>
+<td align="right">60</td>
+<td align="right">63</td>
 </tr>
 <tr class="even">
 <td align="left">SDF456</td>
 <td align="right">31.4</td>
-<td align="right">36.4</td>
-<td align="right">34</td>
+<td align="right">35</td>
+<td align="right">33</td>
 </tr>
 <tr class="odd">
 <td align="left">Hard to say</td>
 <td align="right">2.9</td>
-<td align="right">1.3</td>
-<td align="right">2</td>
+<td align="right">5</td>
+<td align="right">4</td>
 </tr>
 <tr class="even">
 <td align="left">#Total</td>
 <td align="right">70.0</td>
-<td align="right">77.0</td>
-<td align="right">147</td>
+<td align="right">80</td>
+<td align="right">150</td>
 </tr>
 </tbody>
 </table>
