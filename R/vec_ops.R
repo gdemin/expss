@@ -82,6 +82,7 @@
 #' @export
 #' @rdname vectors
 '%d%' = function(e1, e2){
+    if(is.null(e2)) return(e1)
     if (is.function(e2)){
         e1[!e2(e1)]
     } else {
@@ -120,6 +121,7 @@
 #' @export
 #' @rdname vectors
 '%n_d%' = function(e1, e2){
+    if(length(e2)==0) return(e1)
     n_d(e1, e2)
 }
 
@@ -149,10 +151,12 @@ n_i.matrix = function(e1, e2){
 }
 
 n_d = function(e1, e2){
+    
     UseMethod("n_d")
 }
 
 n_d.default = function(e1, e2){
+    
     e1[names(e1) %in% (names(e1) %d% e2)]    
 }
 

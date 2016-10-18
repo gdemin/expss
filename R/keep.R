@@ -83,6 +83,9 @@ except = function(data, ...){
 except.default = function(data, ...){
     vars = names(data)
     new_vars = -unique(keep_helper(vars, ...))
+    if(length(new_vars)==0){
+        return(data)
+    }
     res = data[new_vars]
     names(res) = vars[new_vars] # prevents names correction
     res
@@ -92,6 +95,9 @@ except.default = function(data, ...){
 except.data.frame = function(data, ...){
     vars = colnames(data)
     new_vars = -unique(keep_helper(vars, ...))
+    if(length(new_vars)==0){
+        return(data)
+    }
     res = data[ , new_vars, drop = FALSE]
     colnames(res) = vars[new_vars] # prevents names correction
     res
@@ -102,6 +108,9 @@ except.data.frame = function(data, ...){
 except.matrix = function(data, ...){
     vars = colnames(data)
     new_vars = -unique(keep_helper(vars, ...))
+    if(length(new_vars)==0){
+        return(data)
+    }
     res = data[ , new_vars, drop = FALSE]
     colnames(res) = vars[new_vars] # prevents names correction
     res
@@ -111,7 +120,14 @@ except.matrix = function(data, ...){
 
 keep_helper = function(old_names, ...){
     keep_names = numeric(0)
-    new_names = c(list(...), recursive = TRUE)
+    new_names = rapply(list(...), function(each){
+        if(!is.function(each) && !is.character(each)){
+            as.character(each)
+        } else {
+            each
+        }
+    }, how = "unlist")
+    # new_names = c(args, recursive = TRUE)
     characters_names = character(0) # for checking non-existing names
     for (each in new_names){
         if(is.character(each)){

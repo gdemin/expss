@@ -89,3 +89,17 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 }
 
 expect_error(5 %r% 1:2)
+
+context("edge cases")
+expect_identical(iris %n_i% NULL, iris[, FALSE, drop = FALSE])
+expect_identical(iris %n_d% NULL, iris)
+expect_identical(as.matrix(iris) %n_d% NULL, as.matrix(iris))
+expect_identical(1:5 %n_d% NULL, 1:5)
+expect_identical(1:5 %d% NULL, 1:5)
+expect_identical(1:5 %n_i% NULL, integer(0))
+
+expect_identical(iris %n_i% factor("Species"), iris[, 5, drop = FALSE])
+expect_identical(iris %n_d% factor("Species"), iris[,-5])
+
+
+

@@ -69,4 +69,17 @@ expect_identical(ex_iris %except% "a", ex_iris[, FALSE, drop = FALSE])
 
 
 
+context("keep edge cases")
+
+expect_identical(iris %keep% NULL, iris[, FALSE, drop = FALSE])
+expect_identical(iris %except% NULL, iris)
+expect_identical(as.matrix(iris) %except% NULL, as.matrix(iris))
+expect_identical(1:5 %except% NULL, 1:5)
+expect_identical(1:5 %keep% NULL, integer(0))
+
+expect_identical(iris %keep% factor("Species"), iris[, 5, drop = FALSE])
+expect_identical(iris %except% factor("Species"), iris[,-5])
+
+
+
 
