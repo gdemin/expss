@@ -55,15 +55,7 @@ where.data.frame = function (data, cond) {
 #' @rdname where
 #' @export
 '%where%' = function(data, cond){
-    e = evalq(environment(), data, parent.frame())
-    e$.n = nrow(data)
-    cond = substitute(cond)
-    cond = eval(cond, e)
-    if (!is.logical(cond) && !is.numeric(cond)){ 
-        stop("'cond' must be logical or numeric.")
-    }    
-    if(is.logical(cond)) cond = cond & !is.na(cond)
-    data[cond,, drop = FALSE]
+    eval(bquote(where(data, .(cond))))
 }
 
 
@@ -85,4 +77,34 @@ where.data.frame = function (data, cond) {
     invisible(NULL)
 }
 
+#' @export
+where.default = function (data, cond) {
+    e = evalq(environment(), parent.frame())
+    e$.n = length(data)
+    cond = substitute(cond)
+    cond = eval(cond, e)
+    if (!is.logical(cond) && !is.numeric(cond)){
+        stop("'cond' must be logical or numeric.")
+    }
+    if(is.logical(cond)) cond = cond & !is.na(cond)
+    data[cond]
+}
 
+#' @export
+where.matrix = function (data, cond) {
+    e = evalq(environment(), parent.frame())
+    e$.n = nrow(data)
+    cond = substitute(cond)
+    cond = eval(cond, e)
+    if (!is.logical(cond) && !is.numeric(cond)){
+        stop("'cond' must be logical or numeric.")
+    }
+    if(is.logical(cond)) cond = cond & !is.na(cond)
+    data[cond, drop = FALSE]
+}
+
+#' @export
+where.list = function (data, cond) {
+    cond = substitute(cond)
+    eval(bquote(lapply(data, where, .(cond))))
+}
