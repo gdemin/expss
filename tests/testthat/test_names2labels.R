@@ -40,9 +40,9 @@ expect_identical(names2labels(df, exclude = "a"), df)
 expect_identical(names2labels(df, exclude = 1), df)
 expect_identical(names2labels(df, exclude = c(TRUE, FALSE, FALSE)), df)
 
-colnames(out_df)[1] = "column a (a)"
+colnames(out_df)[1] = "a column a"
 
-expect_identical(names2labels(df, keep_names = TRUE),out_df)
+expect_identical(names2labels(df, keep_names = TRUE), out_df)
 expect_identical(names2labels(df, exclude = "a", keep_names = TRUE), df)
 expect_identical(names2labels(df, exclude = 1, keep_names = TRUE), df)
 expect_identical(names2labels(df, exclude = c(TRUE, FALSE, FALSE), keep_names = TRUE), df)

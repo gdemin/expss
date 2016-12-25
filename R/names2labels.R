@@ -75,7 +75,7 @@ names2labels.list = function(x, exclude = NULL, keep_names = FALSE){
     }
     include = !no_labs & include
     labs = unlist(labs[include])
-    if (keep_names) labs = paste0(labs," (",names(x)[include],")")
+    if (keep_names) labs = paste0(names(x)[include], " ", labs)
     names(x)[include] = labs
     x
 }
