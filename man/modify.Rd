@@ -30,8 +30,8 @@ to return new variables in order of their appearance in the expression.
 rows remain unchanged. Newly created variables also will have values only in 
 rows for which \code{cond} has TRUE. There will be NA's in other rows. This 
 function tries to mimic SPSS "DO IF(). ... END IF." statement. There is a 
-special constant \code{.n} which equals to number of cases in \code{data} for
-usage in expression inside \code{modify}. Inside \code{modify_if} \code{.n} 
+special constant \code{.N} which equals to number of cases in \code{data} for
+usage in expression inside \code{modify}. Inside \code{modify_if} \code{.N} 
 gives number of rows which will be affected by expressions. Inside these 
 functions you can use \code{set} function which creates variables with given
 name/set values to existing variables - \link{.set}. It is possible with
@@ -54,7 +54,7 @@ dfs = data.frame(
 modify(dfs, {
     b_total = sum_row(b_, b_1 \%to\% b_5)
     var_lab(b_total) = "Sum of b"
-    random_numbers = runif(.n) # .n usage
+    random_numbers = runif(.N) # .N usage
 })
 
 # 'set' function
@@ -76,7 +76,7 @@ modify_if(dfs, test \%in\% 2:4, {
     aa = aa + 1    
     a_b = aa + b_    
     b_total = sum_row(b_, b_1 \%to\% b_5)
-    random_numbers = runif(.n) # .n usage
+    random_numbers = runif(.N) # .N usage
 })
 
 }

@@ -20,6 +20,10 @@ dfs = data.frame(
     b_5 = 15 %r% 5 
 )
 
+expect_error(modify(dfs, {.n = 42}))
+expect_error(modify(dfs, {.N = 42}))
+expect_error(modify(dfs, {set = 42}))
+
 result_dfs = dfs
 result_dfs$a_total = sum_row(a_1, a_2, a_4, a_5)
 result_dfs$b_total = with(dfs, sum_row(b_1, b_2, b_4, b_5))
@@ -47,10 +51,30 @@ expect_identical(
 
 set.seed(1)
 expect_identical(
+    modify(dfs, {
+        a_total = sum_row(vars_range("a_1", "a_5"))
+        b_total = sum_row(vars_range("b_1", "b_5"))
+        random_numer = runif(.N)
+    }), 
+    result_dfs
+)
+
+set.seed(1)
+expect_identical(
     dfs %modify% {
         a_total = sum_row(vars_range("a_1", "a_5"))
         b_total = sum_row(vars_range("b_1", "b_5"))
         random_numer = runif(.n)
+    }, 
+    result_dfs
+)
+
+set.seed(1)
+expect_identical(
+    dfs %modify% {
+        a_total = sum_row(vars_range("a_1", "a_5"))
+        b_total = sum_row(vars_range("b_1", "b_5"))
+        random_numer = runif(.N)
     }, 
     result_dfs
 )
@@ -134,6 +158,16 @@ expect_identical(
 )
 
 
+set.seed(1)
+expect_identical(
+    modify_if(dfs2, test %in% 2:4,
+              {
+                  b_total = sum_row(b_1 %to% b_5)
+                  aa = aa + 1
+                  random_numer = runif(.N)
+              }), 
+    result_dfs2
+)
 
 
 expect_error(
@@ -144,6 +178,9 @@ expect_error(
                   aa = aa + 1
               })
 )
+expect_error(modify_if(dfs2,test %in% 2:4,  {.n = 42}))
+expect_error(modify_if(dfs2,test %in% 2:4,  {.N = 42}))
+expect_error(modify_if(dfs2,test %in% 2:4,  {set = 42}))
 
 
 result_dfs2$random_numer = NULL

@@ -136,26 +136,10 @@
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
     data = ref(reference)
-    parent = parent.frame()
-    e = evalq(environment(), data, parent)
-    e$.n = nrow(data)
-    e$set = set_generator(e$.n)
-    eval(substitute(expr), e)
-    rm(".n", "set", envir = e)
-    l = as.list(e, all.names = TRUE)
-    
-    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
-    del = setdiff(names(data), names(l))
-    if(length(del)){
-        data[, del] = NULL
-    }
-    nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
-    stopif(any(nrows!=1L & nrows!=nrow(data)),"Bad number of rows")
-    new_vars = rev(names(l)[!(names(l) %in% names(data))])
-    nl = c(names(data), new_vars)
-    data[nl] = l[nl]
+    expr = substitute(expr)
+    data = eval(bquote(modify(data, .(expr))))
     ref(reference) = data
-    invisible(NULL)
+    invisible(data)
 }
 
 
@@ -164,35 +148,13 @@
 #' @rdname compute
 .modify_if = function (cond, expr) {
     # based on 'within' from base R by R Core team
-    reference = suppressMessages(default_dataset() )
+    reference = suppressMessages(default_dataset())
     data = ref(reference)
-    parent = parent.frame()
     cond = substitute(cond)
-    cond = eval(cond, data, parent.frame())
-    if (!is.logical(cond)) 
-        stop("'cond' must be logical")
-    cond = cond & !is.na(cond)
-    new_data = data[cond,, drop = FALSE]
-    e = evalq(environment(), new_data, parent)
-    e$.n = nrow(new_data)
-    e$set = set_generator(e$.n)
-    eval(substitute(expr), e)
-    rm(".n", "set", envir = e)
-    l = as.list(e, all.names = TRUE)
-    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
-    del = setdiff(names(data), names(l))
-    if(length(del)){
-        data[, del] = NULL
-    }
-    
-    nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
-    stopif(any(nrows!=1L & nrows!=nrow(new_data)),"Bad number of rows")
-    new_vars = rev(names(l)[!(names(l) %in% names(data))])
-    data[cond, names(data)] = l[names(data)]
-    data[, new_vars] = NA
-    data[cond, new_vars] = l[new_vars]
+    expr = substitute(expr)
+    data = eval(bquote(modify_if(data, .(cond), .(expr))))
     ref(reference) = data
-    invisible(NULL)
+    invisible(data)
 }
 
 in_place_if_val = function(x, ..., from = NULL, to = NULL){
@@ -216,6 +178,9 @@ modify_default_dataset_light = function(x, ...){
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     e$.n = nrow(data)
+    e$.N = nrow(data)
+    lockBinding(".n", e)
+    lockBinding(".N", e)
     if (length(all.vars(for_names, functions = FALSE))==1 & length(all.vars(for_names, functions = TRUE))==1){
         for_names = as.character(for_names) 
     } else {
@@ -225,7 +190,7 @@ modify_default_dataset_light = function(x, ...){
     res = eval(expr, e)
     data[, for_names] = res
     ref(reference) = data
-    invisible(NULL)
+    invisible(data)
 }
 
 
@@ -276,13 +241,16 @@ modify_default_dataset_light = function(x, ...){
 #' @rdname compute
 .if_val =  function(x, ...){
     expr = as.character(as.expression(sys.call()))
-    expr = parse(text = gsub("^\\.if_val","expss:::in_place_if_val", expr, perl = TRUE))
+    expr = parse(text = gsub("^\\.(if_val|recode)","expss:::in_place_if_val", expr, perl = TRUE))
     for_names = as.expression(substitute(x))
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     e$.n = nrow(data)
+    e$.N = nrow(data)
+    lockBinding(".n", e)
+    lockBinding(".N", e)
     if (length(all.vars(for_names, functions = FALSE))==1 & length(all.vars(for_names, functions = TRUE))==1){
         for_names = as.character(for_names) 
     } else {
@@ -299,26 +267,8 @@ modify_default_dataset_light = function(x, ...){
 
 #' @export
 #' @rdname compute
-.recode = function(x, ...){
-    expr = as.character(as.expression(sys.call()))
-    expr = parse(text = gsub("^\\.recode","expss:::in_place_if_val", expr, perl = TRUE))
-    for_names = as.expression(substitute(x))
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    parent = parent.frame()
-    e = evalq(environment(), data, parent)
-    e$.n = nrow(data)
-    if (length(all.vars(for_names, functions = FALSE))==1 & length(all.vars(for_names, functions = TRUE))==1){
-        for_names = as.character(for_names) 
-    } else {
-        for_names = names(eval(for_names, e))
-    }
-    stopif(length(for_names)==0, "Something is going wrong. Variables not found: ", deparse((substitute(x))))
-    res = eval(expr, e)
-    data[, for_names] = res
-    ref(reference) = data
-    invisible(NULL)
-}
+.recode = .if_val 
+    
 
 #' @export
 #' @rdname compute
@@ -375,9 +325,11 @@ modify_default_dataset_light = function(x, ...){
     d_nrows = NROW(envir[[dd_name]])
     value_nrows = NROW(value)
     value_ncols = NCOL(value)
-    stopif(value_nrows!=1 & value_nrows!= d_nrows, "Incorrect number of rows in 'value': ", value_nrows, 
+    stopif(value_nrows!=1 & value_nrows!= d_nrows, paste(varnames, collapse = ","), 
+           ": incorrect number of rows in 'value': ", value_nrows, 
            " There are ", d_nrows, " rows in default dataset.")
-    stopif(value_ncols!=1 & value_ncols!= num_of_vars, "Incorrect number of columns in 'value': ", value_ncols, 
+    stopif(value_ncols!=1 & value_ncols!= num_of_vars, paste(varnames, collapse = ","),
+           ": incorrect number of columns in 'value': ", value_ncols, 
            " There are ", num_of_vars, " names in 'varnames'.")
     for (each in seq_along(varnames)){
         envir[[dd_name]][, varnames[[each]]] = column(value, each)
@@ -393,9 +345,11 @@ set_generator = function(number_of_rows){
         num_of_vars = length(varnames)
         value_nrows = NROW(value)
         value_ncols = NCOL(value)
-        stopif(value_nrows!=1 & value_nrows!= number_of_rows, "Incorrect number of rows in 'value': ", value_nrows, 
+        stopif(value_nrows!=1 & value_nrows!= number_of_rows, paste(varnames, collapse = ","), 
+               ": incorrect number of rows in 'value': ", value_nrows, 
                " There are ", number_of_rows, " rows in dataset.")
-        stopif(value_ncols!=1 & value_ncols!= num_of_vars, "Incorrect number of columns in 'value': ", value_ncols, 
+        stopif(value_ncols!=1 & value_ncols!= num_of_vars, paste(varnames, collapse = ","), 
+               ": incorrect number of columns in 'value': ", value_ncols, 
                " There are ", num_of_vars, " names in 'varnames'.")
         if(value_nrows==1){
         for (each in seq_along(varnames)){

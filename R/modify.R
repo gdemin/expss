@@ -7,8 +7,8 @@
 #' rows remain unchanged. Newly created variables also will have values only in 
 #' rows for which \code{cond} has TRUE. There will be NA's in other rows. This 
 #' function tries to mimic SPSS "DO IF(). ... END IF." statement. There is a 
-#' special constant \code{.n} which equals to number of cases in \code{data} for
-#' usage in expression inside \code{modify}. Inside \code{modify_if} \code{.n} 
+#' special constant \code{.N} which equals to number of cases in \code{data} for
+#' usage in expression inside \code{modify}. Inside \code{modify_if} \code{.N} 
 #' gives number of rows which will be affected by expressions. Inside these 
 #' functions you can use \code{set} function which creates variables with given
 #' name/set values to existing variables - \link{.set}. It is possible with
@@ -37,7 +37,7 @@
 #' modify(dfs, {
 #'     b_total = sum_row(b_, b_1 %to% b_5)
 #'     var_lab(b_total) = "Sum of b"
-#'     random_numbers = runif(.n) # .n usage
+#'     random_numbers = runif(.N) # .N usage
 #' })
 #' 
 #' # 'set' function
@@ -59,7 +59,7 @@
 #'     aa = aa + 1    
 #'     a_b = aa + b_    
 #'     b_total = sum_row(b_, b_1 %to% b_5)
-#'     random_numbers = runif(.n) # .n usage
+#'     random_numbers = runif(.N) # .N usage
 #' })
 #' 
 #' @export
@@ -73,9 +73,13 @@ modify.data.frame = function (data, expr) {
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     e$.n = nrow(data)
-    e$set = set_generator(e$.n)
+    e$.N = nrow(data)
+    e$set = set_generator(e$.N)
+    lockBinding(".n", e)
+    lockBinding(".N", e)
+    lockBinding("set", e)
     eval(substitute(expr), e)
-    rm(".n", "set", envir = e)
+    rm(".n", "set", ".N", envir = e)
     l = as.list(e, all.names = TRUE)
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
     del = setdiff(names(data), names(l))
@@ -95,24 +99,8 @@ modify.data.frame = function (data, expr) {
 #' @rdname modify
 '%modify%' = function (data, expr) {
     # based on 'within' from base R by R Core team
-    parent = parent.frame()
-    e = evalq(environment(), data, parent)
-    e$.n = nrow(data)
-    e$set = set_generator(e$.n)
-    eval(substitute(expr), e)
-    rm(".n", "set", envir = e)
-    l = as.list(e, all.names = TRUE)
-    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
-    del = setdiff(names(data), names(l))
-    if(length(del)){
-        data[, del] = NULL
-    }
-    nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
-    stopif(any(nrows!=1L & nrows!=nrow(data)),"Bad number of rows")
-    new_vars = rev(names(l)[!(names(l) %in% names(data))])
-    nl = c(names(data), new_vars)
-    data[nl] = l[nl]
-    data
+    expr = substitute(expr)
+    eval(bquote(modify(data, .(expr))))
 }
 
 
@@ -136,9 +124,13 @@ modify_if.data.frame = function (data, cond, expr) {
     new_data = data[cond,, drop = FALSE]
     e = evalq(environment(), new_data, parent)
     e$.n = nrow(new_data)
-    e$set = set_generator(e$.n)
+    e$.N = nrow(new_data)
+    e$set = set_generator(e$.N)
+    lockBinding(".n", e)
+    lockBinding(".N", e)
+    lockBinding("set", e)
     eval(substitute(expr), e)
-    rm(".n", "set", envir = e)
+    rm(".n", "set", ".N", envir = e)
     l = as.list(e, all.names = TRUE)
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
     del = setdiff(names(data), names(l))
