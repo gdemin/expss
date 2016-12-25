@@ -68,10 +68,10 @@ y = c(8,8,8,9,9)
 z = c(4,4,4,5,5)
 
 
-expect_identical(if_val(x, gt(2)~y, lte(2) ~ z, other ~ copy), c(4, 8, 4, 9, NA))
-expect_identical(if_val(x, gt(2)~y, lte(2) ~ z), c(4, 8, 4, 9, NA))
+expect_identical(if_val(x, gt(2)~y, le(2) ~ z, other ~ copy), c(4, 8, 4, 9, NA))
+expect_identical(if_val(x, gt(2)~y, le(2) ~ z), c(4, 8, 4, 9, NA))
 
-if_val(x) = c(gt(2)~y, lte(2) ~ z)
+if_val(x) = c(gt(2)~y, le(2) ~ z)
 expect_identical(x, c(4, 8, 4, 9, NA))
 
 
@@ -80,17 +80,17 @@ x = c(1,3,1,3,NA)
 y = c(8,8,8,9,9)
 z = c(4,4,4,5,5)
 
-expect_identical(if_val(x, gt(2)~y, lte(2) ~ z, other ~ 99), c(4, 8, 4, 9, 99))
+expect_identical(if_val(x, gt(2)~y, le(2) ~ z, other ~ 99), c(4, 8, 4, 9, 99))
 
-if_val(x) = list(gt(2)~y, lte(2) ~ z, other ~ 99)
+if_val(x) = list(gt(2)~y, le(2) ~ z, other ~ 99)
 expect_identical(x, c(4, 8, 4, 9, 99))
 
 x = c(1,3,1,3,NA)
 y = c(8,8,8,9,9)
 z = c(4,4,4,5,5)
 
-expect_identical(if_val(x, list(gt(2)~y, lte(2) ~ z, other ~99)), c(4, 8, 4, 9, 99))
-if_val(x) = list(gt(2)~y, lte(2) ~ z, other ~99)
+expect_identical(if_val(x, list(gt(2)~y, le(2) ~ z, other ~99)), c(4, 8, 4, 9, 99))
+if_val(x) = list(gt(2)~y, le(2) ~ z, other ~99)
 expect_identical(x, c(4, 8, 4, 9, 99))
 
 x = c(1,3,1,3,NA)
@@ -220,10 +220,10 @@ expect_identical(if_val(x, from = list(gt(2)), to =list(y)), c(NA, 8, NA, 9, NA)
 expect_identical(if_val(x, from = list(gt(2), other), to =list(y, copy)), c(1, 8, 1, 9, NA))
 
 
-expect_identical(if_val(x, from = list(gt(2), lte(2)), to = list(y,z)), c(4, 8, 4, 9, NA))
-expect_identical(if_val(x, from = list(gt(2), lte(2), other), to = list(y,z, copy)), c(4, 8, 4, 9, NA))
+expect_identical(if_val(x, from = list(gt(2), le(2)), to = list(y,z)), c(4, 8, 4, 9, NA))
+expect_identical(if_val(x, from = list(gt(2), le(2), other), to = list(y,z, copy)), c(4, 8, 4, 9, NA))
 
-expect_identical(if_val(x, from = list(gt(2), lte(2),other), to = list(y,z,99)), c(4, 8, 4, 9, 99))
+expect_identical(if_val(x, from = list(gt(2), le(2),other), to = list(y,z,99)), c(4, 8, 4, 9, 99))
 
 expect_identical(if_val(x, from = list(z>4, other), to = list(y, copy)), c(1, 3, 1, 9, 9))
 
@@ -284,7 +284,7 @@ qvar_test[qvar %in% 1:5] = 1
 qvar_test[qvar %in% 6:10] = 2
 qvar_test[qvar >= 11] = 3
 expect_identical(
-    if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, gte(11) ~ 3, other ~ 0),
+    if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, ge(11) ~ 3, other ~ 0),
     qvar_test
 )
 if_val(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% Inf ~ 3, other ~ 0)
@@ -343,7 +343,7 @@ qvar_test[qvar %in% 1:5] = 1
 qvar_test[qvar %in% 6:10] = 2
 qvar_test[qvar >= 11] = 3
 
-fr = list(1 %thru% 5, 6 %thru% 10, gte(11), other)
+fr = list(1 %thru% 5, 6 %thru% 10, ge(11), other)
 to = list(1, 2, 3, 0)
 expect_identical(
     if_val(qvar, from = fr, to = to),

@@ -15,9 +15,9 @@ expect_equal(mean_if(gt(55)|32,df1$b),193/3)
 expect_equal(mean_if(function(x) x>55 | x==54,df1$b),215/3)
 expect_equal(mean_if(gt(55)|54,df1$b),215/3)
 
-expect_equal(mean_if(neq(75),df1$b),172/3)
+expect_equal(mean_if(ne(75),df1$b),172/3)
 
-expect_equal(mean_if(gte(32),df1$b),247/4)
+expect_equal(mean_if(ge(32),df1$b),247/4)
 
 
 expect_equal(mean_if(gt(32) & lt(86),df1$b),(54L + 75L)/2)

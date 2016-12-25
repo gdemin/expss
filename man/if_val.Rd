@@ -118,7 +118,7 @@ set.seed(123)
 qvar = sample((-5):20, 50, replace = TRUE)
 if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, other ~ 0)
 # the same result
-if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, gte(11) ~ 3, other ~ 0)
+if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, ge(11) ~ 3, other ~ 0)
 
 # RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). 
 strngvar = LETTERS
@@ -175,7 +175,7 @@ if_val(v1, from = fr) = to
 v1
 
 # RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
-fr = list(1 \%thru\% 5, 6 \%thru\% 10, gte(11), other)
+fr = list(1 \%thru\% 5, 6 \%thru\% 10, ge(11), other)
 to = list(1, 2, 3, 0)
 if_val(qvar, from = fr, to = to)
 

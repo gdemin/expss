@@ -139,7 +139,7 @@ will be applied columnwise.
 \examples{
 set.seed(123)
 dfs = as.data.frame(
-       matrix(sample(c(1:10,NA),30,replace = TRUE),10)
+       matrix(sample(c(1:10,NA), 30, replace = TRUE), 10)
 )
 
 result  = modify(dfs, {
@@ -154,7 +154,7 @@ result  = modify(dfs, {
              # count NA 
              na = count_row_if(is.na, V1, V2, V3)
              # count not-NA 
-             not_na = count_row_if(, V1, V2, V3) 
+             not_na = count_row_if(not_na, V1, V2, V3) 
              # are there any 5 in each row?
              has_five = 5 \%in_row\% cbind(V1, V2, V3)  
          })  
@@ -172,35 +172,35 @@ apply_row_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements by rows
  
 # Examples borrowed from Microsoft Excel help for COUNTIF
 df1 = data.frame(
-    a=c("apples",   "oranges",     "peaches",     "apples"),
+    a = c("apples",   "oranges",     "peaches",     "apples"),
     b = c(32, 54, 75, 86)
 )
 
-count_if("apples",df1$a) # 2
+count_if("apples", df1$a) # 2
 
-count_if("apples",df1) # 2
+count_if("apples", df1) # 2
 
-with(df1,count_if("apples",a,b)) # 2
+with(df1, count_if("apples", a, b)) # 2
 
-count_if(gt(55),df1$b) # greater than 55 = 2
+count_if(gt(55), df1$b) # greater than 55 = 2
 
-count_if(neq(75),df1$b) # not equal 75 = 3
+count_if(ne(75), df1$b) # not equal 75 = 3
 
-count_if(gte(32),df1$b) # greater than or equal 32 = 4
+count_if(ge(32), df1$b) # greater than or equal 32 = 4
 
-count_if(gt(32) & lt(86),df1$b) # 2
+count_if(gt(32) & lt(86), df1$b) # 2
 
 # count only integer values between 33 and 85
-count_if(33:85,df1$b) # 2
+count_if(33:85, df1$b) # 2
 
 # values with letters
-count_if(regex("^[A-z]+$"),df1) # 4
+count_if(regex("^[A-z]+$"), df1) # 4
 
 # values that started on 'a'
-count_if(regex("^a"),df1) # 2
+count_if(regex("^a"), df1) # 2
 
 # count_row_if
-count_row_if(regex("^a"),df1) # c(1,0,0,1)
+count_row_if(regex("^a"), df1) # c(1,0,0,1)
 
 'apples' \%in_row\% df1  # c(TRUE,FALSE,FALSE,TRUE)
 
@@ -294,11 +294,11 @@ dfs = read.csv(
     ,stringsAsFactors = FALSE
 )
 
-# Minimum gade for weight equals to 1
+# Minimum grade for weight equals to 1
 with(dfs, min_if(1, weight, data = grade)) # 88
 
 
-# Maximum gade for weight equals to 1
+# Maximum grade for weight equals to 1
 with(dfs, max_if(1, weight, data = grade)) #91
 
 

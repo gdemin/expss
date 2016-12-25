@@ -24,21 +24,21 @@
 \usage{
 eq(x)
 
-neq(x)
-
 ne(x)
+
+neq(x)
 
 lt(x)
 
 gt(x)
 
-lte(x)
-
 le(x)
 
-gte(x)
+lte(x)
 
 ge(x)
+
+gte(x)
 
 perl(pattern, ignore.case = FALSE, useBytes = FALSE)
 
@@ -88,14 +88,14 @@ functions.
 List of functions:
 \itemize{
 \item{\code{gt}}{ greater than}
-\item{\code{gte}/\code{ge}}{ greater than or equal}
+\item{\code{ge}/\code{gte}}{ greater than or equal}
 \item{\code{eq}}{ equal} 
-\item{\code{neq}/\code{ne}}{ not equal} 
+\item{\code{ne}/\code{neq}}{ not equal} 
 \item{\code{lt}}{ less than}
-\item{\code{lte}/\code{le}}{ less than or equal}
+\item{\code{le}/\code{lte}}{ less than or equal}
 \item{\code{thru}}{ checks whether value is inside interval.
-\code{thru(0,1)} is equivalent of \code{x>=0 & x<=1} or \code{gte(0) &
-lte(1)}}
+\code{thru(0,1)} is equivalent of \code{x>=0 & x<=1} or \code{ge(0) &
+le(1)}}
 \item{\code{\%thru\%}}{ infix version of \code{thru}, e. g. \code{0 \%thru\% 1}}
 \item{\code{regex}}{ use POSIX 1003.2 extended regular expressions. For details see \link[base]{grepl}}
 \item{\code{perl}}{ perl-compatible regular expressions. For details see \link[base]{grepl}}
@@ -134,9 +134,9 @@ df1 = data.frame(
 
 count_if(gt(55), df1$b) # greater than 55 = 2
 
-count_if(neq(75), df1$b) # not equal 75 = 3
+count_if(ne(75), df1$b) # not equal 75 = 3
 
-count_if(gte(32), df1$b) # greater than or equal 32 = 4
+count_if(ge(32), df1$b) # greater than or equal 32 = 4
 
 count_if(gt(32) & lt(86), df1$b) # greater than 32 and less than 86 = 2
 
@@ -165,7 +165,7 @@ set.seed(123)
 qvar = sample((-5):20, 50, replace = TRUE)
 if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, other ~ 0)
 # the same result
-if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, gte(11) ~ 3, other ~ 0)
+if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, ge(11) ~ 3, other ~ 0)
 
 
 }

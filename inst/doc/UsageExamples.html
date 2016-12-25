@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2016-10-18" />
+<meta name="date" content="2016-12-25" />
 
 <title>Usage Examples</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Usage Examples</h1>
-<h4 class="date"><em>2016-10-18</em></h4>
+<h4 class="date"><em>2016-12-25</em></h4>
 
 
 
@@ -156,7 +156,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Count values less than or equal to 1 in column A of dataset.</p>
 <p><strong>Excel: <code>COUNTIF(A1:A4, &quot;&lt;=1&quot;)</code></strong></p>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">count_col_if</span>(<span class="kw">lte</span>(<span class="dv">1</span>), w$a)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">count_col_if</span>(<span class="kw">le</span>(<span class="dv">1</span>), w$a)</code></pre></div>
 <p><strong>Table of criteria:</strong></p>
 <table>
 <thead>
@@ -172,11 +172,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </tr>
 <tr class="even">
 <td>“&lt;=1”</td>
-<td>lte(1)</td>
+<td>le(1)</td>
 </tr>
 <tr class="odd">
 <td>“&lt;&gt;1”</td>
-<td>neq(1)</td>
+<td>ne(1)</td>
 </tr>
 <tr class="even">
 <td>“=1”</td>
@@ -184,7 +184,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </tr>
 <tr class="odd">
 <td>“&gt;=1”</td>
-<td>gte(1)</td>
+<td>ge(1)</td>
 </tr>
 <tr class="even">
 <td>“&gt;1”</td>
@@ -340,13 +340,13 @@ END IF.</code></pre>
 <p><strong>R</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> %thru%<span class="st"> </span>hi, a1 %to%<span class="st"> </span>a5)</code></pre></div>
 <p>or,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">gte</span>(<span class="dv">1</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">ge</span>(<span class="dv">1</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5 (LO THRU 1).</code></pre>
 <p><strong>R</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(lo %thru%<span class="st"> </span><span class="dv">1</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
 <p>or,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span> (<span class="kw">lte</span>(<span class="dv">1</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span> (<span class="kw">le</span>(<span class="dv">1</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5 (1 THRU 5, 99).</code></pre>
 <p><strong>R</strong>:</p>
@@ -430,8 +430,8 @@ END IF.</code></pre>
 ##  #Total      1       2       1      4</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_mean</span>(<span class="kw">dtfrm</span>(w$b, w$c), w$a) <span class="co"># Mean cost and price by fruits</span></code></pre></div>
 <pre><code>##        apples oranges peaches #Total
-##   Cost     70    22.5      30  36.25
-##  Price     80    45.0      40  52.50</code></pre>
+##   Cost     70      22      30     36
+##  Price     80      45      40     52</code></pre>
 <p>or, the same with default dataset:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">.fre</span>(a) <span class="co"># Frequency of fruits</span>
 <span class="kw">.cro_cpct</span>(b, a) <span class="co"># Column percent of cost by fruits</span>

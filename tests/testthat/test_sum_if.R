@@ -15,9 +15,9 @@ expect_equal(sum_if(gt(55)|32,df1$b),193L)
 expect_equal(sum_if(function(x) x>55 | x==54,df1$b),215L)
 expect_equal(sum_if(gt(55)|54,df1$b),215L)
 
-expect_equal(sum_if(neq(75),df1$b),172L)
+expect_equal(sum_if(ne(75),df1$b),172L)
 
-expect_equal(sum_if(gte(32),df1$b),247L)
+expect_equal(sum_if(ge(32),df1$b),247L)
 
 
 expect_equal(sum_if(gt(32) & lt(86),df1$b),54L + 75L)

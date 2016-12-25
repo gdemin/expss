@@ -86,19 +86,19 @@ Count values less than or equal to 1 in column A of dataset.
 
 **R**: 
 ```
-count_col_if(lte(1), w$a)
+count_col_if(le(1), w$a)
 ```
 
 **Table of criteria:**
 
-| Excel   |   R       |
-|---------|-----------|
-| "<1"    |   lt(1)   |
-| "<=1"   |   lte(1)  |
-| "<>1"	  |   neq(1)  |
-| "=1"    |   eq(1)   |
-| ">=1"   |   gte(1)  |
-| ">1"    |   gt(1)   |
+| Excel   |   R      |
+|---------|----------|
+| "<1"    |   lt(1)  |
+| "<=1"   |   le(1)  |
+| "<>1"	  |   ne(1)  |
+| "=1"    |   eq(1)  |
+| ">=1"   |   ge(1)  |
+| ">1"    |   gt(1)  |
 
 
 
@@ -321,7 +321,7 @@ cnt = count_row_if(1 %thru% hi, a1 %to% a5)
 ```
 or,
 ```
-cnt = count_row_if(gte(1), a1 %to% a5)
+cnt = count_row_if(ge(1), a1 %to% a5)
 ```
 
 **SPSS**:
@@ -334,7 +334,7 @@ cnt = count_row_if(lo %thru% 1, a1 %to% a5)
 ```
 or,
 ```
-cnt = count_row_if (lte(1), a1 %to% a5)
+cnt = count_row_if (le(1), a1 %to% a5)
 ```
 
 **SPSS**:

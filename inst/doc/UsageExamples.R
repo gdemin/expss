@@ -38,7 +38,7 @@ a,b,c
 #  
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  count_col_if(lte(1), w$a)
+#  count_col_if(le(1), w$a)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  sum(w, na.rm = TRUE)
@@ -129,13 +129,13 @@ default_dataset(w)
 #  cnt = count_row_if(1 %thru% hi, a1 %to% a5)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  cnt = count_row_if(gte(1), a1 %to% a5)
+#  cnt = count_row_if(ge(1), a1 %to% a5)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  cnt = count_row_if(lo %thru% 1, a1 %to% a5)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  cnt = count_row_if (lte(1), a1 %to% a5)
+#  cnt = count_row_if (le(1), a1 %to% a5)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  cnt = count_row_if(1 %thru% 5 | 99, a1 %to% a5)

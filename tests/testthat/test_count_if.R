@@ -27,9 +27,9 @@ expect_equal(count_if(gt(55)|32,df1$b),3L)
 expect_equal(count_if(function(x) x>55 | x==54,df1$b),3L)
 expect_equal(count_if(gt(55)|54,df1$b),3L)
 
-expect_equal(count_if(neq(75),df1$b),3L)
+expect_equal(count_if(ne(75),df1$b),3L)
 
-expect_equal(count_if(gte(32),df1$b),4L)
+expect_equal(count_if(ge(32),df1$b),4L)
 
 
 expect_equal(count_if(gt(32) & lt(86), df1$b),2L)
