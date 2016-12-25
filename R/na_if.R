@@ -51,6 +51,7 @@
 #' na_if(a, -1 %thru% 1)
 #' @export
 na_if = function(x, value){
+    if(!length(value)) return(x)
     if_val(x, from=list(value)) = list(NA)
     x
 }

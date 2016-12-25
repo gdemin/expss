@@ -141,5 +141,7 @@ dfs = data.frame(
 )
 
 
-
-
+data(iris)
+expect_identical(na_if(iris, NULL), iris)
+expect_identical(na_if(1:5, numeric(0)), 1:5)
+expect_identical(na_if(1:5, NULL), 1:5)
