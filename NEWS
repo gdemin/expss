@@ -1,3 +1,7 @@
+0.6.0 (01.01.2017)
+================
+* add methods for `where` for vectors/matrices/lists
+
 0.5.5 (19.10.2016)
 ================
 * numerous bugfixes

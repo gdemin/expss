@@ -1,17 +1,20 @@
-#' Subsetting Data Frames
+#' Subset (filter) data.frames/matrices/vectors/lists
 #'
-#' \code{cond} will be evaluated in the context of the data frame, so columns can be referred to (by
-#' name) as variables in the expression (see the examples).
-#' \code{.where} is version for working with default dataset. See \link{default_dataset}.
-#'  \code{\%where\%} is infix function with the same functional. See examples. There is a 
-#' special constant \code{.n} which equals to number of cases in \code{data} for
-#' usage in \code{cond} expression.
-#' 
-#' @param data data.frame to be subsetted
-#' @param cond logical or numeric expression indicating elements or rows to
-#'   keep: missing values (NA) are taken as false.
+#' For the data frame \code{cond} will be evaluated in the data.frame's context.
+#' So columns can be referred as variables in the expression (see the examples).
+#' If \code{data} is list then \code{where} will be applied to each element of
+#' the list. For other types there is no non-standard evaluation. There is a
+#' special constant \code{.N} which equals to number of rows in \code{data} for
+#' usage in \code{cond} expression. \code{\%where\%} is infix function with the
+#' same functional. See examples. \code{.where} is version for working with
+#' default dataset. See \link{default_dataset}.
+#'  
+#' @param data data.frame/matrix/vector/list to be subsetted
+#' @param cond logical or numeric expression indicating elements or rows to 
+#'   keep: missing values (NA) are taken as false. If \code{data} is data.frame
+#'   then \code{cond} will be evaluated in the scope of the \code{data}.
 #'
-#' @return data.frame which contains just selected rows.
+#' @return data.frame/matrix/vector/list which contains just selected rows.
 #' @export
 #'
 #' @examples
@@ -27,34 +30,50 @@
 #' 
 #' iris %where% 1:5
 #' 
-#' # example of .n usage. Very artificial examples
+#' # example of .N usage. 
 #' set.seed(42)
-#' train = iris %where% sample(.n, 100)
+#' train = iris %where% sample(.N, 100)
 #' str(train)
 #' 
 #' set.seed(42)
-#' test = iris %where% -sample(.n, 100)
+#' test = iris %where% -sample(.N, 100)
 #' str(test)
+#' 
+#' # list example
+#' set.seed(123)
+#' rand_matr = matrix(sample(10, 60, replace = TRUE), ncol = 3)
+#' rand_vec = sample(10, 20, replace = TRUE)
+#' my_list = list(iris, rand_matr, rand_vec)
+#' # two random elements from the each list item
+#' where(my_list, sample(.N, 2))
 where = function (data, cond) {
     UseMethod("where")
 }
 
 #' @export
 where.data.frame = function (data, cond) {
-    e = evalq(environment(), data, parent.frame())
-    e$.n = nrow(data)
     cond = substitute(cond)
-    cond = eval(cond, e)
-    if (!is.logical(cond) && !is.numeric(cond)){ 
-        stop("'cond' must be logical or numeric.")
-    }    
-    if(is.logical(cond)) cond = cond & !is.na(cond)
-    data[cond,, drop = FALSE]
+    eval(bquote(where_helper(data, .(cond))))
 }
+
+#' @export
+where.default = function (data, cond) {
+    cond = substitute(cond)
+    eval(bquote(where_helper(data, .(cond))))
+}
+
+
+#' @export
+where.list = function (data, cond) {
+    cond = substitute(cond)
+    eval(bquote(lapply(data, where, .(cond))))
+}
+
 
 #' @rdname where
 #' @export
 '%where%' = function(data, cond){
+    cond = substitute(cond)
     eval(bquote(where(data, .(cond))))
 }
 
@@ -62,49 +81,33 @@ where.data.frame = function (data, cond) {
 #' @rdname where
 #' @export
 .where = function (cond) {
+    cond = substitute(cond)
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    e = evalq(environment(), data, parent.frame())
-    e$.n = nrow(data)
+    data = eval(bquote(where(data, .(cond))))
+    ref(reference) = data 
+    invisible(data)
+}
+
+where_helper = function(data, cond){
     cond = substitute(cond)
+    if(is.data.frame(data)){
+        e = evalq(environment(), data, parent.frame())
+    } else {
+        e = evalq(environment(), new.env(), parent.frame())
+    }
+    e$.n = NROW(data)
+    e$.N = NROW(data)
+    lockBinding(".n", e)
+    lockBinding(".N", e)
     cond = eval(cond, e)
     if (!is.logical(cond) && !is.numeric(cond)){ 
         stop("'cond' must be logical or numeric.")
     }    
     if(is.logical(cond)) cond = cond & !is.na(cond)
-    new_data = data[cond,, drop = FALSE]
-    ref(reference) = new_data
-    invisible(NULL)
-}
-
-#' @export
-where.default = function (data, cond) {
-    e = evalq(environment(), parent.frame())
-    e$.n = length(data)
-    cond = substitute(cond)
-    cond = eval(cond, e)
-    if (!is.logical(cond) && !is.numeric(cond)){
-        stop("'cond' must be logical or numeric.")
-    }
-    if(is.logical(cond)) cond = cond & !is.na(cond)
-    data[cond]
-}
-
-#' @export
-where.matrix = function (data, cond) {
-    e = evalq(environment(), parent.frame())
-    e$.n = nrow(data)
-    cond = substitute(cond)
-    cond = eval(cond, e)
-    if (!is.logical(cond) && !is.numeric(cond)){
-        stop("'cond' must be logical or numeric.")
-    }
-    if(is.logical(cond)) cond = cond & !is.na(cond)
-    data[cond, drop = FALSE]
-}
-
-#' @export
-where.list = function (data, cond) {
-    cond = substitute(cond)
-    eval(bquote(lapply(data, where, .(cond))))
+    if(is.matrix(data) || is.data.frame(data)){
+        data[cond,, drop = FALSE]    
+    }  else {
+        data[cond]
+    }  
 }

@@ -4,7 +4,7 @@
 \alias{.where}
 \alias{\%where\%}
 \alias{where}
-\title{Subsetting Data Frames}
+\title{Subset (filter) data.frames/matrices/vectors/lists}
 \usage{
 where(data, cond)
 
@@ -13,21 +13,24 @@ data \%where\% cond
 .where(cond)
 }
 \arguments{
-\item{data}{data.frame to be subsetted}
+\item{data}{data.frame/matrix/vector/list to be subsetted}
 
-\item{cond}{logical or numeric expression indicating elements or rows to
-keep: missing values (NA) are taken as false.}
+\item{cond}{logical or numeric expression indicating elements or rows to 
+keep: missing values (NA) are taken as false. If \code{data} is data.frame
+then \code{cond} will be evaluated in the scope of the \code{data}.}
 }
 \value{
-data.frame which contains just selected rows.
+data.frame/matrix/vector/list which contains just selected rows.
 }
 \description{
-\code{cond} will be evaluated in the context of the data frame, so columns can be referred to (by
-name) as variables in the expression (see the examples).
-\code{.where} is version for working with default dataset. See \link{default_dataset}.
- \code{\%where\%} is infix function with the same functional. See examples. There is a 
-special constant \code{.n} which equals to number of cases in \code{data} for
-usage in \code{cond} expression.
+For the data frame \code{cond} will be evaluated in the data.frame's context.
+So columns can be referred as variables in the expression (see the examples).
+If \code{data} is list then \code{where} will be applied to each element of
+the list. For other types there is no non-standard evaluation. There is a
+special constant \code{.N} which equals to number of rows in \code{data} for
+usage in \code{cond} expression. \code{\%where\%} is infix function with the
+same functional. See examples. \code{.where} is version for working with
+default dataset. See \link{default_dataset}.
 }
 \examples{
 # leave only 'setosa'
@@ -42,13 +45,21 @@ iris \%where\% (Species == "setosa")
 
 iris \%where\% 1:5
 
-# example of .n usage. Very artificial examples
+# example of .N usage. 
 set.seed(42)
-train = iris \%where\% sample(.n, 100)
+train = iris \%where\% sample(.N, 100)
 str(train)
 
 set.seed(42)
-test = iris \%where\% -sample(.n, 100)
+test = iris \%where\% -sample(.N, 100)
 str(test)
+
+# list example
+set.seed(123)
+rand_matr = matrix(sample(10, 60, replace = TRUE), ncol = 3)
+rand_vec = sample(10, 20, replace = TRUE)
+my_list = list(iris, rand_matr, rand_vec)
+# two random elements from the each list item
+where(my_list, sample(.N, 2))
 }
 
