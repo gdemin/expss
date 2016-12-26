@@ -25,7 +25,7 @@ Both functions returns modified data.frame
 \description{
 \code{modify} evaluates expression \code{expr} in the context of data.frame 
 \code{data}. It works similar to \code{\link[base]{within}} in base R but try
-to return new variables in order of their appearance in the expression.
+to return new variables in order of their occurance in the expression.
 \code{modify_if} modifies only rows for which \code{cond} has TRUE. Other 
 rows remain unchanged. Newly created variables also will have values only in 
 rows for which \code{cond} has TRUE. There will be NA's in other rows. This 

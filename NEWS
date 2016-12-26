@@ -2,6 +2,7 @@
 ================
 * bugfixes
 * add methods for `where` for vectors/matrices/lists
+* less cryptic message about bad number of rows in `modify`/`modify_if`
 
 0.5.5 (19.10.2016)
 ================

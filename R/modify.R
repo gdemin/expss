@@ -2,7 +2,7 @@
 #' 
 #' \code{modify} evaluates expression \code{expr} in the context of data.frame 
 #' \code{data}. It works similar to \code{\link[base]{within}} in base R but try
-#' to return new variables in order of their appearance in the expression.
+#' to return new variables in order of their occurance in the expression.
 #' \code{modify_if} modifies only rows for which \code{cond} has TRUE. Other 
 #' rows remain unchanged. Newly created variables also will have values only in 
 #' rows for which \code{cond} has TRUE. There will be NA's in other rows. This 
@@ -87,7 +87,13 @@ modify.data.frame = function (data, expr) {
         data[, del] = NULL
     }
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
-    stopif(any(nrows!=1L & nrows!=nrow(data)),"Bad number of rows")
+    wrong_rows = nrows!=1L & nrows!=nrow(data)
+    if(any(wrong_rows)){
+        er_message = utils::head(paste0("'", names(l)[wrong_rows], "' has ", nrows[wrong_rows], " rows"), 5)
+        er_message = paste(er_message, collapse = ", ")
+        stop(paste0("Bad number of rows: ", er_message, " instead of ", nrow(data), " rows."))
+    }
+    
     new_vars = rev(names(l)[!(names(l) %in% names(data))])
     nl = c(names(data), new_vars)
     data[nl] = l[nl]
@@ -122,28 +128,16 @@ modify_if.data.frame = function (data, cond, expr) {
         stop("'cond' must be logical")
     cond = cond & !is.na(cond)
     new_data = data[cond,, drop = FALSE]
-    e = evalq(environment(), new_data, parent)
-    e$.n = nrow(new_data)
-    e$.N = nrow(new_data)
-    e$set = set_generator(e$.N)
-    lockBinding(".n", e)
-    lockBinding(".N", e)
-    lockBinding("set", e)
-    eval(substitute(expr), e)
-    rm(".n", "set", ".N", envir = e)
-    l = as.list(e, all.names = TRUE)
-    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
-    del = setdiff(names(data), names(l))
+    expr = substitute(expr)
+    new_data = eval(bquote(modify(new_data, .(expr))))
+    del = setdiff(names(data), names(new_data))
     if(length(del)){
         data[, del] = NULL
     }
-    
-    nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
-    stopif(any(nrows!=1L & nrows!=nrow(new_data)),"Bad number of rows")
-    new_vars = rev(names(l)[!(names(l) %in% names(data))])
-    data[cond, names(data)] = l[names(data)]
+    new_vars = names(new_data)[!(names(new_data) %in% names(data))]
+    data[cond, names(data)] = new_data[names(data)]
     data[, new_vars] = NA
-    data[cond, new_vars] = l[new_vars]
+    data[cond, new_vars] = new_data[new_vars]
     data
 }
 
