@@ -137,6 +137,7 @@ add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
 .add_rows = function(..., nomatch_columns = c("add", "drop", "stop")){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    ref(reference) = add_rows(data, ..., nomatch_columns = nomatch_columns)
-    invisible(NULL)
+    data = add_rows(data, ..., nomatch_columns = nomatch_columns)
+    ref(reference) = data
+    invisible(data)
 }

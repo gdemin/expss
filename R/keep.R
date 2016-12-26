@@ -168,8 +168,9 @@ keep_helper = function(old_names, ...){
 .keep = function(...){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    ref(reference) = keep(data, ...)
-    invisible(NULL)
+    data = keep(data, ...)
+    ref(reference) = data
+    invisible(data)
 }
 
 #' @export
@@ -177,6 +178,7 @@ keep_helper = function(old_names, ...){
 .except = function(...){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    ref(reference) = except(data, ...)
-    invisible(NULL)
+    data = except(data, ...)
+    ref(reference) = data
+    invisible(data)
 }

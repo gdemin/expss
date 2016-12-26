@@ -260,7 +260,7 @@ modify_default_dataset_light = function(x, ...){
     res = eval(expr, e)
     data[, for_names] = res
     ref(reference) = data
-    invisible(NULL)
+    invisible(data)
 }
 
 
@@ -334,7 +334,7 @@ modify_default_dataset_light = function(x, ...){
     for (each in seq_along(varnames)){
         envir[[dd_name]][, varnames[[each]]] = column(value, each)
     }
-    invisible(NULL)
+    invisible(ref(reference))
 }
 
 set_generator = function(number_of_rows){
