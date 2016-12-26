@@ -311,18 +311,8 @@ build_compare.numeric = function(x, compare){
 #' @export
 '|.criterion' = function(e1,e2) {
     # one or both e1, e2 is criterion and criterion can be only logical or function
-    e1
-    e2
-    if (is.function(e1)) {
-        f1 = e1
-    } else {
-        f1 = function(x) x %in% e1
-    }
-    if (is.function(e2)) {
-        f2 = e2
-    } else {
-        f2 = function(x) x %in% e2
-    }
+    f1 = make_function(e1)
+    f2 = make_function(e2)
     res = function(x) f1(x) | f2(x)
     class(res) = union("criterion",class(res))
     res
@@ -331,25 +321,26 @@ build_compare.numeric = function(x, compare){
 
 #' @export
 '&.criterion' = function(e1,e2) {
-    e1
-    e2
-    if (is.function(e1)) {
-        f1 = e1
-    } else {
-        f1 = function(x) x %in% e1
-    }
-    if (is.function(e2)) {
-        f2 = e2
-    } else {
-        f2 = function(x) x %in% e2
-    }
+    f1 = make_function(e1)
+    f2 = make_function(e2)
     res = function(x) f1(x) & f2(x)
     class(res) = union("criterion",class(res))
     res
 }
 
 
-
+make_function = function(crit){
+    force(crit)
+    if (is.function(crit)) {
+        crit
+    } else {
+        if(is.logical(crit)){
+            function(x) crit
+        } else {
+            function(x) x %in% crit       
+        }    
+    }
+}
 
 
 
