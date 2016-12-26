@@ -69,6 +69,9 @@ eval_in_default_dataset = function(...){
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     e$.n = nrow(data)
+    e$.N = nrow(data)
+    lockBinding(".n", e)
+    lockBinding(".N", e)
     eval(expr, e)
 }
 

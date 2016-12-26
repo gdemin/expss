@@ -3,6 +3,7 @@
 * bugfixes
 * add methods for `where` for vectors/matrices/lists
 * less cryptic message about bad number of rows in `modify`/`modify_if`
+* .N now is preferable to .n inside `modify` and etc.
 
 0.5.5 (19.10.2016)
 ================
