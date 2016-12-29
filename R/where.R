@@ -52,14 +52,14 @@ where = function (data, cond) {
 
 #' @export
 where.data.frame = function (data, cond) {
-    where_data_frame = 1
+    # where_data_frame = 1
     cond = substitute(cond)
     eval(bquote(where_helper(data, .(cond))))
 }
 
 #' @export
 where.default = function (data, cond) {
-    where_default = 1
+    # where_default = 1
     cond = substitute(cond)
     eval(bquote(where_helper(data, .(cond))))
 }
@@ -67,7 +67,7 @@ where.default = function (data, cond) {
 
 #' @export
 where.list = function (data, cond) {
-    where_list = 1
+    # where_list = 1
     cond = substitute(cond)
     eval(bquote(lapply(data, where, .(cond))))
 }
@@ -76,7 +76,7 @@ where.list = function (data, cond) {
 #' @rdname where
 #' @export
 '%where%' = function(data, cond){
-    where_infix = 1
+    # where_infix = 1
     cond = substitute(cond)
     eval(bquote(where(data, .(cond))))
 }
@@ -85,7 +85,7 @@ where.list = function (data, cond) {
 #' @rdname where
 #' @export
 .where = function (cond) {
-    where_dd = 1
+    # where_dd = 1
     cond = substitute(cond)
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
@@ -95,7 +95,7 @@ where.list = function (data, cond) {
 }
 
 where_helper = function(data, cond){
-    where_helper = 1
+    # where_helper = 1
     cond = substitute(cond)
     if(is.data.frame(data)){
         e = evalq(environment(), data, parent.frame())
