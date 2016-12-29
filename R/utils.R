@@ -226,3 +226,24 @@ column.default = function(x, column_num, condition = NULL){
     x
 }  
 
+###########################
+
+eval_dynamic_scoping = function(expr, envir, skip = 2){
+    all_env = sys.frames()
+    if(length(all_env)<length(skip)){
+        all_env = .GlobalEnv 
+    } else {
+        all_env = c(rev(all_env)[-seq_len(skip)], .GlobalEnv) 
+    }
+    
+    succ = FALSE
+    i = 1
+    while(!succ && i<=length(all_env)){
+        succ = TRUE
+        parent.env(envir) = all_env[[i]]
+        res = tryCatch(eval(expr, envir), error = function(e) {succ<<-FALSE})
+        if(!succ) i = i + 1
+    }
+    stopif(!succ, "`", deparse(substitute(expr)),"` - some variables not found.")
+    res
+}

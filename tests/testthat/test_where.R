@@ -3,6 +3,25 @@ context("where")
 data(iris)
 
 expect_identical(where(iris, Species == "setosa"), iris[iris$Species == "setosa", ])
+
+item = "setosa"
+expect_identical(where(iris, Species == item), iris[iris$Species == item, ])
+test_scoping = function(item){
+    filt = item
+    where(iris, Species == filt)
+}
+expect_identical(test_scoping(item), iris[iris$Species == item, ])
+
+list_iris = list(iris) 
+expect_identical(where(list_iris, Species == "setosa"), list(iris[iris$Species == "setosa", ]))
+expect_identical(where(list_iris, Species == item), list(iris[iris$Species == item, ]))
+
+test_scoping = function(item){
+    filt = item
+    where(list_iris, Species == filt)
+}
+expect_identical(test_scoping(item), list(iris[iris$Species == item, ]))
+
 expect_identical(where(iris, 1:5), iris[1:5, ])
 
 expect_identical(iris %where% (Species == "setosa"), iris[iris$Species == "setosa", ])
