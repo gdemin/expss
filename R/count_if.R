@@ -279,6 +279,18 @@ count_col_if=function(criterion = NULL,...){
 
 #' @export
 #' @rdname count_if
+'%row_in%'=function(x, criterion){
+    count_row_if(criterion=criterion, x)>0
+}
+
+#' @export
+#' @rdname count_if
+'%col_in%'=function(x, criterion){
+    count_col_if(criterion=criterion, x)>0
+}
+
+#' @export
+#' @rdname count_if
 sum_if=function(criterion = NULL, ..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     sum(data, na.rm = TRUE)
