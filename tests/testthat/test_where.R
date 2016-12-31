@@ -22,6 +22,8 @@ test_scoping = function(item){
 }
 expect_identical(test_scoping(item), list(iris[iris$Species == item, ]))
 
+
+
 expect_identical(where(iris, 1:5), iris[1:5, ])
 
 expect_identical(iris %where% (Species == "setosa"), iris[iris$Species == "setosa", ])
@@ -37,11 +39,16 @@ d_iris = iris
 
 default_dataset(d_iris)
 
-
 .where(Species == "setosa")
 expect_identical(d_iris, iris[iris$Species == "setosa", ])
 
 d_iris = iris
+
+## cond - special name which exists inside `where`
+cond = "setosa"
+.where(Species == cond)
+expect_identical(d_iris, iris[iris$Species == "setosa", ])
+
 .where(1:5)
 expect_identical(d_iris, iris[1:5, ])
 

@@ -227,13 +227,29 @@ column.default = function(x, column_num, condition = NULL){
 }  
 
 ###########################
-
-eval_dynamic_scoping = function(expr, envir, skip = 2){
-    all_env = sys.frames()
-    if(length(all_env)<length(skip)){
-        all_env = .GlobalEnv 
+# use this function only inside other functions
+eval_dynamic_scoping = function(expr, envir, skip_up_to_frame = ""){
+    all_env = rev(sys.frames())[-(1:2)] # remove current and calling environement
+    sys_calls = lapply(rev(sys.calls())[-(1:2)], function(each_call){
+        res = as.character(as.list(each_call)[[1]])
+        if(res[1] %in% c("::", ":::")){
+            res[3]
+        } else {
+            res[1]
+        }
+    })
+    sys_calls = unlist(sys_calls)
+    skip = na.omit(match(skip_up_to_frame, sys_calls))
+    if(length(skip)==0) {
+        skip = 0
     } else {
-        all_env = c(rev(all_env)[-seq_len(skip)], .GlobalEnv) 
+        skip = max(skip)
+    }    
+    
+    if(skip>0){
+        all_env = c(all_env[-seq_len(skip)], .GlobalEnv) 
+    } else {
+        all_env = c(all_env, .GlobalEnv) 
     }
     
     succ = FALSE

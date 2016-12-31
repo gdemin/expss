@@ -106,7 +106,9 @@ where_helper = function(data, cond){
     e$.N = NROW(data)
     lockBinding(".n", e)
     lockBinding(".N", e)
-    cond = eval_dynamic_scoping(cond, e, skip = 3)
+    cond = eval_dynamic_scoping(cond, e, 
+                                skip_up_to_frame = 
+                                    c("where", "%where%", ".where", "where.list", "where.data.frame", "where.default"))
     if (!is.logical(cond) && !is.numeric(cond)){ 
         stop("'cond' must be logical or numeric.")
     }    
