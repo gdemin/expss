@@ -46,7 +46,11 @@
 '%merge%' = function(x, y) UseMethod('%merge%')
 
 #' @export
-'%merge%.default' = function(x, y) merge(x, y, all.x = TRUE, all.y = FALSE)
+'%merge%.default' = function(x, y) {
+    common = intersect(colnames(x), colnames(y))
+    stopif(!length(common), "`%merge%` - there are no common column names between `x` and `y`.")
+    merge(x, y, all.x = TRUE, all.y = FALSE)
+}
 
 #' @export
 '%merge%.simple_table' = function(x, y) merge.simple_table(x, y)

@@ -57,7 +57,9 @@ context("left join")
 
 a = dtfrm(x = 1:5, y = 11:15)
 b = dtfrm(x = 3:7, z = 13:17)
+d = dtfrm(t = 3:7, z = 13:17)
 expect_identical(a %merge% b, merge(a, b, all.x = TRUE, all.y = FALSE))
+expect_error(a %merge% d)
 
 
 context("merge duplicated columns")
