@@ -30,11 +30,11 @@
 \alias{sum_row_if}
 \title{Count/sum/average/other functions on values that meet a criterion}
 \usage{
-count_if(criterion = NULL, ...)
+count_if(criterion, ...)
 
-count_row_if(criterion = NULL, ...)
+count_row_if(criterion, ...)
 
-count_col_if(criterion = NULL, ...)
+count_col_if(criterion, ...)
 
 criterion \%in_row\% x
 
@@ -44,45 +44,45 @@ x \%row_in\% criterion
 
 x \%col_in\% criterion
 
-sum_if(criterion = NULL, ..., data = NULL)
+sum_if(criterion, ..., data = NULL)
 
-sum_row_if(criterion = NULL, ..., data = NULL)
+sum_row_if(criterion, ..., data = NULL)
 
-sum_col_if(criterion = NULL, ..., data = NULL)
+sum_col_if(criterion, ..., data = NULL)
 
-mean_if(criterion = NULL, ..., data = NULL)
+mean_if(criterion, ..., data = NULL)
 
-mean_row_if(criterion = NULL, ..., data = NULL)
+mean_row_if(criterion, ..., data = NULL)
 
-mean_col_if(criterion = NULL, ..., data = NULL)
+mean_col_if(criterion, ..., data = NULL)
 
-sd_if(criterion = NULL, ..., data = NULL)
+sd_if(criterion, ..., data = NULL)
 
-sd_row_if(criterion = NULL, ..., data = NULL)
+sd_row_if(criterion, ..., data = NULL)
 
-sd_col_if(criterion = NULL, ..., data = NULL)
+sd_col_if(criterion, ..., data = NULL)
 
-median_if(criterion = NULL, ..., data = NULL)
+median_if(criterion, ..., data = NULL)
 
-median_row_if(criterion = NULL, ..., data = NULL)
+median_row_if(criterion, ..., data = NULL)
 
-median_col_if(criterion = NULL, ..., data = NULL)
+median_col_if(criterion, ..., data = NULL)
 
-max_if(criterion = NULL, ..., data = NULL)
+max_if(criterion, ..., data = NULL)
 
-max_row_if(criterion = NULL, ..., data = NULL)
+max_row_if(criterion, ..., data = NULL)
 
-max_col_if(criterion = NULL, ..., data = NULL)
+max_col_if(criterion, ..., data = NULL)
 
-min_if(criterion = NULL, ..., data = NULL)
+min_if(criterion, ..., data = NULL)
 
-min_row_if(criterion = NULL, ..., data = NULL)
+min_row_if(criterion, ..., data = NULL)
 
-min_col_if(criterion = NULL, ..., data = NULL)
+min_col_if(criterion, ..., data = NULL)
 
-apply_row_if(fun, criterion = NULL, ..., data = NULL)
+apply_row_if(fun, criterion, ..., data = NULL)
 
-apply_col_if(fun, criterion = NULL, ..., data = NULL)
+apply_col_if(fun, criterion, ..., data = NULL)
 }
 \arguments{
 \item{criterion}{Vector with counted values, logical vector/matrix or
@@ -130,9 +130,6 @@ If criteria is logical matrix/data.frame then column from this
 matrix/data.frame will be used for corresponding column/element of
 \code{...}\code{data}. Note that this kind of criterion doesn't use
 \code{...} so \code{...} can be used instead of \code{data} argument.}}
-
-If criterion is missing (or is NULL) then non-NA's values will be
-  used for function.
 
 \code{count*} and \code{\%in*\%} never returns NA's. Other functions remove
 NA's before calculations (as \code{na.rm = TRUE} in base R functions).

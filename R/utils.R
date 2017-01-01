@@ -11,13 +11,10 @@ stopif = function(cond,...){
 build_criterion = function(criterion,dfs){
     # dfs should be data.frame
     # build criterion should return logical matrix with the form of dfs (e. g. the same dimension)
-    if (is.null(criterion)){
-        return(!is.na(dfs))
-    } 
     UseMethod("build_criterion")
 }
 
-
+#' @export
 build_criterion.function = function(criterion,dfs){
     res = lapply(dfs,function(colmn){
         cond = criterion(colmn)
@@ -27,20 +24,19 @@ build_criterion.function = function(criterion,dfs){
     do.call(cbind,res)
 }
 
-
+#' @export
 build_criterion.default = function(criterion,dfs){
-    criterion
-    build_criterion.function(function(x) {
-        if(("POSIXct" %in% class(x)) & !("POSIXct" %in% class(criterion))){
+    res = lapply(dfs, function(colmn){
+        if(("POSIXct" %in% class(colmn)) & !("POSIXct" %in% class(criterion))){
             criterion = as.POSIXct(criterion)
         }
-        x %in% criterion
-        },
-        dfs)
+        colmn %in% criterion
+    })
+    do.call(cbind,res)
 }
 
 
-
+#' @export
 build_criterion.logical = function(criterion,dfs){
     # uncertainty if criterion is result of something is.na(dfs[,i]) 
     # should we count NA in such case - possible solution - forbid logical criterion for count if
@@ -61,18 +57,18 @@ build_criterion.logical = function(criterion,dfs){
     if_na(res, FALSE)
 }
 
-
+#' @export
 build_criterion.data.frame = function(criterion,dfs){
     build_criterion(as.matrix(criterion), dfs)
 }
 
-
+#' @export
 build_criterion.matrix = function(criterion,dfs){
     stopif(!is.logical(criterion), "matrix/data.frame criterion should be logical.")
     build_criterion.logical(criterion, dfs)
 }
 
-
+#' @export
 build_criterion.list = function(criterion,dfs){
     stop("Condition of type 'list' doesn't supported.")
     #stopif(length(criterion)==0, "Zero-length list is provided as argument.")
@@ -80,7 +76,7 @@ build_criterion.list = function(criterion,dfs){
     #do.call(cbind, res)
 }
 
-
+#' @export
 build_criterion.criterion = function(criterion,dfs){
     build_criterion.function(criterion,dfs) 
 }
@@ -94,6 +90,7 @@ check_conformance = function(x,value){
     UseMethod("check_conformance")
 }
 
+#' @export
 check_conformance.default = function(x,value){
     stopif(length(value)==0, "'value' has zero length.")
     if(is.list(value) && !is.data.frame(value)){
@@ -108,6 +105,7 @@ check_conformance.default = function(x,value){
     invisible(TRUE)
 }
 
+#' @export
 check_conformance.list = function(x, value){
     
     invisible(TRUE)    
@@ -119,6 +117,7 @@ column = function(x, column_num, condition = NULL){
     UseMethod("column")
 }
 
+#' @export
 column.data.frame = function(x, column_num, condition = NULL){
     stopif(column_num>ncol(x) && ncol(x)>1, "Too large column_num:",column_num, " but only ", ncol(x), " columns in the data.frame.")
     if (ncol(x)>1) {
@@ -133,6 +132,7 @@ column.data.frame = function(x, column_num, condition = NULL){
     }    
 }
 
+#' @export
 column.matrix = function(x, column_num, condition = NULL){
     stopif(column_num>ncol(x) && ncol(x)>1, "Too large column_num:",column_num, " only ", ncol(x), " columns in the matrix.")
     if (ncol(x)>1) {
@@ -147,7 +147,7 @@ column.matrix = function(x, column_num, condition = NULL){
     } 
 }
 
-
+#' @export
 column.list = function(x, column_num, condition = NULL){
     stopif(column_num>length(x) && length(x)>1, "Too large column_num:",column_num, " but only ", length(x), " elements in the list.")
     # stopif(!is.null(condition), "Extract column from list with condition doesn't allowed.")
@@ -158,6 +158,7 @@ column.list = function(x, column_num, condition = NULL){
     }  
 }
 
+#' @export
 column.default = function(x, column_num, condition = NULL){
     if(is.null(condition)){
         x
@@ -176,6 +177,7 @@ column.default = function(x, column_num, condition = NULL){
     UseMethod("column<-")
 }
 
+#' @export
 "column<-.data.frame" = function(x, column_num, condition = NULL, value){
     stopif(column_num>ncol(x), "Too large column_num:",column_num, " only ", ncol(x), " columns in the data.frame.")
     
@@ -187,6 +189,7 @@ column.default = function(x, column_num, condition = NULL){
     x
 }
 
+#' @export
 "column<-.matrix" = function(x, column_num, condition = NULL, value){
     stopif(column_num>ncol(x), "Too large column_num:",column_num, " only ", ncol(x), " columns in the matrix.")
     if(!is.null(condition)){
@@ -197,12 +200,13 @@ column.default = function(x, column_num, condition = NULL){
     x
 }
 
-
+#' @export
 "column<-.list" = function(x, column_num, condition = NULL, value){
     stop("Assignment for list doesn't implemented.")
     
 }
 
+#' @export
 "column<-.default" = function(x, column_num, condition = NULL, value){
     if(is.null(condition)){
         x[] = value
@@ -212,6 +216,7 @@ column.default = function(x, column_num, condition = NULL){
     x
 }  
 
+#' @export
 "column<-.factor" = function(x, column_num, condition = NULL, value){
     fac_levels = levels(x)
     if(!all(value %in% fac_levels)){
@@ -239,7 +244,7 @@ eval_dynamic_scoping = function(expr, envir, skip_up_to_frame = ""){
         }
     })
     sys_calls = unlist(sys_calls)
-    skip = na.omit(match(skip_up_to_frame, sys_calls))
+    skip = stats::na.omit(match(skip_up_to_frame, sys_calls))
     if(length(skip)==0) {
         skip = 0
     } else {

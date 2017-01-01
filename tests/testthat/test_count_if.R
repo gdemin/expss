@@ -103,7 +103,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
                     greater = count_row_if(gt(8),V1,V2,V3),
                     range = count_row_if(5:8,V1,V2,V3),
                     na = count_row_if(is.na,V1,V2,V3),
-                    not_na = count_row_if(,V1,V2,V3)),
+                    not_na = count_row_if(not_na,V1,V2,V3)),
                      result)
 
     expect_equal(df2  %>% mutate(exact = count_row_if(8,V1,V2,V3),
@@ -163,7 +163,7 @@ expect_equal(
 )
 
 expect_equal(
-    with(t_df2, unname(count_col_if(,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
+    with(t_df2, unname(count_col_if(not_na,V1,V2,V3, V4, V5, V6, V7, V8, V9, V10))),
     result$not_na
 )
 
@@ -198,7 +198,7 @@ expect_equal(
 
 
 expect_equal(
-    with(df2, unname(count_col_if(,V1,V2,V3))),
+    with(df2, unname(count_col_if(not_na,V1,V2,V3))),
     c(9, 8, 9)
 )
 
@@ -213,7 +213,7 @@ result  = modify(dfs, {
                    greater = count_row_if(gt(8), V1, V2, V3)
                    range = count_row_if(5:8, V1, V2, V3)
                    na = count_row_if(is.na, V1, V2, V3)
-                   not_na = count_row_if(, V1, V2, V3)
+                   not_na = count_row_if(not_na, V1, V2, V3)
                 })  
 result
  
