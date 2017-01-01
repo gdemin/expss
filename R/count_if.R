@@ -12,8 +12,8 @@
 #' @param ... Data on which criterion will be applied. Vector, matrix,
 #'   data.frame, list. Shorter arguments will be recycled.
 #'   
-#' @param x Counted values or criterion for counting. Vector, matrix, data.frame,
-#'   list, function. Shorter columns in list will be recycled.
+#' @param x Data on which criterion will be applied. Vector, matrix,
+#'   data.frame, list. Shorter arguments will be recycled.
 #'   
 #' @param data Data on which function will be applied. Doesn't applicable to 
 #'   \code{count_*_if} functions. If omitted then function will be applied on
@@ -25,24 +25,25 @@
 #' \code{*_if} return single value (vector of length 1). 
 #' \code{*_row_if} returns vector for each row of supplied arguments.
 #' \code{*_col_if} returns vector for each column of supplied arguments.
-#' \code{\%in_row\%}/\code{\%in_col\%} return logical vector - indicator of
+#' \code{\%row_in\%}/\code{\%col_in\%} return logical vector - indicator of
 #' presence of criterion in each row/column.
 #' 
 #' @details
 #' Possible type for criterion argument:
 #' \itemize{
 #' \item{vector/single value}{ All values in \code{...} which equal to elements of
-#' vector in criteria will be used as function argument.}
+#' vector in criteria will be used as function \code{fun} argument.}
 #' \item{function}{ Values for which function gives TRUE will be used as 
-#' function argument. There are some special functions for convenience (e. g.
-#' \code{gt(5)} is equivalent ">5" in spreadsheet) - see \link{criteria}.}
-#' \item{logical vector/matrix/data.frame}{ Values for which element of
-#' criterion equals to TRUE will be used as function argument. Logical vector
-#' will be recycled across all columns of \code{...}\code{data}. If criteria is
-#' logical matrix/data.frame then column from this matrix/data.frame will be
-#' used for corresponding column/element of \code{...}\code{data}. Note that
-#' this kind of criterion doesn't use \code{...} so \code{...} can be used
-#' instead of \code{data} argument.}}
+#' function \code{fun} argument. There are some special functions for
+#' convenience (e. g. \code{gt(5)} is equivalent ">5" in spreadsheet) - see
+#' \link{criteria}.}
+#' \item{logical vector/matrix/data.frame}{ Values for which element of 
+#' criterion equals to TRUE will be used as function \code{fun} argument.
+#' Logical vector will be recycled across all columns of \code{...}\code{data}.
+#' If criteria is logical matrix/data.frame then column from this
+#' matrix/data.frame will be used for corresponding column/element of
+#' \code{...}\code{data}. Note that this kind of criterion doesn't use
+#' \code{...} so \code{...} can be used instead of \code{data} argument.}}
 #' 
 #' If criterion is missing (or is NULL) then non-NA's values will be
 #'   used for function.
@@ -79,7 +80,7 @@
 #'              # count not-NA 
 #'              not_na = count_row_if(not_na, V1, V2, V3) 
 #'              # are there any 5 in each row?
-#'              has_five = 5 %in_row% cbind(V1, V2, V3)  
+#'              has_five = cbind(V1, V2, V3) %row_in% 5   
 #'          })  
 #' result
 #'  
@@ -125,7 +126,7 @@
 #' # count_row_if
 #' count_row_if(regex("^a"), df1) # c(1,0,0,1)
 #' 
-#' 'apples' %in_row% df1  # c(TRUE,FALSE,FALSE,TRUE)
+#' df1 %row_in% 'apples'  # c(TRUE,FALSE,FALSE,TRUE)
 #' 
 #' # Some of Microsoft Excel examples for SUMIF/AVERAGEIF/etc 
 #' dfs = read.csv(
@@ -268,13 +269,23 @@ count_col_if=function(criterion = NULL,...){
 #' @export
 #' @rdname count_if
 '%in_row%'=function(criterion, x){
-    count_row_if(criterion=criterion, x)>0
+    str_x = deparse(substitute(x))
+    str_criterion = deparse(substitute(criterion))
+    warning(
+        paste0("`%in_row%` is deprecated. Please use `", str_x, " %row_in% ", str_criterion,"` instead.")
+        )
+    x %row_in% criterion
 }
 
 #' @export
 #' @rdname count_if
 '%in_col%'=function(criterion, x){
-    count_col_if(criterion=criterion, x)>0
+    str_x = deparse(substitute(x))
+    str_criterion = deparse(substitute(criterion))
+    warning(
+        paste0("`%in_col%` is deprecated. Please use `", str_x, " %col_in% ", str_criterion,"` instead.")
+    )
+    x %col_in% criterion
 }
 
 #' @export

@@ -79,8 +79,11 @@ context("count_row_if")
 
 expect_equal(count_row_if(function(x) grepl("^a",x),df1),c(1,0,0,1))
 
-expect_equal('apples' %in_row% df1, c(TRUE,FALSE,FALSE,TRUE))
-expect_equal('apples' %in_col% df1, c(a = TRUE, b = FALSE))
+expect_warning('apples' %in_row% df1)
+expect_warning('apples' %in_col% df1)
+
+expect_equal(df1 %row_in% 'apples', c(TRUE,FALSE,FALSE,TRUE))
+expect_equal(df1 %col_in% 'apples', c(a = TRUE, b = FALSE))
 
 # example with dplyr
 context("dplyr count_if")

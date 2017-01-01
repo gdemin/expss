@@ -6,6 +6,7 @@
 * .N now is preferable to .n inside `modify` and etc.
 * Functions for default dataset now invisibly return modified default dataset
 * Fix logical arguments in boolean operations for criteria functions
+* `%in_row%`/`%in_col%` are deprecated. Use `%row_in%`/`%col_in%` instead.
 
 0.5.5 (19.10.2016)
 ================

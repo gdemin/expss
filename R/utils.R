@@ -263,3 +263,28 @@ eval_dynamic_scoping = function(expr, envir, skip_up_to_frame = ""){
     stopif(!succ, "`", deparse(substitute(expr)),"` - some variables not found.")
     res
 }
+
+
+
+#############################
+
+#########################################
+
+valid = function(x){
+    UseMethod("valid")
+}
+
+#' @export
+valid.default = function(x){
+    !is.na(x)
+}
+
+#' @export
+valid.matrix = function(x){
+    rowSums(!is.na(x))>0
+}
+
+#' @export
+valid.data.frame = function(x){
+    rowSums(!is.na(x))>0
+}

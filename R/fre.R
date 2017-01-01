@@ -212,13 +212,13 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
         # change negative and NA weights to 0 
         if_val(weight) = list(lo %thru% 0 ~ 0, NA ~ 0)
     }    
-    valid = (NULL %in_row% x) # are there not-NA in row?
+    valid = valid(x) # are there not-NA in row?
     valid = valid & (weight>0)
     not_nas = sum(weight*(valid), na.rm = TRUE) # for fre
     nas = sum(weight*(!valid), na.rm = TRUE) # for fre
     if (!is.null(predictor)){
         stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-        valid = valid & (NULL %in_row% predictor)
+        valid = valid & valid(predictor)
         predictor = predictor[valid]
     }
     if(is.data.frame(x)){
