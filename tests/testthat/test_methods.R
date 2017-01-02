@@ -51,6 +51,12 @@ expect_identical(as.data.frame(b), as.data.frame.vector(b))
 expect_identical(as.data.frame(b, nm="xx"), as.data.frame.vector(b, nm="xx"))
 
 
+a = c("a", "b", "c")
+
+var_lab(a) = "Characters"
+
+expect_identical(as.data.frame(a), as.data.frame(a, stringsAsFactors = FALSE)) 
+
 # a = matrix(1:9, 3)
 # var_lab(a) = "sdfsf"
 # 
@@ -98,6 +104,7 @@ expect_identical(as.integer(a_str), a)
 expect_identical(as.character(a), a_str)
 expect_identical(as.logical(a), a_log)
 expect_identical(as.integer(a_log), a)
+
 
 
 

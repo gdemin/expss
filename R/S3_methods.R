@@ -5,12 +5,12 @@
 as.data.frame.labelled = function(x, ..., nm = paste(deparse(substitute(x), width.cutoff = 500L)) ){
     if(length(class(x))>1){
         # because we can have labelled matrices or factors with variable label
-        NextMethod("as.data.frame", ..., nm = nm)
+        NextMethod("as.data.frame", ..., nm = nm, stringsAsFactors = FALSE)
         
     } else {
         # this branch for other packages where "labelled' is single class rather than c("labelled", "numeric") etc.
         
-        as.data.frame.vector(x, ..., nm = nm)
+        as.data.frame.vector(x, ..., nm = nm, stringsAsFactors = FALSE)
     }
 }
 
