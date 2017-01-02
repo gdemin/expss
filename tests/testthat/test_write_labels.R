@@ -46,6 +46,42 @@ if(isTRUE(options("covr")[[1]])){
     unlink("data/labelled_iris.csv.sps")
     
     write_labelled_csv(aaa, "data/aaa.csv")
+    write_labelled_csv2(aaa2, "data/aaa_csv2.csv")
+    write_labelled_tab(aaa2, "data/aaa_tab.csv")
+    write_labelled_tab2(aaa2, "data/aaa_tab2.csv")
+    
+    aaa2_csv2 = read_labelled_csv2("data/aaa_csv2.csv")
+    aaa2_tab = read_labelled_tab("data/aaa_tab.csv")
+    aaa2_tab2 = read_labelled_tab2("data/aaa_tab2.csv")
+    
+    aaa_test = cbind(aaa, empty = NA, fac = "a", fractional = 1.2345)
+    obj1 = aaa2_csv2
+    obj2 = aaa_test
+    res = sapply(colnames(obj1), function(col) all(obj1[[col]] == obj2[[col]], na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+    res = sapply(colnames(obj1), function(col) all(trimws(names(val_lab(obj1[[col]]))) == trimws(names(val_lab(obj2[[col]]))), na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+    res = sapply(colnames(obj1), function(col) all(var_lab(obj1[[col]]) == var_lab(obj2[[col]]), na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+    
+    obj1 = aaa2_tab
+    obj2 = aaa_test
+    res = sapply(colnames(obj1), function(col) all(obj1[[col]] == obj2[[col]], na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+    res = sapply(colnames(obj1), function(col) all(trimws(names(val_lab(obj1[[col]]))) == trimws(names(val_lab(obj2[[col]]))), na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+    res = sapply(colnames(obj1), function(col) all(var_lab(obj1[[col]]) == var_lab(obj2[[col]]), na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+    
+    obj1 = aaa2_tab2
+    obj2 = aaa_test
+    res = sapply(colnames(obj1), function(col) all(obj1[[col]] == obj2[[col]], na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+    res = sapply(colnames(obj1), function(col) all(trimws(names(val_lab(obj1[[col]]))) == trimws(names(val_lab(obj2[[col]]))), na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+    res = sapply(colnames(obj1), function(col) all(var_lab(obj1[[col]]) == var_lab(obj2[[col]]), na.rm = TRUE)) %d% TRUE
+    expect_equal(length(res), 0 )
+ 
     write_labelled_csv(bbb, "data/bbb.csv")
     write_labelled_csv(raw_data, "data/raw.csv.gz")
     
@@ -131,5 +167,8 @@ if(isTRUE(options("covr")[[1]])){
     unlink("data/bbb.csv.dic.R")
     unlink("data/raw.csv.gz")
     unlink("data/raw.csv.gz.dic.R")
+    unlink("data/aaa_csv2.csv")
+    unlink("data/aaa_tab.csv")
+    unlink("data/aaa_tab2.csv")
     
 }

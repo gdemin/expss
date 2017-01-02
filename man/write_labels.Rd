@@ -2,17 +2,41 @@
 % Please edit documentation in R/write_labels.R
 \name{write_labels}
 \alias{read_labelled_csv}
+\alias{read_labelled_csv2}
+\alias{read_labelled_tab}
+\alias{read_labelled_tab2}
 \alias{write_labelled_csv}
+\alias{write_labelled_csv2}
 \alias{write_labelled_spss}
+\alias{write_labelled_tab}
+\alias{write_labelled_tab2}
 \alias{write_labels}
 \alias{write_labels_spss}
 \title{Write data with labels to file in R code or in SPSS syntax.}
 \usage{
 write_labels(x, filename, fileEncoding = "")
 
-read_labelled_csv(filename, fileEncoding = "", ...)
+read_labelled_csv(filename, fileEncoding = "", sep = ",", dec = ".", ...)
 
-write_labelled_csv(x, filename, fileEncoding = "", ...)
+read_labelled_csv2(filename, fileEncoding = "", sep = ";", dec = ",", ...)
+
+read_labelled_tab(filename, fileEncoding = "", sep = "\\t", dec = ".",
+  ...)
+
+read_labelled_tab2(filename, fileEncoding = "", sep = "\\t", dec = ",",
+  ...)
+
+write_labelled_csv(x, filename, fileEncoding = "", sep = ",", dec = ".",
+  ...)
+
+write_labelled_csv2(x, filename, fileEncoding = "", sep = ";", dec = ",",
+  ...)
+
+write_labelled_tab(x, filename, fileEncoding = "", sep = "\\t", dec = ".",
+  ...)
+
+write_labelled_tab2(x, filename, fileEncoding = "", sep = "\\t",
+  dec = ",", ...)
 
 write_labelled_spss(x, filename, fileEncoding = "", ...)
 
@@ -27,6 +51,12 @@ write_labels_spss(x, filename)
 be used on a file (not a connection) so the character data can be
 re-encoded as they are written. See \link[base]{file}.}
 
+\item{sep}{the field separator string. Values within each row of x are
+separated by this string.}
+
+\item{dec}{the string to use for decimal points in numeric or complex
+columns: must be a single character.}
+
 \item{...}{additional arguments for \link[utils]{read.table}/\link[utils]{write.table}}
 }
 \value{
@@ -36,11 +66,14 @@ Functions for writing invisibly return NULL. Functions for reading
 \description{
 \code{write_labelled_*} functions write data in the CSV format and file with 
 R code/SPSS syntax for labelling data.  SPSS syntax also contains code for 
-reading data in SPSS. \code{write_labelled_*} doesn't save rownames of
-data.frame. \code{write_labels_*} functions write R code/SPSS syntax for
-labelling data. It allows to extract labels from *.sav files that come
-without accompanying syntax. \code{read_labelled_csv} reads data file in CSV
-format and apply labels from accompanying file with R code.
+reading data in SPSS. \code{write_labelled_*} doesn't save rownames of 
+data.frame. \code{write_labels_*} functions write R code/SPSS syntax for 
+labelling data. It allows to extract labels from *.sav files that come 
+without accompanying syntax. \code{read_labelled_csv} reads data file in CSV 
+format and apply labels from accompanying file with R code. \code{*_csv2} 
+write/read data with semicolon separator and comma as decimal delimiter. 
+\code{*_tab/*_tab2} write/read data with tab separator and "."/"," as
+decimal delimiter.
 }
 \examples{
 \dontrun{

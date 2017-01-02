@@ -2,17 +2,24 @@
 #' 
 #' \code{write_labelled_*} functions write data in the CSV format and file with 
 #' R code/SPSS syntax for labelling data.  SPSS syntax also contains code for 
-#' reading data in SPSS. \code{write_labelled_*} doesn't save rownames of
-#' data.frame. \code{write_labels_*} functions write R code/SPSS syntax for
-#' labelling data. It allows to extract labels from *.sav files that come
-#' without accompanying syntax. \code{read_labelled_csv} reads data file in CSV
-#' format and apply labels from accompanying file with R code.
-#'
+#' reading data in SPSS. \code{write_labelled_*} doesn't save rownames of 
+#' data.frame. \code{write_labels_*} functions write R code/SPSS syntax for 
+#' labelling data. It allows to extract labels from *.sav files that come 
+#' without accompanying syntax. \code{read_labelled_csv} reads data file in CSV 
+#' format and apply labels from accompanying file with R code. \code{*_csv2} 
+#' write/read data with semicolon separator and comma as decimal delimiter. 
+#' \code{*_tab/*_tab2} write/read data with tab separator and "."/"," as
+#' decimal delimiter.
+#' 
 #' @param x data.frame to be written/data.frame whose labels to be written
 #' @param filename the name of the file which the data are to be read from/write to.
 #' @param fileEncoding character string: if non-empty declares the encoding to
 #'   be used on a file (not a connection) so the character data can be
 #'   re-encoded as they are written. See \link[base]{file}.
+#' @param sep the field separator string. Values within each row of x are
+#'   separated by this string.
+#' @param dec the string to use for decimal points in numeric or complex
+#'   columns: must be a single character.
 #' @param ... additional arguments for \link[utils]{read.table}/\link[utils]{write.table}  
 #'
 #' @return Functions for writing invisibly return NULL. Functions for reading
@@ -108,10 +115,11 @@ read_dictionary_csv = function(filename, fileEncoding = ""){
 
 #' @export
 #' @rdname write_labels
-read_labelled_csv = function(filename, fileEncoding = "", ...){
+read_labelled_csv = function(filename, fileEncoding = "", sep = ",", dec = ".", ...){
     w = utils::read.table(file = filename,
                    header = TRUE,
-                   sep = ",",
+                   sep = sep,
+                   dec = dec,
                    stringsAsFactors = FALSE,
                    na.strings = "",
                    fileEncoding = fileEncoding,
@@ -130,7 +138,37 @@ read_labelled_csv = function(filename, fileEncoding = "", ...){
 
 #' @export
 #' @rdname write_labels
-write_labelled_csv = function(x, filename, fileEncoding = "", ...){
+read_labelled_csv2 = function(filename, fileEncoding = "", sep = ";", dec = ",", ...){
+    read_labelled_csv(filename = filename,
+                      fileEncoding = fileEncoding,
+                      sep = sep, 
+                      dec = dec, 
+                      ...)
+}
+
+#' @export
+#' @rdname write_labels
+read_labelled_tab = function(filename, fileEncoding = "", sep = "\t", dec = ".", ...){
+    read_labelled_csv(filename = filename,
+                      fileEncoding = fileEncoding,
+                      sep = sep, 
+                      dec = dec, 
+                      ...)
+}
+
+#' @export
+#' @rdname write_labels
+read_labelled_tab2 = function(filename, fileEncoding = "", sep = "\t", dec = ",", ...){
+    read_labelled_csv(filename = filename,
+                      fileEncoding = fileEncoding,
+                      sep = sep, 
+                      dec = dec, 
+                      ...)
+}
+
+#' @export
+#' @rdname write_labels
+write_labelled_csv = function(x, filename, fileEncoding = "", sep = ",", dec = ".", ...){
     if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
     for(each in seq_along(x)){
         if (is.factor(x[[each]])){
@@ -149,7 +187,8 @@ write_labelled_csv = function(x, filename, fileEncoding = "", ...){
     utils::write.table(x = x, file = file2,
                           col.names = TRUE,
                           row.names = FALSE,
-                          sep = ",",
+                          sep = sep,
+                          dec = dec,
                           na = "",
                           qmethod = "double",
                           quote = TRUE,
@@ -160,6 +199,42 @@ write_labelled_csv = function(x, filename, fileEncoding = "", ...){
     write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
     invisible(NULL)
     
+}
+
+#' @export
+#' @rdname write_labels
+write_labelled_csv2 = function(x, filename, fileEncoding = "", sep = ";", dec = ",", ...){
+    write_labelled_csv(x = x, 
+                       filename = filename,
+                       fileEncoding = fileEncoding,
+                       sep = sep, 
+                       dec = dec,
+                       ...                       
+    )
+}
+
+#' @export
+#' @rdname write_labels
+write_labelled_tab = function(x, filename, fileEncoding = "", sep = "\t", dec = ".", ...){
+    write_labelled_csv(x = x, 
+                       filename = filename,
+                       fileEncoding = fileEncoding,
+                       sep = sep, 
+                       dec = dec,
+                       ...                       
+    )
+}
+
+#' @export
+#' @rdname write_labels
+write_labelled_tab2 = function(x, filename, fileEncoding = "", sep = "\t", dec = ",", ...){
+    write_labelled_csv(x = x, 
+                       filename = filename,
+                       fileEncoding = fileEncoding,
+                       sep = sep, 
+                       dec = dec,
+                       ...                       
+    )
 }
 
 #' @export
