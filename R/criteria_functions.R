@@ -173,6 +173,8 @@ gte = ge
 #' @rdname criteria
 perl = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
+    ignore.case
+    useBytes
     res = function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = TRUE, fixed = FALSE, useBytes = useBytes)
     }
@@ -184,6 +186,8 @@ perl = function(pattern, ignore.case = FALSE, useBytes = FALSE){
 #' @rdname criteria
 regex = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
+    ignore.case
+    useBytes
     res = function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = FALSE, fixed = FALSE, useBytes = useBytes)
     }
@@ -195,6 +199,8 @@ regex = function(pattern, ignore.case = FALSE, useBytes = FALSE){
 #' @rdname criteria
 fixed = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
+    ignore.case
+    useBytes
     res = function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = FALSE, fixed = TRUE, useBytes = useBytes)
     }
