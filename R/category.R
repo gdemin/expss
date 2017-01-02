@@ -47,20 +47,7 @@ category.matrix = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1
    vallab = colnames(x)
    res = col(x)
    res[!(x %in% counted_value)] = NA
-   if(compress && length(res)>0 && ncol(res)>1){
-       res = t(apply(res,1,sort,na.last = TRUE))
-       columns_with_values = colSums(!is.na(res))>0
-       res = res[,columns_with_values,drop = FALSE]
-   }
-   if(!is.null(vallab)){
-       val_lab(res) = structure(seq_len(ncol(x)),names = vallab) 
-       
-   } 
-   if(!is.null(prefix) && NCOL(res)>0){
-       colnames(res) = paste0(prefix, seq_len(NCOL(res)))
-   }
-   class(res) = setdiff(class(res),"dichotomy")
-   res
+   compress_and_finish(res = res, vallab = vallab, prefix = prefix, compress = compress)
 }
 
 #' @export
@@ -72,12 +59,13 @@ category.data.frame = function(x, prefix = NULL, use_var_lab = TRUE, counted_val
                 colnames(x)[i] = varlab
             }
         }
-    }    
-    category.matrix(x = as.matrix(x), 
-                    prefix = prefix, 
-                    use_var_lab = use_var_lab, 
-                    counted_value, 
-                    compress)
+    }  
+    vallab = colnames(x)
+    res = col(x)
+    for(i in seq_along(x)){
+        res[,i][!(x[[i]] %in% counted_value)] = NA
+    }
+    compress_and_finish(res = res, vallab = vallab, prefix = prefix, compress = compress)
 }
 
 #' @export
@@ -105,3 +93,20 @@ category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, co
 
 
 
+compress_and_finish = function(res, vallab, prefix, compress){
+    if(compress && length(res)>0 && ncol(res)>1){
+        res = t(apply(res,1,sort,na.last = TRUE))
+        columns_with_values = colSums(!is.na(res))>0
+        res = res[,columns_with_values,drop = FALSE]
+    }
+    if(!is.null(vallab)){
+        val_lab(res) = structure(seq_along(vallab),names = vallab) 
+        
+    } 
+    if(!is.null(prefix) && NCOL(res)>0){
+        colnames(res) = paste0(prefix, seq_len(NCOL(res)))
+    }
+    class(res) = setdiff(class(res),"dichotomy")
+    res
+    
+}
