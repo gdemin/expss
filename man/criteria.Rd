@@ -9,6 +9,7 @@
 \alias{ge}
 \alias{gt}
 \alias{gte}
+\alias{item_ind}
 \alias{le}
 \alias{lt}
 \alias{lte}
@@ -54,6 +55,8 @@ from(x)
 
 to(x)
 
+item_ind(...)
+
 not_na(x)
 
 other(x)
@@ -72,6 +75,8 @@ Coerced by as.character to a character string if possible.}
 \item{lower}{vector/single value - lower bound of interval}
 
 \item{upper}{vector/single value - upper bound of interval}
+
+\item{...}{numeric indexes of desired items}
 }
 \value{
 function of class 'criterion' which tests its argument against condition and return logical value
@@ -108,6 +113,8 @@ vector after the first occurrence of \code{x} and for \code{x}. \code{from} and
 \item{\code{not_na}}{ return TRUE for all non-NA elements of vector.} 
 \item{\code{other}}{ return TRUE for all elements of vector. It is intended
 for usage with \code{if_val}, \code{keep}, \code{except}}
+\item{\code{item_ind}}{ return TRUE for elements of vector with given
+sequential number. It is intended for usage with \code{keep}, \code{except}}
 }
 }
 \examples{

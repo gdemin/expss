@@ -31,6 +31,8 @@
 #' \item{\code{not_na}}{ return TRUE for all non-NA elements of vector.} 
 #' \item{\code{other}}{ return TRUE for all elements of vector. It is intended
 #' for usage with \code{if_val}, \code{keep}, \code{except}}
+#' \item{\code{item_ind}}{ return TRUE for elements of vector with given
+#' sequential number. It is intended for usage with \code{keep}, \code{except}}
 #' } 
 #' 
 #' @param x vector 
@@ -41,6 +43,7 @@
 #'   Coerced by as.character to a character string if possible.
 #' @param ignore.case logical see \link[base]{grepl}
 #' @param useBytes logical see \link[base]{grepl}
+#' @param ... numeric indexes of desired items
 #'
 #' @return function of class 'criterion' which tests its argument against condition and return logical value
 #' 
@@ -252,6 +255,18 @@ to = function(x){
     } 
     class(res) = union("criterion", class(res))
     res
+}
+
+#' @export
+#' @rdname criteria
+item_ind = function(...){
+    items = c(list(...), recursive = TRUE)
+    res = function(x){
+        numbers = seq_along(x)    
+        numbers %in% items
+    }
+    class(res) = union("criterion", class(res))
+    res 
 }
 
 

@@ -3,6 +3,11 @@ context("keep")
 # c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species")
 
 data(iris)
+expect_identical(keep(iris, item_ind(5)), iris[, "Species", drop = FALSE])
+expect_identical(except(iris, item_ind(5)), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_identical(except(iris, item_ind(1, 2, 3, 4)), iris[, "Species", drop = FALSE])
+expect_identical(keep(iris, item_ind(1, 2, 3, 4)), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+
 expect_identical(keep(iris, "Species", other), iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 expect_warning(keep(iris, "Species", other, "Species"))
 expect_identical(keep(iris, "Species", perl("^Sepal")), iris[, c("Species", "Sepal.Length", "Sepal.Width")])
