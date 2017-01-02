@@ -160,13 +160,28 @@ df2 = as.data.frame(
     matrix(sample(c(1:10,NA),30,replace = TRUE),10)
 )
 
+df2_res = df2
+df2_res[df2_res[[1]] %in% 1:5,1] = NA
+df2_res[df2_res[[2]] %in% 1:5,2] = NA
+df2_res[df2_res[[3]] %in% 1:5,3] = NA
+
+expect_identical(max_row_if(gt(5), df2), do.call(pmax, c(df2_res, list(na.rm = TRUE))))
+expect_identical(min_row_if(gt(5), df2), do.call(pmin, c(df2_res, list(na.rm = TRUE))))
+
+expect_identical(unname(max_col_if(gt(5), df2)), do.call(pmax, c(as.dtfrm(t(df2_res)), list(na.rm = TRUE))))
+expect_identical(unname(min_col_if(gt(5), df2)), do.call(pmin, c(as.dtfrm(t(df2_res)), list(na.rm = TRUE))))
 
 
-expect_identical(max_row_if(gt(0), df2), do.call(pmax, c(df2, list(na.rm = TRUE))))
-expect_identical(min_row_if(gt(0), df2), do.call(pmin, c(df2, list(na.rm = TRUE))))
+#######
 
-expect_identical(unname(max_col_if(gt(0), df2)), do.call(pmax, c(as.dtfrm(t(df2)), list(na.rm = TRUE))))
-expect_identical(unname(min_col_if(gt(0), df2)), do.call(pmin, c(as.dtfrm(t(df2)), list(na.rm = TRUE))))
+data(iris)
+iris$Species = as.character(iris$Species)
+expect_equal(max_row_if(gt("0"), iris), apply(iris, 1, max))
+expect_equal(max_col_if(gt("0"), iris), apply(iris, 2, max))
+
+expect_equal(min_row_if(gt("0"), iris), gsub("\\.0$","", apply(iris, 1, min), perl = TRUE))
+expect_equal(min_col_if(gt("0"), iris), apply(iris, 2, min))
+
 
 context("errors")
 data(iris)

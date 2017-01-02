@@ -260,7 +260,7 @@ class(not_na) = union("criterion",class(not_na))
 #' @export
 #' @rdname criteria
 other = function(x){
-    is.na(x) | TRUE 
+    rep(TRUE, NROW(x)) 
 }
 
 

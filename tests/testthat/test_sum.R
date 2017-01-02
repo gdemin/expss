@@ -26,6 +26,13 @@ expect_equal(max_col(a, b, d), c(a = 3, b = 3, d = NA))
 expect_equal(min_row(a, b, d), c(1,2,1))
 expect_equal(min_col(a, b, d), c(a = 1, b = 1, d = NA))
 
+#######
+expect_equal(max_row(iris), apply(iris, 1, max))
+expect_equal(max_col(iris), apply(iris, 2, max))
+
+expect_equal(min_row(iris), gsub("\\.0$","", apply(iris, 1, min), perl = TRUE))
+expect_equal(min_col(iris), apply(iris, 2, min))
+
 temp = cbind(a, b, NA)
 expect_equal(sd_row(a, b, d), apply(temp, 1, sd, na.rm = TRUE))
 expect_equal(unname(sd_col(a, b, d)), unname(apply(temp, 2, sd)))

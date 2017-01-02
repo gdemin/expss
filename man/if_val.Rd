@@ -29,9 +29,11 @@ copy(x)
 \item{...}{sequence of formulas which describe recodings. They are used when
 \code{from}/\code{to} arguments are not provided.}
 
-\item{from}{list of conditions for values which should be recoded (in the same format as LHS of formulas).}
+\item{from}{list of conditions for values which should be recoded (in the
+same format as LHS of formulas).}
 
-\item{to}{list of values into which old values should be recoded (in the same format as RHS of formulas).}
+\item{to}{list of values into which old values should be recoded (in the same
+format as RHS of formulas).}
 
 \item{value}{list with formulas which describe recodings in assignment form
 of function/\code{to} list if \code{from}/\code{to} notation is used.}

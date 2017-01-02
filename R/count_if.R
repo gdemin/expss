@@ -410,7 +410,7 @@ median_col_if=function(criterion,..., data = NULL){
 max_if=function(criterion, ..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(max(data, na.rm = TRUE))
-    if(!is.finite(res)) res = NA
+    if(is.numeric(res) && !is.finite(res)) res = NA
     res
 }
 
@@ -419,7 +419,7 @@ max_if=function(criterion, ..., data = NULL){
 max_row_if=function(criterion,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
-    res[!is.finite(res)] = NA
+    if(is.numeric(res)) res[!is.finite(res)] = NA
     res
 }
 
@@ -429,7 +429,7 @@ max_row_if=function(criterion,..., data = NULL){
 max_col_if=function(criterion,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
-    res[!is.finite(res)] = NA
+    if(is.numeric(res)) res[!is.finite(res)] = NA
     res
 }
 
@@ -440,7 +440,7 @@ max_col_if=function(criterion,..., data = NULL){
 min_if=function(criterion, ..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(min(data, na.rm = TRUE))
-    if(!is.finite(res)) res = NA
+    if(is.numeric(res) && !is.finite(res)) res = NA
     res
 }
 
@@ -449,7 +449,7 @@ min_if=function(criterion, ..., data = NULL){
 min_row_if=function(criterion,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
-    res[!is.finite(res)] = NA
+    if(is.numeric(res)) res[!is.finite(res)] = NA
     res
 }
 
@@ -459,7 +459,7 @@ min_row_if=function(criterion,..., data = NULL){
 min_col_if=function(criterion,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
     res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
-    res[!is.finite(res)] = NA
+    if(is.numeric(res)) res[!is.finite(res)] = NA
     res
 }
 

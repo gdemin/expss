@@ -145,7 +145,7 @@ median_col=function(...){
 max_row=function(...){
     data = dots2data_frame(...)
     res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
-    res[!is.finite(res)] = NA
+    if(is.numeric(res)) res[!is.finite(res)] = NA
     res
 }
 
@@ -155,7 +155,7 @@ max_row=function(...){
 max_col=function(...){
     data = dots2data_frame(...)
     res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
-    res[!is.finite(res)] = NA
+    if(is.numeric(res)) res[!is.finite(res)] = NA
     res
 }
 
@@ -167,7 +167,7 @@ max_col=function(...){
 min_row=function(...){
     data = dots2data_frame(...)
     res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
-    res[!is.finite(res)] = NA
+    if(is.numeric(res)) res[!is.finite(res)] = NA
     res
 }
 
@@ -177,7 +177,7 @@ min_row=function(...){
 min_col=function(...){
     data = dots2data_frame(...)
     res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
-    res[!is.finite(res)] = NA
+    if(is.numeric(res)) res[!is.finite(res)] = NA
     res
 }
 
