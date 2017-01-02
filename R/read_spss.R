@@ -38,6 +38,9 @@ read_spss=function(file, reencode = TRUE){
 #' @export
 #' @rdname read_spss
 read_spss_to_list=function(file, reencode = TRUE){
+    if(is.character(file)){
+        file = gsub("^file\\:///", "", file, perl = TRUE)
+    }
     spss = foreign::read.spss(enc2native(file), use.value.labels=FALSE, to.data.frame=FALSE, reencode = reencode, use.missings = FALSE)
     var_names = names(spss)
     var_labs = attr(spss,'variable.labels')
