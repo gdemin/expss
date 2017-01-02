@@ -8,6 +8,7 @@
 * Fix logical arguments in boolean operations for criteria functions
 * `%in_row%`/`%in_col%` are deprecated. Use `%row_in%`/`%col_in%` instead.
 * NULL argument for criterion is removed. Use `not_na` instead.
+* remove `default` argument in `ifs`. Use TRUE ~ default_value instead.
 
 0.5.5 (19.10.2016)
 ================

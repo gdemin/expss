@@ -113,7 +113,7 @@ default_dataset(default_mtcars)
     mean_mpg = mean(mpg)
     vs_0 = 1
     mpg_by_am = ave(mpg, am, FUN = mean)
-    hi_low_mpg = ifs(mpg<mean(mpg) ~ 0, default = 1)
+    hi_low_mpg = ifs(mpg<mean(mpg) ~ 0, TRUE ~ 1)
 })
 
 

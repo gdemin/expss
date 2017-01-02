@@ -386,15 +386,15 @@ expect_identical(
     c(1,1,NA, NA, NA)
 )
 expect_identical(
-    ifs(b>3 ~ 1, default = 3),
+    ifs(b>3 ~ 1, TRUE ~ 3),
     c(1,1,3, 3, 3)
 )
 expect_identical(
-    ifs(c(b, NA)>3 ~ 1, default = 3),
+    ifs(c(b, NA)>3 ~ 1, TRUE ~ 3),
     c(1,1,3, 3, 3, 3)
 )
 expect_identical(
-    ifs(b>3 ~ 1, a>4 ~ 7, default = 3),
+    ifs(b>3 ~ 1, a>4 ~ 7, TRUE ~ 3),
     c(1,1,3, 3, 7)
     
 )
@@ -404,7 +404,7 @@ expect_identical(
     as.integer(c(1,2,NA,NA, NA))
 )
 expect_identical(
-    ifs(b>3 ~ a, default = "wah"),
+    ifs(b>3 ~ a, TRUE ~ "wah"),
     c("1","2","wah","wah", "wah")
 )
 
