@@ -38,46 +38,29 @@ qc = function(...){
 #' @export
 #' @rdname qc
 subst = function(...){
-    sprintf2 = function(fmt, replacement){
-        number_of_s = vapply(regmatches(fmt, gregexpr("%s", fmt, fixed = TRUE)), 
-                             length,
-                             FUN.VALUE = numeric(1))
-        if(number_of_s<2){
-            sprintf(fmt, replacement)
-        } else {
-            replacement = list(replacement) %r% number_of_s
-            replacement = c(fmt = fmt, replacement)
-            do.call(sprintf, replacement)
-        }
-    }
-    .all_vars_ = c(list(...), recursive = TRUE)
-    res = vector(mode = "list", length = length(.all_vars_))
-    for(each in seq_along(.all_vars_ )){
-        x = .all_vars_ [each]
-        stopif(any(grepl("%s",x)), "%s inside 'x' is not allowed.")
+    all_vars= c(list(...), recursive = TRUE)
+    res = vector(mode = "list", length = length(all_vars))
+    for(each_var in seq_along(all_vars)){
+        x = all_vars[each_var]
         if(any(grepl("`(.+?)`", x, perl = TRUE))){
-            .positions_ = gregexpr("`(.+?)`", x, perl = TRUE)    
-            .matches_ = unique(unlist(regmatches(x, .positions_)))
-            .var_names_ = gsub("`", "", .matches_)
-            #.vars_ = mget(.var_names_, inherits = TRUE)
-            for(.each_ in seq_along(.var_names_)){
-                .curr_ = paste0("`",.var_names_[.each_],"`")
-                x = gsub(.curr_, "%s", x, fixed = TRUE)
-                .res_ = eval(parse(text = .var_names_[.each_]),
-                             envir = parent.frame(), 
-                             enclos = globalenv())
-                if(length(x)>1 && length(.res_)>1){
-                    x = unlist(lapply(x, function(.x_){
-                        sprintf2(.x_, .res_)
-                    }))
-                } else {
-                    x  = sprintf2(x, .res_)    
-                }
+            positions = gregexpr("`(.+?)`", x, perl = TRUE)    
+            matches = unique(unlist(regmatches(x, positions)))
+            var_names = rev(gsub("`", "", matches))
+            
+            for(each_item in seq_along(var_names)){
+                evaluated_item = eval(parse(text = var_names[each_item]),
+                                      envir = parent.frame(), 
+                                      enclos = globalenv())
+                curr = paste0("`",var_names[each_item],"`")
+                x = unlist(lapply(evaluated_item, function(item){
+                    gsub(curr, item, x, fixed = TRUE)
+                    
+                }))
                 
             }
             
         } 
-        res[[each]] = x
+        res[[each_var]] = x
     }
     c(res, recursive = TRUE)
 }

@@ -2,8 +2,10 @@ context("subst")
 
 i = 1:2
 # expect_error(subst(i))
+expect_identical(subst("`i`% of sum"), c("1% of sum", "2% of sum"))
 expect_identical(subst("q"), "q")
 expect_identical(subst("q`i`"), c("q1", "q2"))
+expect_identical(subst("q`1:2`"), c("q1", "q2"))
 expect_identical(subst("q`i`_`i`"), c("q1_1", "q2_2"))
 expect_identical(subst("q`i`_`i`", "q`i`"), c("q1_1", "q2_2", "q1", "q2"))
 expect_identical(subst("q`sum(i)`"), c("q3"))
