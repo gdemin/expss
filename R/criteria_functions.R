@@ -44,6 +44,8 @@
 #' @param ignore.case logical see \link[base]{grepl}
 #' @param useBytes logical see \link[base]{grepl}
 #' @param ... numeric indexes of desired items
+#' @param crit function which returns logical or vector. It will be
+#'   converted to function of class criterion.
 #'
 #' @return function of class 'criterion' which tests its argument against condition and return logical value
 #' 
@@ -332,8 +334,8 @@ build_compare.numeric = function(x, compare){
 #' @export
 '|.criterion' = function(e1,e2) {
     # one or both e1, e2 is criterion and criterion can be only logical or function
-    f1 = make_function(e1)
-    f2 = make_function(e2)
+    f1 = as.criterion(e1)
+    f2 = as.criterion(e2)
     res = function(x) f1(x) | f2(x)
     class(res) = union("criterion",class(res))
     res
@@ -342,25 +344,29 @@ build_compare.numeric = function(x, compare){
 
 #' @export
 '&.criterion' = function(e1,e2) {
-    f1 = make_function(e1)
-    f2 = make_function(e2)
+    f1 = as.criterion(e1)
+    f2 = as.criterion(e2)
     res = function(x) f1(x) & f2(x)
     class(res) = union("criterion",class(res))
     res
 }
 
 
-make_function = function(crit){
+#' @export
+#' @rdname criteria
+as.criterion = function(crit){
     force(crit)
     if (is.function(crit)) {
-        crit
+        res = crit
     } else {
         if(is.logical(crit)){
-            function(x) crit
+            res = function(x) crit
         } else {
-            function(x) x %in% crit       
+            res = function(x) x %in% crit       
         }    
     }
+    class(res) = union("criterion",class(res))
+    res
 }
 
 

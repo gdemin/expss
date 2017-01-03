@@ -2,6 +2,7 @@
 % Please edit documentation in R/criteria_functions.R
 \name{criteria}
 \alias{\%thru\%}
+\alias{as.criterion}
 \alias{criteria}
 \alias{eq}
 \alias{fixed}
@@ -60,6 +61,8 @@ item_ind(...)
 not_na(x)
 
 other(x)
+
+as.criterion(crit)
 }
 \arguments{
 \item{x}{vector}
@@ -77,6 +80,9 @@ Coerced by as.character to a character string if possible.}
 \item{upper}{vector/single value - upper bound of interval}
 
 \item{...}{numeric indexes of desired items}
+
+\item{crit}{function which returns logical or vector. It will be
+converted to function of class criterion.}
 }
 \value{
 function of class 'criterion' which tests its argument against condition and return logical value
