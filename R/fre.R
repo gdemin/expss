@@ -133,6 +133,10 @@
 #' cro_fun_df(iris[,-5], iris$Species, fun = cor)
 #' @export
 fre = function(x, weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
     raw = elementary_freq(x = x, weight = weight)
     not_nas = raw$not_nas
     nas = raw$nas
@@ -263,6 +267,14 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
 #' @export
 #' @rdname fre
 cro = function(x, predictor, weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
     raw = elementary_freq(x = x, predictor = predictor, weight = weight)
     res = raw$freq
@@ -298,6 +310,14 @@ cro = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_cpct = function(x, predictor, weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     res = cro(x = x, predictor = predictor, weight = weight)
     last_row = NROW(res)
     if(NCOL(res)>2 & last_row>1){
@@ -320,6 +340,14 @@ cro_cpct = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_rpct = function(x, predictor, weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     res = cro(x = x, predictor = predictor, weight = weight)
     last_col = NCOL(res)
     if(NROW(res)>1 & last_col>2){
@@ -342,6 +370,14 @@ cro_rpct = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_tpct = function(x, predictor, weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     res = cro(x = x, predictor = predictor, weight = weight)
     last_row = NROW(res)
     last_col = NCOL(res)
@@ -382,6 +418,14 @@ print.summary_table = function(x, ...,  row.names = FALSE){
 #' @export
 #' @rdname fre
 cro_mean = function(x, predictor, weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     if(!is.data.frame(x)){
         possible_name = deparse(substitute(x))
         x = prepare_dataframe(x, possible_name)
@@ -403,6 +447,14 @@ cro_mean = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_sum = function(x, predictor, weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     if(!is.data.frame(x)){
         possible_name = deparse(substitute(x))
         x = prepare_dataframe(x, possible_name)
@@ -434,6 +486,14 @@ cro_sum = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_median = function(x, predictor){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     if(!is.data.frame(x)){
         possible_name = deparse(substitute(x))
         x = prepare_dataframe(x, possible_name)
@@ -480,6 +540,14 @@ prepare_result = function(list_of_results){
 #' @export
 #' @rdname fre
 cro_fun = function(x, predictor, fun, ..., weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     fun = match.fun(fun)
     if(!is.data.frame(x)){
         possible_name = deparse(substitute(x))
@@ -547,6 +615,14 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
 #' @export
 #' @rdname fre
 cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
+    if(is.null(x)){
+        str_x = deparse(substitute(x))
+        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
+    }
+    if(is.null(predictor)){
+        str_predictor = deparse(substitute(predictor))
+        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
+    }
     fun = match.fun(fun)
     if(!is.data.frame(x)){
         possible_name = deparse(substitute(x))

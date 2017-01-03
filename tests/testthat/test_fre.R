@@ -574,3 +574,33 @@ val_lab(score) = make_labels("
                              ")
 
 expect_equal_to_reference(fre(brands), "rds/fre_ex4.rds")
+
+
+#######
+data(mtcars)
+
+expect_error(fre(mtcars$dont_exist))
+expect_error(cro(mtcars$dont_exist, mtcars$am))
+expect_error(cro(mtcars$am, mtcars$dont_exist))
+expect_error(cro_cpct(mtcars$dont_exist, mtcars$am))
+expect_error(cro_cpct(mtcars$am, mtcars$dont_exist))
+expect_error(cro_rpct(mtcars$dont_exist, mtcars$am))
+expect_error(cro_rpct(mtcars$am, mtcars$dont_exist))
+expect_error(cro_tpct(mtcars$dont_exist, mtcars$am))
+expect_error(cro_tpct(mtcars$am, mtcars$dont_exist))
+expect_error(cro_sum(mtcars$dont_exist, mtcars$am))
+expect_error(cro_sum(mtcars$am, mtcars$dont_exist))
+expect_error(cro_mean(mtcars$dont_exist, mtcars$am))
+expect_error(cro_mean(mtcars$am, mtcars$dont_exist))
+expect_error(cro_median(mtcars$dont_exist, mtcars$am))
+expect_error(cro_median(mtcars$am, mtcars$dont_exist))
+expect_error(cro_fun(mtcars$dont_exist, mtcars$am))
+expect_error(cro_fun(mtcars$am, mtcars$dont_exist))
+expect_error(cro_fun_df(mtcars$dont_exist, mtcars$am))
+expect_error(cro_fun_df(mtcars$am, mtcars$dont_exist))
+
+
+
+
+
+
