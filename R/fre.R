@@ -223,16 +223,16 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
     }
     if(is.data.frame(x)){
         for(each in seq_along(x)){
-            if(is.factor(x[[each]])) x[[each]] = as.character(x[[each]])
+            if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
         }
         x = x[valid,]
     } else {
-        if(is.factor(x)) x = as.character(x)
+        if(is.factor(x)) x = as.labelled(x)
         x = x[valid]
     }
     weight = weight[valid]
     if(!is.null(predictor)){
-        if(is.factor(predictor)) predictor = as.character(predictor)
+        if(is.factor(predictor)) predictor = as.labelled(predictor)
         predictor = unvr(predictor)
         total = tapply(weight, list(f(predictor)), FUN = sum, na.rm = TRUE)
         predictor = rep(predictor, NCOL(x))
@@ -490,7 +490,7 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
     stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     
     for(each in seq_along(x)){
-        if(is.factor(x[[each]])) x[[each]] = as.character(x[[each]])
+        if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
     }
     
     if (!is.null(weight)) {
@@ -615,3 +615,4 @@ prepare_dataframe = function(x, possible_name){
     }
     x
 }
+

@@ -269,7 +269,7 @@ val_lab.data.frame=function(x)
     # strange code below for case when we consider data.frame as multiple response question
     if (is.null(res)){
         all_labs=lapply(x, val_lab)
-        all_labs=all_labs[!sapply(all_labs,is.null)]
+        all_labs=all_labs[lengths(all_labs)>0]
         if (length(all_labs)>0) res=do.call(combine_labels, all_labs) else res=NULL
     }
     res

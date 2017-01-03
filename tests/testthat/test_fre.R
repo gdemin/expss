@@ -174,6 +174,12 @@ expect_equal_to_reference(expss:::elementary_freq(iris$Species, iris$Species), "
 
 context("fre and cro examples")
 
+a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c")))
+expect_equal_to_reference(fre(a), "rds/order_factor_fre20.rds")
+expect_equal_to_reference(cro(a, a), "rds/order_factor_cro20.rds")
+
+
+
 
 data(mtcars)
 mtcars = modify(mtcars,{
@@ -542,3 +548,29 @@ expect_identical(cro_fun_df(lst_iris, iris$Species, fun = mean_col),
                  cro_fun_df(correct_iris, iris$Species, fun = mean_col))
 
 
+##################
+
+# multiple-choise variable
+# brands - multiple response question
+# Which brands do you use during last three months? 
+set.seed(123)
+brands = data.frame(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
+# score - evaluation of tested product
+score = sample(-1:1,20,replace = TRUE)
+var_lab(brands) = "Used brands"
+val_lab(brands[[3]]) = make_labels("
+                              1 Brand A
+                              2 Brand B
+                              3 Brand C
+                              4 Brand D
+                              5 Brand E
+                              ")
+
+var_lab(score) = "Evaluation of tested brand"
+val_lab(score) = make_labels("
+                             -1 Dislike it
+                             0 So-so
+                             1 Like it    
+                             ")
+
+expect_equal_to_reference(fre(brands), "rds/fre_ex4.rds")
