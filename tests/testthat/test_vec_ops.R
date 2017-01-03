@@ -5,6 +5,7 @@ expect_equal(c(a=1, b=4) %a% c(d = 5), c(a=1, b=4, d = 5))
 
 expect_equal(c(a=1, b=4, d = 5) %d% c(d = 5), c(a=1, b=4))
 expect_equal(c(a=1, b=4, d = 5) %d% lt(4), c(b=4, d=5))
+expect_equal(v_diff(c(a=1, b=4, d = 5), lt(4)), c(b=4, d=5))
 
 expect_equal(c(a=1, b=4, d = 5) %d% lte(4), c(d=5))
 expect_equal(c(a=1, b=4, d = 5) %d% le(4), c(d=5))
@@ -21,6 +22,7 @@ expect_equal(c(a=1, b=4, d = 5) %r% 2, c(a=1, b=4, d = 5, a=1, b=4, d = 5))
 
 expect_equal( c(1, 2, NA, 3) %i% other, c(1, 2, NA, 3))
 expect_equal( c(1, 2, NA, 3) %i% not_na, c(1, 2, 3))
+expect_equal( v_intersect(c(1, 2, NA, 3), not_na), c(1, 2, 3))
 expect_equal( c(1, 2, NA, 3) %d% is.na, c(1, 2, 3))
 
 expect_equal( c(1, 2, NA, 3) %d% other, numeric(0))
@@ -31,11 +33,13 @@ expect_equal(c(a=1, b=4, f = 5) %i% c(d = 5), c(f = 5))
 
 expect_equal(c(a=1, b=4) %e% c(d = 5), c(a=1, b=4, d = 5))
 expect_equal(c(a=1, b=4, 5) %e% c(d = 5), c(a=1, b=4))
+expect_equal(v_xor(c(a=1, b=4, 5), c(d = 5)), c(a=1, b=4))
 
 
 expect_equal(1:4 %a% 5:6   , 1:6)
 expect_equal(1:4 %a% 4:5   , c(1,2,3,4,4,5))
 expect_equal(1:4 %u% 4:5   , c(1,2,3,4,5))
+expect_equal(v_union(1:4, 4:5)  , c(1,2,3,4,5))
 
 
 
@@ -46,6 +50,7 @@ expect_equal(as.POSIXct("2016-09-23") %e% NULL, as.POSIXct("2016-09-23"))
 expect_equal(NULL %a% as.POSIXct("2016-09-23"), as.POSIXct("2016-09-23"))
 expect_equal(as.POSIXct("2016-09-23") %a% NULL, as.POSIXct("2016-09-23"))
 expect_equal(NULL %u% as.POSIXct("2016-09-23"), as.POSIXct("2016-09-23"))
+expect_equal(v_union(NULL, as.POSIXct("2016-09-23")), as.POSIXct("2016-09-23"))
 expect_equal(as.POSIXct("2016-09-23") %u% NULL, as.POSIXct("2016-09-23"))
 
 
@@ -61,7 +66,9 @@ expect_equal(1:2 %r% 2     , c(1, 2, 1, 2))
 context("%n_i%, %n_d%")
 
 expect_identical(iris %n_d% "Species", iris[, -5, drop = FALSE]) # remove column Species
+expect_identical(n_diff(iris, "Species"), iris[, -5, drop = FALSE]) # remove column Species
 expect_identical(iris %n_i% perl("^Sepal"), iris[, 1:2])
+expect_identical(n_intersect(iris, perl("^Sepal")), iris[, 1:2])
 # leave column "Species" and columns which start with "Sepal" 
 expect_identical(iris %n_i% (perl("^Sepal")|"Species"), iris[, c(1:2,5)]) 
 

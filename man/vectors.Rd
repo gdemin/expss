@@ -9,24 +9,42 @@
 \alias{\%n_i\%}
 \alias{\%r\%}
 \alias{\%u\%}
+\alias{n_diff}
+\alias{n_intersect}
+\alias{v_diff}
+\alias{v_intersect}
+\alias{v_union}
+\alias{v_xor}
 \alias{vectors}
 \title{Infix operations on vectors - append, diff, intersection, union, replication}
 \usage{
 e1 \%a\% e2
 
+v_union(e1, e2)
+
 e1 \%u\% e2
+
+v_diff(e1, e2)
 
 e1 \%d\% e2
 
+v_intersect(e1, e2)
+
 e1 \%i\% e2
+
+v_xor(e1, e2)
 
 e1 \%e\% e2
 
 e1 \%r\% e2
 
-e1 \%n_d\% e2
+n_intersect(e1, e2)
 
 e1 \%n_i\% e2
+
+n_diff(e1, e2)
+
+e1 \%n_d\% e2
 }
 \arguments{
 \item{e1}{vector (possibly data.frame/matrix/list for \code{\%n_d\%}, \code{\%n_i\%})}
@@ -38,23 +56,29 @@ vector (possibly data.frame/matrix/list for \code{\%n_d\%}, \code{\%n_i\%})
 }
 \description{
 \itemize{
-\item{\code{\%a\%}}{ a(ppends) second argument to first argument.}
-\item{\code{\%u\%}}{ u(nites) first and second arguments. Remove elements from
-second argument that exist in first argument. }
-\item{\code{\%d\%}}{ d(iffs) second argument from first argument. Second
-argument could be a function which returns logical value. In this case
-elements of first argument which give TRUE will be removed. }
-\item{\code{\%i\%}}{ i(ntersects) first argument and second argument. Second
-argument could be a function which returns logical value. In this case
-elements of first argument which give FALSE will be removed. } 
-\item{\code{\%e\%}}{ e(xclusive OR). Returns elements that contained only in one of arguments.}
-\item{\code{\%r\%}}{ r(epeats) first argument second argument times.}
-\item{\code{\%n_d\%}}{n(ames) d(iff) - diffs second argument from names of first argument. Second
-argument could be a function which returns logical value. In this case
-elements of first argument which names give TRUE will be removed. }
-\item{\code{\%n_i\%}}{n(ames) i(ntersect) - intersects names of first argument with second argument. Second
-argument could be a function which returns logical value. In this case
-elements of first argument which names give FALSE will be removed. } 
+\item{\code{\%a\%}}{ a(ppends) second argument to first argument. See also
+\link[base]{append}.}
+\item{\code{\%u\%} and \code{v_union}}{ u(nite) first and second arguments.
+Remove elements from second argument which exist in first argument. }
+\item{\code{\%d\%} and \code{v_diff}}{ d(iff) second argument from first
+argument. Second argument could be a function which returns logical value. In
+this case elements of first argument which give TRUE will be removed. }
+\item{\code{\%i\%} and \code{v_intersect}}{ i(ntersect) first argument and
+second argument. Second argument could be a function which returns logical
+value. In this case elements of first argument which give FALSE will be
+removed. }
+\item{\code{\%e\%} and \code{v_xor}}{ e(xclusive OR). Returns elements that
+contained only in one of arguments.}
+\item{\code{\%r\%} }{ r(epeats) first argument second argument times. See
+also \link[base]{rep}.}
+\item{\code{\%n_d\%} and \code{n_diff}}{ n(ames) d(iff) - diff second argument
+from names of first argument. Second argument could be a function which
+returns logical value. In this case elements of first argument which names
+give TRUE will be removed. }
+\item{\code{\%n_i\%} and \code{n_intersect}}{ n(ames) i(ntersect) - intersect
+names of first argument with second argument. Second argument could be a
+function which returns logical value. In this case elements of first argument
+which names give FALSE will be removed. }
 } 
 All these functions except \code{\%n_d\%}, \code{\%n_i\%} preserve names of
 vectors and don't remove duplicates.

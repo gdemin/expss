@@ -1,23 +1,29 @@
 #' Infix operations on vectors - append, diff, intersection, union, replication
 #' 
 #' \itemize{
-#' \item{\code{\%a\%}}{ a(ppends) second argument to first argument.}
-#' \item{\code{\%u\%}}{ u(nites) first and second arguments. Remove elements from
-#' second argument that exist in first argument. }
-#' \item{\code{\%d\%}}{ d(iffs) second argument from first argument. Second
-#' argument could be a function which returns logical value. In this case
-#' elements of first argument which give TRUE will be removed. }
-#' \item{\code{\%i\%}}{ i(ntersects) first argument and second argument. Second
-#' argument could be a function which returns logical value. In this case
-#' elements of first argument which give FALSE will be removed. } 
-#' \item{\code{\%e\%}}{ e(xclusive OR). Returns elements that contained only in one of arguments.}
-#' \item{\code{\%r\%}}{ r(epeats) first argument second argument times.}
-#' \item{\code{\%n_d\%}}{n(ames) d(iff) - diffs second argument from names of first argument. Second
-#' argument could be a function which returns logical value. In this case
-#' elements of first argument which names give TRUE will be removed. }
-#' \item{\code{\%n_i\%}}{n(ames) i(ntersect) - intersects names of first argument with second argument. Second
-#' argument could be a function which returns logical value. In this case
-#' elements of first argument which names give FALSE will be removed. } 
+#' \item{\code{\%a\%}}{ a(ppends) second argument to first argument. See also
+#' \link[base]{append}.}
+#' \item{\code{\%u\%} and \code{v_union}}{ u(nite) first and second arguments.
+#' Remove elements from second argument which exist in first argument. }
+#' \item{\code{\%d\%} and \code{v_diff}}{ d(iff) second argument from first
+#' argument. Second argument could be a function which returns logical value. In
+#' this case elements of first argument which give TRUE will be removed. }
+#' \item{\code{\%i\%} and \code{v_intersect}}{ i(ntersect) first argument and
+#' second argument. Second argument could be a function which returns logical
+#' value. In this case elements of first argument which give FALSE will be
+#' removed. }
+#' \item{\code{\%e\%} and \code{v_xor}}{ e(xclusive OR). Returns elements that
+#' contained only in one of arguments.}
+#' \item{\code{\%r\%} }{ r(epeats) first argument second argument times. See
+#' also \link[base]{rep}.}
+#' \item{\code{\%n_d\%} and \code{n_diff}}{ n(ames) d(iff) - diff second argument
+#' from names of first argument. Second argument could be a function which
+#' returns logical value. In this case elements of first argument which names
+#' give TRUE will be removed. }
+#' \item{\code{\%n_i\%} and \code{n_intersect}}{ n(ames) i(ntersect) - intersect
+#' names of first argument with second argument. Second argument could be a
+#' function which returns logical value. In this case elements of first argument
+#' which names give FALSE will be removed. }
 #' } 
 #' All these functions except \code{\%n_d\%}, \code{\%n_i\%} preserve names of
 #' vectors and don't remove duplicates.
@@ -73,15 +79,18 @@
 
 #' @export
 #' @rdname vectors
-'%u%' = function(e1, e2){
+v_union = function(e1, e2){
     if(is.null(e1)) return(e2)
     c(e1, e2[!(e2 %in% e1)])
 }
 
+#' @export
+#' @rdname vectors
+'%u%' = v_union
 
 #' @export
 #' @rdname vectors
-'%d%' = function(e1, e2){
+v_diff = function(e1, e2){
     if(is.null(e2)) return(e1)
     if (is.function(e2)){
         e1[!e2(e1)]
@@ -90,9 +99,14 @@
     }
 }
 
+
 #' @export
 #' @rdname vectors
-'%i%' = function(e1, e2){
+'%d%' = v_diff
+
+#' @export
+#' @rdname vectors
+v_intersect = function(e1, e2){
     if (is.function(e2)){
         e1[e2(e1)]
     } else {
@@ -103,10 +117,19 @@
 
 #' @export
 #' @rdname vectors
-'%e%' = function(e1, e2){
+'%i%' = v_intersect
+
+#' @export
+#' @rdname vectors
+v_xor = function(e1, e2){
     if(is.null(e1)) return(e2)
     c(e1[!(e1 %in% e2)],e2[!(e2 %in% e1)])
 }
+
+#' @export
+#' @rdname vectors
+'%e%' = v_xor
+
 
 #' @export
 #' @rdname vectors
@@ -120,51 +143,58 @@
 
 #' @export
 #' @rdname vectors
-'%n_d%' = function(e1, e2){
-    if(length(e2)==0) return(e1)
-    n_d(e1, e2)
+n_intersect = function(e1, e2){
+    UseMethod("n_intersect")
+}
+
+#' @export
+n_intersect.default = function(e1, e2){
+    # names %in% .... for duplicated names
+    e1[names(e1) %in% (names(e1) %i% e2)]    
+}
+
+#' @export
+n_intersect.data.frame = function(e1, e2){
+    e1[ , names(e1) %in% (names(e1) %i% e2), drop = FALSE]    
+}
+
+#' @export
+n_intersect.matrix = function(e1, e2){
+    e1[ , colnames(e1) %in% (colnames(e1) %i% e2), drop = FALSE]    
 }
 
 #' @export
 #' @rdname vectors
-'%n_i%' = function(e1, e2){
-    n_i(e1, e2)
+'%n_i%' = n_intersect
+
+#' @export
+#' @rdname vectors
+n_diff = function(e1, e2){
+    if(length(e2)==0) return(e1)
+    UseMethod("n_diff")
 }
 
-
-n_i = function(e1, e2){
-    UseMethod("n_i")
-}
-
-
-# names %in% .... for duplicated names
-n_i.default = function(e1, e2){
-    e1[names(e1) %in% (names(e1) %i% e2)]    
-}
-
-n_i.data.frame = function(e1, e2){
-    e1[ , names(e1) %in% (names(e1) %i% e2), drop = FALSE]    
-}
-
-n_i.matrix = function(e1, e2){
-    e1[ , colnames(e1) %in% (colnames(e1) %i% e2), drop = FALSE]    
-}
-
-n_d = function(e1, e2){
-    
-    UseMethod("n_d")
-}
-
-n_d.default = function(e1, e2){
+#' @export
+n_diff.default = function(e1, e2){
     
     e1[names(e1) %in% (names(e1) %d% e2)]    
 }
 
-n_d.data.frame = function(e1, e2){
+#' @export
+n_diff.data.frame = function(e1, e2){
     e1[ , names(e1) %in% (names(e1) %d% e2), drop = FALSE]    
 }
 
-n_d.matrix = function(e1, e2){
+#' @export
+n_diff.matrix = function(e1, e2){
     e1[ , colnames(e1) %in% (colnames(e1) %d% e2), drop = FALSE]    
 }
+
+#' @export
+#' @rdname vectors
+'%n_d%' = n_diff
+
+
+
+
 
