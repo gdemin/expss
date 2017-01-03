@@ -69,13 +69,12 @@ All functions except \code{apply_*} return numeric vector of length
   on supplied \code{fun} function.
 }
 \description{
-This are convenience functions for usage inside \link{modify},
-\link{modify_if}, \link[base]{with}, \link[base]{within} and \code{dplyr}
-\code{mutate} functions. sum/mean/sd/median/max/min always omits NA.
-\code{any_in_*} checks existence of any TRUE in each row/column. It is 
-equivalent of \link[base]{any} applied to each row/column. \code{all_in_*} is
-equivalent of \link[base]{all} applied to each row/column. They don't
-remove NA.
+This are convenience functions for usage inside \link{modify}, 
+\link{modify_if}, \link[base]{with} and \link[base]{within} functions.
+sum/mean/sd/median/max/min always omits NA. \code{any_in_*} checks existence
+of any TRUE in each row/column. It is equivalent of \link[base]{any} applied
+to each row/column. \code{all_in_*} is equivalent of \link[base]{all} applied
+to each row/column. They don't remove NA.
 }
 \examples{
 ## Inside example

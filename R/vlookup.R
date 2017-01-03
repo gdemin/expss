@@ -158,7 +158,7 @@ vlookup_df = function(lookup_value, dict, result_column = NULL, lookup_column = 
     }
      # calculate index
     if (is.numeric(lookup_column) || is.character(lookup_column)){
-            # data.frame - for tbl_df from dplyr
+            # data.frame 
           ind = match(lookup_value,dict[[lookup_column]],incomparables = NA) 
     } else stop("lookup_column shoud be character or numeric.")
     ### caclulate result
