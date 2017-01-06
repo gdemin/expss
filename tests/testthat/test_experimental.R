@@ -11,7 +11,7 @@ expect_error(.recode(q8_1 %to% q8_99, (1:NROW(data)<11) ~ NA))
 .recode(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
 # .if_val(q8r_1 %to% q8r_99, (1:NROW(data)<11) ~ NA)
 
-.set_var_lab(q8r_1, "Используемые услуги")
+expect_warning(.set_var_lab(q8r_1, "Используемые услуги"))
 expect_equal_to_reference(.fre(reg), "rds/fre_real1.rds")
 expect_equal_to_reference(.fre(s1), "rds/fre_real2.rds")
 expect_equal_to_reference(.fre(q8r_1 %to% q8r_99), "rds/fre_real3.rds")
@@ -44,7 +44,7 @@ default_dataset(default_iris)
 iris$Species[iris$Species == "setosa"] = "versicolor"
 iris$Species[iris$Species == "virginica"] = "versicolor"
 expect_identical(default_iris, iris)
-.set_val_lab(vars_pattern("^Sepal"), c("Hard to say"=99))
+expect_warning(.set_val_lab(vars_pattern("^Sepal"), c("Hard to say"=99)))
 .if_val(vars_pattern("^Sepal"), 4 %thru% hi ~ 1)
 val_lab(iris$Sepal.Length) = c("Hard to say"=99)
 iris$Sepal.Length[iris$Sepal.Length>=4] = 1
@@ -67,12 +67,13 @@ default_dataset(default_mtcars)
                                  ")
 })
 
-.set_var_lab(vs, "Engine")
-.set_val_lab(vs, c("V-engine" = 0)) 
-.add_val_lab(vs, c("Straight engine" = 1))
+.apply_var_labs(vs = "Engine")
+.apply_val_labs(vs = c("V-engine" = 0)) 
+expect_warning(.add_val_lab(vs, c("Straight engine" = 1)))
 
-.set_var_lab(am, "Transmission")
-.set_val_lab(am, c(automatic = 0,  manual=1))
+.apply_labels(am = "Transmission",
+              am = c(automatic = 0,  manual=1)
+)
 
 mtcars = within(mtcars,{
     mpg_by_am = ave(mpg, am, FUN = mean)

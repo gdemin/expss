@@ -27,8 +27,9 @@ unvr(x)
 }
 \description{
 These functions set/get/drop variable labels. For utilizing labels in base R 
-see \link{f}, \link{names2labels}, \link{values2labels}, \link{unlab}. For
-value labels see \link{val_lab}.
+see \link{f}, \link{names2labels}, \link{values2labels}, \link{unlab}. For 
+value labels see \link{val_lab}. For working with entire data.frame see
+\link{apply_labels}.
 \itemize{
 \item{\code{var_lab}}{ returns variable label or NULL if label doesn't 
 exist.} 

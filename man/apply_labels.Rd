@@ -26,16 +26,33 @@ apply_val_labs(data, ...)
 
 \item{...}{named arguments. Name of argument is a variable name in 
 \code{data}. Arguments values is variable label/value labels. For 
-\code{apply_labels} characters are considered as variable labels and named 
-vectors are considered as value labels.}
+\code{apply_labels} unnamed characters of length 1 are considered as
+variable labels and named vectors are considered as value labels.}
 }
 \value{
 \code{data} with applied labels
 }
 \description{
-Set variable labels/value labels on variables in the data.frame
+\code{apply_labels} tries automatically detect what is variable label and
+what are value labels. \code{.apply_*} are versions for working
+with default dataset. See also \link{var_lab} and \link{val_lab}.
 }
 \examples{
-1
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      vs = "Engine",
+                      vs = ml_left("
+                             0 V-engine 
+                             1 Straight engine
+                             "),
+                      am = "Transmission",
+                      am = ml_left("
+                             0 Automatic 
+                             1 Manual
+                             ")
+)
+
+with(mtcars, cro(vs, am))
+
 }
 

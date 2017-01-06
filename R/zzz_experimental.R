@@ -22,12 +22,9 @@
 #' SPSS DO IF operator. See \link{modify_if}.}
 #' \item{\code{.where}}{ Leave subset of default data.frame which meet
 #' condition. See \link{where}, \link[base]{subset}.}
-#' \item{\code{.set_var_lab}}{ Set variable label in the default data.frame. See
-#' \link{set_var_lab}.}
-#' \item{\code{.set_val_lab}}{ Set value labels for variable in the default
-#' data.frame. See \link{set_val_lab}.}
-#' \item{\code{.add_val_lab}}{ Add value labels for variable in the default
-#' data.frame. See \link{add_val_lab}.}
+#' \item{\code{.set_var_lab}}{ Deprecated. Use \link{.apply_labels}.}
+#' \item{\code{.set_val_lab}}{ Deprecated. Use \link{.apply_labels}.}
+#' \item{\code{.add_val_lab}}{ Deprecated. Use \link{.apply_labels}.}
 #' \item{\code{.if_val}}{ Change, rearrange or consolidate the values of an existing
 #' variable inside default data.frame. See \link{if_val}.}
 #' \item{\code{.recode}}{ Shortcut for \code{.if_val}. Name is inspired by
@@ -77,33 +74,33 @@
 #' })
 #' 
 #' # set labels
-#' .set_var_lab(mpg, "Miles/(US) gallon")
-#' .set_var_lab(cyl, "Number of cylinders")
-#' .set_var_lab(disp, "Displacement (cu.in.)")
-#' .set_var_lab(hp, "Gross horsepower")
-#' .set_var_lab(mpg_by_am, "Average mpg for transimission type")
-#' .set_var_lab(hi_low_mpg, "Miles per gallon")
-#' .set_val_lab(hi_low_mpg, ml_left("
-#'                                   0 Low
-#'                                   1 High
-#'                                   "))
+#' .apply_labels(
+#'     mpg = "Miles/(US) gallon",
+#'     cyl = "Number of cylinders",
+#'     disp = "Displacement (cu.in.)",
+#'     hp = "Gross horsepower",
+#'     mpg_by_am = "Average mpg for transimission type",
+#'     hi_low_mpg = "Miles per gallon",
+#'     hi_low_mpg = ml_left("
+#'                      0 Low
+#'                      1 High
+#'                      "),
 #' 
-#' .set_var_lab(vs, "Engine")
-#' .set_val_lab(vs, ml_left(" 
-#'                           0 V-engine
-#'                           1 Straight engine
-#'                           "))
+#'     vs = "Engine",
+#'     vs = ml_left(" 
+#'                      0 V-engine
+#'                      1 Straight engine
+#'                  "),
 #' 
-#' .set_var_lab(am, "Transmission")
-#' .set_val_lab(am, ml_left(" 
-#'                           0 automatic
-#'                           1 manual
-#'                           "))
-#' 
+#'     am = "Transmission",
+#'     am = ml_left(" 
+#'                      0 Automatic
+#'                      1 Manual
+#'                           ")
+#' )
 #' # calculate frequencies
 #' .fre(hi_low_mpg)
 #' .cro(cyl, hi_low_mpg)
-#' .cro_mean(mpg, am)
 #' .cro_mean(data.frame(mpg, disp, hp), vs)
 #' 
 #' # disable default dataset
@@ -172,6 +169,9 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 modify_default_dataset_light = function(x, ...){
     expr = as.character(as.expression(sys.call()))
     expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
+    if(as.character(expr[[1]][[1]]) %in% c("set_var_lab", "set_val_lab", "add_val_lab")){
+        .Deprecated("apply_labels")
+    }
     for_names = as.expression(substitute(x))
     reference = suppressMessages(default_dataset() )
     data = ref(reference)

@@ -1,8 +1,9 @@
 #' Set or get variable label
 #' 
 #' These functions set/get/drop variable labels. For utilizing labels in base R 
-#' see \link{f}, \link{names2labels}, \link{values2labels}, \link{unlab}. For
-#' value labels see \link{val_lab}.
+#' see \link{f}, \link{names2labels}, \link{values2labels}, \link{unlab}. For 
+#' value labels see \link{val_lab}. For working with entire data.frame see
+#' \link{apply_labels}.
 #' \itemize{
 #' \item{\code{var_lab}}{ returns variable label or NULL if label doesn't 
 #' exist.} 
@@ -154,7 +155,7 @@ unvr.list=function(x){
 #' that usually used in questionnaires to named vector. See examples. For 
 #' utilizing labels in base R see \link{f}, \link{names2labels}, 
 #' \link{values2labels}, \link{unlab}, \link{dichotomy}. For variable labels see
-#' \link{var_lab}.
+#' \link{var_lab}. For working with entire data.frame see \link{apply_labels}.
 #' \itemize{
 #' \item{\code{val_lab}}{ returns value labels or NULL if labels doesn't 
 #' exist.} 

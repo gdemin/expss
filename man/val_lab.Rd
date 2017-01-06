@@ -63,7 +63,7 @@ NULL} or \code{unvl(var)}. \code{make_labels} converts text from the form
 that usually used in questionnaires to named vector. See examples. For 
 utilizing labels in base R see \link{f}, \link{names2labels}, 
 \link{values2labels}, \link{unlab}, \link{dichotomy}. For variable labels see
-\link{var_lab}.
+\link{var_lab}. For working with entire data.frame see \link{apply_labels}.
 \itemize{
 \item{\code{val_lab}}{ returns value labels or NULL if labels doesn't 
 exist.} 
