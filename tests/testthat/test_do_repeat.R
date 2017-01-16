@@ -29,3 +29,16 @@ res_iris = do_repeat(res_iris, i = qc(i1, i2, i3), value = c(10, 20, 30),
 
 
 expect_identical(res_iris, test_iris)
+
+test_iris = iris
+test_iris$log = log(iris$Sepal.Length)
+test_iris$exp = exp(iris$Sepal.Length)
+
+res_iris = iris
+
+res_iris = do_repeat(res_iris, i = qc(log, exp), fun = qc(log, exp), 
+                     expr = {
+                         i = fun(Sepal.Length)
+                     })
+
+expect_identical(res_iris, test_iris)
