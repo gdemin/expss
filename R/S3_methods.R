@@ -79,6 +79,14 @@ var_attr = function(x){
 
 
 #' @export
+"[.summary_table" = function(x, i, j, ...){
+    res = `[.data.frame`(x, i, j, drop = FALSE)  
+    class(res) = class(x)
+    res
+}
+
+
+#' @export
 as.double.labelled = function (x, ...){
     y = NextMethod("as.double")
     var_attr(y)=var_attr(x)
