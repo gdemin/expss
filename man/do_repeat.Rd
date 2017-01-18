@@ -4,7 +4,7 @@
 \alias{do_repeat}
 \title{Title}
 \usage{
-do_repeat(data, ..., expr)
+do_repeat(data, ...)
 }
 \arguments{
 \item{data}{dfdf}
@@ -18,6 +18,6 @@ sdsd
 Title
 }
 \examples{
-sdsdds
+1
 }
 

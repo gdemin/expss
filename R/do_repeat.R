@@ -7,8 +7,8 @@
 #' @export
 #'
 #' @examples
-#' sdsdds
-do_repeat = function(data, ..., expr){
+#' 1
+do_repeat = function(data, ...){
     UseMethod("do_repeat")    
 }
 
