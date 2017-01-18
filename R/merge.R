@@ -56,6 +56,8 @@
 '%merge%.simple_table' = function(x, y) merge.simple_table(x, y)
 
 
+
+
 #' @export
 merge.simple_table = function(x, y,
                         by.x = colnames(x)[1],
@@ -107,3 +109,10 @@ merge.simple_table = function(x, y,
     res
 
 }
+
+
+#' @export
+merge.summary_table = merge.simple_table
+
+#' @export
+'%merge%.summary_table' = function(x, y) merge.summary_table(x, y)

@@ -53,6 +53,52 @@ expect_equal_to_reference(with(mtcars,{
 }), "rds/merge11.rds")
 
 
+context("merge summary_table")
+data("mtcars")
+
+mtcars = modify(mtcars, {
+    var_lab(vs) = "vs"
+    var_lab(am) = "am"
+    val_lab(am) = c("automatic transmission" = 1, "manual transmission" = 0)
+    var_lab(gear) = "gear"
+    var_lab(carb) = "carb"})
+
+expect_equal_to_reference(
+    with(mtcars, 
+         merge(cro_mean(list(mpg, gear, carb), am), 
+               cro_mean(list(gear, carb), am)
+         )
+    ), 
+    "rds/merge_summary_table1.rds")
+
+
+expect_equal_to_reference(
+    with(mtcars, 
+         merge(cro_mean(list(mpg, gear, carb), am), 
+               cro_mean(list(gear, carb), vs)
+         )
+    ), 
+    "rds/merge_summary_table2.rds")
+
+
+expect_equal_to_reference(
+    with(mtcars, 
+         cro_mean(list(mpg, gear, carb), am)  %merge%  
+               cro_mean(list(gear, carb), am)
+         
+    ), 
+    "rds/merge_summary_table1.rds")
+
+
+expect_equal_to_reference(
+    with(mtcars, 
+         cro_mean(list(mpg, gear, carb), am) %merge% 
+               cro_mean(list(gear, carb), vs)
+         
+    ), 
+    "rds/merge_summary_table2.rds")
+
+
 context("left join")
 
 a = dtfrm(x = 1:5, y = 11:15)
