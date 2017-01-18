@@ -10,8 +10,6 @@ do_repeat(data, ..., expr)
 \item{data}{dfdf}
 
 \item{...}{sdsdds}
-
-\item{expr}{sdsdds}
 }
 \value{
 sdsd

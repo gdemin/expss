@@ -2,7 +2,6 @@
 #'
 #' @param data dfdf
 #' @param ...  sdsdds
-#' @param expr sdsdds
 #'
 #' @return sdsd
 #' @export
@@ -14,11 +13,17 @@ do_repeat = function(data, ..., expr){
 }
 
 #' @export
-do_repeat.data.frame = function(data, ..., expr){
-    items = list(...)
+do_repeat.data.frame = function(data, ...){
+    args = substitute(list(...))
+    expr = args[[length(args)]]
+    args[length(args)] = NULL
+    items = eval(args, envir = parent.frame())
     items_lengths = lengths(items)
     stopif(!all(items_lengths %in% c(1, max(items_lengths))),
-           "All variable should have equal length or length 1")
+           "All variables should have equal length or length 1")
+    items_names = names(items)
+    stopif(is.null(items_names) || any(is.na(items_names) | items_names==""), 
+           "All variables among '...' should be named.")
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     e$.n = nrow(data)
@@ -38,7 +43,7 @@ do_repeat.data.frame = function(data, ..., expr){
                 item  
             }
         })
-        names(curr_loop) = names(items)
+        names(curr_loop) = items_names
         
         substituted_expr = substitute_symbols(expr, curr_loop)
         eval(substituted_expr, e)
