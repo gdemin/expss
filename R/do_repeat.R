@@ -1,9 +1,9 @@
-#' Title
+#' Repeats the same transformations on a specified set of variables/values
 #'
-#' @param data dfdf
-#' @param ...  sdsdds
+#' @param data data.frame
+#' @param ...  vectors which values will be repeated. 
 #'
-#' @return sdsd
+#' @return transformed data.frame \code{data}
 #' @export
 #'
 #' @examples
@@ -87,3 +87,16 @@ substitute_symbols = function (expr, symbols) {
 }
 
 
+
+
+#' @export
+#' @name do_repeat
+.do_repeat = function (...) {
+    # based on 'within' from base R by R Core team
+    reference = suppressMessages(default_dataset())
+    data = ref(reference)
+    data = eval(substitute(do_repeat(data, ...)), envir = parent.frame(), enclos = baseenv())
+    ref(reference) = data
+    invisible(data)
+
+}
