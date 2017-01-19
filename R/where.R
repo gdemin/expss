@@ -102,10 +102,7 @@ where_helper = function(data, cond){
     } else {
         e = evalq(environment(), new.env(), parent.frame())
     }
-    e$.n = NROW(data)
-    e$.N = NROW(data)
-    lockBinding(".n", e)
-    lockBinding(".N", e)
+    prepare_env(e, n = NROW(data))
     cond = eval_dynamic_scoping(cond, e, 
                                 skip_up_to_frame = 
                                     c("where", "%where%", ".where", "where.list", "where.data.frame", "where.default"))

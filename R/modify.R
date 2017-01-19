@@ -72,14 +72,9 @@ modify.data.frame = function (data, expr) {
     # based on 'within' from base R by R Core team
     parent = parent.frame()
     e = evalq(environment(), data, parent)
-    e$.n = nrow(data)
-    e$.N = nrow(data)
-    e$set = set_generator(e$.N)
-    lockBinding(".n", e)
-    lockBinding(".N", e)
-    lockBinding("set", e)
+    prepare_env(e, n = nrow(data))
     eval(substitute(expr), e)
-    rm(".n", "set", ".N", envir = e)
+    clear_env(e)
     l = as.list(e, all.names = TRUE)
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
     del = setdiff(names(data), names(l))

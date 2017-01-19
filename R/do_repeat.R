@@ -26,16 +26,9 @@ do_repeat.data.frame = function(data, ...){
            "All variables among '...' should be named.")
     parent = parent.frame()
     e = evalq(environment(), data, parent)
-    e$.n = nrow(data)
-    e$.N = nrow(data)
-    e$set = set_generator(e$.N)
-    lockBinding(".n", e)
-    lockBinding(".N", e)
-    lockBinding("set", e)
+    prepare_env(e, n = nrow(data))
     expr = substitute(expr)
     for(each_item in seq_len(max(items_lengths))){
-        e$.item_num = each_item
-        lockBinding(".item_num", e)
         curr_loop = lapply(items, function(item){
             if(length(item)>1){
                 item[each_item]
@@ -47,9 +40,8 @@ do_repeat.data.frame = function(data, ...){
         
         substituted_expr = substitute_symbols(expr, curr_loop)
         eval(substituted_expr, e)
-        rm(".item_num", envir = e)
     }
-    rm(".n", "set", ".N", envir = e)
+    clear_env(e)
     l = as.list(e, all.names = TRUE)
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
     del = setdiff(names(data), names(l))

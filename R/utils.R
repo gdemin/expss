@@ -293,3 +293,19 @@ valid.matrix = function(x){
 valid.data.frame = function(x){
     rowSums(!is.na(x))>0
 }
+
+
+###########
+
+prepare_env = function(env, n){
+    env$.n = n
+    env$.N = n
+    env$set = set_generator(env$.N)
+    lockBinding(".n", env)
+    lockBinding(".N", env)
+    lockBinding("set", env)    
+}
+
+clear_env = function(env){
+    rm(".n", "set", ".N", envir = env)    
+}
