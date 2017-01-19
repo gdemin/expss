@@ -48,13 +48,9 @@ subst = function(...){
             var_names = rev(gsub("`", "", matches))
             
             for(each_item in seq_along(var_names)){
-                evaluated_item = eval_dynamic_scoping(parse(text = var_names[each_item]),
-                                      envir = parent.frame(), 
-                                      skip_up_to_frame = c("subst", "set")
-                                      )
-                # evaluated_item = eval(parse(text = var_names[each_item]),
-                #                       envir = parent.frame(), 
-                #                       enclos = globalenv())
+                evaluated_item = eval(parse(text = var_names[each_item]),
+                                      envir = parent.frame(),
+                                      enclos = globalenv())
                 curr = paste0("`",var_names[each_item],"`")
                 x = unlist(lapply(evaluated_item, function(item){
                     gsub(curr, item, x, fixed = TRUE)
@@ -68,4 +64,3 @@ subst = function(...){
     }
     c(res, recursive = TRUE)
 }
-
