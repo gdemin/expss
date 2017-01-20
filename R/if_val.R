@@ -254,6 +254,7 @@ recode = if_val
 #' @export
 if_val.default = function(x, ..., from = NULL, to = NULL){
     if (is.null(from) && is.null(to)){
+        stopif(!length(list(...)), "Formulas or `from`/`to` arguments should be provided.")
         recoding_list = lapply(unlist(list(...)), parse_formula)
     } else {
         stopif(is.null(from) || is.null(to), "Both 'from' and 'to' arguments should be not NULL.")
@@ -380,35 +381,51 @@ copy = function(x) x
 
 
 # make object with the same shape as its argument but filled with NA and logical type
-# for unknown reasons methods don't work when unexported
 make_empty_object = function(x){
-    if(is.data.frame(x)){
-        res = as.dtfrm(lapply(x, make_empty_object))
-        row.names(res) = row.names(x)
-        colnames(res) = colnames(x)
-    } else {
-        if(is.list(x)){
-            res = lapply(x, make_empty_object)
-            names(res) = names(x)
-        } else {
-            if(is.matrix(x)){
-                res = matrix(NA, nrow = nrow(x), ncol = ncol(x))
-                rownames(res) = rownames(x) 
-                colnames(res) = colnames(x)
-            }   else {
-                if("POSIXct" %in% class(x)){
-                    res = as.POSIXct(rep(NA, length(x)))
-                    names(res) = names(x)
-                } else {
-                    res = rep(NA, length(x))
-                    names(res) = names(x)
-                }
-            } 
-        }
-    }
-    res
-    
+    UseMethod("make_empty_object")    
 }
 
+#' @export
+make_empty_object.data.frame = function(x){
+    res = as.dtfrm(lapply(x, make_empty_object))
+    row.names(res) = row.names(x)
+    colnames(res) = colnames(x)
+    res
+} 
 
+#' @export
+make_empty_object.list = function(x){
+    res = lapply(x, make_empty_object)
+    names(res) = names(x)
+    res
+} 
 
+#' @export
+make_empty_object.matrix = function(x){
+    res = matrix(NA, nrow = nrow(x), ncol = ncol(x))
+    rownames(res) = rownames(x)
+    colnames(res) = colnames(x)
+    res
+}   
+
+#' @export
+make_empty_object.POSIXct = function(x){
+    res = as.POSIXct(rep(NA, length(x)))
+    names(res) = names(x)
+    res
+} 
+
+#' @export
+make_empty_object.factor = function(x){
+    res = x
+    res[] = NA
+    res
+} 
+
+#' @export
+make_empty_object.default = function(x){
+    res = rep(NA, length(x))
+    names(res) = names(x)
+    res
+}
+                

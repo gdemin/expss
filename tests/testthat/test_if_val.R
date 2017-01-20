@@ -2,6 +2,7 @@ context("recode simple vector")
 
 
 expect_error(recode(1, 42))
+expect_error(recode(1))
 expect_error(recode(1, ~ 42))
 
 
@@ -433,8 +434,17 @@ recode(a) = 1 ~ "bah"
 expect_identical(class(a), c("labelled", "character"))
 
 a = factor(letters[1:4])
-recode(a) = "a" ~ "z"
+
 res = factor(c("z", "b", "c", "d"), levels = c("a", "b", "c", "d", "z"))
+b = recode(a, "a" ~ "z", other ~ copy)
+expect_identical(b, res)
+
+b = recode(a, "a" ~ "z")
+res2 = res
+res2[2:4] = NA
+expect_identical(b, res2) 
+
+recode(a) = "a" ~ "z"
 expect_identical(a, res)
 
 a = factor(letters[1:4])
@@ -491,7 +501,8 @@ empty_iris[[1]] = NA
 empty_iris[[2]] = NA
 empty_iris[[3]] = NA
 empty_iris[[4]] = NA
-empty_iris[[5]] = NA
+empty_iris[[5]] = iris$Species
+empty_iris[[5]][] = NA
 rownames(empty_iris) = as.character(1:150)
 res = list(rep(NA, 4), rep(NA, 4), empty_iris)
 names(res) = c("a", "b", "c")
