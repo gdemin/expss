@@ -1,13 +1,61 @@
 #' Repeats the same transformations on a specified set of variables/values
 #'
 #' @param data data.frame
-#' @param ...  vectors which values will be repeated. 
-#'
+#' @param ...  stand-in name(s) followed by equals sign and a vector of 
+#'   replacement variables or values. Characters considered as variables names, 
+#'   all other types considered as is. Last argument should be expression in 
+#'   curly brackets which will be evaluated in the scope of data.frame 
+#'   \code{data}. See examples.
+#' 
+#' @details There is a special constant \code{.N} which equals to number of
+#'   cases in \code{data} for usage in expression inside \code{do_repeat}.
+#'   
 #' @return transformed data.frame \code{data}
 #' @export
+#' @seealso \link{compute}, \link{do_if}
 #'
 #' @examples
-#' 1
+#' data(iris)
+#' scaled_iris = do_repeat(iris, 
+#'                         i = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width), 
+#'                         {
+#'                             i = scale(i)
+#'                         })
+#' head(scaled_iris)
+#' # several stand-in names
+#' old_names = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+#' new_names = paste0("scaled_", old_names)
+#' scaled_iris = do_repeat(iris, 
+#'                         orig = old_names, 
+#'                         scaled = new_names, 
+#'                         {
+#'                             scaled = scale(orig)
+#'                         })
+#' head(scaled_iris)
+#' 
+#' # numerics
+#' set.seed(123)
+#' new_df = data.frame(id = 1:20)
+#' new_df = do_repeat(new_df, 
+#'                    item = qc(i1, i2, i3), 
+#'                    value = c(1, 2, 3), 
+#'                    {
+#'                        item = value
+#'                    })
+#' head(new_df)
+#' 
+#' # functions
+#' set.seed(123)
+#' new_df = data.frame(id = 1:20)
+#' new_df = do_repeat(new_df, 
+#'                    item = qc(i1, i2, i3), 
+#'                    fun = c("rnorm", "runif", "rexp"), 
+#'                    {
+#'                        item = fun(.N)
+#'                    })
+#' head(new_df)
+#' 
+#' 
 do_repeat = function(data, ...){
     UseMethod("do_repeat")    
 }
@@ -31,9 +79,9 @@ do_repeat.data.frame = function(data, ...){
     for(each_item in seq_len(max(items_lengths))){
         curr_loop = lapply(items, function(item){
             if(length(item)>1){
-                item[each_item]
+                item[[each_item]]
             } else {
-                item  
+                item[[1]]  
             }
         })
         names(curr_loop) = items_names

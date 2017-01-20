@@ -170,3 +170,23 @@ fff = function(){
 }
 fff()
 expect_identical(def_iris, test_iris)
+
+
+data(iris)
+
+old_names = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+new_names = paste0("scaled_", old_names)
+
+test_iris = iris
+
+test_iris[, new_names[1]] = scale(iris[, old_names[1]])
+test_iris[, new_names[2]] = scale(iris[, old_names[2]])
+test_iris[, new_names[3]] = scale(iris[, old_names[3]])
+test_iris[, new_names[4]] = scale(iris[, old_names[4]])
+
+scaled_iris = do_repeat(iris, orig = old_names, scaled = new_names,  {
+    scaled = scale(orig)
+    
+})
+
+expect_identical(scaled_iris, test_iris)
