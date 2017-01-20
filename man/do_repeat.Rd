@@ -12,7 +12,7 @@ do_repeat(data, ...)
 \arguments{
 \item{data}{data.frame}
 
-\item{...}{}
+\item{...}{vectors which values will be repeated.}
 }
 \value{
 transformed data.frame \code{data}
@@ -22,5 +22,8 @@ Repeats the same transformations on a specified set of variables/values
 }
 \examples{
 1
+}
+\seealso{
+\link{compute}, \link{do_if}
 }
 

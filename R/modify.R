@@ -2,7 +2,7 @@
 #' 
 #' \code{modify} evaluates expression \code{expr} in the context of data.frame 
 #' \code{data}. It works similar to \code{\link[base]{within}} in base R but try
-#' to return new variables in order of their occurance in the expression.
+#' to return new variables in order of their occurance in the expression. 
 #' \code{modify_if} modifies only rows for which \code{cond} has TRUE. Other 
 #' rows remain unchanged. Newly created variables also will have values only in 
 #' rows for which \code{cond} has TRUE. There will be NA's in other rows. This 
@@ -10,9 +10,10 @@
 #' special constant \code{.N} which equals to number of cases in \code{data} for
 #' usage in expression inside \code{modify}. Inside \code{modify_if} \code{.N} 
 #' gives number of rows which will be affected by expressions. Inside these 
-#' functions you can use \code{set} function which creates variables with given
-#' name/set values to existing variables - \link{.set}. It is possible with
-#' \code{set} to assign values to multiple variables at once.
+#' functions you can use \code{set} function which creates variables with given 
+#' name/set values to existing variables - \link{.set}. It is possible with 
+#' \code{set} to assign values to multiple variables at once. \code{compute} is
+#' an alias for \code{modify} and \code{do_if} is an alias for \code{modify_if}.
 #'
 #' @param data data.frame
 #' @param expr expression(s) that should be evaluated in the context of data.frame \code{data}
@@ -104,6 +105,13 @@ modify.data.frame = function (data, expr) {
     eval(bquote(modify(data, .(expr))))
 }
 
+#' @export
+#' @rdname modify
+compute = modify
+
+#' @export
+#' @rdname modify
+'%compute%' = `%modify%`
 
 #' @export
 #' @rdname modify
@@ -112,6 +120,9 @@ modify_if = function (data, cond, expr){
 }
 
 
+#' @export
+#' @rdname modify
+do_if = modify_if
 
 #' @export
 modify_if.data.frame = function (data, cond, expr) {

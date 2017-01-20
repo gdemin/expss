@@ -1,22 +1,22 @@
 #' Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.
 #' 
-#' \code{if_val} change, rearrange or consolidate the values of an existing 
+#' \code{recode} change, rearrange or consolidate the values of an existing 
 #' variable based on conditions. Design of this function inspired by RECODE from
 #' SPSS. Sequence of recodings provided in the form of formulas. For example, 
 #' 1:2 ~ 1 means that all 1's and 2's will be replaced with 1. Each value will
-#' recoded only once. In the assignment form \code{if_val(...) = ...} of this
+#' recoded only once. In the assignment form \code{recode(...) = ...} of this
 #' function values which doesn't meet any condition remain unchanged. In case of
-#' the usual form \code{... = if_val(...)} values which doesn't meet any
+#' the usual form \code{... = recode(...)} values which doesn't meet any
 #' condition will be replaced with NA. As a condition one can use just values or
 #' more sophisticated logical values and functions. There are several special
 #' functions for usage as criteria - for details see \link{criteria}. Simple
-#' common usage looks like: \code{if_val(x, 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}.
+#' common usage looks like: \code{recode(x, 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}.
 #' For more information, see details and examples.
 #' The \code{ifs} function checks whether one or more conditions are met and
 #' returns a value that corresponds to the first TRUE condition. \code{ifs} can
 #' take the place of multiple nested \code{ifelse} statements and is much
 #' easier to read with multiple conditions. \code{ifs} works in the same manner
-#' as \code{if_val} - e. g. with formulas or with from/to notation. But conditions
+#' as \code{recode} - e. g. with formulas or with from/to notation. But conditions
 #' should be only logical and it doesn't operate on multicolumn objects.
 #' 
 #' @details 
@@ -47,13 +47,14 @@
 #' \code{x}.}
 #' \item{function}{ This function will be applied to values of \code{x} which 
 #' satisfy recoding condition.There is special auxiliary function \code{copy} 
-#' which just returns its argument. So in the \code{if_val} it just copies old 
+#' which just returns its argument. So in the \code{recode} it just copies old 
 #' value (COPY in SPSS RECODE).  See examples. \code{copy} is useful in the
-#' usual form of \code{if_val} and doesn't do anything in the case of the
-#' assignment form \code{if_val() = ...} because this form don't modify values
+#' usual form of \code{recode} and doesn't do anything in the case of the
+#' assignment form \code{recode() = ...} because this form don't modify values
 #' which are not satisfying any of the conditions.}}
 #' \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 #' can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
+#' \code{if_val} is an alias for \code{recode}.
 #' 
 #' @param x vector/matrix/data.frame/list
 #' @param ... sequence of formulas which describe recodings. They are used when
@@ -78,34 +79,34 @@
 #' # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 #' set.seed(123)
 #' v1  = sample(c(0:3, 9, 10), 20, replace = TRUE)
-#' if_val(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, other ~ NA)
+#' recode(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, other ~ NA)
 #' v1
 #' 
 #' # RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 #' set.seed(123)
 #' qvar = sample((-5):20, 50, replace = TRUE)
-#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)
+#' recode(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)
 #' # the same result
-#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, ge(11) ~ 3, other ~ 0)
+#' recode(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, ge(11) ~ 3, other ~ 0)
 #'
 #' # RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). 
 #' strngvar = LETTERS
-#' if_val(strngvar, c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', other ~ ' ')
+#' recode(strngvar, c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', other ~ ' ')
 #'
 #' # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
 #' set.seed(123)
 #' age = sample(c(sample(5:30, 40, replace = TRUE), rep(9, 10)))
-#' voter = if_val(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
+#' voter = recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 #' voter
 #' 
 #' # example with function in RHS
 #' set.seed(123)
 #' a = rnorm(20)
 #' # if a<(-0.5) we change it to absolute value of a (abs function)
-#' if_val(a, lt(-0.5) ~ abs, other ~ copy) 
+#' recode(a, lt(-0.5) ~ abs, other ~ copy) 
 #' 
 #' # the same example with logical criteria
-#' if_val(a, a<(-.5) ~ abs, other ~ copy) 
+#' recode(a, a<(-.5) ~ abs, other ~ copy) 
 #' 
 #' # replace with specific value for each column
 #' # we replace values greater than 0.75 with column max and values less than 0.25 with column min
@@ -121,7 +122,7 @@
 #' dfs = data.frame(x1, x2, x3)
 #' 
 #' #replacement. Note the necessary transpose operation
-#' if_val(dfs, 
+#' recode(dfs, 
 #'         lt(0.25) ~ t(min_col(dfs)), 
 #'         gt(0.75) ~ t(max_col(dfs)), 
 #'         NA ~ t(mean_col(dfs)), 
@@ -130,7 +131,7 @@
 #' 
 #' # replace NA with row means
 #' # some rows which contain all NaN remain unchanged because mean_row for them also is NaN
-#' if_val(dfs, NA ~ mean_row(dfs), other ~ copy) 
+#' recode(dfs, NA ~ mean_row(dfs), other ~ copy) 
 #' 
 #' # some of the above examples with from/to notation
 #' 
@@ -139,23 +140,23 @@
 #' # RECODE V1 TO V3 (0=1) (1=0) (2,3=-1) (9=9) (ELSE=SYSMIS)
 #' fr = list(0, 1, 2:3, 9, other)
 #' to = list(1, 0, -1, 9, NA)
-#' if_val(v1, from = fr) = to
+#' recode(v1, from = fr) = to
 #' v1
 #' 
 #' # RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 #' fr = list(1 %thru% 5, 6 %thru% 10, ge(11), other)
 #' to = list(1, 2, 3, 0)
-#' if_val(qvar, from = fr, to = to)
+#' recode(qvar, from = fr, to = to)
 #' 
 #' # RECODE STRNGVAR ('A','B','C'='A')('D','E','F'='B')(ELSE=' ').
 #' fr = list(c('A','B','C'), c('D','E','F') , other)
 #' to = list("A", "B", " ")
-#' if_val(strngvar, from = fr, to = to)
+#' recode(strngvar, from = fr, to = to)
 #' 
 #' # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER.
 #' fr = list(NA, 18 %thru% hi, 0 %thru% 18)
 #' to = list(9, 1, 0)
-#' voter = if_val(age, from = fr, to = to)
+#' voter = recode(age, from = fr, to = to)
 #' voter
 #' 
 #' @export
@@ -169,6 +170,15 @@ if_val = function(x, ..., from = NULL, to = NULL){
 "if_val<-" = function(x, from = NULL, value){
     UseMethod("if_val<-")
 }
+
+#' @export
+#' @rdname if_val
+"recode<-" = `if_val<-`
+
+
+#' @export
+#' @rdname if_val
+recode = if_val
 
 #' @export
 "if_val<-.default" = function(x, from = NULL, value){

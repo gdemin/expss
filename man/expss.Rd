@@ -34,9 +34,9 @@ originals. I try to make them consistent with other R functions. See examples in
 \section{SPSS}{
 
 \itemize{
-\item{COMPUTE }{\link{modify}}
-\item{DO IF }{\link{modify_if}}
-\item{RECODE }{\link{if_val}}
+\item{COMPUTE }{\link{compute}}
+\item{DO IF }{\link{do_if}}
+\item{RECODE }{\link{recode}}
 \item{COUNT }{\link{count_row_if}}
 \item{VARIABLE LABELS }{\link{var_lab}}
 \item{VALUE LABELS }{\link{val_lab}}

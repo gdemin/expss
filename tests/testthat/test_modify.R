@@ -51,6 +51,16 @@ expect_identical(
 
 set.seed(1)
 expect_identical(
+    compute(dfs, {
+        a_total = sum_row(vars_range("a_1", "a_5"))
+        b_total = sum_row(vars_range("b_1", "b_5"))
+        random_numer = runif(.n)
+    }), 
+    result_dfs
+)
+
+set.seed(1)
+expect_identical(
     modify(dfs, {
         a_total = sum_row(vars_range("a_1", "a_5"))
         b_total = sum_row(vars_range("b_1", "b_5"))
@@ -68,6 +78,18 @@ expect_identical(
     }, 
     result_dfs
 )
+
+
+set.seed(1)
+expect_identical(
+    dfs %compute% {
+        a_total = sum_row(vars_range("a_1", "a_5"))
+        b_total = sum_row(vars_range("b_1", "b_5"))
+        random_numer = runif(.n)
+    }, 
+    result_dfs
+)
+
 
 set.seed(1)
 expect_identical(
@@ -161,6 +183,18 @@ expect_identical(
 set.seed(1)
 expect_identical(
     modify_if(dfs2, test %in% 2:4,
+              {
+                  b_total = sum_row(b_1 %to% b_5)
+                  aa = aa + 1
+                  random_numer = runif(.N)
+              }), 
+    result_dfs2
+)
+
+
+set.seed(1)
+expect_identical(
+    do_if(dfs2, test %in% 2:4,
               {
                   b_total = sum_row(b_1 %to% b_5)
                   aa = aa + 1
