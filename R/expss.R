@@ -41,4 +41,5 @@
 NULL
 
 
-#' @import foreign stats utils
+#' @import foreign stats utils matrixStats
+
