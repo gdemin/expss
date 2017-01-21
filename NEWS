@@ -10,6 +10,9 @@
 * NULL argument for criterion is removed. Use `not_na` instead.
 * remove `default` argument in `ifs`. Use TRUE ~ default_value instead.
 * add usual vectors functions additionally to infix versions.
+* add 'do_repeat' function
+* add functions for weighted statistics - 'w_mean', 'w_median', 'w_cor' and etc.
+* add 'nest' function for creation nested tables.
 
 0.5.5 (19.10.2016)
 ================

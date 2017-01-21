@@ -309,3 +309,82 @@ prepare_env = function(env, n){
 clear_env = function(env){
     rm(".n", "set", ".N", envir = env)    
 }
+
+
+### TRUE if argument is list, not data.frame
+is_list=function(x)
+    
+{
+    is.list(x) && (!is.data.frame(x))
+}
+
+
+##################
+uniq_elements=function(x)
+{
+    UseMethod("uniq_elements")
+}
+
+uniq_elements.default=function(x){
+    unique(x)
+}
+
+uniq_elements.matrix=function(x){
+    unique(c(x))
+}
+
+uniq_elements.data.frame=function(x){
+    unique(unlist(lapply(x, unique)))
+}
+
+uniq_elements.list=function(x){
+    unique(unlist(lapply(x, uniq_elements)))
+}
+
+
+#######
+integer_encoding=function(x, dict = NULL)
+{
+    UseMethod("integer_encoding")
+}
+
+integer_encoding.default=function(x, dict = NULL){
+    if(is.null(dict)) dict = sort(uniq_elements(x))
+    matrix(match(x, dict, incomparables=NA))
+}
+
+integer_encoding.matrix=function(x, dict = NULL){
+    if(is.null(dict)) dict = sort(uniq_elements(x))
+    matrix(match(x, dict, incomparables=NA), nrow = nrow(x))
+}
+
+integer_encoding.data.frame=function(x, dict = NULL){
+    if(is.null(dict)) dict = sort(uniq_elements(x))
+    matrix(match(unlist(x), dict, incomparables=NA), nrow = nrow(x))
+}
+
+## Flatten list
+### list(a,list(b,c))->list(a,b,c)
+### flat_df = FALSE data.frame will be left as data.frame
+### flat_df = TRUE data.frame will be converted to list
+flat_list=function(x, flat_df = FALSE)
+{
+    if(flat_df){
+        check_list = is.list
+    } else {
+        check_list = is_list
+    }
+    if(is.null(x)) return(NULL)
+    if(!check_list(x)) return(list(x))
+    need_unlist=vapply(x, check_list, FUN.VALUE = logical(1))
+    if (any(need_unlist)) {
+        res=lapply(x,function(elem){
+            if (check_list(elem)){
+                flat_list(elem, flat_df = flat_df)
+            } else list(elem)
+            
+        })
+        do.call(c, res)
+    } else as.list(x)
+    
+}
