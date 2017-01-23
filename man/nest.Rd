@@ -3,7 +3,7 @@
 \name{nest}
 \alias{\%nest\%}
 \alias{nest}
-\title{Computes nested variable from several variables}
+\title{Compute nested variable from several variables}
 \usage{
 nest(...)
 
@@ -43,10 +43,13 @@ mtcars = apply_labels(mtcars,
 )
 
 with(mtcars, cro(cyl, am \%nest\% vs))
+
 # three variables 
 with(mtcars, cro(am \%nest\% vs \%nest\% carb, cyl))
+
 # the same with usual version
 with(mtcars, cro(cyl, nest(am, vs)))
+
 # three variables 
 with(mtcars, cro(nest(am, vs, carb), cyl))
 }

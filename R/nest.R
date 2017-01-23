@@ -1,4 +1,4 @@
-#' Computes nested variable from several variables
+#' Compute nested variable from several variables
 #' 
 #' \code{nest} mainly intended for usage with table functions such as 
 #' \link{cro}. See examples. \code{\%nest\%} is infix version of this function.
@@ -30,10 +30,13 @@
 #' )
 #' 
 #' with(mtcars, cro(cyl, am %nest% vs))
+#' 
 #' # three variables 
 #' with(mtcars, cro(am %nest% vs %nest% carb, cyl))
+#' 
 #' # the same with usual version
 #' with(mtcars, cro(cyl, nest(am, vs)))
+#' 
 #' # three variables 
 #' with(mtcars, cro(nest(am, vs, carb), cyl))
 nest = function(...){
