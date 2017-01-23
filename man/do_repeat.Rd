@@ -25,8 +25,10 @@ transformed data.frame \code{data}
 Repeats the same transformations on a specified set of variables/values
 }
 \details{
-There is a special constant \code{.N} which equals to number of
-  cases in \code{data} for usage in expression inside \code{do_repeat}.
+There is a special constant \code{.N} which equals to number of 
+  cases in \code{data} for usage in expression inside \code{do_repeat}. Also 
+  there is a variable \code{.item_num} which is equal to the current
+  iteration number.
 }
 \examples{
 data(iris)
@@ -36,6 +38,7 @@ scaled_iris = do_repeat(iris,
                             i = scale(i)
                         })
 head(scaled_iris)
+
 # several stand-in names
 old_names = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 new_names = paste0("scaled_", old_names)
@@ -48,13 +51,21 @@ scaled_iris = do_repeat(iris,
 head(scaled_iris)
 
 # numerics
-set.seed(123)
 new_df = data.frame(id = 1:20)
 new_df = do_repeat(new_df, 
                    item = qc(i1, i2, i3), 
                    value = c(1, 2, 3), 
                    {
                        item = value
+                   })
+head(new_df)
+
+# the same result with internal variable '.item_num'
+new_df = data.frame(id = 1:20)
+new_df = do_repeat(new_df, 
+                   item = qc(i1, i2, i3),
+                   {
+                       item = .item_num
                    })
 head(new_df)
 

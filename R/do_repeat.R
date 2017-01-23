@@ -7,9 +7,10 @@
 #'   curly brackets which will be evaluated in the scope of data.frame 
 #'   \code{data}. See examples.
 #' 
-#' @details There is a special constant \code{.N} which equals to number of
-#'   cases in \code{data} for usage in expression inside \code{do_repeat}.
-#'   
+#' @details There is a special constant \code{.N} which equals to number of 
+#'   cases in \code{data} for usage in expression inside \code{do_repeat}. Also 
+#'   there is a variable \code{.item_num} which is equal to the current
+#'   iteration number.
 #' @return transformed data.frame \code{data}
 #' @export
 #' @seealso \link{compute}, \link{do_if}
@@ -22,6 +23,7 @@
 #'                             i = scale(i)
 #'                         })
 #' head(scaled_iris)
+#' 
 #' # several stand-in names
 #' old_names = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 #' new_names = paste0("scaled_", old_names)
@@ -34,13 +36,21 @@
 #' head(scaled_iris)
 #' 
 #' # numerics
-#' set.seed(123)
 #' new_df = data.frame(id = 1:20)
 #' new_df = do_repeat(new_df, 
 #'                    item = qc(i1, i2, i3), 
 #'                    value = c(1, 2, 3), 
 #'                    {
 #'                        item = value
+#'                    })
+#' head(new_df)
+#' 
+#' # the same result with internal variable '.item_num'
+#' new_df = data.frame(id = 1:20)
+#' new_df = do_repeat(new_df, 
+#'                    item = qc(i1, i2, i3),
+#'                    {
+#'                        item = .item_num
 #'                    })
 #' head(new_df)
 #' 
@@ -84,10 +94,13 @@ do_repeat.data.frame = function(data, ...){
                 item[[1]]  
             }
         })
+        e$.item_num = each_item
+        lockBinding(".item_num", e)
         names(curr_loop) = items_names
         
         substituted_expr = substitute_symbols(expr, curr_loop)
         eval(substituted_expr, e)
+        rm(".item_num", envir = e)
     }
     clear_env(e)
     l = as.list(e, all.names = TRUE)
