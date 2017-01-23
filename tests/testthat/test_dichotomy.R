@@ -388,8 +388,8 @@ val_lab(brands) = make_labels("
                               ")
 expect_equal_to_reference(dichotomy_df(brands, prefix = "brand_"),"rds/brands_df.rds")
 expect_identical(dichotomy1_df(brands, prefix = "brand_"),dichotomy_df(brands, prefix = "brand_")[,-5])
-expect_equal_to_reference(category(dichotomy_df(brands, prefix = "brand_")),"rds/brands_df_cat.rds")
-expect_equal_to_reference(category_df(dichotomy_df(brands, prefix = "brand_")),"rds/brands_df_cat2.rds")
+expect_equal_to_reference(category(dichotomy_df(brands, prefix = "brand_"),compress=TRUE),"rds/brands_df_cat.rds")
+expect_equal_to_reference(category_df(dichotomy_df(brands, prefix = "brand_"),compress=TRUE),"rds/brands_df_cat2.rds")
 
 ###########
 

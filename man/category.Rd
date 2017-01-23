@@ -6,10 +6,10 @@
 \title{Convert dichotomy matrix/data.frame to matrix/data.frame with category encoding}
 \usage{
 category(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
-  compress = TRUE)
+  compress = FALSE)
 
 category_df(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
-  compress = TRUE)
+  compress = FALSE)
 }
 \arguments{
 \item{x}{Dichotomy matrix (usually with 0,1 coding).}
@@ -23,7 +23,7 @@ value labels instead of column names.}
 \item{counted_value}{Vector. Values that should be considered as indicator 
 of category presence. By default it equals to 1.}
 
-\item{compress}{Logical. Should we drop columns with all NA?}
+\item{compress}{Logical. Should we drop columns with all NA? FALSE by default.}
 }
 \value{
 Matrix or data.frame with numeric values that correspond to column

@@ -7,7 +7,7 @@
 #'   value labels instead of column names.
 #' @param counted_value Vector. Values that should be considered as indicator 
 #' of category presence. By default it equals to 1.
-#' @param compress Logical. Should we drop columns with all NA?
+#' @param compress Logical. Should we drop columns with all NA? FALSE by default.
 #' @return Matrix or data.frame with numeric values that correspond to column
 #'   numbers of counted values. Column names of x or variable labels are added as value labels.
 #' @seealso \code{\link{dichotomy}} for reverse conversion.
@@ -38,12 +38,12 @@
 #' category_df(dichotomy_dataframe, prefix = "products_")
 #' 
 #' @export
-category = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
+category = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
     UseMethod("category")    
 }
 
 #' @export
-category.matrix = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
+category.matrix = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
    vallab = colnames(x)
    res = col(x)
    res[!(x %in% counted_value)] = NA
@@ -51,7 +51,7 @@ category.matrix = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1
 }
 
 #' @export
-category.data.frame = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
+category.data.frame = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
     if (use_var_lab){
         for (i in seq_along(x)){
             varlab = var_lab(x[[i]])
@@ -70,7 +70,7 @@ category.data.frame = function(x, prefix = NULL, use_var_lab = TRUE, counted_val
 }
 
 #' @export
-category.default = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
+category.default = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
     category.matrix(x = as.matrix(x), 
                     prefix = prefix, 
                     use_var_lab = use_var_lab, 
@@ -80,7 +80,7 @@ category.default = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=
 
 #' @export
 #' @rdname category
-category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = TRUE){
+category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
     res =    category(x = x, 
                       prefix = prefix, 
                       use_var_lab = use_var_lab, 
@@ -96,7 +96,10 @@ category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, co
 
 compress_and_finish = function(res, vallab, prefix, compress){
     if(compress && length(res)>0 && ncol(res)>1){
-        res = t(apply(res,1,sort,na.last = TRUE))
+        res = t(apply(res,1,function(x){
+            nas = is.na(x)
+            c(x[!nas], rep(NA, sum(nas)))
+        }))
         columns_with_values = colSums(!is.na(res))>0
         res = res[,columns_with_values,drop = FALSE]
     }
