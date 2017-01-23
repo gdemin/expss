@@ -61,11 +61,12 @@ category.data.frame = function(x, prefix = NULL, use_var_lab = TRUE, counted_val
         }
     }  
     vallab = colnames(x)
-    res = col(x)
+    # res = col(x)
     for(i in seq_along(x)){
-        res[,i][!(x[[i]] %in% counted_value)] = NA
+        x[[i]] =  ((x[[i]] %in% counted_value) | NA)*i
+        # res[,i][!(x[[i]] %in% counted_value)] = NA
     }
-    compress_and_finish(res = res, vallab = vallab, prefix = prefix, compress = compress)
+    compress_and_finish(res = x, vallab = vallab, prefix = prefix, compress = compress)
 }
 
 #' @export
