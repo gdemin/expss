@@ -87,6 +87,42 @@ var_attr = function(x){
 
 
 #' @export
+"[.category" = function(x, i, j, ...){
+    if(inherits(x, "matrix")){
+        res = `[.matrix`(x, i, j, drop = FALSE)     
+    } else {
+        res = `[.data.frame`(x, i, j, drop = FALSE)  
+    } 
+    class(res) = class(x)
+    res
+}
+
+#' @export
+"[.dichotomy" = function(x, i, j, ...){
+    if(inherits(x, "matrix")){
+        res = `[.matrix`(x, i, j, drop = FALSE)     
+        
+    } else {
+        res = `[.data.frame`(x, i, j, drop = FALSE)  
+    }
+        
+   
+    class(res) = class(x)
+    res
+}
+
+#' @export
+"[.etable" = function(x, i, j, ...){
+    res = `[.data.frame`(x, i, j, drop = FALSE)  
+    class(res) = class(x)
+    res
+}
+
+
+
+
+
+#' @export
 as.double.labelled = function (x, ...){
     y = NextMethod("as.double")
     var_attr(y)=var_attr(x)

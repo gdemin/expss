@@ -81,13 +81,13 @@ category.default = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=
 #' @export
 #' @rdname category
 category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
-    res =    category(x = x, 
-                      prefix = prefix, 
-                      use_var_lab = use_var_lab, 
-                      counted_value, 
-                      compress) 
+    res =  category(x = x, 
+                    prefix = prefix, 
+                    use_var_lab = use_var_lab, 
+                    counted_value, 
+                    compress) 
     vallab = val_lab(res)
-    res = as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
+    if (!is.data.frame(res)) res = as.dtfrm(res)
     set_val_lab(res, vallab)
 }
 
