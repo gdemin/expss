@@ -21,7 +21,8 @@ expect_equal_to_reference(category_df(dichotomy_matrix, prefix = "zero",compress
 expect_equal_to_reference(category(dichotomy_matrix, compress = FALSE),"rds/category3.rds")
 
 
-expect_identical(category(dichotomy_matrix[,FALSE,drop = FALSE], compress = FALSE),structure(integer(0), .Dim = c(10L, 0L)))
+expect_identical(category(dichotomy_matrix[,FALSE,drop = FALSE], compress = FALSE),
+                 structure(integer(0), .Dim = c(10L, 0L)))
 expect_identical(category(dichotomy_matrix[,FALSE,drop = FALSE],compress=TRUE),structure(integer(0), .Dim = c(10L, 0L)))
 expect_identical(category(numeric(0),compress=TRUE),structure(integer(0), .Dim = 0:1))
 
