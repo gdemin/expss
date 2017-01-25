@@ -325,9 +325,8 @@ val_lab(vec) = c(a=1,b=2,d=45)
 vec = data.frame(vec,3:5)
 
 expect_identical(dichotomy(vec),
-                 structure(c(1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1), .Dim = c(3L, 
-                                                                                    5L), .Dimnames = list(NULL, c("a", "b", "3", "4", "5")), class = c("dichotomy", 
-                                                                                                                                                       "matrix")))
+structure(c(1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1), .Dim = c(3L, 
+5L), .Dimnames = list(NULL, c("a", "b", "3", "4", "5")), class = c("dichotomy",  "matrix")))
 
 expect_identical(dichotomy(vec,use_na = FALSE),
                  structure(c(1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1), .Dim = c(3L, 

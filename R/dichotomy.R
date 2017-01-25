@@ -236,6 +236,7 @@ dichotomy1 = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep
     if (ncol(res)>0){
         res = res[,-ncol(res),drop = FALSE]
     }
+    class(res) = union("dichotomy", class(res)) 
     res
 }
 
@@ -255,6 +256,7 @@ dichotomy1_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, k
     if (ncol(res)>0){
         res = res[,-ncol(res),drop = FALSE]
     }
+    class(res) = union("dichotomy", class(res)) 
     res
         
 }
@@ -279,6 +281,7 @@ dichotomy_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, ke
             var_lab(res[[each]]) = n_vallab[each]
         }
     } 
+    class(res) = union("dichotomy", class(res)) 
     res
 }
 

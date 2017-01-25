@@ -48,17 +48,31 @@ rep.labelled = function (x, ...){
     y
 }
 
+#' @export
+'[[.labelled' = function (x, ...){
+    y = NextMethod("[[")
+    var_attr(y)=var_attr(x)
+    class(y) = class(x)
+    y
+}
 
 # it is needed to prevent state with inconsistent class and mode
 # (such as 'numeric' in class but mode is character)
 #' @export
 '[<-.labelled' = function (x, ..., value){
     class(x) = setdiff(class(x), "labelled")
-    y = NextMethod("[")
+    y = NextMethod("[<-")
     class(y) = c("labelled", class(y))
     y
 }
 
+#' @export
+'[[<-.labelled' = function (x, ..., value){
+    class(x) = setdiff(class(x), "labelled")
+    y = NextMethod("[[<-")
+    class(y) = c("labelled", class(y))
+    y
+}
 
 var_attr = function(x){
     list(label=var_lab(x),labels=val_lab(x))
@@ -71,49 +85,40 @@ var_attr = function(x){
 }
 
 #' @export
-"[.simple_table" = function(x, i, j, ...){
-    res = `[.data.frame`(x, i, j, drop = FALSE)  
+"[.simple_table" = function(x, i, j, drop = FALSE){
+    res = `[.data.frame`(x, i, j, drop = drop)  
     class(res) = class(x)
     res
 }
 
 
 #' @export
-"[.summary_table" = function(x, i, j, ...){
-    res = `[.data.frame`(x, i, j, drop = FALSE)  
+"[.summary_table" = function(x, i, j, drop = FALSE){
+    res = `[.data.frame`(x, i, j, drop = drop)  
     class(res) = class(x)
     res
 }
 
-
+# it's strange but I cannot make to work "NextMethod"
 #' @export
-"[.category" = function(x, i, j, ...){
-    if(inherits(x, "matrix")){
-        res = `[.matrix`(x, i, j, drop = FALSE)     
-    } else {
-        res = `[.data.frame`(x, i, j, drop = FALSE)  
-    } 
-    class(res) = class(x)
-    res
-}
-
-#' @export
-"[.dichotomy" = function(x, i, j, ...){
-    if(inherits(x, "matrix")){
-        res = `[.matrix`(x, i, j, drop = FALSE)     
-        
-    } else {
-        res = `[.data.frame`(x, i, j, drop = FALSE)  
-    }
-        
-   
+"[.category" = function(x, i, j, drop = FALSE){
+    res = NextMethod("[")
     class(res) = class(x)
     res
 }
 
 #' @export
-"[.etable" = function(x, i, j, ...){
-    res = `[.data.frame`(x, i, j, drop = FALSE)  
+"[.dichotomy" = function(x, i, j, drop = FALSE){
+    class_x = class(x)
+    class(x) = setdiff(class(x), "dichotomy")
+    res = `[`(x, i, j, drop = drop)     
+    class(res) = class_x
+    res
+}
+
+#' @export
+"[.etable" = function(x, i, j, drop = FALSE){
+    res = `[.data.frame`(x, i, j, drop = drop)  
     class(res) = class(x)
     res
 }
