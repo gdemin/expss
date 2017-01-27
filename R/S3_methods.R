@@ -84,42 +84,47 @@ var_attr = function(x){
     x
 }
 
+### All subsetting methods are so strange because
+### NextMethod doesn't work and I don't know why 
 #' @export
 "[.simple_table" = function(x, i, j, drop = FALSE){
-    res = `[.data.frame`(x, i, j, drop = drop)  
-    class(res) = class(x)
+    class(x) = setdiff(class(x), "simple_table")
+    res = x[i, j, drop = drop]  
+    class(res) = union("simple_table", class(res))
     res
 }
 
 
 #' @export
 "[.summary_table" = function(x, i, j, drop = FALSE){
-    res = `[.data.frame`(x, i, j, drop = drop)  
-    class(res) = class(x)
+    class(x) = setdiff(class(x), "summary_table")
+    res = x[i, j, drop = drop]  
+    class(res) = union("summary_table", class(res))
     res
 }
 
 # it's strange but I cannot make to work "NextMethod"
 #' @export
 "[.category" = function(x, i, j, drop = FALSE){
-    res = NextMethod("[")
-    class(res) = class(x)
+    class(x) = setdiff(class(x), "category")
+    res = x[i, j, drop = drop]  
+    class(res) = union("category", class(res))
     res
 }
 
 #' @export
 "[.dichotomy" = function(x, i, j, drop = FALSE){
-    class_x = class(x)
     class(x) = setdiff(class(x), "dichotomy")
-    res = `[`(x, i, j, drop = drop)     
-    class(res) = class_x
+    res = x[i, j, drop = drop]  
+    class(res) = union("dichotomy", class(res))
     res
 }
 
 #' @export
 "[.etable" = function(x, i, j, drop = FALSE){
-    res = `[.data.frame`(x, i, j, drop = drop)  
-    class(res) = class(x)
+    class(x) = setdiff(class(x), "etable")
+    res = x[i, j, drop = drop]  
+    class(res) = union("etable", class(res))
     res
 }
 
