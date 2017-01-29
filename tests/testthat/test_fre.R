@@ -175,6 +175,15 @@ context("simple_table methods")
 expect_equal_to_reference(fre(mtcars$am)[,"Count"], "rds/fre2.6.rds")
 expect_equal_to_reference(fre(mtcars$am)[2, ], "rds/fre2.7.rds")
 
+expect_equal_to_reference(fre(mtcars$am)[,"Count"][,1], "rds/fre2.6.rds")
+expect_equal_to_reference(fre(mtcars$am)[,"Count"][2,], "rds/fre2.8.rds")
+
+expect_equal_to_reference(fre(mtcars$am)[,"Count", drop = TRUE], "rds/fre2.9.rds")
+expect_equal_to_reference(fre(mtcars$am)[,"Count", drop = TRUE][3], "rds/fre2.10.rds")
+expect_equal_to_reference(fre(mtcars$am)[,"Count"][2, , drop = TRUE], "rds/fre2.11.rds")
+
+
+
 context("fre and cro examples")
 
 a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c")))

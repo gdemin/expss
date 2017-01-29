@@ -43,7 +43,11 @@ rep.labelled = function (x, ...){
 #' @export
 '[.labelled' = function (x, ...){
     y = NextMethod("[")
+    # browser()
+    # class(x) = setdiff(class(x), "labelled")
+    # y = x[...]
     var_attr(y)=var_attr(x)
+    # class(y) = union("labelled", class(x))
     class(y) = class(x)
     y
 }
@@ -51,7 +55,11 @@ rep.labelled = function (x, ...){
 #' @export
 '[[.labelled' = function (x, ...){
     y = NextMethod("[[")
+    # browser()
+    # class(x) = setdiff(class(x), "labelled")
+    # y = x[...]
     var_attr(y)=var_attr(x)
+    # class(y) = union("labelled", class(x))
     class(y) = class(x)
     y
 }
@@ -79,8 +87,8 @@ var_attr = function(x){
 }
 
 'var_attr<-' = function(x,value){
-    var_lab(x)=value$label
-    val_lab(x)=value$labels
+    var_lab(x)=value[["label"]]
+    val_lab(x)=value[["labels"]]
     x
 }
 
@@ -88,46 +96,37 @@ var_attr = function(x){
 ### NextMethod doesn't work and I don't know why 
 #' @export
 "[.simple_table" = function(x, i, j, drop = FALSE){
-    class(x) = setdiff(class(x), "simple_table")
-    res = x[i, j, drop = drop]  
-    class(res) = union("simple_table", class(res))
-    res
+    subset_helper(x, i, j, drop, class_name = "simple_table")
 }
 
 
 #' @export
 "[.summary_table" = function(x, i, j, drop = FALSE){
-    class(x) = setdiff(class(x), "summary_table")
-    res = x[i, j, drop = drop]  
-    class(res) = union("summary_table", class(res))
-    res
+    subset_helper(x, i, j, drop, class_name = "summary_table")
 }
 
 # it's strange but I cannot make to work "NextMethod"
 #' @export
 "[.category" = function(x, i, j, drop = FALSE){
-    class(x) = setdiff(class(x), "category")
-    res = x[i, j, drop = drop]  
-    class(res) = union("category", class(res))
-    res
+    subset_helper(x, i, j, drop, class_name = "category")
 }
 
 #' @export
 "[.dichotomy" = function(x, i, j, drop = FALSE){
-    class(x) = setdiff(class(x), "dichotomy")
-    res = x[i, j, drop = drop]  
-    class(res) = union("dichotomy", class(res))
-    res
+    subset_helper(x, i, j, drop, class_name = "dichotomy")
 }
 
 #' @export
 "[.etable" = function(x, i, j, drop = FALSE){
-    class(x) = setdiff(class(x), "etable")
-    res = x[i, j, drop = drop]  
-    class(res) = union("etable", class(res))
-    res
+    subset_helper(x, i, j, drop, class_name = "etable")
 }
 
+subset_helper = function(x, i, j, drop, class_name){
+    class(x) = setdiff(class(x), class_name)
+    res = x[i, j,  drop = drop]     
+    if(!drop) class(res) = union(class_name, class(res))
+    res    
+}
 
 
 

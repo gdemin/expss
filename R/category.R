@@ -87,7 +87,10 @@ category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, co
                     counted_value, 
                     compress) 
     vallab = val_lab(res)
-    if (!is.data.frame(res)) res = as.dtfrm(res)
+    if (!is.data.frame(res)) { 
+        res = as.dtfrm(res)
+        class(res) = union("category", class(res))   
+    }    
     set_val_lab(res, vallab)
 }
 
@@ -110,7 +113,7 @@ compress_and_finish = function(res, vallab, prefix, compress){
     if(!is.null(prefix) && NCOL(res)>0){
         colnames(res) = paste0(prefix, seq_len(NCOL(res)))
     }
-    class(res) = setdiff(class(res),"dichotomy")
+    class(res) = union("category", setdiff(class(res),"dichotomy"))
     res
     
 }
