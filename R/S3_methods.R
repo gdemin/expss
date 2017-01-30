@@ -105,16 +105,7 @@ var_attr = function(x){
     subset_helper(x, i, j, drop, class_name = "summary_table")
 }
 
-# it's strange but I cannot make to work "NextMethod"
-#' @export
-"[.category" = function(x, i, j, drop = FALSE){
-    subset_helper(x, i, j, drop, class_name = "category")
-}
 
-#' @export
-"[.dichotomy" = function(x, i, j, drop = FALSE){
-    subset_helper(x, i, j, drop, class_name = "dichotomy")
-}
 
 #' @export
 "[.etable" = function(x, i, j, drop = FALSE){
@@ -128,6 +119,17 @@ subset_helper = function(x, i, j, drop, class_name){
     res    
 }
 
+
+# it's strange but I cannot make to work "NextMethod"
+# #' @export
+# "[.category" = function(x, i, j, drop = FALSE){
+#     subset_helper(x, i, j, drop, class_name = "category")
+# }
+# 
+# #' @export
+# "[.dichotomy" = function(x, i, j, drop = FALSE){
+#     subset_helper(x, i, j, drop, class_name = "dichotomy")
+# }
 
 
 

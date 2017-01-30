@@ -26,8 +26,9 @@ of category presence. By default it equals to 1.}
 \item{compress}{Logical. Should we drop columns with all NA? FALSE by default.}
 }
 \value{
-Matrix or data.frame with numeric values that correspond to column
-  numbers of counted values. Column names of x or variable labels are added as value labels.
+Matrix or data.frame of calss \code{category} with numeric values
+  that correspond to column numbers of counted values. Column names of x or
+  variable labels are added as value labels.
 }
 \description{
 Convert dichotomy matrix/data.frame to matrix/data.frame with category encoding
@@ -60,6 +61,7 @@ category_df(dichotomy_dataframe, prefix = "products_")
 
 }
 \seealso{
-\code{\link{dichotomy}} for reverse conversion.
+\code{\link{dichotomy}} for reverse conversion, \link{mrset},
+  \link{mdset} for usage multiple-response variables with tables.
 }
 

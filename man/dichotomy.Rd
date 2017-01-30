@@ -55,7 +55,7 @@ all values will be kept. Ignored if keep_values/keep_labels are provided.}
 default all labels/levels will be kept. Ignored if keep_values/keep_labels are provided.}
 }
 \value{
-matrix or data.frame with 0,1 which column names are value labels or
+matrix or data.frame of class \code{dichotomy} with 0,1 which column names are value labels or
   values with prefix. If label doesn't exist for particular value then this
   value will be used as column name.
 }
@@ -122,6 +122,7 @@ dichotomy_df(brands, prefix = "brand_")
 
 }
 \seealso{
-\code{\link{category}} for reverse conversion.
+\code{\link{category}} for reverse conversion, \link{mrset},
+  \link{mdset} for usage multiple-response variables with tables.
 }
 

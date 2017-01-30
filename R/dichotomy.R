@@ -24,10 +24,11 @@
 #'   all values will be kept. Ignored if keep_values/keep_labels are provided.
 #' @param drop_labels Numeric/character. Labels/levels that should be dropped. By
 #'   default all labels/levels will be kept. Ignored if keep_values/keep_labels are provided.
-#' @return matrix or data.frame with 0,1 which column names are value labels or
+#' @return matrix or data.frame of class \code{dichotomy} with 0,1 which column names are value labels or
 #'   values with prefix. If label doesn't exist for particular value then this
 #'   value will be used as column name.
-#' @seealso \code{\link{category}} for reverse conversion.
+#' @seealso \code{\link{category}} for reverse conversion, \link{mrset},
+#'   \link{mdset} for usage multiple-response variables with tables.
 #' @examples
 #' # toy example
 #' # brands - multiple response question
