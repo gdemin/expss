@@ -459,11 +459,13 @@ a = c(1,1,1, 1, 1)
 b = c(0, 1, 2, 2, NA)
 weight = c(0, 0, 1, 1, 1)
 expect_equal_to_reference(cro_mean(b, a, weight = weight), "rds/cro_mean6.rds")
+expect_equal_to_reference(cro_median(b, a, weight = weight), "rds/cro_median6.rds")
 expect_equal_to_reference(cro_sum(b, a, weight = weight), "rds/cro_sum6.rds")
 
 
 
 expect_equal_to_reference(cro_median(iris[,-5], iris$Species), "rds/cro_median8.rds")
+expect_equal_to_reference(cro_median(iris[,-5], iris$Species, weight = rep(1, 150)), "rds/cro_median8.rds")
 expect_equal_to_reference(cro_mean(iris[,-5], iris$Species), "rds/cro_mean8.rds")
 
 expect_output_file(print(cro_mean(iris[,-5], iris$Species)), "rds/cro_mean_out.txt")

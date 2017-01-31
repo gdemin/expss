@@ -435,13 +435,7 @@ cro_mean = function(x, predictor, weight = NULL){
     stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     
     na_if(x) = is.na(predictor)
-    if (is.null(weight)){
-        cro_fun(x = x, predictor = predictor, fun = mean, na.rm = TRUE)
-    } else {
-        cro_fun(x = x, predictor = predictor, weight = weight, fun = function(x, weight, na.rm){
-            stats::weighted.mean(x = x, w = weight, na.rm = TRUE)
-        })
-    }
+    cro_fun(x = x, predictor = predictor, weight = weight, fun = w_mean)
 }
 
 #' @export
@@ -464,28 +458,18 @@ cro_sum = function(x, predictor, weight = NULL){
     stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     
     na_if(x) = is.na(predictor)
-    if (is.null(weight)){
-        cro_fun(x = x, predictor = predictor, fun = function(x) {
-            if(all(is.na(x))){
-                NA
-            } else {
-                sum(x, na.rm = TRUE)    
-            }  
-        })
-    } else {
-        cro_fun(x = x, predictor = predictor, weight = weight, fun = function(x, weight, na.rm){
-            if(all(is.na(x))){
-                NA
-            } else {
-                sum(x*weight, na.rm = TRUE)    
-            }   
-        })
-    }
+    cro_fun(x = x, predictor = predictor, weight = weight, fun = function(x, weight = NULL, na.rm){
+        if(all(is.na(x))){
+            NA
+        } else {
+            w_sum(x, weight = weight)    
+        }   
+    })
 }
 
 #' @export
 #' @rdname fre
-cro_median = function(x, predictor){
+cro_median = function(x, predictor, weight = NULL){
     if(is.null(x)){
         str_x = deparse(substitute(x))
         stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
@@ -500,9 +484,10 @@ cro_median = function(x, predictor){
     }
     stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
     
     na_if(x) = is.na(predictor)
-    cro_fun(x = x, predictor = predictor, fun = stats::median, na.rm = TRUE)
+    cro_fun(x = x, predictor = predictor, weight = weight, fun = w_median)
 }
 
 # used only in cro_fun

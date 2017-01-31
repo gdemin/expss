@@ -27,7 +27,7 @@ cro_mean(x, predictor, weight = NULL)
 
 cro_sum(x, predictor, weight = NULL)
 
-cro_median(x, predictor)
+cro_median(x, predictor, weight = NULL)
 
 cro_fun(x, predictor, fun, ..., weight = NULL)
 
