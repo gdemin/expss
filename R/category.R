@@ -8,7 +8,7 @@
 #' @param counted_value Vector. Values that should be considered as indicator 
 #' of category presence. By default it equals to 1.
 #' @param compress Logical. Should we drop columns with all NA? FALSE by default.
-#' @return Matrix or data.frame of calss \code{category} with numeric values
+#' @return Matrix or data.frame of class \code{category} with numeric values
 #'   that correspond to column numbers of counted values. Column names of x or
 #'   variable labels are added as value labels.
 #' @seealso \code{\link{dichotomy}} for reverse conversion, \link{mrset},

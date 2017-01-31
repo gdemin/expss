@@ -26,7 +26,7 @@ of category presence. By default it equals to 1.}
 \item{compress}{Logical. Should we drop columns with all NA? FALSE by default.}
 }
 \value{
-Matrix or data.frame of calss \code{category} with numeric values
+Matrix or data.frame of class \code{category} with numeric values
   that correspond to column numbers of counted values. Column names of x or
   variable labels are added as value labels.
 }
