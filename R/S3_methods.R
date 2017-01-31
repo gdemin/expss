@@ -2,15 +2,15 @@
 # this entire method for compatibility with other packages where 
 # "labelled' is single class rather than c("labelled", "numeric") etc.
 #' @export
-as.data.frame.labelled = function(x_flat, ..., nm = paste(deparse(substitute(x_flat), width.cutoff = 500L)) ){
-    if(length(class(x_flat))>1){
+as.data.frame.labelled = function(x, ..., nm = paste(deparse(substitute(x), width.cutoff = 500L)) ){
+    if(length(class(x))>1){
         # because we can have labelled matrices or factors with variable label
         NextMethod("as.data.frame", ..., nm = nm, stringsAsFactors = FALSE)
         
     } else {
         # this branch for other packages where "labelled' is single class rather than c("labelled", "numeric") etc.
         
-        as.data.frame.vector(x_flat, ..., nm = nm, stringsAsFactors = FALSE)
+        as.data.frame.vector(x, ..., nm = nm, stringsAsFactors = FALSE)
     }
 }
 
@@ -33,88 +33,88 @@ c.labelled = function(..., recursive = FALSE)
 
 
 #' @export
-rep.labelled = function (x_flat, ...){
+rep.labelled = function (x, ...){
     y=NextMethod("rep")
-    var_attr(y)=var_attr(x_flat)
-    class(y) = class(x_flat)
+    var_attr(y)=var_attr(x)
+    class(y) = class(x)
     y	
 }
 
 #' @export
-'[.labelled' = function (x_flat, ...){
+'[.labelled' = function (x, ...){
     y = NextMethod("[")
     # browser()
-    # class(x_flat) = setdiff(class(x_flat), "labelled")
-    # y = x_flat[...]
-    var_attr(y)=var_attr(x_flat)
-    # class(y) = union("labelled", class(x_flat))
-    class(y) = class(x_flat)
+    # class(x) = setdiff(class(x), "labelled")
+    # y = x[...]
+    var_attr(y)=var_attr(x)
+    # class(y) = union("labelled", class(x))
+    class(y) = class(x)
     y
 }
 
 #' @export
-'[[.labelled' = function (x_flat, ...){
+'[[.labelled' = function (x, ...){
     y = NextMethod("[[")
     # browser()
-    # class(x_flat) = setdiff(class(x_flat), "labelled")
-    # y = x_flat[...]
-    var_attr(y)=var_attr(x_flat)
-    # class(y) = union("labelled", class(x_flat))
-    class(y) = class(x_flat)
+    # class(x) = setdiff(class(x), "labelled")
+    # y = x[...]
+    var_attr(y)=var_attr(x)
+    # class(y) = union("labelled", class(x))
+    class(y) = class(x)
     y
 }
 
 # it is needed to prevent state with inconsistent class and mode
 # (such as 'numeric' in class but mode is character)
 #' @export
-'[<-.labelled' = function (x_flat, ..., value){
-    class(x_flat) = setdiff(class(x_flat), "labelled")
+'[<-.labelled' = function (x, ..., value){
+    class(x) = setdiff(class(x), "labelled")
     y = NextMethod("[<-")
     class(y) = c("labelled", class(y))
     y
 }
 
 #' @export
-'[[<-.labelled' = function (x_flat, ..., value){
-    class(x_flat) = setdiff(class(x_flat), "labelled")
+'[[<-.labelled' = function (x, ..., value){
+    class(x) = setdiff(class(x), "labelled")
     y = NextMethod("[[<-")
     class(y) = c("labelled", class(y))
     y
 }
 
-var_attr = function(x_flat){
-    list(label=var_lab(x_flat),labels=val_lab(x_flat))
+var_attr = function(x){
+    list(label=var_lab(x),labels=val_lab(x))
 }
 
-'var_attr<-' = function(x_flat,value){
-    var_lab(x_flat)=value[["label"]]
-    val_lab(x_flat)=value[["labels"]]
-    x_flat
+'var_attr<-' = function(x,value){
+    var_lab(x)=value[["label"]]
+    val_lab(x)=value[["labels"]]
+    x
 }
 
 ### All subsetting methods are so strange because
 ### NextMethod doesn't work and I don't know why 
 #' @export
-"[.simple_table" = function(x_flat, i, j, drop = FALSE){
-    subset_helper(x_flat, i, j, drop, class_name = "simple_table")
+"[.simple_table" = function(x, i, j, drop = FALSE){
+    subset_helper(x, i, j, drop, class_name = "simple_table")
 }
 
 
 #' @export
-"[.summary_table" = function(x_flat, i, j, drop = FALSE){
-    subset_helper(x_flat, i, j, drop, class_name = "summary_table")
+"[.summary_table" = function(x, i, j, drop = FALSE){
+    subset_helper(x, i, j, drop, class_name = "summary_table")
 }
 
 
 
 #' @export
-"[.etable" = function(x_flat, i, j, drop = FALSE){
-    subset_helper(x_flat, i, j, drop, class_name = "etable")
+"[.etable" = function(x, i, j, drop = FALSE){
+    subset_helper(x, i, j, drop, class_name = "etable")
 }
 
-subset_helper = function(x_flat, i, j, drop, class_name){
-    class(x_flat) = setdiff(class(x_flat), class_name)
-    res = x_flat[i, j,  drop = drop]     
+subset_helper = function(x, i, j, drop, class_name){
+    class(x) = setdiff(class(x), class_name)
+    res = x[i, j,  drop = drop]     
     if(!drop) class(res) = union(class_name, class(res))
     res    
 }
@@ -122,45 +122,45 @@ subset_helper = function(x_flat, i, j, drop, class_name){
 
 # it's strange but I cannot make to work "NextMethod"
 # #' @export
-# "[.category" = function(x_flat, i, j, drop = FALSE){
-#     subset_helper(x_flat, i, j, drop, class_name = "category")
+# "[.category" = function(x, i, j, drop = FALSE){
+#     subset_helper(x, i, j, drop, class_name = "category")
 # }
 # 
 # #' @export
-# "[.dichotomy" = function(x_flat, i, j, drop = FALSE){
-#     subset_helper(x_flat, i, j, drop, class_name = "dichotomy")
+# "[.dichotomy" = function(x, i, j, drop = FALSE){
+#     subset_helper(x, i, j, drop, class_name = "dichotomy")
 # }
 
 
 
 #' @export
-as.double.labelled = function (x_flat, ...){
+as.double.labelled = function (x, ...){
     y = NextMethod("as.double")
-    var_attr(y)=var_attr(x_flat)
+    var_attr(y)=var_attr(x)
     class(y) = union("labelled", class(y))
     y	
 }
 
 #' @export
-as.integer.labelled = function (x_flat, ...){
+as.integer.labelled = function (x, ...){
     y = NextMethod("as.integer")
-    var_attr(y)=var_attr(x_flat)
+    var_attr(y)=var_attr(x)
     class(y) = union("labelled", class(y))
     y	
 }
 
 #' @export
-as.character.labelled = function (x_flat, ...){
+as.character.labelled = function (x, ...){
     y = NextMethod("as.character")
-    var_attr(y)=var_attr(x_flat)
+    var_attr(y)=var_attr(x)
     class(y) = union("labelled", class(y))
     y	
 }
 
 #' @export
-as.logical.labelled = function (x_flat, ...){
+as.logical.labelled = function (x, ...){
     y = NextMethod("as.logical")
-    var_attr(y)=var_attr(x_flat)
+    var_attr(y)=var_attr(x)
     class(y) = union("labelled", class(y))
     y	
 }
@@ -172,10 +172,10 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
     if(is.list(x)){
         x_flat = unname(c(x, recursive = TRUE))
     }
-
+    
     if(!is.null(varlab)){
         cat('LABEL:', varlab, "\n")
-
+        
     }
     cat("VALUES:\n")
     cat(unlab(head(x_flat, max)))
