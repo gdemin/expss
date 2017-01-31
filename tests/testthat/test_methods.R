@@ -25,6 +25,21 @@ expect_identical(val_lab(dfs[1,1]),val_lab(vec_with_lab))
 expect_identical(val_lab(dfs[1,'a']),val_lab(vec_with_lab))
 expect_identical(val_lab(dfs[,'a']),val_lab(vec_with_lab))
 
+expect_identical(var_lab(dfs$a[1]),var_lab(vec_with_lab))
+expect_identical(var_lab(dfs$a[[1]]),var_lab(vec_with_lab))
+
+expect_identical(val_lab(dfs$a[1]),val_lab(vec_with_lab))
+expect_identical(val_lab(dfs$a[[1]]),val_lab(vec_with_lab))
+
+expect_identical(dfs$a[[2]],dfs$a[2])
+expect_identical(dfs$a[[2]],dfs$a[2])
+
+aa = dfs$a
+aa[[1]] = "a"
+dfs$a[1] = "a"
+
+expect_identical(aa, dfs$a)
+
 context("rep")
 
 new_vec = rep(vec_with_lab,2)
@@ -106,8 +121,26 @@ expect_identical(as.logical(a), a_log)
 expect_identical(as.integer(a_log), a)
 
 
+context("print.labelled")
 
+x = c(letters, LETTERS)
+x = as.labelled(x)
 
+expect_identical(print(x), x)
 
+expect_output_file(print(x), "rds/print_labelled1.txt")
+var_lab(x) = "Letters"
+expect_output_file(print(x), "rds/print_labelled2.txt")
+expect_output_file(print(x, max = 100), "rds/print_labelled3.txt")
+expect_output_file(print(x, max = 100, max_labels = 100), "rds/print_labelled4.txt")
+expect_output_file(print(unvl(x)), "rds/print_labelled5.txt")
+x_mat = matrix(x, ncol = 2)
+var_lab(x_mat) = var_lab(x)
+val_lab(x_mat) = val_lab(x)
+expect_output_file(print(x_mat), "rds/print_labelled6.txt")
 
-
+x_df = as.data.frame(x_mat)
+var_lab(x_df) = var_lab(x)
+val_lab(x_df) = val_lab(x)
+class(x_df) = union("labelled", class(x_df))
+expect_output_file(print(x_df), "rds/print_labelled2.txt")
