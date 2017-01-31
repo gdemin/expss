@@ -396,6 +396,28 @@ expect_equal(w_cov(mat, weight = 1, use = "complete.obs"), w_cov(mat, use = "com
 expect_equal(w_cor(mat, weight = 1, use = "complete.obs"), w_cor(mat, use = "complete.obs"))
 expect_equal(w_spearman(mat, weight = 1, use = "complete.obs"), w_spearman(mat, use = "complete.obs"))
 
+
+####################
+
+expect_identical(w_mean(x, weight = TRUE), w_mean(x))
+expect_identical(w_sum(x, weight = TRUE), w_sum(x))
+expect_identical(w_median(x, weight = TRUE), w_median(x))
+expect_identical(w_mad(x, weight = TRUE), w_mad(x))
+expect_identical(w_sd(x, weight = TRUE), w_sd(x))
+expect_identical(w_var(x, weight = TRUE), w_var(x))
+expect_equal(w_n(x, weight = TRUE), w_n(x))
+expect_identical(w_se(x, weight = TRUE), w_se(x))
+
+
+expect_equal(w_cov(mat, weight = TRUE, use = "pairwise"), w_cov(mat, use = "pairwise"))
+expect_equal(w_cor(mat, weight = TRUE, use = "pairwise"), w_cor(mat, use = "pairwise"))
+expect_equal(w_spearman(mat, weight = TRUE, use = "pairwise"), w_spearman(mat, use = "pairwise"))
+
+expect_equal(w_cov(mat, weight = TRUE, use = "complete.obs"), w_cov(mat, use = "complete.obs"))
+expect_equal(w_cor(mat, weight = TRUE, use = "complete.obs"), w_cor(mat, use = "complete.obs"))
+expect_equal(w_spearman(mat, weight = TRUE, use = "complete.obs"), w_spearman(mat, use = "complete.obs"))
+
+
 #############
 
 
@@ -469,3 +491,38 @@ expect_identical(
     rownames(res),
     labs
 )
+
+
+context("weighted stats logical args")
+
+a = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE)
+b = c(TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE)
+w = c(FALSE, TRUE, FALSE, TRUE, TRUE, NA, TRUE, TRUE)
+a_num = as.numeric(a)
+b_num = as.numeric(b)
+w_num = as.numeric(w)
+expect_equal(w_mean(a), w_mean(a_num))
+expect_equal(w_median(a), w_median(a_num))
+expect_equal(w_sum(a), w_sum(a_num))
+expect_equal(w_sd(a), w_sd(a_num))
+expect_equal(w_mad(a), w_mad(a_num))
+expect_equal(w_var(a), w_var(a_num))
+expect_equal(w_se(a), w_se(a_num))
+expect_equal(w_n(a), w_n(a_num))
+
+
+
+expect_identical(w_mean(a, w), w_mean(a_num, w_num))
+expect_identical(w_median(a, w), w_median(a_num, w_num))
+expect_identical(w_sum(a, w), w_sum(a_num, w_num))
+expect_identical(w_sd(a, w), w_sd(a_num, w_num))
+expect_identical(w_mad(a, w), w_mad(a_num, w_num))
+expect_identical(w_var(a, w), w_var(a_num, w_num))
+expect_identical(w_se(a, w), w_se(a_num, w_num))
+expect_identical(w_n(a, w), w_n(a_num, w_num))
+
+
+expect_equal(w_cor(cbind(a, b), weight = w), w_cor(cbind(a = a_num, b = b_num), weight = w_num))
+expect_equal(w_cov(cbind(a, b), weight = w), w_cov(cbind(a = a_num, b = b_num), weight = w_num))
+expect_equal(w_pearson(cbind(a, b), weight = w), w_pearson(cbind(a = a_num, b = b_num), weight = w_num))
+expect_equal(w_spearman(cbind(a, b), weight = w), w_spearman(cbind(a = a_num, b = b_num), weight = w_num))
