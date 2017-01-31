@@ -204,7 +204,9 @@ mtcars = modify(mtcars,{
 })
 
 expect_equal_to_reference(fre(mtcars$vs), "rds/fre_ex1.rds")
+expect_equal_to_reference(fre(mtcars$vs, weight = 1), "rds/fre_ex1.rds")
 expect_equal_to_reference(with(mtcars, cro(am, vs)), "rds/fre_ex2.rds")
+expect_equal_to_reference(with(mtcars, cro(am, vs, weight = 1)), "rds/fre_ex2.rds")
 expect_equal_to_reference(with(mtcars, cro_cpct(am, vs)), "rds/fre_ex3.rds")
 expect_equal_to_reference(with(mtcars, cro_cpct(am, vs))[, '#Total'], "rds/fre_ex3.1.rds")
 expect_equal_to_reference(with(mtcars, cro_cpct(am, vs))[3, ], "rds/fre_ex3.2.rds")
@@ -329,7 +331,24 @@ expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weigh
     
 }), "rds/cro_fun3.rds")
 
+expect_equal_to_reference(cro_fun(b, a, weight = 1, fun = function(x, weight){
+    weighted.mean(x, w = weight)
+    
+}), "rds/cro_fun3.rds")
+
 expect_equal_to_reference(cro_fun_df(b, a, weight = weight, fun = function(x, weight){
+    setNames(weighted.mean(x[[1]], w = weight), names(x))
+    
+}), "rds/cro_fun3.rds")
+
+
+expect_error(
+    cro_fun_df(b, a, weight = 1:2, fun = function(x, weight){
+    setNames(weighted.mean(x[[1]], w = weight), names(x))
+})
+)
+
+expect_equal_to_reference(cro_fun_df(b, a, weight = 1, fun = function(x, weight){
     setNames(weighted.mean(x[[1]], w = weight), names(x))
     
 }), "rds/cro_fun3.rds")
@@ -360,10 +379,19 @@ expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weigh
     
 }, na.rm = TRUE), "rds/cro_fun7.rds")
 
+expect_error(
+    cro_fun(b, a, weight = 1:2, fun = function(x, weight, na.rm){
+    weighted.mean(x, w = weight, na.rm = na.rm)
+}, na.rm = TRUE)
+)
+
 expect_error(cro_fun(b, a, weight = weight, fun = function(x, w, na.rm){
     weighted.mean(x, w = w, na.rm = na.rm)
     
 }, na.rm = TRUE))
+
+
+
 
 
 expect_equal_to_reference(cro_fun(iris[,-5], iris$Species, fun = median), "rds/cro_fun8.rds")
@@ -384,6 +412,7 @@ mtcars = modify(mtcars,{
 expect_equal_to_reference(
     with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = mean)),
     "rds/cro_fun9.rds")
+
 
 expect_equal_to_reference(
     with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), am, fun = mean_col)),
@@ -445,6 +474,7 @@ expect_equal_to_reference(cro_median(b, a), "rds/cro_median2.rds")
 weight = rep(1, 5)
 expect_equal_to_reference(cro_mean(b, a, weight = weight), "rds/cro_mean3.rds")
 expect_equal_to_reference(cro_sum(b, a, weight = weight), "rds/cro_sum3.rds")
+expect_equal_to_reference(cro_sum(b, a, weight = 1), "rds/cro_sum3.rds")
 
 weight = rep(NA, 5)
 expect_equal_to_reference(cro_mean(b, a, weight = weight), "rds/cro_mean4.rds")
@@ -466,6 +496,7 @@ expect_equal_to_reference(cro_sum(b, a, weight = weight), "rds/cro_sum6.rds")
 
 expect_equal_to_reference(cro_median(iris[,-5], iris$Species), "rds/cro_median8.rds")
 expect_equal_to_reference(cro_median(iris[,-5], iris$Species, weight = rep(1, 150)), "rds/cro_median8.rds")
+expect_equal_to_reference(cro_median(iris[,-5], iris$Species, weight = 1), "rds/cro_median8.rds")
 expect_equal_to_reference(cro_mean(iris[,-5], iris$Species), "rds/cro_mean8.rds")
 
 expect_output_file(print(cro_mean(iris[,-5], iris$Species)), "rds/cro_mean_out.txt")
@@ -624,13 +655,18 @@ expect_error(cro_mean(mtcars$dont_exist, mtcars$am))
 expect_error(cro_mean(mtcars$am, mtcars$dont_exist))
 expect_error(cro_median(mtcars$dont_exist, mtcars$am))
 expect_error(cro_median(mtcars$am, mtcars$dont_exist))
-expect_error(cro_fun(mtcars$dont_exist, mtcars$am))
-expect_error(cro_fun(mtcars$am, mtcars$dont_exist))
-expect_error(cro_fun_df(mtcars$dont_exist, mtcars$am))
-expect_error(cro_fun_df(mtcars$am, mtcars$dont_exist))
+expect_error(cro_fun(mtcars$dont_exist, mtcars$am, fun = sum))
+expect_error(cro_fun(mtcars$am, mtcars$dont_exist, fun = sum))
+expect_error(cro_fun_df(mtcars$dont_exist, mtcars$am, fun = median))
+expect_error(cro_fun_df(mtcars$am, mtcars$dont_exist, fun = sum))
 
 
-
-
+data(iris)
+expect_error(
+    cro_fun(iris[,-5], iris$Species, fun = sum, weight = runif(150))
+)
+expect_error(
+    cro_fun_df(iris[,-5], iris$Species, fun = sum_col, weight = runif(150))
+)
 
 

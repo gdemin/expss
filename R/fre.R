@@ -201,7 +201,8 @@ fre = function(x, weight = NULL){
 
 
 elementary_freq = function(x, predictor = NULL, weight = NULL){
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)) && (length(weight)!=1), 
+           "'weight' should have the same number of rows as 'x' or length 1.")
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
     if (is.matrix(x)) {
         vallab0 = val_lab(x)
@@ -213,6 +214,7 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
     if (is.null(weight)) {
         weight = rep(1, NROW(x))
     } else {
+        if(length(weight)==1) weight = rep(weight, NROW(x))
         # change negative and NA weights to 0 
         if_val(weight) = list(lo %thru% 0 ~ 0, NA ~ 0)
     }    
@@ -267,15 +269,14 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
 #' @export
 #' @rdname fre
 cro = function(x, predictor, weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
+    check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = NULL)
     raw = elementary_freq(x = x, predictor = predictor, weight = weight)
     res = raw$freq
     
@@ -310,14 +311,14 @@ cro = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_cpct = function(x, predictor, weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
+    check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = NULL)
     res = cro(x = x, predictor = predictor, weight = weight)
     last_row = NROW(res)
     if(NCOL(res)>2 & last_row>1){
@@ -340,14 +341,14 @@ cro_cpct = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_rpct = function(x, predictor, weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
+    check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = NULL)
     res = cro(x = x, predictor = predictor, weight = weight)
     last_col = NCOL(res)
     if(NROW(res)>1 & last_col>2){
@@ -370,14 +371,14 @@ cro_rpct = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_tpct = function(x, predictor, weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
+    check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = NULL)
     res = cro(x = x, predictor = predictor, weight = weight)
     last_row = NROW(res)
     last_col = NCOL(res)
@@ -418,22 +419,15 @@ print.summary_table = function(x, ...,  row.names = FALSE){
 #' @export
 #' @rdname fre
 cro_mean = function(x, predictor, weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
-    if(!is.data.frame(x)){
-        possible_name = deparse(substitute(x))
-        x = prepare_dataframe(x, possible_name)
-    }
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
-    
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
+    x = check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = NULL)
+
     na_if(x) = is.na(predictor)
     cro_fun(x = x, predictor = predictor, weight = weight, fun = w_mean)
 }
@@ -441,22 +435,15 @@ cro_mean = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_sum = function(x, predictor, weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
-    if(!is.data.frame(x)){
-        possible_name = deparse(substitute(x))
-        x = prepare_dataframe(x, possible_name)
-    }
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
-    
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
+    x = check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = NULL)
+
     na_if(x) = is.na(predictor)
     cro_fun(x = x, predictor = predictor, weight = weight, fun = function(x, weight = NULL, na.rm){
         if(all(is.na(x))){
@@ -470,84 +457,43 @@ cro_sum = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname fre
 cro_median = function(x, predictor, weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
-    if(!is.data.frame(x)){
-        possible_name = deparse(substitute(x))
-        x = prepare_dataframe(x, possible_name)
-    }
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
-    
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
+    x = check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = NULL)
+
     na_if(x) = is.na(predictor)
     cro_fun(x = x, predictor = predictor, weight = weight, fun = w_median)
 }
 
-# used only in cro_fun
-prepare_result = function(list_of_results){
-    nrows = unique(vapply(list_of_results, FUN = NROW, FUN.VALUE = numeric(1)))
-    
-    ncols = unique(vapply(list_of_results, FUN = NCOL, FUN.VALUE = numeric(1)))
-    stopif(length(nrows)!=1,
-           "Different number of rows of 'fun' result. 'fun' should always return result with same number of rows.")
-    stopif(length(ncols)!=1,
-           "Different number of columns of 'fun' result. 'fun' should always return result with same number of columns.")
-    if(is.matrix(list_of_results[[1]]) || is.data.frame(list_of_results[[1]])) {
-        possible_rownames = rownames(list_of_results[[1]])
-    } else {
-        possible_rownames = names(list_of_results[[1]])
-    }  
-    if(is.matrix(list_of_results[[1]]) || is.data.frame(list_of_results[[1]])) {
-        possible_colnames = colnames(list_of_results[[1]])
-    } else {
-        possible_colnames = NULL
-    } 
-    cln = names(list_of_results)
-    if(ncols>1) cln = rep(cln, each = ncols)
-    if(!is.null(possible_colnames)) cln = paste(cln, possible_colnames, sep = LABELS_SEP)
-    res = do.call(cbind, list_of_results)
-    colnames(res) = cln 
-    if(!is.null(possible_rownames)) {
-        res = data.frame("#stat" = possible_rownames, res, stringsAsFactors = FALSE, check.names = FALSE)
-    } else {
-        res = data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
-    }    
-    res
-}
+
 
 #' @export
 #' @rdname fre
 cro_fun = function(x, predictor, fun, ..., weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
     fun = match.fun(fun)
-    if(!is.data.frame(x)){
-        possible_name = deparse(substitute(x))
-        x = prepare_dataframe(x, possible_name)
-    }
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
+    x = check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = fun)
     
     for(each in seq_along(x)){
         if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
     }
     
     if (!is.null(weight)) {
+        stopif(!("weight" %in% names(formals(fun))),
+               "`weight` is provided but `fun` doesn't have formal `weight` argument.")
         # change negative and NA weights to 0 
+        if(length(weight)==1) weight = rep(weight, NROW(x))
         if_val(weight) = list(lo %thru% 0 ~ 0, NA ~ 0)
         splitted_weight = split(weight, predictor, drop = TRUE)
         column_total = lapply(x, FUN = function(each) fun(each, weight = weight, ...))
@@ -600,26 +546,21 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
 #' @export
 #' @rdname fre
 cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
-    if(is.null(x)){
-        str_x = deparse(substitute(x))
-        stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
-    }
-    if(is.null(predictor)){
-        str_predictor = deparse(substitute(predictor))
-        stop(paste0(str_predictor," is NULL. Possibly variable doesn't exist."))
-    }
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
     fun = match.fun(fun)
-    if(!is.data.frame(x)){
-        possible_name = deparse(substitute(x))
-        x = prepare_dataframe(x, possible_name)
-    }
-    stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)), "weight should have the same number of rows as x.")
-    
+    x = check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = fun)
+
     x = names2labels(x)
     if (!is.null(weight)) {
+       
         # change negative and NA weights to 0 
+        if(length(weight)==1) weight = rep(weight, NROW(x))
         if_val(weight) = list(lo %thru% 0 ~ 0, NA ~ 0)
         splitted_weight = split(weight, predictor, drop = TRUE)
         column_total = fun(x, weight = weight, ...)
@@ -677,3 +618,53 @@ prepare_dataframe = function(x, possible_name){
     x
 }
 
+check_cro_arguments = function(x, str_x, predictor, str_predictor, weight, fun = NULL){
+    stopif(is.null(x), 
+               paste0("'", str_x,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(predictor), 
+             paste0("'", str_predictor,"' is NULL. Possibly variable doesn't exist."))
+    if(!is.data.frame(x)){
+        x = prepare_dataframe(x, str_x)
+    }
+    stopif(NCOL(predictor)>1, "'predictor' should have only one column.")
+    stopif(NROW(x)!=length(predictor), "'predictor' should have the same number of rows as 'x'.")
+    stopif(!is.null(weight) && (NROW(x)!=length(weight)) && (length(weight)!=1), 
+           "'weight' should have the same number of rows as 'x' or length 1.")
+    stopif(!is.null(fun) && !is.null(weight) &&  !("weight" %in% names(formals(fun))),
+           "`weight` is provided but `fun` doesn't have formal `weight` argument.")
+    x
+
+}
+
+
+# used only in cro_fun
+prepare_result = function(list_of_results){
+    nrows = unique(vapply(list_of_results, FUN = NROW, FUN.VALUE = numeric(1)))
+    
+    ncols = unique(vapply(list_of_results, FUN = NCOL, FUN.VALUE = numeric(1)))
+    stopif(length(nrows)!=1,
+           "Different number of rows of 'fun' result. 'fun' should always return result with same number of rows.")
+    stopif(length(ncols)!=1,
+           "Different number of columns of 'fun' result. 'fun' should always return result with same number of columns.")
+    if(is.matrix(list_of_results[[1]]) || is.data.frame(list_of_results[[1]])) {
+        possible_rownames = rownames(list_of_results[[1]])
+    } else {
+        possible_rownames = names(list_of_results[[1]])
+    }  
+    if(is.matrix(list_of_results[[1]]) || is.data.frame(list_of_results[[1]])) {
+        possible_colnames = colnames(list_of_results[[1]])
+    } else {
+        possible_colnames = NULL
+    } 
+    cln = names(list_of_results)
+    if(ncols>1) cln = rep(cln, each = ncols)
+    if(!is.null(possible_colnames)) cln = paste(cln, possible_colnames, sep = LABELS_SEP)
+    res = do.call(cbind, list_of_results)
+    colnames(res) = cln 
+    if(!is.null(possible_rownames)) {
+        res = data.frame("#stat" = possible_rownames, res, stringsAsFactors = FALSE, check.names = FALSE)
+    } else {
+        res = data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
+    }    
+    res
+}
