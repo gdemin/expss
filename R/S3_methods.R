@@ -164,3 +164,44 @@ as.logical.labelled = function (x, ...){
     class(y) = union("labelled", class(y))
     y	
 }
+
+#' @export
+print.labelled = function(x, max = 50, max_labels = 20, ...){
+    varlab = var_lab(x)
+    vallab = val_lab(x)
+
+    if(!is.null(varlab)){
+        cat('LABEL:', varlab, "\n")
+
+    }
+    cat("VALUES:\n")
+    cat(unlab(head(x, max)))
+    if(max < NROW(x)) {
+        cat("... only", max, "printed from", NROW(x),"items.\n")
+    } else {
+        cat("\n")
+    }
+    if(!is.null(vallab)){
+        vallab = sort_asc(dtfrm(Value = vallab, Label = names(vallab)),"Value") 
+        vallab = setNames(vallab, NULL)
+        # colnames(vallab) = gsub(".", " ", colnames(vallab), perl = TRUE)
+        cat("VALUE LABELS:")
+        if(max_labels < nrow(vallab)){
+            max_labels  = floor(max_labels/2)
+            print(head(vallab, max_labels), row.names = FALSE, right = FALSE)
+            cat("\n  ...\n")
+            tail_vallab = tail(vallab, max_labels)
+            
+            print(tail_vallab, row.names = FALSE, right = FALSE)
+            
+        } else {
+            print(vallab, row.names = FALSE, right = FALSE)   
+        }
+        
+        
+    }
+    
+    invisible(x)
+}
+
+
