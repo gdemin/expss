@@ -72,7 +72,7 @@ w_prep2 = rep(w2, length(x))
 expect_equal(w_mean(x, w), weighted.mean(x, w_prep, na.rm = TRUE))
 expect_identical(w_sum(x, w), sum(x*w_prep, na.rm = TRUE))
 expect_identical(w_median(x, w),
-                 matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = FALSE, ties = "weighted"))
+                 matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
 expect_identical(w_mad(x, w),
                  matrixStats:::weightedMad(x, w, na.rm = TRUE, center = w_median(x, w, na.rm = TRUE)))
 expect_identical(w_sd(x, w), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
@@ -87,7 +87,7 @@ w = as.matrix(w)
 expect_equal(w_mean(x, w), weighted.mean(x, w_prep, na.rm = TRUE))
 expect_identical(w_sum(x, w), sum(x*w_prep, na.rm = TRUE))
 expect_identical(w_median(x, w),
-                 matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = FALSE, ties = "weighted"))
+                 matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
 expect_identical(w_mad(x, w),
                  matrixStats:::weightedMad(x, w, na.rm = TRUE, center = w_median(x, w, na.rm = TRUE)))
 expect_identical(w_sd(x, w), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
@@ -133,7 +133,7 @@ w_prep2 = rep(w2, length(x))
 expect_equal(w_mean(x, w2), weighted.mean(x, w_prep2, na.rm = TRUE))
 expect_identical(w_sum(x, w2), sum(x*w_prep2, na.rm = TRUE))
 expect_identical(w_median(x, w2),
-                 matrixStats:::weightedMedian(x, w_prep2, na.rm = TRUE, interpolate = FALSE, ties = "weighted"))
+                 matrixStats:::weightedMedian(x, w_prep2, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
 expect_identical(w_mad(x, w2),
                  matrixStats:::weightedMad(x, w_prep2, na.rm = TRUE, center = w_median(x, w_prep2, na.rm = TRUE)))
 expect_identical(w_sd(x, w2), matrixStats:::weightedSd(x, w_prep2, na.rm = TRUE))
@@ -144,9 +144,12 @@ expect_identical(w_se(x, w2),
                  )
 
 ### SPSS compatibility
+data(iris)
 expect_equal(w_mean(x, w), 1.679588893639)
 expect_equal(w_sum(x, w), 13.633172662)
-expect_equal(w_median(x, w), 1.78831)
+# expect_equal(w_median(x, w), 1.78831) # compatibility with SPSS for weighted median is broken
+expect_equal(w_median(iris$Petal.Length), 4.35)
+expect_equal(w_median(iris$Petal.Length, weight = rep(1, 150)), 4.35)
 # expect_equal(w_mad(x, w), ???))
 expect_equal(w_sd(x, w), 0.2728535109892)
 expect_equal(w_var(x, w), 0.07444903845913)
@@ -161,7 +164,7 @@ w = w[-1]
 expect_equal(w_mean(x, w, na.rm = FALSE), weighted.mean(x, w_prep, na.rm = TRUE))
 expect_identical(w_sum(x, w, na.rm = FALSE), sum(x*w_prep, na.rm = TRUE))
 expect_identical(w_median(x, w, na.rm = FALSE),
-                 matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = FALSE, ties = "weighted"))
+                 matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
 expect_identical(w_mad(x, w, na.rm = FALSE),
                  matrixStats:::weightedMad(x, w, na.rm = TRUE, center = w_median(x, w, na.rm = FALSE)))
 expect_identical(w_sd(x, w, na.rm = FALSE), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
