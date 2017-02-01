@@ -182,7 +182,7 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
     cat("VALUES:\n")
     cat(unlab(head(x_flat, max)))
     if(max < NROW(x_flat)) {
-        cat("... only", max, "printed from", NROW(x_flat),"items.\n")
+        cat("...", max, "items printed out of", NROW(x_flat), "\n")
     } else {
         cat("\n")
     }
