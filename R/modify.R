@@ -74,7 +74,7 @@ modify.data.frame = function (data, expr) {
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     prepare_env(e, n = nrow(data))
-    eval(substitute(expr), e)
+    eval(substitute(expr), envir = e, enclos = baseenv())
     clear_env(e)
     l = as.list(e, all.names = TRUE)
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
@@ -102,7 +102,8 @@ modify.data.frame = function (data, expr) {
 '%modify%' = function (data, expr) {
     # based on 'within' from base R by R Core team
     expr = substitute(expr)
-    eval(bquote(modify(data, .(expr))))
+    data = substitute(data)
+    eval(bquote(modify(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
 }
 
 #' @export
@@ -127,15 +128,17 @@ do_if = modify_if
 #' @export
 modify_if.data.frame = function (data, cond, expr) {
     # based on 'within' from base R by R Core team
-    parent = parent.frame()
+    data_expr = substitute(data)
     cond = substitute(cond)
-    cond = eval(cond, data, parent.frame())
-    if (!is.logical(cond)) 
-        stop("'cond' must be logical")
-    cond = cond & !is.na(cond)
-    new_data = data[cond,, drop = FALSE]
     expr = substitute(expr)
-    new_data = eval(bquote(modify(new_data, .(expr))))
+    e = evalq(environment(), data, parent.frame())
+    prepare_env(e, n = NROW(data))
+    cond = calc_cond(cond, envir = e)
+    
+    new_data = eval(bquote(modify(.(data_expr)[.(cond),, drop = FALSE], .(expr))),
+                    envir = parent.frame(),
+                    enclos = baseenv()
+                    )
     del = setdiff(names(data), names(new_data))
     if(length(del)){
         data[, del] = NULL

@@ -143,7 +143,7 @@ mtcars$am = NULL
 mtcars$hi_low_mpg = NULL
 
 expect_identical(mtcars, default_mtcars)
-expect_error({.modify_if(1, {
+expect_error({.modify_if("a", {
     vs_0 = NULL
     
 })})

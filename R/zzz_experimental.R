@@ -133,7 +133,10 @@
     reference = suppressMessages(default_dataset())
     data = ref(reference)
     expr = substitute(expr)
-    data = eval(bquote(modify(data, .(expr))))
+    data = eval(bquote(modify(.(data), .(expr))),
+                envir = parent.frame(),
+                enclos = baseenv()
+                )
     ref(reference) = data
     invisible(data)
 }
@@ -148,7 +151,10 @@
     data = ref(reference)
     cond = substitute(cond)
     expr = substitute(expr)
-    data = eval(bquote(modify_if(data, .(cond), .(expr))))
+    data = eval(bquote(modify_if(.(data), .(cond), .(expr))),
+                envir = parent.frame(),
+                enclos = baseenv()               
+               )
     ref(reference) = data
     invisible(data)
 }
@@ -207,8 +213,9 @@ modify_default_dataset_light = function(x, ...){
 #' @rdname experimental
 .with = function (expr, ...) {
     reference = suppressMessages(default_dataset() )
+    expr = substitute(expr)
     data = ref(reference)
-    eval(substitute(expr), data, enclos = parent.frame())
+    eval(bquote(with(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
 }    
 
 #' @export

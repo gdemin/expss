@@ -69,7 +69,7 @@ eval_in_default_dataset = function(...){
     parent = parent.frame()
     e = evalq(environment(), data, parent)
     prepare_env(e, n = nrow(data))
-    eval(expr, e)
+    eval(expr, e, enclos = baseenv())
 }
 
 #' @export

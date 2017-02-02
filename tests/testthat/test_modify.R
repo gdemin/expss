@@ -182,6 +182,18 @@ expect_identical(
 
 set.seed(1)
 expect_identical(
+    modify_if(dfs2, 2:4,
+              {
+                  b_total = sum_row(b_1 %to% b_5)
+                  aa = aa + 1
+                  random_numer = runif(.n)
+              }), 
+    result_dfs2
+)
+
+
+set.seed(1)
+expect_identical(
     modify_if(dfs2, test %in% 2:4,
               {
                   b_total = sum_row(b_1 %to% b_5)
@@ -246,6 +258,16 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 result_dfs2$b_total = NULL
 expect_identical(
     modify_if(dfs2, test %in% 2:4,
+              {
+                  b_total = NULL
+                  aa = aa + 1
+              }), 
+    result_dfs2
+)
+
+
+expect_identical(
+    modify_if(dfs2, 2:4,
               {
                   b_total = NULL
                   aa = aa + 1
