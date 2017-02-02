@@ -244,6 +244,11 @@ expect_equal_to_reference(fre(mat_brands), "rds/fre_ex4.rds")
 expect_equal_to_reference(cro(brands, score), "rds/fre_ex5.rds")
 expect_equal_to_reference(cro_cpct(brands, score), "rds/fre_ex6.rds")
 
+a = 1
+var_lab(a) = "Total"
+val_lab(a) = c("all" = 1)
+expect_equal_to_reference(cro_cpct(brands, a), "rds/fre_ex7.rds")
+
 expect_output_file(print(fre(brands)), "rds/fre_out.txt")
 expect_output_file(print(fre(brands), round_digits = NULL), "rds/fre_out_unrounded.txt")
 expect_equal_to_reference(cro(brands, score), "rds/fre_ex5.rds")
@@ -288,6 +293,12 @@ expect_equal_to_reference(with(data, fre(q8r_1 %to% q8r_99)), "rds/fre_real3.rds
 
 
 expect_equal_to_reference(cro(data$reg, data$s1), "rds/cro_real1.rds")
+
+matr_s1 = as.matrix(data$s1)
+var_lab(matr_s1) = var_lab(data$s1)
+val_lab(matr_s1) = val_lab(data$s1)
+
+expect_equal_to_reference(cro(data$reg, matr_s1), "rds/cro_real1.rds")
 expect_equal_to_reference(cro_cpct(data$reg, data$s1), "rds/cro_real2.rds")
 expect_equal_to_reference(with(data, cro(q8r_1 %to% q8r_99, reg)), "rds/cro_real3.rds")
 expect_equal_to_reference(with(data, cro_cpct(q8r_1 %to% q8r_99, reg)), "rds/cro_real4.rds")
@@ -303,6 +314,7 @@ expect_equal_to_reference(with(data, fre(q8r_1 %to% q8r_99, weight = weight1)), 
 
 
 expect_equal_to_reference(cro(data$reg, data$s1, weight = data$weight1), "rds/cro_real1w.rds")
+expect_equal_to_reference(cro(data$reg, as.data.frame(data$s1), weight = data$weight1), "rds/cro_real1w.rds")
 expect_equal_to_reference(cro_cpct(data$reg, data$s1, weight = data$weight1), "rds/cro_real2w.rds")
 expect_equal_to_reference(with(data, cro(q8r_1 %to% q8r_99, reg, weight = weight1)), "rds/cro_real3w.rds")
 expect_equal_to_reference(with(data, cro_cpct(q8r_1 %to% q8r_99, reg, weight = weight1)), "rds/cro_real4w.rds")
@@ -324,6 +336,8 @@ b = c(1, 1, 2, 2, 2)
 
 
 expect_equal_to_reference(cro_fun(b, a, fun = mean), "rds/cro_fun2.rds")
+expect_equal_to_reference(cro_fun(b, 1, fun = mean), "rds/cro_fun2.rds")
+expect_equal_to_reference(cro_fun(b, as.matrix(a), fun = mean), "rds/cro_fun2.rds")
 
 weight = rep(1, 5)
 expect_equal_to_reference(cro_fun(b, a, weight = weight, fun = function(x, weight){
@@ -336,7 +350,18 @@ expect_equal_to_reference(cro_fun(b, a, weight = 1, fun = function(x, weight){
     
 }), "rds/cro_fun3.rds")
 
+expect_equal_to_reference(cro_fun(b, 1, weight = 1, fun = function(x, weight){
+    weighted.mean(x, w = weight)
+    
+}), "rds/cro_fun3.rds")
+
 expect_equal_to_reference(cro_fun_df(b, a, weight = weight, fun = function(x, weight){
+    setNames(weighted.mean(x[[1]], w = weight), names(x))
+    
+}), "rds/cro_fun3.rds")
+
+
+expect_equal_to_reference(cro_fun_df(b, 1, weight = 1, fun = function(x, weight){
     setNames(weighted.mean(x[[1]], w = weight), names(x))
     
 }), "rds/cro_fun3.rds")
@@ -349,6 +374,11 @@ expect_error(
 )
 
 expect_equal_to_reference(cro_fun_df(b, a, weight = 1, fun = function(x, weight){
+    setNames(weighted.mean(x[[1]], w = weight), names(x))
+    
+}), "rds/cro_fun3.rds")
+
+expect_equal_to_reference(cro_fun_df(b, as.matrix(a), weight = 1, fun = function(x, weight){
     setNames(weighted.mean(x[[1]], w = weight), names(x))
     
 }), "rds/cro_fun3.rds")
@@ -413,6 +443,10 @@ expect_equal_to_reference(
     with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = mean)),
     "rds/cro_fun9.rds")
 
+expect_equal_to_reference(
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), as.data.frame(am), fun = mean)),
+    "rds/cro_fun9.rds")
+
 
 expect_equal_to_reference(
     with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), am, fun = mean_col)),
@@ -427,6 +461,10 @@ expect_equal_to_reference(
                           "rds/cro_fun11.rds")
 expect_equal_to_reference(
     with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), am, fun = colMeans)), 
+    "rds/cro_fun_df11.rds")
+
+expect_equal_to_reference(
+    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), as.dtfrm(am), fun = colMeans)), 
     "rds/cro_fun_df11.rds")
 
 expect_equal_to_reference(
@@ -562,6 +600,8 @@ expect_identical(fre(aaa), fre(aaa_str))
 expect_identical(cro(aaa, bbb), cro(aaa_str, bbb_str))
 expect_identical(cro_cpct(aaa, bbb), cro_cpct(aaa_str, bbb_str)) 
 expect_identical(cro_rpct(aaa, total),cro_rpct(aaa_str, total)) 
+expect_identical(cro_rpct(aaa, total),cro_rpct(aaa_str, "total")) 
+expect_identical(cro_rpct(aaa, "total"),cro_rpct(aaa_str, total)) 
 expect_identical(cro_tpct(total, bbb), cro_tpct(total, bbb_str)) 
 
 context("cro duplicated names")

@@ -277,6 +277,7 @@ cro = function(x, predictor, weight = NULL){
                         str_predictor = str_predictor, 
                         weight = weight, 
                         fun = NULL)
+    predictor = prepare_predictor(predictor, NROW(x))
     raw = elementary_freq(x = x, predictor = predictor, weight = weight)
     res = raw$freq
     
@@ -484,7 +485,7 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
                         str_predictor = str_predictor, 
                         weight = weight, 
                         fun = fun)
-    
+    predictor = prepare_predictor(predictor, NROW(x))
     for(each in seq_along(x)){
         if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
     }
@@ -555,7 +556,7 @@ cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
                         str_predictor = str_predictor, 
                         weight = weight, 
                         fun = fun)
-
+    predictor = prepare_predictor(predictor, NROW(x))
     x = names2labels(x)
     if (!is.null(weight)) {
        
@@ -601,7 +602,7 @@ prepare_dataframe = function(x, possible_name){
     if (is.matrix(x)) {
         varlab0 = var_lab(x)
         x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
-        if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP,colnames(x))
+        if(!is.null(varlab0)) colnames(x) = paste(varlab0, LABELS_SEP, colnames(x))
     } else {
         if (is.list(x)){
             if(is.null(names(x))){
@@ -627,7 +628,8 @@ check_cro_arguments = function(x, str_x, predictor, str_predictor, weight, fun =
         x = prepare_dataframe(x, str_x)
     }
     stopif(NCOL(predictor)>1, "'predictor' should have only one column.")
-    stopif(NROW(x)!=length(predictor), "'predictor' should have the same number of rows as 'x'.")
+    stopif(NROW(x)!=NROW(predictor) & NROW(predictor)!=1, 
+           "'predictor' should have the same number of rows as 'x' or length 1.")
     stopif(!is.null(weight) && (NROW(x)!=length(weight)) && (length(weight)!=1), 
            "'weight' should have the same number of rows as 'x' or length 1.")
     stopif(!is.null(fun) && !is.null(weight) &&  !("weight" %in% names(formals(fun))),
@@ -667,4 +669,18 @@ prepare_result = function(list_of_results){
         res = data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
     }    
     res
+}
+
+prepare_predictor = function(predictor, nrows){
+    if(is.matrix(predictor) || is.data.frame(predictor)){
+        varlab = var_lab(predictor)
+        vallab = val_lab(predictor)
+        predictor = c(predictor, recursive = TRUE)
+        var_lab(predictor) = varlab
+        val_lab(predictor) = vallab
+    }
+    if(NROW(predictor)==1) {
+            predictor = rep(predictor, nrows)
+    }
+    predictor 
 }
