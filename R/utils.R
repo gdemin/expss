@@ -233,41 +233,41 @@ column.default = function(x, column_num, condition = NULL){
 
 ###########################
 # use this function only inside other functions
-eval_dynamic_scoping = function(expr, envir, skip_up_to_frame = ""){
-    all_env = rev(sys.frames())[-(1:2)] # remove current and calling environement
-    sys_calls = lapply(rev(sys.calls())[-(1:2)], function(each_call){
-        res = as.character(as.list(each_call)[[1]])
-        if(res[1] %in% c("::", ":::")){
-            res[3]
-        } else {
-            res[1]
-        }
-    })
-    sys_calls = unlist(sys_calls)
-    skip = stats::na.omit(match(skip_up_to_frame, sys_calls))
-    if(length(skip)==0) {
-        skip = 0
-    } else {
-        skip = max(skip)
-    }    
-    
-    if(skip>0){
-        all_env = c(all_env[-seq_len(skip)], .GlobalEnv) 
-    } else {
-        all_env = c(all_env, .GlobalEnv) 
-    }
-    
-    succ = FALSE
-    i = 1
-    while(!succ && i<=length(all_env)){
-        succ = TRUE
-        parent.env(envir) = all_env[[i]]
-        res = tryCatch(eval(expr, envir), error = function(e) {succ<<-FALSE})
-        if(!succ) i = i + 1
-    }
-    stopif(!succ, "`", deparse(substitute(expr)),"` - some variables not found.")
-    res
-}
+# eval_dynamic_scoping = function(expr, envir, skip_up_to_frame = ""){
+#     all_env = rev(sys.frames())[-(1:2)] # remove current and calling environement
+#     sys_calls = lapply(rev(sys.calls())[-(1:2)], function(each_call){
+#         res = as.character(as.list(each_call)[[1]])
+#         if(res[1] %in% c("::", ":::")){
+#             res[3]
+#         } else {
+#             res[1]
+#         }
+#     })
+#     sys_calls = unlist(sys_calls)
+#     skip = stats::na.omit(match(skip_up_to_frame, sys_calls))
+#     if(length(skip)==0) {
+#         skip = 0
+#     } else {
+#         skip = max(skip)
+#     }    
+#     
+#     if(skip>0){
+#         all_env = c(all_env[-seq_len(skip)], .GlobalEnv) 
+#     } else {
+#         all_env = c(all_env, .GlobalEnv) 
+#     }
+#     
+#     succ = FALSE
+#     i = 1
+#     while(!succ && i<=length(all_env)){
+#         succ = TRUE
+#         parent.env(envir) = all_env[[i]]
+#         res = tryCatch(eval(expr, envir), error = function(e) {succ<<-FALSE})
+#         if(!succ) i = i + 1
+#     }
+#     stopif(!succ, "`", deparse(substitute(expr)),"` - some variables not found.")
+#     res
+# }
 
 
 

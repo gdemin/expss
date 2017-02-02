@@ -22,6 +22,11 @@ test_scoping = function(item){
 }
 expect_identical(test_scoping(item), list(iris[iris$Species == item, ]))
 
+test_scoping = function(item){
+    filt = item
+    list_iris %where% (Species == filt)
+}
+expect_identical(test_scoping(item), list(iris[iris$Species == item, ]))
 
 
 expect_identical(where(iris, 1:5), iris[1:5, ])

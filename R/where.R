@@ -52,67 +52,84 @@ where = function (data, cond) {
 
 #' @export
 where.data.frame = function (data, cond) {
-    # where_data_frame = 1
     cond = substitute(cond)
-    eval(bquote(where_helper(data, .(cond))))
+    e = evalq(environment(), data, parent.frame())
+    prepare_env(e, n = NROW(data))
+    cond = calc_cond(cond, envir = e)
+    data[cond,, drop = FALSE] 
 }
 
 #' @export
 where.default = function (data, cond) {
-    # where_default = 1
+
     cond = substitute(cond)
-    eval(bquote(where_helper(data, .(cond))))
+
+    e = evalq(environment(), new.env(), parent.frame())
+    prepare_env(e, n = NROW(data))
+    cond = calc_cond(cond, envir = e)
+    
+    if(is.matrix(data)){
+        data[cond,, drop = FALSE]    
+    }  else {
+        data[cond]
+    }  
 }
 
 
 #' @export
 where.list = function (data, cond) {
-    # where_list = 1
+
     cond = substitute(cond)
-    eval(bquote(lapply(data, where, .(cond))))
+    data_expr = substitute(data)
+    for(each in seq_along(data)){
+        
+        data[[each]] = eval(
+                            bquote(where(.(data_expr)[[.(each)]], .(cond))), 
+                            envir = parent.frame(),
+                            enclos = baseenv()
+        )
+    }
+    data
 }
 
 
 #' @rdname where
 #' @export
 '%where%' = function(data, cond){
-    # where_infix = 1
+
     cond = substitute(cond)
-    eval(bquote(where(data, .(cond))))
+    data = substitute(data)
+    eval(
+         bquote(where(.(data), .(cond))), 
+         envir = parent.frame(),
+         enclos = baseenv()                
+    )
 }
 
 
 #' @rdname where
 #' @export
 .where = function (cond) {
-    # where_dd = 1
+
     cond = substitute(cond)
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    data = eval(bquote(where(data, .(cond))))
+    data = eval(
+                bquote(where(.(data), .(cond))), 
+                envir = parent.frame(),
+                enclos = baseenv()                
+                )
     ref(reference) = data 
     invisible(data)
 }
 
-where_helper = function(data, cond){
-    # where_helper = 1
-    cond = substitute(cond)
-    if(is.data.frame(data)){
-        e = evalq(environment(), data, parent.frame())
-    } else {
-        e = evalq(environment(), new.env(), parent.frame())
-    }
-    prepare_env(e, n = NROW(data))
-    cond = eval_dynamic_scoping(cond, e, 
-                                skip_up_to_frame = 
-                                    c("where", "%where%", ".where", "where.list", "where.data.frame", "where.default"))
+
+calc_cond = function(cond, envir){
+    cond = eval(cond, envir = envir, enclos = baseenv())
     if (!is.logical(cond) && !is.numeric(cond)){ 
         stop("'cond' must be logical or numeric.")
     }    
     if(is.logical(cond)) cond = cond & !is.na(cond)
-    if(is.matrix(data) || is.data.frame(data)){
-        data[cond,, drop = FALSE]    
-    }  else {
-        data[cond]
-    }  
+    cond
+    
 }
