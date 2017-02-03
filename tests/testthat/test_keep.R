@@ -3,10 +3,10 @@ context("keep")
 # c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species")
 
 data(iris)
-expect_identical(keep(iris, item_ind(5)), iris[, "Species", drop = FALSE])
-expect_identical(except(iris, item_ind(5)), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
-expect_identical(except(iris, item_ind(1, 2, 3, 4)), iris[, "Species", drop = FALSE])
-expect_identical(keep(iris, item_ind(1, 2, 3, 4)), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_identical(keep(iris, items(5)), iris[, "Species", drop = FALSE])
+expect_identical(except(iris, items(5)), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_identical(except(iris, items(1, 2, 3, 4)), iris[, "Species", drop = FALSE])
+expect_identical(keep(iris, items(1, 2, 3, 4)), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 
 expect_identical(keep(iris, "Species", other), iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 expect_warning(keep(iris, "Species", other, "Species"))
@@ -72,7 +72,65 @@ colnames(ex_iris) = c("a", "a", "a", "a")
 expect_identical(ex_iris %keep% "a", ex_iris)
 expect_identical(ex_iris %except% "a", ex_iris[, FALSE, drop = FALSE])
 
+context("keep/except subst")
+dfs = data.frame(
+    aa = 10 %r% 5,
+    b_ = 20 %r% 5,
+    b_1 = 11 %r% 5,
+    b_2 = 12 %r% 5,
+    b_3 = 12 %r% 5,
+    b_4 = 14 %r% 5,
+    b_5 = 15 %r% 5 
+)
 
+aaa = paste0("b_", 1:5)
+bbb = c("aa", "b_")
+expect_identical(keep(dfs, "b_`1:5`"), dfs[, aaa])
+expect_identical(dfs %keep% "b_`1:5`", dfs[, aaa])
+
+expect_identical(except(dfs, "b_`1:5`"), dfs[, bbb])
+expect_identical(dfs %except% "b_`1:5`", dfs[, bbb])
+
+i = 1:5
+expect_identical(keep(dfs, "b_`i`"), dfs[, aaa])
+expect_identical(dfs %keep% "b_`i`", dfs[, aaa])
+
+expect_identical(except(dfs, "b_`i`"), dfs[, bbb])
+expect_identical(dfs %except% "b_`i`", dfs[, bbb])
+
+ex1 = function(){
+    items = 1:5
+    keep(dfs, "b_`items`")
+
+}
+
+
+ex2 = function(){
+    items = 1:5
+    dfs %keep% "b_`items`"
+
+}
+
+global_items = 2:3
+
+ex3 = function(){
+    dfs %keep% "b_`global_items`"
+    
+}
+
+expect_identical(ex1(), dfs[, aaa])
+expect_identical(ex2(), dfs[, aaa])
+expect_identical(ex3(), dfs[, aaa[2:3]])
+    
+def_dfs = dfs
+default_dataset(def_dfs)
+
+.keep("b_`i`")
+expect_identical(def_dfs, dfs[, aaa])
+
+def_dfs = dfs
+.except("b_`i`")
+expect_identical(def_dfs, dfs[, bbb])
 
 context("keep edge cases")
 

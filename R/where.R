@@ -124,6 +124,7 @@ where.list = function (data, cond) {
 }
 
 
+# 'cond' is expression - result of 'substitute'
 calc_cond = function(cond, envir){
     cond = eval(cond, envir = envir, enclos = baseenv())
     if (!is.logical(cond) && !is.numeric(cond)){ 

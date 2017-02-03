@@ -47,27 +47,28 @@ keep = function(data, ...){
 #' @export
 keep.default = function(data, ...){
     vars = names(data)
-    new_vars = keep_helper(vars, ...)
+    args = list(...)
+    new_vars = keep_helper(vars, args)
     res = data[new_vars]
     names(res) = vars[new_vars] # prevents names correction
     res
-    
 }
 
 #' @export
 keep.data.frame = function(data, ...){
     vars = colnames(data)
-    new_vars = keep_helper(vars, ...)
+    args = list(...)
+    new_vars = keep_helper(vars, args)
     res = data[ , new_vars, drop = FALSE]
     colnames(res) = vars[new_vars] # prevents names correction
     res
-    
 }
 
 #' @export
 keep.matrix = function(data, ...){
     vars = colnames(data)
-    new_vars = keep_helper(vars, ...)
+    args = list(...)
+    new_vars = keep_helper(vars, args)
     res = data[ , new_vars, drop = FALSE]
     colnames(res) = vars[new_vars] # prevents names correction
     res
@@ -82,7 +83,9 @@ except = function(data, ...){
 #' @export
 except.default = function(data, ...){
     vars = names(data)
-    new_vars = -unique(keep_helper(vars, ...))
+    args = list(...)
+    new_vars = keep_helper(vars, args)
+    new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
     }
@@ -94,20 +97,23 @@ except.default = function(data, ...){
 #' @export
 except.data.frame = function(data, ...){
     vars = colnames(data)
-    new_vars = -unique(keep_helper(vars, ...))
+    args = list(...)
+    new_vars = keep_helper(vars, args)
+    new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
     }
     res = data[ , new_vars, drop = FALSE]
     colnames(res) = vars[new_vars] # prevents names correction
     res
-    
 }
 
 #' @export
 except.matrix = function(data, ...){
     vars = colnames(data)
-    new_vars = -unique(keep_helper(vars, ...))
+    args = list(...)
+    new_vars = keep_helper(vars, args)
+    new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
     }
@@ -118,9 +124,9 @@ except.matrix = function(data, ...){
 
 
 
-keep_helper = function(old_names, ...){
+keep_helper = function(old_names, args){
     keep_names = numeric(0)
-    new_names = rapply(list(...), function(each){
+    new_names = rapply(args, function(each){
         if(!is.function(each) && !is.character(each)){
             as.character(each)
         } else {
@@ -131,8 +137,12 @@ keep_helper = function(old_names, ...){
     characters_names = character(0) # for checking non-existing names
     for (each in new_names){
         if(is.character(each)){
-            next_names = which(old_names %in% each)
-            characters_names = c(characters_names, each)
+            expanded_each = eval(bquote(subst(.(each))), 
+                                 envir = parent.frame(2),
+                                 enclos = baseenv()
+            )
+            next_names = which(old_names %in% expanded_each)
+            characters_names = c(characters_names, expanded_each)
         } else {
             next_names = which(old_names %in% (old_names %i% each))
         }
@@ -154,13 +164,25 @@ keep_helper = function(old_names, ...){
 #' @export
 #' @rdname keep
 '%keep%' = function(data, variables){
-    keep(data, variables)
+    data = substitute(data)
+    variables = substitute(variables)
+    eval(
+       bquote(keep(.(data), .(variables))),
+        envir = parent.frame(),
+        enclos = baseenv()
+    )
 }
 
 #' @export
 #' @rdname keep
 '%except%' = function(data, variables){
-    except(data, variables)
+    data = substitute(data)
+    variables = substitute(variables)
+    eval(
+        bquote(except(.(data), .(variables))),
+        envir = parent.frame(),
+        enclos = baseenv()
+    )
 }
 
 #' @export
@@ -168,7 +190,12 @@ keep_helper = function(old_names, ...){
 .keep = function(...){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    data = keep(data, ...)
+    args = substitute(list(...))
+    data = eval(
+        bquote(keep(.(data), .(args))), 
+        envir = parent.frame(),
+        enclos = baseenv()                
+    )
     ref(reference) = data
     invisible(data)
 }
@@ -178,7 +205,12 @@ keep_helper = function(old_names, ...){
 .except = function(...){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    data = except(data, ...)
+    args = substitute(list(...))
+    data = eval(
+        bquote(except(.(data), .(args))), 
+        envir = parent.frame(),
+        enclos = baseenv()                
+    )
     ref(reference) = data
     invisible(data)
 }

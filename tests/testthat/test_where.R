@@ -24,10 +24,13 @@ expect_identical(test_scoping(item), list(iris[iris$Species == item, ]))
 
 global_item = "versicolor"
 test_scoping = function(){
-    item = "setosa"
-    where(list_iris, (Species == global_item) | (Species == item))
+    local_item = "setosa"
+    where(list_iris, (Species == global_item) | (Species == local_item))
 }
 expect_identical(test_scoping(), list(iris[iris$Species == global_item | iris$Species == "setosa", ]))
+
+
+
 
 test_scoping = function(item){
     filt = item
