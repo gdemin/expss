@@ -182,7 +182,7 @@ modify_default_dataset_light = function(x, ...){
     data = ref(reference)
     parent = parent.frame()
     e = evalq(environment(), data, parent)
-    prepare_env(e, n = nrow(data))
+    prepare_env(e, n = nrow(data), column_names = colnames(data))
     if (length(all.vars(for_names, functions = FALSE))==1 & length(all.vars(for_names, functions = TRUE))==1){
         for_names = as.character(for_names) 
     } else {
@@ -250,7 +250,7 @@ modify_default_dataset_light = function(x, ...){
     data = ref(reference)
     parent = parent.frame()
     e = evalq(environment(), data, parent)
-    prepare_env(e, n = nrow(data))
+    prepare_env(e, n = nrow(data), column_names = colnames(data))
     if (length(all.vars(for_names, functions = FALSE))==1 & length(all.vars(for_names, functions = TRUE))==1){
         for_names = as.character(for_names) 
     } else {

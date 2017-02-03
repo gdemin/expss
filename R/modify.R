@@ -73,7 +73,7 @@ modify.data.frame = function (data, expr) {
     # based on 'within' from base R by R Core team
     parent = parent.frame()
     e = evalq(environment(), data, parent)
-    prepare_env(e, n = nrow(data))
+    prepare_env(e, n = nrow(data), column_names = colnames(data))
     eval(substitute(expr), envir = e, enclos = baseenv())
     clear_env(e)
     l = as.list(e, all.names = TRUE)
@@ -146,7 +146,7 @@ modify_if.data.frame = function (data, cond, expr) {
     cond = substitute(cond)
     expr = substitute(expr)
     e = evalq(environment(), data, parent.frame())
-    prepare_env(e, n = NROW(data))
+    prepare_env(e, n = NROW(data), column_names = colnames(data))
     cond = calc_cond(cond, envir = e)
     
     new_data = eval(bquote(modify(.(data_expr)[.(cond),, drop = FALSE], .(expr))),

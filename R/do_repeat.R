@@ -84,7 +84,7 @@ do_repeat.data.frame = function(data, ...){
            "All variables among '...' should be named.")
     parent = parent.frame()
     e = evalq(environment(), data, parent)
-    prepare_env(e, n = nrow(data))
+    prepare_env(e, n = nrow(data), column_names = colnames(data))
     expr = substitute(expr)
     for(each_item in seq_len(max(items_lengths))){
         curr_loop = lapply(items, function(item){

@@ -54,7 +54,7 @@ where = function (data, cond) {
 where.data.frame = function (data, cond) {
     cond = substitute(cond)
     e = evalq(environment(), data, parent.frame())
-    prepare_env(e, n = NROW(data))
+    prepare_env(e, n = NROW(data), column_names = colnames(data))
     cond = calc_cond(cond, envir = e)
     data[cond,, drop = FALSE] 
 }
@@ -65,7 +65,7 @@ where.default = function (data, cond) {
     cond = substitute(cond)
 
     e = evalq(environment(), new.env(), parent.frame())
-    prepare_env(e, n = NROW(data))
+    prepare_env(e, n = NROW(data), NULL)
     cond = calc_cond(cond, envir = e)
     
     if(is.matrix(data)){

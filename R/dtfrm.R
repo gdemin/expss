@@ -68,7 +68,7 @@ eval_in_default_dataset = function(...){
     data = ref(reference)
     parent = parent.frame()
     e = evalq(environment(), data, parent)
-    prepare_env(e, n = nrow(data))
+    prepare_env(e, n = nrow(data), column_names = colnames(data))
     eval(expr, e, enclos = baseenv())
 }
 
