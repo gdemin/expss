@@ -26,6 +26,8 @@ expect_error(modify(dfs, {.n = 42}))
 expect_error(modify(dfs, {.N = 42}))
 expect_error(modify(dfs, {set = 42}))
 
+
+
 result_dfs = dfs
 result_dfs$b_total = with(dfs, sum_row(b_1, b_2, b_4, b_5))
 set.seed(1)
@@ -157,6 +159,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
         }), 
         tbl_df(result_dfs)
     )
+    
     
 } else {
     cat("dplyr not found\n")

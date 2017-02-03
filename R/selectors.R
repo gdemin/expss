@@ -1,49 +1,35 @@
-#' Get range of variables/variables by pattern/by name
+#' Get variables by pattern/by name or range of variables.
 #' 
 #' \itemize{
-#' \item{\code{\%to\%}}{ returns all variables with names  in range from
-#' pattern_num1 to pattern_num2 (similar to SPSS 'to'). Result doesn't depend
-#' from order of variables in data.frame. 'num1' and 'num2' should be numbers.
-#' Results are always arranged in ascending order and include all variables with
-#' such pattern even if these variables located in different parts of dataframe.
-#' \code{vars_range} has the same functionality but intended for programming.}
-#' \item{\code{vars_pattern}}{ returns all variables by pattern (regular expression).
-#' Functions with word 'list' in name return lists of variables instead of
-#' dataframes.}
-#' \item{\code{vars}}{ returns all variables by their names. Expressions in backticks
-#' inside characters will be expanded as with \link{subst}.}
-#' }
-#' Functions with word 'list' in name return lists of variables instead of
+#' \item{\code{vars}}{ returns all variables by their names or by criteria (see 
+#' \link{criteria}). Expressions in backticks inside characters will be expanded
+#' as with \link{subst}. \code{a`1:2`} will be translated to \code{'a1', 'a2'}. 
+#' There is no non-standard evaluation in this function by design so use quotes 
+#' for names of your variables or use \link{qc}. The only exception with 
+#' non-standard evaluation is \code{\%to\%}. You can use \code{\%to\%} inside 
+#' \code{vars} or independently.}
+#' \item{\code{\%to\%}}{ returns range of variables between \code{e1} and 
+#' \code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if}, 
+#' \link{keep}, \link{except} and \link{where} support \code{\%to\%} but if it 
+#' will be used in global environment or inside \link[base]{with}, 
+#' \link[base]{within} range will be taken from names of variables sorted in the
+#' alphabet order.}}
+#' Functions with word 'list' in name return lists of variables instead of 
 #' dataframes.
-#'
-#' @param start character Name of start variable (e. g. a_1)
-#' @param end character Name of start variable (e. g. a_5)
+#' \code{vars_pattern}, \code{vars_pattern_list}, \code{vars_range} and 
+#' \code{vars_range_list} are deprecated and will be removed in the future
+#' version.
+#' @seealso \link{keep}
+#' @param ... characters names of variables or criteria/logical functions
 #' @param e1 unquoted name of start variable (e. g. a_1)
 #' @param e2 unquoted name of start variable (e. g. a_5) 
+#' @param start character name of start variable (e. g. a_1)
+#' @param end character name of start variable (e. g. a_5)
 #' @param pattern character pattern of variable(-s) name
-#' @param ... characters names of variables.
 #'
 #' @return  data.frame/list with variables
 #' 
 #' @examples
-#' 
-#' # In global environement
-#' aa = rep(10, 5)
-#' b = rep(20, 5)
-#' a1 = rep(1, 5)
-#' a2 = rep(2, 5)
-#' a3 = rep(3, 5)
-#' a4 = rep(4, 5)
-#' a5 = rep(5, 5)
-#' 
-#' # identical results
-#' vars_range("a1", "a5")
-#' a1 %to% a5
-#' vars("a`1:5`")
-#' vars_pattern("^a[0-9]$")
-#' 
-#' # sum each row
-#' sum_row(a1 %to% a5)
 #' 
 #' # In data.frame
 #' dfs = data.frame(
@@ -56,15 +42,28 @@
 #'     b_5 = rep(15, 5) 
 #' )
 #' 
-#' # all variables that starts with 'b'
-#' with(dfs, vars_pattern("^b"))
-#' 
 #' # calculate sum of b_* variables
-#' modify(dfs,{
+#' modify(dfs, {
 #'     b_total = sum_row(b_1 %to% b_5)
 #'     b_total2 = sum_row(vars("b_`1:5`"))
 #' })
 #' 
+#' # In global environement
+#' aa = rep(10, 5)
+#' b = rep(20, 5)
+#' a1 = rep(1, 5)
+#' a2 = rep(2, 5)
+#' a3 = rep(3, 5)
+#' a4 = rep(4, 5)
+#' a5 = rep(5, 5)
+#' 
+#' # identical results
+#' a1 %to% a5
+#' vars("a`1:5`")
+#' vars(perl("^a[0-9]$"))
+#' 
+#' # sum each row
+#' sum_row(a1 %to% a5)
 #' 
 #' @export
 vars = function(...){

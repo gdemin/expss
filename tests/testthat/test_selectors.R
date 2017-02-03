@@ -14,6 +14,7 @@ b_5 = -5 %r% 5
 
 dfs = data.frame(
     zz = 10,
+    # b_3 = 42,
     aa = 10 %r% 5,
     b_ = 20 %r% 5,
     b_1 = 11 %r% 5,
@@ -36,10 +37,7 @@ expect_identical(
     with(dfs, vars_range("b_1", "b_5")), 
     with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
 )
-expect_identical(
-    with(dfs, vars_range("b_1", "b_5")), 
-    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
-)
+
 
 expect_identical(
     within(dfs, {
