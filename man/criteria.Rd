@@ -10,7 +10,7 @@
 \alias{ge}
 \alias{gt}
 \alias{gte}
-\alias{item_ind}
+\alias{items}
 \alias{le}
 \alias{lt}
 \alias{lte}
@@ -56,7 +56,7 @@ from(x)
 
 to(x)
 
-item_ind(...)
+items(...)
 
 not_na(x)
 
@@ -119,7 +119,7 @@ vector after the first occurrence of \code{x} and for \code{x}. \code{from} and
 \item{\code{not_na}}{ return TRUE for all non-NA elements of vector.} 
 \item{\code{other}}{ return TRUE for all elements of vector. It is intended
 for usage with \code{if_val}, \code{keep}, \code{except}}
-\item{\code{item_ind}}{ return TRUE for elements of vector with given
+\item{\code{items}}{ return TRUE for elements of vector with given
 sequential number. It is intended for usage with \code{keep}, \code{except}}
 }
 }
@@ -141,7 +141,7 @@ c(1, 2, NA, 3) \%i\% other # c(1, 2, 3)
 
 # examples with count_if
 df1 = data.frame(
-    a=c("apples",   "oranges",     "peaches",     "apples"),
+    a=c("apples", "oranges", "peaches", "apples"),
     b = c(32, 54, 75, 86)
 )
 
@@ -159,10 +159,10 @@ count_if(thru(35, 80), df1$b) # greater than or equals to 35 and less than or eq
 count_if(35 \%thru\% 80, df1$b) # greater than or equals to 35 and less than or equals to 80 = 2
 
 # values that started on 'a'
-count_if(regex("^a"),df1) # 2
+count_if(regex("^a"), df1) # 2
 
 # count_row_if
-count_row_if(regex("^a"),df1) # c(1,0,0,1)
+count_row_if(regex("^a"), df1) # c(1,0,0,1)
 
 # examples with 'keep' and 'except'
 
@@ -171,6 +171,9 @@ iris \%keep\% to("Petal.Width") # column 'Species' will be removed
  
 # 'Sepal.Length', 'Sepal.Width' will be left 
 iris \%except\% from("Petal.Length") 
+
+# except first column
+iris \%except\% items(1)
 
 # if_val examples
 # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
