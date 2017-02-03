@@ -350,5 +350,23 @@ iris2 = modify_if(iris2, Sepal.Length<5, {Species = NULL})
 expect_identical(iris2, iris[,-5])
 
 
+#### 
+context("modify.list/modify_if.list")
+
+data(iris)
+iris_list = split(iris, iris$Species)
 
 
+res = lapply(iris_list, function(dfs) {dfs$aggr = sum(dfs$Sepal.Length); dfs})
+
+res0 = modify(iris_list, {aggr = sum(Sepal.Length)})
+expect_identical(res0, res)
+
+
+res = lapply(iris_list, function(dfs) {
+    dfs$aggr = ifelse(dfs$Sepal.Width>mean(dfs$Sepal.Width), 1, NA)
+    dfs
+    })
+
+res0 = modify_if(iris_list, Sepal.Width>mean(Sepal.Width), {aggr = 1})
+expect_identical(res0, res)

@@ -22,7 +22,8 @@ modify_if(data, cond, expr)
 do_if(data, cond, expr)
 }
 \arguments{
-\item{data}{data.frame}
+\item{data}{data.frame/list of data.frames. For lists expression \code{expr}
+will be evaluated inside each data.frame separately.}
 
 \item{expr}{expression(s) that should be evaluated in the context of data.frame \code{data}}
 

@@ -15,12 +15,12 @@
 #' \code{set} to assign values to multiple variables at once. \code{compute} is
 #' an alias for \code{modify} and \code{do_if} is an alias for \code{modify_if}.
 #'
-#' @param data data.frame
+#' @param data data.frame/list of data.frames. For lists expression \code{expr}
+#'   will be evaluated inside each data.frame separately.
 #' @param expr expression(s) that should be evaluated in the context of data.frame \code{data}
 #' @param cond logical vector or expression. Expression will be evaluated in the context of the data.  
 #'
 #' @return Both functions returns modified data.frame
-#'
 #' @examples
 #' dfs = data.frame(
 #'     test = 1:5,
@@ -96,6 +96,20 @@ modify.data.frame = function (data, expr) {
     data
 }
 
+#' @export
+modify.list = function (data, expr) {
+    expr = substitute(expr)
+    data_expr = substitute(data)
+    for(each in seq_along(data)){
+        data[[each]] = eval(
+            bquote(modify(.(data_expr)[[.(each)]], .(expr))), 
+            envir = parent.frame(),
+            enclos = baseenv()
+        )
+    }
+    data
+}
+
 
 #' @export
 #' @rdname modify
@@ -152,3 +166,17 @@ modify_if.data.frame = function (data, cond, expr) {
 
 
 
+#' @export
+modify_if.list = function (data, cond, expr) {
+    expr = substitute(expr)
+    cond = substitute(cond)
+    data_expr = substitute(data)
+    for(each in seq_along(data)){
+        data[[each]] = eval(
+            bquote(modify_if(.(data_expr)[[.(each)]], .(cond), .(expr))), 
+            envir = parent.frame(),
+            enclos = baseenv()
+        )
+    }
+    data
+}

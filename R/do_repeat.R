@@ -99,7 +99,7 @@ do_repeat.data.frame = function(data, ...){
         names(curr_loop) = items_names
         
         substituted_expr = substitute_symbols(expr, curr_loop)
-        eval(substituted_expr, e)
+        eval(substituted_expr, e, enclos = baseenv())
         rm(".item_num", envir = e)
     }
     clear_env(e)
@@ -153,7 +153,6 @@ substitute_symbols = function (expr, symbols) {
 #' @export
 #' @name do_repeat
 .do_repeat = function (...) {
-    # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
     data = ref(reference)
     data = eval(substitute(do_repeat(data, ...)), envir = parent.frame(), enclos = baseenv())
