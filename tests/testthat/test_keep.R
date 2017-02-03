@@ -72,6 +72,27 @@ colnames(ex_iris) = c("a", "a", "a", "a")
 expect_identical(ex_iris %keep% "a", ex_iris)
 expect_identical(ex_iris %except% "a", ex_iris[, FALSE, drop = FALSE])
 
+context("keep/except %to%")
+data(mtcars)
+expect_identical(keep(mtcars, am %to% carb), keep(mtcars, from("am") & to("carb"))) 
+expect_identical(keep(mtcars, am %to% carb, hp %to% drat),
+                 keep(mtcars, from("am") & to("carb"), from("hp") & to("drat"))) 
+expect_identical(except(mtcars, am %to% carb), except(mtcars, from("am") & to("carb"))) 
+expect_identical(except(mtcars, am %to% carb, hp %to% drat),
+                 except(mtcars, from("am") & to("carb"), from("hp") & to("drat"))) 
+
+expect_identical(mtcars %keep% (am %to% carb), keep(mtcars, from("am") & to("carb"))) 
+expect_identical(mtcars %keep% list(am %to% carb, hp %to% drat),
+                 keep(mtcars, from("am") & to("carb"), from("hp") & to("drat"))) 
+expect_identical(mtcars %except% (am %to% carb), except(mtcars, from("am") & to("carb"))) 
+expect_identical(mtcars %except% list(am %to% carb, hp %to% drat),
+                 except(mtcars, from("am") & to("carb"), from("hp") & to("drat"))) 
+
+expect_error(keep(mtcars, am1 %to% carb))
+expect_error(keep(mtcars, am %to% carb1))
+expect_error(keep(mtcars, carb %to% am))
+
+
 context("keep/except subst")
 dfs = data.frame(
     aa = 10 %r% 5,

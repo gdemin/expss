@@ -36,8 +36,11 @@ object of the same type as \code{data}
 criteria (see \link{criteria}). \code{except} drops  variables/elements from 
 data.frame by their names or by criteria. There is no non-standard evaluation
 in these functions by design so use quotes for names of your variables or use
-\link{qc}. \code{\%keep\%}/\code{\%except\%} are infix versions of these 
-functions. \code{.keep}/\code{.except} are versions which works with 
+\link{qc}. The only exception with non-standard evaluation is \code{\%to\%}.
+See example. Character argumnets will be expanded as with \link{subst}.
+\code{a`1:2`} will be translated to \code{'a1', 'a2'}.
+\code{\%keep\%}/\code{\%except\%} are infix versions of these functions.
+\code{.keep}/\code{.except} are versions which works with
 \link{default_dataset}.
 }
 \examples{
@@ -48,9 +51,11 @@ except(iris, "Species")
 keep(iris, "Species", other) # move 'Species' to the first position
 keep(iris, to("Petal.Width")) # keep all columns except 'Species'
 
-except(iris, perl("^Petal")) # remove columns which names starts with 'Petal'
+except(iris, perl("^Petal")) # remove columns which names start with 'Petal'
 
-keep(airquality, (from("Ozone") & to("Wind"))) # keep columns from 'Ozone' to 'Wind'
+except(iris, items(5)) # remove fifth column
+
+keep(airquality, from("Ozone") & to("Wind")) # keep columns from 'Ozone' to 'Wind'
 
 # the same examples with infix operators
 
@@ -61,9 +66,24 @@ iris \%except\% "Species"
 iris \%keep\% c("Species", other) # move 'Species' to the first position
 iris \%keep\% to("Petal.Width")   # keep all columns except 'Species'
 
-iris \%except\% perl("^Petal")    # remove columns which names starts with 'Petal'
+iris \%except\% perl("^Petal")    # remove columns which names start with 'Petal'
 
 airquality \%keep\% (from("Ozone") & to("Wind")) # keep columns from 'Ozone' to 'Wind'
     
+keep(airquality, Ozone \%to\% Wind) # the same result 
+airquality \%keep\% (Ozone \%to\% Wind) # the same result 
+
+# character expansion
+dfs = data.frame(
+     a = 10 \%r\% 5,
+     b_1 = 11 \%r\% 5,
+     b_2 = 12 \%r\% 5,
+     b_3 = 12 \%r\% 5,
+     b_4 = 14 \%r\% 5,
+     b_5 = 15 \%r\% 5 
+ )
+ i = 1:5
+ keep(dfs, "b_`i`")
+ keep(dfs, b_1 \%to\% b_5) # the same result
 }
 

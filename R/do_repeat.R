@@ -124,7 +124,8 @@ do_repeat.data.frame = function(data, ...){
       
 }
 
-
+# expr - expression as after 'substitute'
+# symbols - named list  - names will be substituted with values 
 substitute_symbols = function (expr, symbols) {
     as.call(rapply(as.list(expr), function(elem){
         if(length(elem)<=1){
