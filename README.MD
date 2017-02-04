@@ -425,7 +425,7 @@ VALUE LABELS a
 **R**:
 ```
 .compute({
-    val_lab(a) = ml_left("
+    val_lab(a) = num_lab("
         1 apples
         2 oranges
         3 peaches 
@@ -434,7 +434,7 @@ VALUE LABELS a
 ```
 or, without using default dataset:
 ```
-val_lab(w$a) = ml_left("
+val_lab(w$a) = num_lab("
     1 apples
     2 oranges
     3 peaches 
@@ -498,7 +498,7 @@ default_dataset(product_test)
 )
 
 # here we prepare likes codeframe for future usage
-codeframe_likes = ml_left("
+codeframe_likes = num_lab("
 1 Liked everything
 2 Disliked everything
 3 Chocolate
@@ -530,7 +530,7 @@ codeframe_likes = ml_left("
     # Apply labels
 
     var_lab(c1r) = "Preferences"
-    val_lab(c1r) = ml_left("
+    val_lab(c1r) = num_lab("
         1 VSX123 
         2 SDF456
         3 Hard to say
@@ -549,7 +549,7 @@ codeframe_likes = ml_left("
     
     var_lab(h22) = "Overall quality. VSX123"
     var_lab(p22) = "Overall quality. SDF456"
-    val_lab(h22) = ml_left("
+    val_lab(h22) = num_lab("
                            1 Extremely poor 
                            2 Very poor
                            3 Quite poor

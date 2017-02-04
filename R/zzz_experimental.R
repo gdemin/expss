@@ -80,19 +80,19 @@
 #'     hp = "Gross horsepower",
 #'     mpg_by_am = "Average mpg for transimission type",
 #'     hi_low_mpg = "Miles per gallon",
-#'     hi_low_mpg = ml_left("
+#'     hi_low_mpg = num_lab("
 #'                      0 Low
 #'                      1 High
 #'                      "),
 #' 
 #'     vs = "Engine",
-#'     vs = ml_left(" 
+#'     vs = num_lab(" 
 #'                      0 V-engine
 #'                      1 Straight engine
 #'                  "),
 #' 
 #'     am = "Transmission",
-#'     am = ml_left(" 
+#'     am = num_lab(" 
 #'                      0 Automatic
 #'                      1 Manual
 #'                           ")

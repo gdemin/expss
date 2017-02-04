@@ -98,7 +98,7 @@ expect_identical(labs2,make_labels("
 
 "))
 
-expect_identical(labs2,ml_left("
+expect_identical(labs2,num_lab("
     1\tBrand1
 
 \t\t2.    Brand2    
@@ -110,7 +110,7 @@ expect_identical(labs2,ml_left("
 
 "))
 
-expect_identical(labs2,ml_right("
+expect_identical(labs2,lab_num("
     Brand1\t      1
 
 \t\t    Brand2   2 
@@ -178,6 +178,16 @@ expect_identical(labs4,make_labels("
     
     ",code_position="right"))
 
+expect_identical(labs4,ml_right("
+    Very bad -1
+                                   Bad \t -0.5 
+                                   Normal    0 
+                                   \t\tGood 0.5 
+                                   Very good  1
+                                   
+                                   
+                                   "))
+
 
 expect_identical(labs4,make_labels("
       \t-1 Very bad
@@ -200,6 +210,15 @@ expect_identical(labs4,make_labels(c("
                             
                             ","","      \t\t"),code_position="left"))
 
+expect_identical(labs4,ml_left(c("
+                            \t-1 Very bad",
+                                     "\t-0.5\tBad \t",  
+                                     "0 Normal
+                                     0.5\t\tGood", 
+                                     "1 Very good
+                                     
+                                     
+                                     ","","      \t\t")))
 
 expect_identical(make_labels("
     1
@@ -304,6 +323,17 @@ expect_identical(
         
               ", code_position = "autonum"),
     NULL
+    )
+
+expect_identical(
+    autonum(
+        "
+        male
+        
+        
+        female
+        "),
+    c(male = 1L, female = 2L)
     )
 
 expect_identical(

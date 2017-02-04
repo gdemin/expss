@@ -164,7 +164,7 @@ unvr.list=function(x){
 #' \item{\code{add_val_lab<-}}{ add value labels to already existing value labels.} 
 #' \item{\code{unvl}}{ drops value labels.}
 #' \item{\code{make_labels}}{ makes named vector from text for usage as value labels.}
-#' \item{\code{ml_left}, \code{ml_right} and  \code{ml_autonum}}{ are shortcuts for \code{make_labels}
+#' \item{\code{num_lab}, \code{lab_num} and  \code{autonum}}{ are shortcuts for \code{make_labels}
 #' with \code{code_postion} 'left', 'right' and 'autonum' accordingly.}
 #' }
 #' @param x Variable(s). Vector/data.frame/list.
@@ -246,7 +246,7 @@ unvr.list=function(x){
 #' 
 #' products = 1:8
 #' 
-#' val_lab(products) = ml_right("
+#' val_lab(products) = lab_num("
 #'  Chocolate bars    1
 #'  Chocolate sweets (bulk)	2
 #'  Slab chocolate(packed)	3
@@ -395,13 +395,32 @@ make_labels=function(text, code_position=c("left","right", "autonum")){
 
 #' @export
 #' @rdname val_lab
-ml_left = function(text) make_labels(text = text, code_position = "left")
+ml_left = function(text) {
+    .Deprecated("num_lab")    
+    num_lab(text)
+}
 #' @export
 #' @rdname val_lab
-ml_right = function(text) make_labels(text = text, code_position = "right")
+ml_right = function(text) {
+    .Deprecated("lab_num")
+    lab_num(text)
+}
 #' @export
 #' @rdname val_lab
-ml_autonum = function(text) make_labels(text = text, code_position = "autonum")
+ml_autonum = function(text) {
+    .Deprecated("autonum")
+    autonum(text)
+}
+
+#' @export
+#' @rdname val_lab
+num_lab = function(text) make_labels(text = text, code_position = "left")
+#' @export
+#' @rdname val_lab
+lab_num = function(text) make_labels(text = text, code_position = "right")
+#' @export
+#' @rdname val_lab
+autonum = function(text) make_labels(text = text, code_position = "autonum")
 
 #' Drop variable label and value labels
 #' 

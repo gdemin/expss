@@ -1,7 +1,7 @@
 context("elementary_summary_df")
 
-library(data.table)
-dt_iris = data.table(iris)
+# library(data.table)
+dt_iris = data.table::data.table(iris)
 dt_iris$Species = as.labelled(dt_iris$Species)
 dt_iris$total = 1
 elementary_summary_df = function(...) {
@@ -171,10 +171,10 @@ expect_equal_to_reference(
 
 
 
-multpl = data.table(s1 = 1:5, s2 = 11:15, b1 = c(1,1,1,NA,NA), b2 = c(1,1,2,2,NA), weight = c(1,2,3,4,5))
+multpl = data.table::data.table(s1 = 1:5, s2 = 11:15, b1 = c(1,1,1,NA,NA), b2 = c(1,1,2,2,NA), weight = c(1,2,3,4,5))
 multpl$total = 1
 
-test_multpl = data.table( s1 = c(1:3,1:4), s2 = c(11:13,11:14), bn = c(1,1,1,1,1,2,2), weight = c(1:3,1:4))
+test_multpl = data.table::data.table( s1 = c(1:3,1:4), s2 = c(11:13,11:14), bn = c(1,1,1,1,1,2,2), weight = c(1:3,1:4))
 
 expect_equal_to_reference(
     elementary_summary_df(multpl,
@@ -202,10 +202,10 @@ expect_equal_to_reference(
 )
 
 
-multpl = data.table(s1 = 1:5, s2 = 11:15, b1 = c(1,1,1,NA,NA), b2 = c(1,1,2,2,NA),
+multpl = data.table::data.table(s1 = 1:5, s2 = 11:15, b1 = c(1,1,1,NA,NA), b2 = c(1,1,2,2,NA),
                     vr = c(1,1,3,2,1), weight = c(1,2,3,4,5))
 
-test_multpl = data.table( s1 = c(1:3,1:4), s2 = c(11:13,11:14),
+test_multpl = data.table::data.table( s1 = c(1:3,1:4), s2 = c(11:13,11:14),
                           bn = c(1,1,1,1,1,2,2), vr = c(1,1,3,1,1,3,2), weight = c(1:3,1:4))
 
 

@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2016-12-25" />
+<meta name="date" content="2017-02-05" />
 
 <title>Usage Examples</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Usage Examples</h1>
-<h4 class="date"><em>2016-12-25</em></h4>
+<h4 class="date"><em>2017-02-05</em></h4>
 
 
 
@@ -399,14 +399,14 @@ END IF.</code></pre>
     3 &quot;peaches&quot;. </code></pre>
 <p><strong>R</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">.compute</span>({
-    <span class="kw">val_lab</span>(a) =<span class="st"> </span><span class="kw">ml_left</span>(<span class="st">&quot;</span>
+    <span class="kw">val_lab</span>(a) =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
 <span class="st">        1 apples</span>
 <span class="st">        2 oranges</span>
 <span class="st">        3 peaches </span>
 <span class="st">    &quot;</span>)
 })</code></pre></div>
 <p>or, without using default dataset:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">val_lab</span>(w$a) =<span class="st"> </span><span class="kw">ml_left</span>(<span class="st">&quot;</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">val_lab</span>(w$a) =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
 <span class="st">    1 apples</span>
 <span class="st">    2 oranges</span>
 <span class="st">    3 peaches </span>
@@ -430,8 +430,8 @@ END IF.</code></pre>
 ##  #Total      1       2       1      4</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_mean</span>(<span class="kw">dtfrm</span>(w$b, w$c), w$a) <span class="co"># Mean cost and price by fruits</span></code></pre></div>
 <pre><code>##        apples oranges peaches #Total
-##   Cost     70      22      30     36
-##  Price     80      45      40     52</code></pre>
+##   Cost     70    22.5      30  36.25
+##  Price     80    45.0      40  52.50</code></pre>
 <p>or, the same with default dataset:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">.fre</span>(a) <span class="co"># Frequency of fruits</span>
 <span class="kw">.cro_cpct</span>(b, a) <span class="co"># Column percent of cost by fruits</span>
@@ -471,7 +471,7 @@ END IF.</code></pre>
 )
 
 <span class="co"># here we prepare likes codeframe for future usage</span>
-codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span class="st">&quot;</span>
+codeframe_likes =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
 <span class="st">1 Liked everything</span>
 <span class="st">2 Disliked everything</span>
 <span class="st">3 Chocolate</span>
@@ -503,7 +503,7 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
     <span class="co"># Apply labels</span>
 
     <span class="kw">var_lab</span>(c1r) =<span class="st"> &quot;Preferences&quot;</span>
-    <span class="kw">val_lab</span>(c1r) =<span class="st"> </span><span class="kw">ml_left</span>(<span class="st">&quot;</span>
+    <span class="kw">val_lab</span>(c1r) =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
 <span class="st">        1 VSX123 </span>
 <span class="st">        2 SDF456</span>
 <span class="st">        3 Hard to say</span>
@@ -522,7 +522,7 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
     
     <span class="kw">var_lab</span>(h22) =<span class="st"> &quot;Overall quality. VSX123&quot;</span>
     <span class="kw">var_lab</span>(p22) =<span class="st"> &quot;Overall quality. SDF456&quot;</span>
-    <span class="kw">val_lab</span>(h22) =<span class="st"> </span><span class="kw">ml_left</span>(<span class="st">&quot;</span>
+    <span class="kw">val_lab</span>(h22) =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
 <span class="st">                           1 Extremely poor </span>
 <span class="st">                           2 Very poor</span>
 <span class="st">                           3 Quite poor</span>
@@ -596,6 +596,9 @@ codeframe_likes =<span class="st"> </span><span class="kw">ml_left</span>(<span 
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># is there significant difference between preferences?</span>
 <span class="co"># 'na_if(c1r, 3)' remove 'hard to say' from vector </span>
 <span class="kw">.with</span>(<span class="kw">chisq.test</span>(<span class="kw">table</span>(<span class="kw">na_if</span>(c1r, <span class="dv">3</span>)))) <span class="co"># yes, it is significant</span></code></pre></div>
+<pre><code>## Warning: '.with' is deprecated.
+## Use '.calculate' instead.
+## See help(&quot;Deprecated&quot;)</code></pre>
 <pre><code>## 
 ##  Chi-squared test for given probabilities
 ## 

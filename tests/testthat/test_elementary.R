@@ -1,9 +1,9 @@
 context("elementary_cases")
-suppressMessages(library(data.table))
+# suppressMessages(library(data.table))
 elementary_cases = expss.tables:::elementary_cases
 data(mtcars)
 # expect_error(elementary_cases(mtcars, var_names = "am", ban_names = "vs", weight_name = NULL))
-mt = data.table(mtcars)
+mt = data.table::data.table(mtcars)
 expect_equal_to_reference(elementary_cases(mt, var_names = "am", ban_names = "vs", weight_name = NULL),
                           "rds/elementary_cases1.rds")
 
@@ -41,7 +41,7 @@ expect_equal_to_reference(elementary_cases(mt, var_names = "am", ban_names = "vs
 
 context("elementary_cases multiple response")
 
-test = data.table(v1 = c(1,1,NA), v2 = c(NA, 2, 2), b1 = c(1, 1, 2), b2 = c(3, NA, 1))
+test = data.table::data.table(v1 = c(1,1,NA), v2 = c(NA, 2, 2), b1 = c(1, 1, 2), b2 = c(3, NA, 1))
 test$weight = c(1, 2, 3)
 test$empty1 = as.numeric(NA)
 test$empty2 = as.numeric(NA)

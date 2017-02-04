@@ -61,7 +61,7 @@ default_dataset(default_mtcars)
     mpg_by_am = ave(mpg, am, FUN = mean)
     hi_low_mpg = ifs(mpg<mean(mpg) ~ 0, mpg>mean(mpg) ~ 1)
     var_lab(hi_low_mpg) = "Miles per gallon"
-    val_lab(hi_low_mpg) = ml_left("
+    val_lab(hi_low_mpg) = num_lab("
                                  0 Low
                                  1 High
                                  ")
@@ -79,7 +79,7 @@ mtcars = within(mtcars,{
     mpg_by_am = ave(mpg, am, FUN = mean)
     hi_low_mpg = ifs(mpg<mean(mpg) ~ 0, mpg>mean(mpg) ~ 1)
     var_lab(hi_low_mpg) = "Miles per gallon"
-    val_lab(hi_low_mpg) = ml_left("
+    val_lab(hi_low_mpg) = num_lab("
                                  0 Low
                                  1 High
                                  ")

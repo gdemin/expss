@@ -3,10 +3,13 @@
 \name{val_lab}
 \alias{add_val_lab}
 \alias{add_val_lab<-}
+\alias{autonum}
+\alias{lab_num}
 \alias{make_labels}
 \alias{ml_autonum}
 \alias{ml_left}
 \alias{ml_right}
+\alias{num_lab}
 \alias{set_val_lab}
 \alias{unvl}
 \alias{val_lab}
@@ -32,6 +35,12 @@ ml_left(text)
 ml_right(text)
 
 ml_autonum(text)
+
+num_lab(text)
+
+lab_num(text)
+
+autonum(text)
 }
 \arguments{
 \item{x}{Variable(s). Vector/data.frame/list.}
@@ -72,7 +81,7 @@ exist.}
 \item{\code{add_val_lab<-}}{ add value labels to already existing value labels.} 
 \item{\code{unvl}}{ drops value labels.}
 \item{\code{make_labels}}{ makes named vector from text for usage as value labels.}
-\item{\code{ml_left}, \code{ml_right} and  \code{ml_autonum}}{ are shortcuts for \code{make_labels}
+\item{\code{num_lab}, \code{lab_num} and  \code{autonum}}{ are shortcuts for \code{make_labels}
 with \code{code_postion} 'left', 'right' and 'autonum' accordingly.}
 }
 }
@@ -142,7 +151,7 @@ f(age)
 
 products = 1:8
 
-val_lab(products) = ml_right("
+val_lab(products) = lab_num("
  Chocolate bars    1
  Chocolate sweets (bulk)	2
  Slab chocolate(packed)	3

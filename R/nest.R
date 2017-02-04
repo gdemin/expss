@@ -17,12 +17,12 @@
 #' mtcars = apply_labels(mtcars,
 #'                       cyl = "Number of cylinders",
 #'                       vs = "Engine",
-#'                       vs = ml_left("
+#'                       vs = num_lab("
 #'                              0 V-engine 
 #'                              1 Straight engine
 #'                              "),
 #'                       am = "Transmission",
-#'                       am = ml_left("
+#'                       am = num_lab("
 #'                              0 Automatic 
 #'                              1 Manual
 #'                              "),

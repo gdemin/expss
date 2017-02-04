@@ -41,12 +41,12 @@ with default dataset. See also \link{var_lab} and \link{val_lab}.
 data(mtcars)
 mtcars = apply_labels(mtcars,
                       vs = "Engine",
-                      vs = ml_left("
+                      vs = num_lab("
                              0 V-engine 
                              1 Straight engine
                              "),
                       am = "Transmission",
-                      am = ml_left("
+                      am = num_lab("
                              0 Automatic 
                              1 Manual
                              ")
