@@ -33,7 +33,7 @@ See \link[base]{rbind}, \link{cro}, \link{fre}
 \description{
 \code{add_rows} is similar to \link[base]{rbind} but it handles non-matching 
 column names. \code{\%add_rows\%} is an infix version of \code{add_rows}. 
-There is also special method for the results of \code{cro_*}/\code{fre}. 
+There is also special method for the results of \code{cro_*}/\code{table_*}/\code{fre}. 
 \code{.add_rows} is version for addding rows to default dataset. See
 \link{default_dataset}.
 }
@@ -48,19 +48,25 @@ add_rows(a, b, nomatch_columns = "drop")  # y
 
 # simple tables
 data(mtcars)
+# apply labels
+mtcars = apply_labels(mtcars,
+                mpg = "Miles/(US) gallon",
+                cyl = "Number of cylinders",
+                disp = "Displacement (cu.in.)",
+                hp = "Gross horsepower",
+                drat = "Rear axle ratio",
+                wt = "Weight (lb/1000)",
+                qsec = "1/4 mile time",
+                vs = "V/S",
+                vs = c("V-engine" = 0, "Straight engine" = 1),
+                am = "Transmission (0 = automatic, 1 = manual)",
+                am = c(automatic = 0, manual = 1),
+                gear = "Number of forward gears",
+                carb = "Number of carburetors"
+)
 
-mtcars = modify(mtcars, {
-            var_lab(mpg) = "Miles/(US) gallon"
-            var_lab(vs) = "vs"
-            val_lab(vs) = c("V-engine" = 0, "Straight engine" = 1)
-            var_lab(am) = "am"
-            val_lab(am) = c("automatic transmission" = 1, "manual transmission" = 0)
-            var_lab(gear) = "gear"
-            var_lab(carb) = "carb"
-})
-
-tab_mean = with(mtcars, cro_mean(mpg, am))
-tab_percent = with(mtcars, cro_cpct(vs, am))
+tab_mean = calculate(mtcars, cro_mean(mpg, am))
+tab_percent = calculate(mtcars, cro_cpct(vs, am))
 
 tab_mean \%add_rows\% tab_percent
 

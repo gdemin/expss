@@ -52,9 +52,26 @@ expect_equal_to_reference(a, "rds/add_rows6b.rds")
 
 expect_error(add_rows(a, b, nomatch_columns = "stop"))
 
-class(a) = union(c("table_cases", "ctable"), class(a))
-class(b) = union(c("table_cases", "ctable"), class(b))
-class(d) = union(c("table_cpct", "ctable"), class(d))
+context("add_rows.etable")
+
+a = data.frame(x = 1:5, y = 6:10)
+b = data.frame(y = 6:10, z = 11:15)
+d = data.frame(y = 6:10, w = 16:20)
+e = data.frame(f = 21:25, g = 26:30)
+
+
+class(a) = union(c("table_cases", "etable"), class(a))
+class(b) = union(c("table_cases", "etable"), class(b))
+class(d) = union(c("table_cpct", "etable"), class(d))
+
+expect_equal_to_reference(add_rows(a, b), "rds/add_rows7e.rds")
+expect_equal_to_reference(add_rows(a, b, d), "rds/add_rows8e.rds")
+expect_equal_to_reference(add_rows(a, b, d, e), "rds/add_rows9e.rds")
+
+expect_equal_to_reference(add_rows(a, NA), "rds/add_rows10e.rds")
+expect_equal_to_reference(add_rows(a, 1:2), "rds/add_rows11e.rds")
+expect_equal_to_reference(add_rows(a, b, d, e), "rds/add_rows12e.rds")
+
 
 context("labels preserving")
 

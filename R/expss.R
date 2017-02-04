@@ -41,5 +41,14 @@
 NULL
 
 
+#' @import data.table
+#' @import magrittr
 #' @import foreign stats utils matrixStats
+
+
+data.table = data.table::data.table
+as.data.table = data.table::as.data.table
+setkeyv = data.table::setkeyv
+# '[.data.table' = data.table::`[.data.table`
+
 

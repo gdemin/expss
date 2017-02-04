@@ -1,3 +1,7 @@
+# data.table = data.table::data.table
+# as.data.table = data.table::as.data.table
+# '[.data.table' = data.table::`[.data.table`
+
 ## stop if condition with message
 stopif = function(cond,...){
     if (cond) {
@@ -404,4 +408,22 @@ flat_list=function(x, flat_df = FALSE)
         do.call(c, res)
     } else as.list(x)
     
+}
+
+
+####
+
+"insert_value_before<-" = function(x, needle, value){
+    needle_pos = which(x %in% needle)
+    if(length(needle_pos)){
+        needle_pos = needle_pos[1]
+        if(needle_pos==1){
+            c(value, x)
+        } else {
+            c(x[1:(needle_pos-1)], value, x[-(1:(needle_pos-1))])
+        }
+
+    } else {
+        x
+    }
 }

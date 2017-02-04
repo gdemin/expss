@@ -8,9 +8,9 @@
 x \%merge\% y
 }
 \arguments{
-\item{x}{data.frame or results of \code{fre}/\code{cro_*}}
+\item{x}{data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}}
 
-\item{y}{data.frame or results of \code{fre}/\code{cro_*}}
+\item{y}{data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}}
 }
 \value{
 data.frame
@@ -26,32 +26,41 @@ duplicates in first column (column with labels).
 \examples{
 data(mtcars)
 # apply labels
-mtcars = modify(mtcars,{
-                var_lab(mpg) = "Miles/(US) gallon"
-                var_lab(cyl) = "Number of cylinders"
-                var_lab(disp) = "Displacement (cu.in.)"
-                var_lab(hp) = "Gross horsepower"
-                var_lab(drat) = "Rear axle ratio"
-                var_lab(wt) = "Weight (lb/1000)"
-                var_lab(qsec) = "1/4 mile time"
-                var_lab(vs) = "V/S"
-                val_lab(vs) = c("V-engine" = 0, "Straight engine" = 1)
-                var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
-                val_lab(am) = c(automatic = 0, manual = 1)
-                var_lab(gear) = "Number of forward gears"
-                var_lab(carb) = "Number of carburetors"
-})
+mtcars = apply_labels(mtcars,
+                mpg = "Miles/(US) gallon",
+                cyl = "Number of cylinders",
+                disp = "Displacement (cu.in.)",
+                hp = "Gross horsepower",
+                drat = "Rear axle ratio",
+                wt = "Weight (lb/1000)",
+                qsec = "1/4 mile time",
+                vs = "V/S",
+                vs = c("V-engine" = 0, "Straight engine" = 1),
+                am = "Transmission (0 = automatic, 1 = manual)",
+                am = c(automatic = 0, manual = 1),
+                gear = "Number of forward gears",
+                carb = "Number of carburetors"
+)
 
 # table by 'am'
-tab1 = with(mtcars, cro_cpct(gear, am))
+tab1 = calculate(mtcars, cro_cpct(gear, am))
 # table with percents
-tab2 = with(mtcars, cro_cpct(gear, vs))
+tab2 = calculate(mtcars, cro_cpct(gear, vs))
 
 # combine tables
-# \%n_d\% remove first total
-tab1 \%n_d\% "#Total" \%merge\% tab2
+# \%except\% remove first total
+tab1 \%except\% "#Total" \%merge\% tab2
+
+# complex tables
+# table with counts
+counts = calculate(mtcars, table_cases(list(vs, am, gear, carb), "Count"))
+# table with percents
+percents = calculate(mtcars, table_cpct(list(vs, am, gear, carb), "Column, \%"))
+
+# combine tables
+counts \%merge\% percents
 }
 \seealso{
-\link{fre}, \link{cro}, \link[base]{merge}
+\link{fre}, \link{cro}, \link{table_cases}, \link{table_summary}, \link[base]{merge}
 }
 

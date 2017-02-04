@@ -18,7 +18,7 @@
 #' @examples
 #' 
 #' data(product_test)
-#' a1 = with(product_test, mrset(a2_1 %to% a2_99))
+#' # a1 = with(product_test, mrset(a2_1 %to% a2_99))
 #' 
 mrset = function(...){
     args = list(...)

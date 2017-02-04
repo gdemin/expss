@@ -1,11 +1,25 @@
+#' Title
+#'
+#' @param x fsdfsfd
+#' @param excluded_columns dsfsdf
+#' @param excluded_rows sdfsdf
+#'
+#' @return dfsdf
+#' @export
+#'
+#' @examples
+#' a = 1
 drop_empty_rows = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
     UseMethod("drop_empty_rows")
 }
 
+#' @export
+#' @rdname drop_empty_rows
 drop_empty_columns = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
     UseMethod("drop_empty_columns")   
 }
 
+#' @export
 drop_empty_rows.data.frame = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
     stopif(!is.null(excluded_columns) && !is.numeric(excluded_columns) && !is.character(excluded_columns) &&
                is.logical(excluded_columns),
@@ -28,7 +42,7 @@ drop_empty_rows.data.frame = function(x, excluded_columns = 1, excluded_rows = g
     
 }
 
-
+#' @export
 drop_empty_columns.data.frame = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
     stopif(!is.null(excluded_columns) && !is.numeric(excluded_columns) && !is.character(excluded_columns) &&
                is.logical(excluded_columns),
