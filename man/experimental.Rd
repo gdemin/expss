@@ -2,6 +2,8 @@
 % Please edit documentation in R/zzz_experimental.R
 \name{experimental}
 \alias{.add_val_lab}
+\alias{.calc}
+\alias{.calculate}
 \alias{.compute}
 \alias{.cro}
 \alias{.cro_cpct}
@@ -36,6 +38,10 @@
 .compute(expr)
 
 .with(expr, ...)
+
+.calculate(expr, ...)
+
+.calc(expr, ...)
 
 .val_lab(...)
 

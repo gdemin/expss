@@ -212,11 +212,25 @@ modify_default_dataset_light = function(x, ...){
 #' @export
 #' @rdname experimental
 .with = function (expr, ...) {
+    .Deprecated(".calculate")
     reference = suppressMessages(default_dataset() )
     expr = substitute(expr)
     data = ref(reference)
     eval(bquote(with(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
-}    
+}  
+
+#' @export
+#' @rdname experimental
+.calculate = function (expr, ...) {
+    reference = suppressMessages(default_dataset() )
+    expr = substitute(expr)
+    data = ref(reference)
+    eval(bquote(calculate(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
+} 
+
+#' @export
+#' @rdname experimental
+.calc = .calculate
 
 #' @export
 #' @rdname experimental

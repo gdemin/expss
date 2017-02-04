@@ -1,26 +1,40 @@
 #' Modify data.frame/conditionally modify data.frame
 #' 
-#' \code{modify} evaluates expression \code{expr} in the context of data.frame 
-#' \code{data}. It works similar to \code{\link[base]{within}} in base R but try
-#' to return new variables in order of their occurance in the expression. 
-#' \code{modify_if} modifies only rows for which \code{cond} has TRUE. Other 
-#' rows remain unchanged. Newly created variables also will have values only in 
-#' rows for which \code{cond} has TRUE. There will be NA's in other rows. This 
-#' function tries to mimic SPSS "DO IF(). ... END IF." statement. There is a 
-#' special constant \code{.N} which equals to number of cases in \code{data} for
-#' usage in expression inside \code{modify}. Inside \code{modify_if} \code{.N} 
-#' gives number of rows which will be affected by expressions. Inside these 
-#' functions you can use \code{set} function which creates variables with given 
-#' name/set values to existing variables - \link{.set}. It is possible with 
-#' \code{set} to assign values to multiple variables at once. \code{compute} is
-#' an alias for \code{modify} and \code{do_if} is an alias for \code{modify_if}.
-#'
-#' @param data data.frame/list of data.frames. For lists expression \code{expr}
-#'   will be evaluated inside each data.frame separately.
-#' @param expr expression(s) that should be evaluated in the context of data.frame \code{data}
+#' \itemize{
+#' \item{{\code{modify}}{ evaluates expression \code{expr} in the context of data.frame 
+#' \code{data} and return original data possibly modified. It works similar to
+#' \code{\link[base]{within}} in base R but try to return new variables in order
+#' of their occurrence in the expression and make available
+#' full-featured \code{\%to\%} and \code{.N} in the expressions. See \link{vars}.}}
+#' \item{{\code{calculate}}{ evaluates expression \code{expr} in the context of
+#' data.frame \code{data} and return value of the evaluated expression. It works
+#' similar to \code{\link[base]{with}} in base R but make available
+#' full-featured \code{\%to\%} and \code{.N} in the expressions. See \link{vars}.}}
+#' \item{{\code{modify_if}}{ modifies only rows for which \code{cond} equals to
+#' TRUE. Other rows remain unchanged. Newly created variables also will have
+#' values only in rows for which \code{cond} have TRUE. There will be NA's in
+#' other rows. This function tries to mimic SPSS "DO IF(). ... END IF."
+#' statement.}}
+#' }
+#' There is a special constant \code{.N} which equals to number of cases in
+#' \code{data} for usage in expression inside \code{modify}/\code{calculate}.
+#' Inside \code{modify_if} \code{.N} gives number of rows which will be affected
+#' by expressions. Inside these functions you can use \code{set} function which 
+#' creates variables with given name/set values to existing variables - 
+#' \link{.set}. It is possible with \code{set} to assign values to multiple 
+#' variables at once. \code{compute} is an alias for \code{modify}, \code{do_if}
+#' is an alias for \code{modify_if} and \code{calc} is an alias for 
+#' \code{calculate}.
+#' 
+#' @param data data.frame/list of data.frames. If \code{data} is list of
+#'   data.frames then expression \code{expr} will be evaluated inside each
+#'   data.frame separately.
+#' @param expr expression that should be evaluated in the context of data.frame \code{data}
 #' @param cond logical vector or expression. Expression will be evaluated in the context of the data.  
 #'
-#' @return Both functions returns modified data.frame
+#' @return \code{modify} and \code{modify_if} functions return modified 
+#'   data.frame/list of modified data.frames, \code{calculate} returns value of
+#'   the evaluated expression/list of values.
 #' @examples
 #' dfs = data.frame(
 #'     test = 1:5,
@@ -34,12 +48,15 @@
 #' )
 #' 
 #' 
-#' # calculate sum of b* variables
+#' # compute sum of b* variables and attach it to 'dfs'
 #' modify(dfs, {
 #'     b_total = sum_row(b_, b_1 %to% b_5)
 #'     var_lab(b_total) = "Sum of b"
 #'     random_numbers = runif(.N) # .N usage
 #' })
+#' 
+#' # calculate sum of b* variables and return it
+#' calculate(dfs, sum_row(b_, b_1 %to% b_5))
 #' 
 #' # 'set' function
 #' # new variables filled with NA
@@ -180,3 +197,51 @@ modify_if.list = function (data, cond, expr) {
     }
     data
 }
+
+########
+
+#' @export
+#' @rdname modify
+calculate =  function (data, expr) {
+    UseMethod("calculate")
+}
+
+#' @export
+calculate.data.frame = function (data, expr) {
+    # based on 'within' from base R by R Core team
+    parent = parent.frame()
+    e = evalq(environment(), data, parent)
+    prepare_env(e, n = nrow(data), column_names = colnames(data))
+    eval(substitute(expr), envir = e, enclos = baseenv())
+}
+
+#' @export
+calculate.list = function (data, expr) {
+    expr = substitute(expr)
+    data_expr = substitute(data)
+    for(each in seq_along(data)){
+        data[[each]] = eval(
+            bquote(calculate(.(data_expr)[[.(each)]], .(expr))), 
+            envir = parent.frame(),
+            enclos = baseenv()
+        )
+    }
+    data
+}
+
+
+#' @export
+#' @rdname modify
+'%calculate%' = function (data, expr) {
+    expr = substitute(expr)
+    data = substitute(data)
+    eval(bquote(calculate(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
+}
+
+#' @export
+#' @rdname modify
+calc = calculate
+
+#' @export
+#' @rdname modify
+'%calc%' = `%calculate%`

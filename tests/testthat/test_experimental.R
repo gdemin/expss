@@ -98,6 +98,7 @@ nn = ncol(mtcars)
 expect_identical(mtcars[, c(1:(nn-2), nn, nn-1)], default_mtcars)
 expect_identical(.fre(vs),fre(mtcars$vs))
 expect_identical(.with(fre(vs)),fre(mtcars$vs))
+expect_identical(.calc(fre(vs)),fre(mtcars$vs))
 expect_identical(.cro(am, vs), cro(mtcars$am, mtcars$vs))
 expect_identical(.cro_cpct(am, vs), cro_cpct(mtcars$am, mtcars$vs))
 var_lab(mtcars$mpg_by_am) = "mpg_by_am"
