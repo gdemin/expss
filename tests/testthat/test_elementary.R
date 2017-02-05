@@ -1,6 +1,6 @@
 context("elementary_cases")
 # suppressMessages(library(data.table))
-elementary_cases = expss.tables:::elementary_cases
+elementary_cases = expss:::elementary_cases
 data(mtcars)
 # expect_error(elementary_cases(mtcars, var_names = "am", ban_names = "vs", weight_name = NULL))
 mt = data.table::data.table(mtcars)

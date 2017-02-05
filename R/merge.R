@@ -78,12 +78,74 @@ merge.simple_table = function(x, y,
                         suffixes = c("",""),
                         incomparables = NULL, ...){
 
+    res = merge_table(x = x, 
+                      y = y,
+                      by.x = by.x,
+                      by.y = by.y,
+                      all.x = all.x,
+                      all.y = all.y,
+                      sort = sort,
+                      suffixes = suffixes,
+                      incomparables = incomparables,
+                      ...)
+
+    if(!("simple_table" %in% class(res))) class(res) = c("simple_table", class(res))
+    res
+
+}
+
+
+#' @export
+merge.summary_table = merge.simple_table
+
+
+#' @export
+merge.etable = function(x, y, by = "row_labels",
+                        by.x = by,
+                        by.y = by,
+                        all = TRUE,
+                        all.x = all,
+                        all.y = all,
+                        sort = FALSE,
+                        suffixes = c("",""),
+                        incomparables = NULL, ...){
+    res = merge_table(x = x, 
+                      y = y,
+                      by.x = by.x,
+                      by.y = by.y,
+                      all.x = all.x,
+                      all.y = all.y,
+                      sort = sort,
+                      suffixes = suffixes,
+                      incomparables = incomparables,
+                      ...)
+    if(!("etable" %in% class(res))) class(res) = c("etable", class(res))
+    res
+
+}
+
+#' @export
+'%merge%.etable' = function(x, y) merge.etable(x, y)
+
+#' @export
+'%merge%.summary_table' = function(x, y) merge.summary_table(x, y)
+
+merge_table = function(x, y,
+                       by.x,
+                       by.y,
+                       all.x,
+                       all.y,
+                       sort,
+                       suffixes,
+                       incomparables, ...){
     class_x = class(x)
     class_y = class(y)
     # below we try to preserve order in rows in y for rows which doesn't exists in x
     order.x = seq_len(nrow(x))
     x[['..order..x']] = order.x
-    order.y = order.x[match(y[[1]], x[[1]])]
+    pos1 = match(by.x, colnames(x))[[1]]
+    pos2 = match(by.y, colnames(y))[[1]]
+    order.y = order.x[match(y[[pos2]], x[[pos1]])]
     # fill NA.
     need_sort = anyNA(order.y) & !all(is.na(order.y))
     if(need_sort){
@@ -114,69 +176,6 @@ merge.simple_table = function(x, y,
     res = res %n_d% c('..order..y','..order..x')
     colnames(res) = preserve_colnames
     class(res) = intersect(class_x, class_y)
-    if(!("simple_table" %in% class(res))) class(res) = c("simple_table", class(res))
     res
 
 }
-
-
-#' @export
-merge.summary_table = merge.simple_table
-
-#' @export
-'%merge%.summary_table' = function(x, y) merge.summary_table(x, y)
-
-
-#' @export
-merge.etable = function(x, y, by = "row_labels",
-                        by.x = by,
-                        by.y = by,
-                        all = TRUE,
-                        all.x = all,
-                        all.y = all,
-                        sort = FALSE,
-                        suffixes = c("",""),
-                        incomparables = NULL, ...){
-    class_x = class(x)
-    class_y = class(y)
-    # below we try to preserve order in rows in y for rows which doesn't exists in x
-    order.x = seq_len(nrow(x))
-    x[['..order..x']] = order.x
-    order.y = order.x[match(y[[by.y]], x[[by.x]])]
-    # fill NA.
-    need_sort = anyNA(order.y) & !all(is.na(order.y))
-    if(need_sort){
-        delta = 1/length(order.y)/10
-        if(is.na(order.y[1])) order.y[1] = 0
-        for (i in seq_along(order.y)[-1]){
-            if(is.na(order.y[i])){
-                order.y[i] = order.y[i-1] + delta
-            }
-        }
-        y[['..order..y']] = order.y
-    }
-
-    res = suppressWarnings(merge.data.frame(x, y, by.x = by.x, by.y = by.y,
-                 all.x = all.x, all.y = all.y,
-                 sort = sort, suffixes = suffixes,
-                 incomparables = incomparables,
-                 ... ))
-    preserve_colnames = colnames(res) %d% c('..order..y','..order..x')
-    if(need_sort){
-        order.y = res[['..order..y']]
-        if_na(order.y) = res[['..order..x']]
-        res = res[order(order.y, method = "radix"), , drop = FALSE]
-    } else {
-        res = res[order(res[['..order..x']], method = "radix"), , drop = FALSE]
-
-    }
-    res = res %n_d% c('..order..y','..order..x')
-    colnames(res) = preserve_colnames
-    class(res) = intersect(class_x, class_y)
-    if(!("etable" %in% class(res))) class(res) = c("etable", class(res))
-    res
-
-}
-
-#' @export
-'%merge%.etable' = function(x, y) merge.etable(x, y)

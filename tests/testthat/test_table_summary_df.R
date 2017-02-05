@@ -5,12 +5,12 @@ dt_iris = data.table::data.table(iris)
 dt_iris$Species = as.labelled(dt_iris$Species)
 dt_iris$total = 1
 elementary_summary_df = function(...) {
-    res = expss.tables:::elementary_summary_df(...)
+    res = expss:::elementary_summary_df(...)
     print(res)
     res
 }
 
-elementary_summary_df = expss.tables:::elementary_summary_df
+elementary_summary_df = expss:::elementary_summary_df
 
 
 expect_equal_to_reference(
@@ -342,7 +342,7 @@ expect_equal_to_reference(
 
 context("long_table_summary_df")
 
-long_table_summary_df = expss.tables:::long_table_summary_df
+long_table_summary_df = expss:::long_table_summary_df
 
 
 
