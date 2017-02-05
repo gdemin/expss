@@ -427,3 +427,18 @@ flat_list=function(x, flat_df = FALSE)
         x
     }
 }
+
+
+"insert_value_after<-" = function(x, needle, value){
+    needle_pos = which(x %in% needle)
+    if(length(needle_pos)){
+        needle_pos = needle_pos[1]
+        if(needle_pos==length(x)){
+            c(x, value)
+        } else {
+            c(x[1:(needle_pos)], value, x[-(1:needle_pos)])
+        }
+    } else {
+        x
+    }
+}

@@ -4,7 +4,7 @@
 \alias{table_pearson}
 \alias{table_spearman}
 \alias{table_summary_df}
-\title{Title}
+\title{Produce summary table over entire subset of variables. Not user-friendly - for expert usage.}
 \usage{
 table_summary_df(summary_vars, col_vars, fun, weight = NULL,
   row_vars = NULL, row_labels = c("row_vars", "row_vars_values"),
@@ -16,31 +16,137 @@ table_pearson(summary_vars, col_vars, weight = NULL, row_vars = NULL)
 table_spearman(summary_vars, col_vars, weight = NULL, row_vars = NULL)
 }
 \arguments{
-\item{summary_vars}{dsd}
+\item{summary_vars}{vector/list/data.frame - these variables will be combined
+into \link[data.table]{data.table} and passed to the \code{fun}.}
 
-\item{col_vars}{dssd}
+\item{col_vars}{vector/data.frame/list of vectors/data.frames/multiple
+response sets(\link{mrset})/multiple dichotomy sets(\link{mdset}).}
 
-\item{fun}{dsd}
+\item{fun}{function which will be computed on susbet of \code{summary_vars}.
+It will take \link[data.table]{data.table} and should return
+vector/data.frame/data.table. It}
 
-\item{weight}{sdsd}
+\item{weight}{numeric vector. Optional case weights. NA's and negative 
+weights treated as zero weights. If \code{weight} is provided then
+\code{fun} should have formal 'weight' argument.}
 
-\item{row_vars}{dssd}
+\item{row_vars}{vector/data.frame/list of vectors/data.frames/multiple
+response sets(\link{mrset})/multiple dichotomy sets(\link{mdset}).}
 
 \item{row_labels}{sdsd}
 
 \item{col_labels}{dssd}
 
-\item{hide}{dssd}
+\item{hide}{character vector of field names which should be hidden in final table.
+Should be one of the \code{row_vars}, \code{row_vars_values}, \code{col_vars},
+\code{col_vars_values} or custom labels.}
 
-\item{use_result_row_order}{sdsd}
+\item{use_result_row_order}{Should we use result row order to prevent 
+collapsing categories? TRUE by default. If it is FALSE then we should take
+care about our own index variables inside \code{fun}. See examples.}
 }
 \value{
-sdsd
+data.frame with class attribute 'etable'
 }
 \description{
-Title
+Produce summary table over entire subset of variables. Not user-friendly - for expert usage.
 }
 \examples{
-1
+data(mtcars)
+# add labels to dataset
+mtcars = apply_labels(mtcars, 
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      vs = "Engine",
+                      vs = num_lab(" 
+                                   0 V-engine
+                                   1 Straight engine
+                                   "),
+                      
+                      am = "Transmission",
+                      am = num_lab(" 
+                                   0 Automatic
+                                   1 Manual
+                                   ")
+                      )
+
+# simple boring example
+mtcars \%calc\% table_summary_df(mpg, 
+                               col_vars = vs, 
+                               fun = w_mean, 
+                               row_vars = am
+)
+
+# correlation with first variable by groups
+custom_corr = function(data, weight = NULL){
+    res = w_pearson(data, weight = weight)
+    dtfrm(Label = rownames(res), "Corr. with 'mpg'" = res[,1])
+}
+
+# as we can see 'label' column appears in every cell - it is undesirable
+mtcars \%calc\% table_summary_df(mpg \%to\% hp,
+                               col_vars = list("#Total", vs), # add total column
+                               fun = custom_corr,
+                               row_vars = list("#Total", am)  # add total row
+)
+
+
+# so we need to add custom field 'label' to 'row_labels'
+mtcars \%calc\% table_summary_df(mpg \%to\% hp,
+                               col_vars = list("#Total", vs), # add total column
+                               fun = custom_corr,
+                               row_vars = list("#Total", am),  # add total row
+                               row_labels = c("row_vars", "row_vars_values", "Label"),
+                               col_labels = c("col_vars", "col_vars_values")
+)
+
+# example with 'nest'
+mtcars \%calc\% table_summary_df(mpg \%to\% hp,
+                               col_vars = list("#Total"), # add total column
+                               fun = custom_corr,
+                               row_vars = list("#Total", am \%nest\% vs)  # add total row
+)
+
+# reposition of labels - move row grouping variable inside summary variable
+mtcars \%calc\% table_summary_df(mpg \%to\% hp,
+                               col_vars = list("#Total", vs), # add total column
+                               fun = custom_corr,
+                               row_vars = list("#Total", am),  # add total row
+                               row_labels = c("Label", "row_vars", "row_vars_values"),
+                               col_labels = c("col_vars", "col_vars_values")
+)
+
+# as we can see we lost order of summary variable in previous example - 
+# to avoid this we need to use custom index field
+# correlation with first variable by groups with custom index
+custom_corr_with_index = function(data, weight = NULL){
+    res = w_pearson(data, weight = weight)
+    dtfrm(index = seq_len(nrow(res)), Label = rownames(res), "Corr. with 'mpg'" = res[,1])
+}
+
+# no order lost
+mtcars \%calc\% table_summary_df(mpg \%to\% hp,
+                               col_vars = list("#Total", vs), # add total column
+                               fun = custom_corr_with_index,
+                               row_vars = list("#Total", am),  # add total row
+                               row_labels = c("index", "Label", "row_vars", "row_vars_values"),
+                               col_labels = c("col_vars", "col_vars_values"),
+                               hide = "index", # because we don't need rows numbers from index
+                               use_result_row_order = FALSE # because we will use our own index
+                               
+)
+
+# one more example with reposition of labels
+mtcars \%calc\% table_summary_df(mpg \%to\% hp,
+                               col_vars = list("#Total", vs), # add total column
+                               fun = custom_corr_with_index,
+                               row_vars = list("#Total", am),  # add total row
+                               row_labels = c("row_vars", "row_vars_values"),
+                               col_labels = c("col_vars_values", "col_vars", "index", "Label"),
+                               hide = "index", # because we don't need rows numbers from index
+                               use_result_row_order = FALSE # because we will use our own index
+)
 }
 
