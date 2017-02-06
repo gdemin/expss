@@ -209,4 +209,28 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
     invisible(x)
 }
 
-
+#' @export
+str.labelled = function(object, ...){
+    cat("Class 'labelled'")
+    str(unlab(object), ...)
+    max_labels = 20
+    if(!is.null(var_lab(object))) cat("   .. .. LABEL:",var_lab(object), "\n")
+    vallab = val_lab(object)
+    if(!is.null(vallab)){
+        vallab = paste0(vallab, "=", names(vallab))
+        n_labs = length(vallab)
+        
+        if(n_labs>max_labels) {
+            max_labels  = floor(max_labels/2)
+            if(max_labels<1) max_labels = 1
+            head_vallab = paste(head(vallab, max_labels), collapse = ", ")
+            tail_vallab = paste(tail(vallab, max_labels), collapse = ", ")
+            vallab = paste0(head_vallab," ... ", tail_vallab)
+        }  else {
+            vallab = paste(vallab, collapse = ", ")
+            
+        } 
+        cat("   .. .. VALUE LABELS",paste0("[1:",n_labs,"]:"),vallab, "\n")
+    }
+    invisible(NULL)
+}
