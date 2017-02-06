@@ -1,6 +1,7 @@
 #' Repeats the same transformations on a specified set of variables/values
 #'
-#' @param data data.frame
+#' @param data data.frame/list. If \code{data} is list then \code{do_repeat}
+#'   will be applied to each element of the list.
 #' @param ...  stand-in name(s) followed by equals sign and a vector of 
 #'   replacement variables or values. Characters considered as variables names, 
 #'   all other types considered as is. Last argument should be expression in 
@@ -10,7 +11,7 @@
 #' @details There is a special constant \code{.N} which equals to number of 
 #'   cases in \code{data} for usage in expression inside \code{do_repeat}. Also 
 #'   there is a variable \code{.item_num} which is equal to the current
-#'   iteration number.
+#'   iteration number. 
 #' @return transformed data.frame \code{data}
 #' @export
 #' @seealso \link{compute}, \link{do_if}
@@ -122,6 +123,18 @@ do_repeat.data.frame = function(data, ...){
     data[nl] = l[nl]
     data    
       
+}
+
+#' @export
+do_repeat.list = function(data, ...){
+    for(each in seq_along(data)){
+        data[[each]] = eval(
+            substitute(do_repeat(data[[each]], ...)), 
+            envir = parent.frame(),
+            enclos = baseenv()
+        )
+    }
+    data    
 }
 
 # expr - expression as after 'substitute'

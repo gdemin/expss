@@ -15,6 +15,7 @@ res_iris = do_repeat(iris, i = qc(i1, i2, i3), value = c(10, 20, 30),
 })
 
 
+
 expect_identical(res_iris, test_iris)
 
 
@@ -202,5 +203,43 @@ scaled_iris = do_repeat(iris, orig = old_names, scaled = new_names,  {
     scaled = scale(orig)
     
 })
-
 expect_identical(scaled_iris, test_iris)
+
+context("do_repeat.list")
+
+data(iris)
+list_iris = split(iris, iris$Species) 
+
+test_iris = iris
+test_iris$i1 = 10
+test_iris$i2 = 20
+test_iris$i3 = 30
+
+res_iris = split(test_iris, iris$Species) 
+expect_identical(do_repeat(list_iris, i = qc(i1, i2, i3), value = c(10, 20, 30), 
+                           {
+                               i = value
+                           }), res_iris)
+
+
+data(iris)
+list_iris = split(iris, iris$Species) 
+
+old_names = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+new_names = paste0("scaled_", old_names)
+
+res_iris = split(iris, iris$Species)
+
+for(i in seq_along(res_iris)){
+    for(j in seq_along(old_names)){
+        res_iris[[i]][[new_names[j]]] = scale(res_iris[[i]][[old_names[j]]])
+    }
+}
+
+
+expect_identical(do_repeat(list_iris, orig = old_names, scaled = new_names,  {
+    scaled = scale(orig)
+    
+}), res_iris)
+
+

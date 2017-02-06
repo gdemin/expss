@@ -10,7 +10,8 @@ do_repeat(data, ...)
 .do_repeat(...)
 }
 \arguments{
-\item{data}{data.frame}
+\item{data}{data.frame/list. If \code{data} is list then \code{do_repeat}
+will be applied to each element of the list.}
 
 \item{...}{stand-in name(s) followed by equals sign and a vector of 
 replacement variables or values. Characters considered as variables names, 
