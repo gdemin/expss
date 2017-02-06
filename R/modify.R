@@ -115,11 +115,11 @@ modify.data.frame = function (data, expr) {
 
 #' @export
 modify.list = function (data, expr) {
-    expr = substitute(expr)
-    data_expr = substitute(data)
+    # expr = substitute(expr)
+    # data_expr = substitute(data)
     for(each in seq_along(data)){
         data[[each]] = eval(
-            bquote(modify(.(data_expr)[[.(each)]], .(expr))), 
+            substitute(modify(data[[each]], expr)), 
             envir = parent.frame(),
             enclos = baseenv()
         )
@@ -131,10 +131,9 @@ modify.list = function (data, expr) {
 #' @export
 #' @rdname modify
 '%modify%' = function (data, expr) {
-    # based on 'within' from base R by R Core team
-    expr = substitute(expr)
-    data = substitute(data)
-    eval(bquote(modify(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
+    # expr = substitute(expr)
+    # data = substitute(data)
+    eval(substitute(modify(data, expr)), envir = parent.frame(), enclos = baseenv())
 }
 
 #' @export
@@ -159,14 +158,14 @@ do_if = modify_if
 #' @export
 modify_if.data.frame = function (data, cond, expr) {
     # based on 'within' from base R by R Core team
-    data_expr = substitute(data)
+    # data_expr = substitute(data)
     cond = substitute(cond)
-    expr = substitute(expr)
+    # expr = substitute(expr)
     e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = NROW(data), column_names = colnames(data))
     cond = calc_cond(cond, envir = e)
     
-    new_data = eval(bquote(modify(.(data_expr)[.(cond),, drop = FALSE], .(expr))),
+    new_data = eval(substitute(modify(data[cond,, drop = FALSE], expr)),
                     envir = parent.frame(),
                     enclos = baseenv()
                     )
@@ -185,12 +184,12 @@ modify_if.data.frame = function (data, cond, expr) {
 
 #' @export
 modify_if.list = function (data, cond, expr) {
-    expr = substitute(expr)
-    cond = substitute(cond)
-    data_expr = substitute(data)
+    # expr = substitute(expr)
+    # cond = substitute(cond)
+    # data_expr = substitute(data)
     for(each in seq_along(data)){
         data[[each]] = eval(
-            bquote(modify_if(.(data_expr)[[.(each)]], .(cond), .(expr))), 
+            substitute(modify_if(data[[each]], cond, expr)), 
             envir = parent.frame(),
             enclos = baseenv()
         )
@@ -217,11 +216,11 @@ calculate.data.frame = function (data, expr) {
 
 #' @export
 calculate.list = function (data, expr) {
-    expr = substitute(expr)
-    data_expr = substitute(data)
+    # expr = substitute(expr)
+    # data_expr = substitute(data)
     for(each in seq_along(data)){
         data[[each]] = eval(
-            bquote(calculate(.(data_expr)[[.(each)]], .(expr))), 
+            substitute(calculate(data[[each]], expr)), 
             envir = parent.frame(),
             enclos = baseenv()
         )
@@ -235,7 +234,7 @@ calculate.list = function (data, expr) {
 '%calculate%' = function (data, expr) {
     expr = substitute(expr)
     data = substitute(data)
-    eval(bquote(calculate(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
+    eval(substitute(calculate(data, expr)), envir = parent.frame(), enclos = baseenv())
 }
 
 #' @export

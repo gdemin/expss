@@ -79,12 +79,11 @@ where.default = function (data, cond) {
 #' @export
 where.list = function (data, cond) {
 
-    cond = substitute(cond)
-    data_expr = substitute(data)
+    # cond = substitute(cond)
+    # data_expr = substitute(data)
     for(each in seq_along(data)){
-        
         data[[each]] = eval(
-                            bquote(where(.(data_expr)[[.(each)]], .(cond))), 
+                            substitute(where(data[[each]], cond)), 
                             envir = parent.frame(),
                             enclos = baseenv()
         )
@@ -97,10 +96,10 @@ where.list = function (data, cond) {
 #' @export
 '%where%' = function(data, cond){
 
-    cond = substitute(cond)
-    data = substitute(data)
+    # cond = substitute(cond)
+    # data = substitute(data)
     eval(
-         bquote(where(.(data), .(cond))), 
+         substitute(where(data, cond)), 
          envir = parent.frame(),
          enclos = baseenv()                
     )
@@ -111,11 +110,11 @@ where.list = function (data, cond) {
 #' @export
 .where = function (cond) {
 
-    cond = substitute(cond)
+    # cond = substitute(cond)
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
     data = eval(
-                bquote(where(.(data), .(cond))), 
+                substitute(where(data, cond)), 
                 envir = parent.frame(),
                 enclos = baseenv()                
                 )

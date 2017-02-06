@@ -67,8 +67,8 @@
 #' 
 #' @export
 vars = function(...){
-    args = substitute(list(...))
-    res = eval(bquote(expss::vars_list(.(args))),
+    # args = substitute(list(...))
+    res = eval(substitute(expss::vars_list(...)),
                envir = parent.frame(),
                enclos = baseenv()
     )
@@ -95,9 +95,9 @@ vars_list = function(...){
 #' @export
 #' @rdname vars
 '%to%' = function(e1, e2){
-    e1 = substitute(e1)
-    e2 = substitute(e2)
-    eval(bquote(expss::vars(.(e1) %to% .(e2))),
+    # e1 = substitute(e1)
+    # e2 = substitute(e2)
+    eval(substitute(expss::vars(e1 %to% e2)),
          envir = parent.frame(),
          enclos = baseenv()
     )
@@ -106,9 +106,9 @@ vars_list = function(...){
 #' @export
 #' @rdname vars
 '%to_list%' = function(e1, e2){
-    e1 = substitute(e1)
-    e2 = substitute(e2)
-    eval(bquote(expss::vars_list(.(e1) %to% .(e2))),
+    # e1 = substitute(e1)
+    # e2 = substitute(e2)
+    eval(substitute(expss::vars_list(e1 %to% e2)),
          envir = parent.frame(),
          enclos = baseenv()
     )

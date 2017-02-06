@@ -181,7 +181,7 @@ keep_helper = function(old_names, args){
     characters_names = character(0) # for checking non-existing names
     for (each in new_names){
         if(is.character(each)){
-            expanded_each = eval(bquote(subst(.(each))), 
+            expanded_each = eval(substitute(subst(each)), 
                                  envir = parent.frame(2),
                                  enclos = baseenv()
             )
@@ -228,10 +228,10 @@ internal_to = function(e1, e2){
 #' @export
 #' @rdname keep
 '%keep%' = function(data, variables){
-    data = substitute(data)
-    variables = substitute(variables)
+    # data = substitute(data)
+    # variables = substitute(variables)
     eval(
-       bquote(keep(.(data), .(variables))),
+       substitute(keep(data, variables)),
         envir = parent.frame(),
         enclos = baseenv()
     )
@@ -240,10 +240,10 @@ internal_to = function(e1, e2){
 #' @export
 #' @rdname keep
 '%except%' = function(data, variables){
-    data = substitute(data)
-    variables = substitute(variables)
+    # data = substitute(data)
+    # variables = substitute(variables)
     eval(
-        bquote(except(.(data), .(variables))),
+        substitute(except(data, variables)),
         envir = parent.frame(),
         enclos = baseenv()
     )
@@ -254,9 +254,9 @@ internal_to = function(e1, e2){
 .keep = function(...){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    args = substitute(list(...))
+    # args = substitute(list(...))
     data = eval(
-        bquote(keep(.(data), .(args))), 
+        substitute(keep(data, ...)), 
         envir = parent.frame(),
         enclos = baseenv()                
     )
@@ -269,9 +269,9 @@ internal_to = function(e1, e2){
 .except = function(...){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    args = substitute(list(...))
+    # args = substitute(list(...))
     data = eval(
-        bquote(except(.(data), .(args))), 
+        substitute(except(data, ...)), 
         envir = parent.frame(),
         enclos = baseenv()                
     )

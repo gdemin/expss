@@ -132,8 +132,8 @@
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
     data = ref(reference)
-    expr = substitute(expr)
-    data = eval(bquote(modify(.(data), .(expr))),
+    # expr = substitute(expr)
+    data = eval(substitute(modify(data, expr)),
                 envir = parent.frame(),
                 enclos = baseenv()
                 )
@@ -149,9 +149,9 @@
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
     data = ref(reference)
-    cond = substitute(cond)
-    expr = substitute(expr)
-    data = eval(bquote(modify_if(.(data), .(cond), .(expr))),
+    # cond = substitute(cond)
+    # expr = substitute(expr)
+    data = eval(substitute(modify_if(data, cond, expr)),
                 envir = parent.frame(),
                 enclos = baseenv()               
                )
@@ -214,18 +214,18 @@ modify_default_dataset_light = function(x, ...){
 .with = function (expr, ...) {
     .Deprecated(".calculate")
     reference = suppressMessages(default_dataset() )
-    expr = substitute(expr)
+    # expr = substitute(expr)
     data = ref(reference)
-    eval(bquote(with(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
+    eval(substitute(with(data, expr)), envir = parent.frame(), enclos = baseenv())
 }  
 
 #' @export
 #' @rdname experimental
 .calculate = function (expr, ...) {
     reference = suppressMessages(default_dataset() )
-    expr = substitute(expr)
+    # expr = substitute(expr)
     data = ref(reference)
-    eval(bquote(calculate(.(data), .(expr))), envir = parent.frame(), enclos = baseenv())
+    eval(substitute(calculate(data, expr, ...)), envir = parent.frame(), enclos = baseenv())
 } 
 
 #' @export
