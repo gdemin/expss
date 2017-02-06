@@ -121,7 +121,7 @@ expect_identical(as.logical(a), a_log)
 expect_identical(as.integer(a_log), a)
 
 
-context("print.labelled")
+context("print.labelled/str.labelled")
 
 x = c(letters, LETTERS)
 x = as.labelled(x)
@@ -129,8 +129,10 @@ x = as.labelled(x)
 expect_identical(print(x), x)
 
 expect_output_file(print(x), "rds/print_labelled1.txt")
+expect_output_file(str(x), "rds/str_labelled1.txt")
 var_lab(x) = "Letters"
 expect_output_file(print(x), "rds/print_labelled2.txt")
+expect_output_file(str(x), "rds/str_labelled2.txt")
 expect_output_file(print(x, max = 100), "rds/print_labelled3.txt")
 expect_output_file(print(x, max = 100, max_labels = 100), "rds/print_labelled4.txt")
 expect_output_file(print(unvl(x)), "rds/print_labelled5.txt")
@@ -138,9 +140,15 @@ x_mat = matrix(x, ncol = 2)
 var_lab(x_mat) = var_lab(x)
 val_lab(x_mat) = val_lab(x)
 expect_output_file(print(x_mat), "rds/print_labelled6.txt")
+expect_output_file(str(x_mat), "rds/str_labelled6.txt")
 
-x_df = as.data.frame(x_mat)
-var_lab(x_df) = var_lab(x)
-val_lab(x_df) = val_lab(x)
-class(x_df) = union("labelled", class(x_df))
-expect_output_file(print(x_df), "rds/print_labelled2.txt")
+x = letters[1:10]
+x = as.labelled(x)
+var_lab(x) = "Letters"
+expect_output_file(str(x), "rds/str_labelled7.txt")
+
+# x_df = as.data.frame(x_mat)
+# var_lab(x_df) = var_lab(x)
+# val_lab(x_df) = val_lab(x)
+# class(x_df) = union("labelled", class(x_df))
+# expect_output_file(print(x_df), "rds/print_labelled2.txt")
