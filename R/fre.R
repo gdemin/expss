@@ -399,20 +399,20 @@ cro_tpct = function(x, predictor, weight = NULL){
 }
 
 #' @export
-print.simple_table = function(x, round_digits = 2, ...,  row.names = FALSE){
+print.simple_table = function(x, round_digits = 2, ...,  right = TRUE){
     class(x) = class(x) %d% "simple_table"
     if(!is.null(round_digits)){
         for (each in seq_along(x)){
             if(is.numeric(x[[each]])) x[[each]] = round(x[[each]], round_digits)
         }
     }
-    print(x, ..., row.names = row.names)
+    print(x, ...,  right = right, row.names = FALSE)
 }
 
 #' @export
-print.summary_table = function(x, ...,  row.names = FALSE){
+print.summary_table = function(x, ...,  right = TRUE){
     class(x) = class(x) %d% "summary_table"
-    print(x, ..., row.names = row.names)
+    print(x, ...,  right = right, row.names = FALSE)
 }
 
 
