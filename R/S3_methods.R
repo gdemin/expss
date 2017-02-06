@@ -169,12 +169,8 @@ as.logical.labelled = function (x, ...){
 print.labelled = function(x, max = 50, max_labels = 20, ...){
     varlab = var_lab(x)
     vallab = val_lab(x)
-    if(is.list(x)){
-        x_flat = unname(c(x, recursive = TRUE))
-    } else {
-        x_flat = x
-    }
-    
+    x_flat = x
+
     if(!is.null(varlab)){
         cat('LABEL:', varlab, "\n")
         

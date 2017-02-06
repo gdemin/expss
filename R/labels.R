@@ -65,15 +65,11 @@ var_lab.default=function(x){
 var_lab.data.frame=function(x)
     ## Drop this function???
     ## mainly for multiple choice questions
-    ## if there is no label on the data.frame itself
-    ## we return label from the first variable 
+    ## we return first label 
 {
-    res=var_lab.default(x)
-    if (is.null(res)){
-        all_labs=lapply(x,var_lab)
-        all_labs=all_labs[!sapply(all_labs,is.null)]
-        if (length(all_labs)>0) res=all_labs[[1]] else res=NULL
-    }
+    all_labs=lapply(x,var_lab)
+    all_labs=all_labs[!sapply(all_labs,is.null)]
+    if (length(all_labs)>0) res=all_labs[[1]] else res=NULL
     res
 }
 
@@ -266,13 +262,10 @@ val_lab=function(x){
 val_lab.data.frame=function(x)
 {
     
-    res=val_lab.default(x)
-    # strange code below for case when we consider data.frame as multiple response question
-    if (is.null(res)){
-        all_labs=lapply(x, val_lab)
-        all_labs=all_labs[lengths(all_labs)>0]
-        if (length(all_labs)>0) res=do.call(combine_labels, all_labs) else res=NULL
-    }
+    # we consider data.frame as multiple response question
+    all_labs=lapply(x, val_lab)
+    all_labs=all_labs[lengths(all_labs)>0]
+    if (length(all_labs)>0) res=do.call(combine_labels, all_labs) else res=NULL
     res
 }
 
@@ -504,6 +497,8 @@ as.labelled.factor = function(x, label = NULL){
     x
     
 }
+
+
 
 #' @export
 as.labelled.labelled = function(x, label = NULL){
