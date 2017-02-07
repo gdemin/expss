@@ -1,14 +1,47 @@
-#' Title
+#' Drop empty (with all NA's) rows/columns from data.frame/table
+#' 
+#' By default tables produced by functions \link{table_cases}, 
+#' \link{table_summary} and \link{table_summary_df} are created with all 
+#' possible value labels. If values of this labels are absent in variable there 
+#' are NA's in rows and columns. 
+#' \code{drop_empty_rows}/\code{drop_empty_columns} are intended to remove 
+#' these empty rows/columns. \code{drop_r} and \code{drop_c} are the same
+#' functions with shorter names. \code{drop_rc} drops rows and columns
+#' simultaneously.
+#' 
+#' @param x data.frame/column
+#' @param excluded_columns logical/numeric/characters columns which won't be
+#'   dropped and in which NAs won't be counted. By default, it is first column -
+#'   column with labels in table.
+#' @param excluded_rows logical/numeric rows which won't be dropped and in which
+#'   NAs won't be counted. By default, it is rows which have values with "#" at
+#'   the beginning  in the first column. it is total rows in tables.
 #'
-#' @param x fsdfsfd
-#' @param excluded_columns dsfsdf
-#' @param excluded_rows sdfsdf
-#'
-#' @return dfsdf
+#' @return data.frame with removed rows/columns
 #' @export
 #'
 #' @examples
-#' a = 1
+#' data(mtcars)
+#' mtcars = apply_labels(mtcars,
+#'             vs = "Engine",
+#'             vs = num_lab("
+#'                       0 V-engine 
+#'                       1 Straight engine
+#'                       9 Other
+#'                       "),
+#'             am = "Transmission",
+#'             am = num_lab("
+#'                      0 Automatic 
+#'                      1 Manual
+#'                      9 Other
+#'                      ")
+#'          )
+#' with_empty_rows = calculate(mtcars, table_cases(am, vs))
+#' 
+#' drop_empty_rows(with_empty_rows)
+#' drop_empty_columns(with_empty_rows)
+#' drop_rc(with_empty_rows)
+#'                         
 drop_empty_rows = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
     UseMethod("drop_empty_rows")
 }
@@ -52,4 +85,18 @@ drop_empty_columns.data.frame = function(x, excluded_columns = 1, excluded_rows 
     not_empty = colSums(!is.na(x[, -1 , drop = FALSE]))>0
     x[, c(TRUE, not_empty), drop = FALSE]
     
+}
+
+#' @export
+#' @rdname drop_empty_rows
+drop_r = drop_empty_rows
+
+#' @export
+#' @rdname drop_empty_rows
+drop_c = drop_empty_columns
+
+#' @export
+#' @rdname drop_empty_rows
+drop_rc = function(x){
+    drop_empty_columns(drop_empty_rows(x))
 }
