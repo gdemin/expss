@@ -8,30 +8,31 @@
 \alias{drop_rc}
 \title{Drop empty (with all NA's) rows/columns from data.frame/table}
 \usage{
-drop_empty_rows(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]],
-  perl = TRUE))
+drop_empty_rows(x, excluded_rows = grep("^#", x[[1]], perl = TRUE),
+  excluded_columns = 1)
 
-drop_empty_columns(x, excluded_columns = 1, excluded_rows = grep("^#",
-  x[[1]], perl = TRUE))
+drop_empty_columns(x, excluded_rows = grep("^#", x[[1]], perl = TRUE),
+  excluded_columns = 1)
 
-drop_r(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl =
-  TRUE))
+drop_r(x, excluded_rows = grep("^#", x[[1]], perl = TRUE),
+  excluded_columns = 1)
 
-drop_c(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl =
-  TRUE))
+drop_c(x, excluded_rows = grep("^#", x[[1]], perl = TRUE),
+  excluded_columns = 1)
 
 drop_rc(x)
 }
 \arguments{
-\item{x}{data.frame/column}
+\item{x}{data.frame}
+
+\item{excluded_rows}{logical/numeric rows which won't be dropped and in which
+NAs won't be counted. By default, it is rows which have values with "#" at 
+the beginning  in the first column. it is total rows in tables ("#" marks
+total in the result of \link{table_cases}).}
 
 \item{excluded_columns}{logical/numeric/characters columns which won't be
 dropped and in which NAs won't be counted. By default, it is first column -
 column with labels in table.}
-
-\item{excluded_rows}{logical/numeric rows which won't be dropped and in which
-NAs won't be counted. By default, it is rows which have values with "#" at
-the beginning  in the first column. it is total rows in tables.}
 }
 \value{
 data.frame with removed rows/columns
@@ -39,7 +40,7 @@ data.frame with removed rows/columns
 \description{
 By default tables produced by functions \link{table_cases}, 
 \link{table_summary} and \link{table_summary_df} are created with all 
-possible value labels. If values of this labels are absent in variable there 
+possible value labels. If values for this labels are absent in variable there 
 are NA's in rows and columns. 
 \code{drop_empty_rows}/\code{drop_empty_columns} are intended to remove 
 these empty rows/columns. \code{drop_r} and \code{drop_c} are the same
@@ -62,11 +63,11 @@ mtcars = apply_labels(mtcars,
                      9 Other
                      ")
          )
-with_empty_rows = calculate(mtcars, table_cases(am, vs))
+with_empty = calculate(mtcars, table_cases(am, vs))
 
-drop_empty_rows(with_empty_rows)
-drop_empty_columns(with_empty_rows)
-drop_rc(with_empty_rows)
+drop_empty_rows(with_empty)
+drop_empty_columns(with_empty)
+drop_rc(with_empty)
                         
 }
 

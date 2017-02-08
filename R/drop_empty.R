@@ -2,20 +2,21 @@
 #' 
 #' By default tables produced by functions \link{table_cases}, 
 #' \link{table_summary} and \link{table_summary_df} are created with all 
-#' possible value labels. If values of this labels are absent in variable there 
+#' possible value labels. If values for this labels are absent in variable there 
 #' are NA's in rows and columns. 
 #' \code{drop_empty_rows}/\code{drop_empty_columns} are intended to remove 
 #' these empty rows/columns. \code{drop_r} and \code{drop_c} are the same
 #' functions with shorter names. \code{drop_rc} drops rows and columns
 #' simultaneously.
 #' 
-#' @param x data.frame/column
+#' @param x data.frame
+#' @param excluded_rows logical/numeric rows which won't be dropped and in which
+#'   NAs won't be counted. By default, it is rows which have values with "#" at 
+#'   the beginning  in the first column. it is total rows in tables ("#" marks
+#'   total in the result of \link{table_cases}).
 #' @param excluded_columns logical/numeric/characters columns which won't be
 #'   dropped and in which NAs won't be counted. By default, it is first column -
 #'   column with labels in table.
-#' @param excluded_rows logical/numeric rows which won't be dropped and in which
-#'   NAs won't be counted. By default, it is rows which have values with "#" at
-#'   the beginning  in the first column. it is total rows in tables.
 #'
 #' @return data.frame with removed rows/columns
 #' @export
@@ -36,29 +37,29 @@
 #'                      9 Other
 #'                      ")
 #'          )
-#' with_empty_rows = calculate(mtcars, table_cases(am, vs))
+#' with_empty = calculate(mtcars, table_cases(am, vs))
 #' 
-#' drop_empty_rows(with_empty_rows)
-#' drop_empty_columns(with_empty_rows)
-#' drop_rc(with_empty_rows)
+#' drop_empty_rows(with_empty)
+#' drop_empty_columns(with_empty)
+#' drop_rc(with_empty)
 #'                         
-drop_empty_rows = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
+drop_empty_rows = function(x, excluded_rows = grep("^#", x[[1]], perl= TRUE), excluded_columns = 1){
     UseMethod("drop_empty_rows")
 }
 
 #' @export
 #' @rdname drop_empty_rows
-drop_empty_columns = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
+drop_empty_columns = function(x, excluded_rows = grep("^#", x[[1]], perl= TRUE), excluded_columns = 1){
     UseMethod("drop_empty_columns")   
 }
 
 #' @export
-drop_empty_rows.data.frame = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
+drop_empty_rows.data.frame = function(x, excluded_rows = grep("^#", x[[1]], perl= TRUE), excluded_columns = 1){
     stopif(!is.null(excluded_columns) && !is.numeric(excluded_columns) && !is.character(excluded_columns) &&
-               is.logical(excluded_columns),
+               !is.logical(excluded_columns),
            "`excluded_columns` should be character, numeric or logical.")
     stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && !is.logical(excluded_rows),
-           "`excluded_columns` should be numeric or logical.")
+           "`excluded_rows` should be numeric or logical.")
     if(is.null(excluded_columns)) {
         not_empty = rowSums(!is.na(x))>0    
     } else {
@@ -67,7 +68,7 @@ drop_empty_rows.data.frame = function(x, excluded_columns = 1, excluded_rows = g
         not_empty = rowSums(!is.na(x[,!excluded_columns]))>0  
     }
     if(is.null(excluded_rows)){
-        excluded_rows = TRUE
+        excluded_rows = FALSE
     } else {
         if(is.numeric(excluded_rows)) excluded_rows = seq_len(nrow(x)) %in% excluded_rows
     }
@@ -76,15 +77,27 @@ drop_empty_rows.data.frame = function(x, excluded_columns = 1, excluded_rows = g
 }
 
 #' @export
-drop_empty_columns.data.frame = function(x, excluded_columns = 1, excluded_rows = grep("^#", x[[1]], perl= TRUE)){
+drop_empty_columns.data.frame = function(x, excluded_rows = grep("^#", x[[1]], perl= TRUE), excluded_columns = 1){
     stopif(!is.null(excluded_columns) && !is.numeric(excluded_columns) && !is.character(excluded_columns) &&
-               is.logical(excluded_columns),
+               !is.logical(excluded_columns),
            "`excluded_columns` should be character, numeric or logical.")
     stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && !is.logical(excluded_rows),
-           "`excluded_columns` should be numeric or logical.")
-    not_empty = colSums(!is.na(x[, -1 , drop = FALSE]))>0
-    x[, c(TRUE, not_empty), drop = FALSE]
-    
+           "`excluded_rows` should be numeric or logical.")
+    if(is.null(excluded_rows)) {
+        empty = colSums(!is.na(x))==0    
+    } else {
+        if(is.numeric(excluded_rows)) excluded_rows = seq_len(nrow(x)) %in%  excluded_rows
+        empty = colSums(!is.na(x[!excluded_rows,]))==0 
+    }
+    if(is.null(excluded_columns)){
+        excluded_columns = FALSE
+    } else {
+        if(is.character(excluded_columns)) excluded_columns = colnames(x) %in%  excluded_columns
+        if(is.numeric(excluded_columns)) excluded_columns = seq_along(x) %in%  excluded_columns
+        
+    }
+    x[, empty & (!excluded_columns)] = NULL # this notation doesn't change colnames if some of them are duplicated
+    x
 }
 
 #' @export
