@@ -6,17 +6,22 @@
 #'   response sets(\link{mrset})/multiple dichotomy sets(\link{mdset}).
 #' @param fun function which will be computed on susbet of \code{summary_vars}.
 #'   It will take \link[data.table]{data.table} and should return
-#'   vector/data.frame/data.table. It
+#'   vector/data.frame/data.table. If \code{weight} is provided then
+#'   \code{fun} should have formal 'weight' argument.
 #' @param weight numeric vector. Optional case weights. NA's and negative 
 #'   weights treated as zero weights. If \code{weight} is provided then
 #'   \code{fun} should have formal 'weight' argument.
 #' @param row_vars vector/data.frame/list of vectors/data.frames/multiple
 #'   response sets(\link{mrset})/multiple dichotomy sets(\link{mdset}).
-#' @param row_labels sdsd
-#' @param col_labels dssd
+#' @param row_labels character elements of data which will appear as row labels.
+#'   Should be one of the \code{'row_vars'}, \code{'row_vars_values'},
+#'   \code{'col_vars'}, \code{'col_vars_values'} or custom labels.
+#' @param col_labels character elements of data which will appear as column
+#'   labels. Should be one of the \code{'row_vars'}, \code{'row_vars_values'},
+#'   \code{'col_vars'}, \code{'col_vars_values'} or custom labels.
 #' @param hide character vector of field names which should be hidden in final table.
-#'   Should be one of the \code{row_vars}, \code{row_vars_values}, \code{col_vars},
-#'   \code{col_vars_values} or custom labels.
+#'   Should be one of the \code{'row_vars'}, \code{'row_vars_values'},
+#'   \code{'col_vars'}, \code{'col_vars_values'} or custom labels.
 #' @param use_result_row_order Should we use result row order to prevent 
 #'   collapsing categories? TRUE by default. If it is FALSE then we should take
 #'   care about our own index variables inside \code{fun}. See examples.
