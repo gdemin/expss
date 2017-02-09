@@ -152,3 +152,66 @@ expect_output_file(str(x), "rds/str_labelled7.txt")
 # val_lab(x_df) = val_lab(x)
 # class(x_df) = union("labelled", class(x_df))
 # expect_output_file(print(x_df), "rds/print_labelled2.txt")
+
+context("rbind/cbind simple_table/summary_table")
+
+data(mtcars)
+mtcars = modify(mtcars,{
+    var_lab(mpg) = "Miles/(US) gallon"
+    var_lab(cyl) = "Number of cylinders"
+    var_lab(disp) = "Displacement (cu.in.)"
+    var_lab(hp) = "Gross horsepower"
+    var_lab(drat) = "Rear axle ratio"
+    var_lab(wt) = "Weight (lb/1000)"
+    var_lab(qsec) = "1/4 mile time"
+    
+    var_lab(vs) = "V/S"
+    val_lab(vs) = c("Straight" = 0, "V" = 1)
+    
+    var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
+    val_lab(am) = c(" automatic" = 0, " manual" =  1)
+    
+    var_lab(gear) = "Number of forward gears"
+    var_lab(carb) = "Number of carburetors"
+})
+
+tbl_df = table_summary_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, fun = function(x){
+    
+    dtfrm(res_num = seq_along(x), parameter = names(x), mean = colMeans(x))
+},  row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
+hide = "res_num",
+use_result_row_order = FALSE
+)
+
+expect_equal_to_reference(cbind(tbl_df, tbl_df), "rds/cbind1.rds")
+expect_equal_to_reference(cbind(tbl_df, new_col = 42), "rds/cbind2.rds")
+expect_equal_to_reference(cbind(tbl_df, new_col = "new_col"), "rds/cbind3.rds")
+# expect_equal_to_reference(cbind(tbl_df, data.frame(new_col = "new_col")), "rds/cbind4.rds")
+
+expect_equal_to_reference(rbind(tbl_df, tbl_df), "rds/cbind5.rds")
+expect_equal_to_reference(rbind(tbl_df, 42), "rds/cbind6.rds")
+expect_equal_to_reference(rbind(42, tbl_df), "rds/cbind7.rds")
+df = tbl_df
+class(df) = class(df) %d% c("etable", "simple_table", "table_summary_df") 
+# expect_equal_to_reference(rbind(tbl_df, df), "rds/cbind8.rds")
+
+simple_df = cro_mean(mtcars %except% qc(vs, am), mtcars$am)
+
+expect_equal_to_reference(cbind(simple_df, simple_df), "rds/cbind9.rds")
+expect_equal_to_reference(cbind(simple_df, new_col = 42), "rds/cbind10.rds")
+expect_equal_to_reference(cbind(simple_df, new_col = "new_col"), "rds/cbind11.rds")
+# expect_equal_to_reference(cbind(tbl_df, data.frame(new_col = "new_col")), "rds/cbind12.rds")
+
+expect_equal_to_reference(rbind(simple_df, simple_df), "rds/cbind13.rds")
+expect_equal_to_reference(rbind(simple_df, 42), "rds/cbind14.rds")
+expect_equal_to_reference(rbind(42, simple_df), "rds/cbind15.rds")
+df = simple_df
+class(df) = class(df) %d% c("etable", "simple_table", "table_summary_df") 
+# expect_equal_to_reference(rbind(simple_df, df), "rds/cbind16.rds")
+
+
+# expect_equal_to_reference(cbind(tbl_df, simple_df), "rds/cbind17.rds")
+# expect_equal_to_reference(cbind(simple_df, tbl_df), "rds/cbind18.rds")
+
+# expect_equal_to_reference(rbind(tbl_df, simple_df), "rds/cbind17.rds")
+# expect_equal_to_reference(rbind(simple_df, tbl_df), "rds/cbind18.rds")

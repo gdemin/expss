@@ -135,11 +135,11 @@ add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
             }
             stopif(nomatch_columns == "stop", "Different column names in 'x' and 'y'.")
         }
-        res = rbind(x, y, stringsAsFactors = FALSE)
+        res = rbind.data.frame(x, y, stringsAsFactors = FALSE)
         if_val(colnames(res), from = temp_names) = true_names
         res
     } else {
-        rbind(x, y, stringsAsFactors = FALSE)
+        rbind.data.frame(x, y, stringsAsFactors = FALSE)
     }
 }
 

@@ -253,5 +253,85 @@ str.labelled = function(object, ...){
 }
 
 
+#' @export
+cbind.etable = function(..., deparse.level = 1){
+    args = list(...)
+    classes = lapply(args, class)
+    new_class = Reduce('%i%', classes)
+    if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
+    if (!("etable" %in% new_class)) new_class = union("etable", new_class)
+    
+    res = dtfrm(...)
+    class(res) = new_class
+    res    
+    
+}
 
 
+
+#' @export
+cbind.simple_table = function(..., deparse.level = 1){
+    args = list(...)
+    classes = lapply(args, class)
+    new_class = Reduce('%i%', classes)
+    if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
+    if (!("simple_table" %in% new_class)) new_class = union("simple_table", new_class)
+    
+    res = dtfrm(...)
+    class(res) = new_class
+    res      
+    
+}
+
+#' @export
+rbind.etable = function(..., deparse.level = 1){
+    args = list(...)
+    classes = lapply(args, class)
+    new_class = Reduce('%i%', classes)
+    if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
+    if (!("etable" %in% new_class)) new_class = union("etable", new_class)
+    
+    res = rbind.data.frame(..., stringsAsFactors = FALSE)
+    class(res) = new_class
+    res    
+    
+    
+}
+
+
+
+#' @export
+rbind.simple_table = function(..., deparse.level = 1){
+    args = list(...)
+    classes = lapply(args, class)
+    new_class = Reduce('%i%', classes)
+    if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
+    if (!("simple_table" %in% new_class)) new_class = union("simple_table", new_class)
+    
+    res = rbind.data.frame(..., stringsAsFactors = FALSE)
+    class(res) = new_class
+    res        
+    
+}
+
+# #' @export
+# as.etable = function(x, ...){
+#     UseMethod("as.etable")
+# }
+# 
+# #' @export
+# as.etable.default = function(x, ...){
+#     class(x) = union("etable", x)
+#     x
+# }
+# 
+# #' @export
+# as.simple_table = function(x, ...){
+#     UseMethod("as.simple_table")
+# }
+# 
+# #' @export
+# as.simple_table.default = function(x, ...){
+#     class(x) = union("simple_table", x)
+#     x
+# }# 
