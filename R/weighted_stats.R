@@ -308,6 +308,7 @@ matrix_of_na = function(x){
 
 internal_w_stat = function(x, weight, na.rm, check_weight_sum = FALSE, fun){
     stopif(NCOL(x)>1, "'x' should be vector or single column matrix.")
+    if(is.data.frame(x)) x = x[[1]]
     if(is.logical(x)) x = as.numeric(x)
     if(!is.null(weight)){
         if(is.logical(weight)) weight = as.numeric(weight)

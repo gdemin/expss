@@ -459,6 +459,25 @@ mtcars = modify(mtcars,{
 })
 
 expect_equal_to_reference(
+mtcars %calc% table_summary_df(mpg, 
+                               col_vars = vs, 
+                               fun = w_mean, 
+                               row_vars = am
+                                )
+,"rds/table_summary_df0.rds"
+)
+
+expect_equal_to_reference(
+    mtcars %calc% table_summary_df(mpg, 
+                                   col_vars = vs, 
+                                   fun = colMeans, 
+                                   row_vars = am
+    )
+    ,"rds/table_summary_df0.rds"
+)
+
+
+expect_equal_to_reference(
     table_summary_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, fun = function(x){
 
         colMeans(x)
