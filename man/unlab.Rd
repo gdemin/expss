@@ -24,4 +24,3 @@ identical(raw_var,unlab(var_with_lab)) # should be TRUE
 \seealso{
 \code{\link{unvr}} \code{\link{unvl}}
 }
-

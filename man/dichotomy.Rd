@@ -125,4 +125,3 @@ dichotomy_df(brands, prefix = "brand_")
 \code{\link{category}} for reverse conversion, \link{mrset},
   \link{mdset} for usage multiple-response variables with tables.
 }
-

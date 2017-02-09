@@ -40,4 +40,3 @@ list_w = read_spss_to_list("project_123.sav") # to list
 \seealso{
 \link[foreign]{read.spss} in package \code{foreign}, \link{val_lab}, \link{var_lab}
 }
-

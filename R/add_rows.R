@@ -99,7 +99,7 @@ add_rows.etable = function(..., nomatch_columns = c("add", "drop", "stop")){
 }
 
 #' @export
-add_rows.summary_table = add_rows.simple_table
+add_rows.simple_summary = add_rows.simple_table
 
 add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
     nomatch_columns = match.arg(nomatch_columns)

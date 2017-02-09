@@ -119,4 +119,3 @@ paste0(vlookup(4, ex3, "First_name"), " ",
        vlookup(4, ex3, "Last_name"), " is a ", 
        vlookup(4, ex3, "Title")) # Michael Patten is a Sales Rep.
 }
-

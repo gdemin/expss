@@ -101,8 +101,8 @@ var_attr = function(x){
 
 
 #' @export
-"[.summary_table" = function(x, i, j, drop = FALSE){
-    subset_helper(x, i, j, drop, class_name = "summary_table")
+"[.simple_summary" = function(x, i, j, drop = FALSE){
+    subset_helper(x, i, j, drop, class_name = "simple_summary")
 }
 
 
@@ -207,25 +207,22 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
 
 #' @export
 print.simple_table = function(x, round_digits = 2, ...,  right = TRUE){
-    class(x) = class(x) %d% "simple_table"
     if(!is.null(round_digits)){
         for (each in seq_along(x)){
             if(is.numeric(x[[each]])) x[[each]] = round(x[[each]], round_digits)
         }
     }
-    print(x, ...,  right = right, row.names = FALSE)
+    print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
 #' @export
-print.summary_table = function(x, ...,  right = TRUE){
-    class(x) = class(x) %d% "summary_table"
-    print(x, ...,  right = right, row.names = FALSE)
+print.simple_summary = function(x, ...,  right = TRUE){
+    print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
 #' @export
 print.etable = function(x, ...,  right = TRUE){
-    class(x) = class(x) %d% "etable"
-    print(x, ...,  right = right, row.names = FALSE)
+    print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
 
@@ -254,3 +251,7 @@ str.labelled = function(object, ...){
     }
     invisible(NULL)
 }
+
+
+
+

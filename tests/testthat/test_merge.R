@@ -153,7 +153,7 @@ expect_equal_to_reference(with(mtcars,{
 }), "rds/merge11.rds")
 
 
-context("merge summary_table")
+context("merge simple_summary")
 data("mtcars")
 
 mtcars = modify(mtcars, {
@@ -169,7 +169,7 @@ expect_equal_to_reference(
                cro_mean(list(gear, carb), am)
          )
     ), 
-    "rds/merge_summary_table1.rds")
+    "rds/merge_simple_summary1.rds")
 
 
 expect_equal_to_reference(
@@ -178,7 +178,7 @@ expect_equal_to_reference(
                cro_mean(list(gear, carb), vs)
          )
     ), 
-    "rds/merge_summary_table2.rds")
+    "rds/merge_simple_summary2.rds")
 
 
 expect_equal_to_reference(
@@ -187,7 +187,7 @@ expect_equal_to_reference(
                cro_mean(list(gear, carb), am)
          
     ), 
-    "rds/merge_summary_table1.rds")
+    "rds/merge_simple_summary1.rds")
 
 
 expect_equal_to_reference(
@@ -196,7 +196,7 @@ expect_equal_to_reference(
                cro_mean(list(gear, carb), vs)
          
     ), 
-    "rds/merge_summary_table2.rds")
+    "rds/merge_simple_summary2.rds")
 
 
 context("left join")

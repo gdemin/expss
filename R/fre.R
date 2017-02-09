@@ -40,7 +40,7 @@
 #'   scalar/vector/matrix of the same size.
 #' @param ... further arguments for \code{fun}   
 #'
-#' @return object of class 'simple_table'/'summary_table'. Basically it's a data.frame but class
+#' @return object of class 'simple_table'/'simple_summary'. Basically it's a data.frame but class
 #'   is needed for custom print method.
 #'
 #' @examples
@@ -522,7 +522,7 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
     if (single_nrow>1) labels = rep(labels, each = single_nrow)
     res = do.call(rbind, result)
     res = data.frame(" " = labels, res, column_total, stringsAsFactors = FALSE, check.names = FALSE)
-    class(res) = union("summary_table", class(res))
+    class(res) = union(c("simple_summary", "simple_table"), class(res))
     rownames(res) = NULL
     res
     
@@ -577,7 +577,7 @@ cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
     if_val(colnames(result)) = c('#stat' ~ ' ')
     res = data.frame(result, column_total, stringsAsFactors = FALSE, check.names = FALSE)
     rownames(res) = NULL
-    class(res) = union("summary_table", class(res))
+    class(res) = union(c("simple_summary", "simple_table"), class(res))
     res
 }
 

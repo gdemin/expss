@@ -39,4 +39,3 @@ about second tested product in the block B). At the end of the questionnaire
 there is a question about preferences between sweets.
 }
 \keyword{datasets}
-

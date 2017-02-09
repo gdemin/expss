@@ -22,4 +22,4 @@ Description: Package implements several popular functions from Excel ('COUNTIF',
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

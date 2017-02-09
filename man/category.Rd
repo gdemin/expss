@@ -64,4 +64,3 @@ category_df(dichotomy_dataframe, prefix = "products_")
 \code{\link{dichotomy}} for reverse conversion, \link{mrset},
   \link{mdset} for usage multiple-response variables with tables.
 }
-

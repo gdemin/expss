@@ -46,4 +46,3 @@ prop(tbl)
 prop_row(tbl)
 prop_col(tbl)
 }
-

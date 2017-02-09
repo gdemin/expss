@@ -43,4 +43,3 @@ subst("q1_`i`_`j`")
 data(iris)
 subst("'iris' has `nrow(iris)` rows.")
 }
-

@@ -41,4 +41,3 @@ default_dataset(NULL) # disable default dataset
 \seealso{
 \link{ref}
 }
-

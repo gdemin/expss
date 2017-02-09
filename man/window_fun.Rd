@@ -28,4 +28,3 @@ window_fun(breaks, tension, function(x) mean(x, trim = 0.1))
 
 detach(warpbreaks)
 }
-

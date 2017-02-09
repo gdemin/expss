@@ -2,14 +2,14 @@
 % Please edit documentation in R/if_val.R
 \docType{data}
 \name{if_val}
-\alias{copy}
-\alias{hi}
 \alias{if_val}
 \alias{if_val<-}
+\alias{recode<-}
+\alias{recode}
 \alias{ifs}
 \alias{lo}
-\alias{recode}
-\alias{recode<-}
+\alias{hi}
+\alias{copy}
 \title{Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
 \usage{
@@ -198,4 +198,3 @@ voter
 
 }
 \keyword{datasets}
-

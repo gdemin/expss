@@ -96,7 +96,7 @@ merge.simple_table = function(x, y,
 
 
 #' @export
-merge.summary_table = merge.simple_table
+merge.simple_summary = merge.simple_table
 
 
 #' @export
@@ -128,7 +128,7 @@ merge.etable = function(x, y, by = "row_labels",
 '%merge%.etable' = function(x, y) merge.etable(x, y)
 
 #' @export
-'%merge%.summary_table' = function(x, y) merge.summary_table(x, y)
+'%merge%.simple_summary' = function(x, y) merge.simple_summary(x, y)
 
 merge_table = function(x, y,
                        by.x,

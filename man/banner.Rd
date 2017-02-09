@@ -24,4 +24,3 @@ Title
 \examples{
 1 == 1
 }
-

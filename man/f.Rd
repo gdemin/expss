@@ -43,4 +43,3 @@ summary(lm(mpg ~ f(unvr(am)), data = mtcars)) # without variable label
   \code{\link[base]{as.factor}}, \code{\link[base]{ordered}},
   \code{\link[base]{as.ordered}}
 }
-
