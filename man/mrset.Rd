@@ -5,30 +5,32 @@
 \alias{mdset}
 \title{Create multiple response set/multiple dichotomy set from variables}
 \usage{
-mrset(...)
+mrset(..., label = NULL)
 
-mdset(...)
+mdset(..., label = NULL)
 }
 \arguments{
 \item{...}{variables}
+
+\item{label}{character optional label for multiple response set}
 }
 \value{
 data.frame of class \code{category}/\code{dichotomy}
 }
 \description{
-This functions are intended for usage with tables - \link{table_cases}, 
+These functions are intended for usage with tables - \link{table_cases}, 
 \link{table_summary}. Result of \code{mrset} is considered as 
 muliple-response set with category encoding and result of \code{mdset} is 
-considered as multiple response set with dichotomy encoding e. g. with 0 or 1
-in the each column. Each column in the \code{dichotomy} is indicator of 
-absense or presense of particular feature. Both functions don't convert its 
-arguments to anything - it is supposed that arguments already have 
-appropriate encoding. For conversation see \link{dichotomy} or
+considered as multiple response set with dichotomy (dummy) encoding e. g.
+with 0 or 1 in the each column. Each column in the \code{dichotomy} is
+indicator of absense or presense of particular feature. Both functions don't
+convert its arguments to anything - it is supposed that arguments already
+have appropriate encoding. For conversation see \link{dichotomy} or 
 \link{category}.
 }
 \examples{
 
 data(product_test)
-# a1 = with(product_test, mrset(a2_1 \%to\% a2_99))
+a1 = with(product_test, mrset(a1_1 \%to\% a1_6))
 
 }
