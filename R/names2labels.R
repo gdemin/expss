@@ -101,3 +101,16 @@ names2labels.matrix = function(x, exclude = NULL, keep_names = FALSE){
 #' @export
 #' @rdname names2labels
 n2l = names2labels
+
+
+make_labels_from_names = function(x){
+    UseMethod("make_labels_from_names")
+}
+
+#' @export
+make_labels_from_names.data.frame = function(x){
+    for(each in seq_along(x)){
+        var_lab(x[[each]]) = names(x)[each]
+    }
+    x
+}
