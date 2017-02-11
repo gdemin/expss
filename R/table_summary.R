@@ -78,9 +78,12 @@ table_summary = function(summary_vars,
                 dttbl[["..weight__"]] = weight
                 dttbl = dttbl[, lapply(.SD[, -"..weight__"], int_fun, weight = ..weight__)]
             }
+            if(nrow(dttbl)==0){
+                dttbl = rbind(dttbl, set_names(data.table(NA), names(dttbl)[1]), fill = TRUE, use.names = TRUE)
+            }
             nrow_dttbl = nrow(dttbl)
             ncol_dttbl = ncol(dttbl)
-            dttbl[["..stat_names__"]] = stat_names
+            dttbl = cbind(dttbl, "..stat_names__" = stat_names)
            # browser()
             dttbl[["..stat_names__index"]] = seq_len(nrow_dttbl)
             res = suppressWarnings(melt(dttbl, id.vars = c("..stat_names__index", "..stat_names__"),

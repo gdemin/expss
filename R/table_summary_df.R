@@ -148,8 +148,9 @@ table_summary_df = function(summary_vars,
                "`weight` is provided but `fun` doesn't have formal `weight` argument.")
     }
     summary_vars = flat_list(summary_vars, flat_df = TRUE)
-    col_vars = flat_list(col_vars)
-    row_vars = flat_list(row_vars)
+    col_vars = flat_list(process_mdsets(col_vars)) # process_mdsets
+    row_vars = flat_list(process_multiples(row_vars), flat_df = TRUE)
+    # row_vars = flat_list(row_vars)
 
     stopif(any(sapply(row_vars, NCOL)>1L),
            " data.frames in 'row_vars'. For 'table_summary_df' data.frames (multiple-choice variables) is allowed only in 'col_vars'.")
@@ -327,8 +328,7 @@ elementary_summary_df = function(dttbl,
     }
     if(nrow(for_calc)==0){
         for_calc = rbind(for_calc, data.table(..bn__ = NA), fill = TRUE, use.names = TRUE)
-    }
-
+    } 
     # construct template with all combinations of possible values
     possible_ban_values = sort(unique(c(b_vallab, for_calc[["..bn__"]])))
     possible_var_values = sort(unique(c(v_vallab, for_calc[["..vr__"]])))
@@ -372,11 +372,19 @@ elementary_summary_df = function(dttbl,
     template[, ..vr__label := v_varlab]
     if(length(custom_labels)){
         for_calc = for_calc[template, on = c("..vr__","..bn__", custom_labels),nomatch = NA]
+        # for_calc = merge(as.dtfrm(template), for_calc,
+        #                  by = c("..vr__","..bn__", custom_labels), 
+        #                  all.x = TRUE, all.y = FALSE)
     } else {
         for_calc = for_calc[template, on = c("..vr__","..bn__"),nomatch = NA]
+        # for_calc = merge(as.dtfrm(template), for_calc, 
+        #                  by = c("..vr__","..bn__"), 
+        #                  all.x = TRUE, all.y = FALSE)
     }
+    # for_calc = as.data.table(for_calc)
     for_calc[, ..res_num__ :=  seq_len(.N), by = by_string]
     for_calc
+
 }
 
 
@@ -427,6 +435,7 @@ long_table_summary_df = function(summary_vars,
                                 new_vars_names[[var_num]],
                                 new_bans_names[[ban_num]],
                                 weight_name = weight_name)
+            # dttbl = curr_dt
             elementary_res = elementary_summary_df(dttbl,
                                         summary_names = new_summary_names,
                                         ban_names = new_bans_names[[ban_num]],

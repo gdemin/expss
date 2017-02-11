@@ -61,7 +61,13 @@ pack_data.table = function(...){
     nulls = vapply(args, is.null, FUN.VALUE = logical(1))
     args = args[!nulls]
     args = lapply(args, flat_list, flat_df = TRUE)
-    as.data.table(do.call(c, args))
+    res = as.data.table(do.call(c, args))
+    names_res = names(res)
+    bad_names = is.na(names_res) | (names_res=="") | duplicated(names_res)
+    if(sum(bad_names)>0){
+        names(res)[bad_names] = paste0("...bbbaaaddd__", 1:sum(bad_names)) 
+    }
+    res
 }
 
 ########
@@ -111,3 +117,53 @@ remove_unnecessary_splitters = function(labels){
 }
 
 
+#######
+
+# convert mdsets to categories
+process_mdsets = function(x){
+    if(is.null(x)) return(NULL)
+    if(!is.list(x) || is.data.frame(x)){
+        x = list(x)
+    }
+    lapply(x, function(item){
+        if(is.list(item) && !is.data.frame(item)){
+            process_mdsets(item)
+        } else {
+            if(is.dichotomy(item)){
+                category_df(item, use_var_lab = TRUE, compress = FALSE)
+            } else {
+                item
+            }
+        }
+    })    
+}
+
+# convert mdsets to categories
+process_multiples = function(x){
+    if(is.null(x)) return(NULL)
+    if(!is.list(x) || is.data.frame(x)){
+        x = list(x)
+    }
+    lapply(x, function(item){
+        if(is.list(item) && !is.data.frame(item)){
+            process_multiples(item)
+        } else {
+            if(is.dichotomy(item)){
+                if(is.matrix(item)) item = as.data.frame(item)
+                na_if(item) = 0
+                
+                as.list(unvl(make_labels_from_names(item)))
+            } else {
+                if(is.category(item)){
+                    item = dichotomy_df(item, keep_unused = TRUE, use_na = TRUE)
+                    na_if(item) = 0
+                    
+                    val_lab(item) = setNames(1, "")
+                    as.list(make_labels_from_names(item))
+                } else {
+                    item
+                }
+            }
+        }
+    })    
+}
