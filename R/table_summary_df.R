@@ -395,11 +395,11 @@ long_table_summary_df = function(summary_vars,
 
     ###### main data.table #######
 
-    col_vars = rapply(col_vars, as.labelled, classes = "factor", how = "replace")
+    col_vars = rapply(col_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
     if(!is.null(row_vars)) {
-        row_vars = rapply(row_vars, as.labelled, classes = "factor", how = "replace")
+        row_vars = rapply(row_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
     } else {
-        row_vars = list(1)
+        row_vars = list(rep(1, NROW(col_vars[[1]])))
     }
     curr_dt = pack_data.table(row_vars, col_vars, summary_vars)
 
