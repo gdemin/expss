@@ -526,6 +526,17 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
+    mtcars %where% FALSE %calc% table_summary_df(vars(!fixed("vs") & !fixed("am")), col_vars = am, row_vars = vs,
+                     fun = function(x){
+                         dtfrm(res_num = seq_along(x), parameter = names(n2l(x)), mean = colMeans(x))
+                     },  row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
+                     hide = "res_num",
+                     use_result_row_order = FALSE
+    )
+    ,"rds/table_summary_df5a.rds"
+)
+
+expect_equal_to_reference(
     table_summary_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, row_vars = mtcars$vs,
                      fun = function(x, weight = NULL){
                          res = w_cor(x, weight = weight)
