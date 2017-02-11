@@ -26,14 +26,20 @@ table_summary = function(summary_vars,
                          col_labels = c("col_vars", "col_vars_values"),
                          hide = NULL
 ){
-    stopif(!is.function(fun), "`fun` should be function.")
+    if(is.null(stat_names)){
+        if(is.character(fun)){
+            stat_names = fun    
+        } else {
+            stat_names = deparse(substitute(fun))    
+        }
+    }
+    fun = match.fun(fun)
+    # stopif(!is.function(fun), "`fun` should be function.")
     if(!is.null(weight)){
         stopif(!("weight" %in% names(formals(fun))),
                "`weight` is provided but `fun` doesn't have formal `weight` argument.")
     }
-    if(is.null(stat_names)){
-        stat_names = deparse(substitute(fun))
-    }
+ 
 
     stopif(!length(row_labels), "`row_labels` should have at least one item.")
     stopif(!length(col_labels), "`col_labels` should have at least one item.")

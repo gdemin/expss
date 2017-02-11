@@ -118,9 +118,14 @@ remove_unnecessary_splitters = function(labels){
 
 
 #######
+set_negative_and_na_to_zero = function(x){
+    x[is.na(x) | (x<0)] = 0
+    x
+}
 
+#####
 # convert mdsets to categories
-process_mdsets = function(x){
+dichotomy_to_category_encoding = function(x){
     if(is.null(x)) return(NULL)
     if(!is.list(x) || is.data.frame(x)){
         x = list(x)
@@ -139,7 +144,7 @@ process_mdsets = function(x){
 }
 
 # convert mdsets to categories
-process_multiples = function(x){
+multiples_to_single_columns_with_dummy_encoding = function(x){
     if(is.null(x)) return(NULL)
     if(!is.list(x) || is.data.frame(x)){
         x = list(x)

@@ -54,6 +54,9 @@ expect_equal_to_reference(
     table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = w_mean, weight = 2),
                           "rds/table_summary0.rds")
 
+expect_equal_to_reference(
+    table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = "w_mean", weight = 2),
+    "rds/table_summary0.rds")
 
 
 

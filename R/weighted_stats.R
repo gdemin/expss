@@ -247,9 +247,9 @@ w_spearman = function(x, weight = NULL, use = c("pairwise.complete.obs", "comple
         if(length(weight) == 1L){
             weight = rep(weight, nrow(x))
         }
-        posititive_weights =  (!is.na(weight)) & (weight>0)
-        x = x[posititive_weights, , drop = FALSE]
-        weight = trunc(weight[posititive_weights]+0.5)
+        posititive_weight =  (!is.na(weight)) & (weight>0)
+        x = x[posititive_weight, , drop = FALSE]
+        weight = trunc(weight[posititive_weight]+0.5)
         if(sum(weight)<1){
             # warning("Sum of weights is less than one. NA will be returned.")
             return(matrix_of_na(x))

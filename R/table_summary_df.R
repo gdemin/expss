@@ -148,8 +148,8 @@ table_summary_df = function(summary_vars,
                "`weight` is provided but `fun` doesn't have formal `weight` argument.")
     }
     summary_vars = flat_list(summary_vars, flat_df = TRUE)
-    col_vars = flat_list(process_mdsets(col_vars)) # process_mdsets
-    row_vars = flat_list(process_multiples(row_vars), flat_df = TRUE)
+    col_vars = flat_list(dichotomy_to_category_encoding(col_vars)) # process_mdsets
+    row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
     # row_vars = flat_list(row_vars)
 
     stopif(any(sapply(row_vars, NCOL)>1L),
