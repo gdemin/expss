@@ -93,6 +93,11 @@ dichotomy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_
       
 }
 
+#' @export
+is.dichotomy = function(x){
+    "dichotomy" %in% class(x)
+}
+
 # so unnessasary complex because we need return dihotomy_df with labels from original data
 
 dichotomy_dispatcher = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,

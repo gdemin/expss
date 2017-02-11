@@ -97,7 +97,10 @@ category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, co
 }
 
 
-
+#' @export
+is.category = function(x){
+    "category" %in% class(x)
+}
 
 compress_and_finish = function(res, vallab, prefix, compress){
     if(compress && length(res)>0 && ncol(res)>1){
