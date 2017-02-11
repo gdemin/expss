@@ -372,7 +372,7 @@ sd_row_if=function(criterion,..., data = NULL){
 #' @rdname count_if
 sd_col_if=function(criterion,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
-    apply(data, 2, stats::sd, na.rm=TRUE)
+    vapply(data, stats::sd, FUN.VALUE = numeric(1), na.rm=TRUE)
 }
 
 ################################################
@@ -399,7 +399,7 @@ median_row_if=function(criterion,..., data = NULL){
 #' @rdname count_if
 median_col_if=function(criterion,..., data = NULL){
     data = fun_if_helper(criterion = criterion, ..., data = data)
-    apply(data, 2, stats::median, na.rm=TRUE)
+    vapply(data, FUN = stats::median, FUN.VALUE = numeric(1), na.rm=TRUE)
 }
 
 
@@ -534,11 +534,7 @@ fun_if_helper = function(criterion,..., data){
     }    
     
     if(!is.data.frame(data)){
-        if(is.list(data)) {
-            data = do.call(data.frame,c(data,stringsAsFactors=FALSE, check.names = FALSE))        
-        }  else {
             data = as.data.frame(data, stringsAsFactors = FALSE, check.names = FALSE)
-        } 
     }    
     na_if(data, !criterion) 
 }
