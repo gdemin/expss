@@ -64,7 +64,7 @@ where.default = function (data, cond) {
 
     cond = substitute(cond)
 
-    e = evalq(environment(), new.env(), parent.frame())
+    e = evalq(environment(), list(), parent.frame())
     prepare_env(e, n = NROW(data), NULL)
     cond = calc_cond(cond, envir = e)
     

@@ -29,6 +29,11 @@ test_scoping = function(){
 }
 expect_identical(test_scoping(), list(iris[iris$Species == global_item | iris$Species == "setosa", ]))
 
+test_scoping = function(){
+    local_item = iris$Species == "setosa"
+    where(list_iris, local_item)
+}
+expect_identical(test_scoping(), list(iris[iris$Species == "setosa", ]))
 
 
 
@@ -44,6 +49,12 @@ expect_identical(where(iris, 1:5), iris[1:5, ])
 expect_identical(iris %where% (Species == "setosa"), iris[iris$Species == "setosa", ])
 expect_identical(iris %where% (iris$Species == "setosa"), iris[iris$Species == "setosa", ])
 
+list_iris = list(iris$Species) 
+test_scoping = function(){
+    local_item = iris$Species == "setosa"
+    where(list_iris, local_item)
+}
+expect_identical(test_scoping(), list(iris[iris$Species == "setosa", "Species"]))
 
 
 a = 150
