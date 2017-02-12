@@ -22,51 +22,51 @@ weight = c(1, 2, 3)
 empty1 = as.numeric(NA)
 empty2 = as.numeric(NA)
 
-expect_equal_to_reference(table_cases(mult1, mult2$b1),
+expect_equal_to_reference(table_cases(mrset(mult1), mult2$b1),
                           "rds/table_cases7.rds")
 
-expect_equal_to_reference(table_cases(mult2$b1, mult1),
+expect_equal_to_reference(table_cases(mult2$b1, mrset(mult1)),
                           "rds/table_cases8.rds")
 
-expect_equal_to_reference(table_cases(mult1, mult2$b1, weight),
+expect_equal_to_reference(table_cases(mrset(mult1), mult2$b1, weight),
                           "rds/table_cases9.rds")
-expect_equal_to_reference(table_cases(mult1, mult2$b1, weight, weighted_total = TRUE),
+expect_equal_to_reference(table_cases(mrset(mult1), mult2$b1, weight, weighted_total = TRUE),
                           "rds/table_cases9a.rds")
 
-expect_equal_to_reference(table_cases(mult2$b1, mult1, weight),
+expect_equal_to_reference(table_cases(mult2$b1, mrset(mult1), weight),
                           "rds/table_cases10.rds")
 
-expect_equal_to_reference(table_cases(mult2$b1, mult1, weight, weighted_total = TRUE),
+expect_equal_to_reference(table_cases(mult2$b1, mrset(mult1), weight, weighted_total = TRUE),
                           "rds/table_cases10a.rds")
 
 #############
-expect_equal_to_reference(table_cases(mult1, mult2),
+expect_equal_to_reference(table_cases(mrset(mult1), mrset(mult2)),
                           "rds/table_cases11.rds")
 
 
-expect_equal_to_reference(table_cases(mult1, mult2,  weight),
+expect_equal_to_reference(table_cases(mrset(mult1), mrset(mult2),  weight),
                           "rds/table_cases12.rds")
 
-expect_equal_to_reference(table_cases(mult1, mult2,  weight, weighted_total = TRUE),
+expect_equal_to_reference(table_cases(mrset(mult1), mrset(mult2),  weight, weighted_total = TRUE),
                           "rds/table_cases12a.rds")
 
-expect_equal_to_reference(table_cases(empty1, mult2),
+expect_equal_to_reference(table_cases(empty1, mrset(mult2)),
                           "rds/table_cases4.rds")
 
 
-expect_equal_to_reference(table_cases(mult1, empty1, weight),
+expect_equal_to_reference(table_cases(mrset(mult1), empty1, weight),
                           "rds/table_cases5.rds")
 
-expect_equal_to_reference(table_cases(mult1, mult2, empty1),
+expect_equal_to_reference(table_cases(mrset(mult1), mrset(mult2), empty1),
                           "rds/table_cases6.rds")
 
-expect_equal_to_reference(table_cases(cbind(mult1, empty1), cbind(mult2, empty1), weight = weight),
+expect_equal_to_reference(table_cases(mrset(mult1, empty1), mrset(mult2, empty1), weight = weight),
                           "rds/table_cases13.rds")
 
-expect_equal_to_reference(table_cases(mult1, "Total", weight = weight),
+expect_equal_to_reference(table_cases(mrset(mult1), "Total", weight = weight),
                           "rds/table_cases14.rds")
 
-expect_equal_to_reference(table_cases("Total", mult2, weight = weight),
+expect_equal_to_reference(table_cases("Total", mrset(mult2), weight = weight),
                           "rds/table_cases15.rds")
 
 # fre(mtcars$vs)
@@ -96,6 +96,10 @@ expect_equal_to_reference(table_cases(list(mtcars$am, mtcars$cyl), list(mtcars$v
 
 expect_equal_to_reference(
     table_cases(list(mtcars$am, mtcars$cyl), list(mtcars$vs, mtcars$gear), variable_labels_position = "row"),
+    "rds/table_cases23.rds")
+
+expect_equal_to_reference(
+    table_cases(dtfrm(mtcars$am, mtcars$cyl), dtfrm(mtcars$vs, mtcars$gear), variable_labels_position = "row"),
     "rds/table_cases23.rds")
 
 expect_equal_to_reference(
@@ -129,11 +133,11 @@ empty2 = as.numeric(NA)
 
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total"), variable_labels_position = "inside_columns")
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total"), variable_labels_position = "inside_columns")
     ,"rds/table_cases31.rds")
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total"), variable_labels_position = "outside_columns"),
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total"), variable_labels_position = "outside_columns"),
     "rds/table_cases32.rds")
 
 
@@ -141,22 +145,22 @@ var_lab(mult2) = "mult1"
 
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total"), variable_labels_position = "inside_columns"),
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total"), variable_labels_position = "inside_columns"),
     "rds/table_cases33.rds")
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total"), variable_labels_position = "outside_columns"),
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total"), variable_labels_position = "outside_columns"),
     "rds/table_cases34.rds")
 
 val_lab(mult1) = c(a = 1, b = 2, c = 3)
 val_lab(mult2) = val_lab(mult1)
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total"), variable_labels_position = "inside_columns"),
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total"), variable_labels_position = "inside_columns"),
     "rds/table_cases35.rds")
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total"), variable_labels_position = "outside_columns"),
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total"), variable_labels_position = "outside_columns"),
     "rds/table_cases36.rds")
 
 add_val_lab(mult1) = c(d = 4)
@@ -164,15 +168,15 @@ add_val_lab(mult2) = c(d = 2)
 
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total"), variable_labels_position = "outside_columns"),
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total"), variable_labels_position = "outside_columns"),
     "rds/table_cases37.rds")
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total"), variable_labels_position = "inside_columns"),
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total"), variable_labels_position = "inside_columns"),
     "rds/table_cases38.rds")
 
 expect_equal_to_reference(
-    table_cases(list(mult1, mult2), list("total", "total")),
+    table_cases(list(mrset(mult1), mrset(mult2)), list("total", "total")),
     "rds/table_cases39.rds")
 
 if_val(mult2) = other ~ NA

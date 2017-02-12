@@ -131,7 +131,12 @@ dichotomy_to_category_encoding = function(x){
             if(is.dichotomy(item)){
                 category_df(item, use_var_lab = TRUE, compress = FALSE)
             } else {
-                item
+                if(is.data.frame(item) & !is.category(item)){
+                    as.list(item)
+                } else {
+                    item    
+                }
+                
             }
         }
     })    
@@ -156,7 +161,11 @@ multiples_to_single_columns_with_dummy_encoding = function(x){
                     val_lab(item) = setNames(1, "")
                     as.list(make_labels_from_names(item))
                 } else {
-                    item
+                    if(is.data.frame(item)){
+                        as.list(item)
+                    } else {
+                        item    
+                    }
                 }
             }
         }

@@ -403,23 +403,23 @@ sofisticated_fun =   function(x, weight=NULL) {
                 n = c(w_n(x[[1]], weight), w_n(x[[2]], weight), w_n(x[[3]], weight))
     )
     dtfrm(row_labels = names(x), res)
-
 }
+
 expect_equal_to_reference(
-    long_table_summary_df(list(dtfrm(av1, av2, av3)), list(mult2),
+    long_table_summary_df(list(dtfrm(av1, av2, av3)), list(mrset(mult2)),
                           fun = sofisticated_fun,
                           weight = NULL),
     "rds/long_table_summary_df7.rds")
 
 expect_equal_to_reference(
-    long_table_summary_df(list(dtfrm(av1, av2, av3)), list(mult2),
+    long_table_summary_df(list(dtfrm(av1, av2, av3)), list(mrset(mult2)),
                           fun = sofisticated_fun,
                           weight = 2),
     "rds/long_table_summary_df8.rds")
 
 mult1[, 1:2] = NA
 expect_equal_to_reference(
-    long_table_summary_df(list(dtfrm(av1, av2, av3)), list(mult1),
+    long_table_summary_df(list(dtfrm(av1, av2, av3)), list(mrset(mult1)),
                           fun = sofisticated_fun,
                           custom_labels = "row_labels",
                           weight = 2),
@@ -543,6 +543,20 @@ expect_equal_to_reference(
     ,"rds/table_summary_df5.rds"
 )
 
+
+expect_equal_to_reference(
+    table_summary_df(mtcars %except% qc(vs, am), col_vars = dtfrm("Total", mtcars$am), 
+                     row_vars = dtfrm("Total",mtcars$vs),
+                     fun = function(x){
+                         dtfrm(res_num = seq_along(x), parameter = names(n2l(x)), mean = colMeans(x))
+                     },  row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
+                     hide = "res_num",
+                     use_result_row_order = FALSE
+    )
+    ,"rds/table_summary_df5c.rds"
+)
+
+
 expect_equal_to_reference(
     mtcars %where% FALSE %calc% table_summary_df(vars(!fixed("vs") & !fixed("am")), col_vars = am, row_vars = vs,
                      fun = function(x){
@@ -638,6 +652,11 @@ expect_equal_to_reference(
 
 expect_equal_to_reference(
     table_summary_df(mtcars %except% c("cyl", "am"), col_vars = list("Total", mtcars$am), fun = colMeans),
+    "rds/table_summary_df11.rds"
+)
+
+expect_equal_to_reference(
+    table_summary_df(mtcars %except% c("cyl", "am"), col_vars = dtfrm("Total", mtcars$am), fun = colMeans),
     "rds/table_summary_df11.rds"
 )
 

@@ -58,11 +58,7 @@ nest = function(...){
     }
     if (length(arg)>2) res = do.call(nest, c(res, arg[-(1:2)]))
     if (length(res) == 1) res = res[[1]]
-    if(is_list(res)){
-        lapply(res, matrix_to_df_with_labels)
-    } else {
-        matrix_to_df_with_labels(res)
-    }
+    res
 }
 
 to_labelled = function(x){
@@ -72,7 +68,7 @@ to_labelled = function(x){
 #' @export
 to_labelled.default = function(x){
     if(is.factor(x)) x = as.labelled(x)
-    if("POSIXct" %in% class(x)) x = as.labelled(as.character(x))
+    if("POSIXct" %in% class(x)) x = as.labelled(x)
     x
 }
 
@@ -125,6 +121,12 @@ nest_xlist = function(x, y)
 
 
 nest_xy = function(x, y){
+    res_mrset = FALSE
+    if(is.dichotomy(x)) x = category_df(x, use_var_lab = TRUE, compress = FALSE)
+    if(is.dichotomy(y)) y = category_df(y, use_var_lab = TRUE, compress = FALSE)
+    if(is.category(x) || is.category(y)){
+        res_mrset = TRUE
+    }
     vlabs_x = var_lab(x)
     vlabs_y = var_lab(y)
     labs_x = val_lab(x)
@@ -165,7 +167,12 @@ nest_xy = function(x, y){
     names(res_lab) = outer(new_lab_y, new_lab_x, function(x, y) paste(y, x, sep = "|"))
     # res_lab = res_lab[res_lab %in% new_uniq]
     val_lab(res) = res_lab
-    res
+    res = matrix_to_df_with_labels(res)
+    if(res_mrset){
+        mrset(res)
+    } else {
+        res    
+    }
 }
 
 #' @export

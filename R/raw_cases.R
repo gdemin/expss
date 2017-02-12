@@ -189,8 +189,13 @@ long_table = function(row_vars, col_vars,
                       total_row_position = c("above", "below", "none"),
                       table_type = c("default", "rpct", "tpct"),
                       weighted_total = FALSE){
-    row_vars = flat_list(row_vars)
-    col_vars = flat_list(col_vars)
+
+    row_vars = flat_list(dichotomy_to_category_encoding(row_vars), flat_df = FALSE) # process_mdsets
+    row_vars = rapply(row_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
+
+    col_vars = flat_list(dichotomy_to_category_encoding(col_vars), flat_df = FALSE) # process_mdsets
+    col_vars = rapply(col_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
+    
     check_sizes("table_cases", row_vars, col_vars, weight)
 
     new_vars_names = lapply(seq_along(row_vars),
