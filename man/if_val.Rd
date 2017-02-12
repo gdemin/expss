@@ -10,6 +10,8 @@
 \alias{lo}
 \alias{hi}
 \alias{copy}
+\alias{\%into\%}
+\alias{.into_helper_}
 \title{Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
 \usage{
@@ -28,6 +30,10 @@ lo
 hi
 
 copy(x)
+
+e1 \%into\% e2
+
+.into_helper_(e1, e2)
 }
 \arguments{
 \item{x}{vector/matrix/data.frame/list}
@@ -43,6 +49,10 @@ format as RHS of formulas).}
 
 \item{value}{list with formulas which describe recodings in assignment form
 of function/\code{to} list if \code{from}/\code{to} notation is used.}
+
+\item{e1}{object which will be assigned to right-hand side of \code{\%into\%} expression.}
+
+\item{e2}{names which will be given to LHS of \code{\%into\%} expression.}
 }
 \value{
 object of same form as \code{x} with recoded values
@@ -100,6 +110,10 @@ value (COPY in SPSS RECODE).  See examples. \code{copy} is useful in the
 usual form of \code{recode} and doesn't do anything in the case of the
 assignment form \code{recode() = ...} because this form don't modify values
 which are not satisfying any of the conditions.}}
+\code{\%into\%} tries to mimic SPSS 'INTO'. Values from left-hand side will 
+be assigned to right-hand side. You can use \code{\%to\%} expression in the 
+RHS of \code{\%into\%}. Characters in the RHS will be expanded as with
+\link{subst}. See examples.
 \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 \code{if_val} is an alias for \code{recode}.
@@ -135,6 +149,22 @@ set.seed(123)
 age = sample(c(sample(5:30, 40, replace = TRUE), rep(9, 10)))
 voter = recode(age, NA ~ 9, 18 \%thru\% hi ~ 1, 0 \%thru\% 18 ~ 0)
 voter
+# the same result with '\%into\%'
+recode(age, NA ~ 9, 18 \%thru\% hi ~ 1, 0 \%thru\% 18 ~ 0) \%into\% voter2
+voter2
+
+# multiple assignment with '\%into\%'
+#' set.seed(123)
+x1 = runif(30)
+x2 = runif(30)
+x3 = runif(30)
+# note nessesary brackets around RHS of '\%into\%'
+recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% (x_rec_1 \%to\% x_rec_3)
+fre(x_rec_1)
+# the same operation with characters expansion
+i = 1:3
+recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% 'x_rec2_`i`'
+fre(x_rec2_1)
 
 # example with function in RHS
 set.seed(123)

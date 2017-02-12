@@ -52,6 +52,10 @@
 #' usual form of \code{recode} and doesn't do anything in the case of the
 #' assignment form \code{recode() = ...} because this form don't modify values
 #' which are not satisfying any of the conditions.}}
+#' \code{\%into\%} tries to mimic SPSS 'INTO'. Values from left-hand side will 
+#' be assigned to right-hand side. You can use \code{\%to\%} expression in the 
+#' RHS of \code{\%into\%}. Characters in the RHS will be expanded as with
+#' \link{subst}. See examples.
 #' \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 #' can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 #' \code{if_val} is an alias for \code{recode}.
@@ -65,6 +69,8 @@
 #'   same format as LHS of formulas).
 #' @param to list of values into which old values should be recoded (in the same
 #'   format as RHS of formulas).
+#' @param e1 object which will be assigned to right-hand side of \code{\%into\%} expression. 
+#' @param e2 names which will be given to LHS of \code{\%into\%} expression. 
 #'
 #' @return object of same form as \code{x} with recoded values
 #' @examples
@@ -98,6 +104,22 @@
 #' age = sample(c(sample(5:30, 40, replace = TRUE), rep(9, 10)))
 #' voter = recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 #' voter
+#' # the same result with '%into%'
+#' recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0) %into% voter2
+#' voter2
+#' 
+#' # multiple assignment with '%into%'
+#' #' set.seed(123)
+#' x1 = runif(30)
+#' x2 = runif(30)
+#' x3 = runif(30)
+#' # note nessesary brackets around RHS of '%into%'
+#' recode(x1 %to% x3, gt(0.5) ~ 1, other ~ 0) %into% (x_rec_1 %to% x_rec_3)
+#' fre(x_rec_1)
+#' # the same operation with characters expansion
+#' i = 1:3
+#' recode(x1 %to% x3, gt(0.5) ~ 1, other ~ 0) %into% 'x_rec2_`i`'
+#' fre(x_rec2_1)
 #' 
 #' # example with function in RHS
 #' set.seed(123)
@@ -378,6 +400,115 @@ hi = Inf
 #' @export
 #' @rdname if_val
 copy = function(x) x
+
+#' @export
+#' @rdname if_val
+'%into%' = function(e1, e2){
+    args = substitute(e2)
+    if(length(args)==1){
+        if(length(all.names(args))==length(all.vars(args))){
+            # there is no functions
+            if(is.character(args)){
+                new_args = eval(substitute(subst(args)), parent.frame(), baseenv())
+            } else {
+                new_args = deparse(args) 
+            }
+            
+        } else {
+            # we have functions
+            new_args = substitute_symbols(args,
+                                          list("%to%" = ".into_helper_")
+            )
+            new_args = eval(substitute(new_args), parent.frame(), baseenv())
+        }
+    } else {
+        if(deparse(args[[1]]) %in% c("list", "c", "qc", "lst")){
+            new_args = list()
+            for(each in seq_along(args[-1])){
+                x = args[[each+1]]
+                if(length(all.names(x))==length(all.vars(x))){
+                    if(is.character(x)){
+                        new_args[[each]] = eval(substitute(subst(x)), parent.frame(), baseenv()) 
+                    } else {
+                        new_args[[each]] = deparse(x) 
+                    }
+                } else {
+                    x = substitute_symbols(x,
+                                           list("%to%" = ".into_helper_")
+                    )
+                    x = eval(substitute(x), parent.frame(), baseenv())
+                    new_args[[each]] = x
+                }
+            }
+        } else {
+            new_args = substitute_symbols(args,
+                                      list("%to%" = ".into_helper_")
+            )
+            new_args = eval(substitute(new_args), parent.frame(), baseenv())
+        }
+    }
+    args = unlist(new_args)
+    if(length(args)==1){
+        assign(args[[1]], e1, envir = parent.frame())
+    } else {
+        if(is.list(e1)){
+            n_elements = length(e1)
+        } else {
+            n_elements = NCOL(e1)
+        }
+        stopif(!((n_elements==length(args)) || (n_elements==1)),
+               "'%into%' - you provide ",length(args), " names and ", n_elements,
+               " items for them. Number of items should be equal to number of the names or equal to one."
+        )
+        for(each in seq_along(args)){
+            assign(args[[each]], column(e1, each), envir = parent.frame())
+        }
+    }
+    invisible(NULL)
+}
+
+
+
+
+# version of %to% for usage inside %into%'
+#' @export
+#' @rdname if_val
+.into_helper_ = function(e1, e2){
+    if(exists(".internal_column_names0", envir = parent.frame())){
+        var_names = internal_ls(parent.frame()[[".internal_column_names0"]], env = parent.frame())
+    } else {
+        var_names = ls(envir = parent.frame())
+    }
+    e1 = deparse(substitute(e1))
+    e2 = deparse(substitute(e2))
+    first = match(e1, var_names)[1]
+    last = match(e2, var_names)[1]
+    if(is.na(first) && is.na(last)){
+        patt1 = gsub("^(.+?)([\\d]+)$", "\\1", e1, perl = TRUE)
+        patt2 = gsub("^(.+?)([\\d]+)$", "\\1", e2, perl = TRUE)
+        stopif(patt1!=patt2, "Start and end variables begin from different patterns: '", patt1, "', '", patt2,"'.")
+        digits1 = gsub("^(.+?)([\\d]+)$", "\\2", e1, perl = TRUE)
+        digits2 = gsub("^(.+?)([\\d]+)$", "\\2", e2, perl = TRUE)
+        padding = 0
+        if((substr(digits1,1,1)=="0" || substr(digits2,1,1)==0) &&
+           !(substr(digits1,1,1)=="0" && nchar(digits1)==1 && substr(digits2,1,1)!=0)){
+            stopif(nchar(digits1)!=nchar(digits2), 
+                   "Invalid use of the %to% convention. For zero-padded numbers numeric part of the names must be the same length but: '", 
+                   digits1, ", '", digits2, "'.")
+            padding = nchar(digits1)
+        }
+        stopif(digits1>digits2, "Name of start variables greater than name of end variables: '", e1,"' > '",e2,"'.")
+        all_digits = digits1:digits2
+        if(padding>0) all_digits = formatC(all_digits, width = padding, format = "d", flag = "0")
+        return(paste0(patt1, all_digits))
+    } else { 
+        stopif(is.na(first), "'", e2, "' is found but '", e1, "' is absent.")
+        stopif(is.na(last), "'", e1, "' is found but '", e2, "' is absent.")
+        stopif(last<first, "'",e2, "' located before '",e1,"'. Did you mean '",e2," %to% ",e1,"'?")
+        return(var_names[first:last])         
+    } 
+}
+
 
 
 # make object with the same shape as its argument but filled with NA and logical type
