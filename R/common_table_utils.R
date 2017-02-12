@@ -60,7 +60,6 @@ pack_data.table = function(...){
     args = list(...)
     nulls = vapply(args, is.null, FUN.VALUE = logical(1))
     args = args[!nulls]
-    args = lapply(args, flat_list, flat_df = TRUE)
     res = as.data.table(do.call(c, args))
     names_res = names(res)
     bad_names = is.na(names_res) | (names_res=="") | duplicated(names_res)
@@ -97,9 +96,8 @@ factors2characters = function(dfs){
 #############################################################
 ### check that all arguments ... have equal length or length 1 (NULLs are also allowed)
 check_sizes = function(caller_name, ...){
-    args = flat_list(list(...))
-    nulls = vapply(args, is.null, FUN.VALUE = logical(1))
-    sizes = vapply(args[!nulls], NROW, FUN.VALUE = numeric(1))
+
+    sizes = vapply(args, NROW, FUN.VALUE = numeric(1))
     stopif(!all(sizes %in% c(1, max(sizes))),
            caller_name, ": all variables should be of the same length or length 1.")
     invisible(TRUE)
@@ -124,15 +122,11 @@ set_negative_and_na_to_zero = function(x){
 }
 
 #####
-# convert mdsets to categories
+# convert mdsets to categories, accepts lists
 dichotomy_to_category_encoding = function(x){
-    if(is.null(x)) return(NULL)
-    if(!is.list(x) || is.data.frame(x)){
-        x = list(x)
-    }
     lapply(x, function(item){
         if(is.list(item) && !is.data.frame(item)){
-            process_mdsets(item)
+            dichotomy_to_category_encoding(item)
         } else {
             if(is.dichotomy(item)){
                 category_df(item, use_var_lab = TRUE, compress = FALSE)
@@ -143,21 +137,17 @@ dichotomy_to_category_encoding = function(x){
     })    
 }
 
-# convert mdsets to categories
+# convert mdsets to categories, accepts lists
 multiples_to_single_columns_with_dummy_encoding = function(x){
-    if(is.null(x)) return(NULL)
-    if(!is.list(x) || is.data.frame(x)){
-        x = list(x)
-    }
     lapply(x, function(item){
         if(is.list(item) && !is.data.frame(item)){
-            process_multiples(item)
+            multiples_to_single_columns_with_dummy_encoding(item)
         } else {
             if(is.dichotomy(item)){
                 if(is.matrix(item)) item = as.data.frame(item)
                 na_if(item) = 0
-                
-                as.list(unvl(make_labels_from_names(item)))
+                val_lab(item) = setNames(1, "")
+                as.list(make_labels_from_names(item))
             } else {
                 if(is.category(item)){
                     item = dichotomy_df(item, keep_unused = TRUE, use_na = TRUE)

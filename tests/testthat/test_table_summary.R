@@ -198,3 +198,97 @@ table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am)
               col_labels = c("col_vars"), fun = mean)
 ,"rds/table_summary15.rds"
 )
+
+#########
+data("product_test")
+w = product_test
+codeframe_likes = num_lab("
+                          1 Liked everything
+                          2 Disliked everything
+                          3 Chocolate
+                          4 Appearance
+                          5 Taste
+                          6 Stuffing
+                          7 Nuts
+                          8 Consistency
+                          98 Other
+                          99 Hard to answer
+                          ")
+
+w = compute(w, {
+    # recode age by groups
+    age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
+    
+    # Apply labels
+    
+    var_lab(c1) = "Preferences"
+    val_lab(c1) = num_lab("
+                          1 VSX123 
+                          2 SDF456
+                          3 Hard to say
+                          ")
+    
+    var_lab(age_cat) = "Age"
+    val_lab(age_cat) = c("18 - 25" = 1, "26 - 35" = 2)
+    
+    var_lab(a1_1) = "Likes. VSX123"
+    var_lab(b1_1) = "Likes. SDF456"
+    val_lab(a1_1) = codeframe_likes
+    val_lab(b1_1) = codeframe_likes
+    
+    var_lab(a22) = "Overall quality. VSX123"
+    var_lab(b22) = "Overall quality. SDF456"
+    val_lab(a22) = num_lab("
+                           1 Extremely poor 
+                           2 Very poor
+                           3 Quite poor
+                           4 Neither good, nor poor
+                           5 Quite good
+                           6 Very good
+                           7 Excellent
+                           ")
+    val_lab(b22) = val_lab(a22)
+})
+
+expect_equal_to_reference(
+calc(w, table_summary(list(a22, b22), col_vars = mrset(a1_1 %to% a1_6), fun = w_mean))
+, "rds/table_summary16.rds"
+)
+expect_equal_to_reference(
+calc(w, table_summary(list(a22, b22), col_vars = list(list(mrset(a1_1 %to% a1_6))), fun = w_mean))
+, "rds/table_summary16.rds"
+)
+expect_equal_to_reference(
+    calc(w, table_summary(list(a22, b22), col_vars = mdset(dichotomy_df(a1_1 %to% a1_6, keep_unused = TRUE)),
+                          fun = w_mean))
+    , "rds/table_summary16.rds"
+)
+expect_equal_to_reference(
+    calc(w, table_summary(list(a22, b22), 
+                          col_vars = list(list(mdset(dichotomy_df(a1_1 %to% a1_6, keep_unused = TRUE)))),
+                          fun = w_mean))
+    , "rds/table_summary16.rds"
+)
+expect_equal_to_reference(
+calc(w, table_summary(list(a22, b22), col_vars = "Total", row_vars = list(mrset(a1_1 %to% a1_6)), fun = w_mean))
+, "rds/table_summary17.rds"
+)
+expect_equal_to_reference(
+    calc(w, table_summary(list(a22, b22), col_vars = "Total",
+                          row_vars = list(list(mrset(a1_1 %to% a1_6))), fun = w_mean))
+    , "rds/table_summary17.rds"
+)
+
+expect_equal_to_reference(
+    calc(w, table_summary(list(a22, b22), col_vars = "Total",
+                          row_vars =  mdset(dichotomy_df(a1_1 %to% a1_6, keep_unused = TRUE)),
+                          fun = w_mean))
+    , "rds/table_summary17.rds"
+)
+expect_equal_to_reference(
+    calc(w, table_summary(list(a22, b22), col_vars = "Total",
+                          row_vars =  list(list(mdset(dichotomy_df(a1_1 %to% a1_6, keep_unused = TRUE)))),
+                          fun = w_mean))
+    , "rds/table_summary17.rds"
+)
+# calc(w, fre(a1_1 %to% a1_6))

@@ -3,6 +3,7 @@
 \name{category}
 \alias{category}
 \alias{category_df}
+\alias{is.category}
 \title{Convert dichotomy matrix/data.frame to matrix/data.frame with category encoding}
 \usage{
 category(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
@@ -10,6 +11,8 @@ category(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
 
 category_df(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
   compress = FALSE)
+
+is.category(x)
 }
 \arguments{
 \item{x}{Dichotomy matrix (usually with 0,1 coding).}

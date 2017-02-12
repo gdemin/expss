@@ -94,6 +94,7 @@ dichotomy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_
 }
 
 #' @export
+#' @rdname dichotomy
 is.dichotomy = function(x){
     "dichotomy" %in% class(x)
 }

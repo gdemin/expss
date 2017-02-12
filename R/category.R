@@ -98,6 +98,7 @@ category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, co
 
 
 #' @export
+#' @rdname category
 is.category = function(x){
     "category" %in% class(x)
 }

@@ -143,19 +143,6 @@ table_summary_df = function(summary_vars,
     ..var_num__ = NULL
     
     fun = match.fun(fun)
-    if(!is.null(weight)){
-        stopif(!("weight" %in% names(formals(fun))),
-               "`weight` is provided but `fun` doesn't have formal `weight` argument.")
-    }
-    summary_vars = flat_list(summary_vars, flat_df = TRUE)
-    col_vars = flat_list(dichotomy_to_category_encoding(col_vars)) # process_mdsets
-    row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
-    # row_vars = flat_list(row_vars)
-
-    stopif(any(sapply(row_vars, NCOL)>1L),
-           " data.frames in 'row_vars'. For 'table_summary_df' data.frames (multiple-choice variables) is allowed only in 'col_vars'.")
-
-    check_sizes("table_summary_df", summary_vars, col_vars, weight, row_vars)
 
     stopif(!length(row_labels), "`row_labels` should have at least one item.")
     stopif(!length(col_labels), "`col_labels` should have at least one item.")
@@ -237,6 +224,82 @@ table_summary_df = function(summary_vars,
 }
 
 
+long_table_summary_df = function(summary_vars,
+                                 col_vars,
+                                 fun,
+                                 weight = NULL,
+                                 row_vars = NULL,
+                                 stat_names = NULL,
+                                 custom_labels = NULL
+){
+    if(!is.null(weight)){
+        stopif(!("weight" %in% names(formals(fun))),
+               "`weight` is provided but `fun` doesn't have formal `weight` argument.")
+    }
+    ###### main data.table #######
+    #### summary_vars
+    if(!is.list(summary_vars) || is.data.frame(summary_vars)) summary_vars = list(summary_vars)
+    summary_vars = flat_list(summary_vars, flat_df = TRUE)
+    
+    #### col_vars
+    if(!is.list(col_vars) || is.data.frame(col_vars)) col_vars = list(col_vars)
+    col_vars = flat_list(dichotomy_to_category_encoding(col_vars), flat_df = FALSE) # process_mdsets
+    col_vars = rapply(col_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
+    
+    #### row_vars
+    if(is.null(row_vars)) row_vars = list(rep(1, NROW(col_vars[[1]])))
+    if(!is.list(row_vars) || is.data.frame(row_vars)) row_vars = list(row_vars)
+    row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
+    row_vars = rapply(row_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
+
+    check_sizes("table_summary_df", summary_vars, col_vars, weight, row_vars)
+    
+
+    curr_dt = pack_data.table(row_vars, col_vars, summary_vars)
+    
+    ####### data.table names ###############
+    
+    new_bans_names = make_names(col_vars, "..b__")
+    new_vars_names = make_names(row_vars, "..v__")
+    colnames(curr_dt)[seq_along(c(new_vars_names, new_bans_names, recursive = TRUE))] = c(new_vars_names, new_bans_names, recursive = TRUE)
+    new_summary_names = colnames(curr_dt)[-seq_along(c(new_vars_names, new_bans_names, recursive = TRUE))]
+    ######## weights ########
+    if (!is.null(weight)) {
+        curr_dt$..weight__ = set_negative_and_na_to_zero(weight)
+        weight_name = "..weight__"
+    } else {
+        weight_name = NULL
+    }
+    
+    ######## calculations #######################
+    
+    res = lapply(seq_along(new_vars_names), function(var_num){
+        #### each row_var
+        res0 = lapply(seq_along(new_bans_names), function(ban_num){
+            ##### each col_var
+            elementary_res = elementary_summary_df(curr_dt,
+                                                   summary_names = new_summary_names,
+                                                   ban_names = new_bans_names[[ban_num]],
+                                                   var_names = new_vars_names[[var_num]],
+                                                   fun = fun,
+                                                   weight_name = weight_name,
+                                                   custom_labels = custom_labels
+            )
+            
+            elementary_res$..ban_num__ = ban_num
+            
+            factors2characters(elementary_res)
+        })
+        
+        res0 = rbindlist(res0, use.names = TRUE, fill = TRUE)
+        res0$..var_num__ = var_num
+        res0
+    })
+    
+    res = rbindlist(res, use.names = TRUE, fill = TRUE)
+    res
+}
+
 long_to_wide_summary_df = function(long, col_indexes, col_labels, row_indexes, row_labels){
     ## indexes are needed to prevent possible collapse of categories with same name
     setkeyv(long, cols = c(row_indexes, col_indexes), verbose = FALSE)
@@ -245,7 +308,13 @@ long_to_wide_summary_df = function(long, col_indexes, col_labels, row_indexes, r
     frm = paste(lhs, "~", rhs)
     value_var = colnames(long) %d% c(row_indexes, row_labels,
                                      col_indexes, col_labels)
-    res = dcast.data.table(long, frm, sep = "|",  value.var = value_var, fill = NA)
+    mess = utils::capture.output(
+        {res = dcast.data.table(long, frm, sep = "|",  value.var = value_var, fill = NA)},
+        type = "message"
+    )
+    stopif(length(mess)>0,
+        paste0("'table_summary_df' - possibly you set 'use_result_row_order' to FALSE without providing your own row index (",mess,").")
+    )
     if(length(row_indexes)) res = res[, -seq_along(row_indexes), with = FALSE]
     if(length(row_labels)) {
         rows = as.list(res[, seq_along(row_labels), with = FALSE] )
@@ -321,11 +390,21 @@ elementary_summary_df = function(dttbl,
     colnames(for_calc)[2] = "..vr__"
     by_string = "..vr__,..bn__"
     if(is.null(weight_name)){
-        for_calc = for_calc[!is.na(for_calc$..bn__), fun(.SD), by = by_string]
+        # we need at least one rows because with zero rows all rows from 'fun' will be ignored
+        if(nrow(for_calc)==0){
+            for_calc = rbind(for_calc, data.table(..bn__ = NA), fill = TRUE, use.names = TRUE)
+        } 
+        for_calc = for_calc[ , fun(.SD), by = by_string]
     } else {
         for_calc[["..weight__"]] = dttbl[[weight_name]]
-        for_calc = for_calc[!is.na(for_calc$..bn__), fun(.SD[,-"..weight__"], weight = ..weight__), by = by_string]
+        # we need at least one rows because with zero rows all rows from 'fun' will be ignored
+        if(nrow(for_calc)==0){
+            for_calc = rbind(for_calc, data.table(..bn__ = NA), fill = TRUE, use.names = TRUE)
+        } 
+        for_calc = for_calc[ , fun(.SD[,-"..weight__"], weight = ..weight__), by = by_string]
     }
+    ### if 'fun' return values with zero rows we will have for_calc with zero rows
+    ### so we fix it
     if(nrow(for_calc)==0){
         for_calc = rbind(for_calc, data.table(..bn__ = NA), fill = TRUE, use.names = TRUE)
     } 
@@ -382,6 +461,24 @@ elementary_summary_df = function(dttbl,
         #                  all.x = TRUE, all.y = FALSE)
     }
     # for_calc = as.data.table(for_calc)
+    nas = !is.na(for_calc[["..vr__"]]) & !is.na(for_calc[["..bn__"]])
+    ### generally we always need data.table with at least one rows
+    if(sum(nas)>0) {
+        for_calc = for_calc[nas, ]
+    } else {
+        should_be_na = names(for_calc) %d% c("..vr__", 
+                                             "..bn__", 
+                                             "..bn__vallabs",
+                                             "..vr__vallabs",
+                                             "..bn__order", 
+                                             "..vr__order", 
+                                             "..bn__label", 
+                                             "..vr__label",
+                                             custom_labels)
+        if(length(should_be_na)>0) {
+            for_calc[, (should_be_na) := NA]
+        }
+    }
     for_calc[, ..res_num__ :=  seq_len(.N), by = by_string]
     for_calc
 
@@ -392,72 +489,7 @@ elementary_summary_df = function(dttbl,
 
 ################################
 
-long_table_summary_df = function(summary_vars,
-                                 col_vars,
-                                 fun,
-                                 weight = NULL,
-                                 row_vars = NULL,
-                                 stat_names = NULL,
-                                 custom_labels = NULL
-){
 
-    ###### main data.table #######
-
-    col_vars = rapply(col_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
-    if(!is.null(row_vars)) {
-        row_vars = rapply(row_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
-    } else {
-        row_vars = list(rep(1, NROW(col_vars[[1]])))
-    }
-    curr_dt = pack_data.table(row_vars, col_vars, summary_vars)
-
-    ####### data.table names ###############
-
-    new_bans_names = make_names(col_vars, "..b__")
-    new_vars_names = make_names(row_vars, "..v__")
-    colnames(curr_dt)[seq_along(c(new_vars_names, new_bans_names, recursive = TRUE))] = c(new_vars_names, new_bans_names, recursive = TRUE)
-    new_summary_names = colnames(curr_dt)[-seq_along(c(new_vars_names, new_bans_names, recursive = TRUE))]
-    ######## weights ########
-    if (!is.null(weight)) {
-        curr_dt$..weight__ = weight
-        weight_name = "..weight__"
-    } else {
-        weight_name = NULL
-    }
-
-    ######## calculations #######################
-
-    res = lapply(seq_along(new_vars_names), function(var_num){
-        #### each row_var
-        res0 = lapply(seq_along(new_bans_names), function(ban_num){
-            ##### each col_var
-            dttbl = valid_dttbl(dttbl = curr_dt,
-                                new_vars_names[[var_num]],
-                                new_bans_names[[ban_num]],
-                                weight_name = weight_name)
-            # dttbl = curr_dt
-            elementary_res = elementary_summary_df(dttbl,
-                                        summary_names = new_summary_names,
-                                        ban_names = new_bans_names[[ban_num]],
-                                        var_names = new_vars_names[[var_num]],
-                                        fun = fun,
-                                        weight_name = weight_name,
-                                        custom_labels = custom_labels
-            )
-
-            elementary_res$..ban_num__ = ban_num
-
-            factors2characters(elementary_res)
-        })
-
-        res0 = rbindlist(res0, use.names = TRUE, fill = TRUE)
-        res0$..var_num__ = var_num
-        res0
-    })
-
-    res = rbindlist(res, use.names = TRUE, fill = TRUE)
-    res
-}
 
 
 ###############################################

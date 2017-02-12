@@ -2,6 +2,7 @@
 % Please edit documentation in R/dichotomy.R
 \name{dichotomy}
 \alias{dichotomy}
+\alias{is.dichotomy}
 \alias{dichotomy1}
 \alias{dichotomy1_df}
 \alias{dichotomy_df}
@@ -12,6 +13,8 @@
 dichotomy(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE,
   keep_values = NULL, keep_labels = NULL, drop_values = NULL,
   drop_labels = NULL)
+
+is.dichotomy(x)
 
 dichotomy1(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE,
   keep_values = NULL, keep_labels = NULL, drop_values = NULL,
