@@ -109,6 +109,7 @@ check_sizes = function(caller_name, ...){
 # remove duplicated or trailing splitters ('|') from labels
 remove_unnecessary_splitters = function(labels){
 
+    labels = gsub("\\.\\.\\.bbbaaaddd__\\d+", "", labels, perl = TRUE)
     labels = gsub("\\|+", "|", labels, perl = TRUE)
     labels = gsub("(^\\|)|(\\|$)", "", labels, perl = TRUE)
     labels
