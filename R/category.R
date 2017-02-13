@@ -55,14 +55,18 @@ category.matrix = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1
 #' @export
 category.data.frame = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
     if (use_var_lab){
-        for (i in seq_along(x)){
+        vallab = unlist(lapply(seq_along(x), function(i){
             varlab = var_lab(x[[i]])
-            if(!is.null(varlab)){
-                colnames(x)[i] = varlab
+            if(!is.null(varlab) && varlab!=""){
+                 varlab
+            } else {
+                colnames(x)[i]
             }
-        }
-    }  
-    vallab = colnames(x)
+        }))
+    } else {
+        vallab = colnames(x)    
+    } 
+    
     # res = col(x)
     for(i in seq_along(x)){
         x[[i]] =  ((x[[i]] %in% counted_value) | NA)*i
