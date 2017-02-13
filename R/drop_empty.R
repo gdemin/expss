@@ -12,7 +12,7 @@
 #' @param x data.frame
 #' @param excluded_rows logical/numeric rows which won't be dropped and in which
 #'   NAs won't be counted. By default, it is rows which have values with "#" at 
-#'   the beginning  in the first column. it is total rows in tables ("#" marks
+#'   the beginning  in the first column. It is total rows in tables ("#" marks
 #'   total in the result of \link{table_cases}).
 #' @param excluded_columns logical/numeric/characters columns which won't be
 #'   dropped and in which NAs won't be counted. By default, it is first column -
