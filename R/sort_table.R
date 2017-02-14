@@ -9,11 +9,13 @@
 #' @param columns character/numeric. Column names/numbers for data.frame/table
 #'   by which object will be sorted. By default it is 2 - the first column with 
 #'   numbers in the table (there are row labels in the first column).
-#' @param excluded_rows character/logical/numeric rows which won't be sorted.
+#' @param excluded_rows character/logical/numeric rows which won't be sorted. 
 #'   Rows of the table will be sorted between excluded rows. If it is characters
-#'   then they will be considered as pattern/vector of patterns. Rows which have
-#'   such patterns in the first column will be excluded. By default, pattern is
-#'   "#" because "#" marks totals in the result of \link{table_cases}.
+#'   then they will be considered as pattern/vector of patterns. Patterns will
+#'   be matched with Perl-style regular expression with values in the first
+#'   column of \code{x} (see \link[base]{grep}, \code{perl = TRUE} argument).
+#'   Rows which have such patterns will be excluded. By default, pattern is "#"
+#'   because "#" marks totals in the result of \link{table_cases}.
 #' @param na.last for controlling the treatment of NAs. If TRUE, missing values
 #'   in the data are put last; if FALSE, they are put first; if NA, they are
 #'   removed.

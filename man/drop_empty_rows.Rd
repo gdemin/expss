@@ -8,27 +8,26 @@
 \alias{drop_rc}
 \title{Drop empty (with all NA's) rows/columns from data.frame/table}
 \usage{
-drop_empty_rows(x, excluded_rows = grep("^#", x[[1]], perl = TRUE),
-  excluded_columns = 1)
+drop_empty_rows(x, excluded_rows = "#", excluded_columns = 1)
 
-drop_empty_columns(x, excluded_rows = grep("^#", x[[1]], perl = TRUE),
-  excluded_columns = 1)
+drop_empty_columns(x, excluded_rows = "#", excluded_columns = 1)
 
-drop_r(x, excluded_rows = grep("^#", x[[1]], perl = TRUE),
-  excluded_columns = 1)
+drop_r(x, excluded_rows = "#", excluded_columns = 1)
 
-drop_c(x, excluded_rows = grep("^#", x[[1]], perl = TRUE),
-  excluded_columns = 1)
+drop_c(x, excluded_rows = "#", excluded_columns = 1)
 
 drop_rc(x)
 }
 \arguments{
 \item{x}{data.frame}
 
-\item{excluded_rows}{logical/numeric rows which won't be dropped and in which
-NAs won't be counted. By default, it is rows which have values with "#" at 
-the beginning  in the first column. It is total rows in tables ("#" marks
-total in the result of \link{table_cases}).}
+\item{excluded_rows}{character/logical/numeric rows which won't be dropped
+and in which NAs won't be counted. If it is characters then they will be
+considered as pattern/vector of patterns. Patterns will be matched with
+Perl-style regular expression with values in the first column of \code{x} 
+(see \link[base]{grep}, \code{perl = TRUE} argument). Rows which have such
+patterns will be excluded. By default, pattern is "#" because "#" marks 
+totals in the result of \link{table_cases}.}
 
 \item{excluded_columns}{logical/numeric/characters columns which won't be
 dropped and in which NAs won't be counted. By default, it is first column -

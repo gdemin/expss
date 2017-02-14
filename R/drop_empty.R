@@ -10,10 +10,13 @@
 #' simultaneously.
 #' 
 #' @param x data.frame
-#' @param excluded_rows logical/numeric rows which won't be dropped and in which
-#'   NAs won't be counted. By default, it is rows which have values with "#" at 
-#'   the beginning  in the first column. It is total rows in tables ("#" marks
-#'   total in the result of \link{table_cases}).
+#' @param excluded_rows character/logical/numeric rows which won't be dropped
+#'   and in which NAs won't be counted. If it is characters then they will be
+#'   considered as pattern/vector of patterns. Patterns will be matched with
+#'   Perl-style regular expression with values in the first column of \code{x} 
+#'   (see \link[base]{grep}, \code{perl = TRUE} argument). Rows which have such
+#'   patterns will be excluded. By default, pattern is "#" because "#" marks 
+#'   totals in the result of \link{table_cases}.
 #' @param excluded_columns logical/numeric/characters columns which won't be
 #'   dropped and in which NAs won't be counted. By default, it is first column -
 #'   column with labels in table.
@@ -43,23 +46,24 @@
 #' drop_empty_columns(with_empty)
 #' drop_rc(with_empty)
 #'                         
-drop_empty_rows = function(x, excluded_rows = grep("^#", x[[1]], perl= TRUE), excluded_columns = 1){
+drop_empty_rows = function(x, excluded_rows = "#", excluded_columns = 1){
     UseMethod("drop_empty_rows")
 }
 
 #' @export
 #' @rdname drop_empty_rows
-drop_empty_columns = function(x, excluded_rows = grep("^#", x[[1]], perl= TRUE), excluded_columns = 1){
+drop_empty_columns = function(x, excluded_rows = "#", excluded_columns = 1){
     UseMethod("drop_empty_columns")   
 }
 
 #' @export
-drop_empty_rows.data.frame = function(x, excluded_rows = grep("^#", x[[1]], perl= TRUE), excluded_columns = 1){
+drop_empty_rows.data.frame = function(x, excluded_rows = "#", excluded_columns = 1){
     stopif(!is.null(excluded_columns) && !is.numeric(excluded_columns) && !is.character(excluded_columns) &&
                !is.logical(excluded_columns),
            "`excluded_columns` should be character, numeric or logical.")
-    stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && !is.logical(excluded_rows),
-           "`excluded_rows` should be numeric or logical.")
+    stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && 
+               !is.logical(excluded_rows) && !is.character(excluded_rows) ,
+           "`excluded_rows` should be character/numeric or logical.")
     if(is.null(excluded_columns)) {
         not_empty = rowSums(!is.na(x))>0    
     } else {
@@ -88,18 +92,23 @@ drop_empty_rows.data.frame = function(x, excluded_rows = grep("^#", x[[1]], perl
             excluded_rows = seq_len(nrow(x)) %in% excluded_rows
             
         }
+        if(is.character(excluded_rows)){
+            excluded_rows = lapply(excluded_rows, grepl, x[[1]], perl = TRUE)
+            excluded_rows = Reduce("|", excluded_rows)
+        }
     }
     x[not_empty | excluded_rows, , drop = FALSE]
     
 }
 
 #' @export
-drop_empty_columns.data.frame = function(x, excluded_rows = grep("^#", x[[1]], perl= TRUE), excluded_columns = 1){
+drop_empty_columns.data.frame = function(x, excluded_rows = "#", excluded_columns = 1){
     stopif(!is.null(excluded_columns) && !is.numeric(excluded_columns) && !is.character(excluded_columns) &&
                !is.logical(excluded_columns),
            "`excluded_columns` should be character, numeric or logical.")
-    stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && !is.logical(excluded_rows),
-           "`excluded_rows` should be numeric or logical.")
+    stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && 
+               !is.logical(excluded_rows) && !is.character(excluded_rows) ,
+           "`excluded_rows` should be character/numeric or logical.")
     if(is.null(excluded_rows)) {
         empty = colSums(!is.na(x))==0    
     } else {
@@ -108,6 +117,10 @@ drop_empty_columns.data.frame = function(x, excluded_rows = grep("^#", x[[1]], p
                    paste(excluded_rows %d% seq_len(nrow(x)), collapse = ", ")
             )
             excluded_rows = seq_len(nrow(x)) %in%  excluded_rows
+        }
+        if(is.character(excluded_rows)){
+            excluded_rows = lapply(excluded_rows, grepl, x[[1]], perl = TRUE)
+            excluded_rows = Reduce("|", excluded_rows)
         }
         empty = colSums(!is.na(x[!excluded_rows,]))==0 
     }

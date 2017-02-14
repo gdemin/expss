@@ -36,6 +36,19 @@ expect_equal_to_reference(drop_r(with_empty, excluded_rows = grep("Other", with_
 expect_equal_to_reference(drop_r(with_empty, excluded_rows = grep("Manual", with_empty[[1]]), excluded_columns = 1),
     "rds/drop_empty7.rds")
 
+expect_equal_to_reference(drop_r(with_empty, excluded_rows = "Other", excluded_columns = 1),
+                          "rds/drop_empty6.rds")
+
+expect_equal_to_reference(drop_r(with_empty, excluded_rows = "Other|Manual", excluded_columns = 1),
+                          "rds/drop_empty6.rds")
+
+expect_equal_to_reference(drop_r(with_empty, excluded_rows = c("Manual", "Other"), excluded_columns = 1),
+                          "rds/drop_empty6.rds")
+
+
+expect_equal_to_reference(drop_r(with_empty, excluded_rows = "Manual", excluded_columns = 1),
+                          "rds/drop_empty7.rds")
+
 expect_equal_to_reference(drop_r(with_empty, excluded_rows = grep("Manual", with_empty[[1]]), 
                                  excluded_columns = colnames(with_empty)=="row_labels"),
                           "rds/drop_empty7.rds")
@@ -64,7 +77,20 @@ expect_equal_to_reference(drop_c(with_empty, excluded_rows = grep("Manual", with
 expect_equal_to_reference(drop_c(with_empty, excluded_rows = grepl("Manual", with_empty[[1]]), excluded_columns = NULL),
                           "rds/drop_empty2.rds")
 
+expect_equal_to_reference(drop_c(with_empty, excluded_rows = "Other", excluded_columns = NULL),
+                          "rds/drop_empty2.rds")
+expect_equal_to_reference(drop_c(with_empty, excluded_rows = "Manual", excluded_columns = NULL),
+                          "rds/drop_empty2.rds")
+
+
 expect_equal_to_reference(drop_c(with_empty, excluded_rows = !is.na(with_empty[[2]]), excluded_columns = NULL),
+                          "rds/drop_empty2a.rds")
+
+
+expect_equal_to_reference(drop_c(with_empty, excluded_rows = "Automatic|Manual|Total", excluded_columns = NULL),
+                          "rds/drop_empty2a.rds")
+
+expect_equal_to_reference(drop_c(with_empty, excluded_rows = c("Automatic", "Manual", "Total"), excluded_columns = NULL),
                           "rds/drop_empty2a.rds")
 
 expect_equal_to_reference(drop_c(with_empty, excluded_rows = which(!is.na(with_empty[[2]])), excluded_columns = NULL),
