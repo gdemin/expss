@@ -87,3 +87,30 @@ expect_equal_to_reference(drop_c(with_empty, excluded_rows = NULL,
                                  excluded_columns = c("Engine|Straight engine", "Engine|Other")),
                           "rds/drop_empty11.rds")
 
+#######
+
+expect_error(
+    drop_r(with_empty, excluded_rows = c(8, 9:11, NA))
+    )
+# expect_error(
+#     drop_r(with_empty, excluded_rows = c(rep(FALSE, 8), TRUE))
+#     )
+expect_error(
+    drop_r(with_empty, excluded_columns = c("sddsfsd"))
+)
+expect_error(
+    drop_r(with_empty, excluded_columns = c(6, 9:11, NA))
+)
+#####
+expect_error(
+    drop_c(with_empty, excluded_rows = c(8, 9:11, NA))
+)
+# expect_error(
+#     drop_r(with_empty, excluded_rows = c(rep(FALSE, 8), TRUE))
+#     )
+expect_error(
+    drop_c(with_empty, excluded_columns = c("sddsfsd"))
+)
+expect_error(
+    drop_c(with_empty, excluded_columns = c(6, 9:11, NA))
+)

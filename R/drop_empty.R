@@ -63,14 +63,31 @@ drop_empty_rows.data.frame = function(x, excluded_rows = grep("^#", x[[1]], perl
     if(is.null(excluded_columns)) {
         not_empty = rowSums(!is.na(x))>0    
     } else {
-        if(is.character(excluded_columns)) excluded_columns = colnames(x) %in%  excluded_columns
-        if(is.numeric(excluded_columns)) excluded_columns = seq_along(x) %in%  excluded_columns
+        
+        if(is.character(excluded_columns)) {
+            stopif(!all(excluded_columns %in% colnames(x)), "some of the 'excluded_columns' not found: ",
+                   paste(excluded_columns %d% colnames(x), collapse = ", ")
+                   )
+            excluded_columns = colnames(x) %in%  excluded_columns
+        }
+        if(is.numeric(excluded_columns)) {
+            stopif(!all(excluded_columns %in% seq_along(x)) , "some of the 'excluded_columns' not found: ",
+                   paste(excluded_columns %d% seq_along(x), collapse = ", ")
+            )
+            excluded_columns = seq_along(x) %in%  excluded_columns
+        }
         not_empty = rowSums(!is.na(x[,!excluded_columns]))>0  
     }
     if(is.null(excluded_rows)){
         excluded_rows = FALSE
     } else {
-        if(is.numeric(excluded_rows)) excluded_rows = seq_len(nrow(x)) %in% excluded_rows
+        if(is.numeric(excluded_rows)) {
+            stopif(!all(excluded_rows %in% seq_len(nrow(x))) , "some of the 'excluded_rows' not found: ",
+                   paste(excluded_rows %d% seq_len(nrow(x)), collapse = ", ")
+            )
+            excluded_rows = seq_len(nrow(x)) %in% excluded_rows
+            
+        }
     }
     x[not_empty | excluded_rows, , drop = FALSE]
     
@@ -86,15 +103,30 @@ drop_empty_columns.data.frame = function(x, excluded_rows = grep("^#", x[[1]], p
     if(is.null(excluded_rows)) {
         empty = colSums(!is.na(x))==0    
     } else {
-        if(is.numeric(excluded_rows)) excluded_rows = seq_len(nrow(x)) %in%  excluded_rows
+        if(is.numeric(excluded_rows)) {
+            stopif(!all(excluded_rows %in% seq_len(nrow(x))) , "some of the 'excluded_rows' not found: ",
+                   paste(excluded_rows %d% seq_len(nrow(x)), collapse = ", ")
+            )
+            excluded_rows = seq_len(nrow(x)) %in%  excluded_rows
+        }
         empty = colSums(!is.na(x[!excluded_rows,]))==0 
     }
     if(is.null(excluded_columns)){
         excluded_columns = FALSE
     } else {
-        if(is.character(excluded_columns)) excluded_columns = colnames(x) %in%  excluded_columns
-        if(is.numeric(excluded_columns)) excluded_columns = seq_along(x) %in%  excluded_columns
-        
+        if(is.character(excluded_columns)) {
+            
+            stopif(!all(excluded_columns %in% colnames(x)), "some of the 'excluded_columns' not found: ",
+                   paste(excluded_columns %d% colnames(x), collapse = ", ")
+            )
+            excluded_columns = colnames(x) %in%  excluded_columns
+        }
+        if(is.numeric(excluded_columns)) {
+            stopif(!all(excluded_columns %in% seq_along(x)) , "some of the 'excluded_columns' not found: ",
+                   paste(excluded_columns %d% seq_along(x), collapse = ", ")
+            )
+            excluded_columns = seq_along(x) %in%  excluded_columns
+        }   
     }
     x[, empty & (!excluded_columns)] = NULL # this notation doesn't change colnames if some of them are duplicated
     x
