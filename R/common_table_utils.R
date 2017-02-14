@@ -97,7 +97,8 @@ factors2characters = function(dfs){
 ### check that all arguments ... have equal length or length 1 (NULLs are also allowed)
 check_sizes = function(caller_name, ...){
 
-    sizes = vapply(args, NROW, FUN.VALUE = numeric(1))
+    sizes = unlist(rapply(list(...),  
+                   NROW, classes = "ANY", how = "replace"))
     stopif(!all(sizes %in% c(1, max(sizes))),
            caller_name, ": all variables should be of the same length or length 1.")
     invisible(TRUE)

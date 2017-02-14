@@ -467,6 +467,40 @@ mtcars %calc% table_summary_df(mpg,
 ,"rds/table_summary_df0.rds"
 )
 
+expect_error(
+    mtcars %calc% table_summary_df(mpg, 
+                                   col_vars = vs[1:2], 
+                                   fun = w_mean, 
+                                   row_vars = am
+    )
+)
+
+expect_error(
+    mtcars %calc% table_summary_df(mpg[1:2], 
+                                   col_vars = vs, 
+                                   fun = w_mean, 
+                                   row_vars = am
+    )
+)
+
+expect_error(
+    mtcars %calc% table_summary_df(mpg, 
+                                   col_vars = vs, 
+                                   fun = w_mean, 
+                                   row_vars = am[1:2]
+    )
+)
+
+expect_error(
+    mtcars %calc% table_summary_df(mpg, 
+                                   col_vars = vs, 
+                                   fun = w_mean, 
+                                   row_vars = am,
+                                   weight = 1:2
+    )
+)
+
+
 
 expect_equal_to_reference(
     mtcars %calc% table_summary_df(mpg, 
@@ -703,7 +737,7 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, weight = 1)
+    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, weight = numeric(0))
     ,"rds/table_cor_1a.rds"
 )
 
