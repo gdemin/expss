@@ -90,7 +90,7 @@ sort_internal = function(data, ..., decreasing, na.last){
 
 #' @export
 sort_asc.list= function(data, ..., na.last = FALSE){
-    stop("Sorting in not implemented for lists.")
+    stop("Sorting not yet implemented for lists.")
 }
 
 #' @rdname sort_asc

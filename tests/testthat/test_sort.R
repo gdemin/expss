@@ -33,7 +33,9 @@ expect_identical(sort_desc(a, na.last = NA), sort(a, decreasing = TRUE, na.last 
 
 context("sort data.frame")
 data(iris)
+
 expect_error(sort_asc(iris))
+
 expect_identical(sort_asc(iris, "Sepal.Length"), iris[order(iris$Sepal.Length, decreasing = FALSE), ])
 expect_identical(sort_asc(iris, "Sepal.Length", 2), iris[order(iris$Sepal.Length, iris$Sepal.Width, decreasing = FALSE), ])
 expect_identical(sort_asc(iris, qc(Sepal.Length, Sepal.Width), 3:4), 
