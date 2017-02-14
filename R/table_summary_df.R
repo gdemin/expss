@@ -11,6 +11,7 @@
 #' @param weight numeric vector. Optional case weights. NA's and negative 
 #'   weights treated as zero weights. If \code{weight} is provided then
 #'   \code{fun} should have formal 'weight' argument.
+#' @param subset an optional logical vector specifying a subset of observations to be used
 #' @param row_vars vector/data.frame/list of vectors/data.frames/multiple
 #'   response sets(\link{mrset})/multiple dichotomy sets(\link{mdset}).
 #' @param row_labels character elements of data which will appear as row labels.
@@ -130,6 +131,7 @@ table_summary_df = function(summary_vars,
                             col_vars,
                             fun,
                             weight = NULL,
+                            subset = NULL,
                             row_vars = NULL,
                             row_labels = c("row_vars", "row_vars_values"),
                             col_labels = c("col_vars", "col_vars_values"),
@@ -188,6 +190,7 @@ table_summary_df = function(summary_vars,
                                  col_vars = col_vars,
                                  fun = fun,
                                  weight = weight,
+                                 subset = subset,
                                  row_vars = row_vars,
                                  custom_labels = custom_labels
     )
@@ -228,6 +231,7 @@ long_table_summary_df = function(summary_vars,
                                  col_vars,
                                  fun,
                                  weight = NULL,
+                                 subset = NULL,
                                  row_vars = NULL,
                                  stat_names = NULL,
                                  custom_labels = NULL
@@ -252,10 +256,10 @@ long_table_summary_df = function(summary_vars,
     row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
     row_vars = rapply(row_vars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
 
-    check_sizes("table_summary_df", summary_vars, col_vars, weight, row_vars)
+    check_sizes("table_summary_df", summary_vars, col_vars, weight, subset, row_vars)
     
 
-    curr_dt = pack_data.table(row_vars, col_vars, summary_vars)
+    curr_dt = pack_data.table(row_vars, col_vars, summary_vars, subset = subset)
     
     ####### data.table names ###############
     
@@ -501,6 +505,7 @@ elementary_summary_df = function(dttbl,
 table_pearson = function(summary_vars,
                          col_vars,
                          weight = NULL,
+                         subset = NULL,
                          row_vars = NULL
 ){
     cor_fun = function(x, weight = NULL){
@@ -511,6 +516,7 @@ table_pearson = function(summary_vars,
                      col_vars = col_vars,
                      fun = cor_fun,
                      weight = weight,
+                     subset = subset,
                      row_vars = row_vars,
                      row_labels = c("row_vars", "row_vars_values", "res_num", "label"),
                      col_labels = c("col_vars", "col_vars_values"),
@@ -524,6 +530,7 @@ table_pearson = function(summary_vars,
 table_spearman = function(summary_vars,
                           col_vars,
                           weight = NULL,
+                          subset = NULL,
                           row_vars = NULL
 ){
     cor_fun = function(x, weight = NULL){
@@ -534,6 +541,7 @@ table_spearman = function(summary_vars,
                      col_vars = col_vars,
                      fun = cor_fun,
                      weight = weight,
+                     subset = subset,
                      row_vars = row_vars,
                      row_labels = c("row_vars", "row_vars_values", "res_num", "label"),
                      col_labels = c("col_vars", "col_vars_values"),

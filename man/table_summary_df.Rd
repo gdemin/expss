@@ -6,14 +6,16 @@
 \alias{table_spearman}
 \title{Produce summary table over entire subset of variables. Not user-friendly - for expert usage.}
 \usage{
-table_summary_df(summary_vars, col_vars, fun, weight = NULL,
+table_summary_df(summary_vars, col_vars, fun, weight = NULL, subset = NULL,
   row_vars = NULL, row_labels = c("row_vars", "row_vars_values"),
   col_labels = c("col_vars", "col_vars_values"), hide = NULL,
   use_result_row_order = TRUE)
 
-table_pearson(summary_vars, col_vars, weight = NULL, row_vars = NULL)
+table_pearson(summary_vars, col_vars, weight = NULL, subset = NULL,
+  row_vars = NULL)
 
-table_spearman(summary_vars, col_vars, weight = NULL, row_vars = NULL)
+table_spearman(summary_vars, col_vars, weight = NULL, subset = NULL,
+  row_vars = NULL)
 }
 \arguments{
 \item{summary_vars}{vector/list/data.frame - these variables will be combined
@@ -30,6 +32,8 @@ vector/data.frame/data.table. If \code{weight} is provided then
 \item{weight}{numeric vector. Optional case weights. NA's and negative 
 weights treated as zero weights. If \code{weight} is provided then
 \code{fun} should have formal 'weight' argument.}
+
+\item{subset}{an optional logical vector specifying a subset of observations to be used}
 
 \item{row_vars}{vector/data.frame/list of vectors/data.frames/multiple
 response sets(\link{mrset})/multiple dichotomy sets(\link{mdset}).}

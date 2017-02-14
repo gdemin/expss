@@ -614,6 +614,48 @@ expect_equal_to_reference(
     ,"rds/table_summary_df5b.rds"
 )
 
+expect_identical(
+    mtcars %where% FALSE %calc% table_summary_df(vars(!fixed("vs") & !fixed("am")), col_vars = am, 
+                                                 fun = function(x){
+                                                     dtfrm(res_num = seq_along(x), parameter = names(n2l(x)), mean = colMeans(x))
+                                                 },  row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
+                                                 hide = "res_num",
+                                                 use_result_row_order = FALSE
+    )
+    ,
+    mtcars %calc% table_summary_df(vars(!fixed("vs") & !fixed("am")), col_vars = am, 
+                                                 fun = function(x){
+                                                     dtfrm(res_num = seq_along(x), parameter = names(n2l(x)), mean = colMeans(x))
+                                                 }, 
+                                   subset = FALSE,
+                                    row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
+                                                 hide = "res_num",
+                                                 use_result_row_order = FALSE
+    )
+)
+
+expect_identical(
+    mtcars %where% (cyl==8) %calc% table_summary_df(vars(!fixed("vs") & !fixed("am")), col_vars = am, 
+                                                 fun = function(x){
+                                                     dtfrm(res_num = seq_along(x), parameter = names(n2l(x)), mean = colMeans(x))
+                                                 },  row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
+                                                 hide = "res_num",
+                                                 use_result_row_order = FALSE
+    )
+    ,
+    mtcars %calc% table_summary_df(vars(!fixed("vs") & !fixed("am")), col_vars = am, 
+                                   fun = function(x){
+                                       dtfrm(res_num = seq_along(x), parameter = names(n2l(x)), mean = colMeans(x))
+                                   }, 
+                                   subset = cyl==8,
+                                   row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
+                                   hide = "res_num",
+                                   use_result_row_order = FALSE
+    )
+)
+
+
+
 
 
 expect_equal_to_reference(
@@ -736,6 +778,7 @@ expect_equal_to_reference(
     ,"rds/table_cor_1a.rds"
 )
 
+
 expect_equal_to_reference(
     mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, weight = numeric(0))
     ,"rds/table_cor_1a.rds"
@@ -749,6 +792,30 @@ expect_equal_to_reference(
 expect_equal_to_reference(
     table_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = 1)
     ,"rds/table_cor_2.rds"
+)
+
+expect_identical(
+    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
+    ,
+    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subset = FALSE)
+)
+
+expect_identical(
+    mtcars %where% FALSE %calc% table_spearman(vars(!perl("vs|am")), col_vars = am)
+    ,
+    mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subset = FALSE)
+)
+
+expect_identical(
+    mtcars %where% (cyl == 8) %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
+    ,
+    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subset = (cyl == 8))
+)
+
+expect_identical(
+    mtcars %where% (cyl == 8) %calc% table_spearman(vars(!perl("vs|am")), col_vars = am)
+    ,
+    mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subset = (cyl == 8))
 )
 
 set.seed(1)

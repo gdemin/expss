@@ -5,6 +5,7 @@
 #' @param col_vars fss
 #' @param fun the function to be applied to summary variables
 #' @param weight dsvfv
+#' @param subset an optional logical vector specifying a subset of observations to be used
 #' @param row_vars fdfg
 #' @param stat_names cdsdc
 #' @param row_labels csdsd
@@ -20,6 +21,7 @@ table_summary = function(summary_vars,
                          col_vars,
                          fun,
                          weight = NULL,
+                         subset = NULL,
                          row_vars = NULL,
                          stat_names = NULL,
                          row_labels = c("row_vars", "row_vars_values", "summary_vars", "stat_names"),
@@ -109,6 +111,7 @@ table_summary = function(summary_vars,
                            col_vars = col_vars,
                            fun = fun,
                            weight = weight,
+                           subset = subset,
                            row_vars = row_vars,
                            row_labels = row_labels,
                            col_labels = col_labels,
@@ -125,6 +128,7 @@ table_summary = function(summary_vars,
 table_means = function(summary_vars,
                          col_vars,
                          weight = NULL,
+                         subset = NULL,
                          row_vars = NULL,
                          stat_names = c("Mean", "Std. Dev.", "N")
 ){
@@ -140,6 +144,7 @@ table_means = function(summary_vars,
         col_vars = col_vars,
         fun = custom_fun,
         weight = weight,
+        subset = subset,
         row_vars = row_vars,
         stat_names = stat_names
     )
@@ -153,6 +158,7 @@ table_means = function(summary_vars,
 table_medians = function(summary_vars,
                        col_vars,
                        weight = NULL,
+                       subset = NULL,
                        row_vars = NULL,
                        stat_names = c("Median", "N")
 ){
@@ -167,6 +173,7 @@ table_medians = function(summary_vars,
         col_vars = col_vars,
         fun = custom_fun,
         weight = weight,
+        subset = subset,
         row_vars = row_vars,
         stat_names = stat_names
     )
@@ -180,6 +187,7 @@ table_medians = function(summary_vars,
 table_sums = function(summary_vars,
                          col_vars,
                          weight = NULL,
+                         subset = NULL,
                          row_vars = NULL,
                          stat_names = c("Sum", "N")
 ){
@@ -194,6 +202,7 @@ table_sums = function(summary_vars,
         col_vars = col_vars,
         fun = custom_fun,
         weight = weight,
+        subset = subset,
         row_vars = row_vars,
         stat_names = stat_names
     )

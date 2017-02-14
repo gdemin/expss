@@ -56,7 +56,7 @@ add_unused_labels = function(dttbl, varname, fill_na = NULL){
 
 ##########################################
 
-pack_data.table = function(...){
+pack_data.table = function(..., subset = NULL){
     args = list(...)
     nulls = vapply(args, is.null, FUN.VALUE = logical(1))
     args = args[!nulls]
@@ -66,7 +66,12 @@ pack_data.table = function(...){
     if(sum(bad_names)>0){
         names(res)[bad_names] = paste0("...bbbaaaddd__", 1:sum(bad_names)) 
     }
-    res
+    if(!is.null(subset)){
+        res[subset & !is.na(subset),]
+    } else {
+        res    
+    }
+    
 }
 
 ########

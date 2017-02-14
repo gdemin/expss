@@ -7,19 +7,19 @@
 \alias{table_sums}
 \title{Title}
 \usage{
-table_summary(summary_vars, col_vars, fun, weight = NULL, row_vars = NULL,
-  stat_names = NULL, row_labels = c("row_vars", "row_vars_values",
-  "summary_vars", "stat_names"), col_labels = c("col_vars",
+table_summary(summary_vars, col_vars, fun, weight = NULL, subset = NULL,
+  row_vars = NULL, stat_names = NULL, row_labels = c("row_vars",
+  "row_vars_values", "summary_vars", "stat_names"), col_labels = c("col_vars",
   "col_vars_values"), hide = NULL)
 
-table_means(summary_vars, col_vars, weight = NULL, row_vars = NULL,
-  stat_names = c("Mean", "Std. Dev.", "N"))
+table_means(summary_vars, col_vars, weight = NULL, subset = NULL,
+  row_vars = NULL, stat_names = c("Mean", "Std. Dev.", "N"))
 
-table_medians(summary_vars, col_vars, weight = NULL, row_vars = NULL,
-  stat_names = c("Median", "N"))
+table_medians(summary_vars, col_vars, weight = NULL, subset = NULL,
+  row_vars = NULL, stat_names = c("Median", "N"))
 
-table_sums(summary_vars, col_vars, weight = NULL, row_vars = NULL,
-  stat_names = c("Sum", "N"))
+table_sums(summary_vars, col_vars, weight = NULL, subset = NULL,
+  row_vars = NULL, stat_names = c("Sum", "N"))
 }
 \arguments{
 \item{summary_vars}{vector/data.frame/list - variables for summary. If ommited
@@ -30,6 +30,8 @@ then variables will be used as summary variables.}
 \item{fun}{the function to be applied to summary variables}
 
 \item{weight}{dsvfv}
+
+\item{subset}{an optional logical vector specifying a subset of observations to be used}
 
 \item{row_vars}{fdfg}
 
