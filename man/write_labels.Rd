@@ -16,15 +16,17 @@
 \usage{
 write_labels(x, filename, fileEncoding = "")
 
-read_labelled_csv(filename, fileEncoding = "", sep = ",", dec = ".", ...)
+read_labelled_csv(filename, fileEncoding = "", encoding = "unknown",
+  sep = ",", dec = ".", ...)
 
-read_labelled_csv2(filename, fileEncoding = "", sep = ";", dec = ",", ...)
+read_labelled_csv2(filename, fileEncoding = "", encoding = "unknown",
+  sep = ";", dec = ",", ...)
 
-read_labelled_tab(filename, fileEncoding = "", sep = "\\t", dec = ".",
-  ...)
+read_labelled_tab(filename, fileEncoding = "", encoding = "unknown",
+  sep = "\\t", dec = ".", ...)
 
-read_labelled_tab2(filename, fileEncoding = "", sep = "\\t", dec = ",",
-  ...)
+read_labelled_tab2(filename, fileEncoding = "", encoding = "unknown",
+  sep = "\\t", dec = ",", ...)
 
 write_labelled_csv(x, filename, fileEncoding = "", sep = ",", dec = ".",
   ...)
@@ -47,9 +49,15 @@ write_labels_spss(x, filename)
 
 \item{filename}{the name of the file which the data are to be read from/write to.}
 
-\item{fileEncoding}{character string: if non-empty declares the encoding to
-be used on a file (not a connection) so the character data can be
-re-encoded as they are written. See \link[base]{file}.}
+\item{fileEncoding}{character string: if non-empty declares the encoding to 
+be used on a file (not a connection) so the character data can be 
+re-encoded as they are written. Used for writing dictionary. See
+\link[base]{file}.}
+
+\item{encoding}{default is "unknown". Other possible options are "UTF-8" and 
+"Latin-1". Note: it is not used to re-encode the input, rather enables 
+handling of encoded strings in their native encoding. Used for writing data
+file. See \link[data.table]{fread}.}
 
 \item{sep}{the field separator string. Values within each row of x are
 separated by this string.}
@@ -57,7 +65,7 @@ separated by this string.}
 \item{dec}{the string to use for decimal points in numeric or complex
 columns: must be a single character.}
 
-\item{...}{additional arguments for \link[utils]{read.table}/\link[utils]{write.table}}
+\item{...}{additional arguments for \link[data.table]{fwrite}/\link[data.table]{fread}}
 }
 \value{
 Functions for writing invisibly return NULL. Functions for reading
