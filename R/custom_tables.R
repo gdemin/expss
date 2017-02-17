@@ -1,144 +1,226 @@
-make_empty_intermediate_table = function(deparsed_call){
-    res = list(data = NULL, 
+#' Functions for constracting custom tables
+#'
+#' @param ... jjjkj
+#'
+#' @return jkjk
+#' @export
+#'
+#' @examples
+#' 1
+col_vars_ = function(...){
+    UseMethod("col_vars_")
+}
+
+
+#' @export
+col_vars_.default = function(...){
+    res = make_empty_intermediate_table()
+    col_vars_(res, ...)
+}
+
+#' @export
+col_vars_.intermediate_table = function(...){
+    args = list(...)
+    res = args[[1]]
+    colvars = args[-1]
+    if(length(colvars)){
+        colvars = flat_list(dichotomy_to_category_encoding(colvars), flat_df = FALSE) # process_mdsets
+        colvars = rapply(colvars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
+        res$colvars = colvars
+    } else {
+        res$colvars = NULL    
+    }
+    res
+}
+
+
+
+######
+
+#' @rdname col_vars_
+#' @export
+cell_ = function(..., cell_name = NULL){
+    UseMethod("cell_")
+}
+
+
+#' @export
+cell_.default = function(..., cell_name = NULL){
+    res = make_empty_intermediate_table()
+    cell_(res, ..., cell_name = cell_name)
+}
+
+#' @export
+cell_.intermediate_table = function(..., cell_name = NULL){
+    args = list(...)
+    res = args[[1]]
+    cell = args[-1]
+    res$cell_name = cell_name
+    if(length(cell)){
+        cell = flat_list(multiples_to_single_columns_with_dummy_encoding(cell), flat_df = TRUE) # process_mdsets
+        cell = rapply(cell, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
+        res$cellvars = cell
+        class(res) = union("with_cell", class(res))
+    } else {
+        res$cellvars = NULL 
+        class(res) = class(res) %d% "with_cell"
+    }
+    res
+}
+
+#########
+
+#' @rdname col_vars_
+#' @export
+row_vars_ = function(...){
+    UseMethod("row_vars_")
+}
+
+
+#' @export
+row_vars_.default = function(...){
+    res = make_empty_intermediate_table()
+    row_vars_(res, ...)
+}
+
+#' @export
+row_vars_.intermediate_table = function(...){
+    args = list(...)
+    res = args[[1]]
+    rowvars = args[-1]
+    if(length(rowvars)){
+        rowvars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE) # process_mdsets
+        rowvars = rapply(rowvars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
+        res$rowvars = rowvars
+    } else {
+        res$rowvars = NULL    
+    }
+    res
+}
+
+
+#####################
+#' @rdname col_vars_
+#' @export
+stat = function(..., margins = c("rows", "columns", "total")){
+    UseMethod("stat")
+}
+
+#' @export
+stat.with_cell = function(..., margins = c("rows", "columns", "total")){
+    
+    args = list(...)
+    res = args[[1]]
+    stopif(length(args)<2, "Functions are needed")
+    fun = match.fun(args[[2]])
+    stat_names = names(args)[[2]]
+    new_long_table = long_table_summary(
+        summary_vars = res$cell,
+        col_vars = res$colvars,
+        fun = fun,
+        weight = res$weight,
+        subgroup = res$subgroup,
+        row_vars = res$rowvars,
+        stat_names = stat_names,
+        custom_labels = NULL
+        
+    )
+    if(is.null(res$long_table)){
+        res$long_table = new_long_table
+    } else {
+        res$long_table = rbind(res$long_table, new_long_table, use.name = TRUE, fill = TRUE)    
+    }
+    class(res) = union("table_with_result", class(res))
+    res
+}
+
+#' @rdname col_vars_
+#' @export
+stat_ = stat
+
+#########
+
+#' @rdname col_vars_
+#' @export
+weight_ = function(...){
+    UseMethod("weight_")
+}
+
+#' @export
+weight_.default = function(...){
+    res = make_empty_intermediate_table()
+    weight_(res, ...)
+}
+
+#' @export
+weight_.intermediate_table = function(...){
+    args = list(...)
+    res = args[[1]]
+    args = args[-1]
+    if(length(args)==0){
+        res$weight = NULL
+    } else {
+        stopif(length(args)>1, "'weight' should be single column variable.")
+        weight = args[[1]]
+        stopif(!is.numeric(weight) && !is.logical(weight), "'weight' should be numeric or logical")
+        res$weight = set_negative_and_na_to_zero(as.numeric(weight))
+    }
+    res
+}
+
+#########
+
+#' @rdname col_vars_
+#' @export
+subgroup_ = function(...){
+    UseMethod("subgroup_")
+}
+
+#' @export
+subgroup_.default = function(...){
+    res = make_empty_intermediate_table()
+    subgroup_(res, ...)
+}
+
+#' @export
+subgroup_.intermediate_table = function(...){
+    args = list(...)
+    res = args[[1]]
+    args = args[-1]
+    if(length(args)==0){
+        res$subgroup = NULL
+    } else {
+        stopif(length(args)>1, "'subgroup' should be single column variable.")
+        subgroup = args[[1]]
+        stopif(!is.numeric(subgroup) && !is.logical(subgroup), "'subgroup' should be numeric or logical")
+        res$subgroup = subgroup
+    }
+    res
+}
+
+#######
+calculate_cell = function(res, fun = fun, stat_names = stat_names, cell_name = cell_name){
+    
+    
+    
+}
+
+########
+
+make_empty_intermediate_table = function(){
+    res = list(long_table = NULL, 
                colvars = NULL, 
                rowvars = NULL, 
                cellvars = NULL,
                weight = NULL, 
-               subset = NULL,
-               call = deparsed_call
+               subgroup = NULL,
+               cell_name = NULL    
     )
     class(res) = union("intermediate_table", class(res))
     res
     
-}
-
-col_vars = function(...){
-    UseMethod("col_vars")
 }
 
 where.intermediate_table = function(...){
-    
-}
-
-weight.intermediate_table = function(weight){
-    
-}
-
-col_vars.default = function(...){
-    colvars = list(...)
-    stopif(length(colvars) == 0, "'col_vars' - there is no variables.")
-    colvars = flat_list(dichotomy_to_category_encoding(colvars), flat_df = FALSE) # process_mdsets
-    colvars = rapply(colvars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
-    res = make_empty_intermediate_table(deparse(sys.call()))
-    res$colvars = colvars
-    res
-}
-
-col_vars.intermediate_table = function(...){
-    args = list(...)
-    res = args[[1]]
-    args = args[-1]
-    colvars = flat_list(dichotomy_to_category_encoding(args), flat_df = FALSE) # process_mdsets
-    colvars = rapply(colvars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
-    stopif(length(colvars) == 0, "'col_vars' - there is no variables.")
-    res$colvars = colvars
-    if(!missing(weight)){
-        res$weight = weight
-    }
-    if(!missing(subset)){
-        res$subset = subset
-    }
-    res$cell_name = ""
-    res$call = paste0(res$call, " %>% ", deparse(sys.call()))
-    class(res) = union("intermediate_table", class(res))
-    res
-}
-
-
-row_vars = function(..., weight = NULL, subset = NULL){
-    UseMethod("row_vars")
-}
-
-row_vars.default = function(..., weight = NULL, subset = NULL){
-    stop(paste0(
-        "you can't use 'row_vars' without precending 'col_vars'. Try col_vars(somo variables) %>% ", 
-        deparse(sys.call())
-    )
-    )
-}
-
-row_vars.intermediate_table = function(..., weight = NULL, subset = NULL){
-    args = list(...)
-    res = args[[1]]
-    args = args[-1]
-    rowvars = flat_list(multiples_to_single_columns_with_dummy_encoding(args), flat_df = FALSE) # process_mdsets
-    rowvars = rapply(rowvars, as.labelled, classes = c("factor", "POSIXct"), how = "replace")
-    stopif(length(rowvars) == 0, "'col_vars' - there is no variables.")
-    res$rowvars = rowvars
-    if(!missing(weight)){
-        res$weight = weight
-    }
-    if(!missing(subset)){
-        res$subset = subset
-    }
-    res$call = paste0(res$call, " %>% ", deparse(sys.call()))
-    class(res) = union("intermediate_table", class(res))
-    res
-}
-
-
-cell = function(..., weight = NULL, subset = NULL){
-    UseMethod("row_vars")
-}
-
-cell.default = function(..., weight = NULL, subset = NULL){
-    stop(paste0(
-        "you can't use 'cell' without precending 'col_vars'. Try col_vars(somo variables) %>% ", 
-        deparse(sys.call())
-    )
-    )
-}
-
-cell.intermediate_table = function(..., cell_name = "", weight = NULL, subset = NULL){
-    args = list(...)
-    res = args[[1]]
-    args = args[-1]
-    cellvars = flat_list(args, flat_df = FALSE)
-    stopif(length(cellvars) == 0, "'cell' - there is no variables for calculations.")
-    res$cellvars = cellvars
-    if(!missing(weight)){
-        res$weight = weight
-    }
-    if(!missing(subset)){
-        res$subset = subset
-    }
-    res$cell_name = cell_name
-    res$call = paste0(res$call, " %>% ", deparse(sys.call()))
-    newdata = calculate_cell(res, fun = fun, stat_names = stat_names, cell_name = cell_name)
-    res$data = data.table::rbind(res$data, newdata, use.name = TRUE, fill = TRUE)
-    class(res) = union("with_cells", "intermediate_table", class(res))
-    res
-}
-
-"[.with_cells" = function(x, ..., stat_names = NULL, need_margins = c("rows", "columns", "total")){
-    res = x
-    fun = list(...)
-    stopif(length(fun)==0, "Functions are needed")
-    stat_names = names(list(...))
-    for(each in funs){
-        funs[[each]] = match.fun(funs[[each]])
-    }
-    
-    res$call = paste0(res$call, " %>% ", deparse(sys.call()))
-    newdata = calculate_cell(res, funs = funs, stat_names = stat_names)
-    res$data = data.table::rbind(res$data, newdata, use.name = TRUE, fill = TRUE)
-    class(res) = union("intermediate_table", class(res))
-    res
-    
-}
-
-calculate_cell = function(res, fun = fun, stat_names = stat_names, cell_name = cell_name){
-    
-    
     
 }
