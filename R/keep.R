@@ -4,12 +4,13 @@
 #' criteria (see \link{criteria}). \code{except} drops  variables/elements from 
 #' data.frame by their names or by criteria. There is no non-standard evaluation
 #' in these functions by design so use quotes for names of your variables or use
-#' \link{qc}. The only exception with non-standard evaluation is \code{\%to\%}.
-#' See example. Character arguments will be expanded as with \link{subst}.
-#' \code{a`1:2`} will be translated to \code{'a1', 'a2'}.
+#' \link{qc}. The only exception with non-standard evaluation is \code{\%to\%}. 
+#' See example. Character arguments will be expanded as with \link{subst}. 
+#' \code{a`1:2`} will be translated to \code{'a1', 'a2'}. 
 #' \code{\%keep\%}/\code{\%except\%} are infix versions of these functions.
-#' \code{.keep}/\code{.except} are versions which works with
-#' \link{default_dataset}.
+#' Methods for list will apply \code{keep}/\code{except} to each element of
+#' the list separately. \code{.keep}/\code{.except} are versions which works
+#' with \link{default_dataset}.
 #'
 #' @param data data.frame/matrix/list/vector
 #' @param ... column names/element names of type character or criteria/logical functions
@@ -64,18 +65,30 @@ keep = function(data, ...){
     UseMethod("keep")
 }
 
+# # @export
+# keep.default = function(data, ...){
+#     vars = names(data)
+#     args = substitute(list(...))
+#     args = substitute_symbols(args,
+#                               list("%to%" = "internal_to")
+#     )
+#     args = eval(args)
+#     new_vars = keep_helper(vars, args)
+#     res = data[new_vars]
+#     names(res) = vars[new_vars] # prevents names correction
+#     res
+# }
+
 #' @export
-keep.default = function(data, ...){
-    vars = names(data)
-    args = substitute(list(...))
-    args = substitute_symbols(args,
-                              list("%to%" = "internal_to")
-    )
-    args = eval(args)
-    new_vars = keep_helper(vars, args)
-    res = data[new_vars]
-    names(res) = vars[new_vars] # prevents names correction
-    res
+keep.list = function(data, ...){
+    for(each in seq_along(data)){
+        data[[each]] = eval(
+            substitute(keep(data[[each]], ...)), 
+            envir = parent.frame(),
+            enclos = baseenv()
+        )
+    }
+    data
 }
 
 #' @export
@@ -112,22 +125,34 @@ except = function(data, ...){
     UseMethod("except")
 }
 
+# # @export
+# except.default = function(data, ...){
+#     vars = names(data)
+#     args = substitute(list(...))
+#     args = substitute_symbols(args,
+#                               list("%to%" = "internal_to")
+#     )
+#     args = eval(args)
+#     new_vars = keep_helper(vars, args)
+#     new_vars = -unique(new_vars)
+#     if(length(new_vars)==0){
+#         return(data)
+#     }
+#     res = data[new_vars]
+#     names(res) = vars[new_vars] # prevents names correction
+#     res
+# }
+
 #' @export
-except.default = function(data, ...){
-    vars = names(data)
-    args = substitute(list(...))
-    args = substitute_symbols(args,
-                              list("%to%" = "internal_to")
-    )
-    args = eval(args)
-    new_vars = keep_helper(vars, args)
-    new_vars = -unique(new_vars)
-    if(length(new_vars)==0){
-        return(data)
+except.list = function(data, ...){
+    for(each in seq_along(data)){
+        data[[each]] = eval(
+            substitute(except(data[[each]], ...)), 
+            envir = parent.frame(),
+            enclos = baseenv()
+        )
     }
-    res = data[new_vars]
-    names(res) = vars[new_vars] # prevents names correction
-    res
+    data
 }
 
 #' @export
@@ -181,12 +206,14 @@ keep_helper = function(old_names, args){
     characters_names = character(0) # for checking non-existing names
     for (each in new_names){
         if(is.character(each)){
-            expanded_each = eval(substitute(subst(each)), 
-                                 envir = parent.frame(2),
-                                 enclos = baseenv()
-            )
-            next_names = which(old_names %in% expanded_each)
-            characters_names = c(characters_names, expanded_each)
+            if(any(grepl("`", each))){
+                each = eval(substitute(subst(each)), 
+                            envir = parent.frame(2),
+                            enclos = baseenv()
+                )
+            } 
+            next_names = which(old_names %in% each)
+            characters_names = c(characters_names, each)
         } else {
             next_names = which(old_names %in% (old_names %i% each))
         }
@@ -197,7 +224,7 @@ keep_helper = function(old_names, args){
                 paste(characters_names[duplicated(characters_names)], collapse = ","),
                 ". Repeated names are ignored."
                 
-                )
+        )
     }
     stopif(any(!(characters_names %in% old_names)), 
            "names not found: '", paste(characters_names %d% old_names, collapse = "', '"),"'")

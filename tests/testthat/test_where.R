@@ -170,3 +170,13 @@ expect_identical(
 )
 
 expect_identical(where(1:3, c(TRUE, FALSE, NA)), 1L)
+
+data(iris)
+
+iris_list = list(iris[,-1], iris[,-5])
+
+curr_name = 1
+
+expect_identical(where(iris_list,  curr_name),
+                 list(iris_list[[1]][1, , drop = FALSE], iris_list[[2]][1, , drop = FALSE])
+)

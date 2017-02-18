@@ -1,4 +1,4 @@
-#' Modify data.frame/conditionally modify data.frame
+#' Modify data.frame/modify subset of the data.frame
 #' 
 #' \itemize{
 #' \item{{\code{modify}}{ evaluates expression \code{expr} in the context of data.frame 
@@ -115,8 +115,6 @@ modify.data.frame = function (data, expr) {
 
 #' @export
 modify.list = function (data, expr) {
-    # expr = substitute(expr)
-    # data_expr = substitute(data)
     for(each in seq_along(data)){
         data[[each]] = eval(
             substitute(modify(data[[each]], expr)), 
@@ -131,8 +129,6 @@ modify.list = function (data, expr) {
 #' @export
 #' @rdname modify
 '%modify%' = function (data, expr) {
-    # expr = substitute(expr)
-    # data = substitute(data)
     eval(substitute(modify(data, expr)), envir = parent.frame(), enclos = baseenv())
 }
 
@@ -158,9 +154,7 @@ do_if = modify_if
 #' @export
 modify_if.data.frame = function (data, cond, expr) {
     # based on 'within' from base R by R Core team
-    # data_expr = substitute(data)
     cond = substitute(cond)
-    # expr = substitute(expr)
     e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = NROW(data), column_names = colnames(data))
     cond = calc_cond(cond, envir = e)
@@ -184,9 +178,7 @@ modify_if.data.frame = function (data, cond, expr) {
 
 #' @export
 modify_if.list = function (data, cond, expr) {
-    # expr = substitute(expr)
-    # cond = substitute(cond)
-    # data_expr = substitute(data)
+
     for(each in seq_along(data)){
         data[[each]] = eval(
             substitute(modify_if(data[[each]], cond, expr)), 
@@ -216,8 +208,7 @@ calculate.data.frame = function (data, expr) {
 
 #' @export
 calculate.list = function (data, expr) {
-    # expr = substitute(expr)
-    # data_expr = substitute(data)
+
     for(each in seq_along(data)){
         data[[each]] = eval(
             substitute(calculate(data[[each]], expr)), 
@@ -232,8 +223,6 @@ calculate.list = function (data, expr) {
 #' @export
 #' @rdname modify
 '%calculate%' = function (data, expr) {
-    expr = substitute(expr)
-    data = substitute(data)
     eval(substitute(calculate(data, expr)), envir = parent.frame(), enclos = baseenv())
 }
 
@@ -244,3 +233,6 @@ calc = calculate
 #' @export
 #' @rdname modify
 '%calc%' = `%calculate%`
+
+
+

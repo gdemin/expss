@@ -11,7 +11,7 @@
 \alias{\%calculate\%}
 \alias{calc}
 \alias{\%calc\%}
-\title{Modify data.frame/conditionally modify data.frame}
+\title{Modify data.frame/modify subset of the data.frame}
 \usage{
 modify(data, expr)
 
