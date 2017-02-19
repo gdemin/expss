@@ -49,6 +49,9 @@
 #' 
 #' split_columns(tabl, remove_repeated = FALSE)
 split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
+    if(length(x)==0){
+        return(matrix(NA, ncol=0, nrow = 0))
+    }
     x_split = strsplit(x, split = split, fixed = fixed, perl = perl)
     max_length = max(lengths(x_split))
     x_split = lapply(x_split, function(each) {
