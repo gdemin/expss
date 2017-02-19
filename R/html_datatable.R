@@ -1,20 +1,61 @@
-#' Title
+#' Create an HTML table widget for usage with Shiny
+#' 
+#' This is method for for rendering results of \link{fre}/\link{cro} in Shiny.
+#' For detailed description of function and its arguments see \link[DT]{datatable}.
 #'
-#' @param data a data object (either a matrix or a data frame)
-#' @param repeat_row_labels logical
-#' @param show_row_numbers logical
-#' @param digits integer
-#' @param ... dfd
+#' @param data a data object (result of \link{fre}/\link{cro} and etc)
+#' @param repeat_row_labels logical Should we repeat duplicated row labels in
+#'   the every row?
+#' @param show_row_numbers logical 
+#' @param digits integer If it is not NULL than all numeric columns will be
+#'   rounded to speciefied number of digits.
+#' @param ... further parameters for \link[DT]{datatable}
 #'
-#' @return fdf
+#' @return Object of class \link[DT]{datatable}
+#' @seealso \link[htmlTable]{htmlTable} for knitting
 #' @export
 #'
 #' @examples
-#' a = 1
+#' \dontrun{ 
+#' data(mtcars)
+#' mtcars = apply_labels(mtcars,
+#'                       mpg = "Miles/(US) gallon|Mean",
+#'                       cyl = "Number of cylinders",
+#'                       disp = "Displacement (cu.in.)|Mean",
+#'                       hp = "Gross horsepower|Mean",
+#'                       drat = "Rear axle ratio",
+#'                       wt = "Weight (lb/1000)",
+#'                       qsec = "1/4 mile time|Mean",
+#'                       vs = "Engine",
+#'                       vs = c("V-engine" = 0,
+#'                              "Straight engine" = 1),
+#'                       am = "Transmission",
+#'                       am = c("Automatic" = 0,
+#'                              "Manual"=1),
+#'                       gear = "Number of forward gears",
+#'                       carb = "Number of carburetors"
+#' )
+#' 
+#' mtcars_table = calculate(mtcars,
+#'                          cro_mean(list(mpg, hp), am %nest% vs) %add_rows%
+#'                              cro_cpct(am, am %nest% vs)  
+#'                          
+#' )
+#' library(shiny)
+#' shinyApp(
+#'     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
+#'     server = function(input, output) {
+#'         output$tbl = DT::renderDataTable(
+#'             datatable(mtcars_table, digits = 1)
+#'         )
+#'     }
+#' )
+#' }
 datatable = function(data, ...){
     UseMethod("datatable")
 }  
 
+#' @export
 datatable.default = function(data, ...){
     DT::datatable(data, ...)
 }
@@ -45,35 +86,63 @@ datatable.simple_table = function(data,
     colnames(row_labels) = rep("", ncol(row_labels))
     empty_corner = matrix("", nrow = nrow(header), ncol = ncol(row_labels))
     header = cbind(empty_corner, header)
-    if(!is.na(first_lab)){
-        header[nrow(header),1] = first_lab    
+    if(!is.na(first_lab && first_lab!="row_labels")){
+        header[1,1] = first_lab    
     }
-    
+    args = list(...)
+    class = args[["class"]]
+    if(is.null(class)) {
+       class = 'stripe hover cell-border row-border order-column compact'
+    }  
+    filter = args[["filter"]]
+    if(is.null(filter)) {
+        filter = "none"
+    }  
+    options = args[["options"]]
+    if(is.null(options)) {
+        options = list(paging = FALSE,
+                       searching = FALSE, 
+                       sorting = FALSE, 
+                       ordering = FALSE,
+                       bFilter = FALSE, 
+                       bInfo = FALSE,
+                       columnDefs = list(
+                           list(
+                               className = 'dt-head-left', # cell-border
+                               targets = 0:(ncol(data)-1)
+                           )
+                       ))
+    }  
     header = matrix_header_to_html(header)
     data = cbind(row_labels, data)
     res = DT::datatable(data, 
                   container = header,
-                  class = 'stripe hover cell-border row-border order-column compact', #  
+                  class = class, #  
                   rownames = FALSE,
-                  filter = "none",
-                  options = list(paging = FALSE,
-                                 searching = FALSE, 
-                                 sorting = FALSE, 
-                                 ordering = FALSE,
-                                 bFilter = FALSE, 
-                                 bInfo = FALSE,
-                                 columnDefs = list(
-                                     list(
-                                         className = 'dt-head-left', # cell-border
-                                         targets = 0:(ncol(data)-1)
-                                         )
-                                 ))
+                  filter = filter,
+                  options = options 
                   )
-    DT::formatStyle(res, (NCOL(empty_corner)+1):NCOL(data), textAlign = 'right')
-                 
-    
+    # if(!is.null(format_bold_value)){
+    #     columns = seq_len(ncol(empty_corner))-1
+    #     if(length(columns)){
+    #         res = DT::formatStyle(res, 
+    #                           columns = columns, 
+    #                           target = "row", 
+    #                           fontWeight = DT::styleEqual("#Total", "bold")
+    #                           )        
+    #     }
+    # }    
+    DT::formatStyle(res, NCOL(empty_corner):NCOL(data), textAlign = 'right')
+
 }
 
+
+#' @export
+#' @rdname datatable
+datatable.etable = datatable.simple
+    
+    
+    
 matrix_header_to_html = function(m_cols){
     # to pass CRAN check
     thead = NULL
@@ -82,7 +151,8 @@ matrix_header_to_html = function(m_cols){
     m_cols[is.na(m_cols)] = ""
     row_rle = list()
     for(i in seq_len(nrow(m_cols))){
-        y = colSums(m_cols[1:i,-1L, drop = FALSE] != m_cols[1:i, -ncol(m_cols), drop = FALSE])>0
+        y = colSums((m_cols[1:i,-1L, drop = FALSE] != m_cols[1:i, -ncol(m_cols), drop = FALSE]) & 
+                        (m_cols[1:i, -1L, drop = FALSE] != "") )>0
         changes = c(which(y | is.na(y)), ncol(m_cols))
         row_rle[[i]] = structure(list(lengths = diff(c(0L, changes)), values = m_cols[i, changes]), 
                   class = "rle")
@@ -121,9 +191,6 @@ matrix_header_to_html = function(m_cols){
                     th(tags$style(type = "text/css",
                                   HTML("th { text-align: center; } ")
                     ),
-                    # tags$style(type = "text/css",
-                    #            HTML("th {border-bottom: 1px solid #DDD}")
-                    # ),
                     tags$style(type = "text/css",
                                HTML("th {border: 1px solid #DDD}")
                     ),
