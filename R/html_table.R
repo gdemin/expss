@@ -26,12 +26,12 @@ htmlTable.simple_table = function(x, digits = NULL, ...){
 #' @rdname htmlTable.simple_table
 #' @export
 knit_print.simple_table = function(x, digits = NULL, ...){
-    knitr::asis_output(htmlTable(x, digits = digits, ...))
+    knitr::asis_output(htmlTable(as.dtfrm(x), ...))
     
 }
 
 #' @rdname htmlTable.simple_table
 #' @export
 knit_print.etable = function(x, digits = NULL, ...){
-    knitr::asis_output(htmlTable(x, digits = digits, ...))    
+    knitr::asis_output(htmlTable(as.dtfrm(x), ...))    
 }
