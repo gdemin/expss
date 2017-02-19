@@ -42,6 +42,9 @@ NULL
 
 
 #' @import data.table
+#' @import htmlTable 
+#' @import DT
+#' @import htmltools
 #' @import magrittr
 #' @import foreign stats utils matrixStats
 
