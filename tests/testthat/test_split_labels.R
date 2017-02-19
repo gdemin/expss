@@ -26,6 +26,7 @@ expect_equal_to_reference(split_labels(colnames(tabl), remove_repeated = FALSE),
 
 expect_identical(split_labels(letters, remove_repeated = TRUE), as.matrix(as.character(letters)))
 expect_identical(split_labels(letters, remove_repeated = FALSE), as.matrix(as.character(letters)))
+expect_identical(split_labels(character(0)), matrix(NA, ncol = 0, nrow = 0))
 
 context("split_columns")
 # replace first column with new columns 

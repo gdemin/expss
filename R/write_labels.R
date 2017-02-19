@@ -13,14 +13,19 @@
 #' 
 #' @param x data.frame to be written/data.frame whose labels to be written
 #' @param filename the name of the file which the data are to be read from/write to.
-#' @param fileEncoding character string: if non-empty declares the encoding to
-#'   be used on a file (not a connection) so the character data can be
-#'   re-encoded as they are written. See \link[base]{file}.
+#' @param fileEncoding character string: if non-empty declares the encoding to 
+#'   be used on a file (not a connection) so the character data can be 
+#'   re-encoded as they are written. Used for writing dictionary. See
+#'   \link[base]{file}.
+#' @param encoding default is "unknown". Other possible options are "UTF-8" and 
+#'   "Latin-1". Note: it is not used to re-encode the input, rather enables 
+#'   handling of encoded strings in their native encoding. Used for writing data
+#'   file. See \link[data.table]{fread}.
 #' @param sep the field separator string. Values within each row of x are
 #'   separated by this string.
 #' @param dec the string to use for decimal points in numeric or complex
 #'   columns: must be a single character.
-#' @param ... additional arguments for \link[utils]{read.table}/\link[utils]{write.table}  
+#' @param ... additional arguments for \link[data.table]{fwrite}/\link[data.table]{fread}  
 #'
 #' @return Functions for writing invisibly return NULL. Functions for reading
 #'   return labelled data.frame.
@@ -115,17 +120,26 @@ read_dictionary_csv = function(filename, fileEncoding = ""){
 
 #' @export
 #' @rdname write_labels
-read_labelled_csv = function(filename, fileEncoding = "", sep = ",", dec = ".", ...){
-    w = utils::read.table(file = filename,
-                   header = TRUE,
-                   sep = sep,
-                   dec = dec,
-                   stringsAsFactors = FALSE,
-                   na.strings = "",
-                   fileEncoding = fileEncoding,
-                   check.names = FALSE,
-                   ...
-                   )
+read_labelled_csv = function(filename, fileEncoding = "", encoding = "unknown", sep = ",", dec = ".", ...){
+    # w = utils::read.table(file = filename,
+    #                header = TRUE,
+    #                sep = sep,
+    #                dec = dec,
+    #                stringsAsFactors = FALSE,
+    #                na.strings = "",
+    #                fileEncoding = fileEncoding,
+    #                check.names = FALSE,
+    #                ...
+    #                )
+    w = data.table::fread(filename, 
+              sep = sep,  
+              header= TRUE, 
+              na.strings="", 
+              stringsAsFactors=FALSE, 
+              integer64 = "character",         
+              dec = dec, 
+              encoding = encoding, 
+              data.table = FALSE)
     dic_file = paste0(filename,".dic.R")
     if (file.exists(dic_file)){
         source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
@@ -138,9 +152,10 @@ read_labelled_csv = function(filename, fileEncoding = "", sep = ",", dec = ".", 
 
 #' @export
 #' @rdname write_labels
-read_labelled_csv2 = function(filename, fileEncoding = "", sep = ";", dec = ",", ...){
+read_labelled_csv2 = function(filename, fileEncoding = "", encoding = "unknown", sep = ";", dec = ",", ...){
     read_labelled_csv(filename = filename,
                       fileEncoding = fileEncoding,
+                      encoding = encoding, 
                       sep = sep, 
                       dec = dec, 
                       ...)
@@ -148,9 +163,10 @@ read_labelled_csv2 = function(filename, fileEncoding = "", sep = ";", dec = ",",
 
 #' @export
 #' @rdname write_labels
-read_labelled_tab = function(filename, fileEncoding = "", sep = "\t", dec = ".", ...){
+read_labelled_tab = function(filename, fileEncoding = "", encoding = "unknown", sep = "\t", dec = ".", ...){
     read_labelled_csv(filename = filename,
                       fileEncoding = fileEncoding,
+                      encoding = encoding, 
                       sep = sep, 
                       dec = dec, 
                       ...)
@@ -158,9 +174,10 @@ read_labelled_tab = function(filename, fileEncoding = "", sep = "\t", dec = ".",
 
 #' @export
 #' @rdname write_labels
-read_labelled_tab2 = function(filename, fileEncoding = "", sep = "\t", dec = ",", ...){
+read_labelled_tab2 = function(filename, fileEncoding = "", encoding = "unknown", sep = "\t", dec = ",", ...){
     read_labelled_csv(filename = filename,
                       fileEncoding = fileEncoding,
+                      encoding = encoding, 
                       sep = sep, 
                       dec = dec, 
                       ...)
@@ -179,21 +196,27 @@ write_labelled_csv = function(x, filename, fileEncoding = "", sep = ",", dec = "
             # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
         }
     }
-    if(grepl("\\.gz$", filename)) {
-        file2 = gzfile(filename)
-    } else {
-        file2 = filename
-    }
-    utils::write.table(x = x, file = file2,
-                          col.names = TRUE,
-                          row.names = FALSE,
-                          sep = sep,
-                          dec = dec,
-                          na = "",
-                          qmethod = "double",
-                          quote = TRUE,
-                          fileEncoding = fileEncoding,
-                          ...
+    # utils::write.table(x = x, file = file2,
+    #                       col.names = TRUE,
+    #                       row.names = FALSE,
+    #                       sep = sep,
+    #                       dec = dec,
+    #                       na = "",
+    #                       qmethod = "double",
+    #                       quote = TRUE,
+    #                       fileEncoding = fileEncoding,
+    #                       ...
+    # )
+    data.table::fwrite(x = x, 
+           file = filename,
+           quote = TRUE,
+           col.names = TRUE,
+           row.names = FALSE,
+           sep = sep,
+           dec = dec,
+           na = "",
+           qmethod = "double",
+           ...
     )
     dic_file = paste0(filename,".dic.R")
     write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
@@ -239,7 +262,7 @@ write_labelled_tab2 = function(x, filename, fileEncoding = "", sep = "\t", dec =
 
 #' @export
 #' @rdname write_labels
-write_labelled_spss = function(x, filename, fileEncoding = "", ...){
+write_labelled_spss = function(x, filename, fileEncoding = "",  ...){
     if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
     cln = colnames(x)
     if(anyDuplicated(cln)){
@@ -258,15 +281,25 @@ write_labelled_spss = function(x, filename, fileEncoding = "", ...){
             x[[each]] = 1*x[[each]]
         }
     }
-    utils::write.table(x = x, file = filename,
-                       col.names = TRUE,
-                       row.names = FALSE,
-                       sep = ",",
-                       na = "",
-                       qmethod = "double",
-                       quote = TRUE,
-                       fileEncoding = fileEncoding,
-                       ...
+    # utils::write.table(x = x, file = filename,
+    #                    col.names = TRUE,
+    #                    row.names = FALSE,
+    #                    sep = ",",
+    #                    na = "",
+    #                    qmethod = "double",
+    #                    quote = TRUE,
+    #                    fileEncoding = fileEncoding,
+    #                    ...
+    # )
+    data.table::fwrite(x = x, 
+           file = filename,
+           col.names = TRUE,
+           row.names = FALSE,
+           sep = ",",
+           na = "",
+           qmethod = "double",
+           quote = TRUE,
+           ...
     )
     #dic_file = paste0(filename,".dic.R")
     #write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)

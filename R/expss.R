@@ -42,6 +42,9 @@ NULL
 
 
 #' @import data.table
+#' @import htmlTable 
+#' @import DT
+#' @import htmltools
 #' @import magrittr
 #' @import foreign stats utils matrixStats
 
@@ -49,6 +52,8 @@ NULL
 data.table = data.table::data.table
 as.data.table = data.table::as.data.table
 setkeyv = data.table::setkeyv
+# fwrite = data.table::fwrite
+# fread = data.table::fread
 # '[.data.table' = data.table::`[.data.table`
 
 

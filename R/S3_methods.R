@@ -102,7 +102,7 @@ var_attr = function(x){
 
 #' @export
 "[.simple_summary" = function(x, i, j, drop = FALSE){
-    subset_helper(x, i, j, drop, class_name = "simple_summary")
+    subset_helper(x, i, j, drop, class_name = c("simple_summary", "simple_table"))
 }
 
 
@@ -114,7 +114,16 @@ var_attr = function(x){
 
 subset_helper = function(x, i, j, drop, class_name){
     class(x) = setdiff(class(x), class_name)
-    res = x[i, j,  drop = drop]     
+
+    
+    res = x[i, j,  drop = drop]
+    # to preserve column names
+    if(is.data.frame(res)){
+        old_names = colnames(x)
+        names(old_names) = old_names # when j is character
+        old_names = old_names[j]
+        colnames(res) = old_names
+    }
     if(!drop) class(res) = union(class_name, class(res))
     res    
 }

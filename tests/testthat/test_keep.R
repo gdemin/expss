@@ -22,9 +22,6 @@ expect_identical(keep(iris, "Species"), iris[, c("Species"), drop = FALSE])
 expect_error(keep(iris, "Species", "not_exists"))
 
 expect_identical(keep(as.matrix(iris), "Species", perl("^Sepal")), as.matrix(iris)[, c("Species", "Sepal.Length", "Sepal.Width")])
-expect_identical(keep(as.list(iris), "Species", perl("^Sepal")), as.list(iris)[c("Species", "Sepal.Length", "Sepal.Width")])
-expect_identical(keep(setNames(1:5, colnames(iris)), "Species", perl("^Sepal")),
-                 setNames(1:5, colnames(iris))[c("Species", "Sepal.Length", "Sepal.Width")])
 
 
 context("except")
@@ -39,9 +36,6 @@ expect_identical(except(iris, qc(Species, Sepal.Length, Petal.Length)), iris[, c
 expect_error(except(iris, "Species", "not_exists"))
 
 expect_identical(except(as.matrix(iris), "Species", perl("^Sepal")), as.matrix(iris)[, c("Petal.Length", "Petal.Width")])
-expect_identical(except(as.list(iris), "Species", perl("^Sepal")), as.list(iris)[c("Petal.Length", "Petal.Width")])
-expect_identical(except(setNames(1:5, colnames(iris)), "Species", perl("^Sepal")),
-                 setNames(1:5, colnames(iris))[c("Petal.Length", "Petal.Width")])
 
 data("airquality")
 expect_identical(airquality %keep% from("Wind"), airquality[, c("Wind", "Temp", "Month", "Day")])
@@ -158,11 +152,49 @@ context("keep edge cases")
 expect_identical(iris %keep% NULL, iris[, FALSE, drop = FALSE])
 expect_identical(iris %except% NULL, iris)
 expect_identical(as.matrix(iris) %except% NULL, as.matrix(iris))
-expect_identical(1:5 %except% NULL, 1:5)
-expect_identical(1:5 %keep% NULL, integer(0))
+# expect_identical(1:5 %except% NULL, 1:5)
+# expect_identical(1:5 %keep% NULL, integer(0))
 
 expect_identical(iris %keep% factor("Species"), iris[, 5, drop = FALSE])
 expect_identical(iris %except% factor("Species"), iris[,-5])
+
+
+
+context("keep/except list")
+
+# expect_identical(keep(as.list(iris), "Species", perl("^Sepal")), as.list(iris)[c("Species", "Sepal.Length", "Sepal.Width")])
+expect_error(keep(setNames(1:5, colnames(iris)), "Species", perl("^Sepal")))
+
+# expect_identical(except(as.list(iris), "Species", perl("^Sepal")), as.list(iris)[c("Petal.Length", "Petal.Width")])
+expect_error(except(setNames(1:5, colnames(iris)), "Species", perl("^Sepal")))
+
+data(iris)
+
+iris_list = list(iris[,-1], iris[,-5])
+
+expect_identical(keep(iris_list,  Petal.Length %to% Petal.Width),
+                 list(iris[,3:4], iris[,3:4])
+                 )
+
+expect_identical(except(iris_list,  Petal.Length %to% Petal.Width),
+                 list(iris[,c(2,5)], iris[,1:2])
+)
+
+
+
+
+
+
+# curr = "Petal.Length"
+# # 
+# expect_identical(keep(iris_list,  curr),
+#                  list(iris[,"Petal.Length", drop = FALSE], iris[,"Petal.Length", drop = FALSE])
+# )
+#     
+# 
+# expect_identical(except(iris_list,  curr),
+#                  list(iris_list[[1]] %except% curr, iris_list[[2]] %except% curr)
+# )
 
 
 

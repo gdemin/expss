@@ -584,6 +584,16 @@ mtcars = modify(mtcars,{
 expect_equal_to_reference(cro_mean(mtcars$mpg, mtcars$am)[,"manual"], "rds/mean_methods_1.rds")
 expect_equal_to_reference(cro_fun(mtcars$mpg, mtcars$am, fun = sum)[, 1], "rds/fun_methods_1.rds")
 
+duplicated_colnames = cro_mean(mtcars$mpg, mtcars$am) %merge% cro_mean(mtcars$mpg, mtcars$am) 
+expect_equal_to_reference(duplicated_colnames[,-2], 
+                          "rds/cro_methods_2.rds")
+expect_equal_to_reference(duplicated_colnames[,seq_along(duplicated_colnames)[-2]], 
+                          "rds/cro_methods_2.rds")
+duplicated_colnames = cro(mtcars$vs, mtcars$am) %merge% cro(mtcars$vs, mtcars$am) 
+expect_equal_to_reference(duplicated_colnames[,-2], 
+                          "rds/cro_methods_3.rds")
+expect_equal_to_reference(duplicated_colnames[,seq_along(duplicated_colnames)[-2]], 
+                          "rds/cro_methods_3.rds")
 context("datetime")
 
 aaa = rep(c(as.POSIXct("2016-09-22 02:28:39"), as.POSIXct("2016-09-22 03:28:39")), 10)
