@@ -4,9 +4,9 @@
 \alias{htmlTable.simple_table}
 \alias{knit_print.simple_table}
 \alias{knit_print.etable}
-\title{Title}
+\title{Outputting HTML tables}
 \usage{
-\method{htmlTable}{simple_table}(x, digits = NULL, ...)
+\method{htmlTable}{simple_table}(x, digits = getOption("expss.digits"), ...)
 
 knit_print.simple_table(x, digits = NULL, ...)
 
@@ -24,7 +24,8 @@ rounded to specified number of digits.}
 Returns a string of class htmlTable
 }
 \description{
-Title
+This is method for rendering results of \link{fre}/\link{cro} in Shiny.
+For detailed description of function and its arguments see \link[DT]{datatable}.
 }
 \examples{
 a = 1

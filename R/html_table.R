@@ -1,4 +1,7 @@
-#' Title
+#' Outputting HTML tables
+#' 
+#' This is method for rendering results of \link{fre}/\link{cro} in Shiny.
+#' For detailed description of function and its arguments see \link[DT]{datatable}.
 #'
 #' @param x a data object (result of \link{fre}/\link{cro} and etc)
 #' @param digits integer If it is not NULL than all numeric columns will be
@@ -10,39 +13,84 @@
 #'
 #' @examples
 #' a = 1
-htmlTable.simple_table = function(x, digits = NULL, ...){
-    if(!is.null(digits)){
-        for (i in seq_len(NCOL(x))){
-            if(is.numeric(x[[i]])){
-                x[[i]] = round(x[[i]], digits)
-            }
-        }
-    }
+htmlTable.simple_table = function(x, digits = getOption("expss.digits"), ...){
+    x = round_dataframe(x, digits = digits)
     first_lab = colnames(x)[1]
+    if(first_lab == "row_labels") first_lab = ""
     row_labels = x[[1]]
+    x[[1]] = NULL
     # x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
     header = t(split_labels(colnames(x), split = "|", remove_repeated = FALSE))
-    # row_labels = split_labels(row_labels, split = "|", remove_repeated = !repeat_row_labels)
-    # if(length(row_labels)){
-    #     row_labels = dtfrm(row_labels)    
-    # } else {
-    #     row_labels = dtfrm(matrix("", nrow = nrow(x), ncol = 1))
-    # }
-    # 
-    # colnames(row_labels) = rep("", ncol(row_labels))
-    # empty_corner = matrix("", nrow = nrow(header), ncol = ncol(row_labels))
-    # if(is.na(first_lab) || first_lab=="row_labels") first_lab = ""
-    # empty_corner[1, 1] = first_lab    
     crgoup_list = matrix_to_cgroup(header)
     cgroup = crgoup_list[["cgroup"]]
     n.cgroup = crgoup_list[["n.cgroup"]]
-    colnames(x) = cgroup[nrow(cgroup), ]
+    html_header = cgroup[nrow(cgroup), ]
+    align = rep("r", ncol(x))
+    row_labels = split_labels(row_labels)
+    if(ncol(row_labels) == 1){
+        rnames = row_labels[,1] 
+        rgroup = NULL
+        n.rgroup = NULL
+    } else {
+        if(ncol(row_labels) > 2){
+            x = dtfrm(row_labels[, -(1:2)], x)
+            html_header = c(rep("", ncol(row_labels) - 2), html_header)
+            align = c(rep("l", ncol(row_labels) - 2), align)
+            cgroup = cbind("", cgroup)
+            n.cgroup = cbind(ncol(row_labels) - 2, n.cgroup)
+        }
+        rnames = row_labels[,2]
+        temp = row_labels[,1]
+        for(each in seq_along(temp)[-1]) {
+            if(temp[each]=="") temp[each] = temp[each-1]
+        }
+        temp = rle(temp)
+        rgroup = temp$values
+        n.rgroup = temp$lengths
+    }
     cgroup = cgroup[-nrow(cgroup), ]
     n.cgroup = n.cgroup[-nrow(n.cgroup), ]
+
     if(nrow(cgroup)>0){
-        htmlTable(as.dtfrm(x), cgroup = cgroup, n.cgroup = n.cgroup, ...)   
+        if(is.null(rgroup)){
+            htmlTable(as.dtfrm(x), 
+                      header = html_header,
+                      cgroup = cgroup, 
+                      align = align,
+                      n.cgroup = n.cgroup, 
+                      rnames = rnames, 
+                      rowlabel = first_lab,
+                      ...)   
+        } else {
+            htmlTable(as.dtfrm(x), 
+                      header = html_header,
+                      cgroup = cgroup, 
+                      align = align,
+                      n.cgroup = n.cgroup, 
+                      rnames = rnames,  
+                      rgroup = rgroup,
+                      n.rgroup = n.rgroup,
+                      rowlabel = first_lab,
+                      ...)     
+        }
     } else {
-        htmlTable(as.dtfrm(x), ..)
+        if(is.null(rgroup)){
+            htmlTable(as.dtfrm(x), 
+                      header = html_header,
+                      align = align,
+                      rnames = rnames, 
+                      rowlabel = first_lab,
+                      ...)   
+        } else {
+            htmlTable(as.dtfrm(x), 
+                      header = html_header,
+                      align = align,
+                      rnames = rnames, 
+                      rgroup = rgroup,
+                      n.rgroup = n.rgroup,
+                      rowlabel = first_lab,
+                      ...)     
+        }
     }
     
     
