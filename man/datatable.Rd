@@ -9,10 +9,10 @@
 datatable(data, ...)
 
 \method{datatable}{simple_table}(data, repeat_row_labels = FALSE,
-  show_row_numbers = FALSE, digits = NULL, ...)
+  show_row_numbers = FALSE, digits = getOption("expss.digits"), ...)
 
 \method{datatable}{etable}(data, repeat_row_labels = FALSE,
-  show_row_numbers = FALSE, digits = NULL, ...)
+  show_row_numbers = FALSE, digits = getOption("expss.digits"), ...)
 }
 \arguments{
 \item{data}{a data object (result of \link{fre}/\link{cro} and etc)}
@@ -24,8 +24,10 @@ the every row?}
 
 \item{show_row_numbers}{logical}
 
-\item{digits}{integer If it is not NULL than all numeric columns will be
-rounded to specified number of digits.}
+\item{digits}{integer By default, all numeric columns are rounded to one digit after
+decimal separator. Also you can set this argument by option 'expss.digits'
+- for example, \code{option(expss.digits = 2)}. If it is NA than all
+numeric columns remain unrounded.}
 }
 \value{
 Object of class \link[DT]{datatable}
@@ -65,7 +67,7 @@ shinyApp(
     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
     server = function(input, output) {
         output$tbl = DT::renderDataTable(
-            datatable(mtcars_table, digits = 1)
+            datatable(mtcars_table)
         )
     }
 )

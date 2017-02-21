@@ -7,8 +7,10 @@
 #' @param repeat_row_labels logical Should we repeat duplicated row labels in
 #'   the every row?
 #' @param show_row_numbers logical 
-#' @param digits integer If it is not NULL than all numeric columns will be
-#'   rounded to specified number of digits.
+#' @param digits integer By default, all numeric columns are rounded to one digit after
+#'   decimal separator. Also you can set this argument by option 'expss.digits'
+#'   - for example, \code{option(expss.digits = 2)}. If it is NA than all
+#'   numeric columns remain unrounded.
 #' @param ... further parameters for \link[DT]{datatable}
 #'
 #' @return Object of class \link[DT]{datatable}
@@ -46,7 +48,7 @@
 #'     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
 #'     server = function(input, output) {
 #'         output$tbl = DT::renderDataTable(
-#'             datatable(mtcars_table, digits = 1)
+#'             datatable(mtcars_table)
 #'         )
 #'     }
 #' )
@@ -65,15 +67,9 @@ datatable.default = function(data, ...){
 datatable.simple_table = function(data, 
                                   repeat_row_labels = FALSE, 
                                   show_row_numbers = FALSE,
-                                  digits = NULL,
+                                  digits = getOption("expss.digits"),
                                   ...){
-    if(!is.null(digits)){
-        for (i in seq_len(NCOL(data))){
-            if(is.numeric(data[[i]])){
-                data[[i]] = round(data[[i]], digits)
-            }
-        }
-    }
+    data = round_dataframe(data, digits = digits)
     stopif(ncol(data)<2, "'data' should have at least two columns.")
     first_lab = colnames(data)[1]
     row_labels = data[[1]]

@@ -442,3 +442,28 @@ flat_list=function(x, flat_df = FALSE)
         x
     }
 }
+
+
+
+## round all numerics in the data.frame
+round_dataframe = function(x, digits = NULL){
+    if(is.null(digits)) digits = 1
+    if(is.na(digits)) return(x)
+    for (i in seq_len(NCOL(x))){
+        if(is.numeric(x[[i]])){
+            x[[i]] = round(x[[i]], digits)
+        }
+    }
+    x
+}
+
+
+
+
+
+
+
+
+
+
+

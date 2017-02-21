@@ -19,6 +19,7 @@ mtcars = apply_labels(mtcars,
                       carb = "Number of carburetors"
 )
 
+options(expss.digits = NA)
 set.seed(1)
 mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, mtcars$vs %nest% mtcars$am) 
 
@@ -81,6 +82,23 @@ colnames(mtcars_table)[7] = ""
 
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable14.rds")
+
+
+options(expss.digits = 0)
+expect_equal(datatable(mtcars_table),
+                          datatable(mtcars_table, digits = 0))
+
+options(expss.digits = 3)
+expect_equal(datatable(mtcars_table),
+                          datatable(mtcars_table, digits = 3))
+
+expect_true(!isTRUE(all.equal(datatable(mtcars_table),
+                          datatable(mtcars_table, digits = 4))))
+
+options(expss.digits = NULL)
+expect_equal(datatable(mtcars_table),
+                          datatable(mtcars_table, digits = 1))
+
 # 
 # library(testthat)
 # library(expss)

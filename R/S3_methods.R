@@ -344,3 +344,5 @@ str.labelled = function(object, ...){
 #     class(x) = union("simple_table", x)
 #     x
 # }# 
+
+
