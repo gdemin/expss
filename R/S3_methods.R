@@ -161,37 +161,55 @@ as.integer.labelled = function (x, ...){
 
 #' @export
 as.character.labelled = function (x, ...){
-    varlab = var_lab(x)
-    if(isTRUE(getOption("expss.disable_value_labels_support"))){
-        y = NextMethod("as.character")
-        var_lab(y) = varlab
-        y
+    if(!identical(getOption("expss.enable_value_labels_support"), 0)){
+        prepend_varlab = isTRUE(getOption("expss.prepend_var_lab"))
+        labelled_to_character_internal(x, prepend_varlab = prepend_varlab)  
     } else {
-        vallab=val_lab(x)
-        x = unlab(x)
-        if(anyDuplicated(vallab)){
-            warning("duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
-        }
-        names_vallab = names(vallab)
-        if (anyDuplicated(names_vallab)){
-            duplicates = duplicated(names_vallab)
-            warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ", ")))
-            names(vallab)[duplicates] = paste0(names_vallab[duplicates], seq_len(sum(duplicates)))
-        }
-        
-        uniqs = unique(x)
-        vallab = labelled_and_unlabelled(uniqs,vallab) 
-        if(isTRUE(getOption("expss.prepend_var_lab"))){
-            if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = LABELS_SEP)
-        }
-        names(vallab)[match(x, vallab,incomparables = NA)]
+        y = NextMethod("as.character")
+        var_lab(y) = var_lab(x)
+        y
+  
     } 
 }
 
+labelled_to_character_internal = function(x, prepend_varlab, ...) {
+    vallab=val_lab(x)
+    varlab =  var_lab(x)
+    x = unlab(x)
+    if(anyDuplicated(vallab)){
+        warning("duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
+    }
+    names_vallab = names(vallab)
+    if (anyDuplicated(names_vallab)){
+        duplicates = duplicated(names_vallab)
+        warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ", ")))
+        names(vallab)[duplicates] = paste0(names_vallab[duplicates], seq_len(sum(duplicates)))
+    }
+    
+    uniqs = unique(x)
+    vallab = labelled_and_unlabelled(uniqs,vallab) 
+    if(prepend_varlab){
+        if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = LABELS_SEP)
+    }
+    names(vallab)[match(x, vallab,incomparables = NA)]
+}
+    
+
 #' @export
 unique.labelled = function(x, ...){
-    y = NextMethod(x, ...)
-    if(!isTRUE(getOption("expss.disable_value_labels_support"))){
+    y = NextMethod("unique")
+    if(!identical(getOption("expss.enable_value_labels_support"), 0)){
+        var_lab(y) = var_lab(x)
+        val_lab(y) = val_lab(x)
+    }
+    y
+}
+
+
+#' @export
+sort.labelled = function(x, decreasing = FALSE, ...){
+    y = NextMethod("sort")
+    if(!identical(getOption("expss.enable_value_labels_support"), 0)){
         var_lab(y) = var_lab(x)
         val_lab(y) = val_lab(x)
     }
@@ -201,7 +219,7 @@ unique.labelled = function(x, ...){
 #' @export
 as.logical.labelled = function (x, ...){
     y = NextMethod("as.logical")
-    var_attr(y)=var_attr(x)
+    var_lab(y)=var_lab(x)
     class(y) = union("labelled", class(y))
     y	
 }
@@ -247,22 +265,21 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
 }
 
 #' @export
-print.simple_table = function(x, round_digits = 2, ...,  right = TRUE){
-    if(!is.null(round_digits)){
-        for (each in seq_along(x)){
-            if(is.numeric(x[[each]])) x[[each]] = round(x[[each]], round_digits)
-        }
-    }
+print.simple_table = function(x, digits = getOption("expss.digits"), ...,  right = TRUE){
+    x = round_dataframe(x, digits = digits)
+    print.data.frame(x, ...,  right = right, row.names = FALSE)
+
+}
+
+#' @export
+print.simple_summary = function(x, digits = getOption("expss.digits"), ...,  right = TRUE){
+    x = round_dataframe(x, digits = digits)
     print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
 #' @export
-print.simple_summary = function(x, ...,  right = TRUE){
-    print.data.frame(x, ...,  right = right, row.names = FALSE)
-}
-
-#' @export
-print.etable = function(x, ...,  right = TRUE){
+print.etable = function(x, digits = getOption("expss.digits"), ...,  right = TRUE){
+    x = round_dataframe(x, digits = digits)
     print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
