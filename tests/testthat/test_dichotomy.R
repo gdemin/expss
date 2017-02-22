@@ -2,8 +2,8 @@ context("dichotomy.default")
 
 
 expect_identical(dichotomy(numeric(0)),
-    structure(numeric(0), .Dim = c(0L, 0L), class = c("dichotomy", 
-                                                  "matrix")))
+                 structure(numeric(0), .Dim = c(0L, 0L), class = c("dichotomy", 
+                                                                   "matrix")))
 
 expect_identical(dichotomy(numeric(0), prefix = "nas"),
                  structure(numeric(0), .Dim = c(0L, 0L), class = c("dichotomy", 

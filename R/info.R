@@ -57,7 +57,7 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
         }
     } 
     if (frequencies){
-        values=sort(table(x,useNA="ifany"),na.last = TRUE,decreasing = TRUE)
+        values=sort(table(unlab(x),useNA="ifany"),na.last = TRUE,decreasing = TRUE)
         if (NA %in% names(values)) {
             values=c(values[is.na(names(values))], values[!is.na(names(values))])
         }    

@@ -116,10 +116,40 @@ a_numeric = a + 0.5 - 0.5
 class(a_numeric) = c("labelled", "numeric")
 expect_identical(as.numeric(a_str), a_numeric)
 expect_identical(as.integer(a_str), a)
-expect_identical(as.character(a), a_str)
+
 expect_identical(as.logical(a), a_log)
 expect_identical(as.integer(a_log), a)
 
+options(expss.disable_value_labels_support = TRUE)
+expect_identical(as.character(a), unvl(a_str))
+options(expss.disable_value_labels_support = NULL)
+expect_identical(as.character(a), c("Lab", "0"))
+options(expss.prepend_var_lab = TRUE)
+expect_identical(as.character(a), c("Lab|Lab", "Lab|0"))
+options(expss.prepend_var_lab = NULL)
+expect_identical(as.character(a), c("Lab", "0"))
+
+a = c(1, 2, 0)
+val_lab(a) = c(a= 1)
+attr(a, "labels") = c(a = 1, a=2 , b = 0)
+
+expect_warning(as.character(a))
+suppressWarnings(expect_identical(as.character(a), c("a", "a1", "b")))
+
+attr(a, "labels") = c(a = 1, c=1 , b = 0)
+
+expect_warning(as.character(a))
+suppressWarnings(expect_identical(as.character(a), c("a", "2", "b")))
+
+context("unique.labelled")
+a = c(1, 1, 0)
+var_lab(a) = "This is a"
+val_lab(a) = c("a" = 1, b = 0)
+expect_identical(unique(a), a[-1])
+options(expss.disable_value_labels_support = TRUE)
+expect_identical(unique(a), c(1, 0))
+options(expss.disable_value_labels_support = FALSE)
+expect_identical(unique(a), a[-1])
 
 context("print.labelled/str.labelled")
 

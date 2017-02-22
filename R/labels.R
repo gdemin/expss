@@ -503,7 +503,7 @@ as.labelled.factor = function(x, label = NULL){
 #' @export
 as.labelled.labelled = function(x, label = NULL){
     if(is.null(val_lab(x))){
-        labels = sort(unique(x), na.last = NA)
+        labels = unlab(sort(unique(x), na.last = NA))
         names(labels) = as.character(labels)
         val_lab(x) = labels
     } 
@@ -522,6 +522,7 @@ combine_labels = function(...){
 }
 
 labelled_and_unlabelled = function(uniqs,vallab){
+    uniqs = unlab(uniqs)
     if (length(uniqs)>0) {
         uniqs=uniqs[!is.na(uniqs)]
         names(uniqs) = uniqs

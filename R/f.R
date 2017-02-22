@@ -48,6 +48,8 @@ f.default = function(x, ...){
 #' @export
 f.labelled = function(x, ...){
     vallab=val_lab(x)
+    varlab = var_lab(x)
+    x = unlab(x)
     stopif(anyDuplicated(vallab),"duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
     names_vallab = names(vallab)
     if (anyDuplicated(names_vallab)){
@@ -55,7 +57,6 @@ f.labelled = function(x, ...){
         warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ",")))
         names(vallab)[duplicates] = paste0(names_vallab[duplicates], seq_len(sum(duplicates)))
     }
-    varlab = var_lab(x)
     uniqs=unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 
     if (!is.null(varlab) && (varlab!="")) names(vallab) = paste(varlab,names(vallab),sep = LABELS_SEP)

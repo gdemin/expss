@@ -182,7 +182,7 @@ fre = function(x, weight = NULL){
                         cum = NA,
                         stringsAsFactors = FALSE,
                         check.names = FALSE
-                        )
+    )
     res = rbind(res, dfs_total, dfs_na)
     rownames(res) = NULL
     
@@ -190,7 +190,7 @@ fre = function(x, weight = NULL){
     if (is.null(varlab)){
         varlab = deparse(substitute(x))
     }
-
+    
     colnames(res) = c(varlab, "Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %")
     
     class(res) = union("simple_table", class(res))

@@ -80,17 +80,17 @@
 dichotomy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                      keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     res = dichotomy_dispatcher(x = x,
-                           prefix = prefix, 
-                           keep_unused = keep_unused,
-                           use_na = use_na,
-                           keep_values = keep_values, 
-                           keep_labels = keep_labels, 
-                           drop_values = drop_values, 
-                           drop_labels = drop_labels)
+                               prefix = prefix, 
+                               keep_unused = keep_unused,
+                               use_na = use_na,
+                               keep_values = keep_values, 
+                               keep_labels = keep_labels, 
+                               drop_values = drop_values, 
+                               drop_labels = drop_labels)
     res = do.call(prefix_helper, res)
     class(res) = union("dichotomy",class(res)) # for future usage. by now there is no methods for this class
     res 
-      
+    
 }
 
 #' @export
@@ -102,13 +102,13 @@ is.dichotomy = function(x){
 # so unnessasary complex because we need return dihotomy_df with labels from original data
 
 dichotomy_dispatcher = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                     keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                                keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     UseMethod("dichotomy_dispatcher")    
 }
 
 
 dichotomy_dispatcher.default = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                             keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                                        keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     vallab = dichotomy_helper(x = x,
                               keep_unused = keep_unused,
                               keep_values = keep_values, 
@@ -128,45 +128,45 @@ dichotomy_dispatcher.default = function(x, prefix = NULL, keep_unused = FALSE, u
 
 
 dichotomy_dispatcher.factor = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                            keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                                       keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     dichotomy_dispatcher.default(as.labelled(x),
-                      prefix = prefix,
-                      keep_unused = keep_unused,
-                      use_na = use_na,
-                      keep_values = keep_values, 
-                      keep_labels = keep_labels, 
-                      drop_values = drop_values, 
-                      drop_labels = drop_labels)
+                                 prefix = prefix,
+                                 keep_unused = keep_unused,
+                                 use_na = use_na,
+                                 keep_values = keep_values, 
+                                 keep_labels = keep_labels, 
+                                 drop_values = drop_values, 
+                                 drop_labels = drop_labels)
 }
 
 
 dichotomy_dispatcher.matrix = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                            keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                                       keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     if (NCOL(x)<2) {
         dichotomy_dispatcher.default(x, 
-                          prefix = prefix,
-                          keep_unused = keep_unused,
-                          use_na = use_na,
-                          keep_values = keep_values, 
-                          keep_labels = keep_labels, 
-                          drop_values = drop_values, 
-                          drop_labels = drop_labels)
+                                     prefix = prefix,
+                                     keep_unused = keep_unused,
+                                     use_na = use_na,
+                                     keep_values = keep_values, 
+                                     keep_labels = keep_labels, 
+                                     drop_values = drop_values, 
+                                     drop_labels = drop_labels)
     } else {
         dichotomy_dispatcher.data.frame(x,
-                             prefix = prefix,
-                             keep_unused = keep_unused,
-                             use_na = use_na,
-                             keep_values = keep_values, 
-                             keep_labels = keep_labels, 
-                             drop_values = drop_values, 
-                             drop_labels = drop_labels)
+                                        prefix = prefix,
+                                        keep_unused = keep_unused,
+                                        use_na = use_na,
+                                        keep_values = keep_values, 
+                                        keep_labels = keep_labels, 
+                                        drop_values = drop_values, 
+                                        drop_labels = drop_labels)
     }
     
 }
 
 
 dichotomy_dispatcher.data.frame = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                                keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                                           keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     vallab = dichotomy_helper(x = x,
                               keep_unused = keep_unused,
                               keep_values = keep_values, 
@@ -178,7 +178,7 @@ dichotomy_dispatcher.data.frame = function(x, prefix = NULL, keep_unused = FALSE
     if (!is.matrix(x)) x = as.matrix(x) 
     res = matrix(0,nrow = nrow(x),ncol=length(vallab))
     for (i in seq_along(vallab)) res[,i] = res[,i] + rowSums(matrix(x %in% vallab[i],nrow=nrow(x)))
-
+    
     res[] = 1*(res>0)
     if(use_na){
         nas = rowSums(!is.na(x))==0
@@ -194,6 +194,7 @@ dichotomy_helper = function(x, keep_unused = FALSE, keep_values = NULL,
                             keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     vallab=val_lab(x)
     varlab = var_lab(x)
+    x = unlab(x)
     uniqs=sort(unique(c(x,recursive = TRUE)))
     if(!is.null(keep_values) && keep_unused){
         uniqs = sort(union(uniqs,keep_values))

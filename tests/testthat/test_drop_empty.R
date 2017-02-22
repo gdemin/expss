@@ -13,12 +13,28 @@ mtcars = apply_labels(mtcars,
                      1 Manual
                      9 Other
                      ")
-         )
-with_empty = calculate(mtcars, table_cases(am, vs))
+)
+# with_empty = calculate(mtcars, table_cases(am, vs))
+# 
+# 
+# with_empty = with_empty %merge% with_empty
+# with_empty = with_empty %add_rows% with_empty
 
-
-with_empty = with_empty %merge% with_empty
-with_empty = with_empty %add_rows% with_empty
+with_empty = structure(list(row_labels = c("Transmission|Automatic", "Transmission|Manual", 
+"Transmission|Other", "Transmission|#Total", "Transmission|Automatic", 
+"Transmission|Manual", "Transmission|Other", "Transmission|#Total"
+), `Engine|V-engine` = c(12L, 6L, NA, 18L, 12L, 6L, NA, 18L), 
+`Engine|Straight engine` = c(7L, 7L, NA, 14L, 7L, 7L, NA, 
+14L), `Engine|Other` = c(NA_integer_, NA_integer_, NA_integer_, 
+NA_integer_, NA_integer_, NA_integer_, NA_integer_, NA_integer_
+), `Engine|V-engine` = c(12L, 6L, NA, 18L, 12L, 6L, NA, 18L
+), `Engine|Straight engine` = c(7L, 7L, NA, 14L, 7L, 7L, 
+NA, 14L), `Engine|Other` = c(NA_integer_, NA_integer_, NA_integer_, 
+NA_integer_, NA_integer_, NA_integer_, NA_integer_, NA_integer_
+)), .Names = c("row_labels", "Engine|V-engine", "Engine|Straight engine", 
+"Engine|Other", "Engine|V-engine", "Engine|Straight engine", 
+"Engine|Other"), row.names = c(NA, 8L), class = c("table_cases", 
+"etable", "data.frame"))
 
 expect_equal_to_reference(drop_r(with_empty), "rds/drop_empty1.rds")
 expect_equal_to_reference(drop_c(with_empty), "rds/drop_empty2.rds")
