@@ -142,12 +142,15 @@ expect_warning(as.character(a))
 suppressWarnings(expect_identical(as.character(a), c("a", "2", "b")))
 
 context("unique.labelled")
-a = c(1, 1, 0)
+a = c(1, 1, 0, NA)
 var_lab(a) = "This is a"
 val_lab(a) = c("a" = 1, b = 0)
+
 expect_identical(unique(a), a[-1])
+
 options(expss.enable_value_labels_support = 0)
-expect_identical(unique(a), c(1, 0))
+expect_identical(unique(a), c(1, 0, NA))
+
 options(expss.enable_value_labels_support = 1)
 expect_identical(unique(a), a[-1])
 

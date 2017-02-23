@@ -206,15 +206,7 @@ unique.labelled = function(x, ...){
 }
 
 
-#' @export
-sort.labelled = function(x, decreasing = FALSE, ...){
-    y = NextMethod("sort")
-    if(!identical(getOption("expss.enable_value_labels_support"), 0)){
-        var_lab(y) = var_lab(x)
-        val_lab(y) = val_lab(x)
-    }
-    y
-}
+
 
 #' @export
 as.logical.labelled = function (x, ...){
