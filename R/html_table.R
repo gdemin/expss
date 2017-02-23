@@ -17,10 +17,14 @@ htmlTable.simple_table = function(x, digits = getOption("expss.digits"), ...){
     x = round_dataframe(x, digits = digits)
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
-    row_labels = x[[1]]
+    first_lab = htmltools::htmlEscape(first_lab)
+    row_labels = htmltools::htmlEscape(x[[1]])
+   
+
     x[[1]] = NULL
     # x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
     header = t(split_labels(colnames(x), split = "|", remove_repeated = FALSE))
+    header[] = htmltools::htmlEscape(header)
     crgoup_list = matrix_to_cgroup(header)
     cgroup = crgoup_list[["cgroup"]]
     n.cgroup = crgoup_list[["n.cgroup"]]
@@ -129,3 +133,5 @@ knit_print.simple_table = function(x, digits = NULL, ...){
 knit_print.etable = function(x, digits = NULL, ...){
     knitr::asis_output(htmlTable(x, ...))    
 }
+
+
