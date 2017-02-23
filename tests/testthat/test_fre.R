@@ -249,8 +249,20 @@ var_lab(a) = "Total"
 val_lab(a) = c("all" = 1)
 expect_equal_to_reference(cro_cpct(brands, a), "rds/fre_ex7.rds")
 
+options(expss.digits = NA)
+
+expect_output_file(print(fre(brands)), "rds/fre_out_unrounded.txt")
+
+
+
+options(expss.digits = 2)
 expect_output_file(print(fre(brands)), "rds/fre_out.txt")
-expect_output_file(print(fre(brands), round_digits = NULL), "rds/fre_out_unrounded.txt")
+expect_output_file(print(fre(brands), digits = NA), "rds/fre_out_unrounded.txt")
+
+options(expss.digits = NULL)
+
+expect_output_file(print(fre(brands), digits = 2), "rds/fre_out.txt")
+
 expect_equal_to_reference(cro(brands, score), "rds/fre_ex5.rds")
 
 
@@ -537,7 +549,9 @@ expect_equal_to_reference(cro_median(iris[,-5], iris$Species, weight = rep(1, 15
 expect_equal_to_reference(cro_median(iris[,-5], iris$Species, weight = 1), "rds/cro_median8.rds")
 expect_equal_to_reference(cro_mean(iris[,-5], iris$Species), "rds/cro_mean8.rds")
 
+options(expss.digits = NA)
 expect_output_file(print(cro_mean(iris[,-5], iris$Species)), "rds/cro_mean_out.txt")
+options(expss.digits = NULL)
 
 expect_equal_to_reference(cro_sum(iris[,-5], iris$Species), "rds/cro_sum8.rds")
 
