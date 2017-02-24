@@ -129,6 +129,12 @@ expect_identical(as.character(a), c("Lab|Lab", "Lab|0"))
 options(expss.prepend_var_lab = NULL)
 expect_identical(as.character(a), c("Lab", "0"))
 
+aa = 1:3
+val_lab(aa) = c(c = 1, b = 2, a = 3)
+
+expect_identical(factor(aa), factor(1:3, levels = 1:3, labels = c("c", "b", "a")))
+
+
 a = c(1, 2, 0)
 val_lab(a) = c(a= 1)
 attr(a, "labels") = c(a = 1, a=2 , b = 0)
