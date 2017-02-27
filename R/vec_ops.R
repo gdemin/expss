@@ -91,6 +91,11 @@ v_union = function(e1, e2){
 #' @export
 #' @rdname vectors
 v_diff = function(e1, e2){
+    UseMethod("v_diff")
+}
+
+#' @export
+v_diff.default = function(e1, e2){
     if(is.null(e2)) return(e1)
     if (is.function(e2)){
         e1[!e2(e1)]
@@ -99,6 +104,15 @@ v_diff = function(e1, e2){
     }
 }
 
+#' @export
+v_diff.list = function(e1, e2){
+    if(is.null(e2)) return(e1)
+    stopif(!is.function(e2), "For lists 'e2' should be function.")
+    e1[!vapply(e1, FUN = e2, FUN.VALUE = logical(1))]
+}
+
+#' @export
+v_diff.data.frame = v_diff.list
 
 #' @export
 #' @rdname vectors
@@ -107,6 +121,11 @@ v_diff = function(e1, e2){
 #' @export
 #' @rdname vectors
 v_intersect = function(e1, e2){
+    UseMethod("v_intersect")
+}
+
+#' @export
+v_intersect.default = function(e1, e2){
     if (is.function(e2)){
         e1[e2(e1)]
     } else {
@@ -114,6 +133,16 @@ v_intersect = function(e1, e2){
     }
 }
 
+#' @export
+v_intersect.list = function(e1, e2){
+    if(is.null(e2)) return(e1[FALSE])
+    stopif(!is.function(e2), "For lists 'e2' should be function.")
+    e1[vapply(e1, FUN = e2, FUN.VALUE = logical(1))]
+}
+
+
+#' @export
+v_intersect.data.frame = v_intersect.list
 
 #' @export
 #' @rdname vectors
@@ -137,7 +166,7 @@ v_xor = function(e1, e2){
     if(length(e2)==1){
         rep(e1, e2)
     } else {
-        stop("Multiplicator should be scalar quantity (vector of length 1).")
+        stop("Multiplicator 'e2' should be scalar quantity (vector of length 1).")
     }
 }
 

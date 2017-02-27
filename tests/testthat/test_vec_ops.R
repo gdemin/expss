@@ -110,3 +110,12 @@ expect_identical(iris %n_d% factor("Species"), iris[,-5])
 
 
 
+context("vec ops list")
+data(iris)
+expect_identical(iris %i% is.numeric, iris[,-5])
+expect_identical(iris %i% NULL, iris[FALSE])
+expect_error(iris %i% 1)
+
+expect_identical(iris %d% is.numeric, iris[, 5, drop = FALSE])
+expect_identical(iris %d% NULL, iris)
+expect_error(iris %d% 1)
