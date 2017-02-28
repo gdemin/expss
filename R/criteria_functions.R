@@ -116,24 +116,20 @@
 #' @export
 eq = function(x){
     force(x)
-    res = function(y) {
-        cond = y == x
-        cond
-    }
-    class(res) = union("criterion",class(res))
-    res
+    as.criterion(function(y) {
+        y == x
+    })
+    
 }
 
 #' @export
 #' @rdname criteria
 ne = function(x){
     force(x)
-    res = function(y) {
-        cond = y != x
-        cond   
-    }    
-    class(res) = union("criterion",class(res))
-    res
+    as.criterion(function(y) {
+        y != x
+    })  
+    
     
 }
 
@@ -183,11 +179,10 @@ perl = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
     ignore.case
     useBytes
-    res = function(x){
+    as.criterion(function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = TRUE, fixed = FALSE, useBytes = useBytes)
-    }
-    class(res) = union("criterion",class(res))
-    res
+    })
+    
 }
 
 #' @export
@@ -196,11 +191,9 @@ regex = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
     ignore.case
     useBytes
-    res = function(x){
+    as.criterion(function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = FALSE, fixed = FALSE, useBytes = useBytes)
-    }
-    class(res) = union("criterion",class(res))
-    res
+    })
 }
 
 #' @export
@@ -209,11 +202,9 @@ fixed = function(pattern, ignore.case = FALSE, useBytes = FALSE){
     pattern
     ignore.case
     useBytes
-    res = function(x){
+    as.criterion(function(x){
         grepl(pattern, x, ignore.case = ignore.case, perl = FALSE, fixed = TRUE, useBytes = useBytes)
-    }
-    class(res) = union("criterion",class(res))
-    res
+    })
 }
 
 #' @export
@@ -236,42 +227,38 @@ thru = function(lower, upper){
 #' @rdname criteria
 from = function(x){
     x
-    res = function(y){
+    as.criterion(function(y){
         first = match_col(x, y)[1]
         stopif(is.na(first), "'",x, "' not found." )
         positions = seq_along(y)
         positions>=first
         
-    } 
-    class(res) = union("criterion",class(res))
-    res
+    })
+
 }
 
 #' @export
 #' @rdname criteria
 to = function(x){
     x
-    res = function(y){
+    as.criterion(function(y){
         last = match_col(x, y)[1]
         stopif(is.na(last), "'",x, "' not found." )
         positions = seq_along(y)
         positions<=last
         
-    } 
-    class(res) = union("criterion", class(res))
-    res
+    })
 }
 
 #' @export
 #' @rdname criteria
 items = function(...){
     args = c(list(...), recursive = TRUE)
-    res = function(x){
+    as.criterion(function(x){
         numbers = seq_along(x)    
         numbers %in% args
-    }
-    class(res) = union("criterion", class(res))
-    res 
+    })
+
 }
 
 
@@ -301,26 +288,23 @@ build_compare.default = function(x, compare){
     force(x)
     force(compare)
     FUN = match.fun(compare)
-    res = function(y){
+    as.criterion(function(y){
        FUN(y,x)
-    }
-    class(res) = union("criterion",class(res))
-    res
+    })
 }
 
 build_compare.numeric = function(x, compare){
     force(x)
     force(compare)
     FUN = match.fun(compare)
-    res = function(y){
+    as.criterion(function(y){
         if(is.numeric(y)){
             FUN(y,x)
         } else {
-            matrix(FALSE, nrow=NROW(y), ncol=NCOL(y))
+            matrix(FALSE, nrow = NROW(y), ncol = NCOL(y))
         }
-    }
-    class(res) = union("criterion",class(res))
-    res
+    })
+    
     
 }
 
@@ -360,7 +344,10 @@ build_compare.numeric = function(x, compare){
 as.criterion = function(crit){
     force(crit)
     if (is.function(crit)) {
-        res = crit
+        res = function(x) {
+            cond = crit(x)
+            cond & !is.na(cond)
+        }
     } else {
         if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
             res = function(x) crit & !is.na(crit)
