@@ -34,7 +34,7 @@ expect_identical(with(dfs, subst("`k`")), '42')
 
 default_dataset(dfs)
 
-expect_identical(.with(subst("`zzz`")), as.character(67:68))
-expect_identical(.with(subst("`k`")), '42')
+expect_identical(.calc(subst("`zzz`")), as.character(67:68))
+expect_identical(.calc(subst("`k`")), '42')
 
 default_dataset(NULL)

@@ -45,7 +45,7 @@ iris$Species[iris$Species == "setosa"] = "versicolor"
 iris$Species[iris$Species == "virginica"] = "versicolor"
 expect_identical(default_iris, iris)
 expect_warning(.set_val_lab(vars_pattern("^Sepal"), c("Hard to say"=99)))
-.if_val(vars_pattern("^Sepal"), 4 %thru% hi ~ 1)
+.if_val(vars(perl("^Sepal")), 4 %thru% hi ~ 1)
 val_lab(iris$Sepal.Length) = c("Hard to say"=99)
 iris$Sepal.Length[iris$Sepal.Length>=4] = 1
 val_lab(iris$Sepal.Width) = c("Hard to say"=99)
@@ -97,7 +97,7 @@ nn = ncol(mtcars)
 
 expect_identical(mtcars[, c(1:(nn-2), nn, nn-1)], default_mtcars)
 expect_identical(.fre(vs),fre(mtcars$vs))
-expect_identical(.with(fre(vs)),fre(mtcars$vs))
+expect_warning(.with(fre(vs)))
 expect_identical(.calc(fre(vs)),fre(mtcars$vs))
 expect_identical(.cro(am, vs), cro(mtcars$am, mtcars$vs))
 expect_identical(.cro_cpct(am, vs), cro_cpct(mtcars$am, mtcars$vs))

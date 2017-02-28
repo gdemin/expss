@@ -54,16 +54,7 @@ expect_identical(calc(dfs, runif(.N)), result_dfs$random_numer)
 set.seed(1)
 expect_identical(
     modify(dfs, {
-        b_total = sum_row(vars_range("b_1", "b_5"))
-        random_numer = runif(.n)
-    }), 
-    result_dfs
-)
-
-set.seed(1)
-expect_identical(
-    compute(dfs, {
-        b_total = sum_row(vars_range("b_1", "b_5"))
+        b_total = sum_row(vars(b_1 %to% b_5))
         random_numer = runif(.n)
     }), 
     result_dfs
@@ -72,11 +63,22 @@ expect_identical(
 set.seed(1)
 expect_identical(
     modify(dfs, {
-        b_total = sum_row(vars_range("b_1", "b_5"))
-        random_numer = runif(.N)
+        b_total = sum_row(vars(from("b_1") & to("b_5")))
+        random_numer = runif(.n)
     }), 
     result_dfs
 )
+
+set.seed(1)
+expect_identical(
+    compute(dfs, {
+        b_total = sum_row(vars(b_1 %to% b_5))
+        random_numer = runif(.n)
+    }), 
+    result_dfs
+)
+
+
 
 # Bad number of rows: 'random_numer' has 2 rows instead of 5 rows. 
 expect_error(
@@ -89,7 +91,7 @@ expect_error(
 set.seed(1)
 expect_identical(
     dfs %modify% {
-        b_total = sum_row(vars_range("b_1", "b_5"))
+        b_total = sum_row(vars(b_1 %to% b_5))
         random_numer = runif(.n)
     }, 
     result_dfs
@@ -99,21 +101,14 @@ expect_identical(
 set.seed(1)
 expect_identical(
     dfs %compute% {
-        b_total = sum_row(vars_range("b_1", "b_5"))
+        b_total = sum_row(vars(from("b_1") & to("b_5")))
         random_numer = runif(.n)
     }, 
     result_dfs
 )
 
 
-set.seed(1)
-expect_identical(
-    dfs %modify% {
-        b_total = sum_row(vars_range("b_1", "b_5"))
-        random_numer = runif(.N)
-    }, 
-    result_dfs
-)
+
 
 result_dfs$random_numer = NULL
 expect_identical(
@@ -135,7 +130,14 @@ context("modify magrittr")
 if(suppressWarnings(require(magrittr, quietly = TRUE))){
     expect_identical(
         dfs %>% modify( {
-            b_total = sum_row(vars_range("b_1", "b_5"))
+            b_total = sum_row(vars(from("b_1") & to("b_5")))
+        }), 
+        result_dfs
+    )
+    
+    expect_identical(
+        dfs %>% modify( {
+            b_total = sum_row(vars(b_1 %to% b_5))
         }), 
         result_dfs
     )
@@ -157,7 +159,14 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     expect_identical(
         tbl_df(dfs) %>% modify( {
-            b_total = rowSums(vars_range("b_1", "b_5"))
+            b_total = rowSums(vars(from("b_1") & to("b_5")))
+        }), 
+        tbl_df(result_dfs)
+    )
+    
+    expect_identical(
+        tbl_df(dfs) %>% modify( {
+            b_total = rowSums(vars(b_1 %to% b_5))
         }), 
         tbl_df(result_dfs)
     )
