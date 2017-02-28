@@ -167,29 +167,6 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 
 
 
-# doesn't create new variables
-modify_default_dataset_light = function(x, ...){
-    expr = as.character(as.expression(sys.call()))
-    expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
-    for_names = as.expression(substitute(x))
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    parent = parent.frame()
-    e = evalq(environment(), data, parent)
-    prepare_env(e, n = nrow(data), column_names = colnames(data))
-    if (length(all.vars(for_names, functions = FALSE))==1 & length(all.vars(for_names, functions = TRUE))==1){
-        for_names = as.character(for_names) 
-    } else {
-        for_names = names(eval(for_names, e))
-    }
-    stopif(length(for_names)==0, "Something is going wrong. Variables not found: ", deparse((substitute(x))))
-    res = eval(expr, e)
-    data[, for_names] = res
-    ref(reference) = data
-    invisible(data)
-}
-
-
 
 
 #' @export
