@@ -5,24 +5,30 @@
 \alias{cell_}
 \alias{row_vars_}
 \alias{stat}
+\alias{stat_df}
 \alias{stat_}
+\alias{stat_df_}
 \alias{weight_}
 \alias{subgroup_}
 \title{Functions for constracting custom tables}
 \usage{
-col_vars_(...)
+col_vars_(..., label = NULL)
 
-cell_(..., cell_name = NULL)
+cell_(..., label = NULL)
 
-row_vars_(...)
+row_vars_(..., label = NULL)
 
-stat(..., margins = c("rows", "columns", "total"))
+stat(..., fun_value_labels = NULL, label = NULL)
 
-stat_(..., margins = c("rows", "columns", "total"))
+stat_df(..., fun_value_labels = NULL, label = NULL)
+
+stat_(..., fun_value_labels = NULL, label = NULL)
+
+stat_df_(..., fun_value_labels = NULL, label = NULL)
 
 weight_(...)
 
-subgroup_(...)
+subgroup_(..., label = NULL)
 }
 \arguments{
 \item{...}{jjjkj}

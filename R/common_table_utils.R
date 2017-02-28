@@ -58,8 +58,6 @@ add_unused_labels = function(dttbl, varname, fill_na = NULL){
 
 pack_data.table = function(..., subset = NULL){
     args = list(...)
-    nulls = vapply(args, is.null, FUN.VALUE = logical(1))
-    args = args[!nulls]
     res = as.data.table(do.call(c, args))
     names_res = names(res)
     bad_names = is.na(names_res) | (names_res=="") | duplicated(names_res)
@@ -136,7 +134,7 @@ dichotomy_to_category_encoding = function(x){
             dichotomy_to_category_encoding(item)
         } else {
             if(is.dichotomy(item)){
-                category_df(item, use_var_lab = TRUE, compress = FALSE)
+                as.category(item, compress = FALSE)
             } else {
                 if(is.data.frame(item) & !is.category(item)){
                     as.list(item)

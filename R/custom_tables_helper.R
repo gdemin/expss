@@ -1,128 +1,115 @@
-long_table_summary = function(summary_vars,
-                                 col_vars,
-                                 fun,
-                                 weight = NULL,
-                                 subgroup = NULL,
-                                 row_vars = NULL,
-                                 stat_names = NULL,
-                                 custom_labels = NULL
+
+
+index_name = function(x){
+    paste0("...", x, "___", "index")
+}
+
+if_null = function(x, value){
+    if(is.null(x)){
+        value
+    } else {
+        x
+    }
+}
+
+
+
+
+
+long_table_summary = function( intermediate_table,
+                               fun_value_labels,
+                               fun
 ){
+    
+    col_vars = if_null(intermediate_table[[COL_VAR]], list(""))
+    row_vars = if_null(intermediate_table[[ROW_VAR]], list(""))
+    cell_vars = if_null(intermediate_table[[CELL_VAR]], list(NA))
+    weight = intermediate_table[[WEIGHT]]
+    subgroup = intermediate_table[[SUBGROUP]]
+    fun = match.fun(fun)
+    
     if(!is.null(weight)){
         stopif(!("weight" %in% names(formals(fun))),
-               "`weight` is provided but `fun` doesn't have formal `weight` argument.")
+               "`weight` is provided but function doesn't have formal `weight` argument.")
     }
+    
+    
     ###### main data.table #######
    
     
-    #### row_vars
-    if(is.null(row_vars)) row_vars = list(rep("", NROW(summary_vars[[1]])))
-    if(is.null(col_vars)) col_vars = list(rep("", NROW(summary_vars[[1]])))
-    
-    check_sizes("table_summary_df", summary_vars, col_vars, weight, subgroup, row_vars)
+    check_sizes("stat", col_vars, row_vars, cell_vars,  weight, subgroup)
     
     
-    curr_dt = pack_data.table(row_vars, col_vars, summary_vars, subset = subgroup)
+    curr_dt = pack_data.table(col_vars, row_vars, cell_vars, subset = subgroup)
     
     ####### data.table names ###############
     
-    new_bans_names = make_names(col_vars, "..b__")
-    new_vars_names = make_names(row_vars, "..v__")
-    colnames(curr_dt)[seq_along(c(new_vars_names, new_bans_names, recursive = TRUE))] = c(new_vars_names, new_bans_names, recursive = TRUE)
-    new_summary_names = colnames(curr_dt)[-seq_along(c(new_vars_names, new_bans_names, recursive = TRUE))]
+    new_cols_names = strange_name(paste0("r", seq_along(col_vars)))
+    new_rows_names = strange_name(paste0("c", seq_along(col_vars)))
+    colnames(curr_dt)[seq_along(c(new_rows_names, new_cols_names, recursive = TRUE))] = 
+        c(new_rows_names, new_cols_names, recursive = TRUE)
+    
+    cell_names_indexes = lapply(cell_vars, function(item) seq_len(NCOL(item)))
+    for(each in seq_along(cell_names_indexes)[-1]){
+        cell_names_indexes[[each]] = max(cell_names_indexes[[each-1]]) + cell_names_indexes[[each]]
+    } 
+    new_cell_names = colnames(curr_dt)[-seq_along(c(new_vars_names, new_bans_names, recursive = TRUE))]
+    
+    
     ######## weights ########
     if (!is.null(weight)) {
-        curr_dt$..weight__ = set_negative_and_na_to_zero(weight)
-        weight_name = "..weight__"
+        weight_name = WEIGHT
+        curr_dt[[WEIGHT]] = weight
     } else {
         weight_name = NULL
     }
     
     ######## calculations #######################
-    
-    res = lapply(seq_along(new_vars_names), function(var_num){
-        #### each row_var
-        res0 = lapply(seq_along(new_bans_names), function(ban_num){
-            ##### each col_var
-            elementary_res = elementary_summary(curr_dt,
-                                                   summary_names = new_summary_names,
-                                                   ban_names = new_bans_names[[ban_num]],
-                                                   var_names = new_vars_names[[var_num]],
-                                                   fun = fun,
-                                                   weight_name = weight_name,
-                                                   custom_labels = custom_labels
-            )
+    #### each row_var
+    res_rows = lapply(seq_along(new_rows_names), function(rows_var_num){
+        ##### each col_var
+        res_cols = lapply(seq_along(new_cols_names), function(cols_var_num){
+            #### each cell vars
+            res_cells = lapply(cell_names_indexes, function(cells_var_num){
+                
+                #### fun
+                res = elementary_summary(curr_dt,
+                                         cell_names = new_cell_names[cells_var_num],
+                                         col_names = new_cols_names[[ban_num]],
+                                         row_names = new_rows_names[[var_num]],
+                                             fun = fun,
+                                             fun_value_labels = fun_value_labels,
+                                             weight_name = weight_name
+                                             
+                    )
+                res
+
+            })
             
-            elementary_res$..ban_num__ = ban_num
+            res_cells = rbindlist(res_cells, use.names = TRUE, fill = TRUE)
+            res_cells[[COL_VAR_NUM]]= cols_var_num
+            res_cells
             
-            factors2characters(elementary_res)
         })
         
-        res0 = rbindlist(res0, use.names = TRUE, fill = TRUE)
-        res0$..var_num__ = var_num
-        res0
+        res_cols = rbindlist(res_cols, use.names = TRUE, fill = TRUE)
+        res_cols[[ROW_VAR_NUM]] = rows_var_num
+        res_cols
     })
     
-    res = rbindlist(res, use.names = TRUE, fill = TRUE)
-    res
+    res_rows = rbindlist(res_rows, use.names = TRUE, fill = TRUE)
+    res_rows
+
 }
 
-long_to_wide_summary = function(long, col_indexes, col_labels, row_indexes, row_labels){
-    ## indexes are needed to prevent possible collapse of categories with same name
-    setkeyv(long, cols = c(row_indexes, col_indexes), verbose = FALSE)
-    lhs = paste(c(row_indexes, row_labels),collapse = "+")
-    rhs = paste(c(col_indexes, col_labels),collapse = "+")
-    frm = paste(lhs, "~", rhs)
-    value_var = colnames(long) %d% c(row_indexes, row_labels,
-                                     col_indexes, col_labels)
-    mess = utils::capture.output(
-        {res = dcast.data.table(long, frm, sep = "|",  value.var = value_var, fill = NA)},
-        type = "message"
-    )
-    stopif(length(mess)>0,
-           paste0("'table_summary_df' - possibly you set 'use_result_row_order' to FALSE without providing your own row index (",mess,").")
-    )
-    if(length(row_indexes)) res = res[, -seq_along(row_indexes), with = FALSE]
-    if(length(row_labels)) {
-        rows = as.list(res[, seq_along(row_labels), with = FALSE] )
-        rows = do.call(paste, c(rows, sep = "|"))
-        res = cbind(row_labels = rows, res[, -seq_along(row_labels), with = FALSE])
-    } else {
-        res = cbind(row_labels = "", res)
-    }
-    res$row_labels = remove_unnecessary_splitters(res$row_labels)
-    if(length(value_var)>1){
-        # dcast place 'value_var' on top of all other grouping variable
-        # we doesn't need it sowe change it
-        regx = paste(value_var, collapse = "|")
-        regx = paste0("^(",regx,")\\|(.*)$")
-        setnames(res, gsub(regx, "\\2|\\1", colnames(res), perl = TRUE))
-        old_order = seq_len(ncol(res))[-1]
-        other_order = rep(seq_len(length(old_order)/length(value_var)), length(value_var))
-        old_var_order = rep(seq_along(value_var), each = length(old_order)/length(value_var))
-        new_order = c(1, order(other_order, old_var_order) + 1)
-        res = res[,new_order, with = FALSE]
-    }
-    # remove indexes from column names
-    if(length(col_indexes)){
-        regx = rep("(\\d+|NA)\\|", length(col_indexes))
-        regx = c("^", regx, "?")
-        regx = paste(regx, collapse = "")
-        clnm = gsub(regx, "", colnames(res), perl = TRUE)
-        clnm = remove_unnecessary_splitters(clnm)
-        setnames(res, clnm)
-    }
-    res
-    
-}
-
-
+#############
 elementary_summary = function(dttbl,
-                                 summary_names,
-                                 ban_names,
-                                 var_names,
-                                 fun,
-                                 weight_name = NULL,
-                                 custom_labels = NULL
+                              cell_names,
+                              col_names,
+                              row_names,
+                              fun,
+                              fun_value_labels,
+                              weight_name = NULL
 ){
     # to pass CRAN check
     ..weight__ = NULL
@@ -138,17 +125,17 @@ elementary_summary = function(dttbl,
     ..vr__label = NULL
     
     #####
-    b_vallab = val_lab(dttbl[, ban_names, with = FALSE])
-    b_varlab = var_lab(dttbl[, ban_names, with = FALSE][[1]])
-    v_vallab = val_lab(dttbl[, var_names, with = FALSE][[1]]) # vars should be only single column
-    v_varlab = var_lab(dttbl[, var_names, with = FALSE][[1]])
+    с_vallab = val_lab(dttbl[, col_names, with = FALSE])
+    с_varlab = var_lab(dttbl[, col_names, with = FALSE][[1]])
+    r_vallab = val_lab(dttbl[, row_names, with = FALSE][[1]]) # vars should be only single column
+    r_varlab = var_lab(dttbl[, row_names, with = FALSE][[1]])
     
-    if(length(ban_names)>1){
+    if(length(col_names)>1){
         # if banner is data.frame (multiple choice) we convert dttbl to long form
-        for_calc = data.table(..bn__ =  unlist(dttbl[, ban_names, with = FALSE]),
-                              dttbl[ , c(var_names, summary_names), with = FALSE])
+        for_calc = data.table(..bn__ =  unlist(dttbl[, col_names, with = FALSE]),
+                              dttbl[ , c(row_names, cell_names), with = FALSE])
     } else {
-        for_calc = dttbl[, c(ban_names, var_names, summary_names), with = FALSE]
+        for_calc = dttbl[, c(col_names, row_names, cell_names), with = FALSE]
         colnames(for_calc)[1] = "..bn__"
     }
     
@@ -249,3 +236,54 @@ elementary_summary = function(dttbl,
     for_calc
     
 }
+
+long_to_wide_summary = function(long, col_indexes, col_labels, row_indexes, row_labels){
+    ## indexes are needed to prevent possible collapse of categories with same name
+    setkeyv(long, cols = c(row_indexes, col_indexes), verbose = FALSE)
+    lhs = paste(c(row_indexes, row_labels),collapse = "+")
+    rhs = paste(c(col_indexes, col_labels),collapse = "+")
+    frm = paste(lhs, "~", rhs)
+    value_var = colnames(long) %d% c(row_indexes, row_labels,
+                                     col_indexes, col_labels)
+    mess = utils::capture.output(
+        {res = dcast.data.table(long, frm, sep = "|",  value.var = value_var, fill = NA)},
+        type = "message"
+    )
+    stopif(length(mess)>0,
+           paste0("'pivot' - possibly you set 'use_result_row_order' to FALSE without providing your own row index (",mess,").")
+    )
+    if(length(row_indexes)) res = res[, -seq_along(row_indexes), with = FALSE]
+    if(length(row_labels)) {
+        rows = as.list(res[, seq_along(row_labels), with = FALSE] )
+        rows = do.call(paste, c(rows, sep = "|"))
+        res = cbind(row_labels = rows, res[, -seq_along(row_labels), with = FALSE])
+    } else {
+        res = cbind(row_labels = "", res)
+    }
+    res$row_labels = remove_unnecessary_splitters(res$row_labels)
+    if(length(value_var)>1){
+        # dcast place 'value_var' on top of all other grouping variable
+        # we doesn't need it sowe change it
+        regx = paste(value_var, collapse = "|")
+        regx = paste0("^(",regx,")\\|(.*)$")
+        setnames(res, gsub(regx, "\\2|\\1", colnames(res), perl = TRUE))
+        old_order = seq_len(ncol(res))[-1]
+        other_order = rep(seq_len(length(old_order)/length(value_var)), length(value_var))
+        old_var_order = rep(seq_along(value_var), each = length(old_order)/length(value_var))
+        new_order = c(1, order(other_order, old_var_order) + 1)
+        res = res[,new_order, with = FALSE]
+    }
+    # remove indexes from column names
+    if(length(col_indexes)){
+        regx = rep("(\\d+|NA)\\|", length(col_indexes))
+        regx = c("^", regx, "?")
+        regx = paste(regx, collapse = "")
+        clnm = gsub(regx, "", colnames(res), perl = TRUE)
+        clnm = remove_unnecessary_splitters(clnm)
+        setnames(res, clnm)
+    }
+    res
+    
+}
+
+
