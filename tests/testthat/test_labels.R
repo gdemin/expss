@@ -29,7 +29,10 @@ context("val_lab")
 
 a = 1
 expect_error({val_lab(a) = c(a = 1, b = 1)})
-# expect_warning({val_lab(a) = c(a = 1, a = 2, b = 3, b = 4)})
+val_lab(a) = c(a = 1, a = 2)
+b = set_val_lab(1, c(a = 1, a_2 = 2))
+expect_identical(a, b)
+
 
 
 ## data.frame
