@@ -3,26 +3,20 @@ context("category")
 set.seed(123)
 dichotomy_matrix = matrix(sample(0:1,40,replace = TRUE,prob=c(.6,.4)),nrow=10)
 colnames(dichotomy_matrix) = c("Milk","Sugar","Tea","Coffee")
-expect_equal_to_reference(category(dichotomy_matrix,compress=FALSE),"rds/category1.rds")
+expect_warning(category(dichotomy_matrix,compress=FALSE))
 
-category_matrix=category(dichotomy_matrix,compress=TRUE)
-expect_identical(val_lab(category_matrix),c(Milk = 1L,Sugar = 2L,Tea = 3L,Coffee = 4L))
+expect_warning(category(dichotomy_matrix,compress=TRUE))
 
-class(dichotomy_matrix) = union("dichotomy",class(dichotomy_matrix))
-
-expect_identical(dichotomy(category_matrix,use_na = FALSE),dichotomy_matrix*1.0)
 
 
 dichotomy_matrix[] = 0
-expect_equal_to_reference(category(dichotomy_matrix,compress=TRUE),"rds/category2.rds")
-expect_equal_to_reference(category(dichotomy_matrix, prefix = "zero",compress=TRUE),"rds/category2.rds")
-expect_equal_to_reference(category_df(dichotomy_matrix, prefix = "zero",compress=TRUE),"rds/category2df.rds")
-
-expect_equal_to_reference(category(dichotomy_matrix, compress = FALSE),"rds/category3.rds")
+expect_warning(category(dichotomy_matrix, prefix = "zero",compress=TRUE))
+expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=TRUE),"rds/category2df.rds")
 
 
-expect_identical(category(dichotomy_matrix[,FALSE,drop = FALSE], compress = FALSE),
-                 structure(integer(0), .Dim = c(10L, 0L), class = c("category", "matrix")))
+
+expect_identical(as.category(dichotomy_matrix[,FALSE, drop = FALSE], compress = FALSE),
+                 (structure(integer(0), .Dim = c(10L, 0L), class = c("category", "matrix"))))
 expect_identical(category(dichotomy_matrix[,FALSE], compress = FALSE),
                  structure(integer(0), .Dim = c(10L, 0L), class = c("category", "matrix")))
 expect_identical(category(numeric(0),compress=TRUE),
@@ -51,7 +45,7 @@ var_lab(dichotomy_dataframe[[2]]) = "Sugar"
 var_lab(dichotomy_dataframe[[3]]) = "Tea"
 var_lab(dichotomy_dataframe[[4]]) = "Coffee"
 
-expect_equal_to_reference(category_df(dichotomy_dataframe, prefix = "products_",compress=TRUE), "rds/category5.rds")
+expect_equal_to_reference(as.category(dichotomy_dataframe, prefix = "products_",compress=TRUE), "rds/category5.rds")
 
 
 

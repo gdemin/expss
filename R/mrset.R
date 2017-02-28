@@ -7,8 +7,8 @@
 #' with 0 or 1 in the each column. Each column in the \code{dichotomy} is
 #' indicator of absense or presense of particular feature. Both functions don't
 #' convert its arguments to anything - it is supposed that arguments already
-#' have appropriate encoding. For conversation see \link{dichotomy} or 
-#' \link{category}.
+#' have appropriate encoding. For conversation see \link{as.dichotomy} or 
+#' \link{as.category}.
 #'
 #' @param ... variables
 #' @param label character optional label for multiple response set

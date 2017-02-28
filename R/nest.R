@@ -122,8 +122,8 @@ nest_xlist = function(x, y)
 
 nest_xy = function(x, y){
     res_mrset = FALSE
-    if(is.dichotomy(x)) x = category_df(x, use_var_lab = TRUE, compress = FALSE)
-    if(is.dichotomy(y)) y = category_df(y, use_var_lab = TRUE, compress = FALSE)
+    if(is.dichotomy(x)) x = as.category(x, compress = FALSE)
+    if(is.dichotomy(y)) y = as.category(y, compress = FALSE)
     if(is.category(x) || is.category(y)){
         res_mrset = TRUE
     }

@@ -156,3 +156,65 @@ modify_default_dataset_light_deprecated = function(x, ...){
 
 
 
+#' @export
+#' @rdname deprecated
+category = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
+    .Deprecated("as.category")
+    UseMethod("category")    
+}
+
+#' @export
+category.matrix = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
+    vallab = colnames(x)
+    res = col(x)
+    res[!(x %in% counted_value)] = NA
+    compress_and_finish(res = res, vallab = vallab, prefix = prefix, compress = compress)
+}
+
+#' @export
+category.data.frame = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
+    if (use_var_lab){
+        vallab = unlist(lapply(seq_along(x), function(i){
+            varlab = var_lab(x[[i]])
+            if(!is.null(varlab) && varlab!=""){
+                varlab
+            } else {
+                colnames(x)[i]
+            }
+        }))
+    } else {
+        vallab = colnames(x)    
+    } 
+    
+    # res = col(x)
+    for(i in seq_along(x)){
+        x[[i]] =  ((x[[i]] %in% counted_value) | NA)*i
+        # res[,i][!(x[[i]] %in% counted_value)] = NA
+    }
+    compress_and_finish(res = x, vallab = vallab, prefix = prefix, compress = compress)
+}
+
+#' @export
+category.default = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
+    category.matrix(x = as.matrix(x), 
+                    prefix = prefix, 
+                    use_var_lab = use_var_lab, 
+                    counted_value, 
+                    compress)
+}
+
+#' @export
+#' @rdname deprecated
+category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, compress = FALSE){
+    res =  category(x = x, 
+                    prefix = prefix, 
+                    use_var_lab = use_var_lab, 
+                    counted_value, 
+                    compress) 
+    vallab = val_lab(res)
+    if (!is.data.frame(res)) { 
+        res = as.dtfrm(res)
+        class(res) = union("category", class(res))   
+    }    
+    set_val_lab(res, vallab)
+}
