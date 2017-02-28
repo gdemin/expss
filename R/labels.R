@@ -386,24 +386,6 @@ make_labels=function(text, code_position=c("left","right", "autonum")){
     }   
 }
 
-#' @export
-#' @rdname val_lab
-ml_left = function(text) {
-    .Deprecated("num_lab")    
-    num_lab(text)
-}
-#' @export
-#' @rdname val_lab
-ml_right = function(text) {
-    .Deprecated("lab_num")
-    lab_num(text)
-}
-#' @export
-#' @rdname val_lab
-ml_autonum = function(text) {
-    .Deprecated("autonum")
-    autonum(text)
-}
 
 #' @export
 #' @rdname val_lab
@@ -512,6 +494,11 @@ as.labelled.labelled = function(x, label = NULL){
     
 }
 
+#' @export
+#' @rdname as.labelled
+is.labelled = function(x){
+    inherits(x, "labelled")
+}
 
 ################
 

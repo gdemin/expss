@@ -5,10 +5,6 @@
 \alias{vars_list}
 \alias{\%to\%}
 \alias{\%to_list\%}
-\alias{vars_range}
-\alias{vars_range_list}
-\alias{vars_pattern}
-\alias{vars_pattern_list}
 \title{Get variables by pattern/by name or range of variables.}
 \usage{
 vars(...)
@@ -18,14 +14,6 @@ vars_list(...)
 e1 \%to\% e2
 
 e1 \%to_list\% e2
-
-vars_range(start, end)
-
-vars_range_list(start, end)
-
-vars_pattern(pattern)
-
-vars_pattern_list(pattern)
 }
 \arguments{
 \item{...}{characters names of variables or criteria/logical functions}

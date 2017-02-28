@@ -6,14 +6,10 @@
 \alias{.modify_if}
 \alias{.do_if}
 \alias{.compute}
-\alias{.with}
 \alias{.calculate}
 \alias{.calc}
 \alias{.val_lab}
 \alias{.var_lab}
-\alias{.set_var_lab}
-\alias{.set_val_lab}
-\alias{.add_val_lab}
 \alias{.if_val}
 \alias{.recode}
 \alias{.fre}
@@ -37,8 +33,6 @@
 
 .compute(expr)
 
-.with(expr, ...)
-
 .calculate(expr, ...)
 
 .calc(expr, ...)
@@ -46,12 +40,6 @@
 .val_lab(...)
 
 .var_lab(...)
-
-.set_var_lab(x, ...)
-
-.set_val_lab(x, ...)
-
-.add_val_lab(x, ...)
 
 .if_val(x, ...)
 
@@ -119,9 +107,6 @@ data.frame. See \link{modify_if}.}
 SPSS DO IF operator. See \link{modify_if}.}
 \item{\code{.where}}{ Leave subset of default data.frame which meet
 condition. See \link{where}, \link[base]{subset}.}
-\item{\code{.set_var_lab}}{ Deprecated. Use \link{.apply_labels}.}
-\item{\code{.set_val_lab}}{ Deprecated. Use \link{.apply_labels}.}
-\item{\code{.add_val_lab}}{ Deprecated. Use \link{.apply_labels}.}
 \item{\code{.recode}}{ Change, rearrange or consolidate the values of an existing
 variable inside default data.frame. See \link{recode}.}
 \item{\code{.if_val}}{ Shortcut for \code{.recode}. See \link{recode}.}

@@ -2,9 +2,12 @@
 % Please edit documentation in R/labels.R
 \name{as.labelled}
 \alias{as.labelled}
+\alias{is.labelled}
 \title{Recode vector into integer vector with value labels}
 \usage{
 as.labelled(x, label = NULL)
+
+is.labelled(x)
 }
 \arguments{
 \item{x}{numeric vector/character vector/factor}

@@ -117,52 +117,5 @@ vars_list = function(...){
 ###################################
 
 
-#' @export
-#' @rdname vars
-vars_range = function(start, end){
-    .Deprecated(msg = 
-                    paste0("'vars_range' is deprecated. Use 'vars(from('", start,"') & to('", end, "'))' instead."))
-    eval(substitute(expss::vars(from(start) & to(end))),
-         envir = parent.frame(),
-         enclos = baseenv()
-    )
-    
-    
-}
 
-#' @export
-#' @rdname vars
-vars_range_list = function(start, end){
-    .Deprecated(msg = 
-                    paste0("'vars_range_list' is deprecated. Use 'vars_list(from('", start,"') & to('", end, "'))' instead."))
-    eval(substitute(expss::vars_list(from(start) & to(end))),
-         envir = parent.frame(),
-         enclos = baseenv()
-    )
-    
-}
-
-#' @export
-#' @rdname vars
-vars_pattern = function(pattern){
-    .Deprecated(msg = 
-                    paste0("'vars_pattern' is deprecated. Use 'vars(perl(", pattern,"))' instead."))
-    eval(substitute(expss::vars(perl(pattern))),
-         envir = parent.frame(),
-         enclos = baseenv()
-    )
-} 
-
-
-#' @export
-#' @rdname vars
-vars_pattern_list = function(pattern){
-    .Deprecated(msg = 
-                    paste0("'vars_pattern_list' is deprecated. Use 'vars_list(perl(", pattern,"))' instead."))
-    eval(substitute(expss::vars_list(perl(pattern))),
-         envir = parent.frame(),
-         enclos = baseenv()
-    )
-    
-} 
 

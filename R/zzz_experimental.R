@@ -22,9 +22,6 @@
 #' SPSS DO IF operator. See \link{modify_if}.}
 #' \item{\code{.where}}{ Leave subset of default data.frame which meet
 #' condition. See \link{where}, \link[base]{subset}.}
-#' \item{\code{.set_var_lab}}{ Deprecated. Use \link{.apply_labels}.}
-#' \item{\code{.set_val_lab}}{ Deprecated. Use \link{.apply_labels}.}
-#' \item{\code{.add_val_lab}}{ Deprecated. Use \link{.apply_labels}.}
 #' \item{\code{.recode}}{ Change, rearrange or consolidate the values of an existing
 #' variable inside default data.frame. See \link{recode}.}
 #' \item{\code{.if_val}}{ Shortcut for \code{.recode}. See \link{recode}.}
@@ -174,9 +171,6 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 modify_default_dataset_light = function(x, ...){
     expr = as.character(as.expression(sys.call()))
     expr = parse(text = gsub("^\\.","", expr, perl = TRUE))
-    if(as.character(expr[[1]][[1]]) %in% c("set_var_lab", "set_val_lab", "add_val_lab")){
-        .Deprecated("apply_labels")
-    }
     for_names = as.expression(substitute(x))
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
@@ -209,15 +203,7 @@ modify_default_dataset_light = function(x, ...){
 
 
 
-#' @export
-#' @rdname experimental
-.with = function (expr, ...) {
-    .Deprecated(".calculate")
-    reference = suppressMessages(default_dataset() )
-    # expr = substitute(expr)
-    data = ref(reference)
-    eval(substitute(with(data, expr)), envir = parent.frame(), enclos = baseenv())
-}  
+ 
 
 #' @export
 #' @rdname experimental
@@ -240,19 +226,6 @@ modify_default_dataset_light = function(x, ...){
 #' @rdname experimental
 .var_lab = eval_in_default_dataset
 
-#' @export
-#' @rdname experimental
-.set_var_lab = modify_default_dataset_light
-
-
-#' @export
-#' @rdname experimental
-.set_val_lab = modify_default_dataset_light
-
-
-#' @export
-#' @rdname experimental
-.add_val_lab = modify_default_dataset_light
 
 #' @export
 #' @rdname experimental

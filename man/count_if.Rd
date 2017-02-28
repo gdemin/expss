@@ -4,8 +4,6 @@
 \alias{count_if}
 \alias{count_row_if}
 \alias{count_col_if}
-\alias{\%in_row\%}
-\alias{\%in_col\%}
 \alias{\%row_in\%}
 \alias{\%col_in\%}
 \alias{sum_if}
@@ -35,10 +33,6 @@ count_if(criterion, ...)
 count_row_if(criterion, ...)
 
 count_col_if(criterion, ...)
-
-criterion \%in_row\% x
-
-criterion \%in_col\% x
 
 x \%row_in\% criterion
 

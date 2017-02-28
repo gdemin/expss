@@ -263,27 +263,7 @@ count_col_if=function(criterion,...){
 }
 
 
-#' @export
-#' @rdname count_if
-'%in_row%'=function(criterion, x){
-    str_x = deparse(substitute(x))
-    str_criterion = deparse(substitute(criterion))
-    warning(
-        paste0("`%in_row%` is deprecated. Please use `", str_x, " %row_in% ", str_criterion,"` instead.")
-        )
-    x %row_in% criterion
-}
 
-#' @export
-#' @rdname count_if
-'%in_col%'=function(criterion, x){
-    str_x = deparse(substitute(x))
-    str_criterion = deparse(substitute(criterion))
-    warning(
-        paste0("`%in_col%` is deprecated. Please use `", str_x, " %col_in% ", str_criterion,"` instead.")
-    )
-    x %col_in% criterion
-}
 
 #' @export
 #' @rdname count_if
