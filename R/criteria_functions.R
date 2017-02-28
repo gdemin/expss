@@ -362,8 +362,8 @@ as.criterion = function(crit){
     if (is.function(crit)) {
         res = crit
     } else {
-        if(is.logical(crit)){
-            res = function(x) crit
+        if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
+            res = function(x) crit & !is.na(crit)
         } else {
             res = function(x) x %in% crit       
         }    

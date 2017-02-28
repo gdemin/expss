@@ -119,3 +119,18 @@ expect_error(iris %i% 1)
 expect_identical(iris %d% is.numeric, iris[, 5, drop = FALSE])
 expect_identical(iris %d% NULL, iris)
 expect_error(iris %d% 1)
+
+
+test_vector = c(-5, 7, 0, 5, -8, 12, 1, 2, 3, -1, -2, -3, NA, Inf, -Inf, NaN)
+expect_identical( test_vector %d% gt(0), test_vector[!(test_vector>0 & !is.na(test_vector))])
+expect_identical( test_vector %i% gt(0), test_vector[(test_vector>0) & !is.na(test_vector)])
+expect_identical(
+    sort_asc(test_vector %d% gt(0) %a% (test_vector %i% gt(0))),
+    sort_asc(test_vector)
+)
+expect_identical( test_vector %i% (0 %thru% hi), test_vector[(test_vector>=0) & !is.na(test_vector)])
+
+expect_identical(
+    test_vector %i% (0 %thru% hi | NA | NaN),
+    c( 7, 0, 5, 12, 1, 2, 3,  NA, Inf, NaN)
+)

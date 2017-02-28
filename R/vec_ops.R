@@ -98,7 +98,9 @@ v_diff = function(e1, e2){
 v_diff.default = function(e1, e2){
     if(is.null(e2)) return(e1)
     if (is.function(e2)){
-        e1[!e2(e1)]
+        crit = e2(e1)
+        crit = !(crit & !is.na(crit))
+        e1[crit]
     } else {
         e1[!(e1 %in% e2)]
     }
@@ -108,7 +110,9 @@ v_diff.default = function(e1, e2){
 v_diff.list = function(e1, e2){
     if(is.null(e2)) return(e1)
     stopif(!is.function(e2), "For lists 'e2' should be function.")
-    e1[!vapply(e1, FUN = e2, FUN.VALUE = logical(1))]
+    crit = vapply(e1, FUN = e2, FUN.VALUE = logical(1))
+    crit = !(crit & !is.na(crit))
+    e1[crit]
 }
 
 #' @export
@@ -127,7 +131,9 @@ v_intersect = function(e1, e2){
 #' @export
 v_intersect.default = function(e1, e2){
     if (is.function(e2)){
-        e1[e2(e1)]
+        crit = e2(e1)
+        crit = crit & !is.na(crit)
+        e1[crit]
     } else {
         e1[e1 %in% e2]
     }
@@ -137,7 +143,9 @@ v_intersect.default = function(e1, e2){
 v_intersect.list = function(e1, e2){
     if(is.null(e2)) return(e1[FALSE])
     stopif(!is.function(e2), "For lists 'e2' should be function.")
-    e1[vapply(e1, FUN = e2, FUN.VALUE = logical(1))]
+    crit = vapply(e1, FUN = e2, FUN.VALUE = logical(1))
+    crit = crit & !is.na(crit)
+    e1[crit]
 }
 
 
