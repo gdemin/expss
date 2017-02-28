@@ -5,8 +5,8 @@
 #'
 #' @param data a data object (result of \link{fre}/\link{cro} and etc)
 #' @param repeat_row_labels logical Should we repeat duplicated row labels in
-#'   the every row?
-#' @param show_row_numbers logical 
+#'   the every row? Default is FALSE.
+#' @param show_row_numbers logical Default is FALSE.
 #' @param digits integer By default, all numeric columns are rounded to one digit after
 #'   decimal separator. Also you can set this argument by option 'expss.digits'
 #'   - for example, \code{option(expss.digits = 2)}. If it is NA than all
@@ -64,60 +64,70 @@ datatable.default = function(data, ...){
 
 #' @export
 #' @rdname datatable
-datatable.simple_table = function(data, 
-                                  repeat_row_labels = FALSE, 
-                                  show_row_numbers = FALSE,
-                                  digits = getOption("expss.digits"),
-                                  ...){
+datatable.etable = function(data, 
+                            repeat_row_labels = FALSE, 
+                            show_row_numbers = FALSE,
+                            digits = getOption("expss.digits"),
+                            ...){
     data = round_dataframe(data, digits = digits)
-    stopif(ncol(data)<2, "'data' should have at least two columns.")
     # first_lab = htmltools::htmlEscape(colnames(data)[1])
-    first_lab = colnames(data)[1]
-    row_labels = data[[1]]
-    data[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
-    header = t(split_labels(colnames(data), split = "|", remove_repeated = FALSE))
-    # header[] = htmltools::htmlEscape(header)
-    row_labels = split_labels(row_labels, split = "|", remove_repeated = !repeat_row_labels)
-    if(length(row_labels)){
-        row_labels = dtfrm(row_labels)    
+    if(NCOL(data)>0){
+        first_lab = colnames(data)[1]
+        row_labels = data[[1]]
+        data[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
+        header = t(split_labels(colnames(data), split = "|", remove_repeated = FALSE))
+        # header[] = htmltools::htmlEscape(header)
+        row_labels = split_labels(row_labels, split = "|", remove_repeated = !repeat_row_labels)
+        if(length(row_labels)){
+            row_labels = dtfrm(row_labels)    
+        } else {
+            row_labels = dtfrm(matrix("", nrow = nrow(data), ncol = 1))
+        }
+        
+        if(show_row_numbers) {
+            row_labels = dtfrm(seq_len(nrow(row_labels)), row_labels)    
+        }
+        colnames(row_labels) = rep("", ncol(row_labels))
+        if(nrow(header)>0){
+            empty_corner = matrix("", nrow = nrow(header) , ncol = ncol(row_labels))
+        } else {
+            empty_corner = matrix("", nrow = 1, ncol = ncol(row_labels))
+        }
+        if(is.na(first_lab) || first_lab=="row_labels") first_lab = ""
+        empty_corner[1, 1] = first_lab    
+        header = matrix_header_to_html(empty_corner, header)
+        data = cbind(row_labels, data)
     } else {
-        row_labels = dtfrm(matrix("", nrow = nrow(data), ncol = 1))
+        if(show_row_numbers) {
+            row_labels = dtfrm(seq_len(nrow(data))) 
+            
+        } else {
+            row_labels = as.dtfrm(matrix(NA, nrow = nrow(data), ncol = 0))
+        }
+        data = cbind(row_labels, data)
+        header = '<table class="display"><thead><tr><th> </th></thead></table>'
+        empty_corner = NULL
     }
-    
-    if(show_row_numbers) {
-        row_labels = dtfrm(seq_len(nrow(row_labels)), row_labels)    
-    }
-    colnames(row_labels) = rep("", ncol(row_labels))
-    empty_corner = matrix("", nrow = nrow(header), ncol = ncol(row_labels))
-    if(is.na(first_lab) || first_lab=="row_labels") first_lab = ""
-    empty_corner[1, 1] = first_lab    
-    header = matrix_header_to_html(empty_corner, header)
     args = list(...)
-    class = args[["class"]]
-    if(is.null(class)) {
-        class = 'stripe hover cell-border row-border order-column compact'
-    }  
-    filter = args[["filter"]]
-    if(is.null(filter)) {
-        filter = "none"
-    }  
-    curr_opts = args[["options"]]
-    if(is.null(curr_opts)) {
-        curr_opts = list(paging = FALSE,
-                         searching = FALSE, 
-                         sorting = FALSE, 
-                         ordering = FALSE,
-                         bFilter = FALSE, 
-                         bInfo = FALSE,
-                         columnDefs = list(
-                             list(
-                                 className = 'dt-head-left', # cell-border
-                                 targets = 0:(ncol(data)-1)
+    class = if_null(args[["class"]], 'stripe hover cell-border row-border order-column compact')
+    filter = if_null(args[["filter"]], "none")
+    curr_opts = if_null(args[["options"]], 
+                        list(paging = FALSE,
+                             searching = FALSE, 
+                             sorting = FALSE, 
+                             ordering = FALSE,
+                             bFilter = FALSE, 
+                             bInfo = FALSE,
+                             columnDefs = list(
+                                 list(
+                                     className = 'dt-head-left', # cell-border
+                                     targets = 0:(ncol(data)-1)
+                                 )
                              )
-                         ))
-    }  
+                        )
+    )
     
-    data = cbind(row_labels, data)
+    
     res = DT::datatable(data, 
                         container = header,
                         class = class, #  
@@ -135,14 +145,18 @@ datatable.simple_table = function(data,
     #                           )        
     #     }
     # }    
-    DT::formatStyle(res, NCOL(empty_corner):NCOL(data), textAlign = 'right')
+    if(NCOL(data)>0) {
+        DT::formatStyle(res, seq_len(NCOL(data))[-seq_len(NCOL(empty_corner))], textAlign = 'right')
+    } else {
+        res
+    }
     
 }
 
 
 #' @export
 #' @rdname datatable
-datatable.etable = datatable.simple_table
+datatable.simple_table = datatable.etable
 
 
 
@@ -151,49 +165,56 @@ matrix_header_to_html = function(corner, m_cols){
     thead = NULL
     tr = NULL
     th = NULL
-    m_cols[is.na(m_cols)] = ""
-    strange = colSums(m_cols != "") ==0
-    m_cols[1, strange] = " "
     row_rle = list()
-    for(i in seq_len(nrow(m_cols))){
-        # y = colSums((m_cols[1:i,-1L, drop = FALSE] != m_cols[1:i, -ncol(m_cols), drop = FALSE]) &
-        #                 (m_cols[1:i, -1L, drop = FALSE] != "") )>0
-        y = colSums((m_cols[1:i,-1L, drop = FALSE] != m_cols[1:i, -ncol(m_cols), drop = FALSE]))>0
-        changes = c(which(y | is.na(y)), ncol(m_cols))
-        row_rle[[i]] = structure(list(lengths = diff(c(0L, changes)), values = m_cols[i, changes]))
-    }
-    for (each_row in seq_along(row_rle)){
-        curr_col = 1
-        names(row_rle[[each_row]]) = c("colspan","values")
-        row_rle[[each_row]][["rowspan"]] = rep(1, length(row_rle[[each_row]]$values))
-        curr_row = row_rle[[each_row]] 
-        for(each_item in seq_along(curr_row$values)){
-            for(each in m_cols[-(1:each_row), curr_col]){
-                if(each == "") {
-                    curr_row$rowspan[each_item] = curr_row$rowspan[each_item] + 1
-                } else {
-                    break
-                }
-
-            }
-            curr_col = curr_col + curr_row$colspan[each_item] 
+    if(NCOL(m_cols)>0){
+        m_cols[is.na(m_cols)] = ""
+        strange = colSums(m_cols != "") ==0
+        m_cols[1, strange] = " "
+        
+        for(i in seq_len(nrow(m_cols))){
+            # y = colSums((m_cols[1:i,-1L, drop = FALSE] != m_cols[1:i, -ncol(m_cols), drop = FALSE]) &
+            #                 (m_cols[1:i, -1L, drop = FALSE] != "") )>0
+            y = colSums((m_cols[1:i,-1L, drop = FALSE] != m_cols[1:i, -ncol(m_cols), drop = FALSE]))>0
+            changes = c(which(y | is.na(y)), ncol(m_cols))
+            row_rle[[i]] = structure(list(lengths = diff(c(0L, changes)), values = m_cols[i, changes]))
         }
-        # if(each_row>1){
-        empty = curr_row$values %in% ""
-        # if (each_row == 1) empty[1] = FALSE
-        curr_row$values = curr_row$values[!empty]
-        curr_row$colspan = curr_row$colspan[!empty]
-        curr_row$rowspan = curr_row$rowspan[!empty]
-        # }
-        row_rle[[each_row]] = curr_row
+        for (each_row in seq_along(row_rle)){
+            curr_col = 1
+            names(row_rle[[each_row]]) = c("colspan","values")
+            row_rle[[each_row]][["rowspan"]] = rep(1, length(row_rle[[each_row]]$values))
+            curr_row = row_rle[[each_row]] 
+            for(each_item in seq_along(curr_row$values)){
+                for(each in m_cols[-(1:each_row), curr_col]){
+                    if(each == "") {
+                        curr_row$rowspan[each_item] = curr_row$rowspan[each_item] + 1
+                    } else {
+                        break
+                    }
+                    
+                }
+                curr_col = curr_col + curr_row$colspan[each_item] 
+            }
+            # if(each_row>1){
+            empty = curr_row$values %in% ""
+            # if (each_row == 1) empty[1] = FALSE
+            curr_row$values = curr_row$values[!empty]
+            curr_row$colspan = curr_row$colspan[!empty]
+            curr_row$rowspan = curr_row$rowspan[!empty]
+            # }
+            row_rle[[each_row]] = curr_row
+        }
+        row_rle[[1]]$values = c(corner[1,1],row_rle[[1]]$values)
+        row_rle[[1]]$colspan = c(ncol(corner),row_rle[[1]]$colspan)
+        row_rle[[1]]$rowspan = c(nrow(corner),row_rle[[1]]$rowspan)
+    } else {
+        row_rle[[1]] = list(values = corner[1,1], 
+                            colspan = ncol(corner),
+                            rowspan = nrow(corner)
+        )
     }
-    row_rle[[1]]$values = c(corner[1,1],row_rle[[1]]$values)
-    row_rle[[1]]$colspan = c(ncol(corner),row_rle[[1]]$colspan)
-    row_rle[[1]]$rowspan = c(nrow(corner),row_rle[[1]]$rowspan)
     withTags(table(
         class = 'display',
         thead(
-            
             lapply(row_rle, function(row){
                 tr(lapply(seq_along(row$values),function(item){
                     th(tags$style(type = "text/css",

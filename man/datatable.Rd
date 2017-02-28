@@ -2,16 +2,16 @@
 % Please edit documentation in R/html_datatable.R
 \name{datatable}
 \alias{datatable}
-\alias{datatable.simple_table}
 \alias{datatable.etable}
+\alias{datatable.simple_table}
 \title{Create an HTML table widget for usage with Shiny}
 \usage{
 datatable(data, ...)
 
-\method{datatable}{simple_table}(data, repeat_row_labels = FALSE,
+\method{datatable}{etable}(data, repeat_row_labels = FALSE,
   show_row_numbers = FALSE, digits = getOption("expss.digits"), ...)
 
-\method{datatable}{etable}(data, repeat_row_labels = FALSE,
+\method{datatable}{simple_table}(data, repeat_row_labels = FALSE,
   show_row_numbers = FALSE, digits = getOption("expss.digits"), ...)
 }
 \arguments{
@@ -20,9 +20,9 @@ datatable(data, ...)
 \item{...}{further parameters for \link[DT]{datatable}}
 
 \item{repeat_row_labels}{logical Should we repeat duplicated row labels in
-the every row?}
+the every row? Default is FALSE.}
 
-\item{show_row_numbers}{logical}
+\item{show_row_numbers}{logical Default is FALSE.}
 
 \item{digits}{integer By default, all numeric columns are rounded to one digit after
 decimal separator. Also you can set this argument by option 'expss.digits'

@@ -27,7 +27,23 @@ expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable1.rds")
 expect_equal_to_reference(datatable(mtcars_table[FALSE, ]) %n_d% c("dependencies"), 
                           "rds/html_datatable2.rds")
-expect_error(datatable(mtcars_table[, 1]))
+expect_equal_to_reference(datatable(mtcars_table[, 1])  %n_d% c("dependencies"), 
+                          "rds/html_datatable2single1.rds")
+
+expect_equal_to_reference(datatable(mtcars_table[, 1], repeat_row_labels = TRUE)  %n_d% c("dependencies"), 
+                          "rds/html_datatable2single2.rds")
+
+expect_equal_to_reference(datatable(mtcars_table[, 1], show_row_numbers = TRUE)  %n_d% c("dependencies"), 
+                          "rds/html_datatable2single3.rds")
+
+expect_equal_to_reference(datatable(mtcars_table[, FALSE, drop = FALSE])  %n_d% c("dependencies"), 
+                          "rds/html_datatable2empty1.rds")
+
+expect_equal_to_reference(datatable(mtcars_table[, FALSE, drop = FALSE], repeat_row_labels = TRUE)  %n_d% c("dependencies"), 
+                          "rds/html_datatable2empty2.rds")
+
+expect_equal_to_reference(datatable(mtcars_table[, FALSE, drop = FALSE], show_row_numbers = TRUE)  %n_d% c("dependencies"), 
+                          "rds/html_datatable2empty3.rds")
 
 expect_equal_to_reference(datatable(mtcars_table, digits = 0) %n_d% c("dependencies"),
                           "rds/html_datatable3.rds")
@@ -64,6 +80,19 @@ expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
 mtcars_table = cro_cpct(mtcars$vs, mtcars$vs %nest% mtcars$am)
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable12.rds")
+
+expect_equal_to_reference(datatable(mtcars_table[,1]) %n_d% c("dependencies"),
+                          "rds/html_datatable12single.rds")
+
+expect_equal_to_reference(datatable(mtcars_table[,1], show_row_numbers = TRUE) %n_d% c("dependencies"),
+                          "rds/html_datatable12single2.rds")
+
+
+expect_equal_to_reference(datatable(mtcars_table[,FALSE, drop = FALSE]) %n_d% c("dependencies"),
+                          "rds/html_datatable12empty.rds")
+
+expect_equal_to_reference(datatable(mtcars_table[,FALSE, drop = FALSE], show_row_numbers = TRUE) %n_d% c("dependencies"),
+                          "rds/html_datatable12empty2.rds")
 
 
 new_am = mtcars$am
@@ -105,7 +134,6 @@ expect_equal(datatable(mtcars_table),
 # 
 # 
 # library(shiny)
-# 
 # shinyApp(
 #     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
 #     server = function(input, output) {
@@ -114,3 +142,14 @@ expect_equal(datatable(mtcars_table),
 #         )
 #     }
 # )
+# 
+# `%n_d%` = function(e1, e2){
+#     shinyApp(
+#         ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
+#         server = function(input, output) {
+#             output$tbl = DT::renderDataTable(
+#                 e1
+#             )
+#         }
+#     )
+# }
