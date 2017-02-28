@@ -178,15 +178,6 @@ expect_identical(labs4,make_labels("
     
     ",code_position="right"))
 
-expect_identical(labs4,ml_right("
-    Very bad -1
-                                   Bad \t -0.5 
-                                   Normal    0 
-                                   \t\tGood 0.5 
-                                   Very good  1
-                                   
-                                   
-                                   "))
 
 
 expect_identical(labs4,make_labels("
@@ -210,15 +201,6 @@ expect_identical(labs4,make_labels(c("
                             
                             ","","      \t\t"),code_position="left"))
 
-expect_identical(labs4,ml_left(c("
-                            \t-1 Very bad",
-                                     "\t-0.5\tBad \t",  
-                                     "0 Normal
-                                     0.5\t\tGood", 
-                                     "1 Very good
-                                     
-                                     
-                                     ","","      \t\t")))
 
 expect_identical(make_labels("
     1
@@ -350,7 +332,7 @@ expect_identical(
 
 context("as.labelled")
 
-expect_error()
+
 
 character_vector = c("one", "two",  "two", "three")
 res = c(1L, 3L, 3L, 2L)
@@ -388,6 +370,15 @@ var_lab(a) = "ssdds"
 expect_identical(as.labelled(a), set_val_lab(a, c("1" = 1L, "2" = 2L)))
 
 
+context("is.labelled")
 
-
-
+a = 1:5
+expect_identical(is.labelled(a), FALSE)
+var_lab(a) = "aaa"
+expect_identical(is.labelled(a), TRUE)
+a = unlab(a)
+expect_identical(is.labelled(a), FALSE)
+val_lab(a) = c(a = 1)
+expect_identical(is.labelled(a), TRUE)
+class(a) = union("new_class", class(a))
+expect_identical(is.labelled(a), TRUE)
