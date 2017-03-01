@@ -218,3 +218,86 @@ category_df = function(x, prefix = NULL, use_var_lab = TRUE, counted_value=1, co
     }    
     set_val_lab(res, vallab)
 }
+
+#' @export
+#' @rdname deprecated
+dichotomy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                     keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    res = dichotomy_dispatcher(x = x,
+                               prefix = prefix, 
+                               keep_unused = keep_unused,
+                               use_na = use_na,
+                               keep_values = keep_values, 
+                               keep_labels = keep_labels, 
+                               drop_values = drop_values, 
+                               drop_labels = drop_labels)
+    res = do.call(prefix_helper, res)
+    class(res) = union("dichotomy",class(res)) # for future usage. by now there is no methods for this class
+    res 
+    
+}
+
+
+#' @export
+#' @rdname deprecated
+dichotomy1 = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                      keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    res = dichotomy(x,
+                    prefix = prefix,
+                    keep_unused = keep_unused,
+                    use_na = use_na,
+                    keep_values = keep_values, 
+                    keep_labels = keep_labels, 
+                    drop_values = drop_values, 
+                    drop_labels = drop_labels)
+    if (ncol(res)>0){
+        res = res[,-ncol(res),drop = FALSE]
+    }
+    class(res) = union("dichotomy", class(res)) 
+    res
+}
+
+
+#' @export
+#' @rdname deprecated
+dichotomy1_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                         keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    res = dichotomy_df(x,
+                       prefix = prefix,
+                       keep_unused = keep_unused,
+                       use_na = use_na,
+                       keep_values = keep_values, 
+                       keep_labels = keep_labels, 
+                       drop_values = drop_values, 
+                       drop_labels = drop_labels)
+    if (ncol(res)>0){
+        res = res[,-ncol(res),drop = FALSE]
+    }
+    class(res) = union("dichotomy", class(res)) 
+    res
+    
+}
+
+#' @export
+#' @rdname deprecated
+dichotomy_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                        keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    res = dichotomy_dispatcher(x = x,
+                               prefix = prefix, 
+                               keep_unused = keep_unused,
+                               use_na = use_na,
+                               keep_values = keep_values, 
+                               keep_labels = keep_labels, 
+                               drop_values = drop_values, 
+                               drop_labels = drop_labels)
+    n_vallab = names(res$vallab)
+    res = do.call(prefix_helper, res)
+    res = as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
+    if(length(n_vallab)>0 && !is.null(prefix)){
+        for (each in seq_along(res)){
+            var_lab(res[[each]]) = n_vallab[each]
+        }
+    } 
+    class(res) = union("dichotomy", class(res)) 
+    res
+}

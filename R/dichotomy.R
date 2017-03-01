@@ -1,21 +1,23 @@
-#' Convert variable (possibly multiple choice question) to matrix of dummy variables.
+#' Convert variable (possibly multiple choice question) to data.frame/matrix of dummy variables.
 #' 
 #' This function converts variable/multiple response variable(matrix/data.frame)
 #'  with category encoding into matrix with dichotomy encoding (0/1) 
 #' suited for most statistical analysis, e. g. clustering, factor analysis, 
 #' linear regression and so on. 
 #' \itemize{ 
-#' \item{\code{dichotomy}}{ returns matrix with 0, 1 and possibly NA.} 
+#' \item{\code{as.dichotomy}}{ returns data.frame of class 'dichotomy' with 0, 1 and possibly NA.} 
 #' \item{\code{dichotomy1}}{ drops last column in dichotomy matrix. It is useful in many cases
 #' because any column of such matrix usually is linear combinations of other columns.}
-#' \item{\code{dummy}}{ is another shortcut for \code{dichotomy}.}
-#' \item{\code{*_df}}{ are the same functions as \code{dichotomy} etc. but return
-#' data.frame instead of matrix.}
+#' \item{\code{dummy}}{ returns matrix of class 'dichotomy' with 0, 1 and possibly NA.}
+#' \item{\code{dummy1}}{ drops last column in dichotomy matrix. It is useful in many cases
+#' because any column of such matrix usually is linear combinations of other columns.}
 #' }
 #' @param x vector/factor/matrix/data.frame.
-#' @param prefix character. If it is not NULL it instead of labels will be used prefix+values.
-#' @param keep_unused Logical. Should we create columns for unused value labels/factor levels.
-#' @param use_na Logical. Should we use NA for rows with all NA or use 0's instead.
+#' @param prefix character. If it is not NULL then instead of labels will be used prefix+values.
+#' @param keep_unused Logical. Should we create columns for unused value
+#'   labels/factor levels? FALSE by default.
+#' @param use_na Logical. Should we use NA for rows with all NA or use 0's
+#'   instead. TRUE by default.
 #' @param keep_values Numeric/character. Values that should be kept. By default
 #'   all values will be kept.
 #' @param keep_labels Numeric/character. Labels/levels that should be kept. By
@@ -24,7 +26,7 @@
 #'   all values will be kept. Ignored if keep_values/keep_labels are provided.
 #' @param drop_labels Numeric/character. Labels/levels that should be dropped. By
 #'   default all labels/levels will be kept. Ignored if keep_values/keep_labels are provided.
-#' @return matrix or data.frame of class \code{dichotomy} with 0,1 which column names are value labels or
+#' @return  data.frame or matrix of class \code{dichotomy} with 0,1 which column names are value labels or
 #'   values with prefix. If label doesn't exist for particular value then this
 #'   value will be used as column name.
 #' @seealso \code{\link{as.category}} for reverse conversion, \link{mrset},
@@ -77,7 +79,32 @@
 #' dichotomy_df(brands, prefix = "brand_")
 #' 
 #' @export
-dichotomy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+#' @rdname dichotomy
+as.dichotomy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                        keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    res = dichotomy_dispatcher(x = x,
+                               prefix = prefix, 
+                               keep_unused = keep_unused,
+                               use_na = use_na,
+                               keep_values = keep_values, 
+                               keep_labels = keep_labels, 
+                               drop_values = drop_values, 
+                               drop_labels = drop_labels)
+    n_vallab = names(res$vallab)
+    res = do.call(prefix_helper, res)
+    res = as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
+    if(length(n_vallab)>0 && !is.null(prefix)){
+        for (each in seq_along(res)){
+            var_lab(res[[each]]) = n_vallab[each]
+        }
+    } 
+    class(res) = union("dichotomy", class(res)) 
+    res
+}
+
+#' @export
+#' @rdname as.dichotomy
+dummy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                      keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     res = dichotomy_dispatcher(x = x,
                                prefix = prefix, 
@@ -93,10 +120,30 @@ dichotomy = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_
     
 }
 
+
 #' @export
 #' @rdname dichotomy
+dummy1 = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
+                  keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    res = dummy(x,
+                prefix = prefix,
+                keep_unused = keep_unused,
+                use_na = use_na,
+                keep_values = keep_values, 
+                keep_labels = keep_labels, 
+                drop_values = drop_values, 
+                drop_labels = drop_labels)
+    if (ncol(res)>0){
+        res = res[,-ncol(res),drop = FALSE]
+    }
+    class(res) = union("dichotomy", class(res)) 
+    res
+}
+
+#' @export
+#' @rdname as.dichotomy
 is.dichotomy = function(x){
-    "dichotomy" %in% class(x)
+    inherits(x, "dichotomy")
 }
 
 # so unnessasary complex because we need return dihotomy_df with labels from original data
@@ -106,7 +153,7 @@ dichotomy_dispatcher = function(x, prefix = NULL, keep_unused = FALSE, use_na = 
     UseMethod("dichotomy_dispatcher")    
 }
 
-
+#' @export
 dichotomy_dispatcher.default = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                                         keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     vallab = dichotomy_helper(x = x,
@@ -126,7 +173,7 @@ dichotomy_dispatcher.default = function(x, prefix = NULL, keep_unused = FALSE, u
     list(res = res, vallab = vallab, prefix = prefix)
 }
 
-
+#' @export
 dichotomy_dispatcher.factor = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                                        keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     dichotomy_dispatcher.default(as.labelled(x),
@@ -139,7 +186,7 @@ dichotomy_dispatcher.factor = function(x, prefix = NULL, keep_unused = FALSE, us
                                  drop_labels = drop_labels)
 }
 
-
+#' @export
 dichotomy_dispatcher.matrix = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                                        keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     if (NCOL(x)<2) {
@@ -164,7 +211,7 @@ dichotomy_dispatcher.matrix = function(x, prefix = NULL, keep_unused = FALSE, us
     
 }
 
-
+#' @export
 dichotomy_dispatcher.data.frame = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                                            keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     vallab = dichotomy_helper(x = x,
@@ -223,75 +270,12 @@ dichotomy_helper = function(x, keep_unused = FALSE, keep_values = NULL,
         }
     }
     if (!is.null(varlab) && (varlab!="")) {
-        names(vallab) = paste(varlab,names(vallab),sep = LABELS_SEP) 
+        names(vallab) = paste(varlab, names(vallab),sep = LABELS_SEP) 
     }    
 
     vallab    
 }
 
-#' @export
-#' @rdname dichotomy
-dichotomy1 = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                      keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    res = dichotomy(x,
-                    prefix = prefix,
-                    keep_unused = keep_unused,
-                    use_na = use_na,
-                    keep_values = keep_values, 
-                    keep_labels = keep_labels, 
-                    drop_values = drop_values, 
-                    drop_labels = drop_labels)
-    if (ncol(res)>0){
-        res = res[,-ncol(res),drop = FALSE]
-    }
-    class(res) = union("dichotomy", class(res)) 
-    res
-}
-
-
-#' @export
-#' @rdname dichotomy
-dichotomy1_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                      keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    res = dichotomy_df(x,
-                    prefix = prefix,
-                    keep_unused = keep_unused,
-                    use_na = use_na,
-                    keep_values = keep_values, 
-                    keep_labels = keep_labels, 
-                    drop_values = drop_values, 
-                    drop_labels = drop_labels)
-    if (ncol(res)>0){
-        res = res[,-ncol(res),drop = FALSE]
-    }
-    class(res) = union("dichotomy", class(res)) 
-    res
-        
-}
-
-#' @export
-#' @rdname dichotomy
-dichotomy_df = function(x, prefix = NULL, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                         keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    res = dichotomy_dispatcher(x = x,
-                               prefix = prefix, 
-                               keep_unused = keep_unused,
-                               use_na = use_na,
-                               keep_values = keep_values, 
-                               keep_labels = keep_labels, 
-                               drop_values = drop_values, 
-                               drop_labels = drop_labels)
-    n_vallab = names(res$vallab)
-    res = do.call(prefix_helper, res)
-    res = as.data.frame(res, stringsAsFactors = FALSE, check.names = FALSE)
-    if(length(n_vallab)>0 && !is.null(prefix)){
-        for (each in seq_along(res)){
-            var_lab(res[[each]]) = n_vallab[each]
-        }
-    } 
-    class(res) = union("dichotomy", class(res)) 
-    res
-}
 
 prefix_helper = function(res, vallab, prefix){
     if(is.null(prefix)){
@@ -304,10 +288,6 @@ prefix_helper = function(res, vallab, prefix){
     res 
 }
 
-#' @export
-#' @rdname dichotomy
-dummy = dichotomy
 
-#' @export
-#' @rdname dichotomy
-dummy_df = dichotomy_df
+
+

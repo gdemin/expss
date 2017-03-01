@@ -14,12 +14,13 @@
 #' @param label character optional label for multiple response set
 #'
 #' @return data.frame of class \code{category}/\code{dichotomy}
+#' @seealso \link{as.dichotomy}, \link{as.category}
 #' @export
 #'
 #' @examples
 #' 
 #' data(product_test)
-#' a1 = with(product_test, mrset(a1_1 %to% a1_6))
+#' a1 = calculate(product_test, mrset(a1_1 %to% a1_6))
 #' 
 mrset = function(..., label = NULL){
     args = list(...)
