@@ -18,7 +18,8 @@ prefix+column number.}
 \item{counted_value}{Vector. Values that will be considered as indicator 
 of category presence. By default it equals to 1.}
 
-\item{compress}{Logical. Should we drop columns with all NA? FALSE by default.}
+\item{compress}{Logical. Should we drop columns with all NA? FALSE by 
+default. TRUE siginficantly decreases performance of the function.}
 }
 \value{
 data.frame of class \code{category} with numeric values

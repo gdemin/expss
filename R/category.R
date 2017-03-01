@@ -5,7 +5,8 @@
 #'   prefix+column number.
 #' @param counted_value Vector. Values that will be considered as indicator 
 #' of category presence. By default it equals to 1.
-#' @param compress Logical. Should we drop columns with all NA? FALSE by default.
+#' @param compress Logical. Should we drop columns with all NA? FALSE by 
+#'   default. TRUE siginficantly decreases performance of the function.
 #' @return data.frame of class \code{category} with numeric values
 #'   that correspond to column numbers of counted values. Column names of x or
 #'   variable labels are added as value labels.
@@ -70,7 +71,7 @@ as.category.data.frame = function(x, prefix = NULL, counted_value = 1, compress 
 
 #' @export
 as.category.default = function(x, prefix = NULL, counted_value = 1, compress = FALSE){
-    as.category(x = as.dtfrm(x), 
+    as.category(x = as.matrix(x), 
                     prefix = prefix, 
                     counted_value = counted_value, 
                     compress = compress)
