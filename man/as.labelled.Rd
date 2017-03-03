@@ -3,7 +3,7 @@
 \name{as.labelled}
 \alias{as.labelled}
 \alias{is.labelled}
-\title{Recode vector into integer vector with value labels}
+\title{Recode vector into numeric vector with value labels}
 \usage{
 as.labelled(x, label = NULL)
 
@@ -15,10 +15,10 @@ is.labelled(x)
 \item{label}{optional variable label}
 }
 \value{
-integer vector with labels
+numeric vector with labels
 }
 \description{
-Recode vector into integer vector with value labels
+Recode vector into numeric vector with value labels
 }
 \examples{
 character_vector = c("one", "two",  "two", "three")

@@ -100,6 +100,9 @@ set_var_lab.data.frame = function(x,value){
 
 #' @export
 set_var_lab.default = function(x,value){
+    # this conversion is needed to avoid strange bug (incorrect residuals)
+    # with 'lm' with labelled integers 
+    if(is.integer(x)) x[] = as.double(x)
     if (length(value)==0){
         attr(x,"label")=NULL
         if(length(val_lab(x))==0){
@@ -107,6 +110,7 @@ set_var_lab.default = function(x,value){
         }
         return(x)
     }
+    
     attr(x,"label")=value
     class(x)=union("labelled",class(x))
     x
@@ -298,7 +302,9 @@ add_val_lab = function(x, value) set_val_lab(x, value, add = TRUE)
 set_val_lab.default = function(x, value, add = FALSE){
     stopif(!is.null(value) && is.null(names(value)), "Labels should be named vector.")
     stopif(anyDuplicated(value),"duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
-
+    # this conversion is needed to avoid strange bug (incorrect residuals)
+    # with 'lm' with labelled integers 
+    if(is.integer(x)) x[] = as.double(x)
     if (add) value = combine_labels(value,val_lab(x))
  
     names_vallab = names(value)
@@ -445,12 +451,12 @@ unlab.list=function(x){
 
 
 
-#' Recode vector into integer vector with value labels 
+#' Recode vector into numeric vector with value labels 
 #'
 #' @param x numeric vector/character vector/factor 
 #' @param label optional variable label
 #'
-#' @return integer vector with labels
+#' @return numeric vector with labels
 #' @export
 #' @examples
 #' character_vector = c("one", "two",  "two", "three")

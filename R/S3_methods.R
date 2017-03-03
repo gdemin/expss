@@ -34,7 +34,7 @@ c.labelled = function(..., recursive = FALSE)
 
 #' @export
 rep.labelled = function (x, ...){
-    y=NextMethod("rep")
+    y= NextMethod("rep")
     var_attr(y)=var_attr(x)
     class(y) = class(x)
     y	
@@ -158,6 +158,8 @@ as.integer.labelled = function (x, ...){
     y	
 }
 
+#' @export
+as.numeric.labelled = as.double.labelled
 
 #' @export
 as.character.labelled = function (x, ...){
