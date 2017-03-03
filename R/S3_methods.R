@@ -42,13 +42,13 @@ rep.labelled = function (x, ...){
 
 #' @export
 '[.labelled' = function (x, ...){
-    y = NextMethod("[")
+    y = NextMethod("[", ...)
     # browser()
     # class(x) = setdiff(class(x), "labelled")
-    # y = x[...]
+    # y = `[`(x, ...)
     var_attr(y)=var_attr(x)
-    # class(y) = union("labelled", class(x))
-    class(y) = class(x)
+    class(y) = union("labelled", class(x))
+    # class(y) = class(x)
     y
 }
 
@@ -59,8 +59,8 @@ rep.labelled = function (x, ...){
     # class(x) = setdiff(class(x), "labelled")
     # y = x[...]
     var_attr(y)=var_attr(x)
-    # class(y) = union("labelled", class(x))
-    class(y) = class(x)
+    class(y) = union("labelled", class(x))
+    # class(y) = class(x)
     y
 }
 
