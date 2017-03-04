@@ -15,8 +15,6 @@
 \alias{.set_var_lab}
 \alias{.set_val_lab}
 \alias{.add_val_lab}
-\alias{category}
-\alias{category_df}
 \title{Deprecated functions (don't use them)}
 \usage{
 criterion \%in_row\% x
@@ -44,12 +42,6 @@ vars_pattern_list(pattern)
 .set_val_lab(x, ...)
 
 .add_val_lab(x, ...)
-
-category(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
-  compress = FALSE)
-
-category_df(x, prefix = NULL, use_var_lab = TRUE, counted_value = 1,
-  compress = FALSE)
 }
 \arguments{
 \item{criterion}{deprecated}

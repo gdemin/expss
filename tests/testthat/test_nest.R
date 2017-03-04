@@ -19,10 +19,10 @@ df_res = structure(list(V1 = structure(c(1, NA, 3), labels = structure(1:6, .Nam
 
 expect_identical(nest(m_choice, 5:7), df_res)
 expect_identical(nest(mrset(m_choice), 5:7), mrset(df_res))
-expect_identical(nest(dichotomy(m_choice), 5:7), mrset(df_res))
+expect_identical(nest(dummy(m_choice), 5:7), mrset(df_res))
 expect_identical(nest(list(m_choice, 1:3), 5:7), list(df_res, simple_res))
 expect_identical(nest(list(mrset(m_choice), 1:3), 5:7), list(mrset(df_res), simple_res))
-expect_identical(nest(list(dichotomy_df(m_choice), 1:3), 5:7), list(mrset(df_res), simple_res))
+expect_identical(nest(list(as.dichotomy(m_choice), 1:3), 5:7), list(mrset(df_res), simple_res))
 
 df_res2 = structure(list(V1 = structure(c(1, NA, 5), labels = structure(1:6, .Names = c("5|1", 
 "5|2", "6|1", "6|2", "7|1", "7|2")), class = c("labelled", "numeric"
@@ -31,7 +31,7 @@ df_res2 = structure(list(V1 = structure(c(1, NA, 5), labels = structure(1:6, .Na
 ))), .Names = c("V1", "V2"), row.names = c(NA, -3L), class = "data.frame")
 expect_identical(nest(5:7, m_choice), df_res2)
 expect_identical(nest(5:7, mrset(m_choice)), mrset(df_res2))
-expect_identical(nest(5:7, dichotomy_df(m_choice)), mrset(df_res2))
+expect_identical(nest(5:7, as.dichotomy(m_choice)), mrset(df_res2))
 
 
 expect_identical(nest(5:7, list(m_choice, 1:3)), 
@@ -56,7 +56,7 @@ expect_identical(nest(5:7, list(mrset(m_choice), 1:3)),
                  )
 )
 
-expect_identical(nest(5:7, list(dichotomy(m_choice), 1:3)), 
+expect_identical(nest(5:7, list(dummy(m_choice), 1:3)), 
                  list(
                      nest(c(5, NA, NA), mrset(m_choice)),
                      nest(c(5, NA, NA), 1:3),
@@ -89,7 +89,7 @@ expect_identical(nest(factor(5:7), list(mrset(m_choice), 1:3)),
                  )
 )
 
-expect_identical(nest(factor(5:7), list(dichotomy_df(m_choice), 1:3)), 
+expect_identical(nest(factor(5:7), list(as.dichotomy(m_choice), 1:3)), 
                  list(
                      nest(c(5, NA, NA), mrset(m_choice)),
                      nest(c(5, NA, NA), 1:3),

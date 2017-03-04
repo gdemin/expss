@@ -58,29 +58,27 @@ b_res = calculate(product_test, b1_1 %to% b1_6)
 
 class(a_res) = union("category", class(a_res))
 
-big = cbind(dichotomy_df(a_res), dichotomy_df(b_res))
+big = cbind(as.dichotomy(a_res), as.dichotomy(b_res))
 class(big) = union("dichotomy", class(big))
-a_res_dich = dichotomy_df(a_res)
+a_res_dich = as.dichotomy(a_res)
 strange = a_res_dich
 if_val(a_res_dich) = 1:150>100 ~ NA
 if_val(strange) = 1:150>100 ~ 0
 expect_identical(mdset(strange), a_res_dich)
-a_res_dich = dichotomy_df(a_res)
+a_res_dich = as.dichotomy(a_res)
 strange = a_res_dich
 if_val(strange) = c(0 ~ NA, 1 ~ 42)
 expect_identical(mdset(strange),  a_res_dich)
 
-expect_identical(mdset(dichotomy_df(a_res), dichotomy_df(b_res)), big)
-expect_identical(mdset(dichotomy(a_res), dichotomy(b_res)), big)
-expect_identical(mdset(dichotomy(a_res)[,1]), 
-                 setNames(mdset(a_res_dich[,1, drop = FALSE]), "x"))
+expect_identical(mdset(as.dichotomy(a_res), as.dichotomy(b_res)), big)
 
-a_res_dich = dichotomy_df(a_res)
+
+a_res_dich = as.dichotomy(a_res)
 for(each in seq_along(a_res_dich)){
     var_lab(a_res_dich[[each]]) = paste0("New label|", names(a_res_dich)[each]) 
 }
 
-expect_identical(mdset(dichotomy(a_res), label = "New label"),  a_res_dich)
+# expect_identical(mdset(dummy(a_res), label = "New label"),  a_res_dich)
 
 a_res = a_res_dich
 for(each in seq_along(a_res_dich)){

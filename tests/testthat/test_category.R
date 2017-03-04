@@ -3,14 +3,11 @@ context("category")
 set.seed(123)
 dichotomy_matrix = matrix(sample(0:1,40,replace = TRUE,prob=c(.6,.4)),nrow=10)
 colnames(dichotomy_matrix) = c("Milk","Sugar","Tea","Coffee")
-expect_warning(category(dichotomy_matrix,compress=FALSE))
-
-expect_warning(category(dichotomy_matrix,compress=TRUE))
 
 
 
 dichotomy_matrix[] = 0
-expect_warning(category(dichotomy_matrix, prefix = "zero",compress=TRUE))
+
 expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=TRUE),"rds/category2df.rds")
 expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE),"rds/category3df.rds")
 expect_true(is.category(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE)))
@@ -51,4 +48,12 @@ expect_equal_to_reference(as.category(dichotomy_dataframe, prefix = "products_",
                           "rds/category5.rds")
 
 
+dichotomy_dataframe2 = dichotomy_dataframe
+var_lab(dichotomy_dataframe2[[4]]) = NULL
 
+expect_identical(as.category(dichotomy_dataframe2, prefix = "products_",compress=TRUE), 
+                          add_val_lab(
+                              as.category(dichotomy_dataframe, prefix = "products_",compress=TRUE),
+                              c("product_4" = 4L)
+                          )
+)

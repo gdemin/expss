@@ -160,7 +160,7 @@ multiples_to_single_columns_with_dummy_encoding = function(x){
                 as.list(make_labels_from_names(item))
             } else {
                 if(is.category(item)){
-                    item = dichotomy_df(item, keep_unused = TRUE, use_na = TRUE)
+                    item = as.dichotomy(item, keep_unused = TRUE, use_na = TRUE)
                     na_if(item) = 0
                     
                     val_lab(item) = setNames(1, "")

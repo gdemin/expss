@@ -31,6 +31,9 @@ have appropriate encoding. For conversation see \link{as.dichotomy} or
 \examples{
 
 data(product_test)
-a1 = with(product_test, mrset(a1_1 \%to\% a1_6))
+a1 = calculate(product_test, mrset(a1_1 \%to\% a1_6))
 
+}
+\seealso{
+\link{as.dichotomy}, \link{as.category}
 }

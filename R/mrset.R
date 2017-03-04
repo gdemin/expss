@@ -44,6 +44,7 @@ mrset = function(..., label = NULL){
 #' @export
 #' @rdname mrset
 mdset = function(..., label = NULL){
+    # TODO should make var labs from column names if it is absent
     args = list(...)
     stopif(!length(args), "`mdset` - you should provide at least one argument.")
     if(length(args)==1){

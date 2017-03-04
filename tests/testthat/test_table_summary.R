@@ -259,18 +259,21 @@ calc(w, table_summary(list(a22, b22), col_vars = list(list(mrset(a1_1 %to% a1_6)
 , "rds/table_summary16.rds"
 )
 expect_equal_to_reference(
-    calc(w, table_summary(list(a22, b22), col_vars = mdset(dichotomy_df(a1_1 %to% a1_6, keep_unused = TRUE)),
+    calc(w, table_summary(list(a22, b22), col_vars = mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)),
                           fun = w_mean))
     , "rds/table_summary16.rds"
 )
 expect_equal_to_reference(
     calc(w, table_summary(list(a22, b22), 
-                          col_vars = list(list(mdset(dichotomy_df(a1_1 %to% a1_6, keep_unused = TRUE)))),
+                          col_vars = list(list(mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)))),
                           fun = w_mean))
     , "rds/table_summary16.rds"
 )
 expect_equal_to_reference(
-calc(w, table_summary(list(a22, b22), col_vars = "Total", row_vars = list(mrset(a1_1 %to% a1_6)), fun = w_mean))
+calc(w, table_summary(list(a22, b22), 
+                      col_vars = "Total", 
+                      row_vars = list(mrset(a1_1 %to% a1_6)), 
+                      fun = w_mean))
 , "rds/table_summary17.rds"
 )
 expect_equal_to_reference(
@@ -281,13 +284,13 @@ expect_equal_to_reference(
 
 expect_equal_to_reference(
     calc(w, table_summary(list(a22, b22), col_vars = "Total",
-                          row_vars =  mdset(dichotomy_df(a1_1 %to% a1_6, keep_unused = TRUE)),
+                          row_vars =  mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)),
                           fun = w_mean))
     , "rds/table_summary17.rds"
 )
 expect_equal_to_reference(
     calc(w, table_summary(list(a22, b22), col_vars = "Total",
-                          row_vars =  list(list(mdset(dichotomy_df(a1_1 %to% a1_6, keep_unused = TRUE)))),
+                          row_vars =  list(list(mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)))),
                           fun = w_mean))
     , "rds/table_summary17.rds"
 )
