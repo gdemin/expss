@@ -13,6 +13,12 @@
 * add 'do_repeat' function
 * add functions for weighted statistics - 'w_mean', 'w_median', 'w_cor' and etc.
 * add 'nest' function for creation nested tables.
+* remove 'category', 'category_df' - use 'as.category' instead
+* remove 'dichotomy', 'dichotomy1' - use 'dummy', 'dummy1' instead
+* remove 'dichotomy_df', 'dichotomy_df1' - use 'as.dichotomy' instead
+* remove labelled matrix support
+* add 'datatable' for tables representation in Shiny
+* make value labels support in the base R and other packages (via 'factor' for class 'labelled')
 
 0.5.5 (19.10.2016)
 ================
