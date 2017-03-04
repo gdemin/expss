@@ -240,7 +240,7 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
     if(!is.null(predictor)){
         if(is.factor(predictor)) predictor = as.labelled(predictor)
         predictor = unvr(predictor)
-        total = tapply(weight, list(f(predictor)), FUN = sum, na.rm = TRUE)
+        total = tapply(weight, list(to_fac(predictor)), FUN = sum, na.rm = TRUE)
         predictor = rep(predictor, NCOL(x))
     } else {
         total = NULL
@@ -252,9 +252,9 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
     val_lab(x) = vallab
     
     if (is.null(predictor)){
-        res = tapply(weight, list(f(x)), FUN = sum, na.rm = TRUE)
+        res = tapply(weight, list(to_fac(x)), FUN = sum, na.rm = TRUE)
     } else {
-        res = tapply(weight, list(f(x), f(predictor)), FUN = sum, na.rm = TRUE)
+        res = tapply(weight, list(to_fac(x), to_fac(predictor)), FUN = sum, na.rm = TRUE)
     }
     labels = rownames(res)
     if(is.null(labels)) labels = character(0)
@@ -499,7 +499,7 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
     )
     if_na(labels) = colnames(x)
     
-    predictor = f(unvr(predictor))
+    predictor = to_fac(unvr(predictor))
     if(is.null(weight)){
         result = lapply(x, function(col){
             res = lapply(split(col, predictor, drop = TRUE), FUN = fun, ...)
@@ -557,7 +557,7 @@ cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
     column_total = lapply(list(column_total), function(each) prepare_result(list("#Total" = each)))
     column_total = do.call(rbind, column_total)
     if (colnames(column_total)[1] == "#stat") column_total = column_total[,-1, drop = FALSE]
-    predictor = f(unvr(predictor))
+    predictor = to_fac(unvr(predictor))
     if(is.null(weight)){
         res = lapply(split(x, predictor, drop = TRUE), FUN = fun, ...)
         result = prepare_result(res)
