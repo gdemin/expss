@@ -8,24 +8,18 @@ mat = matrix(1:9,ncol=3)
 
 expect_identical(values2labels(mat),mat)
 
-var_lab(mat) = "matrix"
+
 
 out_mat =  mat
 expect_identical(values2labels(mat),out_mat)
 
-val_lab(mat) = c(one=1, two = 2)
-out_mat[1,1] = "one" 
-out_mat[2,1] = "two" 
-expect_identical(values2labels(mat),out_mat)
+
 
 mat[,3] = NA
 out_mat[,3] = NA
 expect_identical(values2labels(mat),out_mat)
 expect_identical(values2labels(numeric(0)),numeric(0))
-str_mat = mat
-str_mat[] = "a"
-str_mat = unvl(str_mat[, FALSE])
-expect_identical(values2labels(mat[,FALSE]), str_mat)
+
 
 
 df = data.frame(a=1:3,b = 3:1,d=letters[1:3],e=NA,stringsAsFactors = FALSE)

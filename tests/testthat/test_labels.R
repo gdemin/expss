@@ -288,8 +288,8 @@ context("labels NULL")
 a = 1:3
 b = a
 val_lab(b) = c(a=1)
-expect_identical(set_val_lab(b, NULL), a)
-
+expect_identical(set_val_lab(b, NULL), as.double(a))
+a = as.double(a)
 var_lab(b) = "bbb"
 expect_identical(set_val_lab(b, NULL), set_var_lab(a, "bbb"))
 expect_identical(set_var_lab(b, NULL), set_val_lab(a, c(a=1)))
@@ -388,13 +388,13 @@ expect_identical(as.labelled(dat), res)
 
 a = 1:2
 val_lab(a) = c("a"=1, "b" = 2)
-expect_identical(as.labelled(a), a)
+expect_identical(as.labelled(a), as.double(a))
 var_lab(a) = "ssdds"
 expect_identical(as.labelled(a), a)
 expect_identical(as.labelled(a, "new"), set_var_lab(a, "new"))
 a = 1:2
 var_lab(a) = "ssdds"
-expect_identical(as.labelled(a), set_val_lab(a, c("1" = 1L, "2" = 2L)))
+expect_equal(as.labelled(a), set_val_lab(a, c("1" = 1L, "2" = 2L)))
 
 
 context("is.labelled")
@@ -409,3 +409,13 @@ val_lab(a) = c(a = 1)
 expect_identical(is.labelled(a), TRUE)
 class(a) = union("new_class", class(a))
 expect_identical(is.labelled(a), TRUE)
+
+context("labelled matrix")
+
+aaa = matrix(1:9, 3)
+
+expect_error(set_val_lab(aaa, NULL))
+expect_error(set_var_lab(aaa, NULL))
+expect_error(as.labelled(aaa, NULL))
+expect_error(as.labelled(as.list(aaa), NULL))
+expect_error(as.labelled(as.data.frame(aaa), NULL))

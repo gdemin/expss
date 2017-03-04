@@ -81,16 +81,6 @@ to_labelled.list = function(x){
     how = "replace")
 } 
 
-matrix_to_df_with_labels = function(matr){
-    if(is.matrix(matr)){
-        vallabs = val_lab(matr)
-        varlab = var_lab(matr)
-        matr = as.dtfrm(matr)
-        val_lab(matr) = vallabs
-        var_lab(matr) = varlab
-        matr
-    } else matr
-}
 
 nest_xlist = function(x, y)
     # x - vector or data.frame, y - list
@@ -166,8 +156,8 @@ nest_xy = function(x, y){
     res_lab = seq_len(max_y*max_x)
     names(res_lab) = outer(new_lab_y, new_lab_x, function(x, y) paste(y, x, sep = "|"))
     # res_lab = res_lab[res_lab %in% new_uniq]
+    if(is.matrix(res)) res = as.dtfrm(res)
     val_lab(res) = res_lab
-    res = matrix_to_df_with_labels(res)
     if(res_mrset){
         mrset(res)
     } else {

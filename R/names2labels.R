@@ -86,16 +86,7 @@ names2labels.data.frame = function(x, exclude = NULL, keep_names = FALSE){
     
 }
 
-#' @export
-names2labels.matrix = function(x, exclude = NULL, keep_names = FALSE){
-    lab = var_lab(x)
-    if (is.null(lab) || (lab=="")) return(x)
-    clm = colnames(x)
-    if (is.null(clm)) clm = seq_len(ncol(x))
-    colnames(x) = paste0(lab,LABELS_SEP,clm)
-    x
 
-}
 
 
 #' @export
@@ -110,7 +101,9 @@ make_labels_from_names = function(x){
 #' @export
 make_labels_from_names.data.frame = function(x){
     for(each in seq_along(x)){
-        var_lab(x[[each]]) = names(x)[each]
+        if(is.null(var_lab(x[[each]]))){
+            var_lab(x[[each]]) = names(x)[each]
+        }
     }
     x
 }

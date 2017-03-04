@@ -100,7 +100,7 @@ fre(score)
 # brands - multiple response question
 # Which brands do you use during last three months? 
 
-brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))
+brands = as.dtfrm(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
 
 var_lab(brands) = "Used brands"
 val_lab(brands) = make_labels("
@@ -116,27 +116,27 @@ val_lab(brands) = make_labels("
 fre(brands)
 
 # percentage of brands within each score
-cro(brands, score)
+cro_cpct(brands, score)
 
 
-aggregate(dichotomy(brands) ~ f(score), FUN = mean)
+by(as.dichotomy(brands), score, FUN = colMeans)
 
 # customer segmentation by used brands
-kmeans(dichotomy(brands),3)
+kmeans(dummy(brands),3)
 
 # model of influence of used brands on evaluation of tested product 
-summary(lm(score ~ dichotomy(brands)))
+summary(lm(score ~ dummy(brands)))
 
 ## make labels from text copied from questionnaire
 
 age = c(1, 2, 1, 2)
 
-val_lab(age) = make_labels("
+val_lab(age) = num_lab("
  1. 18 - 26
  2. 27 - 35
 ")
 
-f(age)
+table(age)
 
 # or, if in original codes is on the right side
 
@@ -153,5 +153,5 @@ val_lab(products) = lab_num("
  Other	8
 ")
 
-f(products)
+table(products)
 }

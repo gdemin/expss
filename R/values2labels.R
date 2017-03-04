@@ -36,13 +36,8 @@ values2labels.default = function(x){
 
 #' @export
 values2labels.matrix = function(x){
-    vallab = val_lab(x)
-    if(is.null(vallab)) return(x)
-    res = names(vallab)[match(x,vallab,incomparables = NA)]
-    res_na = is.na(res)
-    if(any(res_na)) res[res_na] = x[res_na]
+    res = values2labels.default(x)
     res = matrix(res, nrow = nrow(x), ncol = ncol(x))
-    var_lab(res) = var_lab(x)
     res
     
 }

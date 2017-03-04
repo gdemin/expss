@@ -237,10 +237,9 @@ val_lab(score) = make_labels("
 
 expect_equal_to_reference(fre(brands), "rds/fre_ex4.rds")
 mat_brands = as.matrix(brands)
-var_lab(mat_brands) = var_lab(brands)
-val_lab(mat_brands) = val_lab(brands)
 
-expect_equal_to_reference(fre(mat_brands), "rds/fre_ex4.rds")
+
+expect_equal_to_reference(fre(mat_brands), "rds/fre_ex4mat.rds")
 expect_equal_to_reference(cro(brands, score), "rds/fre_ex5.rds")
 expect_equal_to_reference(cro_cpct(brands, score), "rds/fre_ex6.rds")
 
@@ -306,11 +305,7 @@ expect_equal_to_reference(with(data, fre(q8r_1 %to% q8r_99)), "rds/fre_real3.rds
 
 expect_equal_to_reference(cro(data$reg, data$s1), "rds/cro_real1.rds")
 
-matr_s1 = as.matrix(data$s1)
-var_lab(matr_s1) = var_lab(data$s1)
-val_lab(matr_s1) = val_lab(data$s1)
 
-expect_equal_to_reference(cro(data$reg, matr_s1), "rds/cro_real1.rds")
 expect_equal_to_reference(cro_cpct(data$reg, data$s1), "rds/cro_real2.rds")
 expect_equal_to_reference(with(data, cro(q8r_1 %to% q8r_99, reg)), "rds/cro_real3.rds")
 expect_equal_to_reference(with(data, cro_cpct(q8r_1 %to% q8r_99, reg)), "rds/cro_real4.rds")
@@ -443,6 +438,7 @@ mtcars = modify(mtcars,{
     var_lab(vs) = "Engine"
     val_lab(vs) = c("V-engine" = 0, 
                     "Straight engine" = 1) 
+    var_lab(disp) = "Displacement (cu.in.)"
     var_lab(hp) = "Gross horsepower"
     var_lab(mpg) = "Miles/(US) gallon"
     var_lab(am) = "Transmission"

@@ -22,7 +22,7 @@ expect_identical(if_val(numeric(0), NA ~ 1, other ~ copy),logical(0))
 
 context("if_val with NA.data.frame")
 
-a = data.frame(a = 1:4, b = 5:8, d = 10:13)
+a = data.frame(a = as.double(1:4), b = as.double(5:8), d = as.double(10:13))
 b = a
 rownames(b) = rownames(a)
 val_lab(a$a) = c('aaa' = 1)

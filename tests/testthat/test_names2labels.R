@@ -9,19 +9,19 @@ var_lab(vec) = "vector"
 expect_identical(names2labels(vec),cbind(vector = vec))
 
 mat = matrix(1:9,ncol=3)
+# 
+# expect_identical(names2labels(mat),mat)
 
-expect_identical(names2labels(mat),mat)
-
-var_lab(mat) = "matrix"
-
-out_mat =  mat
-colnames(out_mat) = paste0("matrix|",1:3)
-expect_identical(names2labels(mat),out_mat)
+# var_lab(mat) = "matrix"
+# 
+# out_mat =  mat
+# colnames(out_mat) = paste0("matrix|",1:3)
+# expect_identical(names2labels(mat),out_mat)
 
 colnames(mat) = letters[1:3]
-out_mat =  mat
-colnames(out_mat) = paste0("matrix|",letters[1:3])
-expect_identical(names2labels(mat),out_mat)
+# out_mat =  mat
+# colnames(out_mat) = paste0("matrix|",letters[1:3])
+# expect_identical(names2labels(mat),out_mat)
 
 df = as.data.frame(mat)
 
