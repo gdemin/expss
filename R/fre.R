@@ -201,69 +201,78 @@ fre = function(x, weight = NULL){
 
 
 elementary_freq = function(x, predictor = NULL, weight = NULL){
-    stopif(!is.null(weight) && (NROW(x)!=length(weight)) && (length(weight)!=1), 
-           "'weight' should have the same number of rows as 'x' or length 1.")
+    check_sizes("cro/fre", x, predictor, weight)
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
     if (is.matrix(x)) {
-        vallab0 = val_lab(x)
-        varlab0 = var_lab(x)
         x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
-        val_lab(x) = vallab0
-        var_lab(x) = varlab0
     }
     if (is.null(weight)) {
         weight = rep(1, NROW(x))
     } else {
         if(length(weight)==1) weight = rep(weight, NROW(x))
-        # change negative and NA weights to 0 
-        if_val(weight) = list(lo %thru% 0 ~ 0, NA ~ 0)
+        weight =set_negative_and_na_to_zero(weight)
     }    
-    valid = valid(x) # are there not-NA in row?
+    valid = valid(x) # are there any not-NA in row?
     valid = valid & (weight>0)
     not_nas = sum(weight*(valid), na.rm = TRUE) # for fre
     nas = sum(weight*(!valid), na.rm = TRUE) # for fre
     if (!is.null(predictor)){
-        stopif(NROW(x)!=length(predictor), "predictor should have the same number of rows as x.")
         valid = valid & valid(predictor)
         predictor = predictor[valid]
     }
     if(is.data.frame(x)){
+        # we convert to labelled because further we will combine data.frame to single column
         for(each in seq_along(x)){
             if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
         }
-        x = x[valid,]
+        x = x[valid, ]
     } else {
         if(is.factor(x)) x = as.labelled(x)
         x = x[valid]
     }
     weight = weight[valid]
     if(!is.null(predictor)){
-        if(is.factor(predictor)) predictor = as.labelled(predictor)
         predictor = unvr(predictor)
-        total = tapply(weight, list(to_fac(predictor)), FUN = sum, na.rm = TRUE)
+        predictor = to_fac(predictor)
+        total = dt_tapply(weight, predictor, fun = sum, na.rm = TRUE)
         predictor = rep(predictor, NCOL(x))
     } else {
         total = NULL
     }
     vallab = val_lab(x)
-    x = unlab(x)
+    x = unvr(x)
     weight = rep(weight, NCOL(x))
     x = c(x, recursive = TRUE)
     val_lab(x) = vallab
-    
     if (is.null(predictor)){
-        res = tapply(weight, list(to_fac(x)), FUN = sum, na.rm = TRUE)
+        res = dt_tapply(weight, to_fac(x), fun = sum, na.rm = TRUE)
     } else {
-        res = tapply(weight, list(to_fac(x), to_fac(predictor)), FUN = sum, na.rm = TRUE)
+        res = dt_tapply(weight, to_fac(x), predictor, fun = sum, na.rm = TRUE)
     }
     labels = rownames(res)
     if(is.null(labels)) labels = character(0)
-    res = data.frame(labels = labels, res, stringsAsFactors = FALSE, check.names = FALSE)
+    res = dtfrm(labels = labels, res)
     rownames(res) = NULL
     list(freq = res, not_nas = not_nas, nas = nas, total = total) 
     
 }
 
+dt_tapply = function(cell_var, row_var, col_var = NULL, fun, ...){
+
+    if(is.null(col_var)){
+        by_str = "row_var"
+        dtable = data.table(cell_var = cell_var, row_var = row_var)
+    } else {
+        by_str = "row_var,col_var"
+        dtable = data.table(cell_var = cell_var, row_var = row_var, col_var = col_var)
+    }
+    dres = dtable[, lapply(.SD, fun, ...), by = by_str]
+    if(is.null(col_var)){
+        tapply(dres[["cell_var"]], list(dres[["row_var"]]), FUN = identity)
+    } else {
+        tapply(dres[["cell_var"]], list(dres[["row_var"]], dres[["col_var"]]), FUN = identity)
+    }
+}
 
 
 #' @export
@@ -292,7 +301,7 @@ cro = function(x, predictor, weight = NULL){
                               check.names = FALSE
     )
     res = rbind(res, column_total)
-    row_total = sum_row(res[,-1])
+    row_total = rowSums(res[,-1, drop = FALSE], na.rm = TRUE)
     res[,"#row_total"] = row_total
     res = res[(row_total>0) | (seq_len(NROW(res)) == NROW(res)),, drop = FALSE]
     
