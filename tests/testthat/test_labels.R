@@ -396,6 +396,17 @@ a = 1:2
 var_lab(a) = "ssdds"
 expect_equal(as.labelled(a), set_val_lab(a, c("1" = 1L, "2" = 2L)))
 
+context("as.labelled labelled factor")
+a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c", "d", "e")))
+b = 5:3
+val_lab(b) = setNames(5:1, letters[1:5])
+expect_identical(as.labelled(a), b)
+
+var_lab(a) = "My 'a' with labels"
+var_lab(b) = "My 'a' with labels"
+expect_identical(as.labelled(a), b)
+var_lab(b) = "New label"
+expect_identical(as.labelled(a, "New label"), b)
 
 context("is.labelled")
 

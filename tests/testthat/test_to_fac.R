@@ -7,7 +7,7 @@ val_lab(vec_with_lab) = c(Apple=1,Bananas=2)
 
 expect_identical(to_fac(unlab(vec_with_lab)),factor(no_lab))
 expect_identical(to_fac(unvr(vec_with_lab)),factor(no_lab,levels = 1:2,labels= c("Apple","Bananas")))
-expect_identical(to_fac(unvr(vec_with_lab)),to_fac(vec_with_lab, prepend = FALSE))
+expect_identical(to_fac(unvr(vec_with_lab)),to_fac(vec_with_lab, prepend_var_lab = FALSE))
 
 a = letters[1:3]
 var_lab(a) = "letters"
@@ -40,6 +40,14 @@ expect_identical(to_fac(vec_with_lab2, drop_unused = TRUE),
                  factor(no_lab,levels = c(1:2),
                         labels= c("Fruits|Apple","Fruits|Bananas")))
 
+a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c", "d", "e")))
+var_lab(a) = "My 'a' with labels"
+
+expect_identical(to_fac(a, drop_unused = FALSE, prepend_var_lab = FALSE), unvr(a))
+b = a
+levels(b) = paste0(var_lab(b),"|", levels(b))
+expect_identical(to_fac(a, drop_unused = FALSE, prepend_var_lab = TRUE), unvr(b))
+expect_identical(to_fac(a, drop_unused = TRUE, prepend_var_lab = FALSE), factor(a))
 
 ### Common usage ###
 

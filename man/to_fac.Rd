@@ -4,7 +4,7 @@
 \alias{to_fac}
 \title{Convert labelled variable to factor}
 \usage{
-to_fac(x, ..., drop_unused_labels = FALSE, prepend = TRUE)
+to_fac(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE)
 }
 \arguments{
 \item{x}{a vector of data with labels.}
@@ -14,7 +14,7 @@ to_fac(x, ..., drop_unused_labels = FALSE, prepend = TRUE)
 \item{drop_unused_labels}{logical. Should we drop unused value labels?
 Default is FALSE.}
 
-\item{prepend}{logical. Should we drop prepend variable label before value
+\item{prepend_var_lab}{logical. Should we prepend variable label before value
 labels? Default is TRUE.}
 }
 \value{

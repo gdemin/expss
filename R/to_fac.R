@@ -14,7 +14,7 @@ LABELS_SEP = "|"
 #' @param ... optional arguments for \code{\link[base]{factor}} 
 #' @param drop_unused_labels logical. Should we drop unused value labels?
 #'   Default is FALSE.
-#' @param prepend logical. Should we drop prepend variable label before value
+#' @param prepend_var_lab logical. Should we prepend variable label before value
 #'   labels? Default is TRUE.
 #' @return an object of class factor. For details see base \link[base]{factor} documentation.
 #'  
@@ -38,17 +38,17 @@ LABELS_SEP = "|"
 #' summary(lm(mpg ~ am, data = mtcars)) # no labels  
 #' summary(lm(mpg ~ to_fac(am), data = mtcars)) # with labels 
 #' summary(lm(mpg ~ to_fac(unvr(am)), data = mtcars)) # without variable label 
-to_fac = function(x, ..., drop_unused_labels = FALSE, prepend = TRUE){
+to_fac = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
     UseMethod("to_fac")
 }
 
 #' @export
-to_fac.default = function(x, ...){
+to_fac.default = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     base::factor(x = x, ...)  
 }  
 
 #' @export
-to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend = TRUE){
+to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     x = as.labelled(x) # if we have only variable label 
     vallab = val_lab(x)
     varlab = var_lab(x)
@@ -66,7 +66,7 @@ to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend = TRUE){
         vallab = v_intersect(vallab, uniqs) 
     }
     vallab = sort(vallab)
-    if (!is.null(varlab) && (varlab!="") && prepend) {
+    if (!is.null(varlab) && (varlab!="") && prepend_var_lab) {
         names(vallab) = paste(varlab,names(vallab), sep = LABELS_SEP)
     }    
     ### premature optimization
