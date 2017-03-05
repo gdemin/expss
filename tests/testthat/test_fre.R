@@ -20,7 +20,7 @@ mtcars = modify(mtcars,{
 
 
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs)), "rds/elem_fre1.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs)), "rds/elem_fre1.rds")
 
 
 # expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs, am)), "rds/elem_fre2.rds")
@@ -35,7 +35,7 @@ expect_equal_to_reference(fre(mtcars$am), "rds/fre2.5.rds")
 
 # expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs, am)), "rds/elem_fre3.rds")
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(am)), "rds/elem_fre4.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_freq(am)), "rds/elem_fre4.rds")
 
 
 mtcars$vs[4:5] = NA
@@ -67,7 +67,7 @@ mtcars = modify(mtcars,{
 
 mtcars$weight = 2
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, weight = weight)), "rds/elem_fre6.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, weight = weight)), "rds/elem_fre6.rds")
 
 # expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs, am, weight = weight)), "rds/elem_fre7.rds")
 
@@ -76,7 +76,7 @@ mtcars$am[1:2] = NA
 
 # expect_equal_to_reference( with(mtcars, expss:::elementary_cro(vs, am, weight = weight)), "rds/elem_fre8.rds")
 
-expect_equal_to_reference (with(mtcars, expss:::elementary_freq(am, weight = weight)), "rds/elem_fre9.rds")
+# expect_equal_to_reference (with(mtcars, expss:::elementary_freq(am, weight = weight)), "rds/elem_fre9.rds")
 
 
 mtcars$vs[4:5] = NA
@@ -110,7 +110,7 @@ mtcars = modify(mtcars,{
 mtcars$vs1 = ifelse(1:32<=16, mtcars$vs, NA)
 mtcars$vs2 = ifelse(1:32>16, mtcars$vs, NA)
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2)), "rds/elem_fre11.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2)), "rds/elem_fre11.rds")
 
 
 # expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs1 %to% vs2, am)), "rds/elem_fre12.rds")
@@ -152,7 +152,7 @@ mtcars$vs2 = ifelse(1:32<=16, mtcars$vs, NA)
 
 mtcars$weight = 2
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, weight = weight)), "rds/elem_fre15.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, weight = weight)), "rds/elem_fre15.rds")
 
 
 # expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs1 %to% vs2, am, weight = weight)), "rds/elem_fre16.rds")
@@ -168,10 +168,13 @@ mtcars$vs1[4:5] = NA
 
 
 context("elementary_freq factor")
-expect_equal_to_reference(expss:::elementary_freq(iris$Species), "rds/elem_fre19.rds")
+# expect_equal_to_reference(expss:::elementary_freq(iris$Species), "rds/elem_fre19.rds")
 # expect_equal_to_reference(expss:::elementary_cro(iris$Species, iris$Species), "rds/elem_fre20.rds")
 
-##############################
+############################################################################################
+############################################################################################
+############################################################################################
+############################################################################################
 
 context("etable methods")
 expect_equal_to_reference(fre(mtcars$am)[,"Count"], "rds/fre2.6.rds")
@@ -184,7 +187,29 @@ expect_equal_to_reference(fre(mtcars$am)[,"Count", drop = TRUE], "rds/fre2.9.rds
 expect_equal_to_reference(fre(mtcars$am)[,"Count", drop = TRUE][3], "rds/fre2.10.rds")
 expect_equal_to_reference(fre(mtcars$am)[,"Count"][2, , drop = TRUE], "rds/fre2.11.rds")
 
+context("fre drop_unused")
 
+a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c", "d", "e")))
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = FALSE)
+                    ,"rds/fre_new_args1.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = TRUE),"rds/fre_new_args2.rds")
+var_lab(a) = "My 'a' with labels"
+expect_equal_to_reference(fre(a),"rds/fre_new_args3.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE),"rds/fre_new_args4.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = TRUE),"rds/fre_new_args5.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = TRUE, prepend_var_lab = TRUE),"rds/fre_new_args6.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = FALSE),"rds/fre_new_args7.rds")
+
+a = 3:5
+val_lab(a) = autonum(letters[5:1])
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = FALSE),"rds/fre_new_args1.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = TRUE),"rds/fre_new_args2.rds")
+var_lab(a) = "My 'a' with labels"
+expect_equal_to_reference(fre(a),"rds/fre_new_args3.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE),"rds/fre_new_args4.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = TRUE),"rds/fre_new_args5.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = TRUE, prepend_var_lab = TRUE),"rds/fre_new_args6.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = FALSE),"rds/fre_new_args7.rds")
 
 context("fre and cro examples")
 
@@ -214,6 +239,18 @@ expect_equal_to_reference(with(mtcars, cro_cpct(am, vs))[, '#Total'], "rds/fre_e
 expect_equal_to_reference(with(mtcars, cro_cpct(am, vs))[3, ], "rds/fre_ex3.2.rds")
 expect_equal_to_reference(with(mtcars, cro_cpct(am, vs))[['#Total']], "rds/fre_ex3.3.rds")
 
+expect_identical(fre(list(mtcars$vs, mtcars$am)), 
+                      add_rows(fre(mtcars$vs, prepend_var_lab = TRUE), 
+                               fre(mtcars$am, prepend_var_lab = TRUE))
+                      )
+
+double_fre = fre(list(mtcars$vs, mtcars$am))
+expect_equal_to_reference( split_columns(double_fre), "rds/fre_split_columns.rds")
+expect_identical(fre(list(mtcars$vs, mtcars$am), prepend_var_lab = FALSE), 
+                 add_rows(fre(mtcars$vs, prepend_var_lab = FALSE), 
+                          fre(mtcars$am, prepend_var_lab = FALSE))
+)
+
 # multiple-choise variable
 # brands - multiple response question
 # Which brands do you use during last three months? 
@@ -238,6 +275,7 @@ val_lab(score) = make_labels("
                              ")
 
 expect_equal_to_reference(fre(brands), "rds/fre_ex4.rds")
+expect_equal_to_reference(fre(as.dichotomy(brands)), "rds/fre_dichotomy.rds")
 mat_brands = as.matrix(brands)
 
 
@@ -303,6 +341,7 @@ var_lab(data$q8r_1) = "Используемые услуги"
 expect_equal_to_reference(fre(data$reg), "rds/fre_real1.rds")
 expect_equal_to_reference(fre(data$s1), "rds/fre_real2.rds")
 expect_equal_to_reference(with(data, fre(q8r_1 %to% q8r_99)), "rds/fre_real3.rds")
+expect_equal_to_reference(with(data, fre(as.dichotomy(q8r_1 %to% q8r_99))), "rds/fre_real3_dichotomy.rds")
 
 
 expect_equal_to_reference(cro(data$reg, data$s1), "rds/cro_real1.rds")
@@ -321,6 +360,16 @@ expect_equal_to_reference(fre(data$reg, weight = data$weight1), "rds/fre_real1w.
 expect_equal_to_reference(fre(data$s1, weight = data$weight1), "rds/fre_real2w.rds")
 expect_equal_to_reference(with(data, fre(q8r_1 %to% q8r_99, weight = weight1)), "rds/fre_real3w.rds")
 
+expect_equal_to_reference(
+    fre(with(data, list(reg, s1, q8r_1 %to% q8r_99)), weight = data$weight1)
+    , "rds/fre_real_list.rds")
+
+expect_equal_to_reference(
+    fre(with(data, list(as.dichotomy(reg), 
+                        as.dichotomy(s1), 
+                        as.dichotomy(q8r_1 %to% q8r_99))), 
+        weight = data$weight1)
+    , "rds/fre_real_list_dichotomy.rds")
 
 expect_equal_to_reference(cro(data$reg, data$s1, weight = data$weight1), "rds/cro_real1w.rds")
 expect_equal_to_reference(cro(data$reg, as.data.frame(data$s1), weight = data$weight1), "rds/cro_real1w.rds")

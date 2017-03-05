@@ -13,7 +13,7 @@
 \alias{cro_fun_df}
 \title{Simple frequencies and crosstabs with support of labels, weights and multiple response variables.}
 \usage{
-fre(x, weight = NULL)
+fre(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE)
 
 cro(x, predictor, weight = NULL)
 
@@ -39,6 +39,13 @@ variables.}
 
 \item{weight}{numeric vector. Optional case weights. NA's and negative weights
 treated as zero weights.}
+
+\item{drop_unused_labels}{logical. Should we drop unused value labels?
+Default is TRUE}
+
+\item{prepend_var_lab}{logical. Should we prepend variable label before value
+labels? By default we will add variable labels to value labels only if
+\code{x} is list (several variables).}
 
 \item{predictor}{vector. By now multiple-response predictor is not supported.}
 

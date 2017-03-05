@@ -36,6 +36,11 @@
 #' @param predictor vector. By now multiple-response predictor is not supported.
 #' @param weight numeric vector. Optional case weights. NA's and negative weights
 #'   treated as zero weights.
+#' @param drop_unused_labels logical. Should we drop unused value labels?
+#'   Default is TRUE
+#' @param prepend_var_lab logical. Should we prepend variable label before value
+#'   labels? By default we will add variable labels to value labels only if
+#'   \code{x} is list (several variables).
 #' @param fun custom summary function. It should always return
 #'   scalar/vector/matrix of the same size.
 #' @param ... further arguments for \code{fun}   
@@ -132,16 +137,72 @@
 #' # or, pairwise correlations inside groups
 #' cro_fun_df(iris[,-5], iris$Species, fun = cor)
 #' @export
-fre = function(x, weight = NULL){
+fre = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE){
+    UseMethod("fre")
+}
+
+#' @export
+fre.list = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = TRUE){
+    x = flat_list(x, flat_df = FALSE)
+    res = lapply(x, fre, 
+                 weight = weight, 
+                 drop_unused_labels = drop_unused_labels, 
+                 prepend_var_lab = prepend_var_lab
+                 )
+    do.call(add_rows, res)
+}
+
+#' @export
+fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE){
+    str_x = deparse(substitute(x))
     if(is.null(x)){
-        str_x = deparse(substitute(x))
         stop(paste0(str_x," is NULL. Possibly variable doesn't exist."))
     }
-    raw = elementary_freq(x = x, weight = weight)
-    not_nas = raw$not_nas
-    nas = raw$nas
-    res = raw$freq
-    res = res[!is.na(res$res), ]
+    
+    check_sizes("fre", x, weight)
+    if(is.dichotomy(x)){
+        x = as.category(x)
+    }
+    if (is.matrix(x)) {
+        x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
+    }
+    if (is.null(weight)) {
+        weight = rep(1, NROW(x))
+    } else {
+        if(length(weight)==1) weight = rep(weight, NROW(x))
+        weight = set_negative_and_na_to_zero(weight)
+    }    
+    valid = valid(x) # are there any not-NA in row?
+    valid = valid & (weight>0)
+    not_nas = sum(weight*(valid), na.rm = TRUE) 
+    nas = sum(weight*(!valid), na.rm = TRUE) 
+    weight = weight[valid]
+    if(is.data.frame(x)){
+        # we convert to labelled because further we will combine data.frame to single column
+        varlab = var_lab(x)
+        for(each in seq_along(x)){
+            if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
+        }
+        vallab = val_lab(x)
+        x = x[valid, ]
+        x = c(x, recursive = TRUE)
+        val_lab(x) = vallab
+        var_lab(x) = varlab
+    } else {
+        x = x[valid]
+    }
+    varlab = var_lab(x)
+    if(!is.factor(x) || is.labelled(x)){
+        x = to_fac(x, prepend_var_lab = FALSE)
+    } 
+    dtable = data.table(weight = weight, x = x)
+    dres = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
+    res = tapply(dres[["weight"]], list(dres[["x"]]), FUN = identity)
+    labels = rownames(res)
+    if(is.null(labels)) labels = character(0)
+    res = dtfrm(labels = labels, res)
+    rownames(res) = NULL
+    res = res[!is.na(res$res) | !drop_unused_labels, ]
     # percent without missing
     if(not_nas>0) {
         res$valid_percent =  res$res/not_nas*100    
@@ -162,7 +223,7 @@ fre = function(x, weight = NULL){
     } else {
         res$rpercent =  rep(0, nrow(res))
     }  
-    total = sum_col(res[[2]])
+    total = sum(res[[2]], na.rm = TRUE)
     dfs_total = data.frame(
         labels = "#Total",
         res = not_nas,
@@ -173,7 +234,7 @@ fre = function(x, weight = NULL){
         stringsAsFactors = FALSE,
         check.names = FALSE
     )
-    res$cum = cumsum(res$rpercent)
+    res$cum = cumsum(if_na(res$rpercent, 0))
     dfs_na = data.frame(labels = "<NA>", 
                         res = nas, 
                         valid_percent = NA, 
@@ -186,12 +247,17 @@ fre = function(x, weight = NULL){
     res = rbind(res, dfs_total, dfs_na)
     rownames(res) = NULL
     
-    varlab = var_lab(x)
-    if (is.null(varlab)){
-        varlab = deparse(substitute(x))
+    if(prepend_var_lab){
+        first_column_label = "" 
+        res[[1]] = paste0(if_null(varlab, ""), "|", res[[1]])
+    } else {
+        first_column_label = if_null(varlab, str_x)
     }
-    
-    colnames(res) = c(varlab, "Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %")
+    res[[1]] = remove_unnecessary_splitters(res[[1]]) 
+    colnames(res) = c(first_column_label, 
+                      "Count", "Valid percent", 
+                      "Percent", "Responses, %",
+                      "Cumulative responses, %")
     
     class(res) = union("etable", class(res))
     res
@@ -199,48 +265,6 @@ fre = function(x, weight = NULL){
 }
 
 
-
-elementary_freq = function(x, weight = NULL){
-    check_sizes("cro/fre", x, weight)
-    if (is.matrix(x)) {
-        x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
-    }
-    if (is.null(weight)) {
-        weight = rep(1, NROW(x))
-    } else {
-        if(length(weight)==1) weight = rep(weight, NROW(x))
-        weight =set_negative_and_na_to_zero(weight)
-    }    
-    valid = valid(x) # are there any not-NA in row?
-    valid = valid & (weight>0)
-    not_nas = sum(weight*(valid), na.rm = TRUE) 
-    nas = sum(weight*(!valid), na.rm = TRUE) 
-    weight = weight[valid]
-    if(is.data.frame(x)){
-        # we convert to labelled because further we will combine data.frame to single column
-        for(each in seq_along(x)){
-            if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
-        }
-        x = x[valid, ]
-        vallab = val_lab(x)
-        x = unvr(x)
-        x = c(x, recursive = TRUE)
-        val_lab(x) = vallab
-    } else {
-        x = x[valid]
-        x = unvr(x)
-    }
-    
-    dtable = data.table(weight = weight, x = to_fac(x))
-    dres = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
-    res = tapply(dres[["weight"]], list(dres[["x"]]), FUN = identity)
-    labels = rownames(res)
-    if(is.null(labels)) labels = character(0)
-    res = dtfrm(labels = labels, res)
-    rownames(res) = NULL
-    list(freq = res, not_nas = not_nas, nas = nas, total = NULL) 
-    
-}
 
 elementary_cro = function(x, predictor, need_row_total = FALSE, need_table_total = FALSE, weight = NULL){
     check_sizes("cro/fre", x, predictor, weight)
