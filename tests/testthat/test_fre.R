@@ -173,7 +173,7 @@ expect_equal_to_reference(expss:::elementary_freq(iris$Species), "rds/elem_fre19
 
 ##############################
 
-context("simple_table methods")
+context("etable methods")
 expect_equal_to_reference(fre(mtcars$am)[,"Count"], "rds/fre2.6.rds")
 expect_equal_to_reference(fre(mtcars$am)[2, ], "rds/fre2.7.rds")
 

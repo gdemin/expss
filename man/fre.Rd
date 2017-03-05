@@ -48,8 +48,8 @@ scalar/vector/matrix of the same size.}
 \item{...}{further arguments for \code{fun}}
 }
 \value{
-object of class 'simple_table'/'simple_summary'. Basically it's a data.frame but class
-  is needed for custom print method.
+object of class 'etable'. Basically it's a data.frame but class
+  is needed for custom methods.
 }
 \description{
 \itemize{

@@ -154,11 +154,6 @@ datatable.etable = function(data,
 }
 
 
-#' @export
-#' @rdname datatable
-datatable.simple_table = datatable.etable
-
-
 
 matrix_header_to_html = function(corner, m_cols){
     # to pass CRAN check

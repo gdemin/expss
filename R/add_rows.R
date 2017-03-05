@@ -72,34 +72,35 @@ add_rows.default =  function(...){
 
 
 #' @export
-add_rows.simple_table = function(..., nomatch_columns = c("add", "drop", "stop")){
+add_rows.etable = function(..., nomatch_columns = c("add", "drop", "stop")){
     args = list(...)
-    for(each in seq_along(args)){
-        colnames(args[[each]])[1] = "row_labels"
+    all_names = lapply(args, function(x) {
+        clnm = colnames(x)
+        if(!is.null(clnm)){
+            clnm[1]
+        } else {
+            NULL
+        }
+    })
+    all_names = unique(unlist(all_names))
+    if(length(all_names)>1){
+        for(each in seq_along(args)){
+            if(!is.null(colnames(args[[each]]))){
+                colnames(args[[each]])[1] = "row_labels"
+            }
+        }
     }
     classes = lapply(args, class)
     new_class = Reduce('%i%', classes)
     res = do.call(add_rows.data.frame, c(args, list(nomatch_columns = nomatch_columns)))
     if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
-    if (!("simple_table" %in% new_class)) new_class = union("simple_table", new_class)
+    if (!("etable" %in% new_class)) new_class = union("etable", new_class)
     
     class(res) = new_class
     res
 }
 
-#' @export
-add_rows.etable = function(..., nomatch_columns = c("add", "drop", "stop")){
-    classes = lapply(list(...), class)
-    new_class = Reduce('%i%', classes)
-    if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
-    if (!("etable" %in% new_class)) new_class = union("etable", new_class)
-    res = NextMethod("add_rows")
-    class(res) = new_class
-    res
-}
 
-#' @export
-add_rows.simple_summary = add_rows.simple_table
 
 add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
     nomatch_columns = match.arg(nomatch_columns)

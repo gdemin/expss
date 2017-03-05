@@ -192,7 +192,7 @@ expect_output_file(str(x), "rds/str_labelled7.txt")
 # class(x_df) = union("labelled", class(x_df))
 # expect_output_file(print(x_df), "rds/print_labelled2.txt")
 
-context("rbind/cbind simple_table/summary_table")
+context("rbind/cbind etable")
 
 # data(mtcars)
 # mtcars = modify(mtcars,{
@@ -231,7 +231,7 @@ context("rbind/cbind simple_table/summary_table")
 # expect_equal_to_reference(rbind(tbl_df, 42), "rds/cbind6.rds")
 # expect_equal_to_reference(rbind(42, tbl_df), "rds/cbind7.rds")
 # df = tbl_df
-# class(df) = class(df) %d% c("etable", "simple_table", "table_summary_df") 
+# class(df) = class(df) %d% c("etable",  "table_summary_df") 
 # # expect_equal_to_reference(rbind(tbl_df, df), "rds/cbind8.rds")
 # 
 # simple_df = cro_mean(mtcars %except% qc(vs, am), mtcars$am)
@@ -245,7 +245,7 @@ context("rbind/cbind simple_table/summary_table")
 # expect_equal_to_reference(rbind(simple_df, 42), "rds/cbind14.rds")
 # expect_equal_to_reference(rbind(42, simple_df), "rds/cbind15.rds")
 # df = simple_df
-# class(df) = class(df) %d% c("etable", "simple_table", "table_summary_df") 
+# class(df) = class(df) %d% c("etable",  "table_summary_df") 
 # expect_equal_to_reference(rbind(simple_df, df), "rds/cbind16.rds")
 
 

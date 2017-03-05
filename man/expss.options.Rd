@@ -9,7 +9,7 @@ can get value of option with \code{getOption("option.name").}
 \itemize{
 \item{\code{expss.digits} }{ Number of digits after decimal separator which will be 
 shown for tables. This parameter is supported in the \link[expss]{datatable},
-\link[expss]{htmlTable.simple_table} and \code{print} methods. \code{NULL} is
+\link[expss]{htmlTable} and \code{print} methods. \code{NULL} is
 default and means 1 digit. \code{NA} means no rounding.}
 \item{\code{expss.enable_value_labels_support} }{By default, all labelled 
 variables will use labels as labels for factor levels when \link{factor} is 

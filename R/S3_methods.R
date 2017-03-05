@@ -94,17 +94,6 @@ var_attr = function(x){
 
 ### All subsetting methods are so strange because
 ### NextMethod doesn't work and I don't know why 
-#' @export
-"[.simple_table" = function(x, i, j, drop = FALSE){
-    subset_helper(x, i, j, drop, class_name = "simple_table")
-}
-
-
-#' @export
-"[.simple_summary" = function(x, i, j, drop = FALSE){
-    subset_helper(x, i, j, drop, class_name = c("simple_summary", "simple_table"))
-}
-
 
 
 #' @export
@@ -258,18 +247,6 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
     invisible(x)
 }
 
-#' @export
-print.simple_table = function(x, digits = getOption("expss.digits"), ...,  right = TRUE){
-    x = round_dataframe(x, digits = digits)
-    print.data.frame(x, ...,  right = right, row.names = FALSE)
-
-}
-
-#' @export
-print.simple_summary = function(x, digits = getOption("expss.digits"), ...,  right = TRUE){
-    x = round_dataframe(x, digits = digits)
-    print.data.frame(x, ...,  right = right, row.names = FALSE)
-}
 
 #' @export
 print.etable = function(x, digits = getOption("expss.digits"), ...,  right = TRUE){
@@ -321,19 +298,6 @@ str.labelled = function(object, ...){
 # 
 # 
 # 
-# #' @export
-# cbind.simple_table = function(..., deparse.level = 1){
-#     args = list(...)
-#     classes = lapply(args, class)
-#     new_class = Reduce('%i%', classes)
-#     if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
-#     if (!("simple_table" %in% new_class)) new_class = union("simple_table", new_class)
-#     
-#     res = dtfrm(...)
-#     class(res) = new_class
-#     res      
-#     
-# }
 # 
 # #' @export
 # rbind.etable = function(..., deparse.level = 1){
@@ -352,19 +316,7 @@ str.labelled = function(object, ...){
 # 
 # 
 # 
-# #' @export
-# rbind.simple_table = function(..., deparse.level = 1){
-#     args = list(...)
-#     classes = lapply(args, class)
-#     new_class = Reduce('%i%', classes)
-#     if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
-#     if (!("simple_table" %in% new_class)) new_class = union("simple_table", new_class)
-#     
-#     res = rbind.data.frame(..., stringsAsFactors = FALSE)
-#     class(res) = new_class
-#     res        
-#     
-# }
+
 
 # #' @export
 # as.etable = function(x, ...){
@@ -377,15 +329,6 @@ str.labelled = function(object, ...){
 #     x
 # }
 # 
-# #' @export
-# as.simple_table = function(x, ...){
-#     UseMethod("as.simple_table")
-# }
-# 
-# #' @export
-# as.simple_table.default = function(x, ...){
-#     class(x) = union("simple_table", x)
-#     x
-# }# 
+
 
 

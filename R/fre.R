@@ -40,8 +40,8 @@
 #'   scalar/vector/matrix of the same size.
 #' @param ... further arguments for \code{fun}   
 #'
-#' @return object of class 'simple_table'/'simple_summary'. Basically it's a data.frame but class
-#'   is needed for custom print method.
+#' @return object of class 'etable'. Basically it's a data.frame but class
+#'   is needed for custom methods.
 #'
 #' @examples
 #' data(mtcars)
@@ -193,7 +193,7 @@ fre = function(x, weight = NULL){
     
     colnames(res) = c(varlab, "Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %")
     
-    class(res) = union("simple_table", class(res))
+    class(res) = union("etable", class(res))
     res
     
 }
@@ -345,7 +345,7 @@ cro = function(x, predictor, weight = NULL){
     
     colnames(res)[1] = varlab
     colnames(res)[NCOL(res)] = "#Total"
-    class(res) = union("simple_table", class(res))
+    class(res) = union("etable", class(res))
     rownames(res) = NULL
     res
     
@@ -564,7 +564,7 @@ cro_fun = function(x, predictor, fun, ..., weight = NULL){
     if (single_nrow>1) labels = rep(labels, each = single_nrow)
     res = do.call(rbind, result)
     res = data.frame(" " = labels, res, column_total, stringsAsFactors = FALSE, check.names = FALSE)
-    class(res) = union(c("simple_summary", "simple_table"), class(res))
+    class(res) = union("etable", class(res))
     rownames(res) = NULL
     res
     
@@ -619,7 +619,7 @@ cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
     if_val(colnames(result)) = c('#stat' ~ ' ')
     res = data.frame(result, column_total, stringsAsFactors = FALSE, check.names = FALSE)
     rownames(res) = NULL
-    class(res) = union(c("simple_summary", "simple_table"), class(res))
+    class(res) = union("etable", class(res))
     res
 }
 

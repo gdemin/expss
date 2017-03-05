@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' a = 1
-htmlTable.simple_table = function(x, digits = getOption("expss.digits"), ...){
+htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
     x = round_dataframe(x, digits = digits)
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
@@ -121,17 +121,13 @@ matrix_to_cgroup = function(header){
 }
 
 
-#' @rdname htmlTable.simple_table
+#' @rdname htmlTable.etable
 #' @export
-knit_print.simple_table = function(x, digits = NULL, ...){
+knit_print.etable = function(x, digits = NULL, ...){
     knitr::asis_output(htmlTable(x, ...))
     
 }
 
-#' @rdname htmlTable.simple_table
-#' @export
-knit_print.etable = function(x, digits = NULL, ...){
-    knitr::asis_output(htmlTable(x, ...))    
-}
+
 
 

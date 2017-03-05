@@ -3,15 +3,11 @@
 \name{datatable}
 \alias{datatable}
 \alias{datatable.etable}
-\alias{datatable.simple_table}
 \title{Create an HTML table widget for usage with Shiny}
 \usage{
 datatable(data, ...)
 
 \method{datatable}{etable}(data, repeat_row_labels = FALSE,
-  show_row_numbers = FALSE, digits = getOption("expss.digits"), ...)
-
-\method{datatable}{simple_table}(data, repeat_row_labels = FALSE,
   show_row_numbers = FALSE, digits = getOption("expss.digits"), ...)
 }
 \arguments{

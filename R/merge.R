@@ -13,7 +13,7 @@
 #' @param y data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}
 #'
 #' @return data.frame
-#' @name merge.simple_table
+#' @name merge.etable
 #' @export
 #'
 #' @examples
@@ -61,14 +61,9 @@
     merge(x, y, all.x = TRUE, all.y = FALSE)
 }
 
-#' @export
-'%merge%.simple_table' = function(x, y) merge.simple_table(x, y)
-
-
-
 
 #' @export
-merge.simple_table = function(x, y,
+merge.etable = function(x, y,
                         by.x = colnames(x)[1],
                         by.y = colnames(y)[1],
                         all = TRUE,
@@ -89,46 +84,16 @@ merge.simple_table = function(x, y,
                       incomparables = incomparables,
                       ...)
 
-    if(!("simple_table" %in% class(res))) class(res) = c("simple_table", class(res))
-    res
-
-}
-
-
-#' @export
-merge.simple_summary = merge.simple_table
-
-
-#' @export
-merge.etable = function(x, y, by = "row_labels",
-                        by.x = by,
-                        by.y = by,
-                        all = TRUE,
-                        all.x = all,
-                        all.y = all,
-                        sort = FALSE,
-                        suffixes = c("",""),
-                        incomparables = NULL, ...){
-    res = merge_table(x = x, 
-                      y = y,
-                      by.x = by.x,
-                      by.y = by.y,
-                      all.x = all.x,
-                      all.y = all.y,
-                      sort = sort,
-                      suffixes = suffixes,
-                      incomparables = incomparables,
-                      ...)
     if(!("etable" %in% class(res))) class(res) = c("etable", class(res))
     res
 
 }
 
-#' @export
-'%merge%.etable' = function(x, y) merge.etable(x, y)
+
+
 
 #' @export
-'%merge%.simple_summary' = function(x, y) merge.simple_summary(x, y)
+'%merge%.etable' = function(x, y) merge.etable(x, y)
 
 merge_table = function(x, y,
                        by.x,

@@ -101,7 +101,7 @@ expect_equal_to_reference(with(mtcars, {
 }), "rds/merge6.rds")
 
 
-context("merge simple_table")
+context("merge etable")
 
 data("mtcars")
 

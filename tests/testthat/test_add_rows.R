@@ -65,12 +65,13 @@ class(b) = union(c("table_cases", "etable"), class(b))
 class(d) = union(c("table_cpct", "etable"), class(d))
 
 expect_equal_to_reference(add_rows(a, b), "rds/add_rows7e.rds")
+expect_equal_to_reference(add_rows(a, a), "rds/add_rows7ee.rds")
 expect_equal_to_reference(add_rows(a, b, d), "rds/add_rows8e.rds")
 expect_equal_to_reference(add_rows(a, b, d, e), "rds/add_rows9e.rds")
 
 expect_equal_to_reference(add_rows(a, NA), "rds/add_rows10e.rds")
 expect_equal_to_reference(add_rows(a, 1:2), "rds/add_rows11e.rds")
-expect_equal_to_reference(add_rows(a, b, d, e), "rds/add_rows12e.rds")
+
 
 
 context("labels preserving")
@@ -97,7 +98,7 @@ val_lab(res$y) = c("yyy" = 1)
 
 expect_identical(add_rows(a, b), res)
 
-context("simple_table")
+context("etable")
 data(mtcars)
 mtcars = modify(mtcars, {
     var_lab(mpg) = "Miles/(US) gallon"
