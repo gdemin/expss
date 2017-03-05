@@ -200,7 +200,49 @@ fre = function(x, weight = NULL){
 
 
 
-elementary_freq = function(x, predictor = NULL, weight = NULL){
+elementary_freq = function(x, weight = NULL){
+    check_sizes("cro/fre", x, weight)
+    if (is.matrix(x)) {
+        x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
+    }
+    if (is.null(weight)) {
+        weight = rep(1, NROW(x))
+    } else {
+        if(length(weight)==1) weight = rep(weight, NROW(x))
+        weight =set_negative_and_na_to_zero(weight)
+    }    
+    valid = valid(x) # are there any not-NA in row?
+    valid = valid & (weight>0)
+    not_nas = sum(weight*(valid), na.rm = TRUE) 
+    nas = sum(weight*(!valid), na.rm = TRUE) 
+    weight = weight[valid]
+    if(is.data.frame(x)){
+        # we convert to labelled because further we will combine data.frame to single column
+        for(each in seq_along(x)){
+            if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
+        }
+        x = x[valid, ]
+        vallab = val_lab(x)
+        x = unvr(x)
+        x = c(x, recursive = TRUE)
+        val_lab(x) = vallab
+    } else {
+        x = x[valid]
+        x = unvr(x)
+    }
+    
+    dtable = data.table(weight = weight, x = to_fac(x))
+    dres = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
+    res = tapply(dres[["weight"]], list(dres[["x"]]), FUN = identity)
+    labels = rownames(res)
+    if(is.null(labels)) labels = character(0)
+    res = dtfrm(labels = labels, res)
+    rownames(res) = NULL
+    list(freq = res, not_nas = not_nas, nas = nas, total = NULL) 
+    
+}
+
+elementary_cro = function(x, predictor, need_row_total = FALSE, need_table_total = FALSE, weight = NULL){
     check_sizes("cro/fre", x, predictor, weight)
     stopif(NCOL(predictor)>1, "predictor should have only one column.")
     if (is.matrix(x)) {
@@ -214,12 +256,14 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
     }    
     valid = valid(x) # are there any not-NA in row?
     valid = valid & (weight>0)
-    not_nas = sum(weight*(valid), na.rm = TRUE) # for fre
-    nas = sum(weight*(!valid), na.rm = TRUE) # for fre
-    if (!is.null(predictor)){
-        valid = valid & valid(predictor)
-        predictor = predictor[valid]
-    }
+    valid = valid & valid(predictor)
+    predictor = predictor[valid]
+    weight = weight[valid]
+    predictor = unvr(predictor)
+    predictor = to_fac(predictor)
+    total = dt_tapply(weight, predictor, fun = sum, na.rm = TRUE)
+    
+    predictor = rep(predictor, NCOL(x))
     if(is.data.frame(x)){
         # we convert to labelled because further we will combine data.frame to single column
         for(each in seq_along(x)){
@@ -230,32 +274,21 @@ elementary_freq = function(x, predictor = NULL, weight = NULL){
         if(is.factor(x)) x = as.labelled(x)
         x = x[valid]
     }
-    weight = weight[valid]
-    if(!is.null(predictor)){
-        predictor = unvr(predictor)
-        predictor = to_fac(predictor)
-        total = dt_tapply(weight, predictor, fun = sum, na.rm = TRUE)
-        predictor = rep(predictor, NCOL(x))
-    } else {
-        total = NULL
-    }
+
+
     vallab = val_lab(x)
     x = unvr(x)
     weight = rep(weight, NCOL(x))
     x = c(x, recursive = TRUE)
     val_lab(x) = vallab
-    if (is.null(predictor)){
-        res = dt_tapply(weight, to_fac(x), fun = sum, na.rm = TRUE)
-    } else {
-        res = dt_tapply(weight, to_fac(x), predictor, fun = sum, na.rm = TRUE)
-    }
+    res = dt_tapply(weight, to_fac(x), predictor, fun = sum, na.rm = TRUE)
     labels = rownames(res)
     if(is.null(labels)) labels = character(0)
     res = dtfrm(labels = labels, res)
     rownames(res) = NULL
-    list(freq = res, not_nas = not_nas, nas = nas, total = total) 
-    
+    list(freq = res, not_nas = NULL, nas = NULL, total = total) 
 }
+
 
 dt_tapply = function(cell_var, row_var, col_var = NULL, fun, ...){
 
@@ -287,7 +320,7 @@ cro = function(x, predictor, weight = NULL){
                         weight = weight, 
                         fun = NULL)
     predictor = prepare_predictor(predictor, NROW(x))
-    raw = elementary_freq(x = x, predictor = predictor, weight = weight)
+    raw = elementary_cro(x = x, predictor = predictor, weight = weight)
     res = raw$freq
     
     

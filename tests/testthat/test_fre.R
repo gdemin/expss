@@ -9,10 +9,10 @@ mtcars = modify(mtcars,{
     var_lab(wt) = "Weight (lb/1000)"
     var_lab(qsec) = "1/4 mile time"
     var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
+    val_lab(vs) = c("V-engine" = 0,
+                    "Straight engine" = 1)
     var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0, 
+    val_lab(am) = c(automatic = 0,
                     manual=1)
     var_lab(gear) = "Number of forward gears"
     var_lab(carb) = "Number of carburetors"
@@ -23,7 +23,7 @@ mtcars = modify(mtcars,{
 expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs)), "rds/elem_fre1.rds")
 
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, am)), "rds/elem_fre2.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs, am)), "rds/elem_fre2.rds")
 
 
 mtcars$am[1:2] = NA
@@ -33,19 +33,19 @@ expect_equal_to_reference(fre(mtcars$am), "rds/fre2.5.rds")
 
 
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, am)), "rds/elem_fre3.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs, am)), "rds/elem_fre3.rds")
 
 expect_equal_to_reference(with(mtcars, expss:::elementary_freq(am)), "rds/elem_fre4.rds")
 
 
 mtcars$vs[4:5] = NA
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, am)), "rds/elem_fre5.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs, am)), "rds/elem_fre5.rds")
 
 
 
 context("elementary_freq weighted")
-data(mtcars)
+# data(mtcars)
 mtcars = modify(mtcars,{
     var_lab(mpg) = "Miles/(US) gallon"
     var_lab(cyl) = "Number of cylinders"
@@ -55,10 +55,10 @@ mtcars = modify(mtcars,{
     var_lab(wt) = "Weight (lb/1000)"
     var_lab(qsec) = "1/4 mile time"
     var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
+    val_lab(vs) = c("V-engine" = 0,
+                    "Straight engine" = 1)
     var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0, 
+    val_lab(am) = c(automatic = 0,
                     manual=1)
     var_lab(gear) = "Number of forward gears"
     var_lab(carb) = "Number of carburetors"
@@ -69,26 +69,26 @@ mtcars$weight = 2
 
 expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, weight = weight)), "rds/elem_fre6.rds")
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, am, weight = weight)), "rds/elem_fre7.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs, am, weight = weight)), "rds/elem_fre7.rds")
 
 
 mtcars$am[1:2] = NA
 
-expect_equal_to_reference( with(mtcars, expss:::elementary_freq(vs, am, weight = weight)), "rds/elem_fre8.rds")
+# expect_equal_to_reference( with(mtcars, expss:::elementary_cro(vs, am, weight = weight)), "rds/elem_fre8.rds")
 
 expect_equal_to_reference (with(mtcars, expss:::elementary_freq(am, weight = weight)), "rds/elem_fre9.rds")
 
 
 mtcars$vs[4:5] = NA
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs, am, weight = weight)),"rds/elem_fre10.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs, am, weight = weight)),"rds/elem_fre10.rds")
 
 
 context("elementary_freq multiple")
 
 
 
-data(mtcars)
+# data(mtcars)
 mtcars = modify(mtcars,{
     var_lab(mpg) = "Miles/(US) gallon"
     var_lab(cyl) = "Number of cylinders"
@@ -98,10 +98,10 @@ mtcars = modify(mtcars,{
     var_lab(wt) = "Weight (lb/1000)"
     var_lab(qsec) = "1/4 mile time"
     var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
+    val_lab(vs) = c("V-engine" = 0,
+                    "Straight engine" = 1)
     var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0, 
+    val_lab(am) = c(automatic = 0,
                     manual=1)
     var_lab(gear) = "Number of forward gears"
     var_lab(carb) = "Number of carburetors"
@@ -113,22 +113,22 @@ mtcars$vs2 = ifelse(1:32>16, mtcars$vs, NA)
 expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2)), "rds/elem_fre11.rds")
 
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, am)), "rds/elem_fre12.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs1 %to% vs2, am)), "rds/elem_fre12.rds")
 
 
 mtcars$am[1:2] = NA
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, am)), "rds/elem_fre13.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs1 %to% vs2, am)), "rds/elem_fre13.rds")
 
 
 
 
 mtcars$vs1[4:5] = NA
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, am)), "rds/elem_fre14.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs1 %to% vs2, am)), "rds/elem_fre14.rds")
 
 context("elementary_freq multiple weighted")
-data(mtcars)
+# data(mtcars)
 mtcars = modify(mtcars,{
     var_lab(mpg) = "Miles/(US) gallon"
     var_lab(cyl) = "Number of cylinders"
@@ -138,10 +138,10 @@ mtcars = modify(mtcars,{
     var_lab(wt) = "Weight (lb/1000)"
     var_lab(qsec) = "1/4 mile time"
     var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
+    val_lab(vs) = c("V-engine" = 0,
+                    "Straight engine" = 1)
     var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0, 
+    val_lab(am) = c(automatic = 0,
                     manual=1)
     var_lab(gear) = "Number of forward gears"
     var_lab(carb) = "Number of carburetors"
@@ -155,21 +155,23 @@ mtcars$weight = 2
 expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, weight = weight)), "rds/elem_fre15.rds")
 
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, am, weight = weight)), "rds/elem_fre16.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs1 %to% vs2, am, weight = weight)), "rds/elem_fre16.rds")
 
 mtcars$am[1:2] = NA
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, am, weight = weight)), "rds/elem_fre17.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs1 %to% vs2, am, weight = weight)), "rds/elem_fre17.rds")
 
 
 mtcars$vs1[4:5] = NA
 
-expect_equal_to_reference(with(mtcars, expss:::elementary_freq(vs1 %to% vs2, am, weight = weight)), "rds/elem_fre18.rds")
+# expect_equal_to_reference(with(mtcars, expss:::elementary_cro(vs1 %to% vs2, am, weight = weight)), "rds/elem_fre18.rds")
 
 
 context("elementary_freq factor")
 expect_equal_to_reference(expss:::elementary_freq(iris$Species), "rds/elem_fre19.rds")
-expect_equal_to_reference(expss:::elementary_freq(iris$Species, iris$Species), "rds/elem_fre20.rds")
+# expect_equal_to_reference(expss:::elementary_cro(iris$Species, iris$Species), "rds/elem_fre20.rds")
+
+##############################
 
 context("simple_table methods")
 expect_equal_to_reference(fre(mtcars$am)[,"Count"], "rds/fre2.6.rds")
@@ -193,7 +195,7 @@ expect_equal_to_reference(cro(a, a), "rds/order_factor_cro20.rds")
 
 
 
-data(mtcars)
+# data(mtcars)
 mtcars = modify(mtcars,{
     var_lab(vs) = "Engine"
     val_lab(vs) = c("V-engine" = 0, 
@@ -433,7 +435,7 @@ expect_error(cro_fun(b, a, weight = weight, fun = function(x, w, na.rm){
 
 expect_equal_to_reference(cro_fun(iris[,-5], iris$Species, fun = median), "rds/cro_fun8.rds")
 
-data(mtcars)
+# data(mtcars)
 mtcars = modify(mtcars,{
     var_lab(vs) = "Engine"
     val_lab(vs) = c("V-engine" = 0, 
@@ -580,7 +582,7 @@ expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = summary), "r
 
 
 context("table_summary methods")
-data(mtcars)
+# data(mtcars)
 mtcars = modify(mtcars,{
     var_lab(vs) = "Engine"
     val_lab(vs) = c("V-engine" = 0, 
@@ -698,7 +700,7 @@ expect_equal_to_reference(fre(brands), "rds/fre_ex4.rds")
 
 
 #######
-data(mtcars)
+# data(mtcars)
 
 expect_error(fre(mtcars$dont_exist))
 expect_error(cro(mtcars$dont_exist, mtcars$am))
