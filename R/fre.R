@@ -192,12 +192,10 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
         x = x[valid]
     }
     varlab = var_lab(x)
-    if(!is.factor(x) || is.labelled(x)){
-        x = to_fac(x, prepend_var_lab = FALSE)
-    } 
     dtable = data.table(weight = weight, x = x)
-    dres = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
-    res = tapply(dres[["weight"]], list(dres[["x"]]), FUN = identity)
+    dtable = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
+    dtable[, x:=to_fac(x, drop_unused = FALSE, prepend_var_lab = FALSE)]
+    res = tapply(dtable[["weight"]], list(dtable[["x"]]), FUN = identity)
     labels = rownames(res)
     if(is.null(labels)) labels = character(0)
     res = dtfrm(labels = labels, res)
