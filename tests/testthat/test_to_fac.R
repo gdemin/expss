@@ -41,6 +41,10 @@ expect_identical(to_fac(vec_with_lab2, drop_unused = TRUE),
                         labels= c("Fruits|Apple","Fruits|Bananas")))
 
 a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c", "d", "e")))
+
+expect_identical(to_fac(a, drop_unused = TRUE), factor(a))
+expect_identical(to_fac(a, drop_unused = FALSE), a)
+
 var_lab(a) = "My 'a' with labels"
 
 expect_identical(to_fac(a, drop_unused = FALSE, prepend_var_lab = FALSE), unvr(a))

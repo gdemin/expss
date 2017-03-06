@@ -48,6 +48,15 @@ to_fac.default = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
 }  
 
 #' @export
+to_fac.factor = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
+    if(drop_unused) {
+        base::factor(x = x, ...)  
+    } else {
+        x
+    }    
+}  
+
+#' @export
 to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     x = as.labelled(x) # if we have only variable label 
     vallab = val_lab(x)
@@ -67,7 +76,7 @@ to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     }
     vallab = sort(vallab)
     if (!is.null(varlab) && (varlab!="") && prepend_var_lab) {
-        names(vallab) = paste(varlab,names(vallab), sep = LABELS_SEP)
+        names(vallab) = paste(varlab, names(vallab), sep = LABELS_SEP)
     }    
     ### premature optimization
     if(is.numeric(x) && !is.object(x)){
