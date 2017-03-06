@@ -194,7 +194,9 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
     varlab = var_lab(x)
     dtable = data.table(weight = weight, x = x)
     dtable = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
-    dtable[, x:=to_fac(x, drop_unused = FALSE, prepend_var_lab = FALSE)]
+    if(is.labelled(dtable[["x"]])) {
+        dtable[, x:=to_fac(x, drop_unused = FALSE, prepend_var_lab = FALSE)]
+    }    
     res = tapply(dtable[["weight"]], list(dtable[["x"]]), FUN = identity)
     labels = rownames(res)
     if(is.null(labels)) labels = character(0)
@@ -329,10 +331,11 @@ dt_tapply = function(cell_var, row_var, col_var = NULL, fun, ...){
     }
 }
 
+# "#Total"
 
 #' @export
 #' @rdname fre
-cro = function(x, predictor, weight = NULL){
+cro = function(x, predictor, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE){
     str_x = deparse(substitute(x))
     str_predictor = deparse(substitute(predictor))
     check_cro_arguments(x = x, 
@@ -350,6 +353,50 @@ cro = function(x, predictor, weight = NULL){
     res = res[, c(TRUE, column_total>0), drop = FALSE]
     column_total = column_total[column_total>0]
 
+    column_total = data.frame(labels = "#Total", 
+                              t(column_total), 
+                              stringsAsFactors = FALSE,
+                              check.names = FALSE
+    )
+    res = rbind(res, column_total)
+    row_total = rowSums(res[,-1, drop = FALSE], na.rm = TRUE)
+    res[,"#row_total"] = row_total
+    res = res[(row_total>0) | (seq_len(NROW(res)) == NROW(res)),, drop = FALSE]
+    
+    varlab = var_lab(x)
+    if (is.null(varlab)){
+        varlab = deparse(substitute(x))
+    }
+    
+    colnames(res)[1] = varlab
+    colnames(res)[NCOL(res)] = "#Total"
+    class(res) = union("etable", class(res))
+    rownames(res) = NULL
+    res
+    
+}
+
+
+#' @export
+#' @rdname fre
+old_cro = function(x, predictor, weight = NULL){
+    str_x = deparse(substitute(x))
+    str_predictor = deparse(substitute(predictor))
+    check_cro_arguments(x = x, 
+                        str_x = str_x, 
+                        predictor = predictor, 
+                        str_predictor = str_predictor, 
+                        weight = weight, 
+                        fun = NULL)
+    predictor = prepare_predictor(predictor, NROW(x))
+    raw = elementary_cro(x = x, predictor = predictor, weight = weight)
+    res = raw$freq
+    
+    
+    column_total = if_na(raw$total, 0) 
+    res = res[, c(TRUE, column_total>0), drop = FALSE]
+    column_total = column_total[column_total>0]
+    
     column_total = data.frame(labels = "#Total", 
                               t(column_total), 
                               stringsAsFactors = FALSE,
