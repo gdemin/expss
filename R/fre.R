@@ -192,17 +192,19 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
         x = x[valid]
     }
     varlab = var_lab(x)
-    dtable = data.table(weight = weight, x = x)
+    dtable = data.table(x = x, weight = weight)
     dtable = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
     if(is.labelled(dtable[["x"]])) {
         dtable[, x:=to_fac(x, drop_unused = FALSE, prepend_var_lab = FALSE)]
     } 
-    dtable[, count:=1]
+    
     
     setkeyv(dtable, cols = "x", verbose = FALSE)
-    # res = tapply(dtable[["weight"]], list(dtable[["x"]]), FUN = identity)
+    
     ### just for generating absent labels
     if(nrow(dtable)>0){
+        dtable[, count:=1]
+        
         res = dcast(dtable, x ~ count, value.var = "weight", drop = FALSE, fill = NA)
         res = res[!is.na(x), ]
         res = as.dtfrm(res)
@@ -212,6 +214,7 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
         if(is.null(labels)) labels = character(0)
         res = dtfrm(labels, res)
     }
+
 
     colnames(res) = c("labels", "res")
     rownames(res) = NULL
