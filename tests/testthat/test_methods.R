@@ -140,7 +140,7 @@ val_lab(a) = c(a= 1)
 attr(a, "labels") = c(a = 1, a=2 , b = 0)
 
 expect_warning(as.character(a))
-suppressWarnings(expect_identical(as.character(a), c("a", "a1", "b")))
+suppressWarnings(expect_identical(as.character(a), c("a", "a_2", "b")))
 
 attr(a, "labels") = c(a = 1, c=1 , b = 0)
 

@@ -174,7 +174,7 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
     if (anyDuplicated(names_vallab)){
         duplicates = duplicated(names_vallab)
         warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ", ")))
-        names(vallab)[duplicates] = paste0(names_vallab[duplicates], seq_len(sum(duplicates)))
+        names(vallab)[duplicates] = paste0(names_vallab[duplicates], "_", seq_len(sum(duplicates)) + 1)
     }
     
     uniqs = unique(x)

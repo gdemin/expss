@@ -63,12 +63,7 @@ to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     varlab = var_lab(x)
     x = unlab(x)
     stopif(anyDuplicated(vallab),"duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
-    names_vallab = names(vallab)
-    if (anyDuplicated(names_vallab)){
-        duplicates = duplicated(names_vallab)
-        warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ",")))
-        names(vallab)[duplicates] = paste0(names_vallab[duplicates], seq_len(sum(duplicates)))
-    }
+
     uniqs=unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 
     if(drop_unused){
@@ -78,6 +73,12 @@ to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     if (!is.null(varlab) && (varlab!="") && prepend_var_lab) {
         names(vallab) = paste(varlab, names(vallab), sep = LABELS_SEP)
     }    
+    names_vallab = names(vallab)
+    if (anyDuplicated(names_vallab)){
+        duplicates = duplicated(names_vallab)
+        warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ",")))
+        names(vallab)[duplicates] = paste0(names_vallab[duplicates], "_", seq_len(sum(duplicates))+1)
+    }
     ### premature optimization
     if(is.numeric(x) && !is.object(x)){
         ordered = if_null(list(...)$ordered, FALSE)
