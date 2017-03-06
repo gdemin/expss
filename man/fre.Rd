@@ -3,6 +3,7 @@
 \name{fre}
 \alias{fre}
 \alias{cro}
+\alias{old_cro}
 \alias{cro_cpct}
 \alias{cro_rpct}
 \alias{cro_tpct}
@@ -15,7 +16,10 @@
 \usage{
 fre(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE)
 
-cro(x, predictor, weight = NULL)
+cro(x, predictor, weight = NULL, drop_unused_labels = TRUE,
+  prepend_var_lab = FALSE)
+
+old_cro(x, predictor, weight = NULL)
 
 cro_cpct(x, predictor, weight = NULL)
 
