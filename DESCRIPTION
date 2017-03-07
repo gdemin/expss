@@ -12,16 +12,19 @@ Depends:
     magrittr (>= 1.5),
     htmlTable (>= 1.9),
     DT (>= 0.2)
-Imports: 
-		 foreign, 
-		 utils,
-		 stats,
-		 matrixStats (>= 0.51.0),
-		 data.table (>= 1.10),
-		 htmltools (>= 0.3.5),
+Imports:
+    foreign,
+    utils,
+    stats,
+    matrixStats (>= 0.51.0),
+    data.table (>= 1.10),
+    htmltools (>= 0.3.5),
 Suggests:
     knitr
-Description: Package implements several popular functions from Excel ('COUNTIF', 'VLOOKUP', etc.) and 'SPSS' Statistics ('RECODE', 'COUNT', etc.). Also there are functions for basic tables with value labels/variable labels support. Package aimed to help people to move data processing from Excel/'SPSS' to R.
+Description: Package implements several popular functions from Excel ('COUNTIF',
+    'VLOOKUP', etc.) and 'SPSS' Statistics ('RECODE', 'COUNT', etc.). Also there are
+    functions for basic tables with value labels/variable labels support. Package
+    aimed to help people to move data processing from Excel/'SPSS' to R.
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
