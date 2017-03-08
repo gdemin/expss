@@ -104,7 +104,7 @@ set_var_lab.matrix = function(x, value){
 
 
 #' @export
-set_var_lab.default = function(x,value){
+set_var_lab.default = function(x, value){
     # this conversion is needed to avoid strange bug (incorrect residuals)
     # with 'lm' with labelled integers 
     if(is.integer(x)) x[] = as.double(x)
@@ -115,7 +115,8 @@ set_var_lab.default = function(x,value){
         }
         return(x)
     }
-    
+    value = as.character(value)
+    stopif(length(value)>1, "Label should be vector of length 1.")
     attr(x,"label")=value
     class(x)=union("labelled",class(x))
     x
