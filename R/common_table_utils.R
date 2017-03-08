@@ -126,6 +126,57 @@ set_negative_and_na_to_zero = function(x){
     x
 }
 
+########## 
+
+convert_multicolumn_object_to_vector  = function(x){
+    if(NCOL(x)>1){
+        # we convert factors to labelled because further we will combine data.frame to single column and
+        # for labelled value labels will be combined. It is not so for factors.
+        varlab = var_lab(x)
+        for(each in seq_along(x)){
+            if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
+        }
+        vallab = val_lab(x)
+        x = c(x, recursive = TRUE)
+        val_lab(x) = vallab
+        var_lab(x) = varlab
+    } 
+    x
+}
+
+#################################
+
+long_datatable_to_table = function(dtable, rows, columns, values){
+    setkeyv(dtable, cols = c(rows, columns), verbose = FALSE)
+    rows_columns = which(colnames(dtable) %in% c(rows, columns))
+    for (each in rows_columns){
+        if(is.labelled(dtable[[each]])) {
+            dtable[[each]] = to_fac(dtable[[each]], drop_unused = FALSE, prepend_var_lab = FALSE)
+        } 
+    }
+    if(nrow(dtable)==0){
+        # we need at least one row in our table
+        # and we want NA only when there are no other levels in the variable
+        dtable = rbind(dtable, NA, use.names = TRUE, fill = TRUE)  
+        
+        for (each in rows_columns){
+            curr_levels = levels(dtable[[each]])
+            if(length(curr_levels)>0){
+                dtable[[each]][] = curr_levels[1]
+            }
+        }
+    }
+    
+    frm = as.formula(paste(paste(rows, collapse = "+"), "~", paste(columns, collapse = "+")))
+    mess = utils::capture.output(
+        {res = res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")},
+        type = "message"
+    )
+    stopif(length(mess)>0,
+           paste0("Something is going wrong - several elements in one cell in the table (",mess,").")
+    )
+    as.dtfrm(res)
+}
 #####
 # convert mdsets to categories, accepts lists
 dichotomy_to_category_encoding = function(x){

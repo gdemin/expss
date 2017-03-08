@@ -311,9 +311,9 @@ expect_equal_to_reference(fre(numeric(0)), "rds/fre1.rds")
 
 a = numeric(0)
 val_lab(a) = autonum(letters[1:3])
-expect_equal_to_reference(fre(a), "rds/fre1_emty_with_labels.rds")
+expect_equal_to_reference(fre(a), "rds/fre1_empty_with_labels.rds")
 
-expect_equal_to_reference(fre(a, drop_unused_labels = FALSE), "rds/fre1_emty_with_labels_not_drop.rds")
+expect_equal_to_reference(fre(a, drop_unused_labels = FALSE), "rds/fre1_empty_with_labels_not_drop.rds")
 
 a = rep(NA, 5)
 

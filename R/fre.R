@@ -160,62 +160,38 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
     }
     
     check_sizes("fre", x, weight)
+    
     if(is.dichotomy(x)){
         x = as.category(x)
     }
-    if (is.matrix(x)) {
-        x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
-    }
-    if (is.null(weight)) {
-        weight = rep(1, NROW(x))
-    } else {
-        if(length(weight)==1) weight = rep(weight, NROW(x))
-        weight = set_negative_and_na_to_zero(weight)
-    }    
+
+    weight = if_null(weight, 1)
+    weight = set_negative_and_na_to_zero(weight)
+    if(length(weight)==1) weight = rep(weight, NROW(x))
+    
+    
     valid = valid(x) # are there any not-NA in row?
     valid = valid & (weight>0)
+    
     not_nas = sum(weight*(valid), na.rm = TRUE) 
     nas = sum(weight*(!valid), na.rm = TRUE) 
+    
+    x = convert_multicolumn_object_to_vector(x)
+    
+    x = x[valid]
     weight = weight[valid]
-    if(is.data.frame(x)){
-        # we convert to labelled because further we will combine data.frame to single column
-        varlab = var_lab(x)
-        for(each in seq_along(x)){
-            if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
-        }
-        vallab = val_lab(x)
-        x = x[valid, ]
-        x = c(x, recursive = TRUE)
-        val_lab(x) = vallab
-        var_lab(x) = varlab
-    } else {
-        x = x[valid]
-    }
+    
     varlab = var_lab(x)
     dtable = data.table(x = x, weight = weight)
+
+    dtable = dtable[!is.na(x), ]
     dtable = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
-    if(is.labelled(dtable[["x"]])) {
-        dtable[, x:=to_fac(x, drop_unused = FALSE, prepend_var_lab = FALSE)]
-    } 
-    
-    
-    setkeyv(dtable, cols = "x", verbose = FALSE)
-    
-    ### just for generating absent labels
-    if(nrow(dtable)>0){
-        dtable[, count:=1]
-        
-        res = dcast(dtable, x ~ count, value.var = "weight", drop = FALSE, fill = NA)
-        res = res[!is.na(x), ]
-        res = as.dtfrm(res)
-    } else {
-        res = tapply(dtable[["weight"]], list(dtable[["x"]]), FUN = identity)
-        labels = rownames(res)
-        if(is.null(labels)) labels = character(0)
-        res = dtfrm(labels, res)
-    }
 
+    dtable[, count:=1]
 
+    ### 'dcast' just for generating absent labels    
+    res = long_datatable_to_table(dtable, rows = "x", columns = "count", value = "weight")
+   
     colnames(res) = c("labels", "res")
     rownames(res) = NULL
     res = res[!is.na(res$res) | !drop_unused_labels, ]
@@ -241,25 +217,21 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
         res$rpercent =  rep(0, nrow(res))
     }  
     total = sum(res[[2]], na.rm = TRUE)
-    dfs_total = data.frame(
+    dfs_total = dtfrm(
         labels = "#Total",
         res = not_nas,
         valid_percent = ifelse(total>0, 100,0), 
         percent = ifelse(base>0, not_nas/base*100, 0),
         rpercent = ifelse(total>0, 100, 0),
-        cum = NA,
-        stringsAsFactors = FALSE,
-        check.names = FALSE
+        cum = NA
     )
     res$cum = cumsum(if_na(res$rpercent, 0))
-    dfs_na = data.frame(labels = "<NA>", 
+    dfs_na = dtfrm(labels = "<NA>", 
                         res = nas, 
                         valid_percent = NA, 
                         percent = ifelse(base>0, nas/base*100, 0),
                         rpercent = NA,
-                        cum = NA,
-                        stringsAsFactors = FALSE,
-                        check.names = FALSE
+                        cum = NA
     )
     res = rbind(res, dfs_total, dfs_na)
     rownames(res) = NULL

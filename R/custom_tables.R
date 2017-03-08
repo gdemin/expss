@@ -207,7 +207,7 @@ stat_df.intermediate_table = function(..., fun_value_labels = NULL, label = NULL
     } else {
         new_long_table[[STAT_NUM]] = 
             max(res[[LONG_TABLE]][[STAT_NUM]]) + 1
-        res[[LONG_TABLE]] = rbind(res[[LONG_TABLE]], new_long_table, use.name = TRUE, fill = TRUE)    
+        res[[LONG_TABLE]] = rbind(res[[LONG_TABLE]], new_long_table, use.names = TRUE, fill = TRUE)    
     }
     res
 }
