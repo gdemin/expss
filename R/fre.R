@@ -33,14 +33,18 @@
 #' 
 #' @param x vector/data.frame. data.frames are considered as multiple response
 #'   variables.
-#' @param predictor vector. By now multiple-response predictor is not supported.
+#' @param row_vars vector. By now multiple-response predictor is not supported.
+#' @param col_vars vector. By now multiple-response predictor is not supported.
 #' @param weight numeric vector. Optional case weights. NA's and negative weights
 #'   treated as zero weights.
+#' @param total_row_position sdsdds
+#' @param total_row_title sdsdd
+#' @param weighted_total dssds
 #' @param drop_unused_labels logical. Should we drop unused value labels?
-#'   Default is TRUE
+#'   Default is TRUE for \code{fre} and FALSE for other functions.
 #' @param prepend_var_lab logical. Should we prepend variable label before value
 #'   labels? By default we will add variable labels to value labels only if
-#'   \code{x} is list (several variables).
+#'   \code{x} or predictor is list (several variables).
 #' @param fun custom summary function. It should always return
 #'   scalar/vector/matrix of the same size.
 #' @param ... further arguments for \code{fun}   
@@ -255,70 +259,83 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
 
 
 
-elementary_cro = function(x, predictor, need_row_total = FALSE, need_table_total = FALSE, weight = NULL){
-    check_sizes("cro/fre", x, predictor, weight)
-    stopif(NCOL(predictor)>1, "predictor should have only one column.")
-    if (is.matrix(x)) {
-        x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
-    }
-    if (is.null(weight)) {
-        weight = rep(1, NROW(x))
-    } else {
-        if(length(weight)==1) weight = rep(weight, NROW(x))
-        weight =set_negative_and_na_to_zero(weight)
-    }    
-    valid = valid(x) # are there any not-NA in row?
-    valid = valid & (weight>0)
-    valid = valid & valid(predictor)
-    predictor = predictor[valid]
-    weight = weight[valid]
-    predictor = unvr(predictor)
-    predictor = to_fac(predictor)
-    total = dt_tapply(weight, predictor, fun = sum, na.rm = TRUE)
+elementary_cro = function(row_var, col_var, weight = NULL, 
+                          total_title = "#Total",
+                          weighted_total_title = "#WeightedTotal",
+                          total = "unweighted",
+                          total_row_position = c("below", "above", "none"),
+                          prepend_var_lab = FALSE,
+                          subgroup = NULL,
+                          stat_type = c("count", "cpct", "cpct_responses", "rpct", "tpct")
+                          ){
     
-    predictor = rep(predictor, NCOL(x))
-    if(is.data.frame(x)){
-        # we convert to labelled because further we will combine data.frame to single column
-        for(each in seq_along(x)){
-            if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
+    ### preparations
+    total_row_position = match.arg(total_title)
+    total = match.arg(unweighted_total, c("unweighted", "weighted"), several.ok = TRUE)
+    stat_type = match.arg(stat_type)
+    
+    weight = if_null(weight, 1)
+    weight = set_negative_and_na_to_zero(weight)
+    if(length(weight)==1) weight = rep(weight, NROW(row_var))
+    
+    valid = valid(row_var) & valid(col_var) & (weight>0)
+    if(!is.null(subgroup)) {
+        valid = valid & subgroup
+    }
+
+    row_var = convert_multicolumn_object_to_vector(row_var)
+    
+    row_var = row_var[valid]
+    col_var = col_var[valid]
+    weight = weight[valid]
+    
+    row_var_lab = var_lab(row_var)
+    col_var_lab = var_lab(col_var)
+    
+    raw_data = data.table(row_var = row_var, col_var = col_var, weight = weight)
+    raw_data = raw_data[!is.na(row_var), ]
+    
+    # statistics
+    
+    dtable = raw_data[, list(value = sum(weight, na.rm = TRUE)), by = "col_var, row_var"]
+    
+    dtotal = data.table(col_var = col_var, weight = weight)
+    dtotal = dtotal[, list(weighted_total = sum(weight, na.rm = TRUE), 
+                               total = .N), by = "col_var"]
+
+    if(stat_type=="cpct" || stat_type=="cpct_responses"){
+        dtable = dtotal[dtable, on = "col_var", no_match = NA]
+        dtable[, value := value/weighted_total*100]
+        if(stat_type == "cpct_responses"){
+            dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]
         }
-        x = x[valid, ]
-    } else {
-        if(is.factor(x)) x = as.labelled(x)
-        x = x[valid]
+    }
+    if(stat_type=="tpct"){
+        dtable = dtotal[dtable, on = "col_var", no_match = NA]
+        dtable[, value := value/sum(weight)*100]
+    }
+    if(stat_type=="rpct"){
+        row_total = raw_data[, list(weighted_total = sum(weight, na.rm = TRUE)), by = "row_var"]
+        dtable = row_total[dtable, on = "row_var", no_match = NA]
+        dtable[, value := value/sum(weighted_total)*100]
     }
 
+    ### make rectangular table  
+    res = long_datatable_to_table(dtable, rows = "row_var", columns = "col_var", value = "value")
 
-    vallab = val_lab(x)
-    x = unvr(x)
-    weight = rep(weight, NCOL(x))
-    x = c(x, recursive = TRUE)
-    val_lab(x) = vallab
-    res = dt_tapply(weight, to_fac(x), predictor, fun = sum, na.rm = TRUE)
-    labels = rownames(res)
-    if(is.null(labels)) labels = character(0)
-    res = dtfrm(labels = labels, res)
+    
     rownames(res) = NULL
-    list(freq = res, not_nas = NULL, nas = NULL, total = total) 
+    res[[1]] = as.character(res[[1]])
+    
+    
+    res[[1]] = remove_unnecessary_splitters(res[[1]]) 
+    colnames(res) = remove_unnecessary_splitters(colnames(res)) 
+    class(res) = union("etable", class(res))
+    res
 }
 
 
-dt_tapply = function(cell_var, row_var, col_var = NULL, fun, ...){
 
-    if(is.null(col_var)){
-        by_str = "row_var"
-        dtable = data.table(cell_var = cell_var, row_var = row_var)
-    } else {
-        by_str = "row_var,col_var"
-        dtable = data.table(cell_var = cell_var, row_var = row_var, col_var = col_var)
-    }
-    dres = dtable[, lapply(.SD, fun, ...), by = by_str]
-    if(is.null(col_var)){
-        tapply(dres[["cell_var"]], list(dres[["row_var"]]), FUN = identity)
-    } else {
-        tapply(dres[["cell_var"]], list(dres[["row_var"]], dres[["col_var"]]), FUN = identity)
-    }
-}
 
 # "#Total"
 
