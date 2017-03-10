@@ -170,12 +170,7 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
     if(anyDuplicated(vallab)){
         warning("duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
     }
-    names_vallab = names(vallab)
-    if (anyDuplicated(names_vallab)){
-        duplicates = duplicated(names_vallab)
-        warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ", ")))
-        names(vallab)[duplicates] = paste0(names_vallab[duplicates], "_", seq_len(sum(duplicates)) + 1)
-    }
+    names(vallab) = make_items_unique(names(vallab), with_warning = "duplicated labels: ")
     
     uniqs = unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 

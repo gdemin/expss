@@ -313,13 +313,10 @@ set_val_lab.default = function(x, value, add = FALSE){
     if(is.integer(x)) x[] = as.double(x)
     if (add) value = combine_labels(value,val_lab(x))
  
-    names_vallab = names(value)
-    if (anyDuplicated(names_vallab)){
-        duplicates = duplicated(names_vallab)
-        names(value)[duplicates] = paste0(names_vallab[duplicates], "_", seq_len(sum(duplicates))+1)
-        # This warning was removed because it was generated too often for third party *.sav files.
-        #     warning(paste0("duplicated labels: ", paste(names_vallab[duplicates], collapse = ",")))
-    }
+    # Warning about dupliction was removed because it was generated too often for third party *.sav files.
+    #    with_warning = "duplicated labels: "
+    names(value) = make_items_unique(names(value))
+
     if (length(value)==0) value = NULL else value = sort(value)
     attr(x, "labels")=value
     if(is.null(value) && is.null(var_lab(x))){
