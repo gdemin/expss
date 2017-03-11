@@ -35,7 +35,7 @@ c.labelled = function(..., recursive = FALSE)
 #' @export
 rep.labelled = function (x, ...){
     y= NextMethod("rep")
-    var_attr(y)=var_attr(x)
+    y = set_var_attr(y, var_attr(x))
     class(y) = class(x)
     y	
 }
@@ -46,7 +46,7 @@ rep.labelled = function (x, ...){
     # browser()
     # class(x) = setdiff(class(x), "labelled")
     # y = `[`(x, ...)
-    var_attr(y)=var_attr(x)
+    y = set_var_attr(y, var_attr(x))
     class(y) = union("labelled", class(x))
     # class(y) = class(x)
     y
@@ -58,7 +58,7 @@ rep.labelled = function (x, ...){
     # browser()
     # class(x) = setdiff(class(x), "labelled")
     # y = x[...]
-    var_attr(y)=var_attr(x)
+    y = set_var_attr(y, var_attr(x))
     class(y) = union("labelled", class(x))
     # class(y) = class(x)
     y
@@ -86,9 +86,9 @@ var_attr = function(x){
     list(label=var_lab(x),labels=val_lab(x))
 }
 
-'var_attr<-' = function(x,value){
-    var_lab(x)=value[["label"]]
-    val_lab(x)=value[["labels"]]
+set_var_attr = function(x, value){
+    x = set_var_lab(x, value[["label"]])
+    x = set_val_lab(x, value[["labels"]])
     x
 }
 
@@ -134,7 +134,7 @@ subset_helper = function(x, i, j, drop, class_name){
 #' @export
 as.double.labelled = function (x, ...){
     y = NextMethod("as.double")
-    var_attr(y)=var_attr(x)
+    y = set_var_attr(y, var_attr(x))
     class(y) = union("labelled", class(y))
     y	
 }
@@ -142,7 +142,7 @@ as.double.labelled = function (x, ...){
 #' @export
 as.integer.labelled = function (x, ...){
     y = NextMethod("as.integer")
-    var_attr(y)=var_attr(x)
+    y = set_var_attr(y, var_attr(x))
     class(y) = union("labelled", class(y))
     y	
 }
