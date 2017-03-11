@@ -21,7 +21,7 @@ mtcars = apply_labels(mtcars,
 
 options(expss.digits = NA)
 set.seed(1)
-mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, mtcars$vs %nest% mtcars$am) 
+mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, list(mtcars$vs %nest% mtcars$am, "#Total")) 
 
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable1.rds")
@@ -39,10 +39,12 @@ expect_equal_to_reference(datatable(mtcars_table[, 1], show_row_numbers = TRUE) 
 expect_equal_to_reference(datatable(mtcars_table[, FALSE, drop = FALSE])  %n_d% c("dependencies"), 
                           "rds/html_datatable2empty1.rds")
 
-expect_equal_to_reference(datatable(mtcars_table[, FALSE, drop = FALSE], repeat_row_labels = TRUE)  %n_d% c("dependencies"), 
+expect_equal_to_reference(datatable(mtcars_table[, FALSE, drop = FALSE], repeat_row_labels = TRUE)  %n_d% 
+                              c("dependencies"), 
                           "rds/html_datatable2empty2.rds")
 
-expect_equal_to_reference(datatable(mtcars_table[, FALSE, drop = FALSE], show_row_numbers = TRUE)  %n_d% c("dependencies"), 
+expect_equal_to_reference(datatable(mtcars_table[, FALSE, drop = FALSE], show_row_numbers = TRUE)  %n_d%
+                              c("dependencies"), 
                           "rds/html_datatable2empty3.rds")
 
 expect_equal_to_reference(datatable(mtcars_table, digits = 0) %n_d% c("dependencies"),
@@ -73,11 +75,11 @@ mtcars_table = calculate(mtcars,
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable10.rds")
 
-mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, mtcars$vs)
+mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, list(mtcars$vs, "#Total"))
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable11.rds")
 
-mtcars_table = cro_cpct(mtcars$vs, mtcars$vs %nest% mtcars$am)
+mtcars_table = cro_cpct(mtcars$vs, list(mtcars$vs %nest% mtcars$am, "#Total"), prepend_var_lab = FALSE)
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable12.rds")
 
@@ -91,22 +93,22 @@ expect_equal_to_reference(datatable(mtcars_table[,1], show_row_numbers = TRUE) %
 expect_equal_to_reference(datatable(mtcars_table[,FALSE, drop = FALSE]) %n_d% c("dependencies"),
                           "rds/html_datatable12empty.rds")
 
-expect_equal_to_reference(datatable(mtcars_table[,FALSE, drop = FALSE], show_row_numbers = TRUE) %n_d% c("dependencies"),
+expect_equal_to_reference(datatable(mtcars_table[,FALSE, drop = FALSE], show_row_numbers = TRUE) %n_d% 
+                              c("dependencies"),
                           "rds/html_datatable12empty2.rds")
 
 
 new_am = mtcars$am
-names(val_lab(new_am)) = paste0("Transmission|", names(val_lab(mtcars$am)))
-mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, mtcars$vs %nest% mtcars$am) %merge%
-    cro_cpct(mtcars$vs %nest% mtcars$am, new_am)
+mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, list(mtcars$vs %nest% mtcars$am, "#Total")) %merge%
+    cro_cpct(mtcars$vs %nest% mtcars$am, list(new_am, "#Total"))
 
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable13.rds")
 
 var_lab(new_am) = "|"
 val_lab(new_am) = setNames(0:1, c("", " "))
-mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, mtcars$vs %nest% mtcars$am) %merge%
-    cro_cpct(mtcars$vs %nest% mtcars$am, new_am)
+mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, list(mtcars$vs %nest% mtcars$am, "#Total")) %merge%
+    cro_cpct(mtcars$vs %nest% mtcars$am, list(new_am, "#Total"))
 colnames(mtcars_table)[7] = ""
 
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),

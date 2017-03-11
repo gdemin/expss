@@ -3,10 +3,10 @@
 \name{fre}
 \alias{fre}
 \alias{cro}
-\alias{old_cro}
 \alias{cro_cpct}
 \alias{cro_rpct}
 \alias{cro_tpct}
+\alias{cro_cpct_responses}
 \alias{cro_mean}
 \alias{cro_sum}
 \alias{cro_median}
@@ -16,16 +16,25 @@
 \usage{
 fre(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE)
 
-cro(x, predictor, weight = NULL, drop_unused_labels = TRUE,
-  prepend_var_lab = FALSE)
+cro(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
+  total_title = "#Total", total = "unweighted",
+  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
 
-old_cro(x, predictor, weight = NULL)
+cro_cpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
+  total_title = "#Total", total = "unweighted",
+  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
 
-cro_cpct(x, predictor, weight = NULL)
+cro_rpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
+  total_title = "#Total", total = "unweighted",
+  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
 
-cro_rpct(x, predictor, weight = NULL)
+cro_tpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
+  total_title = "#Total", total = "unweighted",
+  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
 
-cro_tpct(x, predictor, weight = NULL)
+cro_cpct_responses(row_vars, col_vars = "#Total", weight = NULL,
+  subgroup = NULL, total_title = "#Total", total = "unweighted",
+  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
 
 cro_mean(x, predictor, weight = NULL)
 
@@ -45,18 +54,26 @@ variables.}
 treated as zero weights.}
 
 \item{drop_unused_labels}{logical. Should we drop unused value labels?
-Default is TRUE}
+Default is TRUE.}
 
 \item{prepend_var_lab}{logical. Should we prepend variable label before value
 labels? By default we will add variable labels to value labels only if
-\code{x} is list (several variables).}
+\code{x} or predictor is list (several variables).}
 
-\item{predictor}{vector. By now multiple-response predictor is not supported.}
+\item{row_vars}{vector. By now multiple-response predictor is not supported.}
+
+\item{col_vars}{vector. By now multiple-response predictor is not supported.}
+
+\item{total_row_position}{sdsdds}
 
 \item{fun}{custom summary function. It should always return
 scalar/vector/matrix of the same size.}
 
 \item{...}{further arguments for \code{fun}}
+
+\item{total_row_title}{sdsdd}
+
+\item{weighted_total}{dssds}
 }
 \value{
 object of class 'etable'. Basically it's a data.frame but class
@@ -109,7 +126,7 @@ fre(mtcars$vs)
 with(mtcars, cro(am, vs))
 with(mtcars, cro_cpct(am, vs))
 
-# multiple-choise variable
+# multiple-choiсe variable
 # brands - multiple response question
 # Which brands do you use during last three months? 
 set.seed(123)

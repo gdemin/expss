@@ -60,9 +60,9 @@ d = data.frame(y = 6:10, w = 16:20)
 e = data.frame(f = 21:25, g = 26:30)
 
 
-class(a) = union(c("table_cases", "etable"), class(a))
-class(b) = union(c("table_cases", "etable"), class(b))
-class(d) = union(c("table_cpct", "etable"), class(d))
+class(a) = union(c("etable"), class(a))
+class(b) = union(c("etable"), class(b))
+class(d) = union(c("etable"), class(d))
 
 expect_equal_to_reference(add_rows(a, b), "rds/add_rows7e.rds")
 expect_equal_to_reference(add_rows(a, a), "rds/add_rows7ee.rds")
@@ -110,8 +110,8 @@ mtcars = modify(mtcars, {
     var_lab(carb) = "carb"})
 
 tab1 = with(mtcars, cro_mean(mpg, am))
-tab2 = with(mtcars, cro_cpct(vs, am))
-tab3 = with(mtcars, cro_cpct(vs, carb))
+tab2 = with(mtcars, cro_cpct(vs, list(am, "#Total"), prepend_var_lab = FALSE))
+tab3 = with(mtcars, cro_cpct(vs, list(carb, "#Total"), prepend_var_lab = FALSE))
 
 
 expect_equal_to_reference(tab1 %add_rows% tab2, "rds/add_rows7.rds")

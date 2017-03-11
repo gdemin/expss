@@ -473,7 +473,15 @@ make_items_unique = function(x, with_warning = NULL){
 }
 
 
+#################
 
+if_null = function(x, value){
+    if(is.null(x)){
+        value
+    } else {
+        x
+    }
+}
 
 
 

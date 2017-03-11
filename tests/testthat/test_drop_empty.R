@@ -33,7 +33,7 @@ NA, 14L), `Engine|Other` = c(NA_integer_, NA_integer_, NA_integer_,
 NA_integer_, NA_integer_, NA_integer_, NA_integer_, NA_integer_
 )), .Names = c("row_labels", "Engine|V-engine", "Engine|Straight engine", 
 "Engine|Other", "Engine|V-engine", "Engine|Straight engine", 
-"Engine|Other"), row.names = c(NA, 8L), class = c("table_cases", 
+"Engine|Other"), row.names = c(NA, 8L), class = c( 
 "etable", "data.frame"))
 
 expect_equal_to_reference(drop_r(with_empty), "rds/drop_empty1.rds")

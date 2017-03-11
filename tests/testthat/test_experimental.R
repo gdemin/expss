@@ -19,11 +19,11 @@ expect_equal_to_reference(.fre(q8r_1 %to% q8r_99), "rds/fre_real3.rds")
 
 expect_equal_to_reference(.cro(reg, s1), "rds/cro_real1.rds")
 expect_equal_to_reference(.cro_cpct(reg, s1), "rds/cro_real2.rds")
-expect_equal_to_reference(.cro_tpct(q8r_1 %to% q8r_99, reg), "rds/cro_real4t.rds")
+# expect_equal_to_reference(.cro_tpct(mrset(q8r_1 %to% q8r_99), reg), "rds/cro_real4t.rds")
 
 #### with weight
 expect_equal_to_reference(.fre(reg, weight = weight1), "rds/fre_real1w.rds")
-expect_equal_to_reference(.cro_rpct(q8r_1 %to% q8r_99, s1, weight = weight1), "rds/cro_real6wr.rds")
+expect_equal_to_reference(.cro_rpct(mrset(q8r_1 %to% q8r_99), s1, weight = weight1), "rds/cro_real6wr.rds")
 
 
 data(iris)
@@ -102,7 +102,8 @@ expect_identical(.calc(fre(vs)),fre(mtcars$vs))
 expect_identical(.cro(am, vs), cro(mtcars$am, mtcars$vs))
 expect_identical(.cro_cpct(am, vs), cro_cpct(mtcars$am, mtcars$vs))
 var_lab(mtcars$mpg_by_am) = "mpg_by_am"
-expect_identical(.cro_cpct(mpg_by_am, hi_low_mpg), cro_cpct(mtcars$mpg_by_am, mtcars$hi_low_mpg))
+expect_identical(.cro_cpct(mpg_by_am, hi_low_mpg, prepend_var_lab = FALSE), 
+                 cro_cpct(mtcars$mpg_by_am, mtcars$hi_low_mpg, prepend_var_lab = FALSE))
 
 ############
 rm(mtcars)

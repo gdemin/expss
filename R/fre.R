@@ -41,7 +41,7 @@
 #' @param total_row_title sdsdd
 #' @param weighted_total dssds
 #' @param drop_unused_labels logical. Should we drop unused value labels?
-#'   Default is TRUE for \code{fre} and FALSE for other functions.
+#'   Default is TRUE.
 #' @param prepend_var_lab logical. Should we prepend variable label before value
 #'   labels? By default we will add variable labels to value labels only if
 #'   \code{x} or predictor is list (several variables).
@@ -67,7 +67,7 @@
 #' with(mtcars, cro(am, vs))
 #' with(mtcars, cro_cpct(am, vs))
 #' 
-#' # multiple-choise variable
+#' # multiple-choiсe variable
 #' # brands - multiple response question
 #' # Which brands do you use during last three months? 
 #' set.seed(123)
@@ -258,10 +258,9 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
 }
 
 
-
+### compute statistics for single row_var and single col_var
 elementary_cro = function(row_var, col_var, weight = NULL, 
                           total_title = "#Total",
-                          weighted_total_title = "#WeightedTotal",
                           total = "unweighted",
                           total_row_position = c("below", "above", "none"),
                           prepend_var_lab = FALSE,
@@ -270,8 +269,8 @@ elementary_cro = function(row_var, col_var, weight = NULL,
                           ){
     
     ### preparations
-    total_row_position = match.arg(total_title)
-    total = match.arg(unweighted_total, c("unweighted", "weighted"), several.ok = TRUE)
+    total_row_position = match.arg(total_row_position)
+    total = match.arg(total, c("unweighted", "weighted"), several.ok = TRUE)
     stat_type = match.arg(stat_type)
     
     weight = if_null(weight, 1)
@@ -279,16 +278,29 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     if(length(weight)==1) weight = rep(weight, NROW(row_var))
     
     valid = valid(row_var) & valid(col_var) & (weight>0)
+    
     if(!is.null(subgroup)) {
         valid = valid & subgroup
     }
-
-    row_var = convert_multicolumn_object_to_vector(row_var)
     
-    row_var = row_var[valid]
-    col_var = col_var[valid]
+    max_nrow = max(NROW(row_var), NROW(col_var))
+    
     weight = weight[valid]
     
+    if(length(col_var)==1) col_var = rep(col_var, max_nrow)
+    col_var = col_var[valid]
+    
+    if(NROW(row_var)==1){
+        if(is.matrix(row_var) || is.data.frame(row_var)){
+            row_var =  row_var[rep(1, max_nrow), ]
+        } else {
+            row_var = rep(row_var, max_nrow)
+        }
+    }
+    
+    row_var = convert_multicolumn_object_to_vector(row_var)
+    row_var = row_var[valid]
+
     row_var_lab = var_lab(row_var)
     col_var_lab = var_lab(col_var)
     
@@ -297,222 +309,275 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     
     # statistics
     
-    dtable = raw_data[, list(value = sum(weight, na.rm = TRUE)), by = "col_var, row_var"]
+    dtable = raw_data[, list(value = sum(weight, na.rm = TRUE)), by = "col_var,row_var"]
     
     dtotal = data.table(col_var = col_var, weight = weight)
     dtotal = dtotal[, list(weighted_total = sum(weight, na.rm = TRUE), 
                                total = .N), by = "col_var"]
 
     if(stat_type=="cpct" || stat_type=="cpct_responses"){
-        dtable = dtotal[dtable, on = "col_var", no_match = NA]
+        dtable = dtotal[dtable, on = "col_var", nomatch = NA]
         dtable[, value := value/weighted_total*100]
         if(stat_type == "cpct_responses"){
             dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]
         }
     }
     if(stat_type=="tpct"){
-        dtable = dtotal[dtable, on = "col_var", no_match = NA]
-        dtable[, value := value/sum(weight)*100]
+        dtable = dtotal[dtable, on = "col_var", nomatch = NA]
+        dtable[, value := value/sum(weight, na.rm = TRUE)*100]
     }
     if(stat_type=="rpct"){
         row_total = raw_data[, list(weighted_total = sum(weight, na.rm = TRUE)), by = "row_var"]
-        dtable = row_total[dtable, on = "row_var", no_match = NA]
-        dtable[, value := value/sum(weighted_total)*100]
+        dtable = row_total[dtable, on = "row_var", nomatch = NA]
+        dtable[, value := value/weighted_total*100]
     }
 
     ### make rectangular table  
     res = long_datatable_to_table(dtable, rows = "row_var", columns = "col_var", value = "value")
-
+    colnames(res)[1] = "row_labels"
     
+    if(total_row_position!="none"){
+        res = add_total_to_table(
+            res = res, 
+            dtotal = dtotal,
+            total_row_position = total_row_position,
+            total = total,
+            total_title = total_title
+        )    
+    }    
+
     rownames(res) = NULL
-    res[[1]] = as.character(res[[1]])
+    
+    if(prepend_var_lab){
+        res[[1]] = paste0(row_var_lab, "|", res[[1]])
+        colnames(res)[-1] = paste0(col_var_lab, "|", colnames(res)[-1]) 
+    }
     
     
     res[[1]] = remove_unnecessary_splitters(res[[1]]) 
+    res[[1]] = make_items_unique(res[[1]])
     colnames(res) = remove_unnecessary_splitters(colnames(res)) 
     class(res) = union("etable", class(res))
     res
 }
 
+###########################
 
-
-
-# "#Total"
-
-#' @export
-#' @rdname fre
-cro = function(x, predictor, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    check_cro_arguments(x = x, 
-                        str_x = str_x, 
-                        predictor = predictor, 
-                        str_predictor = str_predictor, 
-                        weight = weight, 
-                        fun = NULL)
-    predictor = prepare_predictor(predictor, NROW(x))
-    raw = elementary_cro(x = x, predictor = predictor, weight = weight)
-    res = raw$freq
-    
-    
-    column_total = if_na(raw$total, 0) 
-    res = res[, c(TRUE, column_total>0), drop = FALSE]
-    column_total = column_total[column_total>0]
-
-    column_total = data.frame(labels = "#Total", 
-                              t(column_total), 
-                              stringsAsFactors = FALSE,
-                              check.names = FALSE
-    )
-    res = rbind(res, column_total)
-    row_total = rowSums(res[,-1, drop = FALSE], na.rm = TRUE)
-    res[,"#row_total"] = row_total
-    res = res[(row_total>0) | (seq_len(NROW(res)) == NROW(res)),, drop = FALSE]
-    
-    varlab = var_lab(x)
-    if (is.null(varlab)){
-        varlab = deparse(substitute(x))
+add_total_to_table = function(res, dtotal, total_row_position, total, total_title){
+    if(length(total)==0) total = "unweighted"
+    if(length(total_title) == 0) total_title = "#Total"
+    if(length(total_title) < length(total)) total_title = rep(total_title, length(total))
+   
+    total =  c("unweighted" = "total", "weighted" = "weighted_total")[total]
+    total_row = lapply(seq_along(total), function(item){
+        dtotal[, title := ""]  
+        row = long_datatable_to_table(dtotal, 
+                                rows = "title", 
+                                columns = "col_var", 
+                                value = total[item])
+        colnames(row)[1] = "row_labels"
+        row[[1]] = add_first_symbol_to_total_title(total_title[item])
+        row
+    })
+    total_row = do.call(add_rows, total_row)
+    if(total_row_position=="above"){
+        res = add_rows(total_row, res)
+    } else {
+        res = add_rows(res, total_row)
     }
-    
-    colnames(res)[1] = varlab
-    colnames(res)[NCOL(res)] = "#Total"
-    class(res) = union("etable", class(res))
-    rownames(res) = NULL
     res
-    
 }
 
+#################################
 
-#' @export
-#' @rdname fre
-old_cro = function(x, predictor, weight = NULL){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    check_cro_arguments(x = x, 
-                        str_x = str_x, 
-                        predictor = predictor, 
-                        str_predictor = str_predictor, 
-                        weight = weight, 
-                        fun = NULL)
-    predictor = prepare_predictor(predictor, NROW(x))
-    raw = elementary_cro(x = x, predictor = predictor, weight = weight)
-    res = raw$freq
-    
-    
-    column_total = if_na(raw$total, 0) 
-    res = res[, c(TRUE, column_total>0), drop = FALSE]
-    column_total = column_total[column_total>0]
-    
-    column_total = data.frame(labels = "#Total", 
-                              t(column_total), 
-                              stringsAsFactors = FALSE,
-                              check.names = FALSE
-    )
-    res = rbind(res, column_total)
-    row_total = rowSums(res[,-1, drop = FALSE], na.rm = TRUE)
-    res[,"#row_total"] = row_total
-    res = res[(row_total>0) | (seq_len(NROW(res)) == NROW(res)),, drop = FALSE]
-    
-    varlab = var_lab(x)
-    if (is.null(varlab)){
-        varlab = deparse(substitute(x))
+multi_cro = function(row_vars, 
+               col_vars = "#Total", 
+               weight = NULL, 
+               subgroup = NULL,
+               total_title = "#Total",
+               total = "unweighted",
+               total_row_position = c("below", "above", "none"),
+               prepend_var_lab = TRUE,
+               stat_type){
+    if(!is_list(row_vars)){
+        row_vars = list(row_vars)
     }
-    
-    colnames(res)[1] = varlab
-    colnames(res)[NCOL(res)] = "#Total"
-    class(res) = union("etable", class(res))
-    rownames(res) = NULL
-    res
-    
-}
-
-#' @export
-#' @rdname fre
-cro_cpct = function(x, predictor, weight = NULL){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    check_cro_arguments(x = x, 
-                        str_x = str_x, 
-                        predictor = predictor, 
-                        str_predictor = str_predictor, 
-                        weight = weight, 
-                        fun = NULL)
-    res = cro(x = x, predictor = predictor, weight = weight)
-    last_row = NROW(res)
-    if(NCOL(res)>2 & last_row>1){
-        total_row = res[last_row, ]
-        for (i in seq_along(res)[-1]){
-            res[[i]][-last_row] = res[[i]][-last_row]/total_row[[i]]*100 
-        }    
+    if(!is_list(col_vars)){
+        col_vars = list(col_vars)
+    }
+    row_vars = flat_list(dichotomy_to_category_encoding(row_vars), flat_df = FALSE)
+    col_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(col_vars), flat_df = TRUE)
+    stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
+    check_sizes("cro", row_vars, col_vars, weight, subgroup)
+    res = lapply(row_vars, function(each_row_var){
+        all_col_vars = lapply(col_vars, function(each_col_var){
+            elementary_cro(row_var = each_row_var, 
+                           col_var = each_col_var, 
+                           weight = weight,
+                           total_title = total_title,
+                           total = total,
+                           total_row_position = total_row_position,
+                           subgroup = subgroup,
+                           prepend_var_lab = prepend_var_lab,
+                           stat_type = stat_type
+            )    
+        })
+        Reduce(merge, all_col_vars)
         
-    }
-    varlab = var_lab(x)
-    if (is.null(varlab)){
-        varlab = deparse(substitute(x))
-    }
-    colnames(res)[1] = varlab
+    })
+    res = do.call(add_rows, res)
     res
+}
+
+######################################################
+
+#' @export
+#' @rdname fre
+cro = function(row_vars, 
+               col_vars = "#Total", 
+               weight = NULL, 
+               subgroup = NULL,
+               total_title = "#Total",
+               total = "unweighted",
+               total_row_position = c("below", "above", "none"),
+               prepend_var_lab = TRUE){
     
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    multi_cro(row_vars = row_vars, 
+                   col_vars = col_vars, 
+                   weight = weight,
+                   total_title = total_title,
+                   total = total,
+                   total_row_position = total_row_position,
+                   subgroup = subgroup,
+                   prepend_var_lab = prepend_var_lab,
+                   stat_type = "count"
+    )    
+}
+
+
+
+
+#' @export
+#' @rdname fre
+cro_cpct = function(row_vars, 
+                    col_vars = "#Total", 
+                    weight = NULL, 
+                    subgroup = NULL,
+                    total_title = "#Total",
+                    total = "unweighted",
+                    total_row_position = c("below", "above", "none"),
+                    prepend_var_lab = TRUE){
     
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    multi_cro(row_vars = row_vars, 
+              col_vars = col_vars, 
+              weight = weight,
+              total_title = total_title,
+              total = total,
+              total_row_position = total_row_position,
+              subgroup = subgroup,
+              prepend_var_lab = prepend_var_lab,
+              stat_type = "cpct"
+    )    
 }
 
 #' @export
 #' @rdname fre
-cro_rpct = function(x, predictor, weight = NULL){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    check_cro_arguments(x = x, 
-                        str_x = str_x, 
-                        predictor = predictor, 
-                        str_predictor = str_predictor, 
-                        weight = weight, 
-                        fun = NULL)
-    res = cro(x = x, predictor = predictor, weight = weight)
-    last_col = NCOL(res)
-    if(NROW(res)>1 & last_col>2){
-        total_col = res[[last_col]]
-        for (i in seq_len(last_col)[c(-1,-last_col)]){
-            res[[i]] = res[[i]]/total_col*100 
-        }    
-        
-    }
-    varlab = var_lab(x)
-    if (is.null(varlab)){
-        varlab = deparse(substitute(x))
-    }
-    colnames(res)[1] = varlab
-    res
+cro_rpct = function(row_vars, 
+                    col_vars = "#Total", 
+                    weight = NULL, 
+                    subgroup = NULL,
+                    total_title = "#Total",
+                    total = "unweighted",
+                    total_row_position = c("below", "above", "none"),
+                    prepend_var_lab = TRUE){
     
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    multi_cro(row_vars = row_vars, 
+              col_vars = col_vars, 
+              weight = weight,
+              total_title = total_title,
+              total = total,
+              total_row_position = total_row_position,
+              subgroup = subgroup,
+              prepend_var_lab = prepend_var_lab,
+              stat_type = "rpct"
+    )    
+}
+
+
+#' @export
+#' @rdname fre
+cro_tpct = function(row_vars, 
+                    col_vars = "#Total", 
+                    weight = NULL, 
+                    subgroup = NULL,
+                    total_title = "#Total",
+                    total = "unweighted",
+                    total_row_position = c("below", "above", "none"),
+                    prepend_var_lab = TRUE){
     
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    multi_cro(row_vars = row_vars, 
+              col_vars = col_vars, 
+              weight = weight,
+              total_title = total_title,
+              total = total,
+              total_row_position = total_row_position,
+              subgroup = subgroup,
+              prepend_var_lab = prepend_var_lab,
+              stat_type = "tpct"
+    )    
 }
 
 #' @export
 #' @rdname fre
-cro_tpct = function(x, predictor, weight = NULL){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    check_cro_arguments(x = x, 
-                        str_x = str_x, 
-                        predictor = predictor, 
-                        str_predictor = str_predictor, 
-                        weight = weight, 
-                        fun = NULL)
-    res = cro(x = x, predictor = predictor, weight = weight)
-    last_row = NROW(res)
-    last_col = NCOL(res)
-    if(last_col>2 & last_row>1){
-        total = res[[last_col]][last_row]
-        res[,-1] = res[,-1]/total*100 
-        res[last_row, last_col] = total
-    }
-    varlab = var_lab(x)
-    if (is.null(varlab)){
-        varlab = deparse(substitute(x))
-    }
-    colnames(res)[1] = varlab
-    res
+cro_cpct_responses = function(row_vars, 
+                    col_vars = "#Total", 
+                    weight = NULL, 
+                    subgroup = NULL,
+                    total_title = "#Total",
+                    total = "unweighted",
+                    total_row_position = c("below", "above", "none"),
+                    prepend_var_lab = TRUE){
     
-    
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    multi_cro(row_vars = row_vars, 
+              col_vars = col_vars, 
+              weight = weight,
+              total_title = total_title,
+              total = total,
+              total_row_position = total_row_position,
+              subgroup = subgroup,
+              prepend_var_lab = prepend_var_lab,
+              stat_type = "cpct_responses"
+    )    
 }
 
 
@@ -720,11 +785,12 @@ prepare_dataframe = function(x, possible_name){
     x
 }
 
+
 check_cro_arguments = function(x, str_x, predictor, str_predictor, weight, fun = NULL){
     stopif(is.null(x), 
-               paste0("'", str_x,"' is NULL. Possibly variable doesn't exist."))
+           paste0("'", str_x,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(predictor), 
-             paste0("'", str_predictor,"' is NULL. Possibly variable doesn't exist."))
+           paste0("'", str_predictor,"' is NULL. Possibly variable doesn't exist."))
     if(!is.data.frame(x)){
         x = prepare_dataframe(x, str_x)
     }
@@ -736,7 +802,7 @@ check_cro_arguments = function(x, str_x, predictor, str_predictor, weight, fun =
     stopif(!is.null(fun) && !is.null(weight) &&  !("weight" %in% names(formals(fun))),
            "`weight` is provided but `fun` doesn't have formal `weight` argument.")
     x
-
+    
 }
 
 

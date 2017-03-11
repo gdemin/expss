@@ -119,6 +119,15 @@ remove_unnecessary_splitters = function(labels){
     labels
 }
 
+### add # as first symbol to the total title
+
+add_first_symbol_to_total_title = function(total_title, symbol = "#"){
+    if(substr(total_title, 1, 1)!=symbol){
+        paste0("#", total_title)       
+    } else {
+        total_title
+    }
+}
 
 #######
 set_negative_and_na_to_zero = function(x){
@@ -133,8 +142,10 @@ convert_multicolumn_object_to_vector  = function(x){
         # we convert factors to labelled because further we will combine data.frame to single column and
         # for labelled value labels will be combined. It is not so for factors.
         varlab = var_lab(x)
-        for(each in seq_along(x)){
-            if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
+        if(!is.matrix(x)){
+            for(each in seq_along(x)){
+                if(is.factor(x[[each]])) x[[each]] = as.labelled(x[[each]])
+            }
         }
         vallab = val_lab(x)
         x = c(x, recursive = TRUE)
@@ -169,12 +180,13 @@ long_datatable_to_table = function(dtable, rows, columns, values){
     
     frm = as.formula(paste(paste(rows, collapse = "+"), "~", paste(columns, collapse = "+")))
     mess = utils::capture.output(
-        {res = res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")},
+        {res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")},
         type = "message"
     )
     stopif(length(mess)>0,
            paste0("Something is going wrong - several elements in one cell in the table (",mess,").")
     )
+    res[[1]] = as.character(res[[1]])
     as.dtfrm(res)
 }
 #####
@@ -207,15 +219,12 @@ multiples_to_single_columns_with_dummy_encoding = function(x){
             if(is.dichotomy(item)){
                 if(is.matrix(item)) item = as.data.frame(item)
                 na_if(item) = 0
-                val_lab(item) = setNames(1, "")
-                as.list(make_labels_from_names(item))
+                as.list(make_value_labels_from_names(item))
             } else {
                 if(is.category(item)){
                     item = as.dichotomy(item, keep_unused = TRUE, use_na = TRUE)
                     na_if(item) = 0
-                    
-                    val_lab(item) = setNames(1, "")
-                    as.list(make_labels_from_names(item))
+                    as.list(make_value_labels_from_names(item))
                 } else {
                     if(is.data.frame(item)){
                         as.list(item)

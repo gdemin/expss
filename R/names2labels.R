@@ -107,3 +107,12 @@ make_labels_from_names.data.frame = function(x){
     }
     x
 }
+
+make_value_labels_from_names = function(x){
+    for(each in seq_along(x)){
+        curr_lab = if_null(var_lab(x[[each]]), names(x)[each])
+        x[[each]] = set_val_lab(x[[each]], setNames(1, curr_lab))
+        x[[each]] = unvr(x[[each]])
+    }
+    x
+}
