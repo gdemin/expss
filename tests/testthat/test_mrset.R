@@ -64,7 +64,7 @@ a_res_dich = as.dichotomy(a_res)
 strange = a_res_dich
 if_val(a_res_dich) = 1:150>100 ~ NA
 if_val(strange) = 1:150>100 ~ 0
-expect_identical(mdset(strange), a_res_dich)
+expect_identical(mdset(strange), strange)
 a_res_dich = as.dichotomy(a_res)
 strange = a_res_dich
 if_val(strange) = c(0 ~ NA, 1 ~ 42)
@@ -72,6 +72,11 @@ expect_identical(mdset(strange),  a_res_dich)
 
 expect_identical(mdset(as.dichotomy(a_res), as.dichotomy(b_res)), big)
 
+a = 1:0
+var_lab(a) = "My a"
+res = dtfrm(x = a)
+class(res) = c("dichotomy", class(res))
+expect_identical(mdset(a), res)
 
 a_res_dich = as.dichotomy(a_res)
 for(each in seq_along(a_res_dich)){

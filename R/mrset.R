@@ -44,7 +44,6 @@ mrset = function(..., label = NULL){
 #' @export
 #' @rdname mrset
 mdset = function(..., label = NULL){
-    # TODO should make var labs from column names if it is absent
     args = list(...)
     stopif(!length(args), "`mdset` - you should provide at least one argument.")
     if(length(args)==1){
@@ -56,16 +55,12 @@ mdset = function(..., label = NULL){
         res = as.dtfrm(args)
     }
     if_val(res) = c(c(NA, 0) ~ 0, other ~ 1)
-    empty = !(res %row_in% 1)
-    na_if(res) = empty
+    res = make_labels_from_names(res)
     if(!is.null(label)){
         for(each in seq_along(res)){
-            curr_lab = var_lab(res[[each]])
-            if(!is.null(curr_lab) && !(curr_lab=="")){
-                var_lab(res[[each]]) = paste0(label, "|", curr_lab) 
-            } else {
-                var_lab(res[[each]]) = paste0(label, "|", names(res)[each])
-            }
+            # we have labels in any case because we made them from names
+            curr_lab = var_lab(res[[each]])  
+            var_lab(res[[each]]) = paste0(label, "|", curr_lab) 
         }
     }
     class(res) = union("dichotomy", class(res) %d% "category")

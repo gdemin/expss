@@ -69,6 +69,9 @@ expect_equal_to_reference(cro(mrset(mult1), "Total", weight = weight),
 expect_equal_to_reference(cro("Total", mrset(mult2), weight = weight),
                           "rds/table_cases15.rds")
 
+expect_equal_to_reference(cro(mrset("Total"), mrset(mult2), weight = weight),
+                          "rds/table_cases15.rds")
+
 # fre(mtcars$vs)
 # with(mtcars, cro(am, vs))
 
