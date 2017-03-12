@@ -2,53 +2,13 @@
 % Please edit documentation in R/fre.R
 \name{fre}
 \alias{fre}
-\alias{cro}
-\alias{cro_cpct}
-\alias{cro_rpct}
-\alias{cro_tpct}
-\alias{cro_cpct_responses}
-\alias{cro_mean}
-\alias{cro_sum}
-\alias{cro_median}
-\alias{cro_fun}
-\alias{cro_fun_df}
-\title{Simple frequencies and crosstabs with support of labels, weights and multiple response variables.}
+\title{Simple frequencies with support of labels, weights and multiple response variables.}
 \usage{
 fre(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE)
-
-cro(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
-  total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
-
-cro_cpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
-  total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
-
-cro_rpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
-  total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
-
-cro_tpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
-  total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
-
-cro_cpct_responses(row_vars, col_vars = "#Total", weight = NULL,
-  subgroup = NULL, total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
-
-cro_mean(x, predictor, weight = NULL)
-
-cro_sum(x, predictor, weight = NULL)
-
-cro_median(x, predictor, weight = NULL)
-
-cro_fun(x, predictor, fun, ..., weight = NULL)
-
-cro_fun_df(x, predictor, fun, ..., weight = NULL)
 }
 \arguments{
-\item{x}{vector/data.frame. data.frames are considered as multiple response
-variables.}
+\item{x}{vector/data.frame/list. data.frames are considered as multiple response
+variables. For list vertically stacked frequencies will be generated,}
 
 \item{weight}{numeric vector. Optional case weights. NA's and negative weights
 treated as zero weights.}
@@ -59,57 +19,16 @@ Default is TRUE.}
 \item{prepend_var_lab}{logical. Should we prepend variable label before value
 labels? By default we will add variable labels to value labels only if
 \code{x} or predictor is list (several variables).}
-
-\item{row_vars}{vector. By now multiple-response predictor is not supported.}
-
-\item{col_vars}{vector. By now multiple-response predictor is not supported.}
-
-\item{total_row_position}{sdsdds}
-
-\item{fun}{custom summary function. It should always return
-scalar/vector/matrix of the same size.}
-
-\item{...}{further arguments for \code{fun}}
-
-\item{total_row_title}{sdsdd}
-
-\item{weighted_total}{dssds}
 }
 \value{
 object of class 'etable'. Basically it's a data.frame but class
   is needed for custom methods.
 }
 \description{
-\itemize{
-\item{\code{fre}}{ returns data.frame with six columns: labels or values, counts, 
+\code{fre} returns data.frame with six columns: labels or values, counts, 
 valid percent (excluding NA), percent (with NA), percent of responses(for 
 single-column \code{x} it equals to valid percent) and cumulative percent of 
-responses.}
-\item{\code{cro}}{ returns data.frame with counts (possibly weighted) with column and
-row totals.}
-\item{\code{cro_pct}, \code{cro_cpct}, \code{cro_rpct}}{ return data.frame with 
-table/column/row percent with column and row totals. There are always 
-weighted counts instead of margin with 100\%. Empty labels/factor levels are 
-removed from results of these functions. Base for multiple response (x is 
-data.frame) percent is number of valid cases (not sum of responses) so sum of
-percent may be greater than 100. Case is considered as valid if it has at
-least one non-NA value.}
-\item{\code{cro_mean}, \code{cro_sum}, \code{cro_median}}{ return data.frame with 
-mean/sum/median. Empty labels/factor levels are 
-removed from results of these functions. NA's are always omitted.}
-\item{\code{cro_fun}, \code{cro_fun_df}}{ return data.frame with custom 
-summary statistics defined by 'fun' argument. Empty labels/factor levels in 
-predictor are removed from results of these functions. NA's treatment depends
-on your 'fun' behavior. To use weight you should have 'weight' argument in 
-'fun' and some logic for its proccessing inside.\code{cro_fun} applies 'fun'
-on each column in 'x' separately, \code{cro_fun_df} gives to 'fun' x as a
-whole data.frame. So \code{cro_fun(iris[, -5], iris$Species, fun = mean)}
-gives the same result as \code{cro_fun_df(iris[, -5], iris$Species, fun =
-colMeans)}. For \code{cro_fun_df} names of 'x' will converted to labels if
-they are available before 'fun' is applied. You should take care to return
-from 'fun' rectangular object with appropriate row/column names - they will
-be used in final result as labels.}
-}
+responses.
 }
 \examples{
 data(mtcars)
@@ -123,10 +42,11 @@ mtcars = modify(mtcars,{
 })
 
 fre(mtcars$vs)
-with(mtcars, cro(am, vs))
-with(mtcars, cro_cpct(am, vs))
 
-# multiple-choiсe variable
+# stacked frequencies
+fre(list(mtcars$vs, mtcars$am))
+
+# multiple-choice variable
 # brands - multiple response question
 # Which brands do you use during last three months? 
 set.seed(123)
@@ -150,53 +70,8 @@ val_lab(score) = make_labels("
                              ")
 
 fre(brands)
-cro(brands, score)
-cro_cpct(brands, score)
 
-# 'cro_mean'
+# stacked frequencies
+fre(list(score, brands))
 
-data(iris)
-cro_mean(iris[, -5], iris$Species)
-
-# 'cro_fun'
-
-data(mtcars)
-mtcars = modify(mtcars,{
-    var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
-    var_lab(hp) = "Gross horsepower"
-    var_lab(mpg) = "Miles/(US) gallon"
-})
-
-# Label for 'disp' forgotten intentionally
-with(mtcars, cro_fun(data.frame(hp, mpg, disp), vs, summary))
-
-# or, the same with transposed summary
-with(mtcars, cro_fun(data.frame(hp, mpg, disp), vs, function(x) t(summary(x))))
-
-# very artificial example
-a = c(1,1,1, 1, 1)
-b = c(0, 1, 2, 2, NA)
-weight = c(0, 0, 1, 1, 1)
-cro_fun(b, a, weight = weight, 
-     fun = function(x, weight, na.rm){
-                 weighted.mean(x, w = weight, na.rm = na.rm)
-             }, 
-     na.rm = TRUE)
-
-
-# comparison 'cro_fun' and 'cro_fun_df'
-
-data(iris)
-cro_fun(iris[, -5], iris$Species, fun = mean)
-# same result
-cro_fun_df(iris[, -5], iris$Species, fun = colMeans)  
-
-# usage for 'cro_fun_df' which is not possible for 'cro_fun'
-# calculate correlations of variables with Sepal.Length inside each group
-cro_fun_df(iris[,-5], iris$Species, fun = function(x) cor(x)[,1])
-
-# or, pairwise correlations inside groups
-cro_fun_df(iris[,-5], iris$Species, fun = cor)
 }
