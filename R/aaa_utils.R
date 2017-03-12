@@ -462,13 +462,16 @@ round_dataframe = function(x, digits = NULL){
 #####
 
 make_items_unique = function(x, with_warning = NULL){
-    if (anyDuplicated(x)){
-        duplicates = duplicated(x)
-        if(!is.null(with_warning)) warning(paste0(with_warning, paste(paste0("'", x[duplicates], "'"), collapse = "', '")))
-        x[duplicates] = paste0(x[duplicates], "_", seq_len(sum(duplicates))+1)
-        x
+    if(!is.null(with_warning)){
+        if (anyDuplicated(x)){
+            duplicates = duplicated(x)
+            warning(paste0(with_warning, paste(paste0("'", x[duplicates], "'"), collapse = "', '")))
+            make.unique(x, sep = "_")
+        } else {
+            x
+        }
     } else {
-        x
+        make.unique(x, sep = "_")
     }
 }
 

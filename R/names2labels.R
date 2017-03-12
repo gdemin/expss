@@ -108,6 +108,18 @@ make_labels_from_names.data.frame = function(x){
     x
 }
 
+#' @export
+make_labels_from_names.list = function(x){
+    if(!is.null(names(x))){
+        for(each in seq_along(x)){
+            if(!is.matrix(x) && !is.data.frame(x) && is.null(var_lab(x[[each]]))){
+                var_lab(x[[each]]) = names(x)[each]
+            }
+        }
+    }
+    x
+}
+
 make_value_labels_from_names = function(x){
     for(each in seq_along(x)){
         curr_lab = if_null(var_lab(x[[each]]), names(x)[each])

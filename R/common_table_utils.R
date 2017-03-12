@@ -158,17 +158,24 @@ convert_multicolumn_object_to_vector  = function(x){
 #################################
 
 long_datatable_to_table = function(dtable, rows, columns, values){
-    setkeyv(dtable, cols = c(rows, columns), verbose = FALSE)
+    
     rows_columns = which(colnames(dtable) %in% c(rows, columns))
     for (each in rows_columns){
-        if(is.labelled(dtable[[each]])) {
-            dtable[[each]] = to_fac(dtable[[each]], drop_unused = FALSE, prepend_var_lab = FALSE)
+        curr_col = dtable[[each]]
+        if(is.labelled(curr_col)) {
+            if(any(!is.na(curr_col)) || length(val_lab(curr_col))>0){
+                dtable[[each]] = to_fac(curr_col, drop_unused = FALSE, prepend_var_lab = FALSE)
+            } else {
+                dtable[[each]] = unlab(curr_col)
+            }
         } 
     }
     if(nrow(dtable)==0){
         # we need at least one row in our table
         # and we want NA only when there are no other levels in the variable
-        dtable = rbind(dtable, NA, use.names = TRUE, fill = TRUE)  
+        empty_dt = data.table(NA)
+        empty_dt = set_names(empty_dt, rows[[1]]) 
+        dtable = rbind(dtable, empty_dt, use.names = TRUE, fill = TRUE)  
         
         for (each in rows_columns){
             curr_levels = levels(dtable[[each]])
@@ -177,7 +184,7 @@ long_datatable_to_table = function(dtable, rows, columns, values){
             }
         }
     }
-    
+    setkeyv(dtable, cols = c(rows, columns), verbose = FALSE)
     frm = as.formula(paste(paste(rows, collapse = "+"), "~", paste(columns, collapse = "+")))
     mess = utils::capture.output(
         {res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")},
@@ -186,6 +193,20 @@ long_datatable_to_table = function(dtable, rows, columns, values){
     stopif(length(mess)>0,
            paste0("Something is going wrong - several elements in one cell in the table (",mess,").")
     )
+    if(length(values)>1){
+        # dcast place 'values' on top of all other grouping variable
+        # we doesn't need it sowe change it
+        regx = gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", values, perl = TRUE)
+        regx = paste(regx, collapse = "|")
+        regx = paste0("^(",regx,")\\|(.*)$")
+        setnames(res, gsub(regx, "\\2|\\1", colnames(res), perl = TRUE))
+        old_order = seq_len(ncol(res))[-seq_along(rows)]
+        other_order = rep(seq_len(length(old_order)/length(values)), length(values))
+        old_var_order = rep(seq_along(values), each = length(old_order)/length(values))
+        new_order = c(seq_along(rows), order(other_order, old_var_order) + length(rows))
+        res = res[, new_order, with = FALSE]
+    }
+
     res[[1]] = as.character(res[[1]])
     as.dtfrm(res)
 }

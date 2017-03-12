@@ -459,13 +459,14 @@ expect_equal_to_reference(cro_fun(b, 1, weight = 1, fun = function(x, weight){
     
 }), "rds/cro_fun3.rds")
 
-expect_equal_to_reference(cro_fun_df(b, a, weight = weight, fun = function(x, weight){
+##############
+expect_equal_to_reference(cro_fun_df(b, list(a, "#Total"), weight = weight, fun = function(x, weight){
     setNames(weighted.mean(x[[1]], w = weight), names(x))
-    
+  
 }), "rds/cro_fun3.rds")
 
 
-expect_equal_to_reference(cro_fun_df(b, 1, weight = 1, fun = function(x, weight){
+expect_equal_to_reference(cro_fun_df(b, list(1, "#Total"), weight = 1, fun = function(x, weight){
     setNames(weighted.mean(x[[1]], w = weight), names(x))
     
 }), "rds/cro_fun3.rds")
@@ -477,12 +478,13 @@ expect_error(
 })
 )
 
-expect_equal_to_reference(cro_fun_df(b, a, weight = 1, fun = function(x, weight){
+expect_equal_to_reference(cro_fun_df(b, list(a, "#Total"), weight = 1, fun = function(x, weight){
     setNames(weighted.mean(x[[1]], w = weight), names(x))
     
 }), "rds/cro_fun3.rds")
 
-expect_equal_to_reference(cro_fun_df(b, as.matrix(a), weight = 1, fun = function(x, weight){
+expect_equal_to_reference(cro_fun_df(b, list(as.matrix(a), "#Total"), weight = 1, 
+                                     fun = function(x, weight){
     setNames(weighted.mean(x[[1]], w = weight), names(x))
     
 }), "rds/cro_fun3.rds")
@@ -554,7 +556,7 @@ expect_equal_to_reference(
 
 
 expect_equal_to_reference(
-    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), am, fun = mean_col)),
+    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), list(am, "#Total"), fun = mean_col)),
     "rds/cro_fun9.rds")
 
 expect_equal_to_reference(
@@ -565,12 +567,12 @@ expect_equal_to_reference(
     with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = summary)), 
                           "rds/cro_fun11.rds")
 expect_equal_to_reference(
-    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), am, fun = colMeans)), 
-    "rds/cro_fun_df11.rds")
+    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), list(am, "#Total"), fun = colMeans)), 
+    "rds/cro_fun9.rds")
 
 expect_equal_to_reference(
-    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), as.dtfrm(am), fun = colMeans)), 
-    "rds/cro_fun_df11.rds")
+    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), list(as.dtfrm(am), "#Total"), fun = colMeans)), 
+    "rds/cro_fun9.rds")
 
 expect_equal_to_reference(
     with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = function(x) t(summary(x)))),
@@ -660,6 +662,8 @@ expect_equal_to_reference(cro_sum(as.list(iris[,-5]), iris$Species), "rds/cro_su
 expect_equal_to_reference(cro_fun(as.list(iris[,-5]), iris$Species, fun = mean), "rds/cro_mean8.rds")
 
 expect_equal_to_reference(cro_fun_df(as.list(iris[,-5]), iris$Species, fun = mean_col), "rds/cro_mean8.rds")
+# expect_equal_to_reference(cro_fun_df(iris[,-5], list(iris$Species, "#Total"), fun = mean_col),
+#                           "rds/cro_mean8.rds")
 
 #####
 expect_equal_to_reference(cro_median(as.matrix(iris[,-5]), iris$Species), "rds/cro_median8.rds")
@@ -668,12 +672,12 @@ expect_equal_to_reference(cro_sum(as.matrix(iris[,-5]), iris$Species), "rds/cro_
 
 expect_equal_to_reference(cro_fun(as.matrix(iris[,-5]), iris$Species, fun = mean), "rds/cro_mean8.rds")
 
-expect_equal_to_reference(cro_fun_df(as.list(iris[,-5]), iris$Species, fun = mean_col), "rds/cro_mean8.rds")
+# expect_equal_to_reference(cro_fun_df(as.list(iris[,-5]), iris$Species, fun = mean_col), "rds/cro_mean8.rds")
 
 ############
 
 expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = function(x) cor(x)[,1]), "rds/cro_fun_df1.rds")
-expect_equal_to_reference(cro_fun_df(iris[,-5], iris$Species, fun = summary), "rds/cro_fun_df2.rds")
+expect_equal_to_reference(cro_fun_df(as.list(iris[,-5]), iris$Species, fun = summary), "rds/cro_fun_df2.rds")
 
 
 context("table_summary methods")
