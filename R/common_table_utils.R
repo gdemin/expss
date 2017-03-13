@@ -169,6 +169,10 @@ long_datatable_to_table = function(dtable, rows, columns, values){
                 dtable[[each]] = unlab(curr_col)
             }
         } 
+        # dcast doesn't work when we have factor without levels
+        if(is.factor(curr_col) && length(levels(curr_col))==0){
+            dtable[[each]] = as.character(curr_col)
+        }
     }
     if(nrow(dtable)==0){
         # we need at least one row in our table
@@ -195,7 +199,7 @@ long_datatable_to_table = function(dtable, rows, columns, values){
     )
     if(length(values)>1){
         # dcast place 'values' on top of all other grouping variable
-        # we doesn't need it sowe change it
+        # we doesn't need it so we change it
         regx = gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", values, perl = TRUE)
         regx = paste(regx, collapse = "|")
         regx = paste0("^(",regx,")\\|(.*)$")
@@ -206,8 +210,10 @@ long_datatable_to_table = function(dtable, rows, columns, values){
         new_order = c(seq_along(rows), order(other_order, old_var_order) + length(rows))
         res = res[, new_order, with = FALSE]
     }
-
-    res[[1]] = as.character(res[[1]])
+    for(each in rows){
+        res[[each]] = as.character(res[[each]])
+        res[[each]][is.na(res[[each]])] = ""
+    }
     as.dtfrm(res)
 }
 #####
