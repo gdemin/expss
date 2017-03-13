@@ -2,20 +2,12 @@
 % Please edit documentation in R/table_summary_df.R
 \name{table_summary_df}
 \alias{table_summary_df}
-\alias{table_pearson}
-\alias{table_spearman}
 \title{Produce summary table over entire subset of variables. Not user-friendly - for expert usage.}
 \usage{
 table_summary_df(summary_vars, col_vars, fun, weight = NULL, subset = NULL,
   row_vars = NULL, row_labels = c("row_vars", "row_vars_values"),
   col_labels = c("col_vars", "col_vars_values"), hide = NULL,
   use_result_row_order = TRUE)
-
-table_pearson(summary_vars, col_vars, weight = NULL, subset = NULL,
-  row_vars = NULL)
-
-table_spearman(summary_vars, col_vars, weight = NULL, subset = NULL,
-  row_vars = NULL)
 }
 \arguments{
 \item{summary_vars}{vector/list/data.frame - these variables will be combined

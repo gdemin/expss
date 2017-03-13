@@ -251,24 +251,29 @@ expect_error(
 
 
 context("table correlations")
+
+
+
 val_lab(mtcars$am) = val_lab(mtcars$am)[1:2] 
 expect_equal_to_reference(
     table_pearson(mtcars %except% qc(vs, am), col_vars = mtcars$am)
     ,"rds/table_cor_1.rds"
 )
+
 expect_equal_to_reference(
     table_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am)
     ,"rds/table_cor_2.rds"
 )
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = numeric(0))
     ,"rds/table_cor_1a.rds"
 )
 
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, weight = numeric(0))
+    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = numeric(0), 
+                                              weight = numeric(0))
     ,"rds/table_cor_1a.rds"
 )
 
@@ -283,27 +288,34 @@ expect_equal_to_reference(
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = numeric(0))
     ,
-    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subset = FALSE)
+    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% table_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% FALSE %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, row_vars = numeric(0))
     ,
-    mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subset = FALSE)
+    mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
     mtcars %where% (cyl == 8) %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subset = (cyl == 8))
+    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
+)
+
+
+expect_identical(
+    mtcars %where% (cyl > 4) %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
+    ,
+    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl, subgroup = (cyl > 4))
 )
 
 expect_identical(
     mtcars %where% (cyl == 8) %calc% table_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subset = (cyl == 8))
+    mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )
 
 set.seed(1)
@@ -323,34 +335,25 @@ expect_equal(table_pearson(mtcars %except% qc(vs, am), col_vars = "Total")[[2]],
 expect_equal(table_spearman(mtcars %except% qc(vs, am), col_vars = "Total")[[2]],
              unname(cor(mtcars %except% qc(vs, am), method = "spearman")[,1]))
 
-context("table_summary_df error with index")
-expect_error(
-    table_summary_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, fun = function(x){
-        
-        colMeans(x)
-    }, 
-    use_result_row_order = FALSE
-    )
-)
 
 context("table_summary_df datetime")
 
 dates = as.POSIXct(rep(paste0("2017-02-", 1:10), each = 10))
 measure = runif(length(dates), 1, 2)
 expect_equal_to_reference(
-table_summary_df(measure, col_vars = "Total", row_vars = dates, fun = mean)
+cro_fun_df(measure, col_vars = "Total", row_vars = dates, fun = mean)
 ,"rds/table_summary_df_dates1.rds"
 )
 expect_equal_to_reference(
-table_summary_df(measure, col_vars = dates, fun = mean)
+    cro_fun_df(measure, col_vars = dates, fun = mean)
 ,"rds/table_summary_df_dates2.rds"
 )
 var_lab(dates) = "Day"
 expect_equal_to_reference(
-table_summary_df(measure, col_vars = "Total", row_vars = dates, fun = mean)
+    cro_fun_df(measure, col_vars = "Total", row_vars = dates, fun = mean)
 ,"rds/table_summary_df_dates3.rds"
 )
 expect_equal_to_reference(
-table_summary_df(measure, col_vars = dates, fun = mean)
+    cro_fun_df(measure, col_vars = dates, fun = mean)
 ,"rds/table_summary_df_dates4.rds"
 )

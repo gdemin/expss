@@ -851,58 +851,7 @@ cro_fun_df = function(cell_vars,
 }
 
 
-#' @export
-#' @rdname cro
-old_cro_fun_df = function(x, predictor, fun, ..., weight = NULL){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    fun = match.fun(fun)
-    x = check_cro_arguments(x = x, 
-                        str_x = str_x, 
-                        predictor = predictor, 
-                        str_predictor = str_predictor, 
-                        weight = weight, 
-                        fun = fun)
-    predictor = prepare_predictor(predictor, NROW(x))
-    x = names2labels(x)
-    if (!is.null(weight)) {
-       
-        # change negative and NA weights to 0 
-        if(length(weight)==1) weight = rep(weight, NROW(x))
-        if_val(weight) = list(lo %thru% 0 ~ 0, NA ~ 0)
-        splitted_weight = split(weight, predictor, drop = TRUE)
-        column_total = fun(x, weight = weight, ...)
-        
-    } else {
-        column_total = fun(x, ...)
-        
-    }
-    column_total = lapply(list(column_total), function(each) prepare_result(list("#Total" = each)))
-    column_total = do.call(rbind, column_total)
-    if (colnames(column_total)[1] == "#stat") column_total = column_total[,-1, drop = FALSE]
-    predictor = to_fac(unvr(predictor))
-    if(is.null(weight)){
-        res = lapply(split(x, predictor, drop = TRUE), FUN = fun, ...)
-        result = prepare_result(res)
-        
-    } else {
-        
-        splitted_x = split(x, predictor, drop = TRUE)
-        res = lapply(seq_along(splitted_x),
-                     function(each) 
-                         fun(splitted_x[[each]],
-                             weight = splitted_weight[[each]],
-                             ...)
-        )
-        names(res) = names(splitted_x)
-        result = prepare_result(res)
-    }
-    if_val(colnames(result)) = c('#stat' ~ ' ')
-    res = data.frame(result, column_total, stringsAsFactors = FALSE, check.names = FALSE)
-    rownames(res) = NULL
-    class(res) = union("etable", class(res))
-    res
-}
+
 
 
 prepare_dataframe = function(x, possible_name){
@@ -991,4 +940,49 @@ prepare_predictor = function(predictor, nrows){
             predictor = rep(predictor, nrows)
     }
     predictor 
+}
+
+
+###############################################
+###############################################
+###############################################
+
+#' @export
+#' @rdname cro
+table_pearson = function(cell_vars, 
+                         col_vars = "#Total", 
+                         row_vars = "", 
+                         weight = NULL,
+                         subgroup = NULL
+){
+    cor_fun = function(x, weight = NULL){
+        w_pearson(x, weight = weight)[ , 1]
+    }
+    cro_fun_df(cell_vars = cell_vars, 
+               col_vars = col_vars, 
+               row_vars = row_vars, 
+               weight = weight,
+               subgroup = subgroup,
+               fun = cor_fun
+    )
+}
+
+#' @export
+#' @rdname cro
+table_spearman = function(cell_vars, 
+                          col_vars = "#Total", 
+                          row_vars = "", 
+                          weight = NULL,
+                          subgroup = NULL
+){
+    cor_fun = function(x, weight = NULL){
+        w_spearman(x, weight = weight)[ , 1]
+    } 
+    cro_fun_df(cell_vars = cell_vars, 
+               col_vars = col_vars, 
+               row_vars = row_vars, 
+               weight = weight,
+               subgroup = subgroup,
+               fun = cor_fun
+    )
 }

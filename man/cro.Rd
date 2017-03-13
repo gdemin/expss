@@ -11,7 +11,8 @@
 \alias{cro_median}
 \alias{cro_fun}
 \alias{cro_fun_df}
-\alias{old_cro_fun_df}
+\alias{table_pearson}
+\alias{table_spearman}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
 cro(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
@@ -45,7 +46,11 @@ cro_fun(x, predictor, fun, ..., weight = NULL)
 cro_fun_df(cell_vars, col_vars = "#Total", row_vars = "", weight = NULL,
   subgroup = NULL, fun, ..., prepend_var_lab = TRUE)
 
-old_cro_fun_df(x, predictor, fun, ..., weight = NULL)
+table_pearson(cell_vars, col_vars = "#Total", row_vars = "",
+  weight = NULL, subgroup = NULL)
+
+table_spearman(cell_vars, col_vars = "#Total", row_vars = "",
+  weight = NULL, subgroup = NULL)
 }
 \arguments{
 \item{row_vars}{vector. By now multiple-response predictor is not supported.}
