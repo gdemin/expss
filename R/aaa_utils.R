@@ -462,6 +462,8 @@ round_dataframe = function(x, digits = NULL){
 #####
 
 make_items_unique = function(x, with_warning = NULL){
+    if(!is.character(x)) x = as.character(x)
+    if(length(x)<2) return(x)
     if(!is.null(with_warning)){
         if (anyDuplicated(x)){
             duplicates = duplicated(x)

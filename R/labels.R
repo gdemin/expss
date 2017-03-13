@@ -312,12 +312,17 @@ set_val_lab.default = function(x, value, add = FALSE){
     # with 'lm' with labelled integers 
     if(is.integer(x)) x[] = as.double(x)
     if (add) value = combine_labels(value,val_lab(x))
- 
-    # Warning about dupliction was removed because it was generated too often for third party *.sav files.
-    #    with_warning = "duplicated labels: "
-    names(value) = make_items_unique(names(value))
-
-    if (length(value)==0) value = NULL else value = sort(value)
+    
+    
+    
+    if (length(value)==0) {
+        value = NULL 
+    } else {
+        # Warning about dupliction was removed because it was generated too often for third party *.sav files.
+        #    with_warning = "duplicated labels: "
+        names(value) = make_items_unique(names(value))
+        value = sort(value)
+    }
     attr(x, "labels")=value
     if(is.null(value) && is.null(var_lab(x))){
         class(x)=setdiff(class(x), "labelled")
