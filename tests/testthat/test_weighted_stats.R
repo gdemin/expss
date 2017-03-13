@@ -492,7 +492,22 @@ expect_identical(
     labs
 )
 
+context("cor emtpy argumnet")
 
+empty = matrix(NA*1, ncol = ncol(dfs), nrow = ncol(dfs))
+colnames(empty) = colnames(names2labels(dfs))
+rownames(empty) = colnames(names2labels(dfs))
+
+expect_identical(w_cor(dfs[FALSE, ]), empty)
+expect_identical(w_cov(dfs[FALSE, ]), empty)
+expect_identical(w_spearman(dfs[FALSE, ]), empty)
+
+
+expect_identical(w_cor(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
+expect_identical(w_cov(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
+expect_identical(w_spearman(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
+
+#####
 context("weighted stats logical args")
 
 a = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE)

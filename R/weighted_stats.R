@@ -149,6 +149,9 @@ w_cov = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.ob
     } else {
         stopif(!is.matrix(x), "'x' must be a matrix or a data frame")
     }
+    if(NROW(x)==0){
+        return(matrix_of_na(x))
+    }
     use = match.arg(use)
     if(!is.null(weight)){
         if(is.logical(weight)) weight = as.numeric(weight)
@@ -201,6 +204,9 @@ w_cor = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.ob
     } else {
         stopif(!is.matrix(x), "'x' must be a matrix or a data frame")
     }
+    if(NROW(x)==0){
+        return(matrix_of_na(x))
+    }
     if(!is.null(weight)){
         if(is.logical(weight)) weight = as.numeric(weight)
         if(length(weight) == 1L){
@@ -241,6 +247,9 @@ w_spearman = function(x, weight = NULL, use = c("pairwise.complete.obs", "comple
         x = as.matrix(names2labels(x))
     } else {
         stopif(!is.matrix(x), "'x' must be a matrix or a data frame")
+    }
+    if(NROW(x)==0){
+        return(matrix_of_na(x))
     }
     if(!is.null(weight)){
         if(is.logical(weight)) weight = as.numeric(weight)
