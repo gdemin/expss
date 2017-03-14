@@ -13,27 +13,29 @@
 \alias{cro_fun_df}
 \alias{table_pearson}
 \alias{table_spearman}
+\alias{total}
+\alias{combine_functions}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
 cro(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
+  total_row_position = c("below", "above", "none"))
 
 cro_cpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
+  total_row_position = c("below", "above", "none"))
 
 cro_rpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
+  total_row_position = c("below", "above", "none"))
 
 cro_tpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
+  total_row_position = c("below", "above", "none"))
 
 cro_cpct_responses(row_vars, col_vars = "#Total", weight = NULL,
   subgroup = NULL, total_title = "#Total", total = "unweighted",
-  total_row_position = c("below", "above", "none"), prepend_var_lab = TRUE)
+  total_row_position = c("below", "above", "none"))
 
 cro_mean(x, predictor, weight = NULL)
 
@@ -44,13 +46,17 @@ cro_median(x, predictor, weight = NULL)
 cro_fun(x, predictor, fun, ..., weight = NULL)
 
 cro_fun_df(cell_vars, col_vars = "#Total", row_vars = "", weight = NULL,
-  subgroup = NULL, fun, ..., prepend_var_lab = TRUE)
+  subgroup = NULL, fun, ...)
 
 table_pearson(cell_vars, col_vars = "#Total", row_vars = "",
   weight = NULL, subgroup = NULL)
 
 table_spearman(cell_vars, col_vars = "#Total", row_vars = "",
   weight = NULL, subgroup = NULL)
+
+total(x, label = "#Total")
+
+combine_functions(..., method = c)
 }
 \arguments{
 \item{row_vars}{vector. By now multiple-response predictor is not supported.}
@@ -62,9 +68,6 @@ treated as zero weights.}
 
 \item{total_row_position}{Position ot total row in the resulting table. Can
 be one of "below", "above", "none".}
-
-\item{prepend_var_lab}{logical. Should we prepend variable label before value
-labels? By default it is TRUE.}
 
 \item{x}{vector/data.frame. data.frames are considered as multiple response
 variables.}

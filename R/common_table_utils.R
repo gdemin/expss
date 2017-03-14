@@ -102,7 +102,7 @@ check_sizes = function(caller_name, ...){
 
     sizes = unlist(rapply(list(...),  
                    NROW, classes = "ANY", how = "replace"))
-    stopif(!all(sizes %in% c(1, max(sizes))),
+    stopif(!all(sizes %in% c(0, 1, max(sizes))),
            caller_name, ": all variables should be of the same length or length 1.")
     invisible(TRUE)
 }

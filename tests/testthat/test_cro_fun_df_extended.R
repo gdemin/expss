@@ -149,16 +149,35 @@ expect_equal_to_reference(
 expect_equal_to_reference(
     mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = am, 
-                                           row_vars = numeric(0),
                                                  fun = colMeans
     )
     ,"rds/table_summary_df5b.rds"
 )
 
+expect_equal_to_reference(
+    mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+                                           col_vars = list(total(1), am), 
+                                           fun = colMeans
+    )
+    ,"rds/table_summary_df5bb.rds"
+)
+
+expect_identical(
+    mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+                                           col_vars = list(total(1), am), 
+                                           fun = colMeans
+    )
+    ,
+    mtcars %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+                                           col_vars = list(total(1), am), 
+                                           fun = colMeans,
+                             subgroup = FALSE
+    )
+)
+
 expect_identical(
     mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = am, 
-                                           row_vars = numeric(0),
                                            fun = colMeans
     )
     ,    mtcars %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
@@ -266,14 +285,13 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = numeric(0))
+    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds"
 )
 
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = numeric(0), 
-                                              weight = numeric(0))
+    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds"
 )
 
@@ -288,13 +306,13 @@ expect_equal_to_reference(
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = numeric(0))
+    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, row_vars = numeric(0))
+    mtcars %where% FALSE %calc% table_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )

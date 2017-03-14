@@ -37,8 +37,6 @@
 #'   be one of "below", "above", "none".
 #' @param weighted_total  By default it is "unweighted". Can be "unweighted" or/and "weighted". You can show weighted total/unweighted total or both.
 #' @param total_row_title By default "#Total". You can provide two titles - for weighted and unqeighted totals.
-#' @param prepend_var_lab logical. Should we prepend variable label before value
-#'   labels? By default it is TRUE.
 #' @param fun custom summary function. It should always return
 #'   scalar/vector/matrix of the same size.
 #' @param ... further arguments for \code{fun}   
@@ -162,8 +160,8 @@ cro = function(row_vars,
                subgroup = NULL,
                total_title = "#Total",
                total = "unweighted",
-               total_row_position = c("below", "above", "none"),
-               prepend_var_lab = TRUE){
+               total_row_position = c("below", "above", "none")
+               ){
     
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -178,7 +176,7 @@ cro = function(row_vars,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
-              prepend_var_lab = prepend_var_lab,
+              prepend_var_lab = TRUE,
               stat_type = "count"
     )    
 }
@@ -194,8 +192,8 @@ cro_cpct = function(row_vars,
                     subgroup = NULL,
                     total_title = "#Total",
                     total = "unweighted",
-                    total_row_position = c("below", "above", "none"),
-                    prepend_var_lab = TRUE){
+                    total_row_position = c("below", "above", "none")
+                    ){
     
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -210,7 +208,7 @@ cro_cpct = function(row_vars,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
-              prepend_var_lab = prepend_var_lab,
+              prepend_var_lab = TRUE,
               stat_type = "cpct"
     )    
 }
@@ -223,8 +221,8 @@ cro_rpct = function(row_vars,
                     subgroup = NULL,
                     total_title = "#Total",
                     total = "unweighted",
-                    total_row_position = c("below", "above", "none"),
-                    prepend_var_lab = TRUE){
+                    total_row_position = c("below", "above", "none")
+                    ){
     
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -239,7 +237,7 @@ cro_rpct = function(row_vars,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
-              prepend_var_lab = prepend_var_lab,
+              prepend_var_lab = TRUE,
               stat_type = "rpct"
     )    
 }
@@ -253,8 +251,8 @@ cro_tpct = function(row_vars,
                     subgroup = NULL,
                     total_title = "#Total",
                     total = "unweighted",
-                    total_row_position = c("below", "above", "none"),
-                    prepend_var_lab = TRUE){
+                    total_row_position = c("below", "above", "none")
+                    ){
     
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -269,7 +267,7 @@ cro_tpct = function(row_vars,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
-              prepend_var_lab = prepend_var_lab,
+              prepend_var_lab = TRUE,
               stat_type = "tpct"
     )    
 }
@@ -282,8 +280,8 @@ cro_cpct_responses = function(row_vars,
                               subgroup = NULL,
                               total_title = "#Total",
                               total = "unweighted",
-                              total_row_position = c("below", "above", "none"),
-                              prepend_var_lab = TRUE){
+                              total_row_position = c("below", "above", "none")
+                              ){
     
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -298,7 +296,7 @@ cro_cpct_responses = function(row_vars,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
-              prepend_var_lab = prepend_var_lab,
+              prepend_var_lab = TRUE,
               stat_type = "cpct_responses"
     )    
 }
@@ -329,8 +327,6 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     if(!is.null(subgroup)) {
         valid = valid & subgroup
     }
-    
-    
     
     weight = weight[valid]
     
@@ -611,7 +607,8 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
                                  fun,
                                  row_var, 
                           prepend_var_lab = FALSE,
-                          subgroup = NULL){
+                          subgroup = NULL,
+                          fun_df = TRUE){
     
     ### calculate vector of valid cases
 
@@ -620,6 +617,8 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
         valid = valid & subgroup
     }
     max_nrow = max(NROW(cell_var), NROW(col_var), NROW(row_var))
+    min_nrow = min(NROW(cell_var), NROW(col_var), NROW(row_var))
+    if(any(min_nrow==0)) max_nrow = 0
     
     if(!is.null(weight)){
         weight = set_negative_and_na_to_zero(weight)
@@ -666,7 +665,7 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
     col_var_lab = var_lab(col_var)
     
     ### pack data.table #####
-    cell_var = names2labels(cell_var)
+    
     if(is.null(weight)){
         raw_data = data.table(..row_var__ = row_var, ..col_var__ = col_var, cell_var)
     } else {
@@ -682,12 +681,12 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
     
     # statistics
     by_string = "..row_var__,..col_var__"
-
     if(is.null(weight)){
         dtable = raw_data[ , fun(.SD), by = by_string]
     } else {
         dtable = raw_data[ , fun(.SD[,-"..weight__"], weight = ..weight__), by = by_string]
     }
+    
     
     ### make rectangular table  
     res = long_datatable_to_table(dtable, rows = c("..row_var__", "row_labels"), 
@@ -724,6 +723,34 @@ make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
         function(x, ...){
             res = fun(x, ...)
             make_dataframe_with_row_labels(res)
+        }        
+    }
+}
+
+make_function_for_cro = function(fun, ..., need_weight = TRUE){
+    force(fun)
+    force(need_weight)
+    if(need_weight){
+        function(x, ..., weight = weight){
+            x = x[[1]]
+            varlab = var_lab(x)
+            res = fun(x, ..., weight = weight)
+            res = make_dataframe_with_row_labels(res)
+            if(!is.null(varlab)){
+                res[["row_labels"]] = paste0(varlab, "|", res[["row_labels"]])
+            }
+            res
+        }
+    } else {
+        function(x, ...){
+            x = x[[1]]
+            varlab = var_lab(x)
+            res = fun(x, ...)
+            res = make_dataframe_with_row_labels(res)
+            if(!is.null(varlab)){
+                res[["row_labels"]] = paste0(varlab, "|", res[["row_labels"]])
+            }
+            res
         }        
     }
 }
@@ -773,7 +800,7 @@ make_dataframe_with_row_labels = function(res){
 
 add_missing_var_lab = function(x, str_lab){
     if(!is.matrix(x) && !is.data.frame(x) && !is.list(x)){
-        if(is.null(var_lab(x)) || var_lab(x)==""){
+        if(is.null(var_lab(x))){
             var_lab(x) = str_lab
         } 
     }
@@ -790,8 +817,8 @@ cro_fun_df = function(cell_vars,
                       row_vars = "", 
                       weight = NULL,
                       subgroup = NULL,
-                      fun, ...,
-                      prepend_var_lab = TRUE){
+                      fun, 
+                      ...){
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -832,13 +859,14 @@ cro_fun_df = function(cell_vars,
     res = lapply(row_vars, function(each_row_var){
         all_cell_vars = lapply(cell_vars, function(each_cell_var){
             all_col_vars = lapply(col_vars, function(each_col_var){
-                elementary_cro_fun_df(cell_var = each_cell_var,
+                elementary_cro_fun_df(cell_var = names2labels(each_cell_var),
                                       row_var = each_row_var, 
                                       col_var = each_col_var, 
                                       weight = weight,
                                       subgroup = subgroup,
-                                      prepend_var_lab = prepend_var_lab,
-                                      fun = fun
+                                      prepend_var_lab = TRUE,
+                                      fun = fun,
+                                      fun_df = TRUE
                 )    
             })
             Reduce(merge, all_col_vars)
@@ -986,3 +1014,41 @@ table_spearman = function(cell_vars,
                fun = cor_fun
     )
 }
+
+
+#' @export
+#' @rdname cro
+total = function(x, label = "#Total"){
+    res = valid(x)
+    res[!res] = NA
+    res = as.numeric(res)
+    var_lab(res) = ""
+    val_lab(res) = setNames(1, label)
+    res
+}
+
+#' @export
+#' @rdname cro
+combine_functions = function(..., method = c){
+    method = match.fun(method)
+    possible_names = unlist(lapply(as.list(substitute(list(...)))[-1], as.character))
+    args = list(...)
+    arg_names =names(args)
+    if(is.null(arg_names)) {
+        names(args) = possible_names
+    } else {
+        names(args)[arg_names==""] = possible_names[arg_names==""]
+    }  
+    function(x, weight = NULL){
+        if(!is.null(weight)){
+            for(each in seq_along(args)){
+                stopif(!("weight" %in% names(formals(args[[each]]))),
+                       paste0("`weight` is provided but function`", names(args)[each],
+                              "` doesn't have formal `weight` argument."))
+            }    
+        }
+        res = lapply(args, function(f) f(x))
+        do.call(method, res)
+    }
+}
+
