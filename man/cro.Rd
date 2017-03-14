@@ -43,15 +43,16 @@ cro_sum(x, predictor, weight = NULL)
 
 cro_median(x, predictor, weight = NULL)
 
-cro_fun(x, predictor, fun, ..., weight = NULL)
-
-cro_fun_df(cell_vars, col_vars = "#Total", row_vars = "", weight = NULL,
+cro_fun(cell_vars, col_vars = total(1), row_vars = "", weight = NULL,
   subgroup = NULL, fun, ...)
 
-table_pearson(cell_vars, col_vars = "#Total", row_vars = "",
+cro_fun_df(cell_vars, col_vars = total(1), row_vars = "", weight = NULL,
+  subgroup = NULL, fun, ...)
+
+table_pearson(cell_vars, col_vars = total(1), row_vars = "",
   weight = NULL, subgroup = NULL)
 
-table_spearman(cell_vars, col_vars = "#Total", row_vars = "",
+table_spearman(cell_vars, col_vars = total(1), row_vars = "",
   weight = NULL, subgroup = NULL)
 
 total(x, label = "#Total")

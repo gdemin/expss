@@ -93,7 +93,7 @@ names2labels.data.frame = function(x, exclude = NULL, keep_names = FALSE){
 #' @rdname names2labels
 n2l = names2labels
 
-
+### set variable label to variable name if label is absent
 make_labels_from_names = function(x){
     UseMethod("make_labels_from_names")
 }
@@ -110,11 +110,14 @@ make_labels_from_names.data.frame = function(x){
 
 #' @export
 make_labels_from_names.list = function(x){
-    if(!is.null(names(x))){
-        for(each in seq_along(x)){
-            if(!is.matrix(x) && !is.data.frame(x) && is.null(var_lab(x[[each]]))){
-                var_lab(x[[each]]) = names(x)[each]
-            }
+    list_names = names(x)
+    for(each in seq_along(x)){
+        if(!is.null(list_names) && !is.matrix(x) && !is.data.frame(x) && is.null(var_lab(x[[each]]))){
+            var_lab(x[[each]]) = list_names[each]
+        } else {
+            if(is.data.frame(x) || is.list(x)){
+                x[[each]] = make_labels_from_names(x[[each]])
+            }            
         }
     }
     x
