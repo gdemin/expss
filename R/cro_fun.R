@@ -372,15 +372,13 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
         function(x, weight = weight){
             x = x[[1]]
             res = fun(x, ..., weight = weight)
-            res = make_dataframe_with_row_labels(res)
-            res
+            make_dataframe_with_row_labels(res)
         }
     } else {
         function(x){
             x = x[[1]]
             res = fun(x, ...)
-            res = make_dataframe_with_row_labels(res)
-            res
+            make_dataframe_with_row_labels(res)
         }        
     }
 }
@@ -428,8 +426,9 @@ make_dataframe_with_row_labels = function(res){
     } 
     row_labels = make_items_unique(as.character(row_labels))
     # we need convert to factor to keep order of row_labels
-    row_labels = factor(row_labels, levels = row_labels)
-    dtfrm(row_labels = row_labels, res)
+    row_labels = factor(row_labels, levels = row_labels) 
+    data.table(row_labels = row_labels, res)
+
 }
 
 ######################## 
@@ -553,7 +552,6 @@ cro_mean = function(cell_vars,
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    # for substituting names of original cell_vars etc
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
@@ -598,7 +596,6 @@ cro_sum = function(cell_vars,
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    # for substituting names of original cell_vars etc
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
@@ -643,7 +640,6 @@ cro_median = function(cell_vars,
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    # for substituting names of original cell_vars etc
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
