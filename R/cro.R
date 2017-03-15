@@ -155,7 +155,7 @@
 #' cro_fun_df(iris[,-5], iris$Species, fun = cor)
 #' @export
 cro = function(row_vars, 
-               col_vars = "#Total", 
+               col_vars = total(), 
                weight = NULL, 
                subgroup = NULL,
                total_title = "#Total",
@@ -187,7 +187,7 @@ cro = function(row_vars,
 #' @export
 #' @rdname cro
 cro_cpct = function(row_vars, 
-                    col_vars = "#Total", 
+                    col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
                     total_title = "#Total",
@@ -216,7 +216,7 @@ cro_cpct = function(row_vars,
 #' @export
 #' @rdname cro
 cro_rpct = function(row_vars, 
-                    col_vars = "#Total", 
+                    col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
                     total_title = "#Total",
@@ -246,7 +246,7 @@ cro_rpct = function(row_vars,
 #' @export
 #' @rdname cro
 cro_tpct = function(row_vars, 
-                    col_vars = "#Total", 
+                    col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
                     total_title = "#Total",
@@ -275,7 +275,7 @@ cro_tpct = function(row_vars,
 #' @export
 #' @rdname cro
 cro_cpct_responses = function(row_vars, 
-                              col_vars = "#Total", 
+                              col_vars = total(), 
                               weight = NULL, 
                               subgroup = NULL,
                               total_title = "#Total",

@@ -12,11 +12,11 @@
 \alias{combine_functions}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
-cro_fun(cell_vars, col_vars = total(1), row_vars = "", weight = NULL,
-  subgroup = NULL, fun, ...)
+cro_fun(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL, fun, ...)
 
-cro_fun_df(cell_vars, col_vars = total(1), row_vars = "", weight = NULL,
-  subgroup = NULL, fun, ...)
+cro_fun_df(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL, fun, ...)
 
 cro_mean(x, predictor, weight = NULL)
 
@@ -24,13 +24,13 @@ cro_sum(x, predictor, weight = NULL)
 
 cro_median(x, predictor, weight = NULL)
 
-cro_pearson(cell_vars, col_vars = total(1), row_vars = "", weight = NULL,
-  subgroup = NULL)
+cro_pearson(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL)
 
-cro_spearman(cell_vars, col_vars = total(1), row_vars = "", weight = NULL,
-  subgroup = NULL)
+cro_spearman(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL)
 
-total(x, label = "#Total")
+total(x = 1, label = "#Total")
 
 combine_functions(..., method = c)
 }

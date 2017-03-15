@@ -8,23 +8,23 @@
 \alias{cro_cpct_responses}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
-cro(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
+cro(row_vars, col_vars = total(), weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 
-cro_cpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
+cro_cpct(row_vars, col_vars = total(), weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 
-cro_rpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
+cro_rpct(row_vars, col_vars = total(), weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 
-cro_tpct(row_vars, col_vars = "#Total", weight = NULL, subgroup = NULL,
+cro_tpct(row_vars, col_vars = total(), weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 
-cro_cpct_responses(row_vars, col_vars = "#Total", weight = NULL,
+cro_cpct_responses(row_vars, col_vars = total(), weight = NULL,
   subgroup = NULL, total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 }

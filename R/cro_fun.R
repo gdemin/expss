@@ -155,8 +155,8 @@
 #' cro_fun_df(iris[,-5], iris$Species, fun = cor)
 #' @export
 cro_fun = function(cell_vars, 
-                      col_vars = total(1), 
-                      row_vars = "", 
+                   col_vars = total(), 
+                   row_vars = total(label = ""),
                       weight = NULL,
                       subgroup = NULL,
                       fun, 
@@ -441,8 +441,8 @@ add_missing_var_lab = function(x, str_lab){
 #' @export
 #' @rdname cro_fun
 cro_fun_df = function(cell_vars, 
-                      col_vars = total(1), 
-                      row_vars = "", 
+                      col_vars = total(), 
+                      row_vars = total(label = ""),
                       weight = NULL,
                       subgroup = NULL,
                       fun, 
@@ -570,8 +570,8 @@ cro_median = function(x, predictor, weight = NULL){
 #' @export
 #' @rdname cro_fun
 cro_pearson = function(cell_vars, 
-                         col_vars = total(1), 
-                         row_vars = "", 
+                       col_vars = total(), 
+                       row_vars = total(label = ""),
                          weight = NULL,
                          subgroup = NULL
 ){
@@ -590,8 +590,8 @@ cro_pearson = function(cell_vars,
 #' @export
 #' @rdname cro_fun
 cro_spearman = function(cell_vars, 
-                          col_vars = total(1), 
-                          row_vars = "", 
+                          col_vars = total(), 
+                          row_vars = total(label = ""), 
                           weight = NULL,
                           subgroup = NULL
 ){
@@ -610,7 +610,7 @@ cro_spearman = function(cell_vars,
 
 #' @export
 #' @rdname cro_fun
-total = function(x, label = "#Total"){
+total = function(x = 1, label = "#Total"){
     res = valid(x)
     res[!res] = NA
     res = as.numeric(res)
