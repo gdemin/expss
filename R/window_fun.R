@@ -35,9 +35,8 @@ window_fun = function(x, ...){
         setnames(dt_table, c("x", grouping_names))
         by_string = paste(grouping_names, collapse = ",")
         dt_table[, res:=eval(expr), by = by_string]
-        x[] = dt_table[["res"]]
+        dt_table[["res"]]
     } else {
-        x[] = fun(x)
+        rep(fun(x), length(x))
     }
-    x
 }
