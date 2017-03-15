@@ -99,6 +99,7 @@ set_var_lab.data.frame = function(x, value){
 
 #' @export
 set_var_lab.matrix = function(x, value){
+    if(is.null(value)) return(x)
     stop("Labels on 'matrix' is not implemented.")
 }
 
@@ -340,6 +341,7 @@ set_val_lab.data.frame = function(x,value, add = FALSE){
 
 #' @export
 set_val_lab.matrix = function(x, value, add = FALSE){
+    if(is.null(value)) return(x)
     stop("Labels on 'matrix' is not implemented.")
 }
 

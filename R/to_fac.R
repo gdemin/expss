@@ -72,9 +72,10 @@ to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     vallab = sort(vallab)
     if (!is.null(varlab) && (varlab!="") && prepend_var_lab) {
         names(vallab) = paste(varlab, names(vallab), sep = LABELS_SEP)
-    }    
-    names(vallab) = make_items_unique(names(vallab), with_warning = "duplicated labels: ")
-
+    }
+    if(length(vallab)>1){
+        names(vallab) = make_items_unique(names(vallab), with_warning = "duplicated labels: ")
+    }
     ### premature optimization
     if(is.numeric(x) && !is.object(x)){
         ordered = if_null(list(...)$ordered, FALSE)

@@ -164,13 +164,13 @@ as.character.labelled = function (x, ...){
 }
 
 labelled_to_character_internal = function(x, prepend_varlab, ...) {
-    vallab=val_lab(x)
+    vallab= val_lab(x)
     varlab =  var_lab(x)
     x = unlab(x)
-    if(anyDuplicated(vallab)){
-        warning("duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
-    }
-    names(vallab) = make_items_unique(names(vallab), with_warning = "duplicated labels: ")
+    # if(anyDuplicated(vallab)){
+    #     warning("duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
+    # }
+    # names(vallab) = make_items_unique(names(vallab), with_warning = "duplicated labels: ")
     
     uniqs = unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 
@@ -213,7 +213,7 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
         
     }
     cat("VALUES:\n")
-    cat(unlab(head(x_flat, max)))
+    cat(unlab(as.character(unlab(head(x_flat, max)))), sep = ", ")
     if(max < NROW(x_flat)) {
         cat("...", max, "items printed out of", NROW(x_flat), "\n")
     } else {
