@@ -99,6 +99,11 @@ make_labels_from_names = function(x){
 }
 
 #' @export
+make_labels_from_names.default = function(x){
+   x
+}
+
+#' @export
 make_labels_from_names.data.frame = function(x){
     for(each in seq_along(x)){
         if(is.null(var_lab(x[[each]]))){
