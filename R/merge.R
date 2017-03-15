@@ -7,7 +7,7 @@
 #' ones. See examples. Strange result is possible if one or two arguments have
 #' duplicates in first column (column with labels).
 #'
-#' @seealso \link{fre}, \link{cro}, \link{table_cases}, \link{table_summary}, \link[base]{merge}
+#' @seealso \link{fre}, \link{cro}, \link{cro}, \link{cro_fun}, \link[base]{merge}
 #'
 #' @param x data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}
 #' @param y data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}
@@ -46,9 +46,9 @@
 #'
 #' # complex tables
 #' # table with counts
-#' counts = calculate(mtcars, table_cases(list(vs, am, gear, carb), "Count"))
+#' counts = calculate(mtcars, cro(list(vs, am, gear, carb), "Count"))
 #' # table with percents
-#' percents = calculate(mtcars, table_cpct(list(vs, am, gear, carb), "Column, %"))
+#' percents = calculate(mtcars, cro_cpct(list(vs, am, gear, carb), "Column, %"))
 #'
 #' # combine tables
 #' counts %merge% percents

@@ -1,7 +1,7 @@
 #' Drop empty (with all NA's) rows/columns from data.frame/table
 #' 
-#' By default tables produced by functions \link{table_cases}, 
-#' \link{table_summary} and \link{table_summary_df} are created with all 
+#' By default tables produced by functions \link{cro}, 
+#' \link{cro_fun} and \link{cro_fun_df} are created with all 
 #' possible value labels. If values for this labels are absent in variable there 
 #' are NA's in rows and columns. 
 #' \code{drop_empty_rows}/\code{drop_empty_columns} are intended to remove 
@@ -16,7 +16,7 @@
 #'   Perl-style regular expression with values in the first column of \code{x} 
 #'   (see \link[base]{grep}, \code{perl = TRUE} argument). Rows which have such
 #'   patterns will be excluded. By default, pattern is "#" because "#" marks 
-#'   totals in the result of \link{table_cases}.
+#'   totals in the result of \link{cro}.
 #' @param excluded_columns logical/numeric/characters columns which won't be
 #'   dropped and in which NAs won't be counted. By default, it is first column -
 #'   column with labels in table.
@@ -40,7 +40,7 @@
 #'                      9 Other
 #'                      ")
 #'          )
-#' with_empty = calculate(mtcars, table_cases(am, vs))
+#' with_empty = calculate(mtcars, cro(am, vs))
 #' 
 #' drop_empty_rows(with_empty)
 #' drop_empty_columns(with_empty)

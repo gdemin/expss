@@ -22,7 +22,7 @@ then they will be considered as pattern/vector of patterns. Patterns will
 be matched with Perl-style regular expression with values in the first
 column of \code{x} (see \link[base]{grep}, \code{perl = TRUE} argument).
 Rows which have such patterns will be excluded. By default, pattern is "#"
-because "#" marks totals in the result of \link{table_cases}.}
+because "#" marks totals in the result of \link{cro}.}
 
 \item{na.last}{for controlling the treatment of NAs. If TRUE, missing values
 in the data are put last; if FALSE, they are put first; if NA, they are
@@ -33,7 +33,7 @@ sorted table('etable')/data.frame
 }
 \description{
 \code{sort_table_asc}/\code{sort_table_desc} sort tables (usually result of 
-\link{table_cases}) in ascending/descending order between specified rows (by 
+\link{cro}) in ascending/descending order between specified rows (by 
 default, it is row which contain '#' in the first column). There is no
 non-standard evaluation in these functions by design so use quotes for names
 of your columns or use \link{qc}.
@@ -55,10 +55,10 @@ mtcars = apply_labels(mtcars,
 )
 
 # without sorting
-mtcars \%>\% calculate(table_cpct(list(cyl, gear, carb), list("#total", vs, am)))
+mtcars \%>\% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
 
 # with sorting
 mtcars \%>\% 
-    calculate(table_cpct(list(cyl, gear, carb), list("#total", vs, am))) \%>\% 
+    calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am))) \%>\% 
     sort_table_desc
 }

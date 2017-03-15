@@ -37,7 +37,7 @@ expressions. Has priority over \code{perl}.}
 }
 \description{
 \code{split_labels}/\code{split_columns} are auxiliary functions for 
-post-processing tables resulted from \link{table_cases}/\link{table_summary} 
+post-processing tables resulted from \link{cro}/\link{cro_fun} 
 and etc. In these tables all labels collapsed in the first column with "|" 
 separator. \code{split_columns} split first column into multiple columns 
 with separator (\code{split} argument).
@@ -59,7 +59,7 @@ mtcars = apply_labels(mtcars,
 )
 
 # all row labels in the first column
-tabl = mtcars \%>\% calculate(table_cpct(list(cyl, gear, carb), list("#total", vs, am)))
+tabl = mtcars \%>\% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
 split_labels(tabl[[1]])
 split_labels(colnames(tabl))
 

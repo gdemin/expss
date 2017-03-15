@@ -53,13 +53,13 @@ tab1 \%except\% "#Total" \%merge\% tab2
 
 # complex tables
 # table with counts
-counts = calculate(mtcars, table_cases(list(vs, am, gear, carb), "Count"))
+counts = calculate(mtcars, cro(list(vs, am, gear, carb), "Count"))
 # table with percents
-percents = calculate(mtcars, table_cpct(list(vs, am, gear, carb), "Column, \%"))
+percents = calculate(mtcars, cro_cpct(list(vs, am, gear, carb), "Column, \%"))
 
 # combine tables
 counts \%merge\% percents
 }
 \seealso{
-\link{fre}, \link{cro}, \link{table_cases}, \link{table_summary}, \link[base]{merge}
+\link{fre}, \link{cro}, \link{cro}, \link{cro_fun}, \link[base]{merge}
 }

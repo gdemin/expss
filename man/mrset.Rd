@@ -18,8 +18,8 @@ mdset(..., label = NULL)
 data.frame of class \code{category}/\code{dichotomy}
 }
 \description{
-These functions are intended for usage with tables - \link{table_cases}, 
-\link{table_summary}. Result of \code{mrset} is considered as 
+These functions are intended for usage with tables - \link{cro}, 
+\link{cro_fun}. Result of \code{mrset} is considered as 
 muliple-response set with category encoding and result of \code{mdset} is 
 considered as multiple response set with dichotomy (dummy) encoding e. g.
 with 0 or 1 in the each column. Each column in the \code{dichotomy} is
