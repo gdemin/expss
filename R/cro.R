@@ -169,6 +169,14 @@ cro = function(row_vars,
            paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
     multi_cro(row_vars = row_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -201,6 +209,14 @@ cro_cpct = function(row_vars,
            paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
     multi_cro(row_vars = row_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -230,6 +246,14 @@ cro_rpct = function(row_vars,
            paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
     multi_cro(row_vars = row_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -260,6 +284,14 @@ cro_tpct = function(row_vars,
            paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
     multi_cro(row_vars = row_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -289,6 +321,14 @@ cro_cpct_responses = function(row_vars,
            paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
     multi_cro(row_vars = row_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -442,12 +482,6 @@ multi_cro = function(row_vars,
                total_row_position = c("below", "above", "none"),
                prepend_var_lab,
                stat_type){
-    if(!is_list(row_vars)){
-        row_vars = list(row_vars)
-    }
-    if(!is_list(col_vars)){
-        col_vars = list(col_vars)
-    }
     row_vars = flat_list(dichotomy_to_category_encoding(row_vars), flat_df = FALSE)
     col_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(col_vars), flat_df = TRUE)
     stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
