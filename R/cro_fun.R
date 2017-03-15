@@ -183,13 +183,18 @@ cro_fun = function(cell_vars,
         cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
         cell_vars = list(cell_vars)
     }
+    for(each in seq_along(cell_vars)){
+        if(is.matrix(cell_vars[[each]])){
+            cell_vars[[each]] = as.dtfrm(cell_vars[[each]])
+        }
+    }
     cell_vars = make_labels_from_names(cell_vars)
     if(!is_list(row_vars)){
-        # row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
         row_vars = list(row_vars)
     }
     if(!is_list(col_vars)){
-        # col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
     cell_vars = flat_list(cell_vars, flat_df = TRUE)
@@ -348,12 +353,12 @@ make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
     force(fun)
     force(need_weight)
     if(need_weight){
-        function(x, ..., weight = weight){
+        function(x, weight = weight){
             res = fun(x, ..., weight = weight)
             make_dataframe_with_row_labels(res)
         }
     } else {
-        function(x, ...){
+        function(x){
             res = fun(x, ...)
             make_dataframe_with_row_labels(res)
         }        
@@ -364,14 +369,14 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
     force(fun)
     force(need_weight)
     if(need_weight){
-        function(x, ..., weight = weight){
+        function(x, weight = weight){
             x = x[[1]]
             res = fun(x, ..., weight = weight)
             res = make_dataframe_with_row_labels(res)
             res
         }
     } else {
-        function(x, ...){
+        function(x){
             x = x[[1]]
             res = fun(x, ...)
             res = make_dataframe_with_row_labels(res)
@@ -471,11 +476,11 @@ cro_fun_df = function(cell_vars,
     }
     cell_vars = make_labels_from_names(cell_vars)
     if(!is_list(row_vars)){
-        # row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
         row_vars = list(row_vars)
     }
     if(!is_list(col_vars)){
-        # col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
     cell_vars = flat_list(cell_vars, flat_df = FALSE)
@@ -510,56 +515,139 @@ cro_fun_df = function(cell_vars,
 
 #' @export
 #' @rdname cro_fun
-cro_mean = function(x, predictor, weight = NULL){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    x = check_cro_arguments(x = x, 
-                            str_x = str_x, 
-                            predictor = predictor, 
-                            str_predictor = str_predictor, 
-                            weight = weight, 
-                            fun = NULL)
+cro_mean = function(cell_vars, 
+                    col_vars = total(), 
+                    row_vars = total(label = ""),
+                    weight = NULL,
+                    subgroup = NULL
+){
     
-    na_if(x) = is.na(predictor)
-    cro_fun(x = x, predictor = predictor, weight = weight, fun = w_mean)
+    fun = function(x, weight = NULL){
+        res = vapply(x, FUN = w_mean, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
+        dtfrm(row_labels = names(x), "|" = res)
+    }
+    
+    str_cell_vars = deparse(substitute(cell_vars))
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
+    
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
+    }    
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
+    # for substituting names of original cell_vars etc
+    cro_fun_df(cell_vars = cell_vars, 
+               col_vars = col_vars, 
+               row_vars = row_vars, 
+               weight = weight,
+               subgroup = subgroup,
+               fun = fun
+    )
 }
 
 #' @export
 #' @rdname cro_fun
-cro_sum = function(x, predictor, weight = NULL){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    x = check_cro_arguments(x = x, 
-                            str_x = str_x, 
-                            predictor = predictor, 
-                            str_predictor = str_predictor, 
-                            weight = weight, 
-                            fun = NULL)
+cro_sum = function(cell_vars, 
+                   col_vars = total(), 
+                   row_vars = total(label = ""),
+                   weight = NULL,
+                   subgroup = NULL
+){
+    fun = function(x, weight = NULL){
+        res = vapply(x, FUN = w_sum, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
+        dtfrm(row_labels = names(x), "|" = res)
+    }
+    str_cell_vars = deparse(substitute(cell_vars))
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
     
-    na_if(x) = is.na(predictor)
-    cro_fun(x = x, predictor = predictor, weight = weight, fun = function(x, weight = NULL, na.rm){
-        if(all(is.na(x))){
-            NA
-        } else {
-            w_sum(x, weight = weight)    
-        }   
-    })
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
+    }    
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
+    # for substituting names of original cell_vars etc
+    cro_fun_df(cell_vars = cell_vars, 
+               col_vars = col_vars, 
+               row_vars = row_vars, 
+               weight = weight,
+               subgroup = subgroup,
+               fun = fun
+    )
 }
 
 #' @export
 #' @rdname cro_fun
-cro_median = function(x, predictor, weight = NULL){
-    str_x = deparse(substitute(x))
-    str_predictor = deparse(substitute(predictor))
-    x = check_cro_arguments(x = x, 
-                            str_x = str_x, 
-                            predictor = predictor, 
-                            str_predictor = str_predictor, 
-                            weight = weight, 
-                            fun = NULL)
+cro_median = function(cell_vars, 
+                      col_vars = total(), 
+                      row_vars = total(label = ""),
+                      weight = NULL,
+                      subgroup = NULL
+){
+    fun = function(x, weight = NULL){
+        res = vapply(x, FUN = w_median, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
+        dtfrm(row_labels = names(x), "|" = res)
+    }
+    str_cell_vars = deparse(substitute(cell_vars))
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
     
-    na_if(x) = is.na(predictor)
-    cro_fun(x = x, predictor = predictor, weight = weight, fun = w_median)
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
+    }    
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
+    # for substituting names of original cell_vars etc
+    cro_fun_df(cell_vars = cell_vars, 
+               col_vars = col_vars, 
+               row_vars = row_vars, 
+               weight = weight,
+               subgroup = subgroup,
+               fun = fun
+    )
 }
 
 

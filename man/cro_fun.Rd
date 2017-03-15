@@ -18,11 +18,14 @@ cro_fun(cell_vars, col_vars = total(), row_vars = total(label = ""),
 cro_fun_df(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL, fun, ...)
 
-cro_mean(x, predictor, weight = NULL)
+cro_mean(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL)
 
-cro_sum(x, predictor, weight = NULL)
+cro_sum(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL)
 
-cro_median(x, predictor, weight = NULL)
+cro_median(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL)
 
 cro_pearson(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
