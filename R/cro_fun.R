@@ -410,6 +410,9 @@ make_dataframe_with_row_labels = function(res){
                 res[["row_labels"]] = NULL
             } else {
                 row_labels = rownames(res)
+                if(!is.null(row_labels) && length(row_labels)==1 && row_labels[1]==1){
+                    row_labels = ""
+                }
             }
         } else {
             row_labels = names(res)

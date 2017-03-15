@@ -1,4 +1,4 @@
-context("table_summary")
+context("cro_fun extended")
 
 
 data(mtcars)
@@ -26,49 +26,42 @@ mtcars = modify(mtcars,{
 # table_medians(mtcars %except% c("cyl", "am"), col_vars = mtcars$am)
 # table_sums(mtcars %except% c("cyl", "am"), col_vars = mtcars$am)
 # table_sums(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, weight = 2)
-expect_error(table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean,
-              row_labels = c("stat_names", "col_vars_values", "row_vars", "row_vars_values", "summary_vars", "col_vars"),
-                col_labels = NULL
-              ))
-expect_error(table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean,
-              col_labels = c("stat_names", "col_vars_values", "row_vars", "row_vars_values", "summary_vars",  "col_vars"),
-              row_labels = NULL
-))
-expect_error(table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean,
-              row_labels = c("stat_names", "col_vars_values", "row_vars", "row_vars_values", "summary_vars",  "col_vars"),
-              col_labels = c("adasd", "rvtrvtt")
-))
-expect_error(table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean,
-              col_labels = c("stat_names", "col_vars_values", "row_vars", "row_vars_values", "summary_vars",  "col_vars"),
-              row_labels = c("adasd", "rvtrvtt")
-))
+# expect_error(cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, 
+#                      fun = mean)
+#              )
+# expect_error(cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean))
+# expect_error(cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean,
+#               row_labels = c("stat_names", "col_vars_values", "row_vars", "row_vars_values", "summary_vars",  "col_vars"),
+#               col_labels = c("adasd", "rvtrvtt")
+# ))
+# expect_error(cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean,
+#               col_labels = c("stat_names", "col_vars_values", "row_vars", "row_vars_values", "summary_vars",  "col_vars"),
+#               row_labels = c("adasd", "rvtrvtt")
+# ))
 
 #######
 expect_error(
-    table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean, weight = 2)
+    cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean, weight = 2)
     )
 
 
 
 expect_equal_to_reference(
-    table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = w_mean, weight = 2),
+    cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = combine_functions(w_mean), weight = 2),
                           "rds/table_summary0.rds")
 
-expect_equal_to_reference(
-    table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = "w_mean", weight = 2),
-    "rds/table_summary0.rds")
-
-
 
 expect_equal_to_reference(
-    table_summary(mtcars %except% c("cyl", "am"), col_vars = list("Total", mtcars$am), fun = mean),
+    cro_fun(mtcars %except% c("cyl", "am"), col_vars = list("Total", mtcars$am), 
+            fun = combine_functions(mean)),
     "rds/table_summary1.rds"
     )
 
 
 add_val_lab(mtcars$am) = c(HardToSay = 3)
 expect_equal_to_reference(
-    table_summary(mtcars %except% c("cyl", "am"), col_vars = list("Total", mtcars$am), fun = mean)
+    cro_fun(mtcars %except% c("cyl", "am"), col_vars = list("Total", mtcars$am), 
+            fun = combine_functions(mean))
     ,"rds/table_summary2.rds"
 )
 
@@ -91,113 +84,114 @@ mtcars = modify(mtcars,{
 
 add_val_lab(mtcars$am) = c(HardToSay = 3)
 expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_labels = c("row_vars", "row_vars_values", "summary_vars", "stat_names"),
-              col_labels = c("col_vars", "col_vars_values"), fun = mean)
+cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+              fun = combine_functions(mean))
 ,"rds/table_summary3.rds"
 )
 
 expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_labels = c("row_vars", "row_vars_values", "summary_vars"),
-              col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
+cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+        fun = mean)
 ,"rds/table_summary4.rds"
 )
 
 expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_labels = c("row_vars", "row_vars_values", "stat_names"),
-              col_labels = c("col_vars", "col_vars_values", "summary_vars"), fun = mean)
+cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+               fun = function(x) {
+                   res = t(colMeans(x) )
+                   rownames(res) = "mean"
+                   res
+                       })
 ,"rds/table_summary5.rds"
 )
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_labels = c("row_vars", "row_vars_values", "stat_names"),
-              col_labels = c("col_vars", "summary_vars", "col_vars_values"), fun = mean)
-,"rds/table_summary6.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+#               row_labels = c("row_vars", "row_vars_values", "stat_names"),
+#               col_labels = c("col_vars", "summary_vars", "col_vars_values"), fun = mean)
+# ,"rds/table_summary6.rds"
+# )
 
 
 ########## rowlabels
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values", "summary_vars", "stat_names"),
-              col_labels = c("col_vars", "col_vars_values"), fun = mean)
-,"rds/table_summary7.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+#               row_vars = mtcars$vs,
+#              fun = combine_functions(mean))
+# ,"rds/table_summary7.rds"
+# )
 
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values", "summary_vars"),
-              col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
-,"rds/table_summary8.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+#               row_vars = mtcars$vs,
+#               row_labels = c("row_vars", "row_vars_values", "summary_vars"),
+#               col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
+# ,"rds/table_summary8.rds"
+# )
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values", "stat_names"),
-              col_labels = c("col_vars", "col_vars_values", "summary_vars"), fun = mean)
-,"rds/table_summary9.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), 
+#               col_vars = mtcars$vs,
+#         row_vars = list("Total", mtcars$am), 
+#         fun = mean)
+# ,"rds/table_summary9.rds"
+# )
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values",  "col_vars_values", "summary_vars", "stat_names"),
-              col_labels = c("col_vars"), fun = mean)
-,"rds/table_summary10.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+#               row_vars = mtcars$vs,
+#               row_labels = c("row_vars", "row_vars_values",  "col_vars_values", "summary_vars", "stat_names"),
+#               col_labels = c("col_vars"), fun = mean)
+# ,"rds/table_summary10.rds"
+# )
 ##############################
 add_val_lab(mtcars$vs) = c("Don't know" = 88)
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values", "summary_vars", "stat_names"),
-              col_labels = c("col_vars", "col_vars_values"), fun = mean)
-,"rds/table_summary11.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+#               row_vars = mtcars$vs, fun = combine_functions(mean))
+# ,"rds/table_summary11.rds"
+# )
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values", "summary_vars"),
-              col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
-,"rds/table_summary12.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+#               row_vars = mtcars$vs,
+#               row_labels = c("row_vars", "row_vars_values", "summary_vars"),
+#               col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
+# ,"rds/table_summary12.rds"
+# )
 
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values", "summary_vars", "stat_names"),
-              col_labels = c("col_vars", "col_vars_values", "summary_vars"), fun = mean)
-,"rds/table_summary13.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+#               row_vars = mtcars$vs,
+#               row_labels = c("row_vars", "row_vars_values", "summary_vars", "stat_names"),
+#               col_labels = c("col_vars", "col_vars_values", "summary_vars"), fun = mean)
+# ,"rds/table_summary13.rds"
+# )
 
 
 expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values", "stat_names"),
-              col_labels = c("col_vars", "col_vars_values", "summary_vars"), fun = mean)
+cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+              row_vars = mtcars$vs, 
+        fun = function(x) {
+            res = t(colMeans(x) )
+            rownames(res) = "mean"
+            res
+        })
 ,"rds/table_summary14.rds"
 )
 
 
-expect_equal_to_reference(
-table_summary(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
-              row_vars = mtcars$vs,
-              row_labels = c("row_vars", "row_vars_values",  "col_vars_values", "summary_vars", "stat_names"),
-              col_labels = c("col_vars"), fun = mean)
-,"rds/table_summary15.rds"
-)
+# expect_equal_to_reference(
+# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+#               row_vars = mtcars$vs,
+#               row_labels = c("row_vars", "row_vars_values",  "col_vars_values", "summary_vars", "stat_names"),
+#               col_labels = c("col_vars"), fun = mean)
+# ,"rds/table_summary15.rds"
+# )
 
 #########
 data("product_test")
@@ -251,47 +245,60 @@ w = compute(w, {
 })
 
 expect_equal_to_reference(
-calc(w, table_summary(list(a22, b22), col_vars = mrset(a1_1 %to% a1_6), fun = w_mean))
+calc(w, cro_fun(list(a22, b22), col_vars = mrset(a1_1 %to% a1_6), fun = combine_functions(w_mean)))
 , "rds/table_summary16.rds"
 )
 expect_equal_to_reference(
-calc(w, table_summary(list(a22, b22), col_vars = list(list(mrset(a1_1 %to% a1_6))), fun = w_mean))
+calc(w, cro_fun(list(a22, b22), col_vars = list(list(mrset(a1_1 %to% a1_6))), 
+                fun = combine_functions(w_mean)))
 , "rds/table_summary16.rds"
-)
-expect_equal_to_reference(
-    calc(w, table_summary(list(a22, b22), col_vars = mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)),
-                          fun = w_mean))
-    , "rds/table_summary16.rds"
-)
-expect_equal_to_reference(
-    calc(w, table_summary(list(a22, b22), 
-                          col_vars = list(list(mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)))),
-                          fun = w_mean))
-    , "rds/table_summary16.rds"
-)
-expect_equal_to_reference(
-calc(w, table_summary(list(a22, b22), 
-                      col_vars = "Total", 
-                      row_vars = list(mrset(a1_1 %to% a1_6)), 
-                      fun = w_mean))
-, "rds/table_summary17.rds"
-)
-expect_equal_to_reference(
-    calc(w, table_summary(list(a22, b22), col_vars = "Total",
-                          row_vars = list(list(mrset(a1_1 %to% a1_6))), fun = w_mean))
-    , "rds/table_summary17.rds"
 )
 
 expect_equal_to_reference(
-    calc(w, table_summary(list(a22, b22), col_vars = "Total",
-                          row_vars =  mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)),
-                          fun = w_mean))
-    , "rds/table_summary17.rds"
+    calc(w, cro_fun(list(a22, b22), col_vars = mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)),
+                    fun = combine_functions(w_mean)))
+    , "rds/table_summary16.rds"
 )
+
 expect_equal_to_reference(
-    calc(w, table_summary(list(a22, b22), col_vars = "Total",
+    calc(w, cro_fun(list(a22, b22), 
+                          col_vars = list(list(mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)))),
+                    fun = combine_functions(w_mean)))
+    , "rds/table_summary16.rds"
+)
+# expect_equal_to_reference(
+# calc(w, cro_fun(list(a22, b22), 
+#                       col_vars = list("Total"), 
+#                       row_vars = list(mrset(a1_1 %to% a1_6)), 
+#                       fun = combine_functions(w_mean)))
+# , "rds/table_summary17.rds"
+# )
+expect_identical(
+    calc(w, cro_fun(list(a22, b22), col_vars = list("Total"),
+                          row_vars = list(list(mrset(a1_1 %to% a1_6))),
+                    fun = combine_functions(w_mean)))
+    , calc(w, cro_fun(list(a22, b22), 
+                      col_vars = list("Total"), 
+                      row_vars = list(mrset(a1_1 %to% a1_6)), 
+                      fun = combine_functions(w_mean)))
+)
+
+expect_identical(
+    calc(w, cro_fun(list(a22, b22), col_vars = list("Total"),
+                          row_vars =  mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)),
+                          fun = combine_functions(w_mean)))
+       , calc(w, cro_fun(list(a22, b22), 
+                           col_vars = list("Total"), 
+                           row_vars = list(mrset(a1_1 %to% a1_6)), 
+                           fun = combine_functions(w_mean)))
+)
+expect_identical(
+    calc(w, cro_fun(list(a22, b22), col_vars = list("Total"),
                           row_vars =  list(list(mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)))),
-                          fun = w_mean))
-    , "rds/table_summary17.rds"
+                          fun = combine_functions(w_mean)))
+    , calc(w, cro_fun(list(a22, b22), 
+                      col_vars = list("Total"), 
+                      row_vars = list(mrset(a1_1 %to% a1_6)), 
+                      fun = combine_functions(w_mean)))
 )
 # calc(w, fre(a1_1 %to% a1_6))
