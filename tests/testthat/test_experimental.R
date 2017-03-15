@@ -102,8 +102,8 @@ expect_identical(.calc(fre(vs)),fre(mtcars$vs))
 expect_identical(.cro(am, vs), cro(mtcars$am, mtcars$vs))
 expect_identical(.cro_cpct(am, vs), cro_cpct(mtcars$am, mtcars$vs))
 var_lab(mtcars$mpg_by_am) = "mpg_by_am"
-expect_identical(.cro_cpct(mpg_by_am, hi_low_mpg, prepend_var_lab = FALSE), 
-                 cro_cpct(mtcars$mpg_by_am, mtcars$hi_low_mpg, prepend_var_lab = FALSE))
+expect_identical(.cro_cpct(list(unvr(mpg_by_am)), list(unvr(hi_low_mpg))), 
+                 cro_cpct(list(unvr(mtcars$mpg_by_am)), list(unvr(mtcars$hi_low_mpg))))
 
 ############
 rm(mtcars)

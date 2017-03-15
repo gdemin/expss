@@ -135,17 +135,17 @@ val_lab(aa) = c(c = 1, b = 2, a = 3)
 expect_identical(factor(aa), factor(1:3, levels = 1:3, labels = c("c", "b", "a")))
 
 
-a = c(1, 2, 0)
-val_lab(a) = c(a= 1)
-attr(a, "labels") = c(a = 1, a=2 , b = 0)
-
-expect_warning(as.character(a))
-suppressWarnings(expect_identical(as.character(a), c("a", "a_2", "b")))
-
-attr(a, "labels") = c(a = 1, c=1 , b = 0)
-
-expect_warning(as.character(a))
-suppressWarnings(expect_identical(as.character(a), c("a", "2", "b")))
+# a = c(1, 2, 0)
+# val_lab(a) = c(a= 1)
+# attr(a, "labels") = c(a = 1, a=2 , b = 0)
+# 
+# expect_warning(as.character(a))
+# suppressWarnings(expect_identical(as.character(a), c("a", "a_2", "b")))
+# 
+# attr(a, "labels") = c(a = 1, c=1 , b = 0)
+# 
+# expect_warning(as.character(a))
+# suppressWarnings(expect_identical(as.character(a), c("a", "2", "b")))
 
 context("unique.labelled")
 a = c(1, 1, 0, NA)

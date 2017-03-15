@@ -275,82 +275,82 @@ context("table correlations")
 
 val_lab(mtcars$am) = val_lab(mtcars$am)[1:2] 
 expect_equal_to_reference(
-    table_pearson(mtcars %except% qc(vs, am), col_vars = mtcars$am)
+    cro_pearson(mtcars %except% qc(vs, am), col_vars = mtcars$am)
     ,"rds/table_cor_1.rds"
 )
 
 expect_equal_to_reference(
-    table_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am)
+    cro_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am)
     ,"rds/table_cor_2.rds"
 )
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% FALSE %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds"
 )
 
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% FALSE %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds"
 )
 
 expect_equal_to_reference(
-    table_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am)
+    cro_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am)
     ,"rds/table_cor_2.rds"
 )
 
 expect_equal_to_reference(
-    table_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = 1)
+    cro_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = 1)
     ,"rds/table_cor_2.rds"
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% FALSE %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
+    mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% table_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% FALSE %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
+    mtcars  %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars %where% (cyl == 8) %calc% table_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% (cyl == 8) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
+    mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )
 
 
 expect_identical(
-    mtcars %where% (cyl > 4) %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
+    mtcars %where% (cyl > 4) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
     ,
-    mtcars  %calc% table_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl, subgroup = (cyl > 4))
+    mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl, subgroup = (cyl > 4))
 )
 
 expect_identical(
-    mtcars %where% (cyl == 8) %calc% table_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars %where% (cyl == 8) %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% table_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
+    mtcars  %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )
 
 set.seed(1)
 weight = runif(nrow(mtcars), 1,2)
 expect_equal_to_reference(
-    table_pearson(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = weight)
+    cro_pearson(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = weight)
     ,"rds/table_cor_3.rds"
 )
 expect_equal_to_reference(
-    table_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = weight)
+    cro_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = weight)
     ,"rds/table_cor_4.rds"
 )
 
 
-expect_equal(table_pearson(mtcars %except% qc(vs, am), col_vars = "Total")[[2]],
+expect_equal(cro_pearson(mtcars %except% qc(vs, am), col_vars = "Total")[[2]],
              unname(cor(mtcars %except% qc(vs, am))[,1]))
-expect_equal(table_spearman(mtcars %except% qc(vs, am), col_vars = "Total")[[2]],
+expect_equal(cro_spearman(mtcars %except% qc(vs, am), col_vars = "Total")[[2]],
              unname(cor(mtcars %except% qc(vs, am), method = "spearman")[,1]))
 
 
@@ -359,19 +359,19 @@ context("table_summary_df datetime")
 dates = as.POSIXct(rep(paste0("2017-02-", 1:10), each = 10))
 measure = runif(length(dates), 1, 2)
 expect_equal_to_reference(
-cro_fun_df(measure, col_vars = "Total", row_vars = dates, fun = mean)
+cro_fun_df(measure, col_vars = list("Total"), row_vars = list(dates), fun = mean)
 ,"rds/table_summary_df_dates1.rds"
 )
 expect_equal_to_reference(
-    cro_fun_df(measure, col_vars = dates, fun = mean)
+    cro_fun_df(list(measure), col_vars = list(dates), fun = mean)
 ,"rds/table_summary_df_dates2.rds"
 )
 var_lab(dates) = "Day"
 expect_equal_to_reference(
-    cro_fun_df(measure, col_vars = "Total", row_vars = dates, fun = mean)
+    cro_fun_df(list(measure), col_vars = list("Total"), row_vars = list(dates), fun = mean)
 ,"rds/table_summary_df_dates3.rds"
 )
 expect_equal_to_reference(
-    cro_fun_df(measure, col_vars = dates, fun = mean)
+    cro_fun_df(list(measure), col_vars = list(dates), fun = mean)
 ,"rds/table_summary_df_dates4.rds"
 )

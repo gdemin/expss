@@ -109,9 +109,9 @@ mtcars = modify(mtcars, {
     var_lab(gear) = "gear"
     var_lab(carb) = "carb"})
 
-tab1 = with(mtcars, cro_mean(mpg, am))
-tab2 = with(mtcars, cro_cpct(vs, list(am, "#Total"), prepend_var_lab = FALSE))
-tab3 = with(mtcars, cro_cpct(vs, list(carb, "#Total"), prepend_var_lab = FALSE))
+tab1 = with(mtcars, cro_mean(mpg, list(unvr(am), total())))
+tab2 = with(mtcars, cro_cpct(list(unvr(vs)), list(unvr(am), total())))
+tab3 = with(mtcars, cro_cpct(list(unvr(vs)), list(unvr(carb), total())))
 
 
 expect_equal_to_reference(tab1 %add_rows% tab2, "rds/add_rows7.rds")

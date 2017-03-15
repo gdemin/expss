@@ -79,7 +79,7 @@ mtcars_table = cro_cpct(mtcars$vs %nest% mtcars$am, list(mtcars$vs, "#Total"))
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable11.rds")
 
-mtcars_table = cro_cpct(mtcars$vs, list(mtcars$vs %nest% mtcars$am, "#Total"), prepend_var_lab = FALSE)
+mtcars_table = cro_cpct(list(unvr(mtcars$vs)), list(mtcars$vs %nest% mtcars$am, "#Total"))
 expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
                           "rds/html_datatable12.rds")
 

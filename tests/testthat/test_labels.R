@@ -30,7 +30,7 @@ context("val_lab")
 a = 1
 expect_error({val_lab(a) = c(a = 1, b = 1)})
 val_lab(a) = c(a = 1, a = 2)
-b = set_val_lab(1, c(a = 1, a_2 = 2))
+b = set_val_lab(1, c(a = 1, a_1 = 2))
 expect_identical(a, b)
 
 
@@ -425,8 +425,10 @@ context("labelled matrix")
 
 aaa = matrix(1:9, 3)
 
-expect_error(set_val_lab(aaa, NULL))
-expect_error(set_var_lab(aaa, NULL))
+expect_identical(set_val_lab(aaa, NULL), aaa)
+expect_error(set_val_lab(aaa, c(a = 1)))
+expect_error(set_var_lab(aaa, "matrix"))
+expect_identical(set_var_lab(aaa, NULL), aaa)
 expect_error(as.labelled(aaa, NULL))
 expect_error(as.labelled(as.list(aaa), NULL))
 expect_error(as.labelled(as.data.frame(aaa), NULL))

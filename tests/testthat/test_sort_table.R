@@ -16,28 +16,28 @@ mtcars = apply_labels(mtcars,
 )
 
 
-tab = calculate(mtcars, table_cpct(list(cyl, gear, carb), list("#total", vs, am)))
+tab = calculate(mtcars, cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
 expect_equal_to_reference(
     sort_table_asc(tab),
-    "rds/sort_table_1"
+    "rds/sort_table_1.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab),
-    "rds/sort_table_2"
+    "rds/sort_table_2.rds"
 )
 
-tab = calculate(mtcars, table_cpct(list(cyl, gear, carb), list("#total", vs, am), 
+tab = calculate(mtcars, cro_cpct(list(cyl, gear, carb), list("#total", vs, am), 
                                    total_row_position = "above"))
 
 expect_equal_to_reference(
     sort_table_asc(tab),
-    "rds/sort_table_3"
+    "rds/sort_table_3.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab),
-    "rds/sort_table_4"
+    "rds/sort_table_4.rds"
 )
 
 expect_identical(
@@ -45,80 +45,80 @@ expect_identical(
     sort_desc(tab, 2)[[2]]
 )
 
-tab = calculate(mtcars, table_cpct(list(cyl, gear, carb), list("#total", vs, am), 
+tab = calculate(mtcars, cro_cpct(list(cyl, gear, carb), list("#total", vs, am), 
                                    total_row_position = "none"))
 
 expect_equal_to_reference(
     sort_table_asc(tab),
-    "rds/sort_table_5"
+    "rds/sort_table_5.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab),
-    "rds/sort_table_6"
+    "rds/sort_table_6.rds"
 )
 
 expect_equal_to_reference(
     sort_table_asc(tab[FALSE,]),
-    "rds/sort_table_7"
+    "rds/sort_table_7.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab[FALSE,]),
-    "rds/sort_table_7"
+    "rds/sort_table_7.rds"
 )
 
-tab = calculate(mtcars, table_cpct(list(cyl, gear, carb), list("#total", vs, am)))
+tab = calculate(mtcars, cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
 expect_equal_to_reference(
     sort_table_asc(tab, excluded_rows = grepl("#|8", tab[[1]], perl = TRUE)),
-    "rds/sort_table_8"
+    "rds/sort_table_8.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab, excluded_rows = grepl("#|1", tab[[1]], perl = TRUE)),
-    "rds/sort_table_9"
+    "rds/sort_table_9.rds"
 )
 
 
 expect_equal_to_reference(
     sort_table_asc(tab, excluded_rows = grep("#|8", tab[[1]], perl = TRUE)),
-    "rds/sort_table_8"
+    "rds/sort_table_8.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab, excluded_rows = grep("#|1", tab[[1]], perl = TRUE)),
-    "rds/sort_table_9"
+    "rds/sort_table_9.rds"
 )
 
 
 expect_equal_to_reference(
     sort_table_asc(tab, excluded_rows = "#|8"),
-    "rds/sort_table_8"
+    "rds/sort_table_8.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab, excluded_rows = "#|1"),
-    "rds/sort_table_9"
+    "rds/sort_table_9.rds"
 )
 
 expect_equal_to_reference(
     sort_table_asc(tab, excluded_rows = c("#","8")),
-    "rds/sort_table_8"
+    "rds/sort_table_8.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab, excluded_rows = c("#","1")),
-    "rds/sort_table_9"
+    "rds/sort_table_9.rds"
 )
 
 expect_equal_to_reference(
     sort_table_asc(tab, columns = "Engine|V-engine"),
-    "rds/sort_table_10"
+    "rds/sort_table_10.rds"
 )
 
 expect_equal_to_reference(
     sort_table_desc(tab, columns = "Engine|V-engine"),
-    "rds/sort_table_11"
+    "rds/sort_table_11.rds"
 )
 
 expect_identical(

@@ -86,12 +86,12 @@ attr(a, "labels") = c(a = 1, b = 1)
 expect_error(to_fac(a))
 attr(a, "labels") = c(a = 1, a = 2)
 expect_warning(to_fac(a))
-expect_identical(suppressWarnings(to_fac(a)), factor(1, levels = 1:2, labels = c("a","a_2")))
+expect_identical(suppressWarnings(to_fac(a)), factor(1, levels = 1:2, labels = c("a","a_1")))
 attr(a, "labels") = c(a = 1, a = 2, a = 3)
-expect_identical(suppressWarnings(to_fac(a)), factor(1, levels = 1:3, labels = c("a","a_2","a_3")))
+expect_identical(suppressWarnings(to_fac(a)), factor(1, levels = 1:3, labels = c("a","a_1","a_2")))
 
 
 a = 1:3
 val_lab(a) = c("1" = 3)
 expect_warning(to_fac(a))
-suppressWarnings(expect_identical(to_fac(a), factor(c("1", "2", "1_2"), levels = c("1", "2", "1_2"))))
+suppressWarnings(expect_identical(to_fac(a), factor(c("1", "2", "1_1"), levels = c("1", "2", "1_1"))))
