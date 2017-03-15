@@ -100,8 +100,13 @@ keep.data.frame = function(data, ...){
                               )
     args = eval(args)
     new_vars = keep_helper(vars, args)
-    res = data[ , new_vars, drop = FALSE]
-    colnames(res) = vars[new_vars] # prevents names correction
+    if(is.data.table(data)){
+        res = data[ , new_vars, with = FALSE]
+    } else {
+        res = data[ , new_vars, drop = FALSE]
+        colnames(res) = vars[new_vars] # prevents names correction    
+    }
+   
     res
 }
 
@@ -168,8 +173,12 @@ except.data.frame = function(data, ...){
     if(length(new_vars)==0){
         return(data)
     }
-    res = data[ , new_vars, drop = FALSE]
-    colnames(res) = vars[new_vars] # prevents names correction
+    if(is.data.table(data)){
+        res = data[ , new_vars, with = FALSE]
+    } else {
+        res = data[ , new_vars, drop = FALSE]
+        colnames(res) = vars[new_vars] # prevents names correction    
+    }
     res
 }
 

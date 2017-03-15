@@ -17,11 +17,15 @@ expect_identical(keep(iris, "Species", fixed("Length"), fixed("Width")),
                  iris[, c("Species", "Sepal.Length", "Petal.Length", "Sepal.Width", "Petal.Width")])
 
 expect_identical(keep(iris, qc(Species, Sepal.Length, Petal.Length)), iris[, c("Species", "Sepal.Length", "Petal.Length")])
+expect_identical(keep(data.table::data.table(iris), qc(Species, Sepal.Length, Petal.Length)),
+                 data.table::data.table(iris)[, c("Species", "Sepal.Length", "Petal.Length")])
 expect_identical(iris %keep% qc(Species, Sepal.Length, Petal.Length), iris[, c("Species", "Sepal.Length", "Petal.Length")])
+expect_identical(keep(iris, "Species"), iris[, c("Species"), drop = FALSE])
 expect_identical(keep(iris, "Species"), iris[, c("Species"), drop = FALSE])
 expect_error(keep(iris, "Species", "not_exists"))
 
-expect_identical(keep(as.matrix(iris), "Species", perl("^Sepal")), as.matrix(iris)[, c("Species", "Sepal.Length", "Sepal.Width")])
+expect_identical(keep(as.matrix(iris), "Species", perl("^Sepal")), 
+                 as.matrix(iris)[, c("Species", "Sepal.Length", "Sepal.Width")])
 
 
 context("except")
@@ -33,6 +37,9 @@ expect_identical(except(iris, fixed("Length"), fixed("Width")),
                  iris[, c("Species"), drop = FALSE])
 
 expect_identical(except(iris, qc(Species, Sepal.Length, Petal.Length)), iris[, c("Sepal.Width", "Petal.Width")])
+expect_identical(except(data.table::data.table(iris), qc(Species, Sepal.Length, Petal.Length)),
+                 data.table::data.table(iris)[, c("Sepal.Width", "Petal.Width")])
+
 expect_error(except(iris, "Species", "not_exists"))
 
 expect_identical(except(as.matrix(iris), "Species", perl("^Sepal")), as.matrix(iris)[, c("Petal.Length", "Petal.Width")])
