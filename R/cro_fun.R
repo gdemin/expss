@@ -179,16 +179,6 @@ cro_fun = function(cell_vars,
     }
     fun = make_function_for_cro(fun, ..., need_weight = !is.null(weight))
     
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }
-    for(each in seq_along(cell_vars)){
-        if(is.matrix(cell_vars[[each]])){
-            cell_vars[[each]] = as.dtfrm(cell_vars[[each]])
-        }
-    }
-    cell_vars = make_labels_from_names(cell_vars)
     if(!is_list(row_vars)){
         row_vars = add_missing_var_lab(row_vars, str_row_vars)
         row_vars = list(row_vars)
@@ -197,16 +187,35 @@ cro_fun = function(cell_vars,
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    cell_vars = flat_list(cell_vars, flat_df = TRUE)
     row_vars = flat_list(dichotomy_to_category_encoding(row_vars), flat_df = FALSE)
     col_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(col_vars), flat_df = TRUE)
     stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
-    check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
+    
+    
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        if(!is.data.frame(cell_vars)){
+            cell_vars = as.dtfrm(cell_vars)    
+        }
+        check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
+    } else {
+        cell_vars = flat_list(cell_vars, flat_df = TRUE)
+        check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
+        cell_vars = as.dtfrm(cell_vars)  
+    }
+    # for(each in seq_along(cell_vars)){
+    #     if(is.matrix(cell_vars[[each]])){
+    #         cell_vars[[each]] = as.dtfrm(cell_vars[[each]])
+    #     }
+    # }
+    cell_vars = make_labels_from_names(cell_vars)
+    
+    
     
     res = lapply(row_vars, function(each_row_var){
-        all_cell_vars = lapply(cell_vars, function(each_cell_var){
+        # all_cell_vars = lapply(cell_vars, function(each_cell_var){
             all_col_vars = lapply(col_vars, function(each_col_var){
-                elementary_cro_fun_df(cell_var = each_cell_var,
+                elementary_cro_fun_df(cell_var = cell_vars,
                                       row_var = each_row_var, 
                                       col_var = each_col_var, 
                                       weight = weight,
@@ -218,9 +227,9 @@ cro_fun = function(cell_vars,
             })
             Reduce(merge, all_col_vars)
         })
-        do.call(add_rows, all_cell_vars) 
+        # do.call(add_rows, all_cell_vars) 
         
-    })
+    # })
     res = do.call(add_rows, res)
     res
 }
@@ -255,12 +264,12 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
     }
     
     ### keep label for cro_fun
-    if(fun_df){
-        cell_var_lab = NULL
-    } else {
-        cell_var_lab = var_lab(cell_var)
-        cell_var = unvr(cell_var)
-    }
+    # if(fun_df){
+    #     cell_var_lab = NULL
+    # } else {
+    #     cell_var_lab = var_lab(cell_var)
+    #     cell_var = unvr(cell_var)
+    # }
 
     ### recycle variables of length 1
 
@@ -328,11 +337,12 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
                                   value = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
                                   )
     
-    if(!fun_df && !is.null(cell_var_lab)){
-        res[["row_labels"]] = paste0(cell_var_lab, "|",as.character(res[["row_labels"]]))
-    } else {
-        res[["row_labels"]] = as.character(res[["row_labels"]])  
-    }
+    # if(!fun_df && !is.null(cell_var_lab)){
+    #     res[["row_labels"]] = paste0(cell_var_lab, "|",as.character(res[["row_labels"]]))
+    # } else {
+    #     res[["row_labels"]] = as.character(res[["row_labels"]])  
+    # }
+    res[["row_labels"]] = as.character(res[["row_labels"]]) 
     res[["row_labels"]] = paste0(res[["..row_var__"]], "|", res[["row_labels"]])  
     res[["..row_var__"]] = NULL
     
@@ -355,12 +365,16 @@ make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
     if(need_weight){
         function(x, weight = weight){
             res = fun(x, ..., weight = weight)
-            make_dataframe_with_row_labels(res)
+            res = make_dataframe_with_row_labels(res)
+            # we need convert to factor to keep order of row_labels
+            as.data.table(res)[, row_labels := factor(row_labels, levels = unique(row_labels))] 
         }
     } else {
         function(x){
             res = fun(x, ...)
-            make_dataframe_with_row_labels(res)
+            res = make_dataframe_with_row_labels(res)
+            # we need convert to factor to keep order of row_labels
+            as.data.table(res)[, row_labels := factor(row_labels, levels = unique(row_labels))] 
         }        
     }
 }
@@ -370,15 +384,33 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
     force(need_weight)
     if(need_weight){
         function(x, weight = weight){
-            x = x[[1]]
-            res = fun(x, ..., weight = weight)
-            make_dataframe_with_row_labels(res)
+            res = lapply(x, function(column) {
+                varlab = var_lab(column)
+                each_res = fun(unvr(column), ..., weight = weight)
+                each_res = make_dataframe_with_row_labels(each_res)
+                if(!is.null(varlab)){
+                    each_res[["row_labels"]] = paste0(varlab, "|", each_res[["row_labels"]]) 
+                }
+                each_res
+            })
+            res = as.data.table(rbindlist(res, use.names = TRUE, fill = TRUE))
+            # we need convert to factor to keep order of row_labels
+            res[, row_labels := factor(row_labels, levels = unique(row_labels))] 
         }
     } else {
         function(x){
-            x = x[[1]]
-            res = fun(x, ...)
-            make_dataframe_with_row_labels(res)
+            res = lapply(x, function(column) {
+                varlab = var_lab(column)
+                each_res = fun(unvr(column), ...)
+                each_res = make_dataframe_with_row_labels(each_res)
+                if(!is.null(varlab)){
+                    each_res[["row_labels"]] = paste0(varlab, "|", each_res[["row_labels"]])
+                }
+                each_res
+            })
+            res = as.data.table(rbindlist(res, use.names = TRUE, fill = TRUE))
+            # we need convert to factor to keep order of row_labels
+            res[, row_labels := factor(row_labels, levels = unique(row_labels))] 
         }        
     }
 }
@@ -425,9 +457,7 @@ make_dataframe_with_row_labels = function(res){
         }
     } 
     row_labels = make_items_unique(as.character(row_labels))
-    # we need convert to factor to keep order of row_labels
-    row_labels = factor(row_labels, levels = row_labels) 
-    data.table(row_labels = row_labels, res)
+    dtfrm(row_labels = row_labels, res)
 
 }
 

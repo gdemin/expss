@@ -539,7 +539,11 @@ expect_equal_to_reference(
     })), 
     "rds/cro_fun15.rds")
 
-expect_error(with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(am, total()), fun = function(x) t(x))))
+expect_error(
+with(mtcars, cro_fun(data.frame(hp, mpg, disp), 
+                     list(am, total()), fun = function(x) dtfrm(t(x)))
+     )
+)
 
 
 

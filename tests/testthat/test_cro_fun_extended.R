@@ -266,13 +266,14 @@ expect_equal_to_reference(
                     fun = combine_functions(w_mean)))
     , "rds/table_summary16.rds"
 )
-# expect_equal_to_reference(
-# calc(w, cro_fun(list(a22, b22), 
-#                       col_vars = list("Total"), 
-#                       row_vars = list(mrset(a1_1 %to% a1_6)), 
-#                       fun = combine_functions(w_mean)))
-# , "rds/table_summary17.rds"
-# )
+
+expect_equal_to_reference(
+calc(w, cro_fun(list(a22, b22),
+                      col_vars = list("Total"),
+                      row_vars = list(mrset(a1_1 %to% a1_6)),
+                      fun = combine_functions(w_mean)))
+, "rds/table_summary17.rds"
+)
 expect_identical(
     calc(w, cro_fun(list(a22, b22), col_vars = list("Total"),
                           row_vars = list(list(mrset(a1_1 %to% a1_6))),
