@@ -117,7 +117,7 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
 
     ### 'dcast' just for generating absent labels    
     res = long_datatable_to_table(dtable, rows = "x", columns = "count", value = "weight")
-   
+    res = as.dtfrm(res)
     colnames(res) = c("labels", "res")
     rownames(res) = NULL
     res = res[!is.na(res$res) | !drop_unused_labels, ]

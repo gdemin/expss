@@ -157,10 +157,10 @@
 cro_fun = function(cell_vars, 
                    col_vars = total(), 
                    row_vars = total(label = ""),
-                      weight = NULL,
-                      subgroup = NULL,
-                      fun, 
-                      ...){
+                   weight = NULL,
+                   subgroup = NULL,
+                   fun, 
+                   ...){
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -203,45 +203,38 @@ cro_fun = function(cell_vars,
         check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
         cell_vars = as.dtfrm(cell_vars)  
     }
-    # for(each in seq_along(cell_vars)){
-    #     if(is.matrix(cell_vars[[each]])){
-    #         cell_vars[[each]] = as.dtfrm(cell_vars[[each]])
-    #     }
-    # }
+    
     cell_vars = make_labels_from_names(cell_vars)
     
     
     
     res = lapply(row_vars, function(each_row_var){
-        # all_cell_vars = lapply(cell_vars, function(each_cell_var){
-            all_col_vars = lapply(col_vars, function(each_col_var){
-                elementary_cro_fun_df(cell_var = cell_vars,
-                                      row_var = each_row_var, 
-                                      col_var = each_col_var, 
-                                      weight = weight,
-                                      subgroup = subgroup,
-                                      prepend_var_lab = TRUE,
-                                      fun = fun,
-                                      fun_df = FALSE
-                )    
-            })
-            Reduce(merge, all_col_vars)
+        all_col_vars = lapply(col_vars, function(each_col_var){
+            elementary_cro_fun_df(cell_var = cell_vars,
+                                  row_var = each_row_var, 
+                                  col_var = each_col_var, 
+                                  weight = weight,
+                                  subgroup = subgroup,
+                                  prepend_var_lab = TRUE,
+                                  fun = fun
+            )    
         })
-        # do.call(add_rows, all_cell_vars) 
-        
-    # })
+        Reduce(merge, all_col_vars)
+    })
+    
     res = do.call(add_rows, res)
     res
 }
 
 
 ### compute statistics for single row_var and single col_var
-elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
+elementary_cro_fun_df = function(cell_var, 
+                                 col_var, 
+                                 weight,
                                  fun,
                                  row_var, 
-                          prepend_var_lab = FALSE,
-                          subgroup = NULL,
-                          fun_df = TRUE
+                          prepend_var_lab,
+                          subgroup
                           ){
     
     ### calculate vector of valid cases
@@ -263,13 +256,6 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
         weight = weight[valid]
     }
     
-    ### keep label for cro_fun
-    # if(fun_df){
-    #     cell_var_lab = NULL
-    # } else {
-    #     cell_var_lab = var_lab(cell_var)
-    #     cell_var = unvr(cell_var)
-    # }
 
     ### recycle variables of length 1
 
@@ -303,7 +289,7 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
     row_var = row_var[valid]
     
     ########
-    # cell_var_lab = var_lab(cell_var)
+
     row_var_lab = var_lab(row_var)
     col_var_lab = var_lab(col_var)
     
@@ -317,17 +303,12 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
     raw_data = raw_data[!is.na(row_var), ]
     
     
-    # we need at least one row because with zero rows all rows from 'fun' will be ignored
-    # if(nrow(raw_data)==0){
-    #     raw_data = rbind(raw_data, data.table(..row_var__ = NA), fill = TRUE, use.names = TRUE)
-    # }
-    
     # statistics
     by_string = "..row_var__,..col_var__"
     if(is.null(weight)){
         dtable = raw_data[ , fun(.SD), by = by_string]
     } else {
-        dtable = raw_data[ , fun(.SD[,-"..weight__"], weight = ..weight__), by = by_string]
+        dtable = raw_data[ , fun(.SD, weight = ..weight__), by = by_string, .SDcols = -"..weight__"]
     }
     
     
@@ -337,24 +318,21 @@ elementary_cro_fun_df = function(cell_var, col_var, weight = NULL,
                                   value = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
                                   )
     
-    # if(!fun_df && !is.null(cell_var_lab)){
-    #     res[["row_labels"]] = paste0(cell_var_lab, "|",as.character(res[["row_labels"]]))
-    # } else {
-    #     res[["row_labels"]] = as.character(res[["row_labels"]])  
-    # }
-    res[["row_labels"]] = as.character(res[["row_labels"]]) 
-    res[["row_labels"]] = paste0(res[["..row_var__"]], "|", res[["row_labels"]])  
+
+    res[ , row_labels  := as.character(row_labels)] 
+    res[ , row_labels  := paste0(..row_var__, "|", row_labels)]  
     res[["..row_var__"]] = NULL
     
     if(prepend_var_lab){
-        res[["row_labels"]] = paste0(row_var_lab, "|", res[[1]])
+        res[, row_labels := paste0(row_var_lab, "|", row_labels)]
         colnames(res)[-1] = paste0(col_var_lab, "|", colnames(res)[-1]) 
     }
     
     
-    res[["row_labels"]] = remove_unnecessary_splitters(res[["row_labels"]]) 
-    res[["row_labels"]] = make_items_unique(res[[1]])
+    res[ , row_labels := remove_unnecessary_splitters(row_labels)] 
+    res[ , row_labels := make_items_unique(row_labels)] 
     colnames(res) = remove_unnecessary_splitters(colnames(res)) 
+    res = as.dtfrm(res)
     class(res) = union("etable", class(res))
     res
 }
@@ -367,14 +345,14 @@ make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
             res = fun(x, ..., weight = weight)
             res = make_dataframe_with_row_labels(res)
             # we need convert to factor to keep order of row_labels
-            as.data.table(res)[, row_labels := factor(row_labels, levels = unique(row_labels))] 
+            as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
         }
     } else {
         function(x){
             res = fun(x, ...)
             res = make_dataframe_with_row_labels(res)
             # we need convert to factor to keep order of row_labels
-            as.data.table(res)[, row_labels := factor(row_labels, levels = unique(row_labels))] 
+            as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
         }        
     }
 }
@@ -393,9 +371,9 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
                 }
                 each_res
             })
-            res = as.data.table(rbindlist(res, use.names = TRUE, fill = TRUE))
+            res = rbindlist(res, use.names = TRUE, fill = TRUE)
             # we need convert to factor to keep order of row_labels
-            res[, row_labels := factor(row_labels, levels = unique(row_labels))] 
+            as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
         }
     } else {
         function(x){
@@ -408,9 +386,9 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
                 }
                 each_res
             })
-            res = as.data.table(rbindlist(res, use.names = TRUE, fill = TRUE))
+            res = rbindlist(res, use.names = TRUE, fill = TRUE)
             # we need convert to factor to keep order of row_labels
-            res[, row_labels := factor(row_labels, levels = unique(row_labels))] 
+            as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
         }        
     }
 }
@@ -457,7 +435,7 @@ make_dataframe_with_row_labels = function(res){
         }
     } 
     row_labels = make_items_unique(as.character(row_labels))
-    dtfrm(row_labels = row_labels, res)
+    data.table(row_labels = row_labels, res)
 
 }
 
@@ -530,8 +508,7 @@ cro_fun_df = function(cell_vars,
                                       weight = weight,
                                       subgroup = subgroup,
                                       prepend_var_lab = TRUE,
-                                      fun = fun,
-                                      fun_df = TRUE
+                                      fun = fun
                 )    
             })
             Reduce(merge, all_col_vars)
@@ -556,7 +533,7 @@ cro_mean = function(cell_vars,
     
     fun = function(x, weight = NULL){
         res = vapply(x, FUN = w_mean, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
-        dtfrm(row_labels = names(x), "|" = res)
+        list(row_labels = names(x), "|" = res)
     }
     
     str_cell_vars = deparse(substitute(cell_vars))
@@ -601,7 +578,7 @@ cro_sum = function(cell_vars,
 ){
     fun = function(x, weight = NULL){
         res = vapply(x, FUN = w_sum, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
-        dtfrm(row_labels = names(x), "|" = res)
+        list(row_labels = names(x), "|" = res)
     }
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
@@ -645,7 +622,7 @@ cro_median = function(cell_vars,
 ){
     fun = function(x, weight = NULL){
         res = vapply(x, FUN = w_median, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
-        dtfrm(row_labels = names(x), "|" = res)
+        list(row_labels = names(x), "|" = res)
     }
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
@@ -687,43 +664,90 @@ cro_median = function(cell_vars,
 #' @export
 #' @rdname cro_fun
 cro_pearson = function(cell_vars, 
-                       col_vars = total(), 
-                       row_vars = total(label = ""),
+                         col_vars = total(), 
+                         row_vars = total(label = ""),
                          weight = NULL,
                          subgroup = NULL
 ){
-    cor_fun = function(x, weight = NULL){
+    fun = function(x, weight = NULL){
         w_pearson(x, weight = weight)[ , 1]
+    }    
+    str_cell_vars = deparse(substitute(cell_vars))
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
+    
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
+    }    
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
     }
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
                weight = weight,
                subgroup = subgroup,
-               fun = cor_fun
+               fun = fun
     )
 }
+
 
 #' @export
 #' @rdname cro_fun
 cro_spearman = function(cell_vars, 
-                          col_vars = total(), 
-                          row_vars = total(label = ""), 
-                          weight = NULL,
-                          subgroup = NULL
+                           col_vars = total(), 
+                           row_vars = total(label = ""),
+                           weight = NULL,
+                           subgroup = NULL
 ){
-    cor_fun = function(x, weight = NULL){
+    fun = function(x, weight = NULL){
         w_spearman(x, weight = weight)[ , 1]
-    } 
+    }    
+    str_cell_vars = deparse(substitute(cell_vars))
+    str_row_vars = deparse(substitute(row_vars))
+    str_col_vars = deparse(substitute(col_vars))
+    
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(row_vars), 
+           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
+    }    
+    if(!is_list(row_vars)){
+        row_vars = add_missing_var_lab(row_vars, str_row_vars)
+        row_vars = list(row_vars)
+    }
+    if(!is_list(col_vars)){
+        col_vars = add_missing_var_lab(col_vars, str_col_vars)
+        col_vars = list(col_vars)
+    }
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
                weight = weight,
                subgroup = subgroup,
-               fun = cor_fun
+               fun = fun
     )
 }
-
+    
 
 #' @export
 #' @rdname cro_fun

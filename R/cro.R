@@ -417,6 +417,8 @@ elementary_cro = function(row_var, col_var, weight = NULL,
 
     ### make rectangular table  
     res = long_datatable_to_table(dtable, rows = "row_var", columns = "col_var", value = "value")
+    
+    
     colnames(res)[1] = "row_labels"
     
     if(total_row_position!="none"){
@@ -432,14 +434,14 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     rownames(res) = NULL
     
     if(prepend_var_lab){
-        res[[1]] = paste0(row_var_lab, "|", res[[1]])
+        res[, row_labels := paste0(row_var_lab, "|", row_labels)]
         colnames(res)[-1] = paste0(col_var_lab, "|", colnames(res)[-1]) 
     }
-    
-    
-    res[[1]] = remove_unnecessary_splitters(res[[1]]) 
-    res[[1]] = make_items_unique(res[[1]])
+    res[ , row_labels := remove_unnecessary_splitters(row_labels)] 
+    res[ , row_labels := make_items_unique(row_labels)] 
+
     colnames(res) = remove_unnecessary_splitters(colnames(res)) 
+    res = as.dtfrm(res)
     class(res) = union("etable", class(res))
     res
 }

@@ -214,7 +214,7 @@ long_datatable_to_table = function(dtable, rows, columns, values){
         res[[each]] = as.character(res[[each]])
         res[[each]][is.na(res[[each]])] = ""
     }
-    as.dtfrm(res)
+    res
 }
 #####
 # convert mdsets to categories, accepts lists
