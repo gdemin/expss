@@ -39,6 +39,8 @@ expect_equal_to_reference(cro(list(mult2$b1), list(mrset(mult1)), weight),
 expect_equal_to_reference(cro(list(mult2$b1), list(mrset(mult1)), weight, total = "weighted"),
                           "rds/table_cases10a.rds")
 
+# expect_equal_to_references(cro(numeric(0)))
+
 #############
 expect_equal_to_reference(cro(list(mrset(mult1)), list(mrset(mult2))),
                           "rds/table_cases11.rds")

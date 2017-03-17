@@ -237,6 +237,9 @@ var_lab(a) = "Total"
 val_lab(a) = c("all" = 1)
 expect_equal_to_reference(cro_cpct(mrset(brands), a), "rds/fre_ex7.rds")
 expect_equal_to_reference(cro_cpct_responses(mrset(brands), a), "rds/fre_ex7responses.rds")
+expect_equal_to_reference(cro_cpct_responses(mrset(brands), score), "rds/fre_ex7responses2.rds")
+expect_identical(cro_cpct_responses(score, a), cro_cpct(score, a))
+# expect_equal_to_reference(cro_cpct_responses(as.dichotomy(mrset(brands)), a), "rds/fre_ex7responses.rds")
 
 options(expss.digits = NA)
 

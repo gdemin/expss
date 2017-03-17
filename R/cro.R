@@ -394,16 +394,22 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     
     dtable = raw_data[, list(value = sum(weight, na.rm = TRUE)), by = "col_var,row_var"]
     
-    dtotal = data.table(col_var = col_var, weight = weight)
-    dtotal = dtotal[, list(weighted_total = sum(weight, na.rm = TRUE), 
+    if(stat_type != "cpct_responses"){
+        dtotal = data.table(col_var = col_var, weight = weight)
+        dtotal = dtotal[, list(weighted_total = sum(weight, na.rm = TRUE), 
                                total = .N), by = "col_var"]
-
-    if(stat_type=="cpct" || stat_type=="cpct_responses"){
+    }
+    
+    ################################
+    if(stat_type=="cpct"){
         dtable = dtotal[dtable, on = "col_var", nomatch = NA]
         dtable[, value := value/weighted_total*100]
-        if(stat_type == "cpct_responses"){
-            dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]
-        }
+
+    }
+    if(stat_type == "cpct_responses"){
+        dtotal = raw_data[, list(weighted_total = sum(weight, na.rm = TRUE), 
+                                 total = .N), by = "col_var"]
+        dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]
     }
     if(stat_type=="tpct"){
         dtable = dtotal[dtable, on = "col_var", nomatch = NA]
