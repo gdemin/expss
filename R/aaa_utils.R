@@ -289,14 +289,14 @@ valid.default = function(x){
 }
 
 #' @export
-valid.matrix = function(x){
+valid.data.frame = function(x){
     rowSums(!is.na(x))>0
 }
 
 #' @export
-valid.data.frame = function(x){
-    rowSums(!is.na(x))>0
-}
+valid.matrix = valid.data.frame
+
+
 
 
 ###########
