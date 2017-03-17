@@ -139,8 +139,8 @@ set_negative_and_na_to_zero = function(x){
 
 convert_multicolumn_object_to_vector  = function(x){
     if(is.matrix(x) || is.data.frame(x)){
-        if(ncol(x)==0){
-            x = cbind(x, 'NA' = NA)
+        if(NCOL(x)==0){
+            x = cbind(x, 'NA' = rep(NA, NROW(x))) # rep for zero rows objects
         }
         # we convert factors to labelled because further we will combine data.frame to single column and
         # for labelled value labels will be combined. It is not so for factors.

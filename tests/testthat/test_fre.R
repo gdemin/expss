@@ -268,6 +268,9 @@ expect_equal_to_reference(cro(as.dichotomy(as.data.frame(matrix(1, 3, 3)))), "rd
 aaa = data.frame(1:5)[, -1, drop = FALSE]
 expect_equal_to_reference(cro(mdset(aaa)), "rds/cro_zero_column_multiple_set.rds")
 expect_equal_to_reference(cro(mrset(aaa)), "rds/cro_zero_column_multiple_set.rds")
+expect_equal_to_reference(cro(mrset(aaa[FALSE, ])), "rds/cro_zero_column_multiple_set.rds")
+
+
 
 expect_equal_to_reference(cro(mrset(as.data.frame(rep(1,3)))), "rds/cro_single_column_mdset.rds")
 expect_equal_to_reference(fre(a, drop_unused_labels = FALSE), "rds/fre1_empty_with_labels_not_drop.rds")
