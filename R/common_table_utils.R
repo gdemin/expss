@@ -138,7 +138,7 @@ set_negative_and_na_to_zero = function(x){
 ########## 
 
 convert_multicolumn_object_to_vector  = function(x){
-    if(NCOL(x)>1){
+    if(is.matrix(x) || is.data.frame(x)){
         # we convert factors to labelled because further we will combine data.frame to single column and
         # for labelled value labels will be combined. It is not so for factors.
         varlab = var_lab(x)
