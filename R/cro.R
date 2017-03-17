@@ -362,12 +362,8 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     weight = set_negative_and_na_to_zero(weight)
     if(length(weight)==1) weight = rep(weight, max_nrow)
     
-    valid = valid(row_var) & valid(col_var) & (weight>0)
-    
-    if(!is.null(subgroup)) {
-        valid = valid & subgroup
-    }
-    
+    valid = valid(row_var) & valid(col_var) & (weight>0) & if_null(subgroup, TRUE)
+
     weight = weight[valid]
     
     if(length(col_var)==1) col_var = rep(col_var, max_nrow)

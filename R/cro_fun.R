@@ -239,10 +239,8 @@ elementary_cro_fun_df = function(cell_var,
     
     ### calculate vector of valid cases
 
-    valid = valid(col_var) & valid(row_var)
-    if(!is.null(subgroup)) {
-        valid = valid & subgroup
-    }
+    valid = valid(col_var) & valid(row_var) & if_null(subgroup, TRUE)
+
     max_nrow = max(NROW(cell_var), NROW(col_var), NROW(row_var))
     
     ## if any of vars is zero-length then we made all vars zero-length
