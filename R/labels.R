@@ -435,6 +435,7 @@ autonum = function(text) make_labels(text = text, code_position = "autonum")
 #' val_lab(var_with_lab) = c("Low"=1,"High"=2)
 #' identical(raw_var,unlab(var_with_lab)) # should be TRUE
 unlab=function(x){
+    if(is.null(x)) return(x)
     UseMethod("unlab")
 }
 
@@ -442,7 +443,7 @@ unlab=function(x){
 unlab.default=function(x){
     var_lab(x) = NULL
     val_lab(x) = NULL
-    class(x) = setdiff(class(x),"labelled")
+    class(x) = setdiff(class(x), "labelled")
     x
 }
 

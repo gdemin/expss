@@ -2,21 +2,21 @@ context("dichotomy.default")
 
 
 expect_identical(dummy(numeric(0)),
-                 structure(numeric(0), .Dim = c(0L, 0L), class = c("dichotomy", 
+                 structure(logical(0), .Dim = c(0L, 0L), class = c("dichotomy", 
                                                                    "matrix")))
 
 expect_identical(as.dichotomy(numeric(0)),
-                 structure(list(), row.names = integer(0), class = c("dichotomy", 
-                                                                     "data.frame")))
+structure(list(`NA` = logical(0)), row.names = integer(0), .Names = "NA", class = c("dichotomy", 
+                     "data.frame")))
 
 
 expect_identical(dummy(c(NA,NA,NA)),
-                 structure(numeric(0), .Dim = c(3L, 0L), class = c("dichotomy", 
-                                                                   "matrix")))
+structure(c(NA, NA, NA), .Dim = c(3L, 1L), .Dimnames = list(
+ NULL, "NA"), class = c("dichotomy", "matrix")))
 
 expect_identical(as.dichotomy(c(NA,NA,NA)),
-                 structure(list(), row.names = c(NA, -3L), class = c("dichotomy", 
-                                                                     "data.frame")))
+structure(list(`NA` = c(NA, NA, NA)), row.names = c(NA, -3L), .Names = "NA", class = c("dichotomy", 
+"data.frame")))
 
 
 vec = 1
@@ -440,4 +440,40 @@ expect_equal_to_reference(as.category(as.dichotomy(brands, prefix = "brand_"),co
 
 ###########
 
+dich = as.data.frame(matrix(NA, nrow = 3, ncol = 3))
 
+expect_identical(as.dichotomy(dich), 
+                 structure(list(`NA` = c(NA, NA, NA)), 
+                           row.names = c(NA, -3L), .Names = "NA",
+                           class = c("dichotomy", 
+"data.frame")))
+
+expect_identical(dummy(dich), 
+structure(c(NA, NA, NA), 
+.Dim = c(3L, 1L), 
+.Dimnames = list(NULL, 
+"NA"), class = c("dichotomy", "matrix")))
+
+
+expect_identical(as.dichotomy(NA), 
+structure(list(`NA` = c(NA)), 
+   row.names = c(NA, -1L), .Names = "NA",
+   class = c("dichotomy", 
+             "data.frame")))
+
+expect_identical(dummy(NA), 
+                 structure(NA, 
+                           .Dim = c(1L, 1L), 
+                           .Dimnames = list(NULL, 
+"NA"), class = c("dichotomy", "matrix")))
+
+expect_identical(dummy1(NA), 
+structure(NA, 
+.Dim = c(1L, 1L), 
+.Dimnames = list(NULL, 
+"NA"), class = c("dichotomy", "matrix")))
+
+
+expect_identical(as.dichotomy(dich[FALSE, FALSE, drop = FALSE]),
+structure(list(`NA` = logical(0)), row.names = integer(0), .Names = "NA", class = c("dichotomy", 
+ "data.frame")))

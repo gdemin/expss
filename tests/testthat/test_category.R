@@ -8,15 +8,14 @@ colnames(dichotomy_matrix) = c("Milk","Sugar","Tea","Coffee")
 
 dichotomy_matrix[] = 0
 
-expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=TRUE),"rds/category2df.rds")
+expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=TRUE),
+                          "rds/category2df.rds")
 expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE),"rds/category3df.rds")
 expect_true(is.category(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE)))
 
 
 
 expect_equal_to_reference(as.category(dichotomy_matrix[,FALSE, drop = FALSE], compress = FALSE),
-                 "rds/category4df.rds")
-expect_equal_to_reference(as.category(dichotomy_matrix[,FALSE], compress = FALSE),
                  "rds/category4df.rds")
 
 expect_identical(as.category(numeric(0),compress=TRUE),
@@ -57,3 +56,25 @@ expect_identical(as.category(dichotomy_dataframe2, prefix = "products_",compress
                               c("product_4" = 4L)
                           )
 )
+
+
+dich = as.data.frame(matrix(NA, nrow = 3, ncol = 3))
+expect_identical(as.category(dich, compress = TRUE),
+structure(list(`NA` = c(NA, NA, NA)), 
+           .Names = "NA", row.names = c(NA, 
+-3L), 
+class = c("category", "data.frame")))
+
+expect_identical(as.category(dich, compress = TRUE),
+structure(list(`NA` = c(NA, NA, NA)), .Names = "NA", row.names = c(NA, 
+-3L), class = c("category", "data.frame"))
+)
+
+
+
+expect_identical(as.category(dich[FALSE, FALSE, drop = FALSE]), 
+structure(list(`NA` = logical(0)), 
+.Names = "NA", 
+row.names = integer(0), 
+class = c("category", 
+"data.frame")))

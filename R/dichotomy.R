@@ -100,18 +100,30 @@ as.dichotomy.default = function(x, prefix = "v", keep_unused = FALSE, use_na = T
                  FUN.VALUE = numeric(length(x)),
                  USE.NAMES = FALSE
     )
-    res = as.matrix(res)
-    if(use_na){
+    if(length(res) > 0){
+        res = as.matrix(res)
+    } else {
+        res = matrix(NA, nrow = NROW(x), ncol = 0)
+    }
+    if(use_na && NCOL(res)>0){
         nas = is.na(x)
         res[nas,] = NA
     }
     res = as.dtfrm(res)
     if(NCOL(res)>0){
         colnames(res) = paste0(prefix, vallab)
+        for (each in seq_along(res)){
+            var_lab(res[[each]]) = names(vallab)[each]
+        }
+    } else {
+        if(NROW(res)>0) {
+            res[["NA"]] = NA
+        } else {
+            res[["NA"]] = logical(0)
+        }   
     }
-    for (each in seq_along(res)){
-        var_lab(res[[each]]) = names(vallab)[each]
-    }
+
+
     class(res) = union("dichotomy", setdiff(class(res), "category")) 
     res  
 }
@@ -129,7 +141,7 @@ as.dichotomy.data.frame = function(x, prefix = "v", keep_unused = FALSE, use_na 
     res = matrix(FALSE, nrow = NROW(x), ncol = length(vallab))
     x = as.matrix(x)
     for (i in seq_along(vallab)) res[ , i] = res[ , i] | (rowSums(x == vallab[i], na.rm = TRUE)>0)
-    if(use_na){
+    if(use_na & NCOL(x)>0){
         nas = rowSums(!is.na(x))==0
         res[nas,] = NA
     }
@@ -141,6 +153,13 @@ as.dichotomy.data.frame = function(x, prefix = "v", keep_unused = FALSE, use_na 
     for (each in seq_along(res)){
         var_lab(res[[each]]) = names(vallab)[each]
     }
+    if(ncol(res) == 0){
+        if(NROW(res)>0) {
+            res[["NA"]] = NA
+        } else {
+            res[["NA"]] = logical(0)
+        }    
+    } 
     class(res) = union("dichotomy", setdiff(class(res), "category")) 
     res  
 }
@@ -177,14 +196,22 @@ dummy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NU
                  FUN.VALUE = numeric(length(x)),
                  USE.NAMES = FALSE
     )
-
-    res = as.matrix(res)
+    if(length(res) > 0){
+        res = as.matrix(res)
+    } else {
+        res = matrix(NA, nrow = NROW(x), ncol = 0)
+    }
     if(use_na){
         nas = is.na(x)
         res[nas,] = NA
     }
     if(NCOL(res)>0){
         colnames(res) = names(vallab)
+    } else {
+        if(NROW(res)>0){
+            res = cbind(res, NA)
+            colnames(res) = "NA"
+        }
     }
     class(res) = union("dichotomy", setdiff(class(res), "category")) 
     res  
@@ -203,13 +230,18 @@ dummy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep_values =
     res = matrix(FALSE, nrow = NROW(x), ncol = length(vallab))
     x = as.matrix(x)
     for (i in seq_along(vallab)) res[ , i] = res[ , i] | (rowSums(x == vallab[i], na.rm = TRUE)>0)
-    if(use_na){
+    if(use_na && NCOL(x)>0){
         nas = rowSums(!is.na(x))==0
         res[nas,] = NA
     }
     res[] = as.numeric(res)
     if(NCOL(res)>0){
         colnames(res) = names(vallab)
+    } else {
+        if(NROW(res)>0){
+            res = cbind(res, NA)
+            colnames(res) = "NA"
+        }
     }
     class(res) = union("dichotomy", setdiff(class(res), "category")) 
     res  
@@ -252,7 +284,12 @@ get_values_for_dichotomizing = function(x, keep_unused = FALSE, keep_values = NU
     vallab = val_lab(x)
     varlab = var_lab(x)
     x = unlab(x)
-    uniqs=sort(unique(c(x, recursive = TRUE)))
+    x = c(x, recursive = TRUE)
+    if(is.null(x)) {
+        uniqs = numeric(0)
+    }  else {  
+        uniqs=sort(unique(x))
+    }
     if(!is.null(keep_values) && keep_unused){
         uniqs = sort(union(uniqs, keep_values))
     }

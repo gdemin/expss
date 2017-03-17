@@ -98,6 +98,13 @@ compress_and_finish = function(res, vallab, prefix, compress){
     if(!is.null(prefix) && NCOL(res)>0){
         colnames(res) = paste0(prefix, seq_len(NCOL(res)))
     }
+    if(NCOL(res) == 0){
+        if(NROW(res)>0){
+            res[["NA"]] = NA
+        } else {
+            res[["NA"]] = logical(0)
+        }
+    }
     class(res) = union("category", setdiff(class(res), "dichotomy"))
     res
     
