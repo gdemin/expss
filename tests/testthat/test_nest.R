@@ -5,6 +5,7 @@ simple_res = structure(c(1, 5, 9), labels = structure(1:9,
                                  "1|6", "1|7", "2|5", "2|6", "2|7", "3|5", "3|6", "3|7")),
 class = c("labelled",
  "numeric"))
+var_lab(simple_res) = ""
 expect_identical(nest(1:3, 5:7), simple_res)
 
 expect_identical(1:3 %nest% 5:7, simple_res)
@@ -16,6 +17,7 @@ df_res = structure(list(V1 = structure(c(1, NA, 3), labels = structure(1:6, .Nam
 )), V2 = structure(c(4, 5, NA), labels = structure(1:6, .Names = c("1|5",
 "1|6", "1|7", "2|5", "2|6", "2|7")), class = c("labelled", "numeric"
 ))), .Names = c("V1", "V2"), row.names = c(NA, -3L), class = "data.frame")
+var_lab(df_res) = ""
 
 expect_identical(nest(m_choice, 5:7), df_res)
 expect_identical(nest(mrset(m_choice), 5:7), mrset(df_res))
@@ -29,6 +31,8 @@ df_res2 = structure(list(V1 = structure(c(1, NA, 5), labels = structure(1:6, .Na
 )), V2 = structure(c(2, 4, NA), labels = structure(1:6, .Names = c("5|1", 
 "5|2", "6|1", "6|2", "7|1", "7|2")), class = c("labelled", "numeric"
 ))), .Names = c("V1", "V2"), row.names = c(NA, -3L), class = "data.frame")
+var_lab(df_res2) = ""
+
 expect_identical(nest(5:7, m_choice), df_res2)
 expect_identical(nest(5:7, mrset(m_choice)), mrset(df_res2))
 expect_identical(nest(5:7, as.dichotomy(m_choice)), mrset(df_res2))
@@ -107,7 +111,7 @@ nest(factor(5:7), posix_ct),
 structure(c(1, 5, 9), labels = structure(1:9, .Names = c("5|2017-01-01", 
 "5|2017-01-02", "5|2017-01-03", "6|2017-01-01", "6|2017-01-02", 
 "6|2017-01-03", "7|2017-01-01", "7|2017-01-02", "7|2017-01-03"
-)), class = c("labelled", "numeric"))
+)), label = "", class = c("labelled", "numeric"))
 )
 
 

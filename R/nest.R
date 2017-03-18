@@ -58,6 +58,7 @@ nest = function(...){
     }
     if (length(arg)>2) res = do.call(nest, c(res, arg[-(1:2)]))
     if (length(res) == 1) res = res[[1]]
+    res = set_var_lab(res, "")
     res
 }
 
@@ -85,7 +86,6 @@ to_labelled.list = function(x){
 nest_xlist = function(x, y)
     # x - vector or data.frame, y - list
 {
-
     labs = val_lab(x)
     vlab = var_lab(x)
     uniqs = sort(unique(c(uniq_elements(x), labs)))
@@ -93,6 +93,9 @@ nest_xlist = function(x, y)
         ((x == item) | NA)*item
 
     })
+    if(!is.null(labs)){
+        names(labs) = remove_unnecessary_splitters(names(labs))
+    }
     res = lapply(seq_along(uniqs), function(i){
         item = uniqs[i]
         # browser()
@@ -157,6 +160,9 @@ nest_xy = function(x, y){
     names(res_lab) = outer(new_lab_y, new_lab_x, function(x, y) paste(y, x, sep = "|"))
     # res_lab = res_lab[res_lab %in% new_uniq]
     if(is.matrix(res)) res = as.dtfrm(res)
+    if(!is.null(res_lab)) {
+        names(res_lab) = remove_unnecessary_splitters(names(res_lab))
+    }    
     val_lab(res) = res_lab
     if(res_mrset){
         mrset(res)
