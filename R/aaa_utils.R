@@ -371,17 +371,13 @@ integer_encoding=function(x, dict = NULL)
 
 integer_encoding.default=function(x, dict = NULL){
     if(is.null(dict)) dict = sort(uniq_elements(x))
-    matrix(match(x, dict, incomparables=NA))
+    matrix(match(x, dict, incomparables=NA), nrow = NROW(x))
 }
 
-integer_encoding.matrix=function(x, dict = NULL){
-    if(is.null(dict)) dict = sort(uniq_elements(x))
-    matrix(match(x, dict, incomparables=NA), nrow = nrow(x))
-}
 
 integer_encoding.data.frame=function(x, dict = NULL){
     if(is.null(dict)) dict = sort(uniq_elements(x))
-    matrix(match(unlist(x), dict, incomparables=NA), nrow = nrow(x))
+    matrix(match(c(x, recursive = TRUE), dict, incomparables=NA), nrow = nrow(x))
 }
 
 ## Flatten list
