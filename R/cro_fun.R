@@ -210,14 +210,23 @@ cro_fun = function(cell_vars,
     
     res = lapply(row_vars, function(each_row_var){
         all_col_vars = lapply(col_vars, function(each_col_var){
-            elementary_cro_fun_df(cell_var = cell_vars,
-                                  row_var = each_row_var, 
-                                  col_var = each_col_var, 
-                                  weight = weight,
-                                  subgroup = subgroup,
-                                  prepend_var_lab = TRUE,
-                                  fun = fun
+            dtable = elementary_cro_fun_df(cell_var = cell_vars,
+                                           row_var = each_row_var, 
+                                           col_var = each_col_var, 
+                                           weight = weight,
+                                           subgroup = subgroup,
+                                           fun = fun
             )    
+            row_var_lab = var_lab(dtable[["..row_var__"]])
+            col_var_lab = var_lab(dtable[["..col_var__"]])
+            ### make rectangular table  
+            res = long_datatable_to_table(dtable, rows = c("..row_var__", "row_labels"), 
+                                          columns = "..col_var__", 
+                                          value = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
+            )
+            format_table(res, 
+                         row_var_lab = row_var_lab, 
+                         col_var_lab = col_var_lab)  
         })
         Reduce(merge, all_col_vars)
     })
@@ -232,8 +241,7 @@ elementary_cro_fun_df = function(cell_var,
                                  col_var, 
                                  weight,
                                  fun,
-                                 row_var, 
-                          prepend_var_lab,
+                                 row_var,
                           subgroup
                           ){
     
@@ -285,12 +293,7 @@ elementary_cro_fun_df = function(cell_var,
     col_var = col_var[valid]
     row_var = convert_multicolumn_object_to_vector(row_var)
     row_var = row_var[valid]
-    
-    ########
 
-    row_var_lab = var_lab(row_var)
-    col_var_lab = var_lab(col_var)
-    
     ### pack data.table #####
     
     if(is.null(weight)){
@@ -308,33 +311,33 @@ elementary_cro_fun_df = function(cell_var,
     } else {
         dtable = raw_data[ , fun(.SD, weight = ..weight__), by = by_string, .SDcols = -"..weight__"]
     }
-    
-    
-    ### make rectangular table  
-    res = long_datatable_to_table(dtable, rows = c("..row_var__", "row_labels"), 
-                                  columns = "..col_var__", 
-                                  value = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
-                                  )
+    dtable
+}    
+
     
 
-    res[ , row_labels  := as.character(row_labels)] 
-    res[ , row_labels  := paste0(..row_var__, "|", row_labels)]  
-    res[["..row_var__"]] = NULL
     
-    if(prepend_var_lab){
-        res[, row_labels := paste0(row_var_lab, "|", row_labels)]
-        colnames(res)[-1] = paste0(col_var_lab, "|", colnames(res)[-1]) 
-    }
+########
+  
+format_table = function(wide_datable, row_var_lab, col_var_lab){       
+
+    wide_datable[ , row_labels  := as.character(row_labels)] 
+    wide_datable[ , row_labels  := paste0(..row_var__, "|", row_labels)]  
+    wide_datable[["..row_var__"]] = NULL
     
-    
-    res[ , row_labels := remove_unnecessary_splitters(row_labels)] 
-    res[ , row_labels := make_items_unique(row_labels)] 
-    colnames(res) = remove_unnecessary_splitters(colnames(res)) 
-    res = as.dtfrm(res)
-    class(res) = union("etable", class(res))
-    res
+    wide_datable[, row_labels := paste0(row_var_lab, "|", row_labels)]
+    colnames(wide_datable)[-1] = paste0(col_var_lab, "|", colnames(wide_datable)[-1]) 
+
+    wide_datable[ , row_labels := remove_unnecessary_splitters(row_labels)] 
+    wide_datable[ , row_labels := make_items_unique(row_labels)] 
+    colnames(wide_datable) = remove_unnecessary_splitters(colnames(wide_datable)) 
+    wide_datable = as.dtfrm(wide_datable)
+    class(wide_datable) = union("etable", class(wide_datable))
+    wide_datable
 }
 
+#######
+    
 make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
     force(fun)
     force(need_weight)
@@ -355,6 +358,7 @@ make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
     }
 }
 
+###############
 make_function_for_cro = function(fun, ..., need_weight = TRUE){
     force(fun)
     force(need_weight)
@@ -500,14 +504,23 @@ cro_fun_df = function(cell_vars,
     res = lapply(row_vars, function(each_row_var){
         all_cell_vars = lapply(cell_vars, function(each_cell_var){
             all_col_vars = lapply(col_vars, function(each_col_var){
-                elementary_cro_fun_df(cell_var = names2labels(each_cell_var),
+                dtable = elementary_cro_fun_df(cell_var = names2labels(each_cell_var),
                                       row_var = each_row_var, 
                                       col_var = each_col_var, 
                                       weight = weight,
                                       subgroup = subgroup,
-                                      prepend_var_lab = TRUE,
                                       fun = fun
                 )    
+                row_var_lab = var_lab(dtable[["..row_var__"]])
+                col_var_lab = var_lab(dtable[["..col_var__"]])
+                ### make rectangular table  
+                res = long_datatable_to_table(dtable, rows = c("..row_var__", "row_labels"), 
+                                              columns = "..col_var__", 
+                                              value = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
+                )
+                format_table(res, 
+                             row_var_lab = row_var_lab, 
+                             col_var_lab = col_var_lab)
             })
             Reduce(merge, all_col_vars)
         })
