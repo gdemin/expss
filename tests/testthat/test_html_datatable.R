@@ -145,13 +145,13 @@ expect_equal(datatable(mtcars_table),
 #     }
 # )
 # 
-`%n_d%` = function(e1, e2){
-    shinyApp(
-        ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
-        server = function(input, output) {
-            output$tbl = DT::renderDataTable(
-                e1
-            )
-        }
-    )
-}
+# `%n_d%` = function(e1, e2){
+#     shinyApp(
+#         ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
+#         server = function(input, output) {
+#             output$tbl = DT::renderDataTable(
+#                 e1
+#             )
+#         }
+#     )
+# }

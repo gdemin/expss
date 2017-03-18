@@ -1,12 +1,15 @@
 #' Outputting HTML tables
 #' 
-#' This is method for rendering results of \link{fre}/\link{cro} in Shiny.
-#' For detailed description of function and its arguments see \link[DT]{datatable}.
+#' This is method for rendering results of \link{fre}/\link{cro} in
+#' Shiny/RMarkdown and etc. For detailed description of function and its
+#' arguments see \link[htmlTable]{htmlTable}.
 #'
 #' @param x a data object (result of \link{fre}/\link{cro} and etc)
-#' @param digits integer If it is not NULL than all numeric columns will be
-#'   rounded to specified number of digits.
-#' @param ... further parameters for \link[htmlTable]{htmlTable}
+#' @param digits integer By default, all numeric columns are rounded to one digit after
+#'   decimal separator. Also you can set this argument by option 'expss.digits'
+#'   - for example, \code{option(expss.digits = 2)}. If it is NA than all
+#'   numeric columns remain unrounded.
+#' @param ... further parameters for \link[htmlTable]{htmlTable}.
 #'
 #' @return Returns a string of class htmlTable
 #' @export
@@ -15,33 +18,54 @@
 #' a = 1
 htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
     x = round_dataframe(x, digits = digits)
+    if(NCOL(x) == 0){
+        return(htmlTable(setNames(dtfrm("Table is empty"), " "), ...))
+    }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
     first_lab = htmltools::htmlEscape(first_lab)
     row_labels = htmltools::htmlEscape(x[[1]])
-   
-
     x[[1]] = NULL
     # x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
     header = t(split_labels(colnames(x), split = "|", remove_repeated = FALSE))
     header[] = htmltools::htmlEscape(header)
-    crgoup_list = matrix_to_cgroup(header)
-    cgroup = crgoup_list[["cgroup"]]
-    n.cgroup = crgoup_list[["n.cgroup"]]
-    html_header = cgroup[nrow(cgroup), ]
-    align = rep("r", ncol(x))
+    for(each in seq_len(NCOL(header))){
+        curr_col = header[, each]
+        ok = !is.na(curr_col) & curr_col!=""
+        header[ok, each] = 
+            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+    }
+    if(NCOL(header)>0){
+        crgoup_list = matrix_to_cgroup(header)
+        cgroup = crgoup_list[["cgroup"]]
+        n.cgroup = crgoup_list[["n.cgroup"]]
+        html_header = cgroup[nrow(cgroup), ]
+    } else {
+        html_header = character(0)
+        cgroup = matrix(character(0), 0, 0)
+        n.cgroup = matrix(0, 1, 1)
+        
+    }
+    align = rep("r", NCOL(x))
     row_labels = split_labels(row_labels)
-    if(ncol(row_labels) == 1){
+    for(each in seq_len(NCOL(row_labels))){
+        curr_col = row_labels[, each]
+        ok = !is.na(curr_col) & curr_col!=""
+        row_labels[ok, each] = 
+            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+    }
+    if(NCOL(row_labels)==0) row_labels = matrix("", 1, 1)
+    if(NCOL(row_labels) == 1){
         rnames = row_labels[,1] 
         rgroup = NULL
         n.rgroup = NULL
     } else {
-        if(ncol(row_labels) > 2){
+        if(NCOL(row_labels) > 2){
             x = dtfrm(row_labels[, -(1:2)], x)
-            html_header = c(rep("", ncol(row_labels) - 2), html_header)
-            align = c(rep("l", ncol(row_labels) - 2), align)
+            html_header = c(rep("", NCOL(row_labels) - 2), html_header)
+            align = c(rep("l", NCOL(row_labels) - 2), align)
             cgroup = cbind("", cgroup)
-            n.cgroup = cbind(ncol(row_labels) - 2, n.cgroup)
+            n.cgroup = cbind(NCOL(row_labels) - 2, n.cgroup)
         }
         rnames = row_labels[,2]
         temp = row_labels[,1]
@@ -52,10 +76,11 @@ htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
         rgroup = temp$values
         n.rgroup = temp$lengths
     }
-    cgroup = cgroup[-nrow(cgroup), ]
-    n.cgroup = n.cgroup[-nrow(n.cgroup), ]
-
-    if(nrow(cgroup)>0){
+    cgroup = cgroup[-NROW(cgroup), ,drop = FALSE]
+    n.cgroup = n.cgroup[-NROW(n.cgroup), , drop = FALSE]
+    if(NROW(cgroup)>0){
+        cgroup = cgroup[,colSums(!is.na(cgroup))>0, drop = FALSE]
+        n.cgroup = n.cgroup[,colSums(!is.na(n.cgroup))>0, drop = FALSE]
         if(is.null(rgroup)){
             htmlTable(as.dtfrm(x), 
                       header = html_header,
@@ -96,8 +121,7 @@ htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
                       ...)     
         }
     }
-    
-    
+ 
 }
 
 matrix_to_cgroup = function(header){
@@ -106,7 +130,8 @@ matrix_to_cgroup = function(header){
     for(i in seq_len(nrow(header))){
         y = colSums((header[1:i,-1L, drop = FALSE] != header[1:i, -ncol(header), drop = FALSE]))>0
         changes = c(which(y | is.na(y)), ncol(header))
-        rle_list[[i]] = structure(list(lengths = diff(c(0L, changes)), values = header[i, changes]))
+        rle_list[[i]] = structure(list(lengths = diff(c(0L, changes)), 
+                                       values = header[i, changes]))
     }
     cgroup = lapply(rle_list, "[[", "values")
     n.cgroup = lapply(rle_list, "[[", "lengths")
