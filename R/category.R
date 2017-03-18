@@ -47,9 +47,23 @@ as.category = function(x, prefix = NULL, counted_value = 1, compress = FALSE){
 #' @export
 as.category.matrix = function(x, prefix = NULL, counted_value = 1, compress = FALSE){
     vallab = colnames(x)
+    varlab_nchars = 0
+    if(length(vallab)>0){
+        varlab = common_label(vallab)
+        varlab_nchars = nchar(varlab)
+        if(varlab_nchars>0){
+            # + 2 because of '|' delimiter
+            vallab = substr(vallab, varlab_nchars+2, nchar(vallab))
+        }
+    }
     res = col(x)
     res[!(x %in% counted_value)] = NA
-    compress_and_finish(res = as.dtfrm(res), vallab = vallab, prefix = prefix, compress = compress)
+    res = compress_and_finish(res = as.dtfrm(res), vallab = vallab, prefix = prefix, compress = compress)
+    if(varlab_nchars>0) {
+        set_var_lab(res, varlab)
+    } else {
+        res
+    }    
 }
 
 #' @export
@@ -62,11 +76,24 @@ as.category.data.frame = function(x, prefix = NULL, counted_value = 1, compress 
             colnames(x)[i]
         }
     }))
-
+    varlab_nchars = 0
+    if(length(vallab)>0){
+        varlab = common_label(vallab)
+        varlab_nchars = nchar(varlab)
+        if(varlab_nchars>0){
+            # + 2 because of '|' delimiter
+            vallab = substr(vallab, varlab_nchars+2, nchar(vallab))
+        }
+    }
     for(i in seq_along(x)){
         x[[i]] =  ((x[[i]] %in% counted_value) | NA)*i
     }
-    compress_and_finish(res = x, vallab = vallab, prefix = prefix, compress = compress)
+    res = compress_and_finish(res = x, vallab = vallab, prefix = prefix, compress = compress)
+    if(varlab_nchars>0) {
+        set_var_lab(res, varlab)
+    } else {
+        res
+    }   
 }
 
 #' @export
@@ -110,3 +137,11 @@ compress_and_finish = function(res, vallab, prefix, compress){
     
 }
 
+common_label = function(vallabs){
+    has_var_labs = grepl("^([^\\|]+)\\|", vallabs, perl = TRUE)
+    if(!all(has_var_labs)) return("")
+    all_var_labs = gsub("^([^\\|]+)\\|(.*)$", "\\1", vallabs, perl = TRUE)
+    all_var_labs = unique(all_var_labs)
+    if(length(all_var_labs)>1) return("")
+    all_var_labs
+}
