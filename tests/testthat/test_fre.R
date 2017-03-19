@@ -182,8 +182,10 @@ expect_equal_to_reference(with(mtcars, cro(am, vs)), "rds/fre_ex2.rds")
 expect_equal_to_reference(with(mtcars, cro(am, vs, weight = 1)), "rds/fre_ex2.rds")
 expect_equal_to_reference(with(mtcars, cro_cpct(am, list(vs, total()))), "rds/fre_ex3.rds")
 expect_equal_to_reference(with(mtcars, cro_cpct(am, list(vs, total())))[, '#Total'], "rds/fre_ex3.1.rds")
-expect_equal_to_reference(with(mtcars, cro_cpct(am, list(vs, total())))[3, ], "rds/fre_ex3.2.rds")
-expect_equal_to_reference(with(mtcars, cro_cpct(am, list(vs, total())))[['#Total']], "rds/fre_ex3.3.rds")
+expect_equal_to_reference(with(mtcars, cro_cpct(am, list(vs, total())))[3, ], 
+                          "rds/fre_ex3.2.rds")
+expect_equal_to_reference(with(mtcars, cro_cpct(am, list(vs, total())))[['#Total']],
+                          "rds/fre_ex3.3.rds")
 
 expect_identical(fre(list(mtcars$vs, mtcars$am)), 
                       add_rows(fre(mtcars$vs, prepend_var_lab = TRUE), 

@@ -95,7 +95,7 @@ add_rows.etable = function(..., nomatch_columns = c("add", "drop", "stop")){
     res = do.call(add_rows.data.frame, c(args, list(nomatch_columns = nomatch_columns)))
     if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
     if (!("etable" %in% new_class)) new_class = union("etable", new_class)
-    
+    rownames(res) = NULL
     class(res) = new_class
     res
 }

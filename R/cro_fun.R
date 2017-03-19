@@ -232,6 +232,7 @@ cro_fun = function(cell_vars,
     })
     
     res = do.call(add_rows, res)
+    rownames(res) = NULL
     res
 }
 
@@ -255,9 +256,10 @@ elementary_cro_fun_df = function(cell_var,
     min_nrow = min(NROW(cell_var), NROW(col_var), NROW(row_var))
     if(any(min_nrow==0)) max_nrow = 0
     
+    ##### prepare weight #####
     if(!is.null(weight)){
         weight = set_negative_and_na_to_zero(weight)
-        if(length(weight)==1) weight = rep(weight, max_nrow)
+        weight = recycle_if_single_row(weight, max_nrow)
         valid = valid & (weight>0)
         weight = weight[valid]
     }
@@ -265,34 +267,19 @@ elementary_cro_fun_df = function(cell_var,
 
     ### recycle variables of length 1
 
-    if(NROW(cell_var)==1){
-        if(is.matrix(cell_var) || is.data.frame(cell_var)){
-            cell_var =  cell_var[rep(1, max_nrow), ]
-        } else {
-            cell_var = rep(cell_var, max_nrow)
-        }
-    }
-    
-    if(length(col_var)==1) col_var = rep(col_var, max_nrow)
-
-    if(NROW(row_var)==1){
-        if(is.matrix(row_var) || is.data.frame(row_var)){
-            row_var =  row_var[rep(1, max_nrow), ]
-        } else {
-            row_var = rep(row_var, max_nrow)
-        }
-    }
+    cell_var = recycle_if_single_row(cell_var, max_nrow)
+    col_var = recycle_if_single_row(col_var, max_nrow)
+    row_var = recycle_if_single_row(row_var, max_nrow)
     
     ### drop non-valid cases 
     
-    if(is.matrix(cell_var) || is.data.frame(cell_var)){
-        cell_var =  cell_var[valid, , drop = FALSE]
-    } else {
-        cell_var = cell_var[valid]
-    }
-    col_var = col_var[valid]
+    cell_var = universal_subset(cell_var, valid, drop = FALSE)
+    col_var = universal_subset(col_var, valid)
+    row_var = universal_subset(row_var, valid, drop = FALSE)
+
+    ###################
     row_var = convert_multicolumn_object_to_vector(row_var)
-    row_var = row_var[valid]
+
 
     ### pack data.table #####
     
@@ -528,6 +515,7 @@ cro_fun_df = function(cell_vars,
         
     })
     res = do.call(add_rows, res)
+    rownames(res) = NULL
     res
 }
 

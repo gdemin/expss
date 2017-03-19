@@ -141,6 +141,7 @@ merge_table = function(x, y,
     res = res %n_d% c('..order..y','..order..x')
     colnames(res) = preserve_colnames
     class(res) = intersect(class_x, class_y)
+    rownames(res) = NULL
     res
 
 }

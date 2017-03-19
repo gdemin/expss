@@ -16,6 +16,29 @@ pack_data.table = function(..., subset = NULL){
     
 }
 
+###########################
+universal_subset = function(data, index, drop = TRUE){
+    if(is.matrix(data) || is.data.frame(data)){
+        data =  data[index, , drop = drop]
+    } else {
+        data =  data[index]
+    }
+    data
+}
+
+recycle_if_single_row = function(data, nrows){
+    if(NCOL(data) == 0) {
+        data = set_val_lab(set_var_lab(NA, var_lab(data)), val_lab(data))
+    }    
+    if(NROW(data)==1){
+        if(is.matrix(data) || is.data.frame(data)){
+            data =  data[rep(1, nrows), ]
+        } else {
+            data =  rep(data, nrows)
+        }
+    }
+    data
+}
 
 #############################################################
 ### check that all arguments ... have equal length or length 1 (NULLs are also allowed)

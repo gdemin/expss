@@ -12,17 +12,20 @@ knit_print.etable(x, digits = NULL, ...)
 \arguments{
 \item{x}{a data object (result of \link{fre}/\link{cro} and etc)}
 
-\item{digits}{integer If it is not NULL than all numeric columns will be
-rounded to specified number of digits.}
+\item{digits}{integer By default, all numeric columns are rounded to one digit after
+decimal separator. Also you can set this argument by option 'expss.digits'
+- for example, \code{option(expss.digits = 2)}. If it is NA than all
+numeric columns remain unrounded.}
 
-\item{...}{further parameters for \link[htmlTable]{htmlTable}}
+\item{...}{further parameters for \link[htmlTable]{htmlTable}.}
 }
 \value{
 Returns a string of class htmlTable
 }
 \description{
-This is method for rendering results of \link{fre}/\link{cro} in Shiny.
-For detailed description of function and its arguments see \link[DT]{datatable}.
+This is method for rendering results of \link{fre}/\link{cro} in
+Shiny/RMarkdown and etc. For detailed description of function and its
+arguments see \link[htmlTable]{htmlTable}.
 }
 \examples{
 a = 1

@@ -49,7 +49,9 @@ expect_equal_to_reference(drop_r(with_empty, excluded_rows = grep("Manual", with
                           "rds/drop_empty5.rds")
 expect_equal_to_reference(drop_r(with_empty, excluded_rows = grep("Other", with_empty[[1]]), excluded_columns = 1),
     "rds/drop_empty6.rds")
-expect_equal_to_reference(drop_r(with_empty, excluded_rows = grep("Manual", with_empty[[1]]), excluded_columns = 1),
+expect_equal_to_reference(drop_r(with_empty,
+                                 excluded_rows = grep("Manual", with_empty[[1]]), 
+                                 excluded_columns = 1),
     "rds/drop_empty7.rds")
 
 expect_equal_to_reference(drop_r(with_empty, excluded_rows = "Other", excluded_columns = 1),
