@@ -187,7 +187,7 @@ cro_fun = function(cell_vars,
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    row_vars = flat_list(dichotomy_to_category_encoding(row_vars), flat_df = FALSE)
+    row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
     col_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(col_vars), flat_df = TRUE)
     stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
     
@@ -278,8 +278,6 @@ elementary_cro_fun_df = function(cell_var,
     row_var = universal_subset(row_var, valid, drop = FALSE)
 
     ###################
-    row_var = convert_multicolumn_object_to_vector(row_var)
-
 
     ### pack data.table #####
     
@@ -288,9 +286,7 @@ elementary_cro_fun_df = function(cell_var,
     } else {
         raw_data = data.table(..row_var__ = row_var, ..col_var__ = col_var, ..weight__ = weight, cell_var)
     }
-    raw_data = raw_data[!is.na(row_var), ]
-    
-    
+
     # statistics
     by_string = "..row_var__,..col_var__"
     if(is.null(weight)){
@@ -483,7 +479,7 @@ cro_fun_df = function(cell_vars,
         col_vars = list(col_vars)
     }
     cell_vars = flat_list(cell_vars, flat_df = FALSE)
-    row_vars = flat_list(dichotomy_to_category_encoding(row_vars), flat_df = FALSE)
+    row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
     col_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(col_vars), flat_df = TRUE)
     stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
     check_sizes("'cro_fun_df'", cell_vars, row_vars, col_vars, weight, subgroup)
