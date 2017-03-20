@@ -2,13 +2,13 @@ LABELS_SEP = "|"
 
 #' Convert labelled variable to factor
 #' 
-#' \code{to_fac} converts variable to factor. It force labels usage as factor
-#' labels for labelled variables to factors even if
-#' 'expss.enable_value_labels_support' set to 0. For other types of variables
-#' base \link[base]{factor} is called. Factor levels are constructed as values
-#' labels. If label doesn't exist for particular value then this value remain as
-#' is - so there is no information lost. This levels look like as
-#' "Variable_label|Value label" if argument \code{prepend} set to TRUE. 
+#' \code{fctr} converts variable to factor. It force labels usage as factor 
+#' labels for labelled variables even if 'expss.enable_value_labels_support' set
+#' to 0. For other types of variables base \link[base]{factor} is called. Factor
+#' levels are constructed as values labels. If label doesn't exist for
+#' particular value then this value remain as is - so there is no information
+#' lost. This levels look like as "Variable_label|Value label" if argument
+#' \code{prepend} set to TRUE.
 #' 
 #' @param x a vector of data with labels.
 #' @param ... optional arguments for \code{\link[base]{factor}} 
@@ -30,25 +30,25 @@ LABELS_SEP = "|"
 #' val_lab(mtcars$am) = c(automatic = 0, manual=1)
 #' 
 #' \dontrun{
-#' plot(to_fac(mtcars$am))
+#' plot(fctr(mtcars$am))
 #' }
 #' 
-#' table(to_fac(mtcars$am))
+#' table(fctr(mtcars$am))
 #' 
 #' summary(lm(mpg ~ am, data = mtcars)) # no labels  
-#' summary(lm(mpg ~ to_fac(am), data = mtcars)) # with labels 
-#' summary(lm(mpg ~ to_fac(unvr(am)), data = mtcars)) # without variable label 
-to_fac = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
-    UseMethod("to_fac")
+#' summary(lm(mpg ~ fctr(am), data = mtcars)) # with labels 
+#' summary(lm(mpg ~ fctr(unvr(am)), data = mtcars)) # without variable label 
+fctr = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
+    UseMethod("fctr")
 }
 
 #' @export
-to_fac.default = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
+fctr.default = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     base::factor(x = x, ...)  
 }  
 
 #' @export
-to_fac.factor = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
+fctr.factor = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     if(drop_unused) {
         base::factor(x = x, ...)  
     } else {
@@ -57,7 +57,7 @@ to_fac.factor = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
 }  
 
 #' @export
-to_fac.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
+fctr.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
     x = as.labelled(x) # if we have only variable label 
     vallab = val_lab(x)
     varlab = var_lab(x)

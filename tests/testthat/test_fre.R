@@ -508,7 +508,7 @@ expect_equal_to_reference(
     "rds/cro_fun9.rds")
 
 expect_equal_to_reference(
-    with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(to_fac(am):to_fac(vs), total()), fun = mean)), 
+    with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(fctr(am):fctr(vs), total()), fun = mean)), 
     "rds/cro_fun10.rds")
 
 expect_equal_to_reference(
