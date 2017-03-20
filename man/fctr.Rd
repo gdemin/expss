@@ -35,12 +35,6 @@ data(mtcars)
 var_lab(mtcars$am) = "Transmission"
 val_lab(mtcars$am) = c(automatic = 0, manual=1)
 
-\dontrun{
-plot(fctr(mtcars$am))
-}
-
-table(fctr(mtcars$am))
-
 summary(lm(mpg ~ am, data = mtcars)) # no labels  
 summary(lm(mpg ~ fctr(am), data = mtcars)) # with labels 
 summary(lm(mpg ~ fctr(unvr(am)), data = mtcars)) # without variable label 

@@ -36,22 +36,22 @@ expect_identical(fctr(vec_with_lab2),
                  factor(no_lab,levels = c(1:2, 42),
                         labels= c("Fruits|Apple","Fruits|Bananas","Fruits|Ananas")))
 
-expect_identical(fctr(vec_with_lab2, drop_unused = TRUE),
+expect_identical(fctr(vec_with_lab2, drop_unused_labels = TRUE),
                  factor(no_lab,levels = c(1:2),
                         labels= c("Fruits|Apple","Fruits|Bananas")))
 
 a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c", "d", "e")))
 
-expect_identical(fctr(a, drop_unused = TRUE), factor(a))
-expect_identical(fctr(a, drop_unused = FALSE), a)
+expect_identical(fctr(a, drop_unused_labels = TRUE), factor(a))
+expect_identical(fctr(a, drop_unused_labels = FALSE), a)
 
 var_lab(a) = "My 'a' with labels"
 
-expect_identical(fctr(a, drop_unused = FALSE, prepend_var_lab = FALSE), unvr(a))
+expect_identical(fctr(a, drop_unused_labels = FALSE, prepend_var_lab = FALSE), unvr(a))
 b = a
 levels(b) = paste0(var_lab(b),"|", levels(b))
-expect_identical(fctr(a, drop_unused = FALSE, prepend_var_lab = TRUE), unvr(b))
-expect_identical(fctr(a, drop_unused = TRUE, prepend_var_lab = FALSE), factor(a))
+expect_identical(fctr(a, drop_unused_labels = FALSE, prepend_var_lab = TRUE), unvr(b))
+expect_identical(fctr(a, drop_unused_labels = TRUE, prepend_var_lab = FALSE), factor(a))
 
 ### Common usage ###
 

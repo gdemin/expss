@@ -29,12 +29,6 @@ LABELS_SEP = "|"
 #' var_lab(mtcars$am) = "Transmission"
 #' val_lab(mtcars$am) = c(automatic = 0, manual=1)
 #' 
-#' \dontrun{
-#' plot(fctr(mtcars$am))
-#' }
-#' 
-#' table(fctr(mtcars$am))
-#' 
 #' summary(lm(mpg ~ am, data = mtcars)) # no labels  
 #' summary(lm(mpg ~ fctr(am), data = mtcars)) # with labels 
 #' summary(lm(mpg ~ fctr(unvr(am)), data = mtcars)) # without variable label 
@@ -43,13 +37,13 @@ fctr = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
 }
 
 #' @export
-fctr.default = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
+fctr.default = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
     base::factor(x = x, ...)  
 }  
 
 #' @export
-fctr.factor = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
-    if(drop_unused) {
+fctr.factor = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
+    if(drop_unused_labels) {
         base::factor(x = x, ...)  
     } else {
         x
@@ -57,7 +51,7 @@ fctr.factor = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
 }  
 
 #' @export
-fctr.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
+fctr.labelled = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
     x = as.labelled(x) # if we have only variable label 
     vallab = val_lab(x)
     varlab = var_lab(x)
@@ -66,7 +60,7 @@ fctr.labelled = function(x, ..., drop_unused = FALSE, prepend_var_lab = TRUE){
 
     uniqs=unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 
-    if(drop_unused){
+    if(drop_unused_labels){
         vallab = v_intersect(vallab, uniqs) 
     }
     vallab = sort(vallab)
