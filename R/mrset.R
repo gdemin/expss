@@ -25,13 +25,10 @@
 mrset = function(..., label = NULL){
     args = list(...)
     stopif(!length(args), "`mrset` - you should provide at least one argument.")
-    if(length(args)==1){
+    if(length(args)==1 && is.data.frame(args[[1]])){
         res = args[[1]]
-        if(!is.data.frame(res)){
-            res = as.dtfrm(res)
-        }
     } else {
-        res = as.dtfrm(args)
+        res = dtfrm(...)
     }
     if(!is.null(label)){
         var_lab(res[[1]]) = label
@@ -46,13 +43,10 @@ mrset = function(..., label = NULL){
 mdset = function(..., label = NULL){
     args = list(...)
     stopif(!length(args), "`mdset` - you should provide at least one argument.")
-    if(length(args)==1){
+    if(length(args)==1 && is.data.frame(args[[1]])){
         res = args[[1]]
-        if(!is.data.frame(res)){
-            res = as.dtfrm(res)
-        }
     } else {
-        res = as.dtfrm(args)
+        res = dtfrm(...)
     }
     if_val(res) = c(c(NA, 0) ~ 0, other ~ 1)
     res = make_labels_from_names(res)

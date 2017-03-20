@@ -47,7 +47,7 @@ expect_identical(calculate(product_test, mrset(as.matrix(a1_1 %to% a1_6))), unla
 expect_identical(calculate(product_test, mrset(a1_1 %to% a1_6, b1_1 %to% b1_6)), big)
 big$b1_1 = unlab(big$b1_1)
 expect_identical(calculate(product_test, mrset(a1_1 %to% a1_6, as.matrix(b1_1 %to% b1_6))), big)
-expect_identical(calculate(product_test, mrset(a1_1)), setNames(a_res[,1, drop = FALSE], "x"))
+expect_identical(calculate(product_test, mrset(a1_1)), setNames(a_res[,1, drop = FALSE], "a1_1"))
 var_lab(a_res$a1_1) = "New label"
 expect_identical(calculate(product_test, mrset(a1_1 %to% a1_6, label = "New label")), a_res)
 #########################
@@ -74,7 +74,7 @@ expect_identical(mdset(as.dichotomy(a_res), as.dichotomy(b_res)), big)
 
 a = 1:0
 var_lab(a) = "My a"
-res = dtfrm(x = a)
+res = dtfrm(a = a)
 class(res) = c("dichotomy", class(res))
 expect_identical(mdset(a), res)
 

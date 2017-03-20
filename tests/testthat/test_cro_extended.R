@@ -200,7 +200,7 @@ expect_equal_to_reference(
 
 
 
-context("cor multiple by multiple")
+context("cro multiple by multiple")
 
 data("product_test")
 codeframe_likes = num_lab("
@@ -241,3 +241,15 @@ expect_equal_to_reference(
 expect_equal_to_reference(
     calc(product_test, cro_tpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_tpct_mult_by_mult.rds")
+
+set.seed(1)
+df <- data.frame(area=rep(c('Area 1','Area 2'), each=6),
+                 var_orange=sample(0:1, 12, T),
+                 var_banana=sample(0:1, 12, T),
+                 var_melon=sample(0:1, 12, T),
+                 var_mango=sample(0:1, 12, T))
+
+expect_equal_to_reference(
+    with(df, cro_cpct(mdset(var_orange, var_banana, var_melon, var_mango), list(area))),
+    "rds/cro_mdset_names_of_result.rds"
+)
