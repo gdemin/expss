@@ -218,7 +218,9 @@ codeframe_likes = num_lab("
 
 
 var_lab(product_test$a1_1) = "Likes. VSX123"
+val_lab(product_test$a1_1) = codeframe_likes
 var_lab(product_test$b1_1) = "Likes. SDF456"
+val_lab(product_test$b1_1) = codeframe_likes
 expect_equal_to_reference(
     calc(product_test, cro(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_mult_by_mult.rds")
