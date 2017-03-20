@@ -29,7 +29,7 @@
 #' 
 #' @param x vector/data.frame. data.frames are considered as multiple response
 #'   variables.
-#' @param row_vars vector. By now multiple-response predictor is not supported.
+#' @param cell_vars vector. By now multiple-response predictor is not supported.
 #' @param col_vars vector. By now multiple-response predictor is not supported.
 #' @param weight numeric vector. Optional case weights. NA's and negative weights
 #'   treated as zero weights.
@@ -154,7 +154,7 @@
 #' # or, pairwise correlations inside groups
 #' cro_fun_df(iris[,-5], iris$Species, fun = cor)
 #' @export
-cro = function(row_vars, 
+cro = function(cell_vars, 
                col_vars = total(), 
                weight = NULL, 
                subgroup = NULL,
@@ -163,21 +163,21 @@ cro = function(row_vars,
                total_row_position = c("below", "above", "none")
                ){
     
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
     }
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    multi_cro(row_vars = row_vars, 
+    multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
               total_title = total_title,
@@ -193,7 +193,7 @@ cro = function(row_vars,
 
 #' @export
 #' @rdname cro
-cro_cpct = function(row_vars, 
+cro_cpct = function(cell_vars, 
                     col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
@@ -202,21 +202,21 @@ cro_cpct = function(row_vars,
                     total_row_position = c("below", "above", "none")
                     ){
     
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
     }
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    multi_cro(row_vars = row_vars, 
+    multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
               total_title = total_title,
@@ -229,7 +229,7 @@ cro_cpct = function(row_vars,
 
 #' @export
 #' @rdname cro
-cro_rpct = function(row_vars, 
+cro_rpct = function(cell_vars, 
                     col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
@@ -238,21 +238,21 @@ cro_rpct = function(row_vars,
                     total_row_position = c("below", "above", "none")
                     ){
     
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
     }
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    multi_cro(row_vars = row_vars, 
+    multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
               total_title = total_title,
@@ -266,7 +266,7 @@ cro_rpct = function(row_vars,
 
 #' @export
 #' @rdname cro
-cro_tpct = function(row_vars, 
+cro_tpct = function(cell_vars, 
                     col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
@@ -275,21 +275,21 @@ cro_tpct = function(row_vars,
                     total_row_position = c("below", "above", "none")
                     ){
     
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
     }
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    multi_cro(row_vars = row_vars, 
+    multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
               total_title = total_title,
@@ -302,7 +302,7 @@ cro_tpct = function(row_vars,
 
 #' @export
 #' @rdname cro
-cro_cpct_responses = function(row_vars, 
+cro_cpct_responses = function(cell_vars, 
                               col_vars = total(), 
                               weight = NULL, 
                               subgroup = NULL,
@@ -311,21 +311,21 @@ cro_cpct_responses = function(row_vars,
                               total_row_position = c("below", "above", "none")
                               ){
     
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
+    stopif(is.null(cell_vars), 
+           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
     stopif(is.null(col_vars), 
            paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
+    if(!is_list(cell_vars)){
+        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+        cell_vars = list(cell_vars)
     }
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
     }
-    multi_cro(row_vars = row_vars, 
+    multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
               total_title = total_title,
@@ -337,8 +337,8 @@ cro_cpct_responses = function(row_vars,
 }
 
 
-### compute statistics for single row_var and single col_var
-elementary_cro = function(row_var, col_var, weight = NULL, 
+### compute statistics for single cell_var and single col_var
+elementary_cro = function(cell_var, col_var, weight = NULL, 
                           total_title,
                           total,
                           total_row_position = c("below", "above", "none"),
@@ -350,43 +350,42 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     total_row_position = match.arg(total_row_position)
     total = match.arg(total, c("unweighted", "weighted"), several.ok = TRUE)
     stat_type = match.arg(stat_type)
-    max_nrow = max(NROW(row_var), NROW(col_var))
+    max_nrow = max(NROW(cell_var), NROW(col_var))
     
     weight = if_null(weight, 1)
     weight = set_negative_and_na_to_zero(weight)
     weight = recycle_if_single_row(weight, max_nrow)
     
-    valid = valid(row_var) & valid(col_var) & (weight>0) & if_null(subgroup, TRUE)
+    valid = valid(cell_var) & valid(col_var) & (weight>0) & if_null(subgroup, TRUE)
 
     weight = universal_subset(weight, valid)
 
     col_var = recycle_if_single_row(col_var, max_nrow)
     col_var = universal_subset(col_var, valid)
 
-    row_var = recycle_if_single_row(row_var, max_nrow)
-    row_var = universal_subset(row_var, valid)
+    cell_var = recycle_if_single_row(cell_var, max_nrow)
+    cell_var = universal_subset(cell_var, valid)
 
-    row_var_lab = var_lab(row_var)
-    row_val_lab = val_lab(row_var)
+    cell_var_lab = var_lab(cell_var)
+    cell_val_lab = val_lab(cell_var)
     
     col_var_lab = var_lab(col_var)
     col_val_lab = val_lab(col_var)
     
 
-    raw_data = cbind(as.data.table(row_var), as.data.table(col_var), data.table(weight))
-    row_var_names = paste0("rv", seq_len(NCOL(row_var)))
-    col_var_names = paste0("cv", seq_len(NCOL(col_var)))
-    setnames(raw_data, c(row_var_names, col_var_names, "weight"))
+    raw_data = cbind(as.data.table(cell_var), as.data.table(col_var), data.table(weight))
+    cell_var_names = paste0("cells", seq_len(NCOL(cell_var)))
+    col_var_names = paste0("cols", seq_len(NCOL(col_var)))
+    setnames(raw_data, c(cell_var_names, col_var_names, "weight"))
 
     # statistics
     
     dtable = internal_cases(raw_data, 
                             col_names = col_var_names, 
-                            cell_names = row_var_names,
+                            cell_names = cell_var_names,
                             need_unweighted = (stat_type == "cpct_responses"))
-    setnames(dtable, "cell_var", "row_var")
-    dtable[, row_var := set_var_lab(row_var, row_var_lab)]
-    dtable[, row_var := set_val_lab(row_var, row_val_lab)]
+    dtable[, cell_var := set_var_lab(cell_var, cell_var_lab)]
+    dtable[, cell_var := set_val_lab(cell_var, cell_val_lab)]
     dtable[, col_var := set_var_lab(col_var, col_var_lab)]
     dtable[, col_var := set_val_lab(col_var, col_val_lab)]
     if(stat_type != "cpct_responses"){
@@ -415,18 +414,18 @@ elementary_cro = function(row_var, col_var, weight = NULL,
         dtable[, value := value/sum(weight, na.rm = TRUE)*100]
     }
     if(stat_type=="rpct"){
-        row_total = internal_cases(raw_data, col_names = row_var_names,
+        row_total = internal_cases(raw_data, col_names = cell_var_names,
                                    need_unweighted = TRUE)[, -"unweighted_value"]
-        setnames(row_total, "col_var", "row_var")
+        setnames(row_total, "col_var", "cell_var")
         setnames(row_total, "value", "weighted_total")
-        row_total[, row_var := set_var_lab(row_var, row_var_lab)]
-        row_total[, row_var := set_val_lab(row_var, row_val_lab)]
-        dtable = row_total[dtable, on = "row_var", nomatch = NA]
+        row_total[, cell_var := set_var_lab(cell_var, cell_var_lab)]
+        row_total[, cell_var := set_val_lab(cell_var, cell_val_lab)]
+        dtable = row_total[dtable, on = "cell_var", nomatch = NA]
         dtable[, value := value/weighted_total*100]
     }
 
     ### make rectangular table  
-    res = long_datatable_to_table(dtable, rows = "row_var", columns = "col_var", value = "value")
+    res = long_datatable_to_table(dtable, rows = "cell_var", columns = "col_var", value = "value")
     
     
     colnames(res)[1] = "row_labels"
@@ -441,7 +440,7 @@ elementary_cro = function(row_var, col_var, weight = NULL,
         )    
     }    
 
-    res[, row_labels := paste0(row_var_lab, "|", row_labels)]
+    res[, row_labels := paste0(cell_var_lab, "|", row_labels)]
     colnames(res)[-1] = paste0(col_var_lab, "|", colnames(res)[-1]) 
 
     res[ , row_labels := remove_unnecessary_splitters(row_labels)] 
@@ -538,7 +537,7 @@ add_total_to_table = function(res, dtotal, total_row_position, total, total_titl
 
 #################################
 
-multi_cro = function(row_vars, 
+multi_cro = function(cell_vars, 
                col_vars, 
                weight, 
                subgroup,
@@ -546,13 +545,13 @@ multi_cro = function(row_vars,
                total,
                total_row_position = c("below", "above", "none"),
                stat_type){
-    row_vars = flat_list(dichotomy_to_category_encoding(row_vars), flat_df = FALSE)
+    cell_vars = flat_list(dichotomy_to_category_encoding(cell_vars), flat_df = FALSE)
     col_vars = flat_list(dichotomy_to_category_encoding(col_vars), flat_df = FALSE)
     stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
-    check_sizes("'cro'", row_vars, col_vars, weight, subgroup)
-    res = lapply(row_vars, function(each_row_var){
+    check_sizes("'cro'", cell_vars, col_vars, weight, subgroup)
+    res = lapply(cell_vars, function(each_cell_var){
         all_col_vars = lapply(col_vars, function(each_col_var){
-            elementary_cro(row_var = each_row_var, 
+            elementary_cro(cell_var = each_cell_var, 
                            col_var = each_col_var, 
                            weight = weight,
                            total_title = total_title,

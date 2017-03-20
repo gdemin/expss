@@ -8,28 +8,28 @@
 \alias{cro_cpct_responses}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
-cro(row_vars, col_vars = total(), weight = NULL, subgroup = NULL,
+cro(cell_vars, col_vars = total(), weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 
-cro_cpct(row_vars, col_vars = total(), weight = NULL, subgroup = NULL,
+cro_cpct(cell_vars, col_vars = total(), weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 
-cro_rpct(row_vars, col_vars = total(), weight = NULL, subgroup = NULL,
+cro_rpct(cell_vars, col_vars = total(), weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 
-cro_tpct(row_vars, col_vars = total(), weight = NULL, subgroup = NULL,
+cro_tpct(cell_vars, col_vars = total(), weight = NULL, subgroup = NULL,
   total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 
-cro_cpct_responses(row_vars, col_vars = total(), weight = NULL,
+cro_cpct_responses(cell_vars, col_vars = total(), weight = NULL,
   subgroup = NULL, total_title = "#Total", total = "unweighted",
   total_row_position = c("below", "above", "none"))
 }
 \arguments{
-\item{row_vars}{vector. By now multiple-response predictor is not supported.}
+\item{cell_vars}{vector. By now multiple-response predictor is not supported.}
 
 \item{col_vars}{vector. By now multiple-response predictor is not supported.}
 
