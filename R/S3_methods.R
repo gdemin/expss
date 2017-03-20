@@ -276,6 +276,17 @@ str.labelled = function(object, ...){
     invisible(NULL)
 }
 
+#' @export
+t.etable = function(x){
+    row_labels = x[[1]]
+    col_names = colnames(x)[-1]
+    data = x[,-1]
+    class(data) = class(data) %d% "etable"
+    res = dtfrm(col_names, t(data))
+    res =setNames(res, c("row_labels", row_labels))
+    class(res) = union("etable", class(res))
+    res
+}
 
 # #' @export
 # cbind.etable = function(..., deparse.level = 1){
