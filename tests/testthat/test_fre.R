@@ -87,19 +87,19 @@ a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c")))
 expect_equal_to_reference(fre(a), "rds/order_factor_fre20.rds")
 expect_equal_to_reference(cro(a, list(a, total())), "rds/order_factor_cro20a.rds")
 expect_equal_to_reference(cro(list(a), list(a, total())), "rds/order_factor_cro20.rds")
-expect_equal_to_reference(cro(list(a), list(a, total()), total_title = "BASE"), "rds/order_factor_cro21.rds")
+expect_equal_to_reference(cro(list(a), list(a, total()), total_label = "BASE"), "rds/order_factor_cro21.rds")
 expect_equal_to_reference(
     cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_title = "BASE"), 
+        total_label = "BASE"), 
     "rds/order_factor_cro22.rds")
 expect_equal_to_reference(
     cro(list(a), 
         list(a, total()),
         weight = 2,
         total = "weighted",
-        total_title = "BASE"), 
+        total_label = "BASE"), 
     "rds/order_factor_cro23.rds")
 
 expect_equal_to_reference(
@@ -107,7 +107,7 @@ expect_equal_to_reference(
         list(a, total()),
         weight = 2,
         total = c("unweighted", "weighted"),
-        total_title = "BASE"), 
+        total_label = "BASE"), 
     "rds/order_factor_cro24.rds")
 
 expect_equal_to_reference(
@@ -115,7 +115,7 @@ expect_equal_to_reference(
         list(a, total()),
         weight = 2,
         total = c("unweighted", "weighted"),
-        total_title = c("BASE", "W_BASE")), 
+        total_label = c("BASE", "W_BASE")), 
     "rds/order_factor_cro25.rds")
 
 expect_equal_to_reference(
@@ -123,7 +123,7 @@ expect_equal_to_reference(
         list(a, total()),
         weight = 2,
         total = c("unweighted", "weighted"),
-        total_title = c("BASE", "W_BASE"), 
+        total_label = c("BASE", "W_BASE"), 
         subgroup = a=="a"),
     "rds/order_factor_cro26.rds")
 
@@ -132,7 +132,7 @@ expect_equal_to_reference(
         list(a, total()),
         weight = 2,
         total = c("unweighted", "weighted"),
-        total_title = c("BASE", "W_BASE"), 
+        total_label = c("BASE", "W_BASE"), 
         subgroup = FALSE),
     "rds/order_factor_cro27.rds")
 
@@ -141,7 +141,7 @@ expect_equal_to_reference(
         list(a, total()),
         weight = 2,
         total = c("weighted", "unweighted"),
-        total_title = c("W_BASE", "BASE")),
+        total_label = c("W_BASE", "BASE")),
     "rds/order_factor_cro28.rds")
 
 expect_equal_to_reference(
@@ -149,7 +149,7 @@ expect_equal_to_reference(
         list(a, total()),
         weight = 2,
         total = c("unweighted", "weighted"),
-        total_title = c("BASE", "W_BASE"), 
+        total_label = c("BASE", "W_BASE"), 
         subgroup = a=="a")),
     "rds/order_factor_cro29.rds")
 
@@ -158,7 +158,7 @@ expect_equal_to_reference(
         list(a, total()),
         weight = 2,
         total = c("unweighted", "weighted"),
-        total_title = c("BASE", "W_BASE"),
+        total_label = c("BASE", "W_BASE"),
         subgroup = FALSE)),
     "rds/order_factor_cro30.rds")
 

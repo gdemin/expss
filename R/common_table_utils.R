@@ -66,11 +66,11 @@ remove_unnecessary_splitters = function(labels){
 
 ### add # as first symbol to the total title
 
-add_first_symbol_to_total_title = function(total_title, symbol = "#"){
-    if(substr(total_title, 1, 1)!=symbol){
-        paste0("#", total_title)       
+add_first_symbol_to_total_label = function(total_label, symbol = "#"){
+    if(substr(total_label, 1, 1)!=symbol){
+        paste0("#", total_label)       
     } else {
-        total_title
+        total_label
     }
 }
 

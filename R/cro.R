@@ -158,7 +158,7 @@ cro = function(cell_vars,
                col_vars = total(), 
                weight = NULL, 
                subgroup = NULL,
-               total_title = "#Total",
+               total_label = "#Total",
                total = "unweighted",
                total_row_position = c("below", "above", "none")
                ){
@@ -180,7 +180,7 @@ cro = function(cell_vars,
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
-              total_title = total_title,
+              total_label = total_label,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
@@ -197,7 +197,7 @@ cro_cpct = function(cell_vars,
                     col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
-                    total_title = "#Total",
+                    total_label = "#Total",
                     total = "unweighted",
                     total_row_position = c("below", "above", "none")
                     ){
@@ -219,7 +219,7 @@ cro_cpct = function(cell_vars,
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
-              total_title = total_title,
+              total_label = total_label,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
@@ -233,7 +233,7 @@ cro_rpct = function(cell_vars,
                     col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
-                    total_title = "#Total",
+                    total_label = "#Total",
                     total = "unweighted",
                     total_row_position = c("below", "above", "none")
                     ){
@@ -255,7 +255,7 @@ cro_rpct = function(cell_vars,
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
-              total_title = total_title,
+              total_label = total_label,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
@@ -270,7 +270,7 @@ cro_tpct = function(cell_vars,
                     col_vars = total(), 
                     weight = NULL, 
                     subgroup = NULL,
-                    total_title = "#Total",
+                    total_label = "#Total",
                     total = "unweighted",
                     total_row_position = c("below", "above", "none")
                     ){
@@ -292,7 +292,7 @@ cro_tpct = function(cell_vars,
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
-              total_title = total_title,
+              total_label = total_label,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
@@ -306,7 +306,7 @@ cro_cpct_responses = function(cell_vars,
                               col_vars = total(), 
                               weight = NULL, 
                               subgroup = NULL,
-                              total_title = "#Total",
+                              total_label = "#Total",
                               total = "unweighted",
                               total_row_position = c("below", "above", "none")
                               ){
@@ -328,7 +328,7 @@ cro_cpct_responses = function(cell_vars,
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
-              total_title = total_title,
+              total_label = total_label,
               total = total,
               total_row_position = total_row_position,
               subgroup = subgroup,
@@ -339,7 +339,7 @@ cro_cpct_responses = function(cell_vars,
 
 ### compute statistics for single cell_var and single col_var
 elementary_cro = function(cell_var, col_var, weight = NULL, 
-                          total_title,
+                          total_label,
                           total,
                           total_row_position = c("below", "above", "none"),
                           subgroup,
@@ -436,7 +436,7 @@ elementary_cro = function(cell_var, col_var, weight = NULL,
             dtotal = dtotal,
             total_row_position = total_row_position,
             total = total,
-            total_title = total_title
+            total_label = total_label
         )    
     }    
 
@@ -510,10 +510,10 @@ internal_cases = function(dtable, col_names, cell_names = NULL, need_unweighted)
 
 ###########################
 
-add_total_to_table = function(res, dtotal, total_row_position, total, total_title){
+add_total_to_table = function(res, dtotal, total_row_position, total, total_label){
     if(length(total)==0) total = "unweighted"
-    if(length(total_title) == 0) total_title = "#Total"
-    if(length(total_title) < length(total)) total_title = rep(total_title, length(total))
+    if(length(total_label) == 0) total_label = "#Total"
+    if(length(total_label) < length(total)) total_label = rep(total_label, length(total))
    
     total =  c("unweighted" = "total", "weighted" = "weighted_total")[total]
     total_row = lapply(seq_along(total), function(item){
@@ -523,7 +523,7 @@ add_total_to_table = function(res, dtotal, total_row_position, total, total_titl
                                 columns = "col_var", 
                                 value = total[item])
         colnames(row)[1] = "row_labels"
-        row[[1]] = add_first_symbol_to_total_title(total_title[item])
+        row[[1]] = add_first_symbol_to_total_label(total_label[item])
         row
     })
     total_row = do.call(add_rows, total_row)
@@ -541,7 +541,7 @@ multi_cro = function(cell_vars,
                col_vars, 
                weight, 
                subgroup,
-               total_title,
+               total_label,
                total,
                total_row_position = c("below", "above", "none"),
                stat_type){
@@ -554,7 +554,7 @@ multi_cro = function(cell_vars,
             elementary_cro(cell_var = each_cell_var, 
                            col_var = each_col_var, 
                            weight = weight,
-                           total_title = total_title,
+                           total_label = total_label,
                            total = total,
                            total_row_position = total_row_position,
                            subgroup = subgroup,
