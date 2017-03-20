@@ -198,3 +198,44 @@ expect_equal_to_reference(
     cro(list(mrset(mult1), mrset(mult2)), list("total", "total")),
     "rds/table_cases39.rds")
 
+
+
+context("cor multiple by multiple")
+
+data("product_test")
+codeframe_likes = num_lab("
+                          1 Liked everything
+                          2 Disliked everything
+                          3 Chocolate
+                          4 Appearance
+                          5 Taste
+                          6 Stuffing
+                          7 Nuts
+                          8 Consistency
+                          98 Other
+                          99 Hard to answer
+                          ")
+
+
+var_lab(product_test$a1_1) = "Likes. VSX123"
+var_lab(product_test$b1_1) = "Likes. SDF456"
+expect_equal_to_reference(
+    calc(product_test, cro(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    "rds/cro_mult_by_mult.rds")
+
+expect_equal_to_reference(
+    calc(product_test, cro_cpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    "rds/cro_cpct_mult_by_mult.rds")
+
+expect_equal_to_reference(
+    calc(product_test, cro_cpct_responses(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    "rds/cro_cpct_responses_mult_by_mult.rds")
+
+expect_equal_to_reference(
+    calc(product_test, cro_rpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    "rds/cro_rpct_mult_by_mult.rds")
+
+
+expect_equal_to_reference(
+    calc(product_test, cro_tpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    "rds/cro_tpct_mult_by_mult.rds")
