@@ -367,8 +367,12 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     row_var = universal_subset(row_var, valid)
 
     row_var_lab = var_lab(row_var)
-    col_var_lab = var_lab(col_var)
+    row_val_lab = val_lab(row_var)
     
+    col_var_lab = var_lab(col_var)
+    col_val_lab = val_lab(col_var)
+    
+
     raw_data = cbind(as.data.table(row_var), as.data.table(col_var), data.table(weight))
     row_var_names = paste0("rv", seq_len(NCOL(row_var)))
     col_var_names = paste0("cv", seq_len(NCOL(col_var)))
@@ -376,11 +380,22 @@ elementary_cro = function(row_var, col_var, weight = NULL,
 
     # statistics
     
-    dtable = internal_cases(raw_data, col_names = col_var_names, cell_names = row_var_names)
+    dtable = internal_cases(raw_data, 
+                            col_names = col_var_names, 
+                            cell_names = row_var_names,
+                            need_unweighted = (stat_type == "cpct_responses"))
     setnames(dtable, "cell_var", "row_var")
+    dtable[, row_var := set_var_lab(row_var, row_var_lab)]
+    dtable[, row_var := set_val_lab(row_var, row_val_lab)]
+    dtable[, col_var := set_var_lab(col_var, col_var_lab)]
+    dtable[, col_var := set_val_lab(col_var, col_val_lab)]
     if(stat_type != "cpct_responses"){
         dtotal = internal_cases(raw_data, 
-                                col_names = col_var_names)
+                                col_names = col_var_names,
+                                need_unweighted = TRUE)
+ 
+        dtotal[, col_var := set_var_lab(col_var, col_var_lab)]
+        dtotal[, col_var := set_val_lab(col_var, col_val_lab)]
         setnames(dtotal, c("value", "unweighted_value"), c("weighted_total", "total"))
     }
     
@@ -400,9 +415,12 @@ elementary_cro = function(row_var, col_var, weight = NULL,
         dtable[, value := value/sum(weight, na.rm = TRUE)*100]
     }
     if(stat_type=="rpct"){
-        row_total = internal_cases(raw_data, col_names = row_var_names)[, -"unweighted_value"]
+        row_total = internal_cases(raw_data, col_names = row_var_names,
+                                   need_unweighted = TRUE)[, -"unweighted_value"]
         setnames(row_total, "col_var", "row_var")
         setnames(row_total, "value", "weighted_total")
+        row_total[, row_var := set_var_lab(row_var, row_var_lab)]
+        row_total[, row_var := set_val_lab(row_var, row_val_lab)]
         dtable = row_total[dtable, on = "row_var", nomatch = NA]
         dtable[, value := value/weighted_total*100]
     }
@@ -434,35 +452,42 @@ elementary_cro = function(row_var, col_var, weight = NULL,
     res
 }
 
-internal_cases = function(dtable, col_names, cell_names = NULL){
-    col_varlab = var_lab(dtable[, col_names, with = FALSE])
-    col_vallab = val_lab(dtable[, col_names, with = FALSE])
-    dtable[, col_names] = unlab(dtable[, col_names, with = FALSE])
+internal_cases = function(dtable, col_names, cell_names = NULL, need_unweighted){
+
+    # dtable[, col_names] = unlab(dtable[, col_names, with = FALSE])
 
     if(is.null(cell_names)){
         res = lapply(col_names, function(each_col){
-            dres = dtable[, list(weight = sum(weight, na.rm = TRUE),
-                                 unweighted_value = .N), by = each_col] 
+            if(need_unweighted){
+                dres = dtable[, list(weight = sum(weight, na.rm = TRUE),
+                                     unweighted_value = .N), by = each_col] 
+            } else {
+                dres = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = each_col]                 
+            }
             setnames(dres, each_col, "col_var")
             
         })
         res = rbindlist(res, use.names = TRUE, fill = TRUE)
-        res = res[, list(value = sum(weight, na.rm = TRUE), 
-                         unweighted_value = sum(unweighted_value, na.rm = TRUE)
-                         ), by = "col_var"]
+        if(need_unweighted){
+            res = res[, list(value = sum(weight, na.rm = TRUE), 
+                             unweighted_value = sum(unweighted_value, na.rm = TRUE)
+            ), by = "col_var"]
+        } else {
+            res = res[, list(value = sum(weight, na.rm = TRUE)), by = "col_var"]            
+        }
         res = res[!is.na(col_var), ]
-        res[, col_var := set_val_lab(col_var, col_vallab)]
-        res[, col_var := set_var_lab(col_var, col_varlab)]
     } else {
-        cell_varlab = var_lab(dtable[, cell_names, with = FALSE])
-        cell_vallab = val_lab(dtable[, cell_names, with = FALSE])
-        dtable[, cell_names] = unlab(dtable[, cell_names, with = FALSE])
+
         res = lapply(cell_names, function(each_cell) { 
             res = lapply(col_names, function(each_col){
-                
+                if(need_unweighted){
                 dres = dtable[, list(weight = sum(weight, na.rm = TRUE),
                                      unweighted_value = .N), 
                               by = eval(paste0(each_cell, ",", each_col))] 
+                } else {
+                    dres = dtable[, list(weight = sum(weight, na.rm = TRUE)), 
+                                  by = eval(paste0(each_cell, ",", each_col))]                     
+                }
                 setnames(dres, each_col, "col_var")
                 setnames(dres, each_cell, "cell_var")
                 
@@ -470,14 +495,16 @@ internal_cases = function(dtable, col_names, cell_names = NULL){
             res = rbindlist(res, use.names = TRUE, fill = TRUE)
         })
         res = rbindlist(res, use.names = TRUE, fill = TRUE)
-        res = res[, list(value = sum(weight, na.rm = TRUE), 
-                         unweighted_value = sum(unweighted_value, na.rm = TRUE)
-                        ), by = "col_var,cell_var"]
+        if(need_unweighted){
+            res = res[, list(value = sum(weight, na.rm = TRUE), 
+                             unweighted_value = sum(unweighted_value, na.rm = TRUE)
+                            ), by = "col_var,cell_var"]
+        } else {
+            res = res[, list(value = sum(weight, na.rm = TRUE)), by = "col_var,cell_var"]
+            
+        }
         res = res[!is.na(col_var) & !is.na(cell_var), ]
-        res[, col_var := set_val_lab(col_var, col_vallab)]
-        res[, col_var := set_var_lab(col_var, col_varlab)]
-        res[, cell_var := set_val_lab(cell_var, cell_vallab)]
-        res[, cell_var := set_var_lab(cell_var, cell_varlab)]
+
     }
     res
 }
