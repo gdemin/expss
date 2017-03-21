@@ -67,6 +67,38 @@ set_negative_and_na_to_zero = function(x){
 
 ########## 
 
+test_for_null_and_make_list = function(curr_vars, str_curr_vars){
+    stopif(is.null(curr_vars), 
+           paste0("'", str_curr_vars,"' is NULL. Possibly variable doesn't exist."))
+    if(!is_list(curr_vars)){
+        if(!is.matrix(curr_vars) && !is.data.frame(curr_vars)){
+            if(is.null(var_lab(curr_vars))){
+                var_lab(curr_vars) = str_curr_vars
+            }            
+        }
+        curr_vars = list(curr_vars)
+    }
+    curr_vars
+}
+
+################
+test_for_null_and_make_dataframe = function(curr_vars, str_curr_vars){
+    stopif(is.null(curr_vars), 
+           paste0("'", str_curr_vars,"' is NULL. Possibly variable doesn't exist."))
+    if(!is_list(curr_vars)){
+        if(!is.matrix(curr_vars) && !is.data.frame(curr_vars)){
+            if(is.null(var_lab(curr_vars))){
+                var_lab(curr_vars) = str_curr_vars
+            }            
+        }
+    }
+    if(!is.data.frame(curr_vars)) curr_vars = as.dtfrm(curr_vars)
+    curr_vars
+}
+
+
+#############
+
 convert_multicolumn_object_to_vector  = function(x){
     if(is.matrix(x) || is.data.frame(x)){
         if(NCOL(x)==0){

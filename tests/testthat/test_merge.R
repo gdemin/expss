@@ -165,7 +165,7 @@ mtcars = modify(mtcars, {
 
 expect_equal_to_reference(
     with(mtcars, 
-         merge(cro_mean(list(mpg, gear, carb), list(unvr(am), total())), 
+         merge(cro_mean(list(V1 = mpg, gear, carb), list(unvr(am), total())), 
                cro_mean(list(gear, carb), list(unvr(am), total()))
          )
     ), 
@@ -174,7 +174,7 @@ expect_equal_to_reference(
 
 expect_equal_to_reference(
     with(mtcars, 
-         merge(cro_mean(list(mpg, gear, carb), list(unvr(am), total())), 
+         merge(cro_mean(list(V1 = mpg, gear, carb), list(unvr(am), total())), 
                cro_mean(list(gear, carb), list(unvr(vs), total()))
          )
     ), 
@@ -183,7 +183,7 @@ expect_equal_to_reference(
 
 expect_equal_to_reference(
     with(mtcars, 
-         cro_mean(list(mpg, gear, carb), list(unvr(am), total()))  %merge%  
+         cro_mean(list(V1 = mpg, gear, carb), list(unvr(am), total()))  %merge%  
              cro_mean(list(gear, carb), list(unvr(am), total()))
          
     ), 
@@ -192,7 +192,7 @@ expect_equal_to_reference(
 
 expect_equal_to_reference(
     with(mtcars, 
-         cro_mean(list(mpg, gear, carb), list(unvr(am), total())) %merge%
+         cro_mean(list(V1 = mpg, gear, carb), list(unvr(am), total())) %merge%
                cro_mean(list(gear, carb), list(unvr(vs), total()))
          
     ), 

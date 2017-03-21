@@ -168,18 +168,9 @@ cro = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
+    cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -207,18 +198,9 @@ cro_cpct = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
+    cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -243,18 +225,9 @@ cro_rpct = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
+    cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -280,19 +253,9 @@ cro_tpct = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
+    cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+ 
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,
@@ -317,18 +280,9 @@ cro_cpct_responses = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
+    cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               weight = weight,

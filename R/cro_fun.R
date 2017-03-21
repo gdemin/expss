@@ -165,12 +165,9 @@ cro_fun = function(cell_vars,
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
     
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
     fun = match.fun(fun)
     if(!is.null(weight)){
@@ -179,30 +176,23 @@ cro_fun = function(cell_vars,
     }
     fun = make_function_for_cro(fun, ..., need_weight = !is.null(weight))
     
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
-    }
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
     row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
     col_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(col_vars), flat_df = TRUE)
     stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
     
+    check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
     
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        if(!is.data.frame(cell_vars)){
-            cell_vars = as.dtfrm(cell_vars)    
-        }
-        check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
-    } else {
-        cell_vars = flat_list(cell_vars, flat_df = TRUE)
-        check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
-        cell_vars = as.dtfrm(cell_vars)  
-    }
+    # if(!is_list(cell_vars)){
+    #     cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
+    #     if(!is.data.frame(cell_vars)){
+    #         cell_vars = as.dtfrm(cell_vars)    
+    #     }
+    #     
+    # } else {
+    #     cell_vars = flat_list(cell_vars, flat_df = TRUE)
+    #     check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
+    #     cell_vars = as.dtfrm(cell_vars)  
+    # }
     
     cell_vars = make_labels_from_names(cell_vars)
     
@@ -426,16 +416,7 @@ make_dataframe_with_row_labels = function(res){
 
 }
 
-######################## 
 
-add_missing_var_lab = function(x, str_lab){
-    if(!is.matrix(x) && !is.data.frame(x) && !is.list(x)){
-        if(is.null(var_lab(x))){
-            var_lab(x) = str_lab
-        } 
-    }
-    x
-}
 
 
 #######
@@ -452,13 +433,10 @@ cro_fun_df = function(cell_vars,
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
-    
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+
+    cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
     fun = match.fun(fun)
     if(!is.null(weight)){
@@ -467,22 +445,11 @@ cro_fun_df = function(cell_vars,
     }
     fun = make_function_for_cro_df(fun, ..., need_weight = !is.null(weight))
     
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }
     cell_vars = make_labels_from_names(cell_vars)
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
-    }
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
     cell_vars = flat_list(cell_vars, flat_df = FALSE)
     row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
     col_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(col_vars), flat_df = TRUE)
+    
     stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
     check_sizes("'cro_fun_df'", cell_vars, row_vars, col_vars, weight, subgroup)
     
@@ -537,25 +504,10 @@ cro_mean = function(cell_vars,
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
     
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }    
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
-    }
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
@@ -577,29 +529,15 @@ cro_sum = function(cell_vars,
         res = vapply(x, FUN = w_sum, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
         list(row_labels = names(x), "|" = res)
     }
+    
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
     
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }    
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
-    }
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
@@ -621,29 +559,15 @@ cro_median = function(cell_vars,
         res = vapply(x, FUN = w_median, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
         list(row_labels = names(x), "|" = res)
     }
+    
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
     
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }    
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
-    }
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
@@ -669,29 +593,15 @@ cro_pearson = function(cell_vars,
     fun = function(x, weight = NULL){
         w_pearson(x, weight = weight)[ , 1]
     }    
+    
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
     
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }    
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
-    }
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
@@ -713,29 +623,15 @@ cro_spearman = function(cell_vars,
     fun = function(x, weight = NULL){
         w_spearman(x, weight = weight)[ , 1]
     }    
+    
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
     
-    stopif(is.null(cell_vars), 
-           paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(row_vars), 
-           paste0("'", str_row_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+    cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
-    if(!is_list(cell_vars)){
-        cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-        cell_vars = list(cell_vars)
-    }    
-    if(!is_list(row_vars)){
-        row_vars = add_missing_var_lab(row_vars, str_row_vars)
-        row_vars = list(row_vars)
-    }
-    if(!is_list(col_vars)){
-        col_vars = add_missing_var_lab(col_vars, str_col_vars)
-        col_vars = list(col_vars)
-    }
     cro_fun_df(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
