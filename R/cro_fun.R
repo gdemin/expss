@@ -358,6 +358,7 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
             })
             res = rbindlist(res, use.names = TRUE, fill = TRUE)
             # we need convert to factor to keep order of row_labels
+            res[, row_labels := make_items_unique(row_labels)]
             as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
         }
     } else {
@@ -373,6 +374,7 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
             })
             res = rbindlist(res, use.names = TRUE, fill = TRUE)
             # we need convert to factor to keep order of row_labels
+            res[, row_labels := make_items_unique(row_labels)]
             as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
         }        
     }
