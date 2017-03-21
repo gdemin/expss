@@ -167,12 +167,12 @@ cro = function(cell_vars,
     str_col_vars = deparse(substitute(col_vars))
     stopif(is.null(cell_vars), 
            paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(cell_vars)){
         cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
         cell_vars = list(cell_vars)
     }
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
@@ -184,7 +184,7 @@ cro = function(cell_vars,
               total_statistic = total_statistic,
               total_row_position = total_row_position,
               subgroup = subgroup,
-              stat_type = "count"
+              stat_type = "cases"
     )    
 }
 
@@ -206,12 +206,12 @@ cro_cpct = function(cell_vars,
     str_col_vars = deparse(substitute(col_vars))
     stopif(is.null(cell_vars), 
            paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(cell_vars)){
         cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
         cell_vars = list(cell_vars)
     }
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
@@ -242,12 +242,12 @@ cro_rpct = function(cell_vars,
     str_col_vars = deparse(substitute(col_vars))
     stopif(is.null(cell_vars), 
            paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(cell_vars)){
         cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
         cell_vars = list(cell_vars)
     }
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
@@ -279,12 +279,13 @@ cro_tpct = function(cell_vars,
     str_col_vars = deparse(substitute(col_vars))
     stopif(is.null(cell_vars), 
            paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
+
     if(!is_list(cell_vars)){
         cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
         cell_vars = list(cell_vars)
     }
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
@@ -315,12 +316,12 @@ cro_cpct_responses = function(cell_vars,
     str_col_vars = deparse(substitute(col_vars))
     stopif(is.null(cell_vars), 
            paste0("'", str_cell_vars,"' is NULL. Possibly variable doesn't exist."))
-    stopif(is.null(col_vars), 
-           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(cell_vars)){
         cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
         cell_vars = list(cell_vars)
     }
+    stopif(is.null(col_vars), 
+           paste0("'", str_col_vars,"' is NULL. Possibly variable doesn't exist."))
     if(!is_list(col_vars)){
         col_vars = add_missing_var_lab(col_vars, str_col_vars)
         col_vars = list(col_vars)
@@ -343,7 +344,7 @@ elementary_cro = function(cell_var, col_var, weight = NULL,
                           total_statistic,
                           total_row_position = c("below", "above", "none"),
                           subgroup,
-                          stat_type = c("count", "cpct", "cpct_responses", "rpct", "tpct")
+                          stat_type = c("cases", "cpct", "cpct_responses", "rpct", "tpct")
                           ){
     
     ### preparations
@@ -379,51 +380,70 @@ elementary_cro = function(cell_var, col_var, weight = NULL,
     setnames(raw_data, c(cell_var_names, col_var_names, "weight"))
 
     # statistics
-    
-    dtable = internal_cases(raw_data, 
-                            col_names = col_var_names, 
-                            cell_names = cell_var_names,
-                            need_unweighted = (stat_type == "cpct_responses"))
-    dtable[, cell_var := set_var_lab(cell_var, cell_var_lab)]
-    dtable[, cell_var := set_val_lab(cell_var, cell_val_lab)]
-    dtable[, col_var := set_var_lab(col_var, col_var_lab)]
-    dtable[, col_var := set_val_lab(col_var, col_val_lab)]
-    if(stat_type != "cpct_responses"){
-        dtotal = internal_cases(raw_data, 
-                                col_names = col_var_names,
-                                need_unweighted = TRUE)
- 
-        dtotal[, col_var := set_var_lab(col_var, col_var_lab)]
-        dtotal[, col_var := set_val_lab(col_var, col_val_lab)]
-        setnames(dtotal, c("value", "unweighted_value"), c("weighted_total", "total"))
-    }
+
+    dtable = switch(stat_type,
+                    cases = internal_cases(raw_data,
+                                           col_var_names = col_var_names,
+                                           cell_var_names = cell_var_names,
+                                           need_unweighted = (stat_type == "cpct_responses")),
+                    cpct = internal_cpct(raw_data,
+                                         col_var_names = col_var_names,
+                                         cell_var_names = cell_var_names,
+                                         need_unweighted = (stat_type == "cpct_responses")),
+                    cpct_responses = internal_cpct_responses(raw_data,
+                                                             col_var_names = col_var_names,
+                                                             cell_var_names = cell_var_names,
+                                                             need_unweighted = (stat_type == "cpct_responses")),
+                    rpct = internal_rpct(raw_data,
+                                         col_var_names = col_var_names,
+                                         cell_var_names = cell_var_names,
+                                         need_unweighted = (stat_type == "cpct_responses")),
+                    tpct = internal_tpct(raw_data,
+                                         col_var_names = col_var_names,
+                                         cell_var_names = cell_var_names,
+                                         need_unweighted = (stat_type == "cpct_responses"))
+    )
+
     
     ################################
+    if(stat_type == "cases"){
+        dtotal = internal_cases(raw_data, 
+                                col_var_names = col_var_names,
+                                need_unweighted = TRUE)
+        
+        setnames(dtotal, c("value", "unweighted_value"), c("weighted_total", "total"))
+    }
     if(stat_type=="cpct"){
-        dtable = dtotal[dtable, on = "col_var", nomatch = NA]
-        dtable[, value := value/weighted_total*100]
-
+        dtotal = internal_cases(raw_data, 
+                                col_var_names = col_var_names,
+                                need_unweighted = TRUE)
+        
+        setnames(dtotal, c("value", "unweighted_value"), c("weighted_total", "total"))
     }
     if(stat_type == "cpct_responses"){
         dtotal = dtable[, list(weighted_total = sum(value, na.rm = TRUE), 
                                  total = sum(unweighted_value, na.rm = TRUE)), by = "col_var"]
-        dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]
-    }
-    if(stat_type=="tpct"){
-        dtable = dtotal[dtable, on = "col_var", nomatch = NA]
-        dtable[, value := value/sum(weight, na.rm = TRUE)*100]
     }
     if(stat_type=="rpct"){
-        row_total = internal_cases(raw_data, col_names = cell_var_names,
-                                   need_unweighted = TRUE)[, -"unweighted_value"]
-        setnames(row_total, "col_var", "cell_var")
-        setnames(row_total, "value", "weighted_total")
-        row_total[, cell_var := set_var_lab(cell_var, cell_var_lab)]
-        row_total[, cell_var := set_val_lab(cell_var, cell_val_lab)]
-        dtable = row_total[dtable, on = "cell_var", nomatch = NA]
-        dtable[, value := value/weighted_total*100]
+        dtotal = internal_cases(raw_data, 
+                                col_var_names = col_var_names,
+                                need_unweighted = TRUE)
+        
+        setnames(dtotal, c("value", "unweighted_value"), c("weighted_total", "total"))
+    }
+    if(stat_type=="tpct"){
+        dtotal = internal_cases(raw_data, 
+                                col_var_names = col_var_names,
+                                need_unweighted = TRUE)
+        
+        setnames(dtotal, c("value", "unweighted_value"), c("weighted_total", "total"))
     }
 
+
+    dtable[, cell_var := set_var_lab(cell_var, cell_var_lab)]
+    dtable[, cell_var := set_val_lab(cell_var, cell_val_lab)]
+    dtable[, col_var := set_var_lab(col_var, col_var_lab)]
+    dtable[, col_var := set_val_lab(col_var, col_val_lab)]
     ### make rectangular table  
     res = long_datatable_to_table(dtable, rows = "cell_var", columns = "col_var", value = "value")
     
@@ -451,17 +471,65 @@ elementary_cro = function(cell_var, col_var, weight = NULL,
     res
 }
 
-internal_cases = function(dtable, col_names, cell_names = NULL, need_unweighted){
+######################
+internal_cpct = function(raw_data, col_var_names, cell_var_names = NULL, need_unweighted){
+    dtable = internal_cases(raw_data, 
+                            col_var_names = col_var_names,
+                            cell_var_names = cell_var_names,
+                            need_unweighted = FALSE)
+    dtotal = internal_cases(raw_data, 
+                            col_var_names = col_var_names,
+                            need_unweighted = TRUE)
+    
+    setnames(dtotal, c("value", "unweighted_value"), c("weighted_total", "total"))
+    dtable = dtotal[dtable, on = "col_var", nomatch = NA]
+    dtable[, value := value/weighted_total*100]    
+}
+
+########################
+internal_cpct_responses = function(raw_data, col_var_names, cell_var_names = NULL, need_unweighted){
+    dtable = internal_cases(raw_data, 
+                            col_var_names = col_var_names,
+                            cell_var_names = cell_var_names,
+                            need_unweighted = TRUE)
+    dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]    
+}
+
+#######################
+internal_rpct = function(raw_data, col_var_names, cell_var_names = NULL, need_unweighted){
+    dtable = internal_cases(raw_data, 
+                            col_var_names = col_var_names,
+                            cell_var_names = cell_var_names,
+                            need_unweighted = FALSE)
+    row_total = internal_cases(raw_data, col_var_names = cell_var_names,
+                               need_unweighted = TRUE)[, -"unweighted_value"]
+    setnames(row_total, "col_var", "cell_var")
+    setnames(row_total, "value", "weighted_total")
+    dtable = row_total[dtable, on = "cell_var", nomatch = NA]
+    dtable[, value := value/weighted_total*100]    
+}
+
+#######################
+internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, need_unweighted){
+    dtable = internal_cases(raw_data, 
+                            col_var_names = col_var_names,
+                            cell_var_names = cell_var_names,
+                            need_unweighted = FALSE)
+    dtable[, value := value/sum(raw_data$weight, na.rm = TRUE)*100]    
+}
+
+########################
+internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, need_unweighted){
 
     # dtable[, col_names] = unlab(dtable[, col_names, with = FALSE])
 
-    if(is.null(cell_names)){
-        res = lapply(col_names, function(each_col){
+    if(is.null(cell_var_names)){
+        res = lapply(col_var_names, function(each_col){
             if(need_unweighted){
-                dres = dtable[, list(weight = sum(weight, na.rm = TRUE),
+                dres = raw_data[, list(weight = sum(weight, na.rm = TRUE),
                                      unweighted_value = .N), by = each_col] 
             } else {
-                dres = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = each_col]                 
+                dres = raw_data[, list(weight = sum(weight, na.rm = TRUE)), by = each_col]                 
             }
             setnames(dres, each_col, "col_var")
             
@@ -477,14 +545,14 @@ internal_cases = function(dtable, col_names, cell_names = NULL, need_unweighted)
         res = res[!is.na(col_var), ]
     } else {
 
-        res = lapply(cell_names, function(each_cell) { 
-            res = lapply(col_names, function(each_col){
+        res = lapply(cell_var_names, function(each_cell) { 
+            res = lapply(col_var_names, function(each_col){
                 if(need_unweighted){
-                dres = dtable[, list(weight = sum(weight, na.rm = TRUE),
+                dres = raw_data[, list(weight = sum(weight, na.rm = TRUE),
                                      unweighted_value = .N), 
                               by = eval(paste0(each_cell, ",", each_col))] 
                 } else {
-                    dres = dtable[, list(weight = sum(weight, na.rm = TRUE)), 
+                    dres = raw_data[, list(weight = sum(weight, na.rm = TRUE)), 
                                   by = eval(paste0(each_cell, ",", each_col))]                     
                 }
                 setnames(dres, each_col, "col_var")
