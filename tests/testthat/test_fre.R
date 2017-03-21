@@ -98,7 +98,7 @@ expect_equal_to_reference(
     cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_statistic = "weighted",
+        total_statistic = "w_cases",
         total_label = "BASE"), 
     "rds/order_factor_cro23.rds")
 
@@ -106,7 +106,7 @@ expect_equal_to_reference(
     cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_statistic = c("unweighted", "weighted"),
+        total_statistic = c("u_cases", "w_cases"),
         total_label = "BASE"), 
     "rds/order_factor_cro24.rds")
 
@@ -114,7 +114,7 @@ expect_equal_to_reference(
     cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_statistic = c("unweighted", "weighted"),
+        total_statistic = c("u_cases", "w_cases"),
         total_label = c("BASE", "W_BASE")), 
     "rds/order_factor_cro25.rds")
 
@@ -122,7 +122,7 @@ expect_equal_to_reference(
     cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_statistic = c("unweighted", "weighted"),
+        total_statistic = c("u_cases", "w_cases"),
         total_label = c("BASE", "W_BASE"), 
         subgroup = a=="a"),
     "rds/order_factor_cro26.rds")
@@ -131,7 +131,7 @@ expect_equal_to_reference(
     cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_statistic = c("unweighted", "weighted"),
+        total_statistic = c("u_cases", "w_cases"),
         total_label = c("BASE", "W_BASE"), 
         subgroup = FALSE),
     "rds/order_factor_cro27.rds")
@@ -140,7 +140,7 @@ expect_equal_to_reference(
     cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_statistic = c("weighted", "unweighted"),
+        total_statistic = c("w_cases", "u_cases"),
         total_label = c("W_BASE", "BASE")),
     "rds/order_factor_cro28.rds")
 
@@ -148,7 +148,7 @@ expect_equal_to_reference(
     drop_rc(cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_statistic = c("unweighted", "weighted"),
+        total_statistic = c("u_cases", "w_cases"),
         total_label = c("BASE", "W_BASE"), 
         subgroup = a=="a")),
     "rds/order_factor_cro29.rds")
@@ -157,7 +157,7 @@ expect_equal_to_reference(
     drop_rc(cro(list(a), 
         list(a, total()),
         weight = 2,
-        total_statistic = c("unweighted", "weighted"),
+        total_statistic = c("u_cases", "w_cases"),
         total_label = c("BASE", "W_BASE"),
         subgroup = FALSE)),
     "rds/order_factor_cro30.rds")
@@ -353,7 +353,7 @@ expect_equal_to_reference(cro_cpct(data$reg, data$s1, weight = data$weight1), "r
 expect_equal_to_reference(with(data, cro(mrset(q8r_1 %to% q8r_99), reg, weight = weight1)), "rds/cro_real3w.rds")
 expect_equal_to_reference(with(data, cro(mrset(q8r_1 %to% q8r_99), list(reg, total()), 
                                          weight = weight1, 
-                                         total_statistic = "weighted")), 
+                                         total_statistic = "w_cases")), 
                           "rds/cro_real3ww.rds")
 
 ## here
