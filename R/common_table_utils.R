@@ -1,20 +1,3 @@
-##########################################
-
-pack_data.table = function(..., subset = NULL){
-    args = list(...)
-    res = as.data.table(do.call(c, args))
-    names_res = names(res)
-    bad_names = is.na(names_res) | (names_res=="") | duplicated(names_res)
-    if(sum(bad_names)>0){
-        names(res)[bad_names] = paste0("...bbbaaaddd__", 1:sum(bad_names)) 
-    }
-    if(!is.null(subset)){
-        res[subset & !is.na(subset),]
-    } else {
-        res    
-    }
-    
-}
 
 ###########################
 universal_subset = function(data, index, drop = TRUE){
@@ -25,6 +8,8 @@ universal_subset = function(data, index, drop = TRUE){
     }
     data
 }
+
+#########################################
 
 recycle_if_single_row = function(data, nrows){
     if(NCOL(data) == 0) {
