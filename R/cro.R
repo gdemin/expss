@@ -187,7 +187,9 @@ cro = function(cell_vars,
 }
 
 
-
+#' @export
+#' @rdname cro
+cro_cases = cro
 
 #' @export
 #' @rdname cro
