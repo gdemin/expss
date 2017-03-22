@@ -403,14 +403,14 @@ elementary_cro = function(cell_var,
     colnames(res)[2] = "row_labels"
     
     if(total_row_position!="none"){
-        res = add_total_to_table(
+        total_rows = make_total_rows(
             res = res, 
             raw_data = raw_data,
             col_var_names = col_var_names,
-            total_row_position = total_row_position,
             total_statistic = total_statistic,
             total_label = total_label
-        )    
+        )   
+        res = add_total_to_table(res, total_rows = total_rows, total_row_position = total_row_position)
     }    
 
     
@@ -456,11 +456,23 @@ internal_rpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
                             col_var_names = col_var_names,
                             cell_var_names = cell_var_names,
                             use_weight = use_weight)
-    row_total = internal_cases(raw_data, col_var_names = cell_var_names,
-                               use_weight = use_weight)
-    setnames(row_total, "col_var", "cell_var")
-    setnames(row_total, "value", "total")
-    dtable = row_total[dtable, on = c("row_var","cell_var"), nomatch = NA]
+    if(is.null(cell_var_names)){
+        if(use_weight){
+            row_total = raw_data[, list(total = as.double(sum(weight, na.rm = TRUE))), by = "row_var" ]
+            
+        } else {
+            row_total = raw_data[, list(total = as.double(.N)), by = "row_var" ]
+        } 
+        dtable = row_total[dtable, on = "row_var", nomatch = NA]
+    } else {
+        row_total = internal_cases(raw_data, col_var_names = cell_var_names,
+                                   use_weight = use_weight)
+        setnames(row_total, "col_var", "cell_var")
+        setnames(row_total, "value", "total")
+        dtable = row_total[dtable, on = c("row_var","cell_var"), nomatch = NA]
+    }
+
+
     dtable[, value := value/total*100]    
 }
 
@@ -471,10 +483,10 @@ internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
                             cell_var_names = cell_var_names,
                             use_weight = use_weight)
     if(use_weight){
-        dtotal = raw_data[, list(total = sum(weight, na.rm = TRUE)), by = "row_var" ]
+        dtotal = raw_data[, list(total = as.double(sum(weight, na.rm = TRUE))), by = "row_var" ]
 
     } else {
-        dtotal = raw_data[, list(total = .N), by = "row_var" ]
+        dtotal = raw_data[, list(total = as.double(.N)), by = "row_var" ]
     }
     dtable = dtotal[dtable, on = "row_var", nomatch = NA]
     dtable[, value := value/total*100]  
@@ -543,8 +555,8 @@ internal_responses = function(raw_data, col_var_names, use_weight){
 
 ###########################
 
-add_total_to_table = function(res, raw_data, col_var_names, 
-                              total_row_position, total_statistic, total_label){
+make_total_rows = function(res, raw_data, col_var_names, 
+                               total_statistic, total_label){
     if(length(total_label) < length(total_statistic)) {
         total_label = rep(total_label, length(total_statistic))
     }
@@ -578,12 +590,21 @@ add_total_to_table = function(res, raw_data, col_var_names,
         row[["row_labels"]] = add_first_symbol_to_total_label(total_label[item])
         row
     })
-    total_row = do.call(add_rows, total_row)
+    rbindlist(total_row, fill = TRUE, use.names = TRUE)
+   
+}
+
+add_total_to_table = function(res, total_rows, total_row_position){
+    # we need total inside ech group of row_var
+    res[ , ..index__ :=2]
     if(total_row_position=="above"){
-        res = add_rows(total_row, res)
+        total_rows[, ..index__ := 1] 
     } else {
-        res = add_rows(res, total_row)
+        total_rows[, ..index__ := 3]
     }
+    res = rbind(res, total_rows, fill = TRUE, use.names = TRUE)
+    setkeyv(res, c("row_var", "..index__"), verbose = FALSE)
+    res[["..index__"]] = NULL
     res
 }
 
