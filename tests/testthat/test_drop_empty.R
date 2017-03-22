@@ -21,8 +21,8 @@ mtcars = apply_labels(mtcars,
 # with_empty = with_empty %add_rows% with_empty
 
 with_empty = structure(list(row_labels = c("Transmission|Automatic", "Transmission|Manual", 
-"Transmission|Other", "Transmission|#Total", "Transmission|Automatic", 
-"Transmission|Manual", "Transmission|Other", "Transmission|#Total"
+"Transmission|Other", "Transmission|#Total cases", "Transmission|Automatic", 
+"Transmission|Manual", "Transmission|Other", "Transmission|#Total cases"
 ), `Engine|V-engine` = c(12L, 6L, NA, 18L, 12L, 6L, NA, 18L), 
 `Engine|Straight engine` = c(7L, 7L, NA, 14L, 7L, 7L, NA, 
 14L), `Engine|Other` = c(NA_integer_, NA_integer_, NA_integer_, 

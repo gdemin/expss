@@ -16,7 +16,7 @@ mtcars = apply_labels(mtcars,
 )
 
 # without sorting
-tabl = mtcars %>% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
+tabl = mtcars %>% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am), total_label = "#Total"))
 expect_equal_to_reference(split_labels(tabl[[1]]), "rds/split_labels1.RDS")
 expect_equal_to_reference(split_labels(colnames(tabl)), "rds/split_labels2.RDS")
 

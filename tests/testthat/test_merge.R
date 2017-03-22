@@ -115,7 +115,8 @@ mtcars = modify(mtcars, {
 
 expect_equal_to_reference(with(mtcars,{
     freq = fre(carb)
-    cross = cro(list(unvr(carb)), list(unvr(am), total()))
+    cross = cro(list(unvr(carb)), list(unvr(am), total()),
+                total_label = "#Total") 
     freq %merge% cross
 
 
@@ -123,7 +124,7 @@ expect_equal_to_reference(with(mtcars,{
 
 expect_equal_to_reference(with(mtcars,{
     freq = fre(carb)
-    cross = cro(list(unvr(carb)), list(unvr(am), total()))
+    cross = cro(list(unvr(carb)), list(unvr(am), total()), total_label = "#Total")
     cross %merge% freq
 
 
@@ -131,7 +132,7 @@ expect_equal_to_reference(with(mtcars,{
 
 expect_equal_to_reference(with(mtcars,{
     freq = fre(carb[carb!=2])
-    cross = cro(list(unvr(carb[carb!=4])), list(unvr(am[carb!=4]), "#Total"))
+    cross = cro(list(unvr(carb[carb!=4])), list(unvr(am[carb!=4]), "#Total"), total_label = "#Total")
     freq %merge% cross
 
 
@@ -140,7 +141,7 @@ expect_equal_to_reference(with(mtcars,{
 # weird
 expect_equal_to_reference(with(mtcars,{
     freq = fre(carb)
-    cross = cro(list(unvr(vs)), list(unvr(am), total()))
+    cross = cro(list(unvr(vs)), list(unvr(am), total()), total_label = "#Total")
     cross %merge% freq
 
 
