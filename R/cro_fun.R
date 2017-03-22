@@ -385,6 +385,8 @@ make_dataframe_with_row_labels = function(res){
         row_labels = dm_names[[1]]
         if(length(dm_names)>1){
             new_df = setNames(new_df, dm_names[[2]])
+        } else {
+            new_df = setNames(dtfrm(new_df), rep("|", NCOL(new_df)))
         }
         res = new_df
     } else {
@@ -401,7 +403,7 @@ make_dataframe_with_row_labels = function(res){
             }
         } else {
             row_labels = names(res)
-            res = setNames(dtfrm(res), "|")
+            res = setNames(dtfrm(res), rep("|", NCOL(res)))
         } 
     }
     if(is.null(row_labels)){
