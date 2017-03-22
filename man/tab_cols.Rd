@@ -27,9 +27,9 @@ tab_weight(data, weight = NULL)
 
 tab_subgroup(data, subgroup = NULL)
 
-tab_stat_fun(data, fun, ..., mis_val = NULL, label = NULL)
+tab_stat_fun(data, ..., mis_val = NULL, label = NULL)
 
-tab_stat_fun_df(data, fun, ..., mis_val = NULL, label = NULL)
+tab_stat_fun_df(data, ..., mis_val = NULL, label = NULL)
 
 tab_stat_cases(data, total_label = NULL, total_statistic = "u_cases",
   total_row_position = c("below", "above", "none"), label = NULL)

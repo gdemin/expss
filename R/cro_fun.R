@@ -663,7 +663,7 @@ total = function(x = 1, label = "#Total"){
 #' @rdname cro_fun
 combine_functions = function(..., method = c){
     method = match.fun(method)
-    possible_names = unlist(lapply(as.list(substitute(list(...)))[-1], as.character))
+    possible_names = unlist(lapply(as.list(substitute(list(...)))[-1], deparse))
     args = list(...)
     arg_names =names(args)
     if(is.null(arg_names)) {

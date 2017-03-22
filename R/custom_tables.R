@@ -167,7 +167,7 @@ tab_subgroup.intermediate_table = function(data, subgroup = NULL){
 #####################
 #' @rdname tab_cols
 #' @export
-tab_stat_fun = function(data, fun, ..., 
+tab_stat_fun = function(data, ..., 
                         mis_val = NULL, 
                         label = NULL){
     UseMethod("tab_stat_fun")
@@ -175,7 +175,7 @@ tab_stat_fun = function(data, fun, ...,
 
 #' @rdname tab_cols
 #' @export
-tab_stat_fun_df = function(data, fun, ..., 
+tab_stat_fun_df = function(data, ..., 
                            mis_val = NULL, 
                            label = NULL){
     UseMethod("tab_stat_fun_df")
@@ -233,33 +233,33 @@ tab_stat_rpct = function(data,
 
 ############
 #' @export
-tab_stat_fun.intermediate_table = function(data, fun, ..., 
+tab_stat_fun.intermediate_table = function(data, ..., 
                                 mis_val = NULL, 
                                 label = NULL){
+    fun = eval(substitute(combine_functions(...)))
     result = cro_fun(
         cell_vars = na_if(data[[CELL_VAR]], mis_val),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
         subgroup = data[[SUBGROUP]],
-        fun = fun,
-        ...
+        fun = fun
     )
     add_result_to_intermediate_table(data, result, label)
 }
 
 #' @export
-tab_stat_fun_df.intermediate_table = function(data, fun, ..., 
+tab_stat_fun_df.intermediate_table = function(data, ..., 
                                    mis_val = NULL, 
                                    label = NULL){
+    fun = eval(substitute(combine_functions(...)))
     result = cro_fun_df(
         cell_vars = na_if(data[[CELL_VAR]], mis_val),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
         subgroup = data[[SUBGROUP]],
-        fun = fun,
-        ...
+        fun = fun
     )
     add_result_to_intermediate_table(data, result, label)
 }
@@ -449,9 +449,11 @@ tab_pivot.intermediate_table = function(data, stat_label_position = c("outside_r
            "No statistics in the table. Use at least one of 'tab_stat' before the 'pivot'.")
     stat_label_position = match.arg(stat_label_position)
     res = switch(stat_label_position, 
-           inside_rows = pivot_rows(data, stat_label_position = "inside"),
-           outside_rows = pivot_rows(data, stat_label_position = "outside")
-           )
+                 outside_rows = pivot_rows(data, stat_label_position = "outside"),
+                 inside_rows = pivot_rows(data, stat_label_position = "inside"),
+                 outside_columns = pivot_columns(data, stat_label_position = "outside"),
+                 inside_columns = pivot_columns(data, stat_label_position = "inside")
+    )
     res[["row_labels"]] = remove_unnecessary_splitters(res[["row_labels"]])
     colnames(res) = remove_unnecessary_splitters(colnames(res))
     res
@@ -525,13 +527,56 @@ pivot_rows = function(data, stat_label_position = c("inside", "outside")){
                                             unique(results[["row_labels"]])
         )
         results = sort_asc(results, "..row_labels__", "..label_index__")
-        results[["row_labels"]] = paste0( results[["row_labels"]], "|", results[["..label__"]])
+        
         results[["..row_labels__"]] = NULL
-    } else {
-        results[["row_labels"]] = paste0( results[["..label__"]], "|", results[["row_labels"]])        
     }
+    # else {
+        # results[["row_labels"]] = paste0( results[["..label__"]], "|", results[["row_labels"]])        
+    # }
+    results[["row_labels"]] = paste0( results[["row_labels"]], "|", results[["..label__"]])
     results[["..label__"]] = NULL
     results[["..label_index__"]] = NULL
+    results
+    
+}
+
+################
+
+pivot_columns = function(data, stat_label_position = c("inside", "outside")){
+    stat_label_position = match.arg(stat_label_position)  
+    results = data[[RESULT]]
+    labels = data[[STAT_LABELS]]
+    labels_index = seq_along(labels)
+    
+    all_colnames = unlist(lapply(results, function(item) colnames(item)[-1]))
+    colnames_index = match(all_colnames, unique(all_colnames))
+    results_ncols = vapply(results, NCOL, FUN.VALUE = numeric(1)) - 1 # 'row_labels' excluded
+    
+    
+    results = lapply(labels_index, function(item_num){
+        curr = results[[item_num]]
+        colnames(curr)[-1] = paste0(colnames(curr)[-1], "|", labels[item_num])
+        # if(stat_label_position=="outside"){
+        #     colnames(curr)[-1] = paste0(labels[item_num], "|", colnames(curr)[-1])
+        # } else {
+        #     colnames(curr)[-1] = paste0(colnames(curr)[-1], "|", labels[item_num])
+        # }
+
+        curr
+    })
+    
+    
+    results = Reduce(merge, results)
+    
+    labels_index = rep.int(labels_index, times = results_ncols)
+    if(stat_label_position == "inside"){
+        new_order = order(colnames_index, labels_index, decreasing = FALSE)
+    } else {
+        new_order = order(labels_index, colnames_index, decreasing = FALSE)   
+    }
+    old_colnames = colnames(results)
+    results = results[, c(1, new_order + 1), drop = FALSE]
+    colnames(results) = old_colnames[c(1, new_order + 1)]
     results
     
 }
@@ -582,6 +627,19 @@ create_list_with_names = function(...){
         } else {
             names(args)[arg_names==""] = possible_names[arg_names==""]
         } 
+    }
+    for(each_item in seq_along(names(args))){
+        curr_args = args[[each_item]]
+        if(!is.list(curr_args) && 
+           !is.data.frame(curr_args) && 
+           !is.function(curr_args) && 
+           !is.matrix(curr_args)){
+            curr_lab = var_lab(curr_args)
+            if(is.null(curr_lab)){
+                var_lab(args[[each_item]]) = names(args)[[each_item]]
+            }
+        }
+        
     }
     args
 }
