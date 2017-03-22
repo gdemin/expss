@@ -9,27 +9,27 @@
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
 cro(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL, total_label = "#Total",
+  weight = NULL, subgroup = NULL, total_label = NULL,
   total_statistic = "u_cases", total_row_position = c("below", "above",
   "none"))
 
 cro_cpct(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL, total_label = "#Total",
+  weight = NULL, subgroup = NULL, total_label = NULL,
   total_statistic = "u_cases", total_row_position = c("below", "above",
   "none"))
 
 cro_rpct(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL, total_label = "#Total",
+  weight = NULL, subgroup = NULL, total_label = NULL,
   total_statistic = "u_cases", total_row_position = c("below", "above",
   "none"))
 
 cro_tpct(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL, total_label = "#Total",
+  weight = NULL, subgroup = NULL, total_label = NULL,
   total_statistic = "u_cases", total_row_position = c("below", "above",
   "none"))
 
 cro_cpct_responses(cell_vars, col_vars = total(), row_vars = total(label =
-  ""), weight = NULL, subgroup = NULL, total_label = "#Total",
+  ""), weight = NULL, subgroup = NULL, total_label = NULL,
   total_statistic = "u_responses", total_row_position = c("below", "above",
   "none"))
 }

@@ -162,7 +162,7 @@ cro = function(cell_vars,
                row_vars = total(label = ""),
                weight = NULL,
                subgroup = NULL,
-               total_label = "#Total",
+               total_label = NULL,
                total_statistic = "u_cases",
                total_row_position = c("below", "above", "none")
                ){
@@ -196,7 +196,7 @@ cro_cpct = function(cell_vars,
                     row_vars = total(label = ""),
                     weight = NULL,
                     subgroup = NULL,
-                    total_label = "#Total",
+                    total_label = NULL,
                     total_statistic = "u_cases",
                     total_row_position = c("below", "above", "none")
                     ){
@@ -227,7 +227,7 @@ cro_rpct = function(cell_vars,
                     row_vars = total(label = ""),
                     weight = NULL,
                     subgroup = NULL,
-                    total_label = "#Total",
+                    total_label = NULL,
                     total_statistic = "u_cases",
                     total_row_position = c("below", "above", "none")
                     ){
@@ -259,7 +259,7 @@ cro_tpct = function(cell_vars,
                     row_vars = total(label = ""),
                     weight = NULL,
                     subgroup = NULL,
-                    total_label = "#Total",
+                    total_label = NULL,
                     total_statistic = "u_cases",
                     total_row_position = c("below", "above", "none")
                     ){
@@ -290,7 +290,7 @@ cro_cpct_responses = function(cell_vars,
                               row_vars = total(label = ""),
                               weight = NULL,
                               subgroup = NULL,
-                              total_label = "#Total",
+                              total_label = NULL,
                               total_statistic = "u_responses",
                               total_row_position = c("below", "above", "none")
                               ){
@@ -557,9 +557,17 @@ internal_responses = function(raw_data, col_var_names, use_weight){
 
 make_total_rows = function(res, raw_data, col_var_names, 
                                total_statistic, total_label){
-    if(length(total_label) < length(total_statistic)) {
-        total_label = rep(total_label, length(total_statistic))
+    total_statistic_label = gsub("^u_", " ", total_statistic, perl = TRUE)
+    total_statistic_label = gsub("^w_", " wtd. ", total_statistic_label, perl = TRUE)
+    # total_statistic_label = paste0(" ", total_statistic_label, ")")
+    if(is.null(total_label)){
+        total_label = paste0("#Total", total_statistic_label)    
+    } else {
+        if(length(total_label) < length(total_statistic)) {
+            total_label = paste0(total_label, total_statistic_label)
+        }    
     }
+    total_label = make_items_unique(total_label)
    
     total_row = lapply(seq_along(total_statistic), function(item){
         curr_statistic = total_statistic[[item]]
