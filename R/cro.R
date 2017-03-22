@@ -169,8 +169,10 @@ cro = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
+    str_row_vars = deparse(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
@@ -201,8 +203,10 @@ cro_cpct = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
+    str_row_vars = deparse(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
@@ -230,8 +234,10 @@ cro_rpct = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
+    str_row_vars = deparse(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
@@ -260,8 +266,10 @@ cro_tpct = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
+    str_row_vars = deparse(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
  
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
@@ -289,8 +297,10 @@ cro_cpct_responses = function(cell_vars,
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
+    str_row_vars = deparse(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
@@ -565,33 +575,37 @@ add_total_to_table = function(res, raw_data, col_var_names,
 #################################
 
 multi_cro = function(cell_vars, 
-               col_vars,
-               row_vars,
-               weight, 
-               subgroup,
-               total_label,
-               total_statistic,
-               total_row_position = c("below", "above", "none"),
-               stat_type){
+                     col_vars,
+                     row_vars,
+                     weight, 
+                     subgroup,
+                     total_label,
+                     total_statistic,
+                     total_row_position = c("below", "above", "none"),
+                     stat_type){
     cell_vars = flat_list(dichotomy_to_category_encoding(cell_vars), flat_df = FALSE)
     col_vars = flat_list(dichotomy_to_category_encoding(col_vars), flat_df = FALSE)
+    row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
     stopif(!is.null(subgroup) && !is.logical(subgroup), "'subgroup' should be logical.")
     check_sizes("'cro'", cell_vars, col_vars, weight, subgroup)
-    res = lapply(cell_vars, function(each_cell_var){
-        all_col_vars = lapply(col_vars, function(each_col_var){
-            elementary_cro(cell_var = each_cell_var, 
-                           col_var = each_col_var, 
-                           row_var = NULL,
-                           weight = weight,
-                           subgroup = subgroup,
-                           total_label = total_label,
-                           total_statistic = total_statistic,
-                           total_row_position = total_row_position,
-                           stat_type = stat_type
-            )    
+    res = lapply(row_vars, function(each_row_var) {
+        res = lapply(cell_vars, function(each_cell_var){
+            all_col_vars = lapply(col_vars, function(each_col_var){
+                elementary_cro(cell_var = each_cell_var, 
+                               col_var = each_col_var, 
+                               row_var = each_row_var,
+                               weight = weight,
+                               subgroup = subgroup,
+                               total_label = total_label,
+                               total_statistic = total_statistic,
+                               total_row_position = total_row_position,
+                               stat_type = stat_type
+                )    
+            })
+            Reduce(merge, all_col_vars)
+            
         })
-        Reduce(merge, all_col_vars)
-        
+        res = do.call(add_rows, res)
     })
     res = do.call(add_rows, res)
     rownames(res) = NULL
