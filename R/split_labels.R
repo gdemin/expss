@@ -81,6 +81,16 @@ split_columns  = function(data, columns = 1, remove_repeated = TRUE, split = "|"
    UseMethod("split_columns")
 }
 
+#' @rdname split_labels
+#' @export
+tab_split_columns = split_columns
+
+#' @export
+split_columns.intermeditate_table = function(x, ...){
+    stop("No results for splitting. Use 'tab_split_columns' after 'tab_pivot'.")
+}
+
+
 #' @export
 split_columns.data.frame  = function(data, columns = 1, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
     stopif(!is.numeric(columns) && !is.character(columns) &&

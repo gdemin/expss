@@ -1,4 +1,4 @@
-0.6.0 (01.01.2017)
+0.7.0 (29.03.2017)
 ================
 * bugfixes
 * add methods for `where` for vectors/matrices/lists
@@ -18,7 +18,10 @@
 * remove 'dichotomy_df', 'dichotomy_df1' - use 'as.dichotomy' instead
 * remove labelled matrix support
 * add 'datatable' for tables representation in Shiny
+* add 'htmlTables' for tables representation in RStudio viewer and for knitting to html
 * make value labels support in the base R and other packages (via 'factor' for class 'labelled')
+* multiple/nested banners/variables suppport in 'cro_*'
+* interface for creating sofisticated tables
 
 0.5.5 (19.10.2016)
 ================

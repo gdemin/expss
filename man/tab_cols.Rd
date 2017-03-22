@@ -4,14 +4,17 @@
 \alias{tab_cols}
 \alias{tab_cells}
 \alias{tab_rows}
+\alias{tab_weight}
+\alias{tab_subgroup}
 \alias{tab_stat_fun}
 \alias{tab_stat_fun_df}
 \alias{tab_stat_cases}
 \alias{tab_stat_cpct}
 \alias{tab_stat_cpct_responses}
 \alias{tab_stat_tpct}
-\alias{tab_weight}
-\alias{tab_subgroup}
+\alias{tab_stat_rpct}
+\alias{tab_pivot}
+\alias{tab_intermediate_pivot}
 \title{Functions for constracting custom tables}
 \usage{
 tab_cols(data, ...)
@@ -20,21 +23,35 @@ tab_cells(data, ...)
 
 tab_rows(data, ...)
 
-tab_stat_fun(data, ..., label = NULL)
-
-tab_stat_fun_df(data, ..., label = NULL)
-
-tab_stat_cases(data, label = NULL)
-
-tab_stat_cpct(data, label = NULL)
-
-tab_stat_cpct_responses(data, label = NULL)
-
-tab_stat_tpct(data, label = NULL)
-
 tab_weight(data, weight = NULL)
 
 tab_subgroup(data, subgroup = NULL)
+
+tab_stat_fun(data, fun, ..., mis_val = NULL, label = NULL)
+
+tab_stat_fun_df(data, fun, ..., mis_val = NULL, label = NULL)
+
+tab_stat_cases(data, total_label = NULL, total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none"), label = NULL)
+
+tab_stat_cpct(data, total_label = NULL, total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none"), label = NULL)
+
+tab_stat_cpct_responses(data, total_label = NULL,
+  total_statistic = "u_responses", total_row_position = c("below", "above",
+  "none"), label = NULL)
+
+tab_stat_tpct(data, total_label = NULL, total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none"), label = NULL)
+
+tab_stat_rpct(data, total_label = NULL, total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none"), label = NULL)
+
+tab_pivot(data, stat_label_position = c("outside_rows", "inside_rows",
+  "outside_columns", "inside_columns"))
+
+tab_intermediate_pivot(data, stat_label_position = c("outside_rows",
+  "inside_rows", "outside_columns", "inside_columns"))
 }
 \arguments{
 \item{...}{jjjkj}

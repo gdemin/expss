@@ -2,6 +2,7 @@
 % Please edit documentation in R/cro.R
 \name{cro}
 \alias{cro}
+\alias{cro_cases}
 \alias{cro_cpct}
 \alias{cro_rpct}
 \alias{cro_tpct}
@@ -9,6 +10,11 @@
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
 cro(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL, total_label = NULL,
+  total_statistic = "u_cases", total_row_position = c("below", "above",
+  "none"))
+
+cro_cases(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL, total_label = NULL,
   total_statistic = "u_cases", total_row_position = c("below", "above",
   "none"))
