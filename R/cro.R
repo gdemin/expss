@@ -337,12 +337,15 @@ elementary_cro = function(cell_var,
     weight = set_negative_and_na_to_zero(weight)
     weight = recycle_if_single_row(weight, max_nrow)
     
-    valid = valid(cell_var) & valid(col_var) & (weight>0) & if_null(subgroup, TRUE)
+    valid = valid(cell_var) & valid(col_var) & valid(row_var) & (weight>0) & if_null(subgroup, TRUE)
 
     weight = universal_subset(weight, valid)
 
     col_var = recycle_if_single_row(col_var, max_nrow)
     col_var = universal_subset(col_var, valid)
+    
+    row_var = recycle_if_single_row(row_var, max_nrow)
+    row_var = universal_subset(row_var, valid)
 
     cell_var = recycle_if_single_row(cell_var, max_nrow)
     cell_var = universal_subset(cell_var, valid)
@@ -350,14 +353,19 @@ elementary_cro = function(cell_var,
     cell_var_lab = var_lab(cell_var)
     cell_val_lab = val_lab(cell_var)
     
+    row_var_lab = var_lab(row_var)
+    
     col_var_lab = var_lab(col_var)
     col_val_lab = val_lab(col_var)
     
 
-    raw_data = cbind(as.data.table(cell_var), as.data.table(col_var), data.table(weight))
+    raw_data = cbind(as.data.table(cell_var), 
+                     as.data.table(col_var), 
+                     data.table(weight),
+                     data.table(row_var))
     cell_var_names = paste0("cells", seq_len(NCOL(cell_var)))
     col_var_names = paste0("cols", seq_len(NCOL(col_var)))
-    setnames(raw_data, c(cell_var_names, col_var_names, "weight"))
+    setnames(raw_data, c(cell_var_names, col_var_names, "weight", "row_var"))
 
     # statistics
 
@@ -389,10 +397,10 @@ elementary_cro = function(cell_var,
     dtable[, col_var := set_var_lab(col_var, col_var_lab)]
     dtable[, col_var := set_val_lab(col_var, col_val_lab)]
     ### make rectangular table  
-    res = long_datatable_to_table(dtable, rows = "cell_var", columns = "col_var", value = "value")
+    res = long_datatable_to_table(dtable, rows = c("row_var", "cell_var"), columns = "col_var", value = "value")
     
     
-    colnames(res)[1] = "row_labels"
+    colnames(res)[2] = "row_labels"
     
     if(total_row_position!="none"){
         res = add_total_to_table(
@@ -405,7 +413,9 @@ elementary_cro = function(cell_var,
         )    
     }    
 
-    res[, row_labels := paste0(cell_var_lab, "|", row_labels)]
+    
+    res[, row_labels := paste0(row_var_lab, "|", row_var, "|", cell_var_lab, "|", row_labels)]
+    res[["row_var"]] = NULL
     colnames(res)[-1] = paste0(col_var_lab, "|", colnames(res)[-1]) 
 
     res[ , row_labels := remove_unnecessary_splitters(row_labels)] 
@@ -427,7 +437,7 @@ internal_cpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
                             use_weight = use_weight)
     
     setnames(dtotal, "value", "total")
-    dtable = dtotal[dtable, on = "col_var", nomatch = NA]
+    dtable = dtotal[dtable, on = c("row_var","col_var"), nomatch = NA]
     dtable[, value := value/total*100]    
 }
 
@@ -437,7 +447,7 @@ internal_cpct_responses = function(raw_data, col_var_names, cell_var_names = NUL
                             col_var_names = col_var_names,
                             cell_var_names = cell_var_names,
                             use_weight = use_weight)
-    dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]    
+    dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "row_var,col_var"]    
 }
 
 #######################
@@ -450,7 +460,7 @@ internal_rpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
                                use_weight = use_weight)
     setnames(row_total, "col_var", "cell_var")
     setnames(row_total, "value", "total")
-    dtable = row_total[dtable, on = "cell_var", nomatch = NA]
+    dtable = row_total[dtable, on = c("row_var","cell_var"), nomatch = NA]
     dtable[, value := value/total*100]    
 }
 
@@ -461,10 +471,13 @@ internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
                             cell_var_names = cell_var_names,
                             use_weight = use_weight)
     if(use_weight){
-        dtable[, value := value/sum(raw_data$weight, na.rm = TRUE)*100]  
+        dtotal = raw_data[, list(total = sum(weight, na.rm = TRUE)), by = "row_var" ]
+
     } else {
-        dtable[, value := value/NROW(raw_data)*100] 
+        dtotal = raw_data[, list(total = .N), by = "row_var" ]
     }
+    dtable = dtotal[dtable, on = "row_var", nomatch = NA]
+    dtable[, value := value/total*100]  
 }
 
 ########################
@@ -474,27 +487,29 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
 
     if(is.null(cell_var_names)){
         res = lapply(col_var_names, function(each_col){
+            by_str = paste0("row_var,", each_col)
             if(use_weight){
-                dres = raw_data[, list(value = sum(weight, na.rm = TRUE)), by = each_col] 
+                dres = raw_data[, list(value = sum(weight, na.rm = TRUE)), by = by_str] 
             } else {
-                dres = raw_data[, list(value = .N), by = each_col]                 
+                dres = raw_data[, list(value = .N), by = by_str]                 
             }
             setnames(dres, each_col, "col_var")
             
         })
         res = rbindlist(res, use.names = TRUE, fill = TRUE)
-        res = res[, list(value = sum(value, na.rm = TRUE)), by = "col_var"]
+        res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
         res = res[!is.na(col_var), ]
     } else {
 
         res = lapply(cell_var_names, function(each_cell) { 
             res = lapply(col_var_names, function(each_col){
+                by_str = paste0("row_var,",each_cell, ",", each_col)
                 if(use_weight){
                     dres = raw_data[, list(value = sum(weight, na.rm = TRUE)), 
-                                    by = eval(paste0(each_cell, ",", each_col))] 
+                                    by = by_str] 
                 } else {
                     dres = raw_data[, list(value = .N), 
-                                    by = eval(paste0(each_cell, ",", each_col))]                 
+                                    by = by_str]                 
                 }
                 setnames(dres, each_col, "col_var")
                 setnames(dres, each_cell, "cell_var")
@@ -503,7 +518,7 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
             res = rbindlist(res, use.names = TRUE, fill = TRUE)
         })
         res = rbindlist(res, use.names = TRUE, fill = TRUE)
-        res = res[, list(value = sum(value, na.rm = TRUE)), by = "col_var,cell_var"]
+        res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var,cell_var"]
         res = res[!is.na(col_var) & !is.na(cell_var), ]
     }
     res
@@ -516,13 +531,13 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
 internal_responses = function(raw_data, col_var_names, use_weight){
     
     # dtable[, col_names] = unlab(dtable[, col_names, with = FALSE])
-    cell_var_names = setdiff(colnames(raw_data), c(col_var_names, "weight"))
+    cell_var_names = setdiff(colnames(raw_data), c(col_var_names, "weight", "row_var"))
     res = internal_cases(raw_data, 
                          col_var_names = col_var_names,
                          cell_var_names = cell_var_names,
                          use_weight = use_weight
                          )
-    res[, list(value = sum(value, na.rm = TRUE)), by = "col_var"]
+    res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
 }
 
 ###########################
@@ -554,13 +569,12 @@ add_total_to_table = function(res, raw_data, col_var_names,
                                        col_var_names = col_var_names, 
                                        use_weight = use_weight)
         )
-        dtotal[, title := ""] 
+        dtotal[, row_labels := ""] 
         row = long_datatable_to_table(dtotal, 
-                                rows = "title", 
+                                rows = c("row_var", "row_labels"), 
                                 columns = "col_var", 
                                 value = "value")
-        colnames(row)[1] = "row_labels"
-        row[[1]] = add_first_symbol_to_total_label(total_label[item])
+        row[["row_labels"]] = add_first_symbol_to_total_label(total_label[item])
         row
     })
     total_row = do.call(add_rows, total_row)
