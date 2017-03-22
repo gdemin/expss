@@ -159,7 +159,8 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' @export
 cro = function(cell_vars, 
                col_vars = total(), 
-               weight = NULL, 
+               row_vars = total(label = ""),
+               weight = NULL,
                subgroup = NULL,
                total_label = "#Total",
                total_statistic = "u_cases",
@@ -173,11 +174,12 @@ cro = function(cell_vars,
     
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
+              row_vars = row_vars,
               weight = weight,
+              subgroup = subgroup,
               total_label = total_label,
               total_statistic = total_statistic,
               total_row_position = total_row_position,
-              subgroup = subgroup,
               stat_type = "cases"
     )    
 }
@@ -189,7 +191,8 @@ cro = function(cell_vars,
 #' @rdname cro
 cro_cpct = function(cell_vars, 
                     col_vars = total(), 
-                    weight = NULL, 
+                    row_vars = total(label = ""),
+                    weight = NULL,
                     subgroup = NULL,
                     total_label = "#Total",
                     total_statistic = "u_cases",
@@ -203,11 +206,12 @@ cro_cpct = function(cell_vars,
     
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
+              row_vars = row_vars,
               weight = weight,
+              subgroup = subgroup,
               total_label = total_label,
               total_statistic = total_statistic,
               total_row_position = total_row_position,
-              subgroup = subgroup,
               stat_type = "cpct"
     )    
 }
@@ -216,7 +220,8 @@ cro_cpct = function(cell_vars,
 #' @rdname cro
 cro_rpct = function(cell_vars, 
                     col_vars = total(), 
-                    weight = NULL, 
+                    row_vars = total(label = ""),
+                    weight = NULL,
                     subgroup = NULL,
                     total_label = "#Total",
                     total_statistic = "u_cases",
@@ -230,11 +235,12 @@ cro_rpct = function(cell_vars,
     
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
+              row_vars = row_vars,
               weight = weight,
+              subgroup = subgroup,
               total_label = total_label,
               total_statistic = total_statistic,
               total_row_position = total_row_position,
-              subgroup = subgroup,
               stat_type = "rpct"
     )    
 }
@@ -244,7 +250,8 @@ cro_rpct = function(cell_vars,
 #' @rdname cro
 cro_tpct = function(cell_vars, 
                     col_vars = total(), 
-                    weight = NULL, 
+                    row_vars = total(label = ""),
+                    weight = NULL,
                     subgroup = NULL,
                     total_label = "#Total",
                     total_statistic = "u_cases",
@@ -258,11 +265,12 @@ cro_tpct = function(cell_vars,
  
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
+              row_vars = row_vars,
               weight = weight,
+              subgroup = subgroup,
               total_label = total_label,
               total_statistic = total_statistic,
               total_row_position = total_row_position,
-              subgroup = subgroup,
               stat_type = "tpct"
     )    
 }
@@ -271,7 +279,8 @@ cro_tpct = function(cell_vars,
 #' @rdname cro
 cro_cpct_responses = function(cell_vars, 
                               col_vars = total(), 
-                              weight = NULL, 
+                              row_vars = total(label = ""),
+                              weight = NULL,
                               subgroup = NULL,
                               total_label = "#Total",
                               total_statistic = "u_responses",
@@ -285,22 +294,26 @@ cro_cpct_responses = function(cell_vars,
     
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
+              row_vars = row_vars,
               weight = weight,
+              subgroup = subgroup,
               total_label = total_label,
               total_statistic = total_statistic,
               total_row_position = total_row_position,
-              subgroup = subgroup,
               stat_type = "cpct_responses"
     )    
 }
 
 
 ### compute statistics for single cell_var and single col_var
-elementary_cro = function(cell_var, col_var, weight = NULL, 
+elementary_cro = function(cell_var, 
+                          col_var, 
+                          row_var, 
+                          weight = NULL, 
+                          subgroup,
                           total_label,
                           total_statistic,
                           total_row_position = c("below", "above", "none"),
-                          subgroup,
                           stat_type = c("cases", "cpct", "cpct_responses", "rpct", "tpct")
                           ){
     
@@ -552,7 +565,8 @@ add_total_to_table = function(res, raw_data, col_var_names,
 #################################
 
 multi_cro = function(cell_vars, 
-               col_vars, 
+               col_vars,
+               row_vars,
                weight, 
                subgroup,
                total_label,
@@ -567,11 +581,12 @@ multi_cro = function(cell_vars,
         all_col_vars = lapply(col_vars, function(each_col_var){
             elementary_cro(cell_var = each_cell_var, 
                            col_var = each_col_var, 
+                           row_var = NULL,
                            weight = weight,
+                           subgroup = subgroup,
                            total_label = total_label,
                            total_statistic = total_statistic,
                            total_row_position = total_row_position,
-                           subgroup = subgroup,
                            stat_type = stat_type
             )    
         })

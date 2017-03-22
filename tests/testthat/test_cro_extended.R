@@ -28,15 +28,15 @@ expect_equal_to_reference(cro(list(mrset(mult1)), list(mult2$b1)),
 expect_equal_to_reference(cro(list(mult2$b1), list(mrset(mult1))),
                           "rds/table_cases8.rds")
 
-expect_equal_to_reference(cro(list(mrset(mult1)), list(mult2$b1), weight),
+expect_equal_to_reference(cro(list(mrset(mult1)), list(mult2$b1), weight = weight),
                           "rds/table_cases9.rds")
-expect_equal_to_reference(cro(list(mrset(mult1)), list(mult2$b1), weight, total_statistic = "w_cases"),
+expect_equal_to_reference(cro(list(mrset(mult1)), list(mult2$b1), weight = weight, total_statistic = "w_cases"),
                           "rds/table_cases9a.rds")
 
-expect_equal_to_reference(cro(list(mult2$b1), list(mrset(mult1)), weight),
+expect_equal_to_reference(cro(list(mult2$b1), list(mrset(mult1)), weight = weight),
                           "rds/table_cases10.rds")
 
-expect_equal_to_reference(cro(list(mult2$b1), list(mrset(mult1)), weight, total_statistic = "w_cases"),
+expect_equal_to_reference(cro(list(mult2$b1), list(mrset(mult1)), weight = weight, total_statistic = "w_cases"),
                           "rds/table_cases10a.rds")
 
 # expect_equal_to_references(cro(numeric(0)))
@@ -46,10 +46,10 @@ expect_equal_to_reference(cro(list(mrset(mult1)), list(mrset(mult2))),
                           "rds/table_cases11.rds")
 
 
-expect_equal_to_reference(cro(list(mrset(mult1)), list(mrset(mult2)),  weight),
+expect_equal_to_reference(cro(list(mrset(mult1)), list(mrset(mult2)),  weight = weight),
                           "rds/table_cases12.rds")
 
-expect_equal_to_reference(cro(list(mrset(mult1)), list(mrset(mult2)),  weight, 
+expect_equal_to_reference(cro(list(mrset(mult1)), list(mrset(mult2)),  weight = weight, 
                               total_statistic = "w_cases"),
                           "rds/table_cases12a.rds")
 
@@ -57,10 +57,10 @@ expect_equal_to_reference(cro(list(empty1), list(mrset(mult2))),
                           "rds/table_cases4.rds")
 
 
-expect_equal_to_reference(cro(list(mrset(mult1)), list(empty1), weight),
+expect_equal_to_reference(cro(list(mrset(mult1)), list(empty1), weight = weight),
                           "rds/table_cases5.rds")
 
-expect_equal_to_reference(cro(list(mrset(mult1)), list(mrset(mult2)), empty1),
+expect_equal_to_reference(cro(list(mrset(mult1)), list(mrset(mult2)), weight = empty1),
                           "rds/table_cases6.rds")
 
 expect_equal_to_reference(cro(list(mrset(mult1, empty1)), 
