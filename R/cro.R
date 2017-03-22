@@ -521,6 +521,7 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
         res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var,cell_var"]
         res = res[!is.na(col_var) & !is.na(cell_var), ]
     }
+    res[, value := as.double(value)]
     res
 }
 
