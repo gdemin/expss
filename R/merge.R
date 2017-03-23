@@ -64,8 +64,9 @@
 
 #' @export
 merge.etable = function(x, y,
-                        by.x = colnames(x)[1],
-                        by.y = colnames(y)[1],
+                        by = 1,
+                        by.x = by,
+                        by.y = by,
                         all = TRUE,
                         all.x = all,
                         all.y = all,
@@ -103,13 +104,24 @@ merge_table = function(x, y,
                        sort,
                        suffixes,
                        incomparables, ...){
+    stopif(length(by.x)>1 || length(by.y)>1, "'etable' can be merged only by single column.")
     class_x = class(x)
     class_y = class(y)
     # below we try to preserve order in rows in y for rows which doesn't exists in x
     order.x = seq_len(nrow(x))
     x[['..order..x']] = order.x
-    pos1 = match(by.x, colnames(x))[[1]]
-    pos2 = match(by.y, colnames(y))[[1]]
+    
+    #### duplicated column names are possible so we use integer position if by.x or by.y is character
+    if(is.numeric(by.x)){
+        pos1 = by.x
+    } else {
+        pos1 = match(by.x, colnames(x))[[1]]
+    }
+    if(is.numeric(by.y)){
+        pos2 = by.y
+    } else {
+        pos2 = match(by.y, colnames(y))[[1]]
+    }
     order.y = order.x[match(y[[pos2]], x[[pos1]])]
     # fill NA.
     need_sort = anyNA(order.y) & !all(is.na(order.y))
@@ -123,6 +135,20 @@ merge_table = function(x, y,
         }
         y[['..order..y']] = order.y
     }
+    
+    ###### actions for avoiding duplication of rows if we have duplicated keys
+    x_match_col = x[[pos1]]
+    y_match_col = y[[pos2]]
+    # if(anyDuplicated(x_match_col) || anyDuplicated(y_match_col)){
+    x[[pos1]] = make_items_unique(x[[pos1]])       
+    y[[pos2]] = make_items_unique(y[[pos2]])
+    uniqs = c(x[[pos1]], y[[pos2]])
+    old = c(x_match_col, y_match_col)
+    # } else {
+    # old = NULL
+    # }
+
+    ##########################################
     
     res = suppressWarnings(merge.data.frame(x, y, by.x = by.x, by.y = by.y,
                                             all.x = all.x, all.y = all.y,
@@ -139,6 +165,7 @@ merge_table = function(x, y,
         
     }
     res = res %n_d% c('..order..y','..order..x')
+    res[[1]] = old[match(res[[1]], uniqs)]
     colnames(res) = preserve_colnames
     class(res) = intersect(class_x, class_y)
     rownames(res) = NULL

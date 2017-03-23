@@ -215,3 +215,38 @@ data(mtcars)
 expect_equal_to_reference(fre(mtcars$cyl[mtcars$mpg<20]) %merge% fre(mtcars$cyl) ,
                            "rds/merge12.rds")
 
+context("merge duplicated rows")
+
+tabl1 = mtcars %>% 
+    tab_cells(am) %>% 
+    tab_cols(total(), vs) %>% 
+    tab_stat_cpct() %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+tabl2 = mtcars %>% 
+    tab_cells(am) %>% 
+    tab_cols(total(), cyl) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    tabl1 %merge% tabl2,
+    "rds/merge13.rds")
+expect_equal_to_reference(
+    tabl2 %merge% tabl1,
+    "rds/merge14.rds")
+expect_equal_to_reference(
+    tabl1 %merge% tabl1,
+    "rds/merge15.rds")
+
+
+expect_equal_to_reference(
+    merge(tabl1, tabl1, by = "row_labels"),
+    "rds/merge15.rds")
+
+expect_equal_to_reference(
+    merge(tabl1, tabl1, by = 1),
+    "rds/merge15.rds")
+
+expect_error(merge(tabl1, tabl1, by = 1:2))
