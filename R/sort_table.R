@@ -106,18 +106,25 @@ sort_table_internal = function(x, columns, excluded_rows, na.last, decreasing){
 
 #' @export
 sort_table_asc.intermeditate_table = function(x, ...){
-    stop("No results for sorting. Use 'tab_sort_*' after 'tab_pivot'.")
+    result_num = length(x[[RESULT]])
+    stopif(result_num==0, 
+           "No results for sorting. Use 'tab_format_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
+    x[[RESULT]][[result_num]] = sort_table_asc(x[[RESULT]][[result_num]], ...)
 }
 
 #' @export
 sort_table_desc.intermeditate_table = function(x, ...){
-    stop("No results for sorting. Use 'tab_sort_*' after 'tab_pivot'.")
+    result_num = length(x[[RESULT]])
+    stopif(result_num==0,
+           "No results for sorting. Use 'tab_format_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
+    x[[RESULT]][[result_num]] = sort_table_desc(x[[RESULT]][[result_num]], ...)
+    
 }
 
 #' @rdname sort_table_asc
 #' @export
-tab_sort_asc = sort_table_asc
+tab_format_sort_asc = sort_table_asc
 
 #' @rdname sort_table_asc
 #' @export
-tab_sort_desc = sort_table_desc
+tab_format_sort_desc = sort_table_desc
