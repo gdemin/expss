@@ -105,20 +105,27 @@ sort_table_internal = function(x, columns, excluded_rows, na.last, decreasing){
 }
 
 #' @export
-sort_table_asc.intermeditate_table = function(x, ...){
+sort_table_asc.intermeditate_table = function(x, columns = 2, excluded_rows = "#", na.last = FALSE){
     result_num = length(x[[RESULT]])
     stopif(result_num==0, 
            "No results for sorting. Use 'tab_format_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
-    x[[RESULT]][[result_num]] = sort_table_asc(x[[RESULT]][[result_num]], ...)
+    x[[RESULT]][[result_num]] = sort_table_asc(x[[RESULT]][[result_num]], 
+                                               columns = columns, 
+                                               excluded_rows = excluded_rows,
+                                               na.last = na.last
+                                                )
 }
 
 #' @export
-sort_table_desc.intermeditate_table = function(x, ...){
+sort_table_desc.intermeditate_table = function(x, columns = 2, excluded_rows = "#", na.last = TRUE){
     result_num = length(x[[RESULT]])
     stopif(result_num==0,
            "No results for sorting. Use 'tab_format_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
-    x[[RESULT]][[result_num]] = sort_table_desc(x[[RESULT]][[result_num]], ...)
-    
+    x[[RESULT]][[result_num]] = sort_table_desc(x[[RESULT]][[result_num]], 
+                                                columns = columns, 
+                                                excluded_rows = excluded_rows,
+                                                na.last = na.last
+                                                )
 }
 
 #' @rdname sort_table_asc

@@ -3,17 +3,17 @@
 \name{sort_table_asc}
 \alias{sort_table_asc}
 \alias{sort_table_desc}
-\alias{tab_sort_asc}
-\alias{tab_sort_desc}
+\alias{tab_format_sort_asc}
+\alias{tab_format_sort_desc}
 \title{Partially (inside blocks) sort tables/data.frames}
 \usage{
 sort_table_asc(x, columns = 2, excluded_rows = "#", na.last = FALSE)
 
 sort_table_desc(x, columns = 2, excluded_rows = "#", na.last = TRUE)
 
-tab_sort_asc(x, columns = 2, excluded_rows = "#", na.last = FALSE)
+tab_format_sort_asc(x, columns = 2, excluded_rows = "#", na.last = FALSE)
 
-tab_sort_desc(x, columns = 2, excluded_rows = "#", na.last = TRUE)
+tab_format_sort_desc(x, columns = 2, excluded_rows = "#", na.last = TRUE)
 }
 \arguments{
 \item{x}{data.frame}
