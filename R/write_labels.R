@@ -89,6 +89,7 @@ write_labels = function(x, filename, fileEncoding = ""){
         ##### 
         curr_var_lab = var_labs[[each]]
         if (!is.null(curr_var_lab) && (curr_var_lab!="")){
+            curr_var_lab = gsub("\\", "\\\\", curr_var_lab, fixed = TRUE) # escape backslash
             code = paste0(code,
                           'var_lab(w$',x_names[each],') = "', gsub('"','\\\\"',curr_var_lab),'\"',           
                           "\n")
@@ -409,7 +410,8 @@ make_make_labs = function(vars, named_vec){
     } else {
         vars = paste0("val_lab(w$",vars,")")
     }
-    labs = gsub('"','\\\\"',names(named_vec))
+    labs = gsub("\\", "\\\\", names(named_vec), fixed = TRUE) # escape backslash
+    labs = gsub('"','\\\\"', labs)
     vallab = paste0("    ",named_vec,' ',labs,'')#[labs!=""]
     pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]+)(.+?)$"
     if(all(grepl(pattern, gsub("^([\\s\\t]+)|([\\s\\t]+)$","",vallab,perl = TRUE), perl = TRUE))){

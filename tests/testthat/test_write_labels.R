@@ -160,6 +160,15 @@ if(isTRUE(options("covr")[[1]])){
     unlink("data/aaa.csv.dic.R")
     expect_warning(read_labelled_csv("data/aaa.csv"))
     
+    ####### wrong slash
+    w = read_spss("data/wrong_slash.sav")
+    
+    write_labelled_csv(w, "data/wrong_slash.csv")
+    w2 = read_labelled_csv("data/wrong_slash.csv")
+    expect_true(all.equal(w, w2))
+    
+    unlink("data/wrong_slash.csv")
+    unlink("data/wrong_slash.csv.dic.R")
     unlink("data/prelaunch.csv")
     unlink("data/prelaunch.csv.sps")
     unlink("data/aaa.csv")
