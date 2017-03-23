@@ -9,6 +9,7 @@
 \alias{w_mad}
 \alias{w_sum}
 \alias{w_n}
+\alias{unweighted_n}
 \alias{w_cov}
 \alias{w_cor}
 \alias{w_pearson}
@@ -30,6 +31,8 @@ w_mad(x, weight = NULL, na.rm = TRUE)
 w_sum(x, weight = NULL, na.rm = TRUE)
 
 w_n(x, weight = NULL, na.rm = TRUE)
+
+unweighted_n(x, weight = NULL, na.rm = TRUE)
 
 w_cov(x, weight = NULL, use = c("pairwise.complete.obs", "complete.obs"))
 

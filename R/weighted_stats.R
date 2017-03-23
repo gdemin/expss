@@ -143,6 +143,18 @@ w_n = function(x, weight = NULL, na.rm = TRUE){
 
 #' @export
 #' @rdname w_mean
+unweighted_n = function(x, weight = NULL, na.rm = TRUE) {
+    internal_w_stat(x = x,  weight = weight, na.rm = na.rm, fun = function(x, w, na.rm){
+        if(na.rm){
+            sum(!is.na(x))
+        } else {
+            length(x)
+        }
+    })
+}
+
+#' @export
+#' @rdname w_mean
 w_cov = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.obs")){
     if (is.data.frame(x)) {
         x = as.matrix(names2labels(x))
