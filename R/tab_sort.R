@@ -1,6 +1,6 @@
 #' Partially (inside blocks) sort tables/data.frames
 #' 
-#' \code{sort_table_asc}/\code{sort_table_desc} sort tables (usually result of 
+#' \code{tab_sort_asc}/\code{tab_sort_desc} sort tables (usually result of 
 #' \link{cro}) in ascending/descending order between specified rows (by 
 #' default, it is row which contain '#' in the first column). There is no
 #' non-standard evaluation in these functions by design so use quotes for names
@@ -45,31 +45,31 @@
 #' # with sorting
 #' mtcars %>% 
 #'     calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am))) %>% 
-#'     sort_table_desc
-sort_table_asc = function(x, columns = 2, excluded_rows = "#", na.last = FALSE){
-    UseMethod("sort_table_asc")
+#'     tab_sort_desc
+tab_sort_asc = function(x, columns = 2, excluded_rows = "#", na.last = FALSE){
+    UseMethod("tab_sort_asc")
 }
 
 #' @export
-#' @rdname sort_table_asc
-sort_table_desc = function(x, columns = 2, excluded_rows = "#", na.last = TRUE){
-    UseMethod("sort_table_desc")
+#' @rdname tab_sort_asc
+tab_sort_desc = function(x, columns = 2, excluded_rows = "#", na.last = TRUE){
+    UseMethod("tab_sort_desc")
 }
 
 
 #' @export
-sort_table_asc.data.frame = function(x, columns = 2, excluded_rows = "#", na.last = FALSE){
-    sort_table_internal(x = x, columns = columns, excluded_rows = excluded_rows, na.last = na.last, decreasing = FALSE)
+tab_sort_asc.data.frame = function(x, columns = 2, excluded_rows = "#", na.last = FALSE){
+    tab_sort_internal(x = x, columns = columns, excluded_rows = excluded_rows, na.last = na.last, decreasing = FALSE)
 }
 
 #' @export
-sort_table_desc.data.frame = function(x, columns = 2, excluded_rows = "#", na.last = TRUE){
-    sort_table_internal(x = x, columns = columns, excluded_rows = excluded_rows, na.last = na.last, decreasing = TRUE)
+tab_sort_desc.data.frame = function(x, columns = 2, excluded_rows = "#", na.last = TRUE){
+    tab_sort_internal(x = x, columns = columns, excluded_rows = excluded_rows, na.last = na.last, decreasing = TRUE)
 }
 
-sort_table_internal = function(x, columns, excluded_rows, na.last, decreasing){
+tab_sort_internal = function(x, columns, excluded_rows, na.last, decreasing){
     stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && !is.logical(excluded_rows) &&
-           !is.character(excluded_rows),
+               !is.character(excluded_rows),
            "`excluded_rows` should be character/numeric or logical.")
     if(is.null(excluded_rows)){
         excluded_rows = rep(FALSE, nrow(x))
@@ -78,7 +78,7 @@ sort_table_internal = function(x, columns, excluded_rows, na.last, decreasing){
             stopif(!all(excluded_rows %in% seq_len(nrow(x))) , "some of the 'excluded_rows' not found: ",
                    paste(excluded_rows %d% seq_len(nrow(x)), collapse = ", ")
             )
-        
+            
             excluded_rows = seq_len(nrow(x)) %in% excluded_rows
         }
         if(is.character(excluded_rows)){
@@ -105,33 +105,28 @@ sort_table_internal = function(x, columns, excluded_rows, na.last, decreasing){
 }
 
 #' @export
-sort_table_asc.intermeditate_table = function(x, columns = 2, excluded_rows = "#", na.last = FALSE){
+tab_sort_asc.intermediate_table = function(x, columns = 2, excluded_rows = "#", na.last = FALSE){
     result_num = length(x[[RESULT]])
     stopif(result_num==0, 
            "No results for sorting. Use 'tab_format_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
-    x[[RESULT]][[result_num]] = sort_table_asc(x[[RESULT]][[result_num]], 
-                                               columns = columns, 
-                                               excluded_rows = excluded_rows,
-                                               na.last = na.last
-                                                )
+    x[[RESULT]][[result_num]] = tab_sort_asc(x[[RESULT]][[result_num]], 
+                                             columns = columns, 
+                                             excluded_rows = excluded_rows,
+                                             na.last = na.last
+    )
+    x
 }
 
 #' @export
-sort_table_desc.intermeditate_table = function(x, columns = 2, excluded_rows = "#", na.last = TRUE){
+tab_sort_desc.intermediate_table = function(x, columns = 2, excluded_rows = "#", na.last = TRUE){
     result_num = length(x[[RESULT]])
     stopif(result_num==0,
-           "No results for sorting. Use 'tab_format_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
-    x[[RESULT]][[result_num]] = sort_table_desc(x[[RESULT]][[result_num]], 
-                                                columns = columns, 
-                                                excluded_rows = excluded_rows,
-                                                na.last = na.last
-                                                )
+           "No results for sorting. Use 'tab_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
+    x[[RESULT]][[result_num]] = tab_sort_desc(x[[RESULT]][[result_num]], 
+                                              columns = columns, 
+                                              excluded_rows = excluded_rows,
+                                              na.last = na.last
+    )
+    x
 }
 
-#' @rdname sort_table_asc
-#' @export
-tab_format_sort_asc = sort_table_asc
-
-#' @rdname sort_table_asc
-#' @export
-tab_format_sort_desc = sort_table_desc
