@@ -143,14 +143,26 @@ w_n = function(x, weight = NULL, na.rm = TRUE){
 
 #' @export
 #' @rdname w_mean
-unweighted_n = function(x, weight = NULL, na.rm = TRUE) {
-    internal_w_stat(x = x,  weight = weight, na.rm = na.rm, fun = function(x, w, na.rm){
-        if(na.rm){
-            sum(!is.na(x))
-        } else {
-            length(x)
-        }
-    })
+unweighted_valid_n = function(x, weight = NULL) {
+    res = valid(x)
+    if(is.null(weight)){
+        sum(res, na.rm = TRUE)    
+    } else {
+        weight = set_negative_and_na_to_zero(weight)
+        sum(res[weight>0], na.rm = TRUE)
+    }
+}
+
+#' @export
+#' @rdname w_mean
+valid_n = function(x, weight = NULL) {
+    res = valid(x)
+    if(is.null(weight)){
+        sum(res, na.rm = TRUE)
+    } else {
+        weight = set_negative_and_na_to_zero(weight)
+        sum(weight[res])
+    }
 }
 
 #' @export
