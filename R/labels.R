@@ -410,6 +410,41 @@ make_labels=function(text, code_position=c("left","right", "autonum")){
     }   
 }
 
+##################
+
+#' @export
+#' @rdname val_lab
+drop_unused_labels = function(x){
+    UseMethod("drop_unused_labels")
+}
+
+#' @export
+drop_unused_labels.default = function(x){
+    curr_labs = val_lab(x)
+    curr_values = uniq_elements(x)
+    set_val_lab(x, curr_labs[curr_labs %in% curr_values])
+}
+
+#' @export
+drop_unused_labels.category = function(x){
+    curr_labs = val_lab(x)
+    curr_values = uniq_elements(x)
+    set_val_lab(x, curr_labs[curr_labs %in% curr_values])
+}
+
+#' @export
+drop_unused_labels.list = function(x){
+    lapply(x, drop_unused_labels)
+}
+
+#' @export
+drop_unused_labels.data.frame = function(x){
+    x[] = lapply(x, drop_unused_labels)
+    x
+}
+
+
+##########################    
 
 #' @export
 #' @rdname val_lab
