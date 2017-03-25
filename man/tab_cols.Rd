@@ -14,6 +14,7 @@
 \alias{tab_stat_tpct}
 \alias{tab_stat_rpct}
 \alias{tab_pivot}
+\alias{tab_transpose}
 \alias{tab_intermediate_pivot}
 \title{Functions for constracting custom tables}
 \usage{
@@ -47,11 +48,13 @@ tab_stat_tpct(data, total_label = NULL, total_statistic = "u_cases",
 tab_stat_rpct(data, total_label = NULL, total_statistic = "u_cases",
   total_row_position = c("below", "above", "none"), label = NULL)
 
-tab_pivot(data, stat_label_position = c("outside_rows", "inside_rows",
-  "outside_columns", "inside_columns"))
+tab_pivot(data, stat_position = c("outside_rows", "inside_rows",
+  "outside_columns", "inside_columns"), stat_label = c("inside", "outside"))
 
-tab_intermediate_pivot(data, stat_label_position = c("outside_rows",
-  "inside_rows", "outside_columns", "inside_columns"))
+tab_transpose(data)
+
+tab_intermediate_pivot(data, stat_position = c("outside_rows", "inside_rows",
+  "outside_columns", "inside_columns"), stat_label = c("inside", "outside"))
 }
 \arguments{
 \item{...}{jjjkj}

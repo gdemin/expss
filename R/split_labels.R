@@ -81,13 +81,10 @@ split_columns  = function(data, columns = 1, remove_repeated = TRUE, split = "|"
    UseMethod("split_columns")
 }
 
-#' @rdname split_labels
-#' @export
-tab_format_split_columns = split_columns
 
 #' @export
 split_columns.intermeditate_table = function(x, ...){
-    stop("No results for splitting. Use 'tab_format_split_columns' after 'tab_pivot'.")
+    stop("No results for splitting. Use 'split_columns' after 'tab_pivot'.")
 }
 
 
