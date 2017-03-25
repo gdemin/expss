@@ -243,20 +243,8 @@ expect_equal_to_reference(cro_cpct_responses(mrset(brands), score), "rds/fre_ex7
 expect_identical(cro_cpct_responses(score, a, total_label = "#Total"), cro_cpct(score, a, total_label = "#Total"))
 # expect_equal_to_reference(cro_cpct_responses(as.dichotomy(mrset(brands)), a), "rds/fre_ex7responses.rds")
 
-options(expss.digits = NA)
 
-expect_output_file(print(fre(brands)), "rds/fre_out_unrounded.txt")
-
-
-
-options(expss.digits = 2)
-expect_output_file(print(fre(brands)), "rds/fre_out.txt")
-expect_output_file(print(fre(brands), digits = NA), "rds/fre_out_unrounded.txt")
-
-options(expss.digits = NULL)
-
-expect_output_file(print(fre(brands), digits = 2), "rds/fre_out.txt")
-
+#################################################
 context("fre and cro some special cases")
 
 expect_equal_to_reference(fre(numeric(0)), "rds/fre1.rds")
@@ -616,9 +604,7 @@ expect_equal_to_reference(cro_median(iris[,-5], list(iris$Species, total()), wei
 expect_equal_to_reference(cro_mean(iris[,-5], list(iris$Species, total())), 
                           "rds/cro_mean8.rds")
 
-options(expss.digits = NA)
-expect_output_file(print(cro_mean(iris[,-5], list(iris$Species, total()))), "rds/cro_mean_out.txt")
-options(expss.digits = NULL)
+
 
 expect_equal_to_reference(cro_sum(iris[,-5], list(iris$Species, total())), "rds/cro_sum8.rds")
 

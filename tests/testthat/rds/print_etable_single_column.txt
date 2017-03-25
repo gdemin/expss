@@ -1,0 +1,20 @@
+                                        
+ |                     |               |
+ |--------------------:| -------------:|
+ | Number of cylinders |          Mean |
+ |                     |      Std. dev |
+ |                     |       Valid N |
+ |                     |             4 |
+ |                     |             6 |
+ |                     |             8 |
+ |                     |  #Total cases |
+ |         Carbureuter |          Mean |
+ |                     |      Std. dev |
+ |                     |       Valid N |
+ |                     |             1 |
+ |                     |             2 |
+ |                     |             3 |
+ |                     |             4 |
+ |                     |             6 |
+ |                     |             8 |
+ |                     |  #Total cases |
