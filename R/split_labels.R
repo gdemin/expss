@@ -52,6 +52,7 @@ split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, pe
     if(length(x)==0){
         return(matrix(NA, ncol=0, nrow = 0))
     }
+    if(length(x)==1 && x[1]=="") x[1] = " "
     x_split = strsplit(x, split = split, fixed = fixed, perl = perl)
     max_length = max(lengths(x_split))
     x_split = lapply(x_split, function(each) {
@@ -150,3 +151,138 @@ split_columns.matrix  = function(data, columns = 1, remove_repeated = TRUE, spli
                   perl = perl
     )
 }
+
+#' @export
+#' @rdname split_labels
+split_all_in_etable = function(data, 
+                               digits = getOption("expss.digits"), 
+                        remove_repeated = TRUE, 
+                        split = "|", 
+                        fixed = TRUE, 
+                        perl = FALSE){
+    data = round_dataframe(data, digits = digits)
+    cl_names = colnames(data)
+    if(cl_names[1] == "row_labels") cl_names[1] = ""
+    header = t(split_labels(cl_names, 
+                            remove_repeated = remove_repeated,
+                            split = split,
+                            fixed = fixed,
+                            perl = perl)
+    )
+    digits = if_null(digits, 1)
+    if(!is.na(digits)){
+        for(i in seq_len(NCOL(data))[-1]){
+            if(any(grepl(".", data[[i]], fixed = TRUE))){
+                data[[i]] = format(data[[i]], nsmall = digits, justify = "right")
+            }
+        }
+    }
+    recode(data) = NA ~ ""
+    recode(data) = perl("^\\s*NA\\s*$") ~ ""
+    cl_names = paste0("v", seq_len(NCOL(data)))
+    colnames(header) = cl_names
+    colnames(data) = cl_names
+    data = rbind(header, data, stringsAsFactors = FALSE)
+    old_ncol = NCOL(data)
+    data = split_columns(data, 
+                         columns = 1,
+                         remove_repeated = remove_repeated,
+                         split = split,
+                         fixed = fixed,
+                         perl = perl
+    )
+    data[] = lapply(data, function(x) paste0(" ", x, " ")) # some extra space
+    width = sapply(as.dtfrm(lapply(data, nchar)), max, na.rm = TRUE) 
+    width[!is.finite(width) | width<3 ] = 3
+
+    for(i in seq_len(NCOL(data))){
+        data[[i]] = format(data[[i]], width = width[i], justify =  "right")    
+     }
+    rownames(data) = NULL
+    data = setNames(data, rep("", NCOL(data)))
+    class(data) = class(data) %d% 'etable'
+    data
+}
+
+#' @export
+split_all_in_etable_for_print = function(data, 
+                               digits = getOption("expss.digits"), 
+                               remove_repeated = TRUE, 
+                               split = "|", 
+                               fixed = TRUE, 
+                               perl = FALSE){
+    if(NCOL(data) == 0) return(data)
+    data = round_dataframe(data, digits = digits)
+    cl_names = colnames(data)
+    if(cl_names[1] == "row_labels") cl_names[1] = ""
+    header = t(split_labels(cl_names, 
+                            remove_repeated = remove_repeated,
+                            split = split,
+                            fixed = fixed,
+                            perl = perl)
+    )
+    # for(i in seq_len(NCOL(header))){
+    #     header[,i] = ifelse(nchar(header[,i])>41, 
+    #                         remove_middle_of_string(header[,i], 41),
+    #                         header[,i])
+    # }
+    digits = if_null(digits, 1)
+    if(!is.na(digits)){
+        for(i in seq_len(NCOL(data))[-1]){
+            if(any(grepl(".", data[[i]], fixed = TRUE))){
+                data[[i]] = format(data[[i]], nsmall = digits, justify = "right")
+            }
+        }
+    }
+    recode(data) = NA ~ ""
+    recode(data) = perl("^\\s*NA\\s*$") ~ ""
+    cl_names = paste0("v", seq_len(NCOL(data)))
+    colnames(header) = cl_names
+    colnames(data) = cl_names
+    data = rbind(header, data, stringsAsFactors = FALSE)
+    old_ncol = NCOL(data)
+    data = split_columns(data, 
+                         columns = 1,
+                         remove_repeated = remove_repeated,
+                         split = split,
+                         fixed = fixed,
+                         perl = perl
+    )
+    # for(i in seq_len(NCOL(data) - old_ncol+1)){
+    #     data[[i]] = ifelse(data[[i]]>41, 
+    #                         remove_middle_of_string(data[[i]], 41),
+    #                        data[[i]])    
+    # }
+    data[] = lapply(data, function(x) paste0(" ", x, " ")) # some extra space
+    width = sapply(as.dtfrm(lapply(data, nchar)), max, na.rm = TRUE) 
+    width[!is.finite(width) | width<3 ] = 3
+    delimiter = unlist(lapply(width, function(x) {
+        res = paste(rep("-", x  - 1), collapse = "")
+        paste0(res,":")
+    }))
+    
+    data = rbind(data[seq_len(NROW(header)), ,drop = FALSE], 
+                 delimiter, 
+                 data[-seq_len(NROW(header)), ,drop = FALSE],
+                 stringsAsFactors = FALSE)
+    
+    
+    for(i in seq_len(NCOL(data))){
+        data[[i]] = format(data[[i]], width = width[i], justify =  "right")    
+        data[[i]] = paste0(data[[i]], "|")    
+    }
+
+    data[[1]] = paste0("|", data[[1]])
+    rownames(data) = NULL
+    data = setNames(data, rep("", NCOL(data)))
+    class(data) = class(data) %d% 'etable'
+    data
+}
+
+# remove_middle_of_string = function(x, max_length){
+#     need = (max_length - 5)/2
+#     beg = substr(x, 1, need)
+#     end = substr(x, nchar(x) - need, nchar(x))
+#     paste0(beg, "<...>", end)
+#     
+# }

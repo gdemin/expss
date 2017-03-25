@@ -182,18 +182,6 @@ cro_fun = function(cell_vars,
     
     check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
     
-    # if(!is_list(cell_vars)){
-    #     cell_vars = add_missing_var_lab(cell_vars, str_cell_vars)
-    #     if(!is.data.frame(cell_vars)){
-    #         cell_vars = as.dtfrm(cell_vars)    
-    #     }
-    #     
-    # } else {
-    #     cell_vars = flat_list(cell_vars, flat_df = TRUE)
-    #     check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
-    #     cell_vars = as.dtfrm(cell_vars)  
-    # }
-    
     cell_vars = make_labels_from_names(cell_vars)
     
     

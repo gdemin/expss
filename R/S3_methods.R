@@ -244,8 +244,10 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
 
 
 #' @export
-print.etable = function(x, digits = getOption("expss.digits"), ...,  right = TRUE){
-    x = round_dataframe(x, digits = digits)
+print.etable = function(x, digits = getOption("expss.digits"), remove_repeated = TRUE, ...,  right = TRUE){
+    x = split_all_in_etable_for_print(x,
+                                      digits = digits, 
+                                      remove_repeated = remove_repeated)
     print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
