@@ -307,14 +307,16 @@ make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
             res = fun(x, ..., weight = weight)
             res = make_dataframe_with_row_labels(res)
             # we need convert to factor to keep order of row_labels
-            as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
+            as.list(res[, row_labels := fctr(row_labels, levels = unique(row_labels),
+                                             prepend_var_lab = FALSE)])
         }
     } else {
         function(x){
             res = fun(x, ...)
             res = make_dataframe_with_row_labels(res)
             # we need convert to factor to keep order of row_labels
-            as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
+            as.list(res[, row_labels := fctr(row_labels, levels = unique(row_labels),
+                                             prepend_var_lab = FALSE)])
         }        
     }
 }
@@ -337,7 +339,8 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
             res = rbindlist(res, use.names = TRUE, fill = TRUE)
             # we need convert to factor to keep order of row_labels
             res[, row_labels := make_items_unique(row_labels)]
-            as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
+            as.list(res[, row_labels := fctr(row_labels, levels = unique(row_labels),
+                                             prepend_var_lab = FALSE)])
         }
     } else {
         function(x){
@@ -353,7 +356,8 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
             res = rbindlist(res, use.names = TRUE, fill = TRUE)
             # we need convert to factor to keep order of row_labels
             res[, row_labels := make_items_unique(row_labels)]
-            as.list(res[, row_labels := factor(row_labels, levels = unique(row_labels))])
+            as.list(res[, row_labels := fctr(row_labels, levels = unique(row_labels),
+                                             prepend_var_lab = FALSE)])
         }        
     }
 }
