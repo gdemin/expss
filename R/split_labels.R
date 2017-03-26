@@ -253,14 +253,15 @@ split_all_in_etable_for_print = function(data,
     } else {
         data = as.dtfrm(header)
     }
-    data[] = lapply(data, function(x) paste0(" ", x, " ")) # some extra space
+    data[[1]] = paste0(" ", data[[1]], " ") # some extra space
+    data[,-1] = lapply(data[,-1, drop = FALSE], function(x) paste0("", x, " ")) # some extra space
     width = sapply(as.dtfrm(lapply(data, nchar)), max, na.rm = TRUE) 
     width[!is.finite(width) | width<3 ] = 3
-    delimiter = unlist(lapply(width, function(x) {
+    delimiter = unlist(lapply(width[-1], function(x) {
         res = paste(rep("-", x  - 1), collapse = "")
-        paste0(res,":")
+        paste0(res," ")
     }))
-    
+    delimiter = c(paste0(" ", paste(rep("-", width[1]  - 2), collapse = ""), " "), delimiter)
     data = rbind(data[seq_len(NROW(header)), ,drop = FALSE], 
                  delimiter, 
                  data[-seq_len(NROW(header)), ,drop = FALSE],

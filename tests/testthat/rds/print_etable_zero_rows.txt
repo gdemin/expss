@@ -1,6 +1,6 @@
-                                                                                  
- |   |  #Total |  Transmission |                  |           |                  |
- |   |         |     Automatic |                  |    Manual |                  |
- |   |         |        Engine |                  |    Engine |                  |
- |   |         |      V-engine |  Straight engine |  V-engine |  Straight engine |
- |--:| -------:| -------------:| ----------------:| ---------:| ----------------:|
+                                                                             
+ |   | #Total | Transmission |                 |          |                 |
+ |   |        |    Automatic |                 |   Manual |                 |
+ |   |        |       Engine |                 |   Engine |                 |
+ |   |        |     V-engine | Straight engine | V-engine | Straight engine |
+ | - | ------ | ------------ | --------------- | -------- | --------------- |
