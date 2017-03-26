@@ -15,7 +15,6 @@
 \alias{tab_stat_rpct}
 \alias{tab_pivot}
 \alias{tab_transpose}
-\alias{tab_intermediate_pivot}
 \title{Functions for constracting custom tables}
 \usage{
 tab_cols(data, ...)
@@ -52,9 +51,6 @@ tab_pivot(data, stat_position = c("outside_rows", "inside_rows",
   "outside_columns", "inside_columns"), stat_label = c("inside", "outside"))
 
 tab_transpose(data)
-
-tab_intermediate_pivot(data, stat_position = c("outside_rows", "inside_rows",
-  "outside_columns", "inside_columns"), stat_label = c("inside", "outside"))
 }
 \arguments{
 \item{...}{jjjkj}

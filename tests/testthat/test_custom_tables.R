@@ -128,10 +128,9 @@ res = mtcars %>%
     tab_stat_cpct(total_row_position = "none", label = "col %") %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
-    tab_intermediate_pivot(stat_position = "inside_rows") %>% 
     tab_cells(total(vs, label = "#Total|cases")) %>% 
     tab_stat_cases(total_row_position = "none") %>% 
-    tab_pivot() 
+    tab_pivot(stat_position = "inside_rows") 
 
 expect_equal_to_reference(res, "rds/ctable8.rds")
 
@@ -142,10 +141,9 @@ res = mtcars %>%
     tab_stat_cpct(total_row_position = "none", label = "col %") %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
-    tab_intermediate_pivot(stat_position = "inside_rows") %>% 
     tab_cells(total(vs, label = "#Total|cases")) %>% 
     tab_stat_cases(total_row_position = "none") %>% 
-    tab_pivot() 
+    tab_pivot(stat_position = "inside_rows") 
 
 expect_equal_to_reference(res, "rds/ctable9.rds")
 
@@ -156,7 +154,7 @@ res = mtcars %>%
     tab_pivot() %>% 
     tab_transpose() %>% 
     tab_sort_desc()
-    
+
 expect_equal_to_reference(res, "rds/ctable10.rds")
 
 res = mtcars %>% 
@@ -207,6 +205,8 @@ res = mtcars %>%
 
 expect_equal_to_reference(res, "rds/ctable14.rds")
 
+
+
 res = mtcars %>%
     tab_cols(total(), am %nest% vs)
 
@@ -216,6 +216,7 @@ for(each in qc(cyl, carb, hp)){
         tab_stat_cpct()
 }
 res = res %>% tab_pivot()
+
 expect_equal_to_reference(res, "rds/ctable15.rds")
 
 
@@ -246,11 +247,11 @@ expect_equal_to_reference(res, "rds/ctable16.rds")
 #     tab_split_columns()
 
 
-
-product_test %>% 
-    tab_cols(c1) %>% 
-    tab_cells(list(unvr(mrset(a1_1 %to% a1_6)))) %>% 
-    tab_stat_cpct(label = var_lab(a1_1)) %>% 
-    tab_cells(list(unvr(mrset(b1_1 %to% b1_6)))) %>% 
-    tab_stat_cpct(label = var_lab(b1_1)) %>% 
-    tab_pivot(stat_position = "inside_columns") 
+data("product_test")
+product_test %>%
+    tab_cols(c1) %>%
+    tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
+    tab_stat_cpct(label = var_lab(a1_1)) %>%
+    tab_cells(unvr(mrset(b1_1 %to% b1_6))) %>%
+    tab_stat_cpct(label = var_lab(b1_1)) %>%
+    tab_pivot(stat_position = "inside_columns")
