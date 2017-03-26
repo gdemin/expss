@@ -246,11 +246,11 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
 print.etable = function(x, digits = getOption("expss.digits"), remove_repeated = TRUE, ...,  right = TRUE){
     curr_output = getOption("expss.print_table")
     if(!is.null(curr_output)){
-        if(curr_output == "rnotebook"){
+        if("rnotebook" %in% curr_output){
             print(htmlTable(x, digits = digits))
             return(invisible(NULL))
         }
-        if(curr_output == "viewer"){
+        if("viewer" %in% curr_output){
             res = htmlTable(x, digits = digits)
             attr(res, "html") = NULL
             class(res) = class(res) %d% "html"
