@@ -14,8 +14,6 @@
 #' \code{labelled} - \code{as.character} and \code{unique} - on which
 #' \code{factor} depends entirely. If you have compatibility problems set this
 #' option to zero: \code{options(expss.enable_value_labels_support = 0)}.}
-#' \item{\code{expss.prepend_var_lab} }{ Should we prepend value labels with variable 
-#' label ('var_lab|val_lab') during conversion to factor or character?}
 #' \item{\code{expss.use_viewer} }{ Not available yet.}
 #' }
 #' 

@@ -124,10 +124,7 @@ options(expss.enable_value_labels_support = 0)
 expect_identical(as.character(a), unvl(a_str))
 options(expss.enable_value_labels_support = NULL)
 expect_identical(as.character(a), c("Lab", "0"))
-options(expss.prepend_var_lab = TRUE)
-expect_identical(as.character(a), c("Lab|Lab", "Lab|0"))
-options(expss.prepend_var_lab = NULL)
-expect_identical(as.character(a), c("Lab", "0"))
+
 
 aa = 1:3
 val_lab(aa) = c(c = 1, b = 2, a = 3)

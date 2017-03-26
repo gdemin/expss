@@ -153,8 +153,7 @@ as.numeric.labelled = as.double.labelled
 #' @export
 as.character.labelled = function (x, ...){
     if(!identical(getOption("expss.enable_value_labels_support"), 0)){
-        prepend_varlab = isTRUE(getOption("expss.prepend_var_lab"))
-        labelled_to_character_internal(x, prepend_varlab = prepend_varlab)  
+        labelled_to_character_internal(x, prepend_varlab = FALSE)  
     } else {
         y = NextMethod("as.character")
         var_lab(y) = var_lab(x)
