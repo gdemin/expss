@@ -356,6 +356,7 @@ elementary_cro = function(cell_var,
     cell_val_lab = val_lab(cell_var)
     
     row_var_lab = var_lab(row_var)
+    row_val_lab = val_lab(row_var)
     
     col_var_lab = var_lab(col_var)
     col_val_lab = val_lab(col_var)
@@ -398,6 +399,8 @@ elementary_cro = function(cell_var,
     dtable[, cell_var := set_val_lab(cell_var, cell_val_lab)]
     dtable[, col_var := set_var_lab(col_var, col_var_lab)]
     dtable[, col_var := set_val_lab(col_var, col_val_lab)]
+    dtable[, row_var := set_var_lab(row_var, row_var_lab)]
+    dtable[, row_var := set_val_lab(row_var, row_val_lab)]
     ### make rectangular table  
     res = long_datatable_to_table(dtable, rows = c("row_var", "cell_var"), columns = "col_var", value = "value")
     
