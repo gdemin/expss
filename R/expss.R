@@ -57,3 +57,8 @@ setkeyv = data.table::setkeyv
 # '[.data.table' = data.table::`[.data.table`
 
 
+.onLoad = function(...){
+    options(expss.print_table = "")
+    options(expss.digits = 1)
+    options(expss.enable_value_labels_support = 1)
+}

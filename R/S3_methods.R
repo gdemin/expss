@@ -244,6 +244,20 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
 
 #' @export
 print.etable = function(x, digits = getOption("expss.digits"), remove_repeated = TRUE, ...,  right = TRUE){
+    curr_output = getOption("expss.print_table")
+    if(!is.null(curr_output)){
+        if(curr_output == "rnotebook"){
+            print(htmlTable(x, digits = digits))
+            return(invisible(NULL))
+        }
+        if(curr_output == "viewer"){
+            res = htmlTable(x, digits = digits)
+            attr(res, "html") = NULL
+            class(res) = class(res) %d% "html"
+            print(res)
+            return(invisible(NULL))
+        }
+    }
     x = split_all_in_etable_for_print(x,
                                       digits = digits, 
                                       remove_repeated = remove_repeated)

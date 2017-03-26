@@ -5,7 +5,7 @@
 #' \itemize{
 #' \item{\code{expss.digits} }{ Number of digits after decimal separator which will be 
 #' shown for tables. This parameter is supported in the \link[expss]{datatable},
-#' \link[expss]{htmlTable} and \code{print} methods. \code{NULL} is
+#'  \link[expss]{htmlTable} and \code{print} methods. \code{NULL} is
 #' default and means 1 digit. \code{NA} means no rounding.}
 #' \item{\code{expss.enable_value_labels_support} }{By default, all labelled 
 #' variables will use labels as labels for factor levels when \link{factor} is 
@@ -14,8 +14,12 @@
 #' \code{labelled} - \code{as.character} and \code{unique} - on which
 #' \code{factor} depends entirely. If you have compatibility problems set this
 #' option to zero: \code{options(expss.enable_value_labels_support = 0)}.}
-#' \item{\code{expss.use_viewer} }{ Not available yet.}
-#' }
+#' \item{\code{expss.print_table} }{ By default tables are printed in the 
+#' console. You can change this behavior by setting this option. There are to 
+#' possible values: \code{'rnotebook'} or \code{'viewer'}. First option is 
+#' useful when you run your code in the R Notebook - output will be rendered to 
+#' nice HTML. The second option will render tables to RStudio viewer.
+#' \code{knitr} is supported automatically via \code{knit_print} method.} }
 #' 
 #' @name expss.options
 NULL
