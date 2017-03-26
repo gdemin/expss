@@ -267,6 +267,22 @@ expect_output_file(print(cro_mean(iris[,-5], list(iris$Species, total()))),
                    "rds/cro_mean_out.txt")
 options(expss.digits = NULL)
 
+# my_vec = 1:3
+# val_lab(my_vec) = autonum("Один
+#                           Два
+#                           Три")
+# 
+# var_lab(my_vec) = "Цифры"
+# 
+# all_dat = total(label = "Всего|Я")
+# 
+# cyrillic = cro(my_vec, all_dat)
+# 
+# options(expss.print_table = "")
+# cyrillic
+
+
+
 # context("rbind/cbind etable")
 
 # data(mtcars)

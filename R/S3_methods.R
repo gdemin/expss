@@ -247,11 +247,17 @@ print.etable = function(x, digits = getOption("expss.digits"), remove_repeated =
     curr_output = getOption("expss.print_table")
     if(!is.null(curr_output)){
         if("rnotebook" %in% curr_output){
-            print(htmlTable(x, digits = digits))
+            res = htmlTable(x, digits = digits)
+
+            res = fix_cyrillic_for_rstudio(res)
+            
+            ######
+            print(res)
             return(invisible(NULL))
         }
         if("viewer" %in% curr_output){
             res = htmlTable(x, digits = digits)
+            res = fix_cyrillic_for_rstudio(res)
             attr(res, "html") = NULL
             class(res) = class(res) %d% "html"
             print(res)
@@ -266,6 +272,18 @@ print.etable = function(x, digits = getOption("expss.digits"), remove_repeated =
     print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
+fix_cyrillic_for_rstudio = function(x){
+    need_fix = is.null(getOption("expss.fix_encoding"))
+    if(need_fix){
+        curr_enc = Encoding(x)
+        if(toupper(curr_enc) %in% c("UTF-8", "UTF8")){
+            x = iconv(x, from = "UTF8", to = "cp65001")
+        } else {
+            x = iconv(enc2utf8(x), from = "UTF8", to = "cp65001")
+        }
+    }
+    x
+}
 
 #' @export
 str.labelled = function(object, ...){
