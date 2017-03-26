@@ -87,7 +87,8 @@ vars_list = function(...){
     args = substitute_symbols(args,
                               list("%to%" = "internal_to")
     )
-    args = eval(args)
+    args = eval(args, envir = parent.frame(),
+                enclos = baseenv())
     selected_names = keep_helper(var_names, args)
     mget(var_names[selected_names], envir = parent.frame(), inherits = TRUE)
 }
