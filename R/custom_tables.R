@@ -142,7 +142,7 @@ tab_weight.intermediate_table = function(data, weight = NULL){
     weight = eval(substitute(calculate(data[["data"]], weight)),
                   envir = parent.frame(),
                   enclos = baseenv())
-    if(is.null(args)==0){
+    if(is.null(weight)){
         data[[WEIGHT]] = NULL
     } else {
         stopif(!is.numeric(weight) && !is.logical(weight), "'weight' should be numeric or logical.")
@@ -281,6 +281,7 @@ tab_stat_fun.intermediate_table = function(data, ...,
     add_result_to_intermediate_table(data, result, label)
 }
 
+#' @rdname tab_cols
 #' @export
 tab_stat_mean = function(data, mis_val = NULL, label = "Mean"){
     eval(substitute(tab_stat_fun(data, 
@@ -291,6 +292,7 @@ tab_stat_mean = function(data, mis_val = NULL, label = "Mean"){
          enclos = baseenv())    
 }
 
+#' @rdname tab_cols
 #' @export
 tab_stat_median = function(data, mis_val = NULL, label = "Median"){
     eval(substitute(tab_stat_fun(data, 
@@ -301,6 +303,7 @@ tab_stat_median = function(data, mis_val = NULL, label = "Median"){
          enclos = baseenv())    
 }
 
+#' @rdname tab_cols
 #' @export
 tab_stat_se = function(data, mis_val = NULL, label = "S. E."){
     eval(substitute(tab_stat_fun(data,
@@ -311,6 +314,7 @@ tab_stat_se = function(data, mis_val = NULL, label = "S. E."){
          enclos = baseenv())    
 }
 
+#' @rdname tab_cols
 #' @export
 tab_stat_sum = function(data, mis_val = NULL, label = "Sum"){
     eval(substitute(tab_stat_fun(data, 
@@ -321,6 +325,29 @@ tab_stat_sum = function(data, mis_val = NULL, label = "Sum"){
          enclos = baseenv())    
 }
 
+#' @rdname tab_cols
+#' @export
+tab_stat_min = function(data, mis_val = NULL, label = "Min."){
+    eval(substitute(tab_stat_fun(data, 
+                                 w_min, 
+                                 mis_val = mis_val, 
+                                 label = label)),
+         envir = parent.frame(),
+         enclos = baseenv())    
+}
+
+#' @rdname tab_cols
+#' @export
+tab_stat_max = function(data, mis_val = NULL, label = "Max."){
+    eval(substitute(tab_stat_fun(data, 
+                                 w_max, 
+                                 mis_val = mis_val, 
+                                 label = label)),
+         envir = parent.frame(),
+         enclos = baseenv())    
+}
+
+#' @rdname tab_cols
 #' @export
 tab_stat_sd = function(data, mis_val = NULL, label = "Std. dev."){
     eval(substitute(tab_stat_fun(data, 
@@ -331,6 +358,7 @@ tab_stat_sd = function(data, mis_val = NULL, label = "Std. dev."){
          enclos = baseenv())
 }
 
+#' @rdname tab_cols
 #' @export
 tab_stat_valid_n = function(data, mis_val = NULL, label = "Valid N"){
     eval(substitute(tab_stat_fun(data, 
@@ -341,6 +369,7 @@ tab_stat_valid_n = function(data, mis_val = NULL, label = "Valid N"){
          enclos = baseenv())    
 }
 
+#' @rdname tab_cols
 #' @export
 tab_stat_unweighted_valid_n = function(data, mis_val = NULL, label = "Unw. valid N"){
     eval(substitute(tab_stat_fun(data, 
@@ -350,6 +379,7 @@ tab_stat_unweighted_valid_n = function(data, mis_val = NULL, label = "Unw. valid
          envir = parent.frame(),
          enclos = baseenv())    
 }
+
 
 #' @export
 tab_stat_fun_df.intermediate_table = function(data, ..., 
@@ -494,14 +524,14 @@ tab_stat_rpct.intermediate_table = function(data,
 tab_stat_fun.default = function(data, ..., 
                         mis_val = NULL, 
                         label = NULL){
-    alert_stat()
+    tab_stat_()
 }
 
 #' @export
 tab_stat_fun_df.default = function(data, ..., 
                            mis_val = NULL, 
                            label = NULL){
-    alert_stat()
+    tab_stat_()
 }
 
 #' @export
@@ -510,7 +540,7 @@ tab_stat_cases.default = function(data,
                           total_statistic = "u_cases",
                           total_row_position = c("below", "above", "none"),
                           label = NULL){
-    alert_stat()
+    tab_stat_()
 }
 
 #' @export
@@ -519,7 +549,7 @@ tab_stat_cpct.default = function(data,
                          total_statistic = "u_cases",
                          total_row_position = c("below", "above", "none"),
                          label = NULL){
-    alert_stat()
+    tab_stat_()
 }
 
 
@@ -529,7 +559,7 @@ tab_stat_cpct_responses.default =function(data,
                                   total_statistic = "u_responses",
                                   total_row_position = c("below", "above", "none"),
                                   label = NULL){
-    alert_stat()
+    tab_stat_()
 }
 
 #' @export
@@ -538,7 +568,7 @@ tab_stat_tpct.default = function(data,
                          total_statistic = "u_cases",
                          total_row_position = c("below", "above", "none"),
                          label = NULL){
-    alert_stat()
+    tab_stat_()
 }
 
 #' @export
@@ -547,11 +577,11 @@ tab_stat_rpct.default = function(data,
                                  total_statistic = "u_cases",
                                  total_row_position = c("below", "above", "none"),
                                  label = NULL){
-    alert_stat()
+    tab_stat_()
 }
 
 ######
-alert_stat = function(){
+tab_stat_ = function(){
     stop("No data for 'tab_stat_*'. Use at least one of 'tab_cells'/'tab_rows'/'tab_cols' before the 'tab_stat'.")
 }
 

@@ -13,6 +13,15 @@
 \alias{tab_stat_cpct_responses}
 \alias{tab_stat_tpct}
 \alias{tab_stat_rpct}
+\alias{tab_stat_mean}
+\alias{tab_stat_median}
+\alias{tab_stat_se}
+\alias{tab_stat_sum}
+\alias{tab_stat_min}
+\alias{tab_stat_max}
+\alias{tab_stat_sd}
+\alias{tab_stat_valid_n}
+\alias{tab_stat_unweighted_valid_n}
 \alias{tab_pivot}
 \alias{tab_transpose}
 \title{Functions for constracting custom tables}
@@ -46,6 +55,24 @@ tab_stat_tpct(data, total_label = NULL, total_statistic = "u_cases",
 
 tab_stat_rpct(data, total_label = NULL, total_statistic = "u_cases",
   total_row_position = c("below", "above", "none"), label = NULL)
+
+tab_stat_mean(data, mis_val = NULL, label = "Mean")
+
+tab_stat_median(data, mis_val = NULL, label = "Median")
+
+tab_stat_se(data, mis_val = NULL, label = "S. E.")
+
+tab_stat_sum(data, mis_val = NULL, label = "Sum")
+
+tab_stat_min(data, mis_val = NULL, label = "Min.")
+
+tab_stat_max(data, mis_val = NULL, label = "Max.")
+
+tab_stat_sd(data, mis_val = NULL, label = "Std. dev.")
+
+tab_stat_valid_n(data, mis_val = NULL, label = "Valid N")
+
+tab_stat_unweighted_valid_n(data, mis_val = NULL, label = "Unw. valid N")
 
 tab_pivot(data, stat_position = c("outside_rows", "inside_rows",
   "outside_columns", "inside_columns"), stat_label = c("inside", "outside"))

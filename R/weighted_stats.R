@@ -167,6 +167,26 @@ valid_n = function(x, weight = NULL) {
 
 #' @export
 #' @rdname w_mean
+w_max = function(x, weight = NULL, na.rm = TRUE){
+    internal_w_stat(x = x,  weight = weight, na.rm = na.rm, fun = function(x, w, na.rm){
+        res = max(x, na.rm = TRUE)
+        res[!is.finite(res)] = NA
+        res
+    })
+}
+
+#' @export
+#' @rdname w_mean
+w_min = function(x, weight = NULL, na.rm = TRUE){
+    internal_w_stat(x = x,  weight = weight, na.rm = na.rm, fun = function(x, w, na.rm){
+        res = min(x, na.rm = TRUE)
+        res[!is.finite(res)] = NA
+        res
+    })
+}
+
+#' @export
+#' @rdname w_mean
 w_cov = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.obs")){
     if (is.data.frame(x)) {
         x = as.matrix(names2labels(x))
