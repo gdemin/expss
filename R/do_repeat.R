@@ -76,7 +76,7 @@ do_repeat.data.frame = function(data, ...){
     args = substitute(list(...))
     expr = args[[length(args)]]
     args[length(args)] = NULL
-    items = eval(args, envir = parent.frame())
+    items = eval(args, envir = parent.frame(), enclos = baseenv())
     items_lengths = lengths(items)
     stopif(!all(items_lengths %in% c(1, max(items_lengths))),
            "All variables should have equal length or length 1")
@@ -169,7 +169,9 @@ substitute_symbols = function (expr, symbols) {
 .do_repeat = function (...) {
     reference = suppressMessages(default_dataset())
     data = ref(reference)
-    data = eval(substitute(do_repeat(data, ...)), envir = parent.frame(), enclos = baseenv())
+    data = eval(substitute(do_repeat(data, ...)), 
+                envir = parent.frame(), 
+                enclos = baseenv())
     ref(reference) = data
     invisible(data)
 

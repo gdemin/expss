@@ -98,7 +98,8 @@ keep.data.frame = function(data, ...){
     args = substitute_symbols(args,
                               list("%to%" = "internal_to")
                               )
-    args = eval(args)
+    args = eval(args, envir = parent.frame(),
+                enclos = baseenv())
     new_vars = keep_helper(vars, args)
     if(is.data.table(data)){
         res = data[ , new_vars, with = FALSE]
@@ -117,7 +118,8 @@ keep.matrix = function(data, ...){
     args = substitute_symbols(args,
                               list("%to%" = "internal_to")
     )
-    args = eval(args)
+    args = eval(args, envir = parent.frame(),
+                enclos = baseenv())
     new_vars = keep_helper(vars, args)
     res = data[ , new_vars, drop = FALSE]
     colnames(res) = vars[new_vars] # prevents names correction
@@ -167,7 +169,8 @@ except.data.frame = function(data, ...){
     args = substitute_symbols(args,
                               list("%to%" = "internal_to")
     )
-    args = eval(args)
+    args = eval(args, envir = parent.frame(),
+                enclos = baseenv())
     new_vars = keep_helper(vars, args)
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
@@ -189,7 +192,8 @@ except.matrix = function(data, ...){
     args = substitute_symbols(args,
                               list("%to%" = "internal_to")
     )
-    args = eval(args)
+    args = eval(args, envir = parent.frame(),
+                enclos = baseenv())
     new_vars = keep_helper(vars, args)
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
@@ -242,6 +246,7 @@ keep_helper = function(old_names, args){
 }
 
 # version of %to% for usage inside 'keep'/'except'/'vars'
+#' @export
 internal_to = function(e1, e2){
     e1 = deparse(substitute(e1))
     e2 = deparse(substitute(e2))
