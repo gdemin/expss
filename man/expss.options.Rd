@@ -19,9 +19,11 @@ value labels. In details this option changes behavior of two methods for class
 \code{factor} depends entirely. If you have compatibility problems set this
 option to zero: \code{options(expss.enable_value_labels_support = 0)}.}
 \item{\code{expss.print_table} }{ By default tables are printed in the 
-console. You can change this behavior by setting this option. There are to 
-possible values: \code{'rnotebook'} or \code{'viewer'}. First option is 
-useful when you run your code in the R Notebook - output will be rendered to 
-nice HTML. The second option will render tables to RStudio viewer.
-\code{knitr} is supported automatically via \code{knit_print} method.} }
+console. You can change this behavior by setting this option. There are three
+possible values: \code{'rnotebook'}, \code{'viewer'} or  \code{'raw'}. First
+option is useful when you run your code in the R Notebook - output will be
+rendered to nice HTML. The second option will render tables to RStudio
+viewer. \code{knitr} is supported automatically via \code{knit_print} method.
+Option \code{raw} disables any formatting and all tables are printed as
+data.frames.} }
 }

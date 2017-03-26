@@ -258,9 +258,11 @@ print.etable = function(x, digits = getOption("expss.digits"), remove_repeated =
             return(invisible(NULL))
         }
     }
-    x = split_all_in_etable_for_print(x,
-                                      digits = digits, 
-                                      remove_repeated = remove_repeated)
+    if(!("raw" %in% curr_output)){
+        x = split_all_in_etable_for_print(x,
+                                          digits = digits, 
+                                          remove_repeated = remove_repeated)
+    }
     print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
