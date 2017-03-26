@@ -7,7 +7,7 @@
 \usage{
 \method{htmlTable}{etable}(x, digits = getOption("expss.digits"), ...)
 
-knit_print.etable(x, digits = NULL, ...)
+knit_print.etable(x, digits = getOption("expss.digits"), ...)
 }
 \arguments{
 \item{x}{a data object (result of \link{fre}/\link{cro} and etc)}
