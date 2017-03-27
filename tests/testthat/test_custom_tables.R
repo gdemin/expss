@@ -361,6 +361,48 @@ res = mtcars %>%
 
 expect_equal_to_reference(res, "rds/ctable20.rds")
 
+res1 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
+    tab_cells(a) %>% 
+    tab_stat_mean(mis_val = 3:5) %>% 
+    tab_stat_median(mis_val = 3:5) %>% 
+    tab_stat_sd(mis_val = 3:5) %>% 
+    tab_stat_sum(mis_val = 3:5) %>% 
+    tab_stat_se(mis_val = 3:5) %>% 
+    tab_stat_unweighted_valid_n(mis_val = 3:5) %>% 
+    tab_stat_valid_n(mis_val = 3:5) %>% 
+    tab_stat_min(mis_val = 3:5) %>% 
+    tab_stat_max(mis_val = 3:5) %>% 
+    tab_pivot(stat_position = "inside_columns")
+
+res2 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
+    tab_cells(a) %>% 
+    tab_stat_mean(mis_val = gt(2)) %>% 
+    tab_stat_median(mis_val = gt(2)) %>% 
+    tab_stat_sd(mis_val = gt(2)) %>% 
+    tab_stat_sum(mis_val = gt(2)) %>% 
+    tab_stat_se(mis_val = gt(2)) %>% 
+    tab_stat_unweighted_valid_n(mis_val = gt(2)) %>% 
+    tab_stat_valid_n(mis_val = gt(2)) %>% 
+    tab_stat_min(mis_val = gt(2)) %>% 
+    tab_stat_max(mis_val = gt(2)) %>% 
+    tab_pivot(stat_position = "inside_columns")
+
+res3 = dtfrm(a = c(1, 2, NA, NA, NA), b = c(NA, NA, 1, 2, NA)) %>% 
+    tab_cells(a) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
+    tab_pivot(stat_position = "inside_columns")
+
+expect_identical(res1, res2)
+expect_identical(res1, res3)
+
 data("product_test")
 
 codeframe_likes = num_lab("
@@ -414,15 +456,167 @@ pr_t = compute(product_test, {
 # write_labelled_spss(pr_t, "product_test.csv")
 # options(expss.digits = 3)
 
-pr_t %>%
-    tab_cols(total(), age_cat) %>%
-    tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
-    tab_stat_cpct(label = var_lab(a1_1)) %>%
-    tab_cells(unvr(mrset(b1_1 %to% b1_6))) %>%
-    tab_stat_cpct(label = var_lab(b1_1)) %>%
-    tab_pivot(stat_position = "inside_columns")
+expect_error(
+pr_t %>% 
+    tab_cells(mrset(a1_1 %to% a1_6), a22) %>% 
+    tab_cols(mrset(b1_1 %to% b1_6), b22) %>% 
+    tab_stat_cases(
+        total_statistic = c("u_cases", "u_repsonses", "u_cpct", "u_cpct_repsonses", "u_rpct", "u_tpct",
+                            "w_cases", "w_repsonses", "w_cpct", "w_cpct_repsonses", "w_rpct", "w_tpct"
+                            )) %>% 
+    tab_pivot()
+)
 
 
+res = pr_t %>% 
+    tab_cells(mrset(a1_1 %to% a1_6), a22) %>% 
+    tab_cols(mrset(b1_1 %to% b1_6), b22) %>% 
+    tab_stat_cases(
+        total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                            "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+        )) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable20_1.rds"
+)
+
+
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6), a22) %>% 
+    tab_cols(mrset(b1_1 %to% b1_6), b22) %>% 
+    tab_stat_cases(
+        total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                            "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+        )) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable21.rds"
+)
+
+
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6), a22) %>% 
+    tab_cols(mrset(b1_1 %to% b1_6), b22) %>% 
+    tab_stat_cpct(
+        total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                            "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+        )) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable22.rds"
+)
+
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6), a22) %>% 
+    tab_cols(mrset(b1_1 %to% b1_6), b22) %>% 
+    tab_stat_rpct(
+        total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                            "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+        )) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable23.rds"
+)
+
+
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6), a22) %>% 
+    tab_cols(mrset(b1_1 %to% b1_6), b22) %>% 
+    tab_stat_tpct(
+        total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                            "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+        )) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable24.rds"
+)
+
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6), a22) %>% 
+    tab_cols(mrset(b1_1 %to% b1_6), b22) %>% 
+    tab_stat_cpct_responses(
+        total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                            "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+        )) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable25.rds"
+)
+
+
+# pr_t %>%
+#     tab_cols(total(), age_cat) %>%
+#     tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
+#     tab_stat_cpct(label = var_lab(a1_1)) %>%
+#     tab_cells(unvr(mrset(b1_1 %to% b1_6))) %>%
+#     tab_stat_cpct(label = var_lab(b1_1)) %>%
+#     tab_pivot(stat_position = "inside_columns")
+
+
+#############
+
+res = mtcars %>% 
+    tab_cells(qsec, mpg) %>% 
+    tab_stat_fun(my_fun = w_mean, w_median) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable26.rds"
+)
+
+res = mtcars %>% 
+    tab_cells(vars(qc(mpg, qsec, hp, disp))) %>% 
+    tab_rows(am) %>% 
+    tab_cols(vs) %>% 
+    tab_stat_fun_df(w_cor) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable27.rds"
+)
+
+res = mtcars %>% 
+    tab_cells(vars(qc(mpg, qsec, hp, disp))) %>% 
+    tab_rows(am %nest% vs) %>% 
+    tab_stat_fun_df(w_cor) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable28.rds"
+)
+
+res = mtcars %>% tab_cells() %>% 
+    tab_rows() %>% 
+    tab_cols() %>% 
+    tab_stat_cases() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable29.rds"
+)
+    
+    
 context("custom tables error")
 
 expect_error(

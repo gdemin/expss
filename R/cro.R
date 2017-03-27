@@ -331,6 +331,9 @@ elementary_cro = function(cell_var,
     
     ### preparations
     total_row_position = match.arg(total_row_position)
+    unknowns = total_statistic %d% TOTAL_STATISTICS
+    stopif(length(unknowns)>0, "unknown total statistics - ", 
+           paste(unknowns, collapse = ", "))
     total_statistic = match.arg(total_statistic, TOTAL_STATISTICS, several.ok = TRUE)
     stat_type = match.arg(stat_type)
     max_nrow = max(NROW(cell_var), NROW(col_var))
