@@ -146,14 +146,8 @@ matrix_to_cgroup = function(header){
 }
 
 
-#' @rdname htmlTable.etable
-#' @export
-knit_print.etable = function(x, digits = getOption("expss.digits"), ...){
-    res = htmlTable(x, digits = digits, ...)
-    # res = fix_cyrillic_for_rstudio(res)
-    knitr::asis_output(res)
-    
-}
+
+
 
 
 

@@ -311,6 +311,15 @@ str.labelled = function(object, ...){
     invisible(NULL)
 }
 
+
+#' @export
+knit_print.etable = function(x, digits = getOption("expss.digits"), ...){
+    res = htmlTable(x, digits = digits, ...)
+    # res = fix_cyrillic_for_rstudio(res)
+    knitr::asis_output(res)
+    
+}
+
 #' @export
 t.etable = function(x){
     row_labels = x[[1]]
