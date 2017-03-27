@@ -9,6 +9,7 @@ CELL_VAR = "cell_var"
 SUBGROUP = "subgroup"   
 WEIGHT  = "weight" 
 STAT_LABELS = "stat_labels"
+MIS_VAL = "mis_val"
 
 #' Functions for constracting custom tables
 #'
@@ -32,9 +33,6 @@ tab_cols.data.frame = function(data, ...){
 
 #' @export
 tab_cols.intermediate_table = function(data, ...){
-    # expr = substitute(create_list_with_names(...))
-    # args = eval(bquote(calculate(data[["data"]], .(expr))))
-    # expr = substitute(list(...))
     args = eval(substitute(calculate(data[["data"]], list(...))),
                 envir = parent.frame(),
                 enclos = baseenv())
@@ -151,6 +149,34 @@ tab_weight.intermediate_table = function(data, weight = NULL){
     data
 }
 
+############
+
+#' @rdname tab_cols
+#' @export
+tab_mis_val = function(data, ...){
+    UseMethod("tab_mis_val")
+}
+
+#' @export
+tab_mis_val.default = function(data, ...){
+    res = make_empty_intermediate_table(data)
+    tab_mis_val(res, ...)
+}
+
+#' @export
+tab_mis_val.intermediate_table = function(data, ...){
+    # expr = substitute(weight)
+    args = eval(substitute(calculate(data[["data"]], list(...))),
+                envir = parent.frame(),
+                enclos = baseenv())
+    if(length(args)>0){
+        data[[MIS_VAL]] = unlist(args)
+    } else {
+        data[[MIS_VAL]] = NULL
+    }
+    data
+}
+
 #########
 
 #' @rdname tab_cols
@@ -182,9 +208,6 @@ tab_subgroup.intermediate_table = function(data, subgroup = NULL){
     }
     data
 }
-
-
-
 
 
 #####################
@@ -257,7 +280,6 @@ tab_stat_rpct = function(data,
 ############
 #' @export
 tab_stat_fun.intermediate_table = function(data, ..., 
-                                mis_val = NULL, 
                                 label = NULL){
     # fun = eval(substitute(combine_functions(...)))
     args = list(...)
@@ -271,7 +293,7 @@ tab_stat_fun.intermediate_table = function(data, ...,
                  envir = parent.frame(),
                  enclos = baseenv())
     result = cro_fun(
-        cell_vars = na_if(data[[CELL_VAR]], mis_val),
+        cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
@@ -283,10 +305,9 @@ tab_stat_fun.intermediate_table = function(data, ...,
 
 #' @rdname tab_cols
 #' @export
-tab_stat_mean = function(data, mis_val = NULL, label = "Mean"){
+tab_stat_mean = function(data, label = "Mean"){
     eval(substitute(tab_stat_fun(data, 
                              w_mean, 
-                             mis_val = mis_val, 
                              label = label)),
          envir = parent.frame(),
          enclos = baseenv())    
@@ -294,10 +315,9 @@ tab_stat_mean = function(data, mis_val = NULL, label = "Mean"){
 
 #' @rdname tab_cols
 #' @export
-tab_stat_median = function(data, mis_val = NULL, label = "Median"){
+tab_stat_median = function(data, label = "Median"){
     eval(substitute(tab_stat_fun(data, 
                              w_median, 
-                             mis_val = mis_val, 
                              label = label)),
          envir = parent.frame(),
          enclos = baseenv())    
@@ -305,10 +325,9 @@ tab_stat_median = function(data, mis_val = NULL, label = "Median"){
 
 #' @rdname tab_cols
 #' @export
-tab_stat_se = function(data, mis_val = NULL, label = "S. E."){
+tab_stat_se = function(data, label = "S. E."){
     eval(substitute(tab_stat_fun(data,
                              w_se, 
-                             mis_val = mis_val, 
                              label = label)),
          envir = parent.frame(),
          enclos = baseenv())    
@@ -316,10 +335,9 @@ tab_stat_se = function(data, mis_val = NULL, label = "S. E."){
 
 #' @rdname tab_cols
 #' @export
-tab_stat_sum = function(data, mis_val = NULL, label = "Sum"){
+tab_stat_sum = function(data, label = "Sum"){
     eval(substitute(tab_stat_fun(data, 
                              w_sum, 
-                             mis_val = mis_val, 
                              label = label)),
          envir = parent.frame(),
          enclos = baseenv())    
@@ -327,10 +345,9 @@ tab_stat_sum = function(data, mis_val = NULL, label = "Sum"){
 
 #' @rdname tab_cols
 #' @export
-tab_stat_min = function(data, mis_val = NULL, label = "Min."){
+tab_stat_min = function(data, label = "Min."){
     eval(substitute(tab_stat_fun(data, 
                                  w_min, 
-                                 mis_val = mis_val, 
                                  label = label)),
          envir = parent.frame(),
          enclos = baseenv())    
@@ -338,10 +355,9 @@ tab_stat_min = function(data, mis_val = NULL, label = "Min."){
 
 #' @rdname tab_cols
 #' @export
-tab_stat_max = function(data, mis_val = NULL, label = "Max."){
+tab_stat_max = function(data, label = "Max."){
     eval(substitute(tab_stat_fun(data, 
                                  w_max, 
-                                 mis_val = mis_val, 
                                  label = label)),
          envir = parent.frame(),
          enclos = baseenv())    
@@ -349,10 +365,9 @@ tab_stat_max = function(data, mis_val = NULL, label = "Max."){
 
 #' @rdname tab_cols
 #' @export
-tab_stat_sd = function(data, mis_val = NULL, label = "Std. dev."){
+tab_stat_sd = function(data, label = "Std. dev."){
     eval(substitute(tab_stat_fun(data, 
                              w_sd, 
-                             mis_val = mis_val, 
                              label = label)),
          envir = parent.frame(),
          enclos = baseenv())
@@ -360,10 +375,9 @@ tab_stat_sd = function(data, mis_val = NULL, label = "Std. dev."){
 
 #' @rdname tab_cols
 #' @export
-tab_stat_valid_n = function(data, mis_val = NULL, label = "Valid N"){
+tab_stat_valid_n = function(data, label = "Valid N"){
     eval(substitute(tab_stat_fun(data, 
                              valid_n, 
-                             mis_val = mis_val, 
                              label = label)),
          envir = parent.frame(),
          enclos = baseenv())    
@@ -371,10 +385,9 @@ tab_stat_valid_n = function(data, mis_val = NULL, label = "Valid N"){
 
 #' @rdname tab_cols
 #' @export
-tab_stat_unweighted_valid_n = function(data, mis_val = NULL, label = "Unw. valid N"){
+tab_stat_unweighted_valid_n = function(data, label = "Unw. valid N"){
     eval(substitute(tab_stat_fun(data, 
                              unweighted_valid_n, 
-                             mis_val = mis_val, 
                              label = label)),
          envir = parent.frame(),
          enclos = baseenv())    
@@ -383,7 +396,6 @@ tab_stat_unweighted_valid_n = function(data, mis_val = NULL, label = "Unw. valid
 
 #' @export
 tab_stat_fun_df.intermediate_table = function(data, ..., 
-                                   mis_val = NULL, 
                                    label = NULL){
     
     # fun = eval(substitute(combine_functions(...)))
@@ -397,7 +409,7 @@ tab_stat_fun_df.intermediate_table = function(data, ...,
                  envir = parent.frame(),
                  enclos = baseenv())
     result = cro_fun_df(
-        cell_vars = na_if(data[[CELL_VAR]], mis_val),
+        cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
@@ -417,7 +429,7 @@ tab_stat_cases.intermediate_table = function(data,
                  envir = parent.frame(),
                  enclos = baseenv())
     result = cro_cases(
-        cell_vars = data[[CELL_VAR]],
+        cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
@@ -439,7 +451,7 @@ tab_stat_cpct.intermediate_table = function(data,
                  envir = parent.frame(),
                  enclos = baseenv())
     result = cro_cpct(
-        cell_vars = data[[CELL_VAR]],
+        cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
@@ -462,7 +474,7 @@ tab_stat_cpct_responses.intermediate_table =function(data,
                  envir = parent.frame(),
                  enclos = baseenv())
     result = cro_cpct_responses(
-        cell_vars = data[[CELL_VAR]],
+        cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
@@ -484,7 +496,7 @@ tab_stat_tpct.intermediate_table = function(data,
                  envir = parent.frame(),
                  enclos = baseenv())
     result = cro_tpct(
-        cell_vars = data[[CELL_VAR]],
+        cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
@@ -506,7 +518,7 @@ tab_stat_rpct.intermediate_table = function(data,
                  envir = parent.frame(),
                  enclos = baseenv())
     result = cro_rpct(
-        cell_vars = data[[CELL_VAR]],
+        cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
@@ -785,6 +797,7 @@ make_empty_intermediate_table = function(data){
     res[[CELL_VAR]] = list(total())
     res[[SUBGROUP]] = NULL
     res[[WEIGHT]] = NULL
+    res[[MIS_VAL]] = NULL
     res[[RESULT]] = list()
     res[[STAT_LABELS]] = character(0)
     class(res) = union("intermediate_table", class(res))
@@ -792,6 +805,16 @@ make_empty_intermediate_table = function(data){
     
 }
 
+##############
+
+get_cells = function(intermediate_table){
+    cells = intermediate_table[[CELL_VAR]]
+    mis_val = intermediate_table[[MIS_VAL]]
+    if(is.list(mis_val) && length(mis_val)==1){
+        mis_val = mis_val[[1]]
+    }
+    na_if(cells, mis_val)
+}
 
 ##############
 

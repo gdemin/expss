@@ -2,12 +2,9 @@
 % Please edit documentation in R/html_table.R
 \name{htmlTable.etable}
 \alias{htmlTable.etable}
-\alias{knit_print.etable}
 \title{Outputting HTML tables}
 \usage{
 \method{htmlTable}{etable}(x, digits = getOption("expss.digits"), ...)
-
-knit_print.etable(x, digits = getOption("expss.digits"), ...)
 }
 \arguments{
 \item{x}{a data object (result of \link{fre}/\link{cro} and etc)}

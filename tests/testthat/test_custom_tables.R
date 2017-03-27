@@ -362,33 +362,51 @@ res = mtcars %>%
 expect_equal_to_reference(res, "rds/ctable20.rds")
 
 res1 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
-    tab_cells(a) %>% 
-    tab_stat_mean(mis_val = 3:5) %>% 
-    tab_stat_median(mis_val = 3:5) %>% 
-    tab_stat_sd(mis_val = 3:5) %>% 
-    tab_stat_sum(mis_val = 3:5) %>% 
-    tab_stat_se(mis_val = 3:5) %>% 
-    tab_stat_unweighted_valid_n(mis_val = 3:5) %>% 
-    tab_stat_valid_n(mis_val = 3:5) %>% 
-    tab_stat_min(mis_val = 3:5) %>% 
-    tab_stat_max(mis_val = 3:5) %>% 
+    tab_cells(a, b) %>% 
+    tab_mis_val(3:5) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
 
 res2 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
-    tab_cells(a) %>% 
-    tab_stat_mean(mis_val = gt(2)) %>% 
-    tab_stat_median(mis_val = gt(2)) %>% 
-    tab_stat_sd(mis_val = gt(2)) %>% 
-    tab_stat_sum(mis_val = gt(2)) %>% 
-    tab_stat_se(mis_val = gt(2)) %>% 
-    tab_stat_unweighted_valid_n(mis_val = gt(2)) %>% 
-    tab_stat_valid_n(mis_val = gt(2)) %>% 
-    tab_stat_min(mis_val = gt(2)) %>% 
-    tab_stat_max(mis_val = gt(2)) %>% 
+    tab_cells(a, b) %>% 
+    tab_mis_val(gt(2)) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
+    tab_pivot(stat_position = "inside_columns")
+
+res4 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
+    tab_cells(a, b) %>% 
+    tab_mis_val(3 | gt(3)) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
 
 res3 = dtfrm(a = c(1, 2, NA, NA, NA), b = c(NA, NA, 1, 2, NA)) %>% 
-    tab_cells(a) %>% 
+    tab_mis_val(1:2) %>% 
+    tab_cells(a, b) %>% 
+    tab_mis_val() %>% 
     tab_stat_mean() %>% 
     tab_stat_median() %>% 
     tab_stat_sd() %>% 
@@ -402,6 +420,7 @@ res3 = dtfrm(a = c(1, 2, NA, NA, NA), b = c(NA, NA, 1, 2, NA)) %>%
 
 expect_identical(res1, res2)
 expect_identical(res1, res3)
+expect_identical(res1, res4)
 
 data("product_test")
 
