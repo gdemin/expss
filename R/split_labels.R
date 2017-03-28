@@ -57,7 +57,7 @@ split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, pe
     max_length = max(lengths(x_split))
     x_split = lapply(x_split, function(each) {
         if(length(each)<max_length){
-            each[max_length] = NA
+            each = c(each, rep(NA, max_length - length(each)))
         }
         each
     })
@@ -67,6 +67,7 @@ split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, pe
         for(i in rev(seq_len(nrow(res))[-1])){
             repeats = res[i-1, ] ==  res[i, ]
             first_no_repeat = which(!repeats)[1]-1
+            if(is.na(first_no_repeat)) first_no_repeat = NCOL(res)
             if(!is.na(first_no_repeat) && first_no_repeat>0){
                 res[i, 1:first_no_repeat] = ""
             }

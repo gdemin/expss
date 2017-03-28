@@ -28,6 +28,11 @@ expect_identical(split_labels(letters, remove_repeated = TRUE), as.matrix(as.cha
 expect_identical(split_labels(letters, remove_repeated = FALSE), as.matrix(as.character(letters)))
 expect_identical(split_labels(character(0)), matrix(NA, ncol = 0, nrow = 0))
 
+vec = c("c1|1", "c1|1", "c1|2", "c1|2", "c1|3", "c1|3")
+expect_equal_to_reference(
+    split_labels(vec),
+    "rds/split_labels5.RDS")
+
 context("split_columns")
 # replace first column with new columns 
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
@@ -69,3 +74,5 @@ expect_equal_to_reference(split_columns(as.matrix(tabl[[1]]), remove_repeated = 
 
 tabl[,1] = as.factor(tabl[[1]])
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
+
+
