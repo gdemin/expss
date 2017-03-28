@@ -20,13 +20,14 @@ mtcars = apply_labels(mtcars,
 )
 
 options(expss.digits = NA)
-mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total")) 
+mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), 
+                        list(mtcars$vs %nest% mtcars$am, "#Total")) 
 
 expect_equal_to_reference(htmlTable(mtcars_table),
                           "rds/htmlTable1.rds")
 expect_equal_to_reference(suppressWarnings(htmlTable(mtcars_table[FALSE, ])) , 
                           "rds/htmlTable2.rds")
-expect_equal_to_reference(htmlTable(mtcars_table[, 1])  , 
+expect_equal_to_reference(htmlTable(mtcars_table[, 1])  ,  ### wrong
                           "rds/htmlTable2single1.rds")
 
 
@@ -50,9 +51,13 @@ mtcars_table = cro_cpct(list(unvr(mtcars$vs)), list(mtcars$vs %nest% mtcars$am, 
 expect_equal_to_reference(htmlTable(mtcars_table) ,
                           "rds/htmlTable12.rds")
 
-expect_equal_to_reference(htmlTable(mtcars_table[,1]) ,
+expect_equal_to_reference(htmlTable(mtcars_table[,1]) ,    #####
                           "rds/htmlTable12single.rds")
 
+colnames(mtcars_table)[1] = "My table"
+
+expect_equal_to_reference(htmlTable(mtcars_table[,1]) ,    #####
+                          "rds/htmlTable12single2.rds")
 
 new_am = mtcars$am
 mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total")) %merge%
@@ -91,23 +96,30 @@ options(expss.digits = NULL)
 expect_equal(htmlTable(mtcars_table),
              htmlTable(mtcars_table, digits = 1))
 
-# 
-# library(testthat)
-# library(expss)
-# 
-# 
-# library(shiny)
-# shinyApp(
-#     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
-#     server = function(input, output) {
-#         output$tbl = DT::renderDataTable(
-#             datatable(mtcars_table)
-#         )
-#     }
-# )
-# 
+data("product_test")
+res = product_test %>%
+    tab_cols(c1) %>%
+    tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
+    tab_stat_cpct(label = var_lab(a1_1)) %>%
+    tab_cells(unvr(mrset(b1_1 %to% b1_6))) %>%
+    tab_stat_cpct(label = var_lab(b1_1)) %>%
+    tab_pivot(stat_position = "inside_columns")
 
-htmlTable = function(x, ...) htmlTable:::print.htmlTable(expss:::htmlTable.etable(x, ...),
-                                                         useViewer = TRUE)
+## first row of header with duplicates
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable15.rds")
 
+res = product_test %>%
+    compute({
+        total = 1
+        var_lab(total) = "Total"
+        val_lab(total) = setNames(1, " ")
+        }) %>% 
+    tab_cols(total) %>%
+    tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
+    tab_stat_cpct() %>%
+    tab_pivot()
 
+# single column header
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable16.rds")
+
+# temp = function(x) htmlTable:::print.htmlTable(x, useViewer = TRUE)

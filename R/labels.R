@@ -1,7 +1,6 @@
 #' Set or get variable label
 #' 
-#' These functions set/get/drop variable labels. For utilizing labels in base R 
-#' see \link{f}, \link{names2labels}, \link{values2labels}, \link{unlab}. For 
+#' These functions set/get/drop variable labels. For 
 #' value labels see \link{val_lab}. For working with entire data.frame see
 #' \link{apply_labels}.
 #' \itemize{
@@ -34,23 +33,17 @@
 #'                 var_lab(qsec) = "1/4 mile time"
 #'                 var_lab(vs) = "V/S"
 #'                 var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
+#'                 val_lab(am) = c(automatic = 0, manual=1)
 #'                 var_lab(gear) = "Number of forward gears"
 #'                 var_lab(carb) = "Number of carburetors"
 #' })
 #' 
-#' # note: we exclude dependent variable 'mpg' from conversion to use its short name in formula
-#' summary(lm(mpg ~ ., data = n2l(mtcars, exclude = "mpg")))
-#' 
-#' data(mtcars)
-#' 
-#' var_lab(mtcars$am) = "Transmission"
-#' val_lab(mtcars$am) = c(automatic = 0, manual=1)
-#' 
-#' \dontrun{
-#' plot(f(mtcars$am))
-#' }
-#' 
 #' fre(mtcars$am)
+#' 
+#' calculate(mtcars, 
+#'      cro_mean(list(mpg, disp, hp, qsec), list(total(), am))
+#'      ) 
+#' 
 #' 
 var_lab=function(x){
     UseMethod("var_lab")
