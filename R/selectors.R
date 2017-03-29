@@ -85,7 +85,7 @@ vars_list = function(...){
     }
     args = substitute(list(...))
     args = substitute_symbols(args,
-                              list("%to%" = "internal_to")
+                              list("%to%" = ".internal_to_")
     )
     args = eval(args, envir = parent.frame(),
                 enclos = baseenv())

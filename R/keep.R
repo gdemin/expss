@@ -70,7 +70,7 @@ keep = function(data, ...){
 #     vars = names(data)
 #     args = substitute(list(...))
 #     args = substitute_symbols(args,
-#                               list("%to%" = "internal_to")
+#                               list("%to%" = ".internal_to_")
 #     )
 #     args = eval(args)
 #     new_vars = keep_helper(vars, args)
@@ -96,7 +96,7 @@ keep.data.frame = function(data, ...){
     vars = colnames(data)
     args = substitute(list(...))
     args = substitute_symbols(args,
-                              list("%to%" = "internal_to")
+                              list("%to%" = ".internal_to_")
                               )
     args = eval(args, envir = parent.frame(),
                 enclos = baseenv())
@@ -116,7 +116,7 @@ keep.matrix = function(data, ...){
     vars = colnames(data)
     args = substitute(list(...))
     args = substitute_symbols(args,
-                              list("%to%" = "internal_to")
+                              list("%to%" = ".internal_to_")
     )
     args = eval(args, envir = parent.frame(),
                 enclos = baseenv())
@@ -137,7 +137,7 @@ except = function(data, ...){
 #     vars = names(data)
 #     args = substitute(list(...))
 #     args = substitute_symbols(args,
-#                               list("%to%" = "internal_to")
+#                               list("%to%" = ".internal_to_")
 #     )
 #     args = eval(args)
 #     new_vars = keep_helper(vars, args)
@@ -167,7 +167,7 @@ except.data.frame = function(data, ...){
     vars = colnames(data)
     args = substitute(list(...))
     args = substitute_symbols(args,
-                              list("%to%" = "internal_to")
+                              list("%to%" = ".internal_to_")
     )
     args = eval(args, envir = parent.frame(),
                 enclos = baseenv())
@@ -190,7 +190,7 @@ except.matrix = function(data, ...){
     vars = colnames(data)
     args = substitute(list(...))
     args = substitute_symbols(args,
-                              list("%to%" = "internal_to")
+                              list("%to%" = ".internal_to_")
     )
     args = eval(args, envir = parent.frame(),
                 enclos = baseenv())
@@ -247,7 +247,7 @@ keep_helper = function(old_names, args){
 
 # version of %to% for usage inside 'keep'/'except'/'vars'
 #' @export
-internal_to = function(e1, e2){
+.internal_to_ = function(e1, e2){
     e1 = deparse(substitute(e1))
     e2 = deparse(substitute(e2))
     res = function(y){
