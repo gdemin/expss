@@ -13,6 +13,17 @@ context("[")
 expect_identical(var_lab(vec_with_lab[1]),var_lab(vec_with_lab))
 expect_identical(val_lab(vec_with_lab[1]),val_lab(vec_with_lab))
 
+aaa = matrix(1:9, 3)
+bbb = aaa[1:2, 1:2]
+class(aaa) = "labelled"
+expect_identical(aaa[1,3], 7L)
+expect_identical(aaa[1:2, 1:2], bbb)
+
+aaa = matrix(1:9, 3)
+bbb = aaa[1:2, 1:2]
+class(aaa) = c("labelled", class(aaa))
+expect_identical(aaa[1,3], 7L)
+expect_identical(aaa[1:2, 1:2], bbb)
 
 context("data.frame[")
 dfs = data.frame(a = vec_with_lab,b= vec_with_lab,stringsAsFactors = FALSE)

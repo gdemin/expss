@@ -18,7 +18,7 @@ as.data.frame.labelled = function(x, ..., nm = paste(deparse(substitute(x), widt
 c.labelled = function(..., recursive = FALSE)
     ### concatenate vectors of class 'labelled' and preserve labels
 {
-    y = NextMethod("c")
+    y = NextMethod()
     vectors=list(...)
     dummy= lapply(vectors,var_lab)
     dummy=dummy[lengths(dummy)>0]
@@ -33,7 +33,7 @@ c.labelled = function(..., recursive = FALSE)
 
 #' @export
 rep.labelled = function (x, ...){
-    y= NextMethod("rep")
+    y= NextMethod()
     y = set_var_attr(y, var_attr(x))
     class(y) = class(x)
     y	
@@ -41,30 +41,24 @@ rep.labelled = function (x, ...){
 
 #' @export
 '[.labelled' = function (x, ...){
-    y = NextMethod("[", ...)
-    # browser()
-    # class(x) = setdiff(class(x), "labelled")
-    # y = `[`(x, ...)
+    y = NextMethod()
     y = set_var_attr(y, var_attr(x))
     y
 }
 
 #' @export
 '[[.labelled' = function (x, ...){
-    y = NextMethod("[[")
-    # browser()
-    # class(x) = setdiff(class(x), "labelled")
-    # y = x[...]
+    y = NextMethod()
     y = set_var_attr(y, var_attr(x))
     y
 }
 
-# it is needed to prevent state with inconsistent class and mode
+# two assignment methods are needed to prevent state with inconsistent class and mode
 # (such as 'numeric' in class but mode is character)
 #' @export
 '[<-.labelled' = function (x, ..., value){
     class(x) = setdiff(class(x), "labelled")
-    y = NextMethod("[<-")
+    y = NextMethod()
     class(y) = c("labelled", class(y))
     y
 }
@@ -72,7 +66,7 @@ rep.labelled = function (x, ...){
 #' @export
 '[[<-.labelled' = function (x, ..., value){
     class(x) = setdiff(class(x), "labelled")
-    y = NextMethod("[[<-")
+    y = NextMethod()
     class(y) = c("labelled", class(y))
     y
 }
@@ -87,7 +81,11 @@ set_var_attr = function(x, value){
     # skip perfomance unfriendly sorting of labels
     attr(x, "label") = value[["label"]]
     attr(x, "labels") = value[["labels"]]
-    class(x) = union("labelled", class(x))
+    if(length(value[["label"]])==0 && length(value[["labels"]])==0){
+        class(x) = setdiff(class(x), "labelled")
+    } else {
+        class(x) = union("labelled", class(x))
+    }
     x
 }
 
@@ -132,14 +130,14 @@ subset_helper = function(x, i, j, drop, class_name){
 
 #' @export
 as.double.labelled = function (x, ...){
-    y = NextMethod("as.double")
+    y = NextMethod()
     y = set_var_attr(y, var_attr(x))
     y	
 }
 
 #' @export
 as.integer.labelled = function (x, ...){
-    y = NextMethod("as.integer")
+    y = NextMethod()
     y = set_var_attr(y, var_attr(x))
     y	
 }
@@ -152,7 +150,7 @@ as.character.labelled = function (x, ...){
     if(!identical(getOption("expss.enable_value_labels_support"), 0)){
         labelled_to_character_internal(x, prepend_varlab = FALSE)  
     } else {
-        y = NextMethod("as.character")
+        y = NextMethod()
         y = set_var_lab(y, var_lab(x))
         y
   
@@ -179,7 +177,7 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
 
 #' @export
 unique.labelled = function(x, ...){
-    y = NextMethod("unique")
+    y = NextMethod()
     if(!identical(getOption("expss.enable_value_labels_support"), 0)){
         y = set_var_attr(y, var_attr(x))
     }
@@ -191,7 +189,7 @@ unique.labelled = function(x, ...){
 
 #' @export
 as.logical.labelled = function (x, ...){
-    y = NextMethod("as.logical")
+    y = NextMethod()
     set_var_lab(y, var_lab(x))
 	
 }
