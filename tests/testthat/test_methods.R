@@ -112,13 +112,17 @@ val_lab(a) = c("Lab" = 1)
 val_lab(a_str) = c("Lab" = 1)
 val_lab(a_log) = c("Lab" = 1)
 
+a_integer = a
+storage.mode(a_integer) = "integer"
+class(a_integer) = c("labelled", "integer")
+
 a_numeric = a + 0.5 - 0.5
 class(a_numeric) = c("labelled", "numeric")
 expect_identical(as.numeric(a_str), a_numeric)
-expect_identical(as.integer(a_str), a)
+expect_identical(as.integer(a_str), a_integer)
 
 expect_identical(as.logical(a), unvl(a_log))
-expect_identical(as.integer(a_log), a)
+expect_identical(as.integer(a_log), a_integer)
 
 options(expss.enable_value_labels_support = 0)
 expect_identical(as.character(a), unvl(a_str))

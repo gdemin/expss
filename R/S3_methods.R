@@ -22,11 +22,10 @@ c.labelled = function(..., recursive = FALSE)
     vectors=list(...)
     dummy= lapply(vectors,var_lab)
     dummy=dummy[lengths(dummy)>0]
-    if (length(dummy)>0) var_lab(y)=dummy[[1]]
+    if (length(dummy)>0) y = set_var_lab(y, dummy[[1]])
     
     dummy= lapply(vectors,val_lab)
-    val_lab(y)=do.call(combine_labels,dummy)
-    class(y) = union("labelled",class(y))
+    y = set_val_lab(y, do.call(combine_labels,dummy))
     y
 }
 
@@ -47,8 +46,6 @@ rep.labelled = function (x, ...){
     # class(x) = setdiff(class(x), "labelled")
     # y = `[`(x, ...)
     y = set_var_attr(y, var_attr(x))
-    class(y) = union("labelled", class(x))
-    # class(y) = class(x)
     y
 }
 
@@ -59,8 +56,6 @@ rep.labelled = function (x, ...){
     # class(x) = setdiff(class(x), "labelled")
     # y = x[...]
     y = set_var_attr(y, var_attr(x))
-    class(y) = union("labelled", class(x))
-    # class(y) = class(x)
     y
 }
 
@@ -83,12 +78,16 @@ rep.labelled = function (x, ...){
 }
 
 var_attr = function(x){
-    list(label=var_lab(x),labels=val_lab(x))
+    list(label = var_lab(x), labels = val_lab(x))
 }
 
 set_var_attr = function(x, value){
-    x = set_var_lab(x, value[["label"]])
-    x = set_val_lab(x, value[["labels"]])
+    #####
+    # we bypass interfaces set_val_lab, set_var_lab to 
+    # skip perfomance unfriendly sorting of labels
+    attr(x, "label") = value[["label"]]
+    attr(x, "labels") = value[["labels"]]
+    class(x) = union("labelled", class(x))
     x
 }
 
@@ -135,7 +134,6 @@ subset_helper = function(x, i, j, drop, class_name){
 as.double.labelled = function (x, ...){
     y = NextMethod("as.double")
     y = set_var_attr(y, var_attr(x))
-    class(y) = union("labelled", class(y))
     y	
 }
 
@@ -143,7 +141,6 @@ as.double.labelled = function (x, ...){
 as.integer.labelled = function (x, ...){
     y = NextMethod("as.integer")
     y = set_var_attr(y, var_attr(x))
-    class(y) = union("labelled", class(y))
     y	
 }
 
@@ -156,15 +153,15 @@ as.character.labelled = function (x, ...){
         labelled_to_character_internal(x, prepend_varlab = FALSE)  
     } else {
         y = NextMethod("as.character")
-        var_lab(y) = var_lab(x)
+        y = set_var_lab(y, var_lab(x))
         y
   
     } 
 }
 
 labelled_to_character_internal = function(x, prepend_varlab, ...) {
-    vallab= val_lab(x)
-    varlab =  var_lab(x)
+    vallab = val_lab(x)
+    varlab = var_lab(x)
     x = unlab(x)
     # if(anyDuplicated(vallab)){
     #     warning("duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
@@ -184,8 +181,7 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
 unique.labelled = function(x, ...){
     y = NextMethod("unique")
     if(!identical(getOption("expss.enable_value_labels_support"), 0)){
-        var_lab(y) = var_lab(x)
-        val_lab(y) = val_lab(x)
+        y = set_var_attr(y, var_attr(x))
     }
     y
 }
@@ -196,9 +192,8 @@ unique.labelled = function(x, ...){
 #' @export
 as.logical.labelled = function (x, ...){
     y = NextMethod("as.logical")
-    var_lab(y)=var_lab(x)
-    class(y) = union("labelled", class(y))
-    y	
+    set_var_lab(y, var_lab(x))
+	
 }
 
 #' @export

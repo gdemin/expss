@@ -69,7 +69,7 @@ var_lab.data.frame=function(x)
 #' @rdname var_lab
 #' @export
 "var_lab<-"=function(x,value){
-    set_var_lab(x,value)
+    set_var_lab(x, value)
 }
 
 #' @rdname var_lab
@@ -80,13 +80,13 @@ set_var_lab=function(x,value){
 
 #' @export
 set_var_lab.list = function(x,value){
-    for (each in seq_along(x)) var_lab(x[[each]]) = value
+    for (each in seq_along(x)) x[[each]] = set_var_lab(x[[each]], value)
     x
 }
 
 #' @export
 set_var_lab.data.frame = function(x, value){
-    for (each in seq_along(x)) var_lab(x[[each]]) = value
+    for (each in seq_along(x)) x[[each]] = set_var_lab(x[[each]], value)
     x
 }
 
@@ -101,7 +101,6 @@ set_var_lab.matrix = function(x, value){
 set_var_lab.default = function(x, value){
     # this conversion is needed to avoid strange bug (incorrect residuals)
     # with 'lm' with labelled integers 
-    if(is.integer(x)) x[] = as.double(x)
     if (length(value)==0){
         attr(x,"label")=NULL
         if(length(val_lab(x))==0){
@@ -109,10 +108,11 @@ set_var_lab.default = function(x, value){
         }
         return(x)
     }
+    if(is.integer(x)) x[] = as.double(x)
     value = as.character(value)
     stopif(length(value)>1, "Label should be vector of length 1.")
-    attr(x,"label")=value
-    class(x)=union("labelled",class(x))
+    attr(x, "label")=value
+    class(x)=union("labelled", class(x))
     x
 }
 
@@ -128,7 +128,7 @@ unvr=function(x){
 
 #' @export
 unvr.default=function(x){
-    set_var_lab(x,NULL)
+    set_var_lab(x, NULL)
 }
 
 #' @export
@@ -300,34 +300,34 @@ add_val_lab = function(x, value) set_val_lab(x, value, add = TRUE)
 
 #' @export
 set_val_lab.default = function(x, value, add = FALSE){
-    stopif(!is.null(value) && is.null(names(value)), "Labels should be named vector.")
-    stopif(anyDuplicated(value),"duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
+     if (length(value)==0){
+        if(!add){
+            attr(x, "labels") = NULL
+        }
+        if(length(val_lab(x)) == 0 && is.null(var_lab(x))){
+            class(x)=setdiff(class(x), "labelled")
+        }
+        return(x)
+     }
+    stopif(is.null(names(value)), "Labels should be named vector.")
+    stopif(anyDuplicated(value), "duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
+    
     # this conversion is needed to avoid strange bug (incorrect residuals)
     # with 'lm' with labelled integers 
     if(is.integer(x)) x[] = as.double(x)
     if (add) value = combine_labels(value,val_lab(x))
-    
-    
-    
-    if (length(value)==0) {
-        value = NULL 
-    } else {
-        # Warning about dupliction was removed because it was generated too often for third party *.sav files.
-        #    with_warning = "duplicated labels: "
-        names(value) = make_items_unique(names(value))
-        value = sort(value)
-    }
+ 
+    # Warning about dupliction was removed because it was generated too often for third party *.sav files.
+    #    with_warning = "duplicated labels: "
+    names(value) = make_items_unique(names(value))
+    value = sort(value)
     attr(x, "labels")=value
-    if(is.null(value) && is.null(var_lab(x))){
-        class(x)=setdiff(class(x), "labelled")
-    } else {
-        class(x)=union("labelled",class(x))
-    }
+    class(x)=union("labelled", class(x))
     x
 }
 
 #' @export
-set_val_lab.data.frame = function(x,value, add = FALSE){
+set_val_lab.data.frame = function(x, value, add = FALSE){
     for (each in seq_along(x)) x[[each]] = set_val_lab(x[[each]], value, add = add)
     x
 }
@@ -469,8 +469,8 @@ unlab=function(x){
 
 #' @export
 unlab.default=function(x){
-    var_lab(x) = NULL
-    val_lab(x) = NULL
+    x = set_var_lab(x, NULL)
+    x = set_val_lab(x, NULL, add = FALSE)
     class(x) = setdiff(class(x), "labelled")
     x
 }

@@ -128,7 +128,7 @@ long_datatable_to_table = function(dtable, rows, columns, values){
     for (each in rows_columns){
         curr_col = dtable[[each]]
         if(is.labelled(curr_col)) {
-            if(any(!is.na(curr_col)) || length(val_lab(curr_col))>0){
+            if(length(val_lab(curr_col))>0){
                 dtable[[each]] = fctr(curr_col, drop_unused_labels = FALSE, 
                                       prepend_var_lab = FALSE)
             } else {
