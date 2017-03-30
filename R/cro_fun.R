@@ -258,7 +258,9 @@ elementary_cro_fun_df = function(cell_var,
     ###################
 
     ### pack data.table #####
-    
+    if(is.data.frame(cell_var)){
+        colnames(cell_var) = make_items_unique(colnames(cell_var))
+    }
     if(is.null(weight)){
         raw_data = data.table(..row_var__ = row_var, ..col_var__ = col_var, cell_var)
     } else {

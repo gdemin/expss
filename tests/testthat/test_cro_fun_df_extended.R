@@ -375,3 +375,15 @@ expect_equal_to_reference(
     cro_fun_df(list(measure), col_vars = list(dates), fun = mean)
 ,"rds/table_summary_df_dates4.rds"
 )
+
+context("cro_fun_df duplicated names")
+
+expect_equal_to_reference(
+    calculate(mtcars, cro_mean(list(mpg, mpg, mpg, mpg), list(am))),
+    "rds/cro_fun_df_duplicated_names.rds"
+)
+
+expect_equal_to_reference(
+    calculate(mtcars, cro_mean(list(mpg, mpg, mpg, mpg), list(am), weight = wt)),
+    "rds/cro_fun_df_duplicated_names_weighted.rds"
+)
