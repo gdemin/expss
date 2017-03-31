@@ -26,10 +26,9 @@ htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
     }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
-    first_lab = htmltools::htmlEscape(first_lab)
-    row_labels = htmltools::htmlEscape(x[[1]])
-    x[[1]] = NULL
-    # x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
+    # first_lab = htmltools::htmlEscape(first_lab)
+    row_labels = x[[1]]  # htmltools::htmlEscape(x[[1]])
+    x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
     header = t(split_labels(colnames(x), split = "|", remove_repeated = FALSE))
     header_last_row = t(split_labels(colnames(x),
                                      split = "|", 
