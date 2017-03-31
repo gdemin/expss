@@ -18,6 +18,7 @@ MIS_VAL = "mis_val"
 #' @return jkjk
 #' @export
 #'
+#' @name tables
 #' @examples
 #' 1
 tab_cols = function(data, ...){
@@ -50,7 +51,7 @@ tab_cols.intermediate_table = function(data, ...){
 
 ######
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_cells = function(data, ...){
     UseMethod("tab_cells")
@@ -83,7 +84,7 @@ tab_cells.intermediate_table = function(data, ...){
 
 #########
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_rows = function(data, ...){
     UseMethod("tab_rows")
@@ -119,7 +120,7 @@ tab_rows.intermediate_table = function(data, ...){
 
 #########
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_weight = function(data, weight = NULL){
     UseMethod("tab_weight")
@@ -151,7 +152,7 @@ tab_weight.intermediate_table = function(data, weight = NULL){
 
 ############
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_mis_val = function(data, ...){
     UseMethod("tab_mis_val")
@@ -179,7 +180,7 @@ tab_mis_val.intermediate_table = function(data, ...){
 
 #########
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_subgroup = function(data, subgroup = NULL){
     UseMethod("tab_subgroup")
@@ -211,7 +212,7 @@ tab_subgroup.intermediate_table = function(data, subgroup = NULL){
 
 
 #####################
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_fun = function(data, ..., 
                         mis_val = NULL, 
@@ -219,7 +220,7 @@ tab_stat_fun = function(data, ...,
     UseMethod("tab_stat_fun")
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_fun_df = function(data, ..., 
                            mis_val = NULL, 
@@ -227,7 +228,7 @@ tab_stat_fun_df = function(data, ...,
     UseMethod("tab_stat_fun_df")
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_cases = function(data, 
                           total_label = NULL,
@@ -237,7 +238,7 @@ tab_stat_cases = function(data,
     UseMethod("tab_stat_cases")
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_cpct = function(data, 
                          total_label = NULL,
@@ -247,7 +248,7 @@ tab_stat_cpct = function(data,
     UseMethod("tab_stat_cpct")
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_cpct_responses =function(data, 
                                   total_label = NULL,
@@ -257,7 +258,7 @@ tab_stat_cpct_responses =function(data,
     UseMethod("tab_stat_cpct_responses")
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_tpct = function(data, 
                          total_label = NULL,
@@ -267,7 +268,7 @@ tab_stat_tpct = function(data,
     UseMethod("tab_stat_tpct")
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_rpct = function(data, 
                          total_label = NULL,
@@ -303,7 +304,7 @@ tab_stat_fun.intermediate_table = function(data, ...,
     add_result_to_intermediate_table(data, result, label)
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_mean = function(data, label = "Mean"){
     eval(substitute(tab_stat_fun(data, 
@@ -313,7 +314,7 @@ tab_stat_mean = function(data, label = "Mean"){
          enclos = baseenv())    
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_median = function(data, label = "Median"){
     eval(substitute(tab_stat_fun(data, 
@@ -323,7 +324,7 @@ tab_stat_median = function(data, label = "Median"){
          enclos = baseenv())    
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_se = function(data, label = "S. E."){
     eval(substitute(tab_stat_fun(data,
@@ -333,7 +334,7 @@ tab_stat_se = function(data, label = "S. E."){
          enclos = baseenv())    
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_sum = function(data, label = "Sum"){
     eval(substitute(tab_stat_fun(data, 
@@ -343,7 +344,7 @@ tab_stat_sum = function(data, label = "Sum"){
          enclos = baseenv())    
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_min = function(data, label = "Min."){
     eval(substitute(tab_stat_fun(data, 
@@ -353,7 +354,7 @@ tab_stat_min = function(data, label = "Min."){
          enclos = baseenv())    
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_max = function(data, label = "Max."){
     eval(substitute(tab_stat_fun(data, 
@@ -363,7 +364,7 @@ tab_stat_max = function(data, label = "Max."){
          enclos = baseenv())    
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_sd = function(data, label = "Std. dev."){
     eval(substitute(tab_stat_fun(data, 
@@ -373,7 +374,7 @@ tab_stat_sd = function(data, label = "Std. dev."){
          enclos = baseenv())
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_valid_n = function(data, label = "Valid N"){
     eval(substitute(tab_stat_fun(data, 
@@ -383,7 +384,7 @@ tab_stat_valid_n = function(data, label = "Valid N"){
          enclos = baseenv())    
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_stat_unweighted_valid_n = function(data, label = "Unw. valid N"){
     eval(substitute(tab_stat_fun(data, 
@@ -598,7 +599,7 @@ tab_stat_ = function(){
 }
 
 ########
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_pivot = function(data, stat_position = c("outside_rows",
                                              "inside_rows",
@@ -644,7 +645,7 @@ tab_pivot.default = function(data, stat_position = c("outside_rows",
          Use at least one of 'tab_cells'/'tab_rows'/'tab_cols' and at least one of 'tab_stat' before the 'tab_pivot'.")
 }
 
-#' @rdname tab_cols
+#' @rdname tables
 #' @export
 tab_transpose = function(data){
     UseMethod("tab_transpose")
@@ -664,7 +665,7 @@ tab_transpose.intermediate_table = function(data){
     data
 }
 # ########
-# #' @rdname tab_cols
+# #' @rdname tables
 # #' @export
 # tab_intermediate_pivot = function(data, stat_position = c("outside_rows",
 #                                                           "inside_rows",

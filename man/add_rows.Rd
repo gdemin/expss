@@ -28,14 +28,14 @@ columns, \code{"stop"} will raise an error.}
 \item{y}{data.frame/matrix/table for binding}
 }
 \value{
-See \link[base]{rbind}, \link{cro}, \link{fre}
+See \link[base]{rbind}, \link{cro}, \link{cro_fun}, \link{fre}, \link{tables}
 }
 \description{
 \code{add_rows} is similar to \link[base]{rbind} but it handles non-matching 
 column names. \code{\%add_rows\%} is an infix version of \code{add_rows}. 
-There is also special method for the results of \code{cro_*}/\code{table_*}/\code{fre}. 
-\code{.add_rows} is version for addding rows to default dataset. See
-\link{default_dataset}.
+There is also special method for the results of
+\link{cro}/\link{cro_fun}/\link{tables}/\link{fre}. \code{.add_rows} is
+version for adding rows to default dataset. See \link{default_dataset}.
 }
 \examples{
 a = data.frame(x = 1:5, y = 6:10)
@@ -65,9 +65,9 @@ mtcars = apply_labels(mtcars,
                 carb = "Number of carburetors"
 )
 
-tab_mean = calculate(mtcars, cro_mean(mpg, am))
-tab_percent = calculate(mtcars, cro_cpct(vs, am))
+tbl_mean = calculate(mtcars, cro_mean(cyl, am))
+tbl_percent = calculate(mtcars, cro_cpct(cyl, am))
 
-tab_mean \%add_rows\% tab_percent
+tbl_mean \%add_rows\% tbl_percent
 
 }

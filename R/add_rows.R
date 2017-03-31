@@ -2,9 +2,9 @@
 #'
 #' \code{add_rows} is similar to \link[base]{rbind} but it handles non-matching 
 #' column names. \code{\%add_rows\%} is an infix version of \code{add_rows}. 
-#' There is also special method for the results of \code{cro_*}/\code{table_*}/\code{fre}. 
-#' \code{.add_rows} is version for addding rows to default dataset. See
-#' \link{default_dataset}.
+#' There is also special method for the results of
+#' \link{cro}/\link{cro_fun}/\link{tables}/\link{fre}. \code{.add_rows} is
+#' version for adding rows to default dataset. See \link{default_dataset}.
 #'
 #' @param ... data.frame/matrix/table for binding
 #' @param x data.frame/matrix/table for binding
@@ -14,7 +14,7 @@
 #'   \code{"add"} will combine all columns, \code{"drop"} will leave only common
 #'   columns, \code{"stop"} will raise an error.
 #'
-#' @return See \link[base]{rbind}, \link{cro}, \link{fre}
+#' @return See \link[base]{rbind}, \link{cro}, \link{cro_fun}, \link{fre}, \link{tables} 
 #' @export
 #'
 #' @examples
@@ -45,10 +45,10 @@
 #'                 carb = "Number of carburetors"
 #' )
 #' 
-#' tab_mean = calculate(mtcars, cro_mean(mpg, am))
-#' tab_percent = calculate(mtcars, cro_cpct(vs, am))
+#' tbl_mean = calculate(mtcars, cro_mean(cyl, am))
+#' tbl_percent = calculate(mtcars, cro_cpct(cyl, am))
 #' 
-#' tab_mean %add_rows% tab_percent
+#' tbl_mean %add_rows% tbl_percent
 #'
 add_rows = function(...){
     UseMethod("add_rows")
