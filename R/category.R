@@ -6,7 +6,7 @@
 #' @param counted_value Vector. Values that will be considered as indicator 
 #' of category presence. By default it equals to 1.
 #' @param compress Logical. Should we drop columns with all NA? FALSE by 
-#'   default. TRUE siginficantly decreases performance of the function.
+#'   default. TRUE significantly decreases performance of the function.
 #' @return data.frame of class \code{category} with numeric values
 #'   that correspond to column numbers of counted values. Column names of x or
 #'   variable labels are added as value labels.
@@ -18,11 +18,12 @@
 #' # Let's imagine it's matrix of consumed products
 #' dichotomy_matrix = matrix(sample(0:1,40,replace = TRUE,prob=c(.6,.4)),nrow=10)
 #' colnames(dichotomy_matrix) = c("Milk","Sugar","Tea","Coffee")
+#' 
 #' as.category(dichotomy_matrix, compress = TRUE) # compressed version
 #' category_encoding = as.category(dichotomy_matrix)
 #' 
 #'  # should be TRUE
-#' identical(val_lab(category_encoding), c(Milk = 1L,Sugar = 2L,Tea = 3L,Coffee = 4L))
+#' identical(val_lab(category_encoding), c(Milk = 1L, Sugar = 2L, Tea = 3L, Coffee = 4L))
 #' all(as.dichotomy(category_encoding, use_na = FALSE) == dichotomy_matrix)
 #' 
 #' # with prefix
