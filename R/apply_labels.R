@@ -28,7 +28,11 @@
 #'                              ")
 #' )
 #' 
-#' with(mtcars, cro(vs, am))
+#' # 'table' from base R
+#' table(mtcars$vs, mtcars$am)
+#' 
+#' # more sofisticated crosstable
+#' calculate(mtcars, cro(vs, am))
 #' 
 apply_labels = function(data, ...){
     UseMethod("apply_labels")

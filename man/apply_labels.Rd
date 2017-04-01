@@ -52,6 +52,10 @@ mtcars = apply_labels(mtcars,
                              ")
 )
 
-with(mtcars, cro(vs, am))
+# 'table' from base R
+table(mtcars$vs, mtcars$am)
+
+# more sofisticated crosstable
+calculate(mtcars, cro(vs, am))
 
 }
