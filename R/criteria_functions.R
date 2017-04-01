@@ -1,12 +1,12 @@
 #' Criteria functions
 #' 
 #' These functions returns criteria functions which could be used in different 
-#' situation - see \link{keep}, \link{except}, \link{if_val}, \link{na_if},
+#' situation - see \link{keep}, \link{except}, \link{recode}, \link{na_if},
 #' \link{\%i\%}, \link{\%d\%}, \link{count_if}, \link{match_row} etc. For
 #' example, \code{gt(5)} returns function which tests whether its argument
 #' greater than five.
 #' \code{fixed("apple")} return function which tests whether its argument
-#' contains "apple". Logical operations (|, &, !, xor) defined for these
+#' contains "apple". Logical operations (|, &, !, xor) are defined for these
 #' functions.
 #' List of functions:
 #' \itemize{
@@ -44,13 +44,14 @@
 #' @param ignore.case logical see \link[base]{grepl}
 #' @param useBytes logical see \link[base]{grepl}
 #' @param ... numeric indexes of desired items
-#' @param crit function which returns logical or vector. It will be
+#' @param crit vector of values/function which returns logical or vector. It will be
 #'   converted to function of class criterion.
 #'
-#' @return function of class 'criterion' which tests its argument against condition and return logical value
+#' @return function of class 'criterion' which tests its argument against
+#'   condition and return logical value
 #' 
-#' @seealso \link{keep}, \link{except}, \link{count_if}, \link{match_row},
-#'   \link{if_val}, \link{na_if}, \link{\%i\%}, \link{\%d\%}
+#' @seealso \link{recode}, \link{keep}, \link{except}, \link{count_if},
+#'   \link{match_row}, \link{na_if}, \link{\%i\%}, \link{\%d\%}
 #' @examples
 #' # operations on vector
 #' 1:6 %d% gt(4) # 1:4
@@ -107,9 +108,9 @@
 #' # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 #' set.seed(123)
 #' qvar = sample((-5):20, 50, replace = TRUE)
-#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)
+#' recode(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)
 #' # the same result
-#' if_val(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, ge(11) ~ 3, other ~ 0)
+#' recode(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, ge(11) ~ 3, other ~ 0)
 #' 
 #' 
 #' @name criteria
@@ -344,6 +345,7 @@ build_compare.numeric = function(x, compare){
 as.criterion = function(crit){
     force(crit)
     if (is.function(crit)) {
+        crit = match.fun(crit)
         res = function(x) {
             cond = crit(x)
             cond & !is.na(cond)

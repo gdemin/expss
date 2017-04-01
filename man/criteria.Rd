@@ -81,20 +81,21 @@ Coerced by as.character to a character string if possible.}
 
 \item{...}{numeric indexes of desired items}
 
-\item{crit}{function which returns logical or vector. It will be
+\item{crit}{vector of values/function which returns logical or vector. It will be
 converted to function of class criterion.}
 }
 \value{
-function of class 'criterion' which tests its argument against condition and return logical value
+function of class 'criterion' which tests its argument against
+  condition and return logical value
 }
 \description{
 These functions returns criteria functions which could be used in different 
-situation - see \link{keep}, \link{except}, \link{if_val}, \link{na_if},
+situation - see \link{keep}, \link{except}, \link{recode}, \link{na_if},
 \link{\%i\%}, \link{\%d\%}, \link{count_if}, \link{match_row} etc. For
 example, \code{gt(5)} returns function which tests whether its argument
 greater than five.
 \code{fixed("apple")} return function which tests whether its argument
-contains "apple". Logical operations (|, &, !, xor) defined for these
+contains "apple". Logical operations (|, &, !, xor) are defined for these
 functions.
 List of functions:
 \itemize{
@@ -179,13 +180,13 @@ iris \%except\% items(1)
 # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 set.seed(123)
 qvar = sample((-5):20, 50, replace = TRUE)
-if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, other ~ 0)
+recode(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, other ~ 0)
 # the same result
-if_val(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, ge(11) ~ 3, other ~ 0)
+recode(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, ge(11) ~ 3, other ~ 0)
 
 
 }
 \seealso{
-\link{keep}, \link{except}, \link{count_if}, \link{match_row},
-  \link{if_val}, \link{na_if}, \link{\%i\%}, \link{\%d\%}
+\link{recode}, \link{keep}, \link{except}, \link{count_if},
+  \link{match_row}, \link{na_if}, \link{\%i\%}, \link{\%d\%}
 }
