@@ -51,7 +51,7 @@ negative and zero weights are removed before calculations.}
 
 \item{subgroup}{logical vector.}
 
-\item{total_label}{By default "#Total". You can provide several names - for
+\item{total_label}{By default "#Total". You can provide several names - each name for
 each total statistics.}
 
 \item{total_statistic}{By default it is "u_cases" (unweighted cases). 

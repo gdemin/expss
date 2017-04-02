@@ -5,6 +5,7 @@
 \alias{vars_list}
 \alias{\%to\%}
 \alias{\%to_list\%}
+\alias{.internal_to_}
 \title{Get variables by pattern/by name or range of variables.}
 \usage{
 vars(...)
@@ -14,6 +15,8 @@ vars_list(...)
 e1 \%to\% e2
 
 e1 \%to_list\% e2
+
+.internal_to_(e1, e2)
 }
 \arguments{
 \item{...}{characters names of variables or criteria/logical functions}
@@ -45,12 +48,13 @@ non-standard evaluation is \code{\%to\%}. You can use \code{\%to\%} inside
 \link{calculate}, \link{keep}, \link{except} and \link{where} support
 \code{\%to\%} but if it will be used in global environment or inside
 \link[base]{with}, \link[base]{within} range will be taken from names of
-variables sorted in the alphabet order.}}
+variables sorted in the alphabetic order.}}
 Functions with word 'list' in name return lists of variables instead of 
 dataframes.
 \code{vars_pattern}, \code{vars_pattern_list}, \code{vars_range} and 
 \code{vars_range_list} are deprecated and will be removed in the future
 version.
+\code{.internal_to_} is for internal usage and not documented.
 }
 \examples{
 

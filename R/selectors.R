@@ -13,12 +13,13 @@
 #' \link{calculate}, \link{keep}, \link{except} and \link{where} support
 #' \code{\%to\%} but if it will be used in global environment or inside
 #' \link[base]{with}, \link[base]{within} range will be taken from names of
-#' variables sorted in the alphabet order.}}
+#' variables sorted in the alphabetic order.}}
 #' Functions with word 'list' in name return lists of variables instead of 
 #' dataframes.
 #' \code{vars_pattern}, \code{vars_pattern_list}, \code{vars_range} and 
 #' \code{vars_range_list} are deprecated and will be removed in the future
 #' version.
+#' \code{.internal_to_} is for internal usage and not documented.
 #' @seealso \link{keep}
 #' @param ... characters names of variables or criteria/logical functions
 #' @param e1 unquoted name of start variable (e. g. a_1)
@@ -118,5 +119,23 @@ vars_list = function(...){
 ###################################
 
 
-
+# version of %to% for usage inside 'keep'/'except'/'vars'
+#' @export
+#' @rdname vars
+.internal_to_ = function(e1, e2){
+    e1 = deparse(substitute(e1))
+    e2 = deparse(substitute(e2))
+    res = function(y){
+        first = match(e1, y)[1]
+        stopif(is.na(first), "'",e1, "' not found." )
+        last = match(e2, y)[1]
+        stopif(is.na(last), "'",e2, "' not found." )
+        stopif(last<first, "'",e2, "' located before '",e1,"'. Did you mean '",e2," %to% ",e1,"'?")
+        positions = seq_along(y)
+        (positions>=first) & (positions<=last)         
+    } 
+    class(res) = union("criterion",class(res))
+    res
+    
+}
 

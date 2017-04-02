@@ -245,25 +245,6 @@ keep_helper = function(old_names, args){
     
 }
 
-# version of %to% for usage inside 'keep'/'except'/'vars'
-#' @export
-.internal_to_ = function(e1, e2){
-    e1 = deparse(substitute(e1))
-    e2 = deparse(substitute(e2))
-    res = function(y){
-        first = match(e1, y)[1]
-        stopif(is.na(first), "'",e1, "' not found." )
-        last = match(e2, y)[1]
-        stopif(is.na(last), "'",e2, "' not found." )
-        stopif(last<first, "'",e2, "' located before '",e1,"'. Did you mean '",e2," %to% ",e1,"'?")
-        positions = seq_along(y)
-        (positions>=first) & (positions<=last)         
-    } 
-    class(res) = union("criterion",class(res))
-    res
-    
-}
-    
 
     
 #' @export
