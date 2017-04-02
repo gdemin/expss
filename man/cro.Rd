@@ -40,27 +40,27 @@ cro_cpct_responses(cell_vars, col_vars = total(), row_vars = total(label =
   "none"))
 }
 \arguments{
-\item{cell_vars}{vector. By now multiple-response predictor is not supported.}
+\item{cell_vars}{vector/data.frame/list.}
 
-\item{col_vars}{vector. By now multiple-response predictor is not supported.}
+\item{col_vars}{vector/data.frame/list. By now multiple-response predictor is not supported.}
 
-\item{weight}{numeric vector. Optional case weights. NA's and negative weights
-treated as zero weights.}
+\item{row_vars}{vector/data.frame/list. By now multiple-response predictor is not supported.}
+
+\item{weight}{numeric vector. Optional cases weights. Cases with NA's,
+negative and zero weights are removed before calculations.}
+
+\item{subgroup}{logical vector.}
+
+\item{total_label}{By default "#Total". You can provide several names - for
+each total statistics.}
+
+\item{total_statistic}{By default it is "u_cases" (unweighted cases). 
+Possible values are "u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+"w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct". "u_" means
+unweighted statictics and "w_" means weighted statistics.}
 
 \item{total_row_position}{Position ot total row in the resulting table. Can
 be one of "below", "above", "none".}
-
-\item{x}{vector/data.frame. data.frames are considered as multiple response
-variables.}
-
-\item{weighted_total}{By default it is "unweighted". Can be "unweighted" or/and "weighted". You can show weighted total/unweighted total or both.}
-
-\item{total_row_title}{By default "#Total". You can provide two titles - for weighted and unqeighted totals.}
-
-\item{fun}{custom summary function. It should always return
-scalar/vector/matrix of the same size.}
-
-\item{...}{further arguments for \code{fun}}
 }
 \value{
 object of class 'etable'. Basically it's a data.frame but class
@@ -68,31 +68,23 @@ object of class 'etable'. Basically it's a data.frame but class
 }
 \description{
 \itemize{
-\item{\code{cro}}{ returns data.frame with counts (possibly weighted) with column and
-row totals.}
-\item{\code{cro_pct}, \code{cro_cpct}, \code{cro_rpct}}{ return data.frame with 
-table/column/row percent with column and row totals. There are always 
-weighted counts instead of margin with 100\%. Empty labels/factor levels are 
-removed from results of these functions. Base for multiple response (x is 
-data.frame) percent is number of valid cases (not sum of responses) so sum of
-percent may be greater than 100. Case is considered as valid if it has at
-least one non-NA value.}
-\item{\code{cro_mean}, \code{cro_sum}, \code{cro_median}}{ return data.frame with 
-mean/sum/median. Empty labels/factor levels are 
-removed from results of these functions. NA's are always omitted.}
-\item{\code{cro_fun}, \code{cro_fun_df}}{ return data.frame with custom 
-summary statistics defined by 'fun' argument. Empty labels/factor levels in 
-predictor are removed from results of these functions. NA's treatment depends
-on your 'fun' behavior. To use weight you should have 'weight' argument in 
-'fun' and some logic for its proccessing inside.\code{cro_fun} applies 'fun'
-on each column in 'x' separately, \code{cro_fun_df} gives to 'fun' x as a
-whole data.frame. So \code{cro_fun(iris[, -5], iris$Species, fun = mean)}
-gives the same result as \code{cro_fun_df(iris[, -5], iris$Species, fun =
-colMeans)}. For \code{cro_fun_df} names of 'x' will converted to labels if
-they are available before 'fun' is applied. You should take care to return
-from 'fun' rectangular object with appropriate row/column names - they will
-be used in final result as labels.}
+\item{\code{cro}}{ build a contingency table of the counts.}
+\item{\code{cro_cpct}, \code{cro_cpct_responses}}{ build a contingency table 
+of the column percents. These functions give different results only for 
+multiple response variables. For \code{cro_cpct} base of percents is number 
+of valid cases. Case is considered as valid if it has at least one non-NA 
+value. So for multiple response variables sum of percents may be greater than
+100. For \code{cro_cpct_responses} base of percents is number of valid 
+responses. Multiple response variables can have several responses for single 
+case. Sum of percents of \code{cro_cpct_responses} always equals to 100\%.}
+\item{\code{cro_rpct}}{ build a contingency table of the row percents. Base
+for percents is number of valid cases.}
+\item{\code{cro_tpct}}{ build a contingency table of the table percents. Base
+for percents is number of valid cases.}
 }
+To provide multiple-response variables as arguments use \link{mrset} for
+multiples with category encoding and \link{mdset} for multiples with
+dichotomy (dummy) encoding.
 }
 \examples{
 data(mtcars)
@@ -117,19 +109,19 @@ mtcars = apply_labels(mtcars,
 calculate(mtcars, cro(am, vs))
 
 # multiple banners
-calculate(mtcars, cro(cyl, list("#Total", vs, am, carb)))
+calculate(mtcars, cro(cyl, list(total(), vs, am, carb)))
 
 # column percent
-calculate(mtcars, cro_cpct(cyl, list("#Total", vs, am, carb)))
+calculate(mtcars, cro_cpct(cyl, list(total(), vs, am, carb)))
 
 # nested banner
-calculate(mtcars, cro(cyl, list("#Total", vs \%nest\% am, carb)))
+calculate(mtcars, cro(cyl, list(total(), vs \%nest\% am, carb)))
 
 # stacked variables
-calculate(mtcars, cro(list(cyl, carb), list("#Total", vs \%nest\% am)))
+calculate(mtcars, cro(list(cyl, carb), list(total(), vs \%nest\% am)))
 
 # nested variables
-calculate(mtcars, cro(am \%nest\% cyl, list("#Total", vs, carb)))
+calculate(mtcars, cro(am \%nest\% cyl, list(total(), vs, carb)))
 
 # multiple-choice variable
 # brands - multiple response question
@@ -154,53 +146,10 @@ val_lab(score) = make_labels("
                              1 Like it    
                              ")
 
-cro(mrset(brands), list("#Total", score))
-cro_cpct(mrset(brands), list("#Total", score))
+cro(mrset(brands), list(total(), score))
+cro_cpct(mrset(brands), list(total(), score))
 
-# 'cro_mean'
-
-data(iris)
-cro_mean(iris[, -5], iris$Species)
-
-# 'cro_fun'
-
-data(mtcars)
-mtcars = modify(mtcars,{
-    var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
-    var_lab(hp) = "Gross horsepower"
-    var_lab(mpg) = "Miles/(US) gallon"
-})
-
-# Label for 'disp' forgotten intentionally
-with(mtcars, cro_fun(data.frame(hp, mpg, disp), vs, summary))
-
-# or, the same with transposed summary
-with(mtcars, cro_fun(data.frame(hp, mpg, disp), vs, function(x) t(summary(x))))
-
-# very artificial example
-a = c(1,1,1, 1, 1)
-b = c(0, 1, 2, 2, NA)
-weight = c(0, 0, 1, 1, 1)
-cro_fun(b, a, weight = weight, 
-     fun = function(x, weight, na.rm){
-                 weighted.mean(x, w = weight, na.rm = na.rm)
-             }, 
-     na.rm = TRUE)
-
-
-# comparison 'cro_fun' and 'cro_fun_df'
-
-data(iris)
-cro_fun(iris[, -5], iris$Species, fun = mean)
-# same result
-cro_fun_df(iris[, -5], iris$Species, fun = colMeans)  
-
-# usage for 'cro_fun_df' which is not possible for 'cro_fun'
-# calculate correlations of variables with Sepal.Length inside each group
-cro_fun_df(iris[,-5], iris$Species, fun = function(x) cor(x)[,1])
-
-# or, pairwise correlations inside groups
-cro_fun_df(iris[,-5], iris$Species, fun = cor)
+}
+\seealso{
+\link{tables}, \link{fre}, \link{cro_fun}.
 }
