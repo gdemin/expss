@@ -99,6 +99,7 @@ mtcars = modify(mtcars,{
 })
 expect_equal_to_reference(cro(list(mtcars$am), list(mtcars$vs)), "rds/table_cases1.rds")
 expect_equal_to_reference(cro(list(mtcars$am, mtcars$vs), list(mtcars$vs)), "rds/table_cases22.rds")
+expect_equal_to_reference(cro(list(mtcars$am, list(mtcars$vs)), list(mtcars$vs)), "rds/table_cases22.rds")
 expect_equal_to_reference(cro(list(mtcars$am, mtcars$cyl), list(mtcars$vs, mtcars$gear)), "rds/table_cases23.rds")
 
 expect_equal_to_reference(
