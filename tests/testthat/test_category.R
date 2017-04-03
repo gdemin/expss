@@ -78,3 +78,19 @@ structure(list(`NA` = logical(0)),
 row.names = integer(0), 
 class = c("category", 
 "data.frame")))
+
+set.seed(123)
+dichotomy_matrix = matrix(sample(0:1,40,replace = TRUE,prob=c(.6,.4)),nrow=10)
+colnames(dichotomy_matrix) = c("Used product|Milk","Used product|Sugar",
+                               "Used product|Tea","Used product|Coffee")
+
+expect_equal_to_reference(
+as.category(dichotomy_matrix),
+"rds/category7.rds"
+)
+
+
+expect_equal_to_reference(
+    as.category(dichotomy_matrix, compress = TRUE),
+    "rds/category8.rds"
+)
