@@ -33,6 +33,17 @@ expect_equal_to_reference(
     ,"rds/table_summary_df0.rds"
 )
 
+# test for empty rowlabels
+
+expect_equal_to_reference(
+    mtcars %calc% cro_fun_df(dtfrm(mpg, disp, hp, qsec), 
+                             col_vars = vs, 
+                             fun = function(x) {res = colMeans(x, na.rm = TRUE); unname(res)}, 
+                             row_vars = am
+    )
+    ,"rds/table_summary_df0rowlabels.rds"
+)
+
 expect_error(
     mtcars %calc% cro_fun_df(mpg, 
                                    col_vars = vs[1:2], 

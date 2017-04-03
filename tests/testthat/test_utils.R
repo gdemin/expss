@@ -43,3 +43,6 @@ expect_identical(uniq_elements(a), 1:9)
 
 a = list(1:3, a, dtfrm(5:6))
 expect_identical(uniq_elements(a), 1:9)
+
+## just for coverage
+expss:::.onLoad()
