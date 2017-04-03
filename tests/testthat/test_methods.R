@@ -282,6 +282,30 @@ options(expss.digits = 4)
 expect_output_file(print(cro_mean(iris[,-5], list(iris$Species, total()))), 
                    "rds/cro_mean_out.txt")
 options(expss.digits = NULL)
+options(expss.print_table = "rnotebook")
+expect_output_file(print(tbl), 
+                   "rds/print_etable_rnotebook.txt")
+
+options(expss.print_table = "viewer")
+aa = capture_output(
+    expect_identical(print(tbl), NULL)
+)
+
+options(expss.print_table = "raw")
+expect_output_file(print(tbl[, 1:2]), 
+                   "rds/print_etable_raw.txt")
+
+options(expss.print_table = NULL)
+
+res = expss:::knit_print.etable(tbl)
+expect_equal_to_reference(res, "rds/knit_print.rds")
+
+options(expss.print_table = "rnotebook")
+colnames(tbl) = enc2utf8(colnames(tbl))
+tbl[[1]] = enc2utf8(tbl[[1]])
+expect_output_file(print(tbl), 
+                   "rds/print_etable_rnotebook.txt")
+
 
 # my_vec = 1:3
 # val_lab(my_vec) = autonum("Один

@@ -240,8 +240,7 @@ print.etable = function(x, digits = getOption("expss.digits"), remove_repeated =
             res = htmlTable(x, digits = digits)
 
             res = fix_cyrillic_for_rstudio(res)
-            
-            ######
+
             print(res)
             return(invisible(NULL))
         }
