@@ -146,12 +146,14 @@ as.integer.labelled = function (x, ...){
 as.numeric.labelled = as.double.labelled
 
 #' @export
-as.character.labelled = function (x, ...){
+as.character.labelled = function (x, prepend_varlab = FALSE, ...){
     if(!identical(getOption("expss.enable_value_labels_support"), 0)){
-        labelled_to_character_internal(x, prepend_varlab = FALSE)  
+        labelled_to_character_internal(x, prepend_varlab = prepend_varlab)  
     } else {
         y = NextMethod()
-        y = set_var_lab(y, var_lab(x))
+        if(!prepend_varlab) {
+            y = set_var_lab(y, var_lab(x))
+        }
         y
   
     } 
@@ -161,11 +163,6 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
     vallab = val_lab(x)
     varlab = var_lab(x)
     x = unlab(x)
-    # if(anyDuplicated(vallab)){
-    #     warning("duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
-    # }
-    # names(vallab) = make_items_unique(names(vallab), with_warning = "duplicated labels: ")
-    
     uniqs = unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 
     if(prepend_varlab){
@@ -310,7 +307,6 @@ knit_print.etable = function(x, digits = getOption("expss.digits"), ...){
     res = htmlTable(x, digits = digits, ...)
     # res = fix_cyrillic_for_rstudio(res)
     knitr::asis_output(res)
-    
 }
 
 #' @export

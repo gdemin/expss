@@ -139,6 +139,7 @@ options(expss.enable_value_labels_support = 0)
 expect_identical(as.character(a), unvl(a_str))
 options(expss.enable_value_labels_support = NULL)
 expect_identical(as.character(a), c("Lab", "0"))
+expect_identical(as.character(a, prepend_varlab = TRUE), c("Lab|Lab", "Lab|0"))
 
 
 aa = 1:3
