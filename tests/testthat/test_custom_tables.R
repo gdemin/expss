@@ -157,6 +157,20 @@ res = mtcars %>%
     tab_subgroup(vs == 0) %>% 
     tab_cells(vs) %>% 
     tab_cols(total(), am) %>% 
+    tab_subgroup() %>% 
+    tab_stat_cpct(total_row_position = "none", label = "col %") %>%
+    tab_stat_rpct(total_row_position = "none", label = "row %") %>%
+    tab_stat_tpct(total_row_position = "none", label = "table %") %>%
+    tab_cells(total(vs, label = "#Total|cases")) %>% 
+    tab_stat_cases(total_row_position = "none") %>% 
+    tab_pivot(stat_position = "inside_rows") 
+
+expect_equal_to_reference(res, "rds/ctable8.rds")
+
+res = mtcars %>% 
+    tab_subgroup(vs == 0) %>% 
+    tab_cells(vs) %>% 
+    tab_cols(total(), am) %>% 
     tab_stat_cpct(total_row_position = "none", label = "col %") %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
@@ -579,6 +593,27 @@ expect_equal_to_reference(
     "rds/ctable25.rds"
 )
 
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cols(drop_unused_labels(a22), drop_unused_labels(b22)) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6)) %>% 
+    tab_stat_cpct_responses(
+        total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                            "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+        )) %>% 
+    tab_sort_desc() %>% 
+    tab_cells(mrset(b1_1 %to% b1_6)) %>% 
+    tab_stat_cpct_responses(
+        total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                            "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+        )) %>% 
+    tab_sort_asc() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable25_sorting.rds"
+)
 
 # pr_t %>%
 #     tab_cols(total(), age_cat) %>%
@@ -636,6 +671,125 @@ expect_equal_to_reference(
 )
     
     
+res = mtcars %>% 
+    tab_cells(vars(qc(mpg, qsec, hp, disp))) %>% 
+    tab_rows(am %nest% vs) %>% 
+    tab_stat_fun_df(sum = colSums, mean = colMeans, method = list) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable30.rds"
+)
+
+res = mtcars %>% 
+    tab_cells(mpg, qsec, hp, disp) %>% 
+    tab_weight(wt) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
+    tab_pivot(stat_position = "inside_columns", stat_label = "outside")
+
+expect_equal_to_reference(res, "rds/ctable31.rds")
+
+res = mtcars %>% 
+    tab_cells(mpg, qsec, hp, disp) %>% 
+    tab_weight(wt) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
+    tab_pivot(stat_position = "inside_rows", stat_label = "outside")
+
+expect_equal_to_reference(res, "rds/ctable32.rds")
+
+res = mtcars %>% 
+    tab_cells(mpg, qsec, hp, disp) %>% 
+    tab_weight(wt) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
+    tab_pivot(stat_position = "outside_rows", stat_label = "outside")
+
+expect_equal_to_reference(res, "rds/ctable33.rds")
+
+res = mtcars %>% 
+    tab_cells(mpg, qsec, hp, disp) %>% 
+    tab_cols(total(), am, vs) %>% 
+    tab_weight(wt) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
+    tab_pivot(stat_position = "outside_columns", stat_label = "outside")
+
+expect_equal_to_reference(res, "rds/ctable34.rds")
+
+mtcars2 = mtcars
+mtcars2$am = unvr(mtcars2$am)
+res = mtcars2 %>% 
+    tab_cells(mpg, qsec, hp, disp) %>% 
+    tab_cols(total(), "My am" = am) %>% 
+    tab_weight(wt) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() %>% 
+    tab_pivot(stat_position = "outside_columns", stat_label = "outside")
+
+expect_equal_to_reference(res, "rds/ctable35.rds")
+
+mtcars2$vs = unvr(mtcars2$vs)
+res = mtcars2 %>% 
+    tab_cells("My vs" = vs) %>% 
+    tab_cols(total(), "My am" = am) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(res, "rds/ctable36.rds")
+
+res = mtcars %>% 
+    tab_cells(mpg, qsec, hp, disp) %>% 
+    tab_weight(wt) %>% 
+    tab_stat_mean() %>% 
+    tab_stat_median() %>% 
+    tab_stat_sd() %>% 
+    tab_stat_sum() %>% 
+    tab_stat_se() %>% 
+    tab_stat_unweighted_valid_n() %>% 
+    tab_stat_valid_n() %>% 
+    tab_stat_min() %>% 
+    tab_stat_max() 
+
+expect_output_file(print(res), "rds/print_intermediate_table.txt")
+
 context("custom tables error")
 
 expect_error(

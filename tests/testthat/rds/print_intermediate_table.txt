@@ -1,0 +1,1 @@
+Object of class 'intermediate_table'. Use 'tab_pivot' to finish table creation.
