@@ -122,4 +122,12 @@ res = product_test %>%
 # single column header
 expect_equal_to_reference(htmlTable(res), "rds/htmlTable16.rds")
 
+# single row header
+res = mtcars %>% calc(cro(am, list(unvr(vs))))
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable17.rds")
+
+# single row header
+res = mtcars %>% calc(cro(list(unvr(am)), list(unvr(vs))))
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable18.rds")
+
 # temp = function(x) htmlTable:::print.htmlTable(x, useViewer = TRUE)

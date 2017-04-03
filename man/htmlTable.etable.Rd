@@ -20,7 +20,7 @@ numeric columns remain unrounded.}
 Returns a string of class htmlTable
 }
 \description{
-This is method for rendering results of \link{fre}/\link{cro} in
+This is method for rendering results of \link{fre}/\link{cro}/\link{tables} in
 Shiny/RMarkdown and etc. For detailed description of function and its
 arguments see \link[htmlTable]{htmlTable}. You may be interested in
 \code{options(expss.print_table = "viewer")} for automatical rendering tables
