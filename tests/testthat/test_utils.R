@@ -46,3 +46,12 @@ expect_identical(uniq_elements(a), 1:9)
 
 ## just for coverage
 expss:::.onLoad()
+
+expss:::.onAttach 
+expss:::.onAttach 
+expss:::.onAttach 
+expss:::.onAttach 
+expss:::.onAttach 
+expss:::.onAttach 
+expss:::.onAttach 
+expss:::.onAttach 

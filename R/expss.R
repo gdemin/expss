@@ -62,3 +62,13 @@ setkeyv = data.table::setkeyv
     options(expss.digits = 1)
     options(expss.enable_value_labels_support = 1)
 }
+
+.onAttach = function(...) {
+    rnd = runif(1)
+    if(rnd<0.2){
+        packageStartupMessage("\nUse \'options(expss.print_table = \"viewer\")\' to display tables in the RStudio Viewer.\n To return to defaults use \'options(expss.print_table = NULL)\'.\n")
+    }
+    if(rnd>0.8){
+        packageStartupMessage("\nUse \'options(expss.print_table = \"rnotebook\")\' to display tables inside R Notebooks.\n To return to defaults use \'options(expss.print_table = NULL)\'.\n")
+    }
+}
