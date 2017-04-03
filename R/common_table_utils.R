@@ -100,10 +100,7 @@ test_for_null_and_make_dataframe = function(curr_vars, str_curr_vars){
 #############
 
 convert_multicolumn_object_to_vector  = function(x){
-    if(is.matrix(x) || is.data.frame(x)){
-        if(NCOL(x)==0){
-            x = cbind(x, 'NA' = rep(NA, NROW(x))) # rep for zero rows objects
-        }
+    if((is.matrix(x) || is.data.frame(x)) && NCOL(x)>0){
         # we convert factors to labelled because further we will combine data.frame to single column and
         # for labelled value labels will be combined. It is not so for factors.
         varlab = var_lab(x)

@@ -249,6 +249,9 @@ context("fre and cro some special cases")
 
 expect_equal_to_reference(fre(numeric(0)), "rds/fre1.rds")
 
+a = matrix(1:9, 3)
+expect_equal_to_reference(fre(a[, FALSE, drop = FALSE]), "rds/fre1matrix.rds")
+
 a = numeric(0)
 val_lab(a) = autonum(letters[1:3])
 expect_equal_to_reference(fre(a), "rds/fre1_empty_with_labels.rds")
