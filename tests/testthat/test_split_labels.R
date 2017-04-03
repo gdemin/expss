@@ -76,3 +76,41 @@ tabl[,1] = as.factor(tabl[[1]])
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
 
 
+mtcars = apply_labels(mtcars,
+                      cyl = "Number of cylinders",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c(automatic = 0,
+                             manual=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+# without sorting
+tabl = mtcars %>% 
+    tab_cells(cyl, gear, carb) %>% 
+    tab_cols("#total", vs, am) %>% 
+    tab_stat_cpct()
+
+expect_error(split_columns(tabl))
+expect_error(split_table_to_df(tabl))
+
+tabl = tabl %>% tab_pivot() 
+
+expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1.rds")
+expect_equal_to_reference(split_table_to_df(tabl, remove_repeated = FALSE),
+                          "rds/split_table_to_df2.rds")
+
+expect_identical(split_table_to_df(tabl[, FALSE]), tabl[, FALSE])
+expect_equal_to_reference(split_table_to_df(tabl[FALSE, ]),
+                          "rds/split_table_to_df3.rds")
+expect_equal_to_reference(split_table_to_df(tabl[FALSE, ], remove_repeated = FALSE),
+                          "rds/split_table_to_df4.rds")
+
+expect_equal_to_reference(split_table_to_df(tabl[, 1]),
+                          "rds/split_table_to_df5.rds")
+
+expect_equal_to_reference(split_table_to_df(tabl[, 1], remove_repeated = FALSE),
+                          "rds/split_table_to_df6.rds")

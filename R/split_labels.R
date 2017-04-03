@@ -85,7 +85,7 @@ split_columns  = function(data, columns = 1, remove_repeated = TRUE, split = "|"
 
 
 #' @export
-split_columns.intermeditate_table = function(x, ...){
+split_columns.intermediate_table = function(x, ...){
     stop("No results for splitting. Use 'split_columns' after 'tab_pivot'.")
 }
 
@@ -155,7 +155,22 @@ split_columns.matrix  = function(data, columns = 1, remove_repeated = TRUE, spli
 
 #' @export
 #' @rdname split_labels
-split_all_in_etable = function(data, 
+split_table_to_df = function(data, 
+                             digits = getOption("expss.digits"), 
+                             remove_repeated = TRUE, 
+                             split = "|", 
+                             fixed = TRUE, 
+                             perl = FALSE){
+    UseMethod("split_table_to_df")
+}
+
+#' @export
+split_table_to_df.intermediate_table = function(x, ...){
+    stop("No results for splitting. Use 'split_table_to_df' after 'tab_pivot'.")
+}
+
+#' @export
+split_table_to_df.etable = function(data, 
                                digits = getOption("expss.digits"), 
                         remove_repeated = TRUE, 
                         split = "|", 
@@ -197,14 +212,6 @@ split_all_in_etable = function(data,
     } else {
         data = as.dtfrm(header)
     }
-    data[] = lapply(data, function(x) paste0(" ", x, " ")) # some extra space
-    width = sapply(as.dtfrm(lapply(data, nchar)), max, na.rm = TRUE) 
-    width[!is.finite(width) | width<3 ] = 3
-    for(i in seq_len(NCOL(data))){
-        data[[i]] = format(data[[i]], width = width[i], justify =  "right")    
- 
-    }
-    
     rownames(data) = NULL
     data = setNames(data, rep("", NCOL(data)))
     class(data) = class(data) %d% 'etable'
