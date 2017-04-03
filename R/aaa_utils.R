@@ -346,18 +346,22 @@ uniq_elements=function(x)
     UseMethod("uniq_elements")
 }
 
+#' @export
 uniq_elements.default=function(x){
     unique(x)
 }
 
+#' @export
 uniq_elements.matrix=function(x){
     unique(c(x))
 }
 
+#' @export
 uniq_elements.data.frame=function(x){
     unique(unlist(lapply(x, unique)))
 }
 
+#' @export
 uniq_elements.list=function(x){
     unique(unlist(lapply(x, uniq_elements)))
 }
@@ -369,12 +373,13 @@ integer_encoding=function(x, dict = NULL)
     UseMethod("integer_encoding")
 }
 
+#' @export
 integer_encoding.default=function(x, dict = NULL){
     if(is.null(dict)) dict = sort(uniq_elements(x))
     matrix(match(x, dict, incomparables=NA), nrow = NROW(x))
 }
 
-
+#' @export
 integer_encoding.data.frame=function(x, dict = NULL){
     if(is.null(dict)) dict = sort(uniq_elements(x))
     matrix(match(c(x, recursive = TRUE), dict, incomparables=NA), nrow = nrow(x))
