@@ -638,20 +638,7 @@ cro_spearman = function(cell_vars,
 }
     
 
-#' @export
-#' @rdname cro_fun
-total = function(x = 1, label = "#Total"){
-    res = valid(x)
-    res[!res] = NA
-    res = as.numeric(res)
-    varlab = var_lab(x) 
-    if(!is.null(varlab) && varlab!=""){
-        label = paste0(varlab, "|", label)
-    }
-    var_lab(res) = ""
-    val_lab(res) = setNames(1, label)
-    res
-}
+
 
 #' @export
 #' @rdname cro_fun

@@ -8,7 +8,6 @@
 \alias{cro_median}
 \alias{cro_pearson}
 \alias{cro_spearman}
-\alias{total}
 \alias{combine_functions}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
@@ -32,8 +31,6 @@ cro_pearson(cell_vars, col_vars = total(), row_vars = total(label = ""),
 
 cro_spearman(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
-
-total(x = 1, label = "#Total")
 
 combine_functions(..., method = c)
 }

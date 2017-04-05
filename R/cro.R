@@ -6,37 +6,45 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' \itemize{
 #' \item{\code{cro}, \code{cro_cases}}{ build a contingency table of the counts.}
 #' \item{\code{cro_cpct}, \code{cro_cpct_responses}}{ build a contingency table 
-#' of the column percents. These functions give different results only for 
-#' multiple response variables. For \code{cro_cpct} base of percents is number 
+#' of the column percent. These functions give different results only for 
+#' multiple response variables. For \code{cro_cpct} base of percent is number 
 #' of valid cases. Case is considered as valid if it has at least one non-NA 
-#' value. So for multiple response variables sum of percents may be greater than
-#' 100. For \code{cro_cpct_responses} base of percents is number of valid 
+#' value. So for multiple response variables sum of percent may be greater than
+#' 100. For \code{cro_cpct_responses} base of percent is number of valid 
 #' responses. Multiple response variables can have several responses for single 
-#' case. Sum of percents of \code{cro_cpct_responses} always equals to 100\%.}
-#' \item{\code{cro_rpct}}{ build a contingency table of the row percents. Base
-#' for percents is number of valid cases.}
-#' \item{\code{cro_tpct}}{ build a contingency table of the table percents. Base
-#' for percents is number of valid cases.}
-#' \item{\code{total}}{ auxilary function - creates variables with 1 for valid
+#' case. Sum of percent of \code{cro_cpct_responses} always equals to 100\%.}
+#' \item{\code{cro_rpct}}{ build a contingency table of the row percent. Base
+#' for percent is number of valid cases.}
+#' \item{\code{cro_tpct}}{ build a contingency table of the table percent. Base
+#' for percent is number of valid cases.}
+#' \item{\code{total}}{ auxiliary function - creates variables with 1 for valid
 #' case of its argument \code{x} and NA in opposite case.}
 #' }
-#' To provide multiple-response variables as arguments use \link{mrset} for
-#' multiples with category encoding and \link{mdset} for multiples with
-#' dichotomy (dummy) encoding.
+#' You can combine tables with \link{add_rows} and \link{merge.etable}. For
+#' sorting table see \link{tab_sort_asc}. 
+#' To provide multiple-response variables as arguments use \link{mrset} for 
+#' multiples with category encoding and \link{mdset} for multiples with 
+#' dichotomy (dummy) encoding. To compute statistics with nested 
+#' variables/banners use \link{nest}. For more sophisticated interface with
+#' modern piping via \code{magrittr} see \link{tables}.
 #' 
-#' @param cell_vars vector/data.frame/list. variables
-#' @param col_vars vector/data.frame/list. By now multiple-response predictor is not supported.
-#' @param row_vars vector/data.frame/list. By now multiple-response predictor is not supported.
+#' @param cell_vars vector/data.frame/list. Variables on which percentage/cases
+#'   will be computed. Use \link{mrset}/\link{mdset} for multiple-response
+#'   variables.
+#' @param col_vars vector/data.frame/list. Variables which breaks table by
+#'   columns. Use \link{mrset}/\link{mdset} for multiple-response variables.
+#' @param row_vars vector/data.frame/list. Variables which breaks table by rows.
+#'   Use \link{mrset}/\link{mdset} for multiple-response variables.
 #' @param weight numeric vector. Optional cases weights. Cases with NA's,
 #'   negative and zero weights are removed before calculations.
-#' @param subgroup logical vector.  
+#' @param subgroup logical vector. You can specify subgroup on which table will be computed. 
 #' @param total_label By default "#Total". You can provide several names - each name for
 #'   each total statistics.
 #' @param total_statistic  By default it is "u_cases" (unweighted cases). 
 #'   Possible values are "u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
 #'   "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct". "u_" means
-#'   unweighted statictics and "w_" means weighted statistics.
-#' @param total_row_position Position ot total row in the resulting table. Can
+#'   unweighted statistics and "w_" means weighted statistics.
+#' @param total_row_position Position of total row in the resulting table. Can
 #'   be one of "below", "above", "none".
 #' @param x vector/data.frame of class 'category'/'dichotomy'. 
 #' @param label character. Label for total variable. 
@@ -48,13 +56,13 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' @examples
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
-#'                       mpg = "Miles/(US) gallon|Mean",
+#'                       mpg = "Miles/(US) gallon",
 #'                       cyl = "Number of cylinders",
-#'                       disp = "Displacement (cu.in.)|Mean",
-#'                       hp = "Gross horsepower|Mean",
+#'                       disp = "Displacement (cu.in.)",
+#'                       hp = "Gross horsepower",
 #'                       drat = "Rear axle ratio",
-#'                       wt = "Weight (lb/1000)",
-#'                       qsec = "1/4 mile time|Mean",
+#'                       wt = "Weight (1000 lbs)",
+#'                       qsec = "1/4 mile time",
 #'                       vs = "Engine",
 #'                       vs = c("V-engine" = 0,
 #'                              "Straight engine" = 1),
@@ -67,20 +75,29 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' 
 #' calculate(mtcars, cro(am, vs))
 #' 
-#' # multiple banners
-#' calculate(mtcars, cro(cyl, list(total(), vs, am, carb)))
-#' 
-#' # column percent
-#' calculate(mtcars, cro_cpct(cyl, list(total(), vs, am, carb)))
+#' # column percent with multiple banners
+#' calculate(mtcars, cro_cpct(cyl, list(total(), vs, am)))
 #' 
 #' # nested banner
-#' calculate(mtcars, cro(cyl, list(total(), vs %nest% am, carb)))
+#' calculate(mtcars, cro_cpct(cyl, list(total(), vs %nest% am)))
 #' 
 #' # stacked variables
 #' calculate(mtcars, cro(list(cyl, carb), list(total(), vs %nest% am)))
 #' 
 #' # nested variables
-#' calculate(mtcars, cro(am %nest% cyl, list(total(), vs, carb)))
+#' calculate(mtcars, cro_cpct(am %nest% cyl, list(total(), vs)))
+#'
+#' # row variables
+#' calculate(mtcars, cro_cpct(cyl, list(total(), vs), row_vars = am))
+#' 
+#' # several totals above table
+#' calculate(mtcars, cro_cpct(cyl, 
+#'               list(total(), vs), 
+#'               row_vars = am,
+#'               total_row_position = "above",
+#'               total_label = c("number of cases", "row %"),
+#'               total_statistic = c("u_cases", "u_rpct")
+#'               ))
 #' 
 #' # multiple-choice variable
 #' # brands - multiple response question
@@ -99,15 +116,15 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #'                               ")
 #' 
 #' var_lab(score) = "Evaluation of tested brand"
-#' val_lab(score) = make_labels("
+#' val_lab(score) = num_lab("
 #'                              -1 Dislike it
 #'                              0 So-so
 #'                              1 Like it    
 #'                              ")
-#' 
-#' cro(mrset(brands), list(total(), score))
+#'
 #' cro_cpct(mrset(brands), list(total(), score))
-#' 
+#' # responses
+#' cro_cpct_responses(mrset(brands), list(total(), score))
 #' @export
 cro = function(cell_vars, 
                col_vars = total(), 
