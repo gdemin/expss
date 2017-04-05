@@ -7,6 +7,7 @@
 \alias{cro_rpct}
 \alias{cro_tpct}
 \alias{cro_cpct_responses}
+\alias{total}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
 cro(cell_vars, col_vars = total(), row_vars = total(label = ""),
@@ -38,9 +39,11 @@ cro_cpct_responses(cell_vars, col_vars = total(), row_vars = total(label =
   ""), weight = NULL, subgroup = NULL, total_label = NULL,
   total_statistic = "u_responses", total_row_position = c("below", "above",
   "none"))
+
+total(x = 1, label = "#Total")
 }
 \arguments{
-\item{cell_vars}{vector/data.frame/list.}
+\item{cell_vars}{vector/data.frame/list. variables}
 
 \item{col_vars}{vector/data.frame/list. By now multiple-response predictor is not supported.}
 
@@ -61,6 +64,10 @@ unweighted statictics and "w_" means weighted statistics.}
 
 \item{total_row_position}{Position ot total row in the resulting table. Can
 be one of "below", "above", "none".}
+
+\item{x}{vector/data.frame of class 'category'/'dichotomy'.}
+
+\item{label}{character. Label for total variable.}
 }
 \value{
 object of class 'etable'. Basically it's a data.frame but class
@@ -68,7 +75,7 @@ object of class 'etable'. Basically it's a data.frame but class
 }
 \description{
 \itemize{
-\item{\code{cro}}{ build a contingency table of the counts.}
+\item{\code{cro}, \code{cro_cases}}{ build a contingency table of the counts.}
 \item{\code{cro_cpct}, \code{cro_cpct_responses}}{ build a contingency table 
 of the column percents. These functions give different results only for 
 multiple response variables. For \code{cro_cpct} base of percents is number 
@@ -81,6 +88,8 @@ case. Sum of percents of \code{cro_cpct_responses} always equals to 100\%.}
 for percents is number of valid cases.}
 \item{\code{cro_tpct}}{ build a contingency table of the table percents. Base
 for percents is number of valid cases.}
+\item{\code{total}}{ auxilary function - creates variables with 1 for valid
+case of its argument \code{x} and NA in opposite case.}
 }
 To provide multiple-response variables as arguments use \link{mrset} for
 multiples with category encoding and \link{mdset} for multiples with

@@ -434,6 +434,30 @@ val_lab(brands) = make_labels("
                               ")
 expect_equal_to_reference(as.dichotomy(brands, prefix = "brand_"),"rds/brands_df.rds")
 
+brands2 = as.dichotomy(brands)
+brands2[5, ] = NA 
+brands2[15, ] = 0 
+
+expect_identical(total(brands2), structure(c(1, 1, 1, 1, NA, 1, 1, 1, 1, 1, 1, 1, 1, 1, NA, 1, 
+ 1, 1, 1, 1), 
+ label = "", 
+ class = c("labelled", "numeric"), 
+ labels = structure(1, .Names = "Used brands|#Total")))
+
+expect_identical(total(set_var_lab(names2labels(brands2), "")),
+                 structure(c(1, 1, 1, 1, NA, 1, 1, 1, 1, 1, 1, 1, 1, 1, NA, 1, 
+                                             1, 1, 1, 1), 
+                                           label = "", 
+                                           class = c("labelled", "numeric"), 
+                                           labels = structure(1, .Names = "Used brands|#Total")))
+
+expect_identical(total(set_var_lab(brands2, "")),
+                 structure(c(1, 1, 1, 1, NA, 1, 1, 1, 1, 1, 1, 1, 1, 1, NA, 1, 
+                             1, 1, 1, 1), 
+                           label = "", 
+                           class = c("labelled", "numeric"), 
+                           labels = structure(1, .Names = "#Total")))
+
 expect_equal_to_reference(as.category(as.dichotomy(brands, prefix = "brand_"),compress=TRUE),
                           "rds/brands_df_cat.rds")
 

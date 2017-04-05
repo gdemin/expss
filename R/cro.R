@@ -4,7 +4,7 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' Cross tabulation with support of labels, weights and multiple response variables.
 #' 
 #' \itemize{
-#' \item{\code{cro}}{ build a contingency table of the counts.}
+#' \item{\code{cro}, \code{cro_cases}}{ build a contingency table of the counts.}
 #' \item{\code{cro_cpct}, \code{cro_cpct_responses}}{ build a contingency table 
 #' of the column percents. These functions give different results only for 
 #' multiple response variables. For \code{cro_cpct} base of percents is number 
@@ -17,12 +17,14 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' for percents is number of valid cases.}
 #' \item{\code{cro_tpct}}{ build a contingency table of the table percents. Base
 #' for percents is number of valid cases.}
+#' \item{\code{total}}{ auxilary function - creates variables with 1 for valid
+#' case of its argument \code{x} and NA in opposite case.}
 #' }
 #' To provide multiple-response variables as arguments use \link{mrset} for
 #' multiples with category encoding and \link{mdset} for multiples with
 #' dichotomy (dummy) encoding.
 #' 
-#' @param cell_vars vector/data.frame/list.
+#' @param cell_vars vector/data.frame/list. variables
 #' @param col_vars vector/data.frame/list. By now multiple-response predictor is not supported.
 #' @param row_vars vector/data.frame/list. By now multiple-response predictor is not supported.
 #' @param weight numeric vector. Optional cases weights. Cases with NA's,
@@ -36,6 +38,8 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #'   unweighted statictics and "w_" means weighted statistics.
 #' @param total_row_position Position ot total row in the resulting table. Can
 #'   be one of "below", "above", "none".
+#' @param x vector/data.frame of class 'category'/'dichotomy'. 
+#' @param label character. Label for total variable. 
 #'   
 #' @return object of class 'etable'. Basically it's a data.frame but class
 #'   is needed for custom methods.
@@ -113,7 +117,7 @@ cro = function(cell_vars,
                total_label = NULL,
                total_statistic = "u_cases",
                total_row_position = c("below", "above", "none")
-               ){
+){
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -149,7 +153,7 @@ cro_cpct = function(cell_vars,
                     total_label = NULL,
                     total_statistic = "u_cases",
                     total_row_position = c("below", "above", "none")
-                    ){
+){
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -180,7 +184,7 @@ cro_rpct = function(cell_vars,
                     total_label = NULL,
                     total_statistic = "u_cases",
                     total_row_position = c("below", "above", "none")
-                    ){
+){
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -212,7 +216,7 @@ cro_tpct = function(cell_vars,
                     total_label = NULL,
                     total_statistic = "u_cases",
                     total_row_position = c("below", "above", "none")
-                    ){
+){
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -220,7 +224,7 @@ cro_tpct = function(cell_vars,
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
- 
+    
     multi_cro(cell_vars = cell_vars, 
               col_vars = col_vars, 
               row_vars = row_vars,
@@ -243,7 +247,7 @@ cro_cpct_responses = function(cell_vars,
                               total_label = NULL,
                               total_statistic = "u_responses",
                               total_row_position = c("below", "above", "none")
-                              ){
+){
     
     str_cell_vars = deparse(substitute(cell_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -275,7 +279,7 @@ elementary_cro = function(cell_var,
                           total_statistic,
                           total_row_position = c("below", "above", "none"),
                           stat_type = c("cases", "cpct", "cpct_responses", "rpct", "tpct")
-                          ){
+){
     
     ### preparations
     total_row_position = match.arg(total_row_position)
@@ -291,18 +295,18 @@ elementary_cro = function(cell_var,
     weight = recycle_if_single_row(weight, max_nrow)
     
     valid = valid(cell_var) & valid(col_var) & valid(row_var) & (weight>0) & if_null(subgroup, TRUE)
-
+    
     weight = universal_subset(weight, valid)
-
+    
     col_var = recycle_if_single_row(col_var, max_nrow)
     col_var = universal_subset(col_var, valid)
     
     row_var = recycle_if_single_row(row_var, max_nrow)
     row_var = universal_subset(row_var, valid)
-
+    
     cell_var = recycle_if_single_row(cell_var, max_nrow)
     cell_var = universal_subset(cell_var, valid)
-
+    
     cell_var_lab = var_lab(cell_var)
     cell_val_lab = val_lab(cell_var)
     
@@ -312,7 +316,7 @@ elementary_cro = function(cell_var,
     col_var_lab = var_lab(col_var)
     col_val_lab = val_lab(col_var)
     
-
+    
     raw_data = cbind(as.data.table(cell_var), 
                      as.data.table(col_var), 
                      data.table(weight),
@@ -320,9 +324,9 @@ elementary_cro = function(cell_var,
     cell_var_names = paste0("cells", seq_len(NCOL(cell_var)))
     col_var_names = paste0("cols", seq_len(NCOL(col_var)))
     setnames(raw_data, c(cell_var_names, col_var_names, "weight", "row_var"))
-
+    
     # statistics
-
+    
     dtable = switch(stat_type,
                     cases = internal_cases(raw_data,
                                            col_var_names = col_var_names,
@@ -345,7 +349,7 @@ elementary_cro = function(cell_var,
                                          cell_var_names = cell_var_names,
                                          use_weight = TRUE)
     )
-
+    
     dtable[, cell_var := set_var_lab(cell_var, cell_var_lab)]
     dtable[, cell_var := set_val_lab(cell_var, cell_val_lab)]
     dtable[, col_var := set_var_lab(col_var, col_var_lab)]
@@ -368,12 +372,12 @@ elementary_cro = function(cell_var,
         )   
         res = add_total_to_table(res, total_rows = total_rows, total_row_position = total_row_position)
     }    
-
+    
     
     res[, row_labels := paste0(row_var_lab, "|", row_var, "|", cell_var_lab, "|", row_labels)]
     res[["row_var"]] = NULL
     colnames(res)[-1] = paste0(col_var_lab, "|", colnames(res)[-1]) 
-
+    
     res[ , row_labels := remove_unnecessary_splitters(row_labels)] 
     res[ , row_labels := make_items_unique(row_labels)] 
     setnames(res, remove_unnecessary_splitters(colnames(res)))
@@ -427,8 +431,8 @@ internal_rpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
         setnames(row_total, "value", "total")
         dtable = row_total[dtable, on = c("row_var","cell_var"), nomatch = NA]
     }
-
-
+    
+    
     dtable[, value := value/total*100]    
 }
 
@@ -440,7 +444,7 @@ internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
                             use_weight = use_weight)
     if(use_weight){
         dtotal = raw_data[, list(total = as.double(sum(weight, na.rm = TRUE))), by = "row_var" ]
-
+        
     } else {
         dtotal = raw_data[, list(total = as.double(.N)), by = "row_var" ]
     }
@@ -450,9 +454,9 @@ internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
 
 ########################
 internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
-
+    
     # dtable[, col_names] = unlab(dtable[, col_names, with = FALSE])
-
+    
     if(is.null(cell_var_names)){
         res = lapply(col_var_names, function(each_col){
             by_str = paste0("row_var,", each_col)
@@ -468,7 +472,7 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
         res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
         res = res[!is.na(col_var), ]
     } else {
-
+        
         res = lapply(cell_var_names, function(each_cell) { 
             res = lapply(col_var_names, function(each_col){
                 by_str = paste0("row_var,",each_cell, ",", each_col)
@@ -505,14 +509,14 @@ internal_responses = function(raw_data, col_var_names, use_weight){
                          col_var_names = col_var_names,
                          cell_var_names = cell_var_names,
                          use_weight = use_weight
-                         )
+    )
     res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
 }
 
 ###########################
 
 make_total_rows = function(res, raw_data, col_var_names, 
-                               total_statistic, total_label){
+                           total_statistic, total_label){
     total_statistic_label = gsub("^u_", " ", total_statistic, perl = TRUE)
     total_statistic_label = gsub("^w_", " wtd. ", total_statistic_label, perl = TRUE)
     # total_statistic_label = paste0(" ", total_statistic_label, ")")
@@ -524,38 +528,38 @@ make_total_rows = function(res, raw_data, col_var_names,
         }    
     }
     total_label = make_items_unique(total_label)
-   
+    
     total_row = lapply(seq_along(total_statistic), function(item){
         curr_statistic = total_statistic[[item]]
         use_weight = substr(curr_statistic, 1,2) == "w_"
         curr_statistic = gsub("^(u|w)_", "", curr_statistic, perl = TRUE)
         dtotal = switch(curr_statistic, 
-                cases = internal_cases(raw_data = raw_data, 
-                                col_var_names = col_var_names, 
-                                use_weight = use_weight),
-                responses = internal_responses(raw_data = raw_data, 
-                                       col_var_names = col_var_names, 
-                                       use_weight = use_weight),
-                cpct = internal_cpct(raw_data = raw_data, 
-                                       col_var_names = col_var_names, 
-                                       use_weight = use_weight),
-                rpct = internal_rpct(raw_data = raw_data, 
-                                       col_var_names = col_var_names, 
-                                       use_weight = use_weight),
-                tpct = internal_tpct(raw_data = raw_data, 
-                                       col_var_names = col_var_names, 
-                                       use_weight = use_weight)
+                        cases = internal_cases(raw_data = raw_data, 
+                                               col_var_names = col_var_names, 
+                                               use_weight = use_weight),
+                        responses = internal_responses(raw_data = raw_data, 
+                                                       col_var_names = col_var_names, 
+                                                       use_weight = use_weight),
+                        cpct = internal_cpct(raw_data = raw_data, 
+                                             col_var_names = col_var_names, 
+                                             use_weight = use_weight),
+                        rpct = internal_rpct(raw_data = raw_data, 
+                                             col_var_names = col_var_names, 
+                                             use_weight = use_weight),
+                        tpct = internal_tpct(raw_data = raw_data, 
+                                             col_var_names = col_var_names, 
+                                             use_weight = use_weight)
         )
         dtotal[, row_labels := ""] 
         row = long_datatable_to_table(dtotal, 
-                                rows = c("row_var", "row_labels"), 
-                                columns = "col_var", 
-                                value = "value")
+                                      rows = c("row_var", "row_labels"), 
+                                      columns = "col_var", 
+                                      value = "value")
         row[["row_labels"]] = add_first_symbol_to_total_label(total_label[item])
         row
     })
     rbindlist(total_row, fill = TRUE, use.names = TRUE)
-   
+    
 }
 
 add_total_to_table = function(res, total_rows, total_row_position){
@@ -615,4 +619,47 @@ multi_cro = function(cell_vars,
 ######################################################
 
 
+#' @export
+#' @rdname cro
+total = function(x = 1, label = "#Total"){
+    UseMethod("total")
+}    
+
+#' @export
+total.default = function(x = 1, label = "#Total"){
+    res = valid(x)
+    res[!res] = NA
+    res = as.numeric(res)
+    varlab = var_lab(x) 
+    if(!is.null(varlab) && varlab!=""){
+        label = paste0(varlab, "|", label)
+    }
+    var_lab(res) = ""
+    val_lab(res) = setNames(1, label)
+    res
+}
+
+#' @export
+total.dichotomy = function(x = 1, label = "#Total"){
+    res = valid(x)
+    res[!res] = NA
+    res = as.numeric(res)
+    vallab = unlist(lapply(seq_along(x), function(i){
+        varlab = var_lab(x[[i]])
+        if(!is.null(varlab) && varlab!=""){
+            varlab
+        } else {
+            colnames(x)[i]
+        }
+    }))
+    if(length(vallab)>0){
+        varlab = common_label(vallab)
+    }
+    if(length(varlab)>0 && varlab!=""){
+        label = paste0(varlab, "|", label)
+    }
+    var_lab(res) = ""
+    val_lab(res) = setNames(1, label)
+    res
+}
 

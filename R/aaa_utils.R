@@ -294,6 +294,11 @@ valid.data.frame = function(x){
 }
 
 #' @export
+valid.dichotomy = function(x){
+    rowSums(x, na.rm = TRUE)>0
+}
+
+#' @export
 valid.matrix = valid.data.frame
 
 
