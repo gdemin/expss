@@ -502,9 +502,11 @@ expect_equal_to_reference(
     with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(fctr(am):fctr(vs), total()), fun = mean)), 
     "rds/cro_fun10.rds")
 
-expect_equal_to_reference(
-    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = summary)), 
-                          "rds/cro_fun11.rds")
+if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
+    expect_equal_to_reference(
+        with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = summary)), 
+        "rds/cro_fun11.rds")
+}
 expect_equal_to_reference(
     with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), list(am, total()), fun = colMeans)), 
     "rds/cro_fun9.rds")
@@ -513,39 +515,42 @@ expect_equal_to_reference(
     with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), list(as.dtfrm(am), total()), fun = colMeans)), 
     "rds/cro_fun9.rds")
 
-expect_equal_to_reference(
-    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = summary)),
-    "rds/cro_fun11.rds")
-
-expect_equal_to_reference(
-    with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, row_vars = vs, fun = summary)),
-    "rds/cro_fun11vs.rds")
-
-expect_equal_to_reference(
-    with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(am, total()), fun = function(x) t(summary(x)))),
-    "rds/cro_fun12.rds")
-
-expect_equal_to_reference(
-    with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(am, total()), 
-                         row_vars = vs, 
-                         fun = function(x) t(summary(x)))),
-    "rds/cro_fun12vs.rds")
-
-expect_equal_to_reference(
-    with(mtcars, cro_fun(data.frame(hp, mpg, disp), 
-                         list(am, total()), 
-                         fun = function(x) matrix(summary(x),2))
-         ), 
-    "rds/cro_fun13.rds")
-
-expect_equal_to_reference(
-    with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(am, total()), fun = function(x) {
-        res = matrix(summary(x),2)
-        rownames(res) = c("a","b")
-        colnames(res) = c("c","d","e")
-        res
+if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
+    expect_equal_to_reference(
+        with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, fun = summary)),
+        "rds/cro_fun11.rds")
+    
+    
+    expect_equal_to_reference(
+        with(mtcars, cro_fun(data.frame(hp, mpg, disp), am, row_vars = vs, fun = summary)),
+        "rds/cro_fun11vs.rds")
+    
+    expect_equal_to_reference(
+        with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(am, total()), fun = function(x) t(summary(x)))),
+        "rds/cro_fun12.rds")
+    
+    expect_equal_to_reference(
+        with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(am, total()), 
+                             row_vars = vs, 
+                             fun = function(x) t(summary(x)))),
+        "rds/cro_fun12vs.rds")
+    
+    expect_equal_to_reference(
+        with(mtcars, cro_fun(data.frame(hp, mpg, disp), 
+                             list(am, total()), 
+                             fun = function(x) matrix(summary(x),2))
+        ), 
+        "rds/cro_fun13.rds")
+    
+    expect_equal_to_reference(
+        with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(am, total()), fun = function(x) {
+            res = matrix(summary(x),2)
+            rownames(res) = c("a","b")
+            colnames(res) = c("c","d","e")
+            res
         })), 
-    "rds/cro_fun14.rds")
+        "rds/cro_fun14.rds")
+}
 
 expect_equal_to_reference(
     with(mtcars, cro_fun(data.frame(hp, mpg, disp), list(am, total()), fun = function(x) {

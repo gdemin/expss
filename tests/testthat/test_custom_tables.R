@@ -139,7 +139,9 @@ res = mtcars %>%
     tab_stat_fun(summary) %>% 
     tab_pivot()
 
-expect_equal_to_reference(res, "rds/ctable7.rds")
+if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
+    expect_equal_to_reference(res, "rds/ctable7.rds")
+}
 
 res = mtcars %>% 
     tab_cells(vs) %>% 
