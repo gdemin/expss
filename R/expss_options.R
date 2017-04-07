@@ -14,7 +14,7 @@
 #' \code{labelled} - \code{as.character} and \code{unique} - on which
 #' \code{factor} depends entirely. If you have compatibility problems set this
 #' option to zero: \code{options(expss.enable_value_labels_support = 0)}.}
-#' \item{\code{expss.print_table} }{ By default tables are printed in the 
+#' \item{\code{expss.output} }{ By default tables are printed in the 
 #' console. You can change this behavior by setting this option. There are three
 #' possible values: \code{'rnotebook'}, \code{'viewer'} or  \code{'raw'}. First
 #' option is useful when you run your code in the R Notebook - output will be

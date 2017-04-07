@@ -282,25 +282,25 @@ options(expss.digits = 4)
 expect_output_file(print(cro_mean(iris[,-5], list(iris$Species, total()))), 
                    "rds/cro_mean_out.txt")
 options(expss.digits = NULL)
-options(expss.print_table = "rnotebook")
+options(expss.output = "rnotebook")
 expect_output_file(print(tbl), 
                    "rds/print_etable_rnotebook.txt")
 
-options(expss.print_table = "viewer")
+options(expss.output = "viewer")
 aa = capture_output(
     expect_identical(print(tbl), NULL)
 )
 
-options(expss.print_table = "raw")
+options(expss.output = "raw")
 expect_output_file(print(tbl[, 1:2]), 
                    "rds/print_etable_raw.txt")
 
-options(expss.print_table = NULL)
+options(expss.output = NULL)
 
 res = expss:::knit_print.etable(tbl)
 expect_equal_to_reference(res, "rds/knit_print.rds")
 
-options(expss.print_table = "rnotebook")
+options(expss.output = "rnotebook")
 colnames(tbl) = enc2utf8(colnames(tbl))
 tbl[[1]] = enc2utf8(tbl[[1]])
 expect_output_file(print(tbl), 
@@ -318,7 +318,7 @@ expect_output_file(print(tbl),
 # 
 # cyrillic = cro(my_vec, all_dat)
 # 
-# options(expss.print_table = "")
+# options(expss.output = "")
 # cyrillic
 
 

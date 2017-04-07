@@ -23,8 +23,8 @@ Returns a string of class htmlTable
 This is method for rendering results of \link{fre}/\link{cro}/\link{tables} in
 Shiny/RMarkdown and etc. For detailed description of function and its
 arguments see \link[htmlTable]{htmlTable}. You may be interested in
-\code{options(expss.print_table = "viewer")} for automatical rendering tables
-in the RStudio viewer or  \code{options(expss.print_table = "rnotebook")} for
+\code{options(expss.output = "viewer")} for automatical rendering tables
+in the RStudio viewer or  \code{options(expss.output = "rnotebook")} for
 rendering in the R notebooks.
 }
 \examples{
