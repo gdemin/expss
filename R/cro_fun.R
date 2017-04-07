@@ -1,59 +1,72 @@
-#' Cross tabulation with support of labels, weights and multiple response variables.
+#' Cross-tabulation with custom summary function.
 #' 
 #' \itemize{
-#' \item{\code{cro}}{ returns data.frame with counts (possibly weighted) with column and
-#' row totals.}
-#' \item{\code{cro_pct}, \code{cro_cpct}, \code{cro_rpct}}{ return data.frame with 
-#' table/column/row percent with column and row totals. There are always 
-#' weighted counts instead of margin with 100\%. Empty labels/factor levels are 
-#' removed from results of these functions. Base for multiple response (x is 
-#' data.frame) percent is number of valid cases (not sum of responses) so sum of
-#' percent may be greater than 100. Case is considered as valid if it has at
-#' least one non-NA value.}
-#' \item{\code{cro_mean}, \code{cro_sum}, \code{cro_median}}{ return data.frame with 
-#' mean/sum/median. Empty labels/factor levels are 
-#' removed from results of these functions. NA's are always omitted.}
-#' \item{\code{cro_fun}, \code{cro_fun_df}}{ return data.frame with custom 
-#' summary statistics defined by 'fun' argument. Empty labels/factor levels in 
-#' predictor are removed from results of these functions. NA's treatment depends
-#' on your 'fun' behavior. To use weight you should have 'weight' argument in 
-#' 'fun' and some logic for its proccessing inside.\code{cro_fun} applies 'fun'
-#' on each column in 'x' separately, \code{cro_fun_df} gives to 'fun' x as a
-#' whole data.frame. So \code{cro_fun(iris[, -5], iris$Species, fun = mean)}
-#' gives the same result as \code{cro_fun_df(iris[, -5], iris$Species, fun =
-#' colMeans)}. For \code{cro_fun_df} names of 'x' will converted to labels if
-#' they are available before 'fun' is applied. You should take care to return
-#' from 'fun' rectangular object with appropriate row/column names - they will
-#' be used in final result as labels.}
-#' }
+#' \item{\code{cro_mean}, \code{cro_sum}, \code{cro_median}}{ calculate 
+#' mean/sum/median by groups. NA's are always omitted.}
+#' \item{\code{cro_pearson}, \code{cro_spearman}}{ calculate correlation of 
+#' first variable in each data.frame in \code{cell_vars} with other variables. 
+#' NA's are removed pairwise.}
+#' \item{\code{cro_fun}, \code{cro_fun_df}}{ return table with custom summary 
+#' statistics defined by \code{fun} argument. NA's treatment depends on your 
+#' \code{fun} behavior. To use weight you should have formal \code{weight} 
+#' argument in \code{fun} and some logic for its processing inside. Several 
+#' functions with weight support are provided - see \link{w_mean}. 
+#' \code{cro_fun} applies \code{fun} on each variable in \code{cell_vars} 
+#' separately, \code{cro_fun_df} gives to \code{fun} each data.frame in 
+#' \code{cell_vars} as a whole. So \code{cro_fun(iris[, -5], iris$Species, fun =
+#' mean)} gives the same result as \code{cro_fun_df(iris[, -5], iris$Species, 
+#' fun = colMeans)}. For \code{cro_fun_df} names of \code{cell_vars} will 
+#' converted to labels if they are available before \code{fun} will be applied.
+#' Generally it is recommended that \code{fun} will always return object of the
+#' same form. Row names/vector names of \code{fun} result will appear in the row
+#' labels of the table and column names/names of list will appear in the column
+#' labels.}
+#' \item{\code{combine_functions}}{ is auxiliary function for combining several 
+#' functions into one function for usage with \code{cro_fun}/\code{cro_fun_df}.
+#' Names of arguments will be used as statistic labels. By default, results of
+#' each function are combined with \link{c}. But you can provide your own method
+#' function with \code{method} argument. It will be applied as in the expression
+#' \code{do.call(method, list_of_functions_results)}. Particular useful method
+#' is \code{list}. When it used statistic labels will appear in the column
+#' labels. See examples. Also you may be interested in \code{data.frame}, 
+#' \code{rbind}, \code{cbind} methods.}}
 #' 
-#' @param x vector/data.frame. data.frames are considered as multiple response
-#'   variables.
-#' @param row_vars vector. By now multiple-response predictor is not supported.
-#' @param col_vars vector. By now multiple-response predictor is not supported.
-#' @param weight numeric vector. Optional case weights. NA's and negative weights
-#'   treated as zero weights.
-#' @param total_row_position Position ot total row in the resulting table. Can
-#'   be one of "below", "above", "none".
-#' @param weighted_total  By default it is "unweighted". Can be "unweighted" or/and "weighted". You can show weighted total/unweighted total or both.
-#' @param total_row_title By default "#Total". You can provide two titles - for weighted and unqeighted totals.
-#' @param fun custom summary function. It should always return
-#'   scalar/vector/matrix of the same size.
-#' @param ... further arguments for \code{fun}   
+#' @param cell_vars vector/data.frame/list. Variables on which summary function
+#'   will be computed. 
+#' @param col_vars vector/data.frame/list. Variables which breaks table by
+#'   columns. Use \link{mrset}/\link{mdset} for multiple-response variables.
+#' @param row_vars vector/data.frame/list. Variables which breaks table by rows.
+#'   Use \link{mrset}/\link{mdset} for multiple-response variables.
+#' @param weight numeric vector. Optional cases weights. Cases with NA's,
+#'   negative and zero weights are removed before calculations.
+#' @param subgroup logical vector. You can specify subgroup on which table will be computed. 
+#' @param fun custom summary function. Generally it is recommended that 
+#'   \code{fun} will always return object of the same form. Rownames/vector
+#'   names of \code{fun} result will appear in the row labels of the table and
+#'   column names/names of list will appear in the column labels. To use weight
+#'   you should have formal \code{weight} argument in \code{fun} and some logic
+#'   for its processing inside.
+#' @param ... further arguments for \code{fun}  in
+#'   \code{cro_fun}/\code{cro_fun_df} or functions for \code{combine_functions}.
+#' @param method function which will combine results of multiple functions in
+#'   \code{combine_functions}. It will be applied as in the expression 
+#'   \code{do.call(method, list_of_functions_results)}. By default it is
+#'   \code{c}.
 #'
 #' @return object of class 'etable'. Basically it's a data.frame but class
 #'   is needed for custom methods.
+#' @seealso \link{tables}, \link{fre}, \link{cro}.
 #'
 #' @examples
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
-#'                       mpg = "Miles/(US) gallon|Mean",
+#'                       mpg = "Miles/(US) gallon",
 #'                       cyl = "Number of cylinders",
-#'                       disp = "Displacement (cu.in.)|Mean",
-#'                       hp = "Gross horsepower|Mean",
+#'                       disp = "Displacement (cu.in.)",
+#'                       hp = "Gross horsepower",
 #'                       drat = "Rear axle ratio",
-#'                       wt = "Weight (lb/1000)",
-#'                       qsec = "1/4 mile time|Mean",
+#'                       wt = "Weight (1000 lbs)",
+#'                       qsec = "1/4 mile time",
 #'                       vs = "Engine",
 #'                       vs = c("V-engine" = 0,
 #'                              "Straight engine" = 1),
@@ -64,95 +77,70 @@
 #'                       carb = "Number of carburetors"
 #' )
 #' 
-#' calculate(mtcars, cro(am, vs))
 #' 
-#' # multiple banners
-#' calculate(mtcars, cro(cyl, list("#Total", vs, am, carb)))
+#' # Simple example - there is special shortcut for it - 'cro_mean'
+#' calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec), 
+#'                                col_vars = list(total(), am), 
+#'                                row_vars = vs, 
+#'                                fun = mean)
+#' )
 #' 
-#' # column percent
-#' calculate(mtcars, cro_cpct(cyl, list("#Total", vs, am, carb)))
+#' # The same example with 'subgroup'
+#' calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec), 
+#'                                col_vars = list(total(), am), 
+#'                                row_vars = vs,
+#'                                subgroup = vs == 0, 
+#'                                fun = mean)
+#' )
+#'                                 
+#' # 'combine_functions' usage  
+#' calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec), 
+#'                           col_vars = list(total(), am), 
+#'                           row_vars = vs, 
+#'                           fun = combine_functions(Mean = mean, 
+#'                                                   'Std. dev.' = sd,
+#'                                                   'Valid N' = valid_n)
+#' ))  
+#' # 'combine_functions' usage - statistic labels in columns
+#' calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec), 
+#'                           col_vars = list(total(), am), 
+#'                           row_vars = vs, 
+#'                           fun = combine_functions(Mean = mean, 
+#'                                                   'Std. dev.' = sd,
+#'                                                   'Valid N' = valid_n,
+#'                                                   method = list
+#'                                                   )
+#' )) 
 #' 
-#' # nested banner
-#' calculate(mtcars, cro(cyl, list("#Total", vs %nest% am, carb)))
-#' 
-#' # stacked variables
-#' calculate(mtcars, cro(list(cyl, carb), list("#Total", vs %nest% am)))
-#' 
-#' # nested variables
-#' calculate(mtcars, cro(am %nest% cyl, list("#Total", vs, carb)))
-#' 
-#' # multiple-choice variable
-#' # brands - multiple response question
-#' # Which brands do you use during last three months? 
-#' set.seed(123)
-#' brands = data.frame(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
-#' # score - evaluation of tested product
-#' score = sample(-1:1,20,replace = TRUE)
-#' var_lab(brands) = "Used brands"
-#' val_lab(brands) = make_labels("
-#'                               1 Brand A
-#'                               2 Brand B
-#'                               3 Brand C
-#'                               4 Brand D
-#'                               5 Brand E
-#'                               ")
-#' 
-#' var_lab(score) = "Evaluation of tested brand"
-#' val_lab(score) = make_labels("
-#'                              -1 Dislike it
-#'                              0 So-so
-#'                              1 Like it    
-#'                              ")
-#' 
-#' cro(mrset(brands), list("#Total", score))
-#' cro_cpct(mrset(brands), list("#Total", score))
-#' 
-#' # 'cro_mean'
-#' 
-#' data(iris)
-#' cro_mean(iris[, -5], iris$Species)
-#' 
-#' # 'cro_fun'
-#' 
-#' data(mtcars)
-#' mtcars = modify(mtcars,{
-#'     var_lab(vs) = "Engine"
-#'     val_lab(vs) = c("V-engine" = 0, 
-#'                     "Straight engine" = 1) 
-#'     var_lab(hp) = "Gross horsepower"
-#'     var_lab(mpg) = "Miles/(US) gallon"
-#' })
-#' 
-#' # Label for 'disp' forgotten intentionally
-#' with(mtcars, cro_fun(data.frame(hp, mpg, disp), vs, summary))
-#' 
-#' # or, the same with transposed summary
-#' with(mtcars, cro_fun(data.frame(hp, mpg, disp), vs, function(x) t(summary(x))))
-#' 
-#' # very artificial example
-#' a = c(1,1,1, 1, 1)
-#' b = c(0, 1, 2, 2, NA)
-#' weight = c(0, 0, 1, 1, 1)
-#' cro_fun(b, a, weight = weight, 
-#'      fun = function(x, weight, na.rm){
-#'                  weighted.mean(x, w = weight, na.rm = na.rm)
-#'              }, 
-#'      na.rm = TRUE)
-#' 
-#' 
+#' # 'summary' function
+#' calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec), 
+#'                           col_vars = list(total(), am), 
+#'                           row_vars = list(total(), vs), 
+#'                           fun = summary
+#' ))  
+#'                           
 #' # comparison 'cro_fun' and 'cro_fun_df'
+#' calculate(mtcars, cro_fun(dtfrm(mpg, disp, hp, wt, qsec), 
+#'                        col_vars = am, fun = mean)
+#' )
 #' 
-#' data(iris)
-#' cro_fun(iris[, -5], iris$Species, fun = mean)
 #' # same result
-#' cro_fun_df(iris[, -5], iris$Species, fun = colMeans)  
+#' calculate(mtcars, cro_fun_df(dtfrm(mpg, disp, hp, wt, qsec), 
+#'                        col_vars = am, fun = colMeans)
+#' ) 
 #' 
 #' # usage for 'cro_fun_df' which is not possible for 'cro_fun'
-#' # calculate correlations of variables with Sepal.Length inside each group
-#' cro_fun_df(iris[,-5], iris$Species, fun = function(x) cor(x)[,1])
-#' 
-#' # or, pairwise correlations inside groups
-#' cro_fun_df(iris[,-5], iris$Species, fun = cor)
+#' # linear regression by groups
+#' calculate(mtcars, cro_fun_df(dtfrm(mpg, disp, hp, wt, qsec), 
+#'                              col_vars = am,
+#'                              fun = function(x){
+#'                                  frm = reformulate(".", response = names(x)[1])
+#'                                  model = lm(frm, data = x)
+#'                                  dtfrm('Coef. estimate' = coef(model), 
+#'                                        confint(model)
+#'                                  )
+#'                              }
+#' ))
 #' @export
 cro_fun = function(cell_vars, 
                    col_vars = total(), 
