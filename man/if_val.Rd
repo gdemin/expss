@@ -50,7 +50,8 @@ format as RHS of formulas).}
 \item{value}{list with formulas which describe recodings in assignment form
 of function/\code{to} list if \code{from}/\code{to} notation is used.}
 
-\item{e1}{object which will be assigned to right-hand side of \code{\%into\%} expression.}
+\item{e1}{object which will be assigned to right-hand side of \code{\%into\%}
+expression.}
 
 \item{e2}{names which will be given to LHS of \code{\%into\%} expression.}
 }
@@ -84,7 +85,7 @@ element of \code{from} list:
 \item{vector/single value}{ All values in \code{x} which equal to elements of
 vector in LHS will be replaced with RHS.}
 \item{function}{ Values for which function gives TRUE will be replaced with 
-RHS. There are some special functions for convenience - see \link{criteria}.
+RHS. There are some special functions for the convenience - see \link{criteria}.
 One of special functions is \code{other}. It means all other unrecoded values
 (ELSE in SPSS RECODE). All other unrecoded values will be changed to RHS
 of formula or appropriate element of \code{to}.}
@@ -93,7 +94,8 @@ will be recoded. Logical vector will be recycled across all columns of
 \code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
 will be used for corresponding column/element of \code{x}.}
 }
-Output values - possible values for right hand side (RHS) of formula or element of \code{to} list:
+Output values - possible values for right hand side (RHS) of formula or
+element of \code{to} list:
 \itemize{
 \item{value}{ replace elements of \code{x}. This value will be
 recycled across rows and columns of \code{x}.}

@@ -26,7 +26,7 @@
 #' \item{vector/single value}{ All values in \code{x} which equal to elements of
 #' vector in LHS will be replaced with RHS.}
 #' \item{function}{ Values for which function gives TRUE will be replaced with 
-#' RHS. There are some special functions for convenience - see \link{criteria}.
+#' RHS. There are some special functions for the convenience - see \link{criteria}.
 #' One of special functions is \code{other}. It means all other unrecoded values
 #' (ELSE in SPSS RECODE). All other unrecoded values will be changed to RHS
 #' of formula or appropriate element of \code{to}.}
@@ -35,7 +35,8 @@
 #' \code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
 #' will be used for corresponding column/element of \code{x}.}
 #' }
-#' Output values - possible values for right hand side (RHS) of formula or element of \code{to} list:
+#' Output values - possible values for right hand side (RHS) of formula or
+#' element of \code{to} list:
 #' \itemize{
 #' \item{value}{ replace elements of \code{x}. This value will be
 #' recycled across rows and columns of \code{x}.}
@@ -69,7 +70,8 @@
 #'   same format as LHS of formulas).
 #' @param to list of values into which old values should be recoded (in the same
 #'   format as RHS of formulas).
-#' @param e1 object which will be assigned to right-hand side of \code{\%into\%} expression. 
+#' @param e1 object which will be assigned to right-hand side of \code{\%into\%}
+#'   expression.
 #' @param e2 names which will be given to LHS of \code{\%into\%} expression. 
 #'
 #' @return object of same form as \code{x} with recoded values
