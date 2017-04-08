@@ -7,8 +7,9 @@
 fre(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE)
 }
 \arguments{
-\item{x}{vector/data.frame/list. data.frames are considered as multiple response
-variables. For list vertically stacked frequencies will be generated,}
+\item{x}{vector/data.frame/list. data.frames are considered as multiple
+response variables. If \code{x} is list then vertically stacked frequencies
+for each element of list will be generated,}
 
 \item{weight}{numeric vector. Optional case weights. NA's and negative weights
 treated as zero weights.}

@@ -5,8 +5,9 @@
 #' single-column \code{x} it equals to valid percent) and cumulative percent of 
 #' responses.
 #' 
-#' @param x vector/data.frame/list. data.frames are considered as multiple response
-#'   variables. For list vertically stacked frequencies will be generated,
+#' @param x vector/data.frame/list. data.frames are considered as multiple
+#'   response variables. If \code{x} is list then vertically stacked frequencies
+#'   for each element of list will be generated,
 #' @param weight numeric vector. Optional case weights. NA's and negative weights
 #'   treated as zero weights.
 #' @param drop_unused_labels logical. Should we drop unused value labels?
