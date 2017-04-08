@@ -26,7 +26,7 @@
 \alias{tab_stat_unweighted_valid_n}
 \alias{tab_pivot}
 \alias{tab_transpose}
-\title{Functions for constracting custom tables}
+\title{Functions for tables constraction}
 \usage{
 tab_cols(data, ...)
 
@@ -84,14 +84,314 @@ tab_pivot(data, stat_position = c("outside_rows", "inside_rows",
 tab_transpose(data)
 }
 \arguments{
-\item{...}{jjjkj}
+\item{data}{data.frame/intermediate_table}
+
+\item{...}{vector/data.frame/list. Variables for tables. Use
+\link{mrset}/\link{mdset} for multiple-response variables.}
+
+\item{weight}{numeric vector in \code{tab_weight}. Cases with NA's, negative
+and zero weights are removed before calculations.}
+
+\item{subgroup}{logical vector in \code{tab_subgroup}. You can specify
+subgroup on which table will be computed.}
+
+\item{label}{character. Label for the statistic in the \code{tab_stat_*}.}
+
+\item{total_label}{By default "#Total". You can provide several names - each
+name for each total statistics.}
+
+\item{total_statistic}{By default it is "u_cases" (unweighted cases). 
+Possible values are "u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+"w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct". "u_" means
+unweighted statistics and "w_" means weighted statistics.}
+
+\item{total_row_position}{Position of total row in the resulting table. Can
+be one of "below", "above", "none".}
+
+\item{stat_position}{character one of the values \code{"outside_rows"}, 
+\code{"inside_rows"}, \code{"outside_columns"} or \code{"inside_columns"}.
+It defines how we will combine statistics in the table.}
+
+\item{stat_label}{character one of the values \code{"inside"} or 
+\code{"outside"}. Where will be placed labels for the statistics relative
+to column names/row labels? See examples.}
 }
 \value{
-jkjk
+All of these functions return object of class 
+  \code{intermediate_table} except \code{tab_pivot} which returns final
+  result - object of class \code{etable}. Basically it's a data.frame but
+  class is needed for custom methods.
 }
 \description{
-Functions for constracting custom tables
+Table construction consists of at least of three functions chained with 
+\code{magrittr} pipe operator: \link[magrittr]{\%>\%}. At first we need to 
+specify variables for which statistics will be computed with 
+\code{tab_cells}. Secondary, we calculate statistics with one of 
+\code{tab_stat_*} functions. And last, we finalize table creation with 
+\code{tab_pivot}: \code{dataset \%>\% tab_cells(variable) \%>\%
+tab_stat_cases() \%>\% tab_pivot()}. After that we can optionally sort table
+with \link{tab_sort_asc}, drop empty rows/columns with \link{drop_rc} and 
+transpose with \code{tab_transpose}. Generally, table is just a data.frame so
+we can use arbitrary operations on it. Statistic is always calculated with 
+the last cell, column/row variables, weight, missing values and subgroup. To 
+define new variables we can call appropriate function one more time. 
+\code{tab_pivot} defines how we combine different statistics and where 
+statistic labels will appear - inside/outside rows/columns. See examples.
+}
+\details{
+\itemize{
+\item{\code{tab_cells}}{ variables on which percentage/cases/summary
+functions will be computed. Use \link{mrset}/\link{mdset} for
+multiple-response variables.}
+\item{\code{tab_cols}}{ optional variables which breaks table by
+  columns. Use \link{mrset}/\link{mdset} for
+multiple-response variables.}
+\item{\code{tab_rows}}{ optional variables which breaks table by rows. Use
+\link{mrset}/\link{mdset} for multiple-response variables.}
+\item{\code{tab_weight}}{ optional weight for the statistic.}
+\item{\code{tab_mis_val}}{ optional missing values for the statistic. It will
+be applied on variables specified by \code{tab_cells}. It works in the same
+manner as \link{na_if}.}
+\item{\code{tab_subgroup}}{ optional logical vector/expression which specify
+subset of data for table.}
+\item{\code{tab_stat_fun}, \code{tab_stat_fun_df}}{ \code{tab_stat_fun}
+applies function on each variable in cells separately,
+\code{tab_stat_fun_df} gives to function each data.frame in cells as a whole.
+You can provide several functions as arguments. They will be combined as with
+\link{combine_functions}. So you can use \code{method} argument. For details
+see documentation for \link{combine_functions}.}
+\item{\code{tab_stat_cases}}{ calculate counts.}
+\item{\code{tab_stat_cpct}, \code{tab_stat_cpct_responses}}{ calculate column
+percent. These functions give different results only for multiple response
+variables. For \code{tab_stat_cpct} base of percent is number of valid cases.
+Case is considered as valid if it has at least one non-NA value. So for
+multiple response variables sum of percent may be greater than 100. For 
+\code{tab_stat_cpct_responses} base of percent is number of valid responses. 
+Multiple response variables can have several responses for single case. Sum 
+of percent of \code{tab_stat_cpct_responses} always equals to 100\%.}
+\item{\code{tab_stat_rpct}}{ calculate row percent. Base
+for percent is number of valid cases.}
+\item{\code{tab_stat_tpct}}{ calculate table percent. Base
+for percent is number of valid cases.}
+\item{\code{tab_stat_mean}, \code{tab_stat_median}, \code{tab_stat_se},
+\code{tab_stat_sum}, \code{tab_stat_min}, \code{tab_stat_max},
+\code{tab_stat_sd}, \code{tab_stat_valid_n}, 
+\code{tab_stat_unweighted_valid_n}}{ different summary statistics. NA's are
+always omitted.}
+\item{\code{tab_pivot}}{ finalize table creation and define how different
+\code{tab_stat_*} will be combined}
+\item{\code{tab_transpose}}{ transpose final table after \code{tab_pivot} or last
+statistic.}}
 }
 \examples{
-1
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (1000 lbs)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+# some examples from 'cro'
+# simple example - generally with 'cro' it can be made with less typing
+mtcars \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(vs) \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_pivot()
+
+# split rows
+mtcars \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(vs) \%>\% 
+    tab_rows(am) \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_pivot()
+
+# multiple banners
+mtcars \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(total(), vs, am) \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_pivot()
+
+# nested banners
+mtcars \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(total(), vs \%nest\% am) \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_pivot()
+
+# summary statistics
+mtcars \%>\% 
+    tab_cells(mpg, disp, hp, wt, qsec) \%>\%
+    tab_cols(am) \%>\% 
+    tab_stat_fun(Mean = w_mean, "Std. dev" = w_sd, "Valid N" = w_n) \%>\%
+    tab_pivot()
+
+# summary statistics - labels in columns
+mtcars \%>\% 
+    tab_cells(mpg, disp, hp, wt, qsec) \%>\%
+    tab_cols(am) \%>\% 
+    tab_stat_fun(Mean = w_mean, "Std. dev" = w_sd, "Valid N" = w_n, method = list) \%>\%
+    tab_pivot()
+
+# subgroup with droping empty columns
+mtcars \%>\% 
+    tab_subgroup(am == 0) \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(total(), vs \%nest\% am) \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_pivot() \%>\% 
+    drop_empty_columns()
+
+# total position at the top of the table
+mtcars \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(total(), vs) \%>\% 
+    tab_rows(am) \%>\% 
+    tab_stat_cpct(total_row_position = "above",
+                  total_label = c("number of cases", "row \%"),
+                  total_statistic = c("u_cases", "u_rpct")) \%>\% 
+    tab_pivot()
+
+# this example cannot be made easily with 'cro'             
+mtcars \%>\%
+    tab_cells(am) \%>\%
+    tab_cols(total(), vs) \%>\%
+    tab_stat_cpct(total_row_position = "none", label = "col \%") \%>\%
+    tab_stat_rpct(total_row_position = "none", label = "row \%") \%>\%
+    tab_stat_tpct(total_row_position = "none", label = "table \%") \%>\%
+    tab_pivot(stat_position = "inside_rows")
+
+# statistic labels inside columns             
+mtcars \%>\%
+    tab_cells(am) \%>\%
+    tab_cols(total(), vs) \%>\%
+    tab_stat_cpct(total_row_position = "none", label = "col \%") \%>\%
+    tab_stat_rpct(total_row_position = "none", label = "row \%") \%>\%
+    tab_stat_tpct(total_row_position = "none", label = "table \%") \%>\%
+    tab_pivot(stat_position = "inside_columns")
+
+# stacked statistics
+mtcars \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(total(), am) \%>\% 
+    tab_stat_mean() \%>\%
+    tab_stat_se() \%>\% 
+    tab_stat_valid_n() \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_pivot()
+
+# stacked statistics with different variables
+mtcars \%>\% 
+    tab_cols(total(), am) \%>\% 
+    tab_cells(mpg, hp, qsec) \%>\% 
+    tab_stat_mean() \%>\%
+    tab_cells(cyl, carb) \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_pivot()
+
+# stacked statistics - label position outside row labels
+mtcars \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(total(), am) \%>\% 
+    tab_stat_mean() \%>\%
+    tab_stat_se \%>\% 
+    tab_stat_valid_n() \%>\% 
+    tab_stat_cpct(label = "Col \%") \%>\% 
+    tab_pivot(stat_label = "outside")
+    
+# example from 'cro_fun_df' - linear regression by groups with sorting 
+mtcars \%>\% 
+    tab_cells(dtfrm(mpg, disp, hp, wt, qsec)) \%>\% 
+    tab_cols(total(), am) \%>\% 
+    tab_stat_fun_df(
+        function(x){
+            frm = reformulate(".", response = names(x)[1])
+            model = lm(frm, data = x)
+            dtfrm('Coef. estimate' = coef(model), 
+                  confint(model)
+            )
+        }    
+    ) \%>\% 
+    tab_pivot() \%>\% 
+    tab_sort_desc()
+
+# multiple-response variables and weight
+data(product_test)
+codeframe_likes = num_lab("
+                          1 Liked everything
+                          2 Disliked everything
+                          3 Chocolate
+                          4 Appearance
+                          5 Taste
+                          6 Stuffing
+                          7 Nuts
+                          8 Consistency
+                          98 Other
+                          99 Hard to answer
+                          ")
+
+set.seed(1)
+product_test = compute(product_test, {
+    # recode age by groups
+    age_cat = recode(s2a, lo \%thru\% 25 ~ 1, lo \%thru\% hi ~ 2)
+    
+    var_lab(age_cat) = "Age"
+    val_lab(age_cat) = c("18 - 25" = 1, "26 - 35" = 2)
+    
+    var_lab(a1_1) = "Likes. VSX123"
+    var_lab(b1_1) = "Likes. SDF456"
+    val_lab(a1_1) = codeframe_likes
+    val_lab(b1_1) = codeframe_likes
+    
+    wgt = runif(.N, 0.25, 4)
+    wgt = wgt/sum(wgt)*.N
+})
+
+product_test \%>\% 
+    tab_cells(mrset(a1_1 \%to\% a1_6), mrset(b1_1 \%to\% b1_6)) \%>\% 
+    tab_cols(total(), age_cat) \%>\% 
+    tab_weight(wgt) \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_sort_desc() \%>\% 
+    tab_pivot()
+    
+# trick to place cell variables labels inside columns
+# useful to compare two variables
+# '|' is needed to prevent automatic labels creation from argument
+# alternatively we can use list(...) to avoid this
+product_test \%>\% 
+    tab_cols(total(), age_cat) \%>\% 
+    tab_weight(wgt) \%>\% 
+    tab_cells("|" = unvr(mrset(a1_1 \%to\% a1_6))) \%>\% 
+    tab_stat_cpct(label = var_lab(a1_1)) \%>\% 
+    tab_cells("|" = unvr(mrset(b1_1 \%to\% b1_6))) \%>\% 
+    tab_stat_cpct(label = var_lab(b1_1)) \%>\% 
+    tab_pivot(stat_position = "inside_columns")
+
+# if you need standard evaluation, use 'vars'
+tables = mtcars \%>\%
+      tab_cols(total(), am \%nest\% vs)
+
+for(each in c("mpg", "disp", "hp", "qsec")){
+    tables = tables \%>\% tab_cells(vars(each)) \%>\%
+        tab_stat_fun(Mean = w_mean, "Std. dev" = w_sd, "Valid N" = w_n) 
+}
+tables \%>\% tab_pivot()
+}
+\seealso{
+\link{fre}, \link{cro}, \link{cro_fun}, \link{tab_sort_asc},
+  \link{drop_empty_rows}.
 }
