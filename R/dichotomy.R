@@ -5,7 +5,8 @@
 #' data.frame/matrix with dichotomy encoding (0/1) suited for most statistical
 #' analysis, e. g. clustering, factor analysis, linear regression and so on.
 #' \itemize{ 
-#' \item{\code{as.dichotomy}}{ returns data.frame of class 'dichotomy' with 0, 1 and possibly NA.} 
+#' \item{\code{as.dichotomy}}{ returns data.frame of class 'dichotomy' with 0, 1
+#' and possibly NA.}
 #' \item{\code{dummy}}{ returns matrix of class 'dichotomy' with 0, 1 and possibly NA.}
 #' \item{\code{dummy1}}{ drops last column in dichotomy matrix. It is useful in many cases
 #' because any column of such matrix usually is linear combinations of other columns.}
@@ -56,14 +57,8 @@
 #'                               1 Like it    
 #'                              ")
 #' 
-#' # percentage of used brands
-#' colMeans(dummy(brands))
-#' 
-#' # percentage of brands within each score
-#' cro_mean(as.dichotomy(brands), score)
-#' # the same as
 #' cro_cpct(as.dichotomy(brands), score)
-#' # or
+#' # the same as
 #' cro_cpct(mrset(brands), score)
 #' 
 #' # customer segmentation by used brands
