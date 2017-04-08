@@ -1,6 +1,6 @@
 #' Drop empty (with all NA's) rows/columns from data.frame/table
 #' 
-#' By default tables produced by functions \link{cro}, 
+#' By default tables produced by functions \link{tables}, \link{cro}, 
 #' \link{cro_fun} and \link{cro_fun_df} are created with all 
 #' possible value labels. If values for this labels are absent in variable there 
 #' are NA's in rows and columns. 
