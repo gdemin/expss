@@ -188,7 +188,7 @@ cro_fun = function(cell_vars,
             ### make rectangular table  
             res = long_datatable_to_table(dtable, rows = c("..row_var__", "row_labels"), 
                                           columns = "..col_var__", 
-                                          value = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
+                                          values = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
             )
             format_table(res, 
                          row_var_lab = row_var_lab, 
@@ -452,7 +452,7 @@ cro_fun_df = function(cell_vars,
                 ### make rectangular table  
                 res = long_datatable_to_table(dtable, rows = c("..row_var__", "row_labels"), 
                                               columns = "..col_var__", 
-                                              value = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
+                                              values = colnames(dtable) %d% c("..row_var__", "row_labels", "..col_var__")
                 )
                 format_table(res, 
                              row_var_lab = row_var_lab, 

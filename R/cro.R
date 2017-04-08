@@ -374,7 +374,8 @@ elementary_cro = function(cell_var,
     dtable[, row_var := set_var_lab(row_var, row_var_lab)]
     dtable[, row_var := set_val_lab(row_var, row_val_lab)]
     ### make rectangular table  
-    res = long_datatable_to_table(dtable, rows = c("row_var", "cell_var"), columns = "col_var", value = "value")
+    res = long_datatable_to_table(dtable, rows = c("row_var", "cell_var"), 
+                                  columns = "col_var", values = "value")
     
     
     colnames(res)[2] = "row_labels"
@@ -571,7 +572,7 @@ make_total_rows = function(res, raw_data, col_var_names,
         row = long_datatable_to_table(dtotal, 
                                       rows = c("row_var", "row_labels"), 
                                       columns = "col_var", 
-                                      value = "value")
+                                      values = "value")
         row[["row_labels"]] = add_first_symbol_to_total_label(total_label[item])
         row
     })
