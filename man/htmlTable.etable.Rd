@@ -28,8 +28,39 @@ Shiny/RMarkdown and etc. For detailed description of function and its
 arguments see \link[htmlTable]{htmlTable}. You may be interested in
 \code{options(expss.output = "viewer")} for automatical rendering tables
 in the RStudio viewer or  \code{options(expss.output = "rnotebook")} for
-rendering in the R notebooks.
+rendering in the R notebooks. See \link{expss.options}.
 }
 \examples{
-a = 1
+\dontrun{ 
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (1000 lbs)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+options(expss.output = "viewer")
+mtcars \%>\% 
+     tab_cols(total(), am \%nest\% vs) \%>\% 
+     tab_cells(mpg, hp) \%>\% 
+     tab_stat_mean() \%>\% 
+     tab_cells(cyl) \%>\% 
+     tab_stat_cpct() \%>\% 
+     tab_pivot()
+     
+options(expss.output = NA)   
+ 
+}
 }
