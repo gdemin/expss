@@ -59,8 +59,8 @@ param[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(group, param)
 
 # replace NA's with group means
-df = modify(df, {
-        if_na(param) = ave(param, group, FUN = mean_col)
+df = compute(df, {
+        if_na(param) = window_fun(param, group, mean_col)
     })
 
 df
