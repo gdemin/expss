@@ -10,7 +10,7 @@
 #'   labels in round brackets. Only applicable to list/data.frame.
 #' @return Object of the same type as x but with variable labels instead of
 #'   names. 
-#' @seealso \link{values2labels}, \link{f}, \link{val_lab},  \link{var_lab}
+#' @seealso \link{values2labels}, \link{val_lab},  \link{var_lab}
 #' @examples
 #' data(mtcars)
 #' mtcars = modify(mtcars,{

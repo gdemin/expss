@@ -50,5 +50,5 @@ summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg")))
 summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg", keep_names = TRUE)))
 }
 \seealso{
-\link{values2labels}, \link{f}, \link{val_lab},  \link{var_lab}
+\link{values2labels}, \link{val_lab},  \link{var_lab}
 }

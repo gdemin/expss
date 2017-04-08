@@ -8,7 +8,7 @@
 #' @param x vector/matrix/data.frame/list
 #' @return Object of the same form as x but with value labels instead of values.
 #'  
-#' @seealso \link{f}, \link{names2labels}, \link{val_lab},  \link{var_lab}
+#' @seealso \link{names2labels}, \link{val_lab},  \link{var_lab}
 #' @examples
 #' data(mtcars)
 #' mtcars = modify(mtcars,{

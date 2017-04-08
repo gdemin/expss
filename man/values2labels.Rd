@@ -31,5 +31,5 @@ mtcars = modify(mtcars,{
 summary(lm(mpg ~ ., data = values2labels(mtcars[,c("mpg","am")])))
 }
 \seealso{
-\link{f}, \link{names2labels}, \link{val_lab},  \link{var_lab}
+\link{names2labels}, \link{val_lab},  \link{var_lab}
 }
