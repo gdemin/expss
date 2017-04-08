@@ -46,7 +46,7 @@ default all labels/levels will be kept. Ignored if keep_values/keep_labels are p
 \code{as.dichotomy} returns data.frame of class \code{dichotomy} 
   with 0,1. Columns of this data.frame have variable labels according to
   value labels of original data. If label doesn't exist for particular value
-  then this value will be used as variable lable. \code{dummy} returns matrix
+  then this value will be used as variable label. \code{dummy} returns matrix
   of class \code{dichotomy}. Column names of this matrix are value labels of
   original data.
 }
@@ -67,7 +67,7 @@ because any column of such matrix usually is linear combinations of other column
 # brands - multiple response question
 # Which brands do you use during last three months? 
 set.seed(123)
-brands = t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))
+brands = as.dtfrm(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
 # score - evaluation of tested product
 score = sample(-1:1,20,replace = TRUE)
 var_lab(brands) = "Used brands"
@@ -92,10 +92,9 @@ colMeans(dummy(brands))
 # percentage of brands within each score
 cro_mean(as.dichotomy(brands), score)
 # the same as
-cro_cpct(brands, score)
-
-# percentage of brands within each score - same numbers
-by(as.dichotomy(brands), score, FUN = colMeans)
+cro_cpct(as.dichotomy(brands), score)
+# or
+cro_cpct(mrset(brands), score)
 
 # customer segmentation by used brands
 kmeans(dummy(brands), 3)

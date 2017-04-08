@@ -4,11 +4,12 @@
 \name{expss}
 \alias{expss}
 \alias{expss-package}
-\title{expss: Some Useful Functions from Spreadsheets and SPSS Statistics}
+\title{expss: Tables with Labels and Some Useful Functions from Spreadsheets and SPSS Statistics}
 \description{
-'expss' package implements some popular functions from spreadsheets and SPSS
-Statistics software. Implementations are not complete copies of their
-originals. I try to make them consistent with other R functions. See examples in vignette and in help.
+'expss' package implements some popular functions from spreadsheets and SPSS 
+Statistics software. Implementations are not complete copies of their 
+originals. I try to make them consistent with other R functions. See examples
+in the vignette and in the help.
 }
 \section{Excel}{
 
@@ -28,6 +29,7 @@ originals. I try to make them consistent with other R functions. See examples in
 \item{IFNA }{\link{if_na}}
 \item{MATCH }{\link{match_row}}
 \item{INDEX }{\link{index_row}}
+\item{PIVOT TABLES}{\link{tables}, \link{cro_fun}, \link{cro}}
 }
 }
 
@@ -43,6 +45,7 @@ originals. I try to make them consistent with other R functions. See examples in
 \item{ANY }{\link{any_in_row}}
 \item{FREQUENCIES }{\link{fre}}
 \item{CROSSTABS }{\link{cro}}
+\item{CUSTOM TABLES}{\link{tables}}
 }
 }
 

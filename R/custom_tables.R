@@ -504,7 +504,6 @@ tab_subgroup.intermediate_table = function(data, subgroup = NULL){
 #' @rdname tables
 #' @export
 tab_stat_fun = function(data, ..., 
-                        mis_val = NULL, 
                         label = NULL){
     UseMethod("tab_stat_fun")
 }
@@ -512,7 +511,6 @@ tab_stat_fun = function(data, ...,
 #' @rdname tables
 #' @export
 tab_stat_fun_df = function(data, ..., 
-                           mis_val = NULL, 
                            label = NULL){
     UseMethod("tab_stat_fun_df")
 }
@@ -824,14 +822,12 @@ tab_stat_rpct.intermediate_table = function(data,
 ############
 #' @export
 tab_stat_fun.default = function(data, ..., 
-                        mis_val = NULL, 
                         label = NULL){
     tab_stat_()
 }
 
 #' @export
 tab_stat_fun_df.default = function(data, ..., 
-                           mis_val = NULL, 
                            label = NULL){
     tab_stat_()
 }

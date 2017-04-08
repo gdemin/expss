@@ -297,7 +297,8 @@ elementary_cro = function(cell_var,
                           total_row_position = c("below", "above", "none"),
                           stat_type = c("cases", "cpct", "cpct_responses", "rpct", "tpct")
 ){
-    
+    # to pass CRAN check
+    row_labels = NULL
     ### preparations
     total_row_position = match.arg(total_row_position)
     unknowns = total_statistic %d% TOTAL_STATISTICS
@@ -406,6 +407,8 @@ elementary_cro = function(cell_var,
 
 ######################
 internal_cpct = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
+    # to pass CRAN check
+    value = NULL
     dtable = internal_cases(raw_data, 
                             col_var_names = col_var_names,
                             cell_var_names = cell_var_names,
@@ -421,6 +424,8 @@ internal_cpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
 
 ########################
 internal_cpct_responses = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
+    # to pass CRAN check
+    value = NULL
     dtable = internal_cases(raw_data, 
                             col_var_names = col_var_names,
                             cell_var_names = cell_var_names,
@@ -430,6 +435,9 @@ internal_cpct_responses = function(raw_data, col_var_names, cell_var_names = NUL
 
 #######################
 internal_rpct = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
+    # to pass CRAN check
+    weight = NULL
+    value = NULL
     dtable = internal_cases(raw_data, 
                             col_var_names = col_var_names,
                             cell_var_names = cell_var_names,
@@ -456,6 +464,10 @@ internal_rpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
 
 #######################
 internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
+    # to pass CRAN check
+    weight = NULL
+    value = NULL
+
     dtable = internal_cases(raw_data, 
                             col_var_names = col_var_names,
                             cell_var_names = cell_var_names,
@@ -472,9 +484,13 @@ internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
 
 ########################
 internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
-    
-    # dtable[, col_names] = unlab(dtable[, col_names, with = FALSE])
-    
+    # to pass CRAN check
+    weight = NULL
+    value = NULL
+    col_var = NULL
+    cell_var = NULL
+    row_var = NULL
+
     if(is.null(cell_var_names)){
         res = lapply(col_var_names, function(each_col){
             by_str = paste0("row_var,", each_col)
@@ -520,8 +536,8 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
 
 # used only for total 
 internal_responses = function(raw_data, col_var_names, use_weight){
-    
-    # dtable[, col_names] = unlab(dtable[, col_names, with = FALSE])
+    # to pass CRAN check
+    value = NULL
     cell_var_names = setdiff(colnames(raw_data), c(col_var_names, "weight", "row_var"))
     res = internal_cases(raw_data, 
                          col_var_names = col_var_names,
@@ -535,6 +551,8 @@ internal_responses = function(raw_data, col_var_names, use_weight){
 
 make_total_rows = function(res, raw_data, col_var_names, 
                            total_statistic, total_label){
+    # to pass CRAN check
+    row_labels = NULL
     total_statistic_label = gsub("^u_", " ", total_statistic, perl = TRUE)
     total_statistic_label = gsub("^w_", " wtd. ", total_statistic_label, perl = TRUE)
     # total_statistic_label = paste0(" ", total_statistic_label, ")")
@@ -581,7 +599,9 @@ make_total_rows = function(res, raw_data, col_var_names,
 }
 
 add_total_to_table = function(res, total_rows, total_row_position){
-    # we need total inside ech group of row_var
+    # to pass CRAN check
+    ..index__  = NULL
+    # we need total inside each group of row_var
     res[ , ..index__ :=2]
     if(total_row_position=="above"){
         total_rows[, ..index__ := 1] 

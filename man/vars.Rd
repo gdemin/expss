@@ -24,12 +24,6 @@ e1 \%to_list\% e2
 \item{e1}{unquoted name of start variable (e. g. a_1)}
 
 \item{e2}{unquoted name of start variable (e. g. a_5)}
-
-\item{start}{character name of start variable (e. g. a_1)}
-
-\item{end}{character name of start variable (e. g. a_5)}
-
-\item{pattern}{character pattern of variable(-s) name}
 }
 \value{
 data.frame/list with variables

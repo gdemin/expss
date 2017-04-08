@@ -41,14 +41,13 @@
 #' tab2 = calculate(mtcars, cro_cpct(gear, vs))
 #'
 #' # combine tables
-#' # %except% remove first total
-#' tab1 %except% "#Total" %merge% tab2
+#' tab1 %merge% tab2
 #'
 #' # complex tables
 #' # table with counts
-#' counts = calculate(mtcars, cro(list(vs, am, gear, carb), "Count"))
+#' counts = calculate(mtcars, cro(list(vs, am, gear, carb), list("Count")))
 #' # table with percents
-#' percents = calculate(mtcars, cro_cpct(list(vs, am, gear, carb), "Column, %"))
+#' percents = calculate(mtcars, cro_cpct(list(vs, am, gear, carb), list("Column, %")))
 #'
 #' # combine tables
 #' counts %merge% percents

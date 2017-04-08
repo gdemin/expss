@@ -24,9 +24,6 @@
 #' @param ... characters names of variables or criteria/logical functions
 #' @param e1 unquoted name of start variable (e. g. a_1)
 #' @param e2 unquoted name of start variable (e. g. a_5) 
-#' @param start character name of start variable (e. g. a_1)
-#' @param end character name of start variable (e. g. a_5)
-#' @param pattern character pattern of variable(-s) name
 #'
 #' @return  data.frame/list with variables
 #' 

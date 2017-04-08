@@ -211,6 +211,8 @@ elementary_cro_fun_df = function(cell_var,
                                  row_var,
                           subgroup
                           ){
+    # to pass CRAN check
+    ..weight__ = NULL
     
     ### calculate vector of valid cases
 
@@ -270,7 +272,10 @@ elementary_cro_fun_df = function(cell_var,
     
 ########
   
-format_table = function(wide_datable, row_var_lab, col_var_lab){       
+format_table = function(wide_datable, row_var_lab, col_var_lab){  
+    # to pass CRAN check
+    row_labels = NULL
+    ..row_var__ = NULL
 
     wide_datable[ , row_labels  := as.character(row_labels)] 
     wide_datable[ , row_labels  := paste0(..row_var__, "|", row_labels)]  
@@ -290,6 +295,9 @@ format_table = function(wide_datable, row_var_lab, col_var_lab){
 #######
     
 make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
+    # to pass CRAN check
+    row_labels = NULL
+    
     force(fun)
     force(need_weight)
     if(need_weight){
@@ -313,6 +321,8 @@ make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
 
 ###############
 make_function_for_cro = function(fun, ..., need_weight = TRUE){
+    # to pass CRAN check
+    row_labels = NULL
     force(fun)
     force(need_weight)
     if(need_weight){
