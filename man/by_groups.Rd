@@ -17,9 +17,10 @@ data \%by_groups\% args
 such as \code{mean_x ~ mean(x)}. Instead of the formulas it can be single
 function - it will be applied to all non-grouping columns. Note that there
 is no non-standard evaluation by design so use quotes for names of your
-variables or use \link[expss]{qc}.}
+variables or use \link{qc}.}
 
-\item{args}{The same as \code{...} but for infix the version \code{\%by_groups\%}.}
+\item{args}{list The same as \code{...} but for infix the version
+\code{\%by_groups\%}.}
 }
 \value{
 aggregated data.frame/data.table
@@ -27,8 +28,7 @@ aggregated data.frame/data.table
 \description{
 Splits the data by groups, computes summary statistics for each, and returns
 \code{data.frame}/\code{data.table}. \code{\%by_groups\%} is infix version of
-the function. \code{.by_groups} is version which works with
-\link[expss]{default_dataset}.
+the function.
 }
 \examples{
 # compute mean of the every column for every value of the Species
