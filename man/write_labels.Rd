@@ -65,7 +65,8 @@ separated by this string.}
 \item{dec}{the string to use for decimal points in numeric or complex
 columns: must be a single character.}
 
-\item{...}{additional arguments for \link[data.table]{fwrite}/\link[data.table]{fread}}
+\item{...}{additional arguments for
+\link[data.table]{fwrite}/\link[data.table]{fread}}
 }
 \value{
 Functions for writing invisibly return NULL. Functions for reading

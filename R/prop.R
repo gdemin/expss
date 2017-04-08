@@ -24,7 +24,7 @@
 #' prop_row(a)
 #' prop_col(a)
 #' 
-#' # the same as result as with prop.table
+#' # the same as result as with 'prop.table'
 #' tbl = table(state.division, state.region)
 #' 
 #' prop(tbl)

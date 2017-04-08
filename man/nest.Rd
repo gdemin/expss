@@ -22,7 +22,7 @@ vector/data.frame/list
 \description{
 \code{nest} mainly intended for usage with table functions such as 
 \link{cro}. See examples. \code{\%nest\%} is infix version of this function.
-\code{data.frame} among arguments is considered as multiple-response variable.
+Multiple-response variable are supported in this function..
 }
 \examples{
 data(mtcars)

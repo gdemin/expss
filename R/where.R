@@ -2,16 +2,16 @@
 #'
 #' For the data frame \code{cond} will be evaluated in the data.frame's context.
 #' So columns can be referred as variables in the expression (see the examples).
-#' If \code{data} is list then \code{where} will be applied to each element of
-#' the list. For other types there is no non-standard evaluation. There is a
-#' special constant \code{.N} which equals to number of rows in \code{data} for
-#' usage in \code{cond} expression. \code{\%where\%} is infix function with the
-#' same functional. See examples. \code{.where} is version for working with
-#' default dataset. See \link{default_dataset}.
+#' If \code{data} is list then \code{where} will be applied to each element of 
+#' the list. For other types (vector/matrix) there is no non-standard
+#' evaluation. There is a special constant \code{.N} which equals to number of
+#' rows in \code{data} for usage in \code{cond} expression. \code{\%where\%} is
+#' infix function with the same functional. See examples. \code{.where} is
+#' version for working with default dataset. See \link{default_dataset}.
 #'  
 #' @param data data.frame/matrix/vector/list to be subsetted
 #' @param cond logical or numeric expression indicating elements or rows to 
-#'   keep: missing values (NA) are taken as false. If \code{data} is data.frame
+#'   keep: missing values (NA) are taken as FALSE. If \code{data} is data.frame
 #'   then \code{cond} will be evaluated in the scope of the \code{data}.
 #'
 #' @return data.frame/matrix/vector/list which contains just selected rows.

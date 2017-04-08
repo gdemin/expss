@@ -129,8 +129,8 @@ crosstabulations of variable in the default data.frame.  See \link{cro}.}
 \item{\code{.cro_mean}/\code{.cro_sum}/\code{.cro_median}/\code{.cro_fun}/\code{.cro_fun_df}}{
 Simple crosstabulations of variable in the default data.frame.  See 
 \link{cro_fun}.}
-\item{\code{.with}}{ Evaluate arbitrary expression in the context of
-data.frame.  See \link[base]{with}.}
+\item{\code{.calculate}}{ Evaluate arbitrary expression in the context of
+data.frame.  See \link{calculate}.}
 }
 }
 \examples{

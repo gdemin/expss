@@ -33,10 +33,10 @@ sorted table('etable')/data.frame
 }
 \description{
 \code{tab_sort_asc}/\code{tab_sort_desc} sort tables (usually result of 
-\link{cro}) in ascending/descending order between specified rows (by 
-default, it is row which contain '#' in the first column). There is no
-non-standard evaluation in these functions by design so use quotes for names
-of your columns or use \link{qc}.
+\link{cro}/\link{tables}) in ascending/descending order between specified
+rows (by default, it is row which contain '#' in the first column). There is
+no non-standard evaluation in these functions by design so use quotes for
+names of your columns or use \link{qc}.
 }
 \examples{
 data(mtcars)

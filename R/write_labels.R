@@ -25,7 +25,8 @@
 #'   separated by this string.
 #' @param dec the string to use for decimal points in numeric or complex
 #'   columns: must be a single character.
-#' @param ... additional arguments for \link[data.table]{fwrite}/\link[data.table]{fread}  
+#' @param ... additional arguments for
+#'   \link[data.table]{fwrite}/\link[data.table]{fread}
 #'
 #' @return Functions for writing invisibly return NULL. Functions for reading
 #'   return labelled data.frame.

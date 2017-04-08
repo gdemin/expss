@@ -6,8 +6,8 @@
 #' @param x data.frame/list.
 #' @param exclude logical/integer/character columns which names should be left
 #'   unchanged. Only applicable to list/data.frame.
-#' @param keep_names logical. If TRUE original column names will be appended to
-#'   labels in round brackets. Only applicable to list/data.frame.
+#' @param keep_names logical. If TRUE original column names will be kept with
+#'   labels. Only applicable to list/data.frame.
 #' @return Object of the same type as x but with variable labels instead of
 #'   names. 
 #' @seealso \link{values2labels}, \link{val_lab},  \link{var_lab}

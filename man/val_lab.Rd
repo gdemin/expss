@@ -81,7 +81,6 @@ with \code{code_postion} 'left', 'right' and 'autonum' accordingly.}
 Value labels are stored in attribute "labels" 
   (\code{attr(x,"labels")}). We set variable class to "labelled" for preserving
   labels from dropping during some operations (such as \code{c} and \code{`[`}).
-  There are special methods of subsetting and concatenation for this class.
 }
 \examples{
 # toy example
@@ -119,15 +118,6 @@ fre(brands)
 # percentage of brands within each score
 cro_cpct(brands, score)
 
-
-by(as.dichotomy(brands), score, FUN = colMeans)
-
-# customer segmentation by used brands
-kmeans(dummy(brands),3)
-
-# model of influence of used brands on evaluation of tested product 
-summary(lm(score ~ dummy(brands)))
-
 ## make labels from text copied from questionnaire
 
 age = c(1, 2, 1, 2)
@@ -137,6 +127,7 @@ val_lab(age) = num_lab("
  2. 27 - 35
 ")
 
+# note support of value lables in base R
 table(age)
 
 # or, if in original codes is on the right side

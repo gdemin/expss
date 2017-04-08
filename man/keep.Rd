@@ -50,7 +50,7 @@ keep(iris, qc(Sepal.Length, Sepal.Width)) # same result with non-standard eval
 except(iris, "Species")
 
 keep(iris, "Species", other) # move 'Species' to the first position
-keep(iris, to("Petal.Width")) # keep all columns except 'Species'
+keep(iris, to("Petal.Width")) # keep all columns up to 'Species'
 
 except(iris, perl("^Petal")) # remove columns which names start with 'Petal'
 

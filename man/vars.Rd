@@ -38,11 +38,11 @@ for names of your variables or use \link{qc}. The only exception with
 non-standard evaluation is \code{\%to\%}. You can use \code{\%to\%} inside 
 \code{vars} or independently.}
 \item{\code{\%to\%}}{ returns range of variables between \code{e1} and 
-\code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if},
-\link{calculate}, \link{keep}, \link{except} and \link{where} support
-\code{\%to\%} but if it will be used in global environment or inside
-\link[base]{with}, \link[base]{within} range will be taken from names of
-variables sorted in the alphabetic order.}}
+\code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if}, 
+\link{calculate}, \link{keep}, \link{except} and \link{where} support 
+\code{\%to\%}. Inside global environment \link[base]{with},
+\link[base]{within} \code{\%to\%} will take range from names of variables
+sorted in the alphabetic order.}}
 Functions with word 'list' in name return lists of variables instead of 
 dataframes.
 \code{vars_pattern}, \code{vars_pattern_list}, \code{vars_range} and 

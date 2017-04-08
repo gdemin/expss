@@ -17,7 +17,8 @@
 #' 
 #' \code{read_spss_to_list} returns list of variables from SPSS files.
 #' 
-#' @seealso \link[foreign]{read.spss} in package \code{foreign}, \link{val_lab}, \link{var_lab} 
+#' @seealso \link[foreign]{read.spss} in package \code{foreign}, \link{val_lab},
+#'   \link{var_lab}
 #' 
 #' @export
 #' @examples

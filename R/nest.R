@@ -2,7 +2,7 @@
 #' 
 #' \code{nest} mainly intended for usage with table functions such as 
 #' \link{cro}. See examples. \code{\%nest\%} is infix version of this function.
-#' \code{data.frame} among arguments is considered as multiple-response variable.
+#' Multiple-response variable are supported in this function..
 #' 
 #' @param ... vectors/data.frames/lists
 #' @param x vector/data.frame/list

@@ -29,7 +29,7 @@
 product_test
 }
 \description{
-It is rather artificial dataset with data from product test of two samples of
+It is truncated dataset with data from product test of two samples of
 chocolate sweets. 150 respondents tested two kinds of sweets (codenames:
 VSX123 and SDF546). Sample was divided into two groups (cells) of 75
 respondents in each group. In cell 1 product VSX123 was presented first and

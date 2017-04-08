@@ -76,6 +76,8 @@ split_labels(colnames(tabl))
 split_columns(tabl) # remove repeated
 
 split_columns(tabl, remove_repeated = FALSE)
+
+split_table_to_df(tabl)
 }
 \seealso{
 \link[base]{strsplit}

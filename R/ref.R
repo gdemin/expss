@@ -11,31 +11,31 @@
 #' \code{ref} returns value of referenced variable. 
 #' \code{ref<-} modifies referenced variable.
 #' 
-#' @details To create reference to variable one can use formula: \code{b = ~a}. \code{b} 
-#' is reference to \code{a}.
-#' So  \code{ref(b)} returns value of \code{a} and \code{ref(b) = new_val} will modify \code{a}.
-#' If argument \code{x} of these functions is not formula then these functions have no effect
-#'  e. g. \code{ref(a)} is identical to \code{a} and after \code{ref(a) = value}
-#'   \code{a} is identical to \code{value}.
-#' It is not possible to use function as argument \code{x} in assignment form. For example, 
-#' \code{ref(some_function(x)) = some_value} will rise error. 
-#' Use \code{y = some_function(x); ref(y) = some_value} instead.
+#' @details To create reference to variable one can use formula: \code{b = ~a}.
+#'   \code{b} is reference to \code{a}. So \code{ref(b)} returns value of
+#'   \code{a} and \code{ref(b) = new_val} will modify \code{a}. If argument
+#'   \code{x} of these functions is not formula then these functions have no
+#'   effect e. g. \code{ref(a)} is identical to \code{a} and after \code{ref(a)
+#'   = value} \code{a} is identical to \code{value}. It is not possible to use
+#'   function as argument \code{x} in assignment form. For example, 
+#'   \code{ref(some_function(x)) = some_value} will rise error. Use \code{y =
+#'   some_function(x); ref(y) = some_value} instead.
 #' 
 #' @export
 #' @examples
 #' # Simple example
 #' a = 1:3
-#' b = ~a  # b is reference to a
+#' b = ~a  # b is reference to 'a'
 #' identical(ref(b),a) # TRUE
 #' 
-#' ref(b)[2] = 4 # here we modify a
-#' identical(a,c(1,4,3)) # TRUE
+#' ref(b)[2] = 4 # here we modify 'a'
+#' identical(a, c(1,4,3)) # TRUE
 #' 
 #' # usage inside function
 #' 
 #' # top 10 rows 
 #' head10 = function(x){
-#'  ds = head(ref(x),10)
+#'  ds = head(ref(x), 10)
 #'  ref(x) = ds
 #'  invisible(ds) # for usage without references
 #' }

@@ -94,7 +94,7 @@ correlation matrix of a numeric matrix/data.frame}}
 \details{
 If argument of correlation functions is data.frame with variable labels then
 variables names will be replaced with labels. If this is undesirable behavior
-use \link[expss]{unvr} function: \code{w_cor(unvr(x))}. Weighted spearman
+use \link{unvr} function: \code{w_cor(unvr(x))}. Weighted spearman
 correlation coefficients are calculated with rounded to nearest integer
 weights. It gives the same result as in SPSS Statistics software. By now this
 algorithm is not memory efficient.

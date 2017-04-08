@@ -51,6 +51,8 @@
 #' split_columns(tabl) # remove repeated
 #' 
 #' split_columns(tabl, remove_repeated = FALSE)
+#' 
+#' split_table_to_df(tabl)
 split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
     if(length(x)==0){
         return(matrix(NA, ncol=0, nrow = 0))

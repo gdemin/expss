@@ -15,8 +15,8 @@ n2l(x, exclude = NULL, keep_names = FALSE)
 \item{exclude}{logical/integer/character columns which names should be left
 unchanged. Only applicable to list/data.frame.}
 
-\item{keep_names}{logical. If TRUE original column names will be appended to
-labels in round brackets. Only applicable to list/data.frame.}
+\item{keep_names}{logical. If TRUE original column names will be kept with
+labels. Only applicable to list/data.frame.}
 }
 \value{
 Object of the same type as x but with variable labels instead of

@@ -33,5 +33,5 @@ reference about working dataset.
 data(mtcars)
 var_lab(mtcars$am) = "Transmission"
 val_lab(mtcars$am) = c("Automatic"=0, "Manual"=1)
-info(mtcars,max_levels = 5)                             
+info(mtcars, max_levels = 5)                             
 }
