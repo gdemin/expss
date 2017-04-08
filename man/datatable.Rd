@@ -11,7 +11,7 @@ datatable(data, ...)
   show_row_numbers = FALSE, digits = getOption("expss.digits"), ...)
 }
 \arguments{
-\item{data}{a data object (result of \link{fre}/\link{cro} and etc)}
+\item{data}{a data object (result of \link{tables}/\link{fre}/\link{cro}).}
 
 \item{...}{further parameters for \link[DT]{datatable}}
 
@@ -29,20 +29,21 @@ numeric columns remain unrounded.}
 Object of class \link[DT]{datatable}
 }
 \description{
-This is method for rendering results of \link{fre}/\link{cro} in Shiny.
-For detailed description of function and its arguments see \link[DT]{datatable}.
+This is method for rendering results of \link{tables}/\link{fre}/\link{cro}
+in Shiny. For detailed description of function and its arguments see
+\link[DT]{datatable}.
 }
 \examples{
 \dontrun{ 
 data(mtcars)
 mtcars = apply_labels(mtcars,
-                      mpg = "Miles/(US) gallon|Mean",
+                      mpg = "Miles/(US) gallon",
                       cyl = "Number of cylinders",
-                      disp = "Displacement (cu.in.)|Mean",
-                      hp = "Gross horsepower|Mean",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
                       drat = "Rear axle ratio",
-                      wt = "Weight (lb/1000)",
-                      qsec = "1/4 mile time|Mean",
+                      wt = "Weight (1000 lbs)",
+                      qsec = "1/4 mile time",
                       vs = "Engine",
                       vs = c("V-engine" = 0,
                              "Straight engine" = 1),
@@ -53,11 +54,14 @@ mtcars = apply_labels(mtcars,
                       carb = "Number of carburetors"
 )
 
-mtcars_table = calculate(mtcars,
-                         cro_mean(list(mpg, hp), am \%nest\% vs) \%add_rows\%
-                             cro_cpct(am, am \%nest\% vs)  
-                         
-)
+mtcars_table = mtcars \%>\% 
+                 tab_cols(total(), am \%nest\% vs) \%>\% 
+                 tab_cells(mpg, hp) \%>\% 
+                 tab_stat_mean() \%>\% 
+                 tab_cells(cyl) \%>\% 
+                 tab_stat_cpct() \%>\% 
+                 tab_pivot()
+
 library(shiny)
 shinyApp(
     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
