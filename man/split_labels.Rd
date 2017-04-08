@@ -33,18 +33,23 @@ expressions. Has priority over \code{perl}.}
 
 \item{columns}{character/numeric/logical  columns in the data.frame
 \code{data} which should be split}
+
+\item{digits}{numeric. How many digits after decimal point should be left in
+\code{split_table_to_df}?}
 }
 \value{
 \code{split_labels} returns character matrix, \code{split_columns} returns
   data.frame with columns replaced by possibly multiple columns with split
-  labels.
+  labels. \code{split_table_to_df} returns data.frame with character columns.
 }
 \description{
 \code{split_labels}/\code{split_columns} are auxiliary functions for 
-post-processing tables resulted from \link{cro}/\link{cro_fun} 
-and etc. In these tables all labels collapsed in the first column with "|" 
-separator. \code{split_columns} split first column into multiple columns 
-with separator (\code{split} argument).
+post-processing tables resulted from \link{cro}/\link{cro_fun} and etc. In
+these tables all labels collapsed in the first column with "|" separator.
+\code{split_columns} split first column into multiple columns with separator
+(\code{split} argument). \code{split_table_to_df} split first column of table
+and column names. Result of this operation is data.frame with character
+columns.
 }
 \examples{
 data(mtcars)

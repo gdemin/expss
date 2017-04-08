@@ -1,10 +1,12 @@
 #' Split character vector to matrix/split columns in data.frame
 #' 
 #' \code{split_labels}/\code{split_columns} are auxiliary functions for 
-#' post-processing tables resulted from \link{cro}/\link{cro_fun} 
-#' and etc. In these tables all labels collapsed in the first column with "|" 
-#' separator. \code{split_columns} split first column into multiple columns 
-#' with separator (\code{split} argument).
+#' post-processing tables resulted from \link{cro}/\link{cro_fun} and etc. In
+#' these tables all labels collapsed in the first column with "|" separator.
+#' \code{split_columns} split first column into multiple columns with separator
+#' (\code{split} argument). \code{split_table_to_df} split first column of table
+#' and column names. Result of this operation is data.frame with character
+#' columns.
 #'
 #' @param data data.frame vector which will be split
 #' @param x character vector which will be split
@@ -17,10 +19,11 @@
 #' @param fixed logical. If TRUE match split exactly, otherwise use regular
 #'   expressions. Has priority over \code{perl}.
 #' @param perl logical. Should Perl-compatible regexps be used?
-#'
+#' @param digits numeric. How many digits after decimal point should be left in
+#'   \code{split_table_to_df}?
 #' @return \code{split_labels} returns character matrix, \code{split_columns} returns
 #'   data.frame with columns replaced by possibly multiple columns with split
-#'   labels.
+#'   labels. \code{split_table_to_df} returns data.frame with character columns.
 #' @export
 #' @seealso \link[base]{strsplit}
 #' @examples
@@ -79,19 +82,35 @@ split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, pe
 
 #' @export
 #' @rdname split_labels
-split_columns  = function(data, columns = 1, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
+split_columns  = function(data, 
+                          columns = 1, 
+                          remove_repeated = TRUE, 
+                          split = "|", 
+                          fixed = TRUE, 
+                          perl = FALSE){
    UseMethod("split_columns")
 }
 
 
 #' @export
-split_columns.intermediate_table = function(x, ...){
+split_columns.intermediate_table = function(data, 
+                                            columns = 1, 
+                                            remove_repeated = TRUE, 
+                                            split = "|", 
+                                            fixed = TRUE, 
+                                            perl = FALSE
+                                            ){
     stop("No results for splitting. Use 'split_columns' after 'tab_pivot'.")
 }
 
 
 #' @export
-split_columns.data.frame  = function(data, columns = 1, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
+split_columns.data.frame  = function(data, 
+                                     columns = 1, 
+                                     remove_repeated = TRUE, 
+                                     split = "|", 
+                                     fixed = TRUE, 
+                                     perl = FALSE){
     stopif(!is.numeric(columns) && !is.character(columns) &&
                !is.logical(columns),
            "`columns` should be character, numeric or logical.")
@@ -142,7 +161,12 @@ split_columns.data.frame  = function(data, columns = 1, remove_repeated = TRUE, 
 }
 
 #' @export
-split_columns.matrix  = function(data, columns = 1, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
+split_columns.matrix  = function(data, 
+                                 columns = 1, 
+                                 remove_repeated = TRUE, 
+                                 split = "|", 
+                                 fixed = TRUE, 
+                                 perl = FALSE){
     data = as.dtfrm(data)
     split_columns(data, 
                   columns = columns, 
@@ -165,7 +189,11 @@ split_table_to_df = function(data,
 }
 
 #' @export
-split_table_to_df.intermediate_table = function(x, ...){
+split_table_to_df.intermediate_table = function(data, digits = getOption("expss.digits"), 
+                                                remove_repeated = TRUE, 
+                                                split = "|", 
+                                                fixed = TRUE, 
+                                                perl = FALSE){
     stop("No results for splitting. Use 'split_table_to_df' after 'tab_pivot'.")
 }
 
