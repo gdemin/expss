@@ -4,7 +4,8 @@ expect_error(by_groups(iris, "Species"))
 expect_error(by_groups(iris, "Species", mean, b ~ sum(Sepal.Width)))
 expect_error(by_groups(iris, "Species", mean, sum))
 expect_error(by_groups(iris, "species", mean))
-expect_identical(by_groups(iris, "Species", mean), aggregate( . ~ Species , data = iris, FUN = mean))
+expect_identical(by_groups(iris, "Species", mean), 
+                 aggregate( . ~ Species , data = iris, FUN = mean))
 expect_identical(by_groups(iris[,-5], mean), as.data.frame(t(colMeans(iris[,-5]))))
 expect_identical(by_groups(iris[,-5], character(0), mean), as.data.frame(t(colMeans(iris[,-5]))))
 alpha = 3

@@ -12,12 +12,12 @@ data \%by_groups\% args
 \arguments{
 \item{data}{data for aggregation}
 
-\item{...}{aggregation parameters. It should be names of variables in quotes
-(characters, e. g. 'Species') and formulas with aggregation expressions,
-such as \code{mean_x ~ mean(x)}. Instead of the formulas it can be single
-function - it will be applied to all non-grouping columns. Note that there
-is no non-standard evaluation by design so use quotes for names of your
-variables or use \link{qc}.}
+\item{...}{aggregation parameters. It should be names of variables in quotes 
+(characters, e. g. 'Species') and formulas with aggregation expressions, 
+such as \code{mean_x ~ mean(x)}. Instead of the formulas it can be single 
+function as last argument - it will be applied to all non-grouping columns.
+Note that there is no non-standard evaluation by design so use quotes for
+names of your variables or use \link{qc}.}
 
 \item{args}{list The same as \code{...} but for infix the version
 \code{\%by_groups\%}.}

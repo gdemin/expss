@@ -5,12 +5,12 @@
 #' the function. 
 #'
 #' @param data data for aggregation
-#' @param ... aggregation parameters. It should be names of variables in quotes
-#'   (characters, e. g. 'Species') and formulas with aggregation expressions,
-#'   such as \code{mean_x ~ mean(x)}. Instead of the formulas it can be single
-#'   function - it will be applied to all non-grouping columns. Note that there
-#'   is no non-standard evaluation by design so use quotes for names of your
-#'   variables or use \link{qc}.
+#' @param ... aggregation parameters. It should be names of variables in quotes 
+#'   (characters, e. g. 'Species') and formulas with aggregation expressions, 
+#'   such as \code{mean_x ~ mean(x)}. Instead of the formulas it can be single 
+#'   function as last argument - it will be applied to all non-grouping columns.
+#'   Note that there is no non-standard evaluation by design so use quotes for
+#'   names of your variables or use \link{qc}.
 #' @param args list The same as \code{...} but for infix the version
 #'   \code{\%by_groups\%}.
 #' @return aggregated data.frame/data.table
@@ -58,16 +58,15 @@ by_groups = function(data, ...){
 #' @export
 by_groups.data.table = function(data, ...){
     args = unlist(list(...))
+    stopif(length(args)==0, "'by groups' - insufficient number of arguments.")
     is_formula = vapply(args, function(each) "formula" %in% class(each), FUN.VALUE = logical(1))
-    is_function = vapply(args, is.function, FUN.VALUE = logical(1))
     formulas = args[is_formula]
-    functions = args[is_function]
-    stopif(length(formulas)==0 && length(functions)==0, "No formulas/functions in arguments.")
-    stopif(length(formulas)>0 && length(functions)>0, "There are function and formulas among arguments.
-           You should provide either function or formulas.")
-    stopif(length(functions)>1, "For aggregation of the all variables only one function should be provided.")
-
-    grouping_variables = args[!is_formula & !is_function]
+    if(length(formulas)==0){
+        fun = match.fun(args[[length(args)]])
+        grouping_variables = args[-length(args)]  
+    } else {
+        grouping_variables = args[!is_formula]
+    }
     grouping_variables = unique(as.character(unlist(grouping_variables)))
     non_grouping = setdiff(colnames(data), grouping_variables)
     unknowns = grouping_variables %d% colnames(data)
@@ -76,19 +75,19 @@ by_groups.data.table = function(data, ...){
     if(length(grouping_variables)){
         grouping_variables = paste(grouping_variables, collapse = ",")
     }
-    processed_formulas = lapply(formulas, function(each_formula){
-        res = as.character(each_formula)[-1]
-        if(length(res)==1) res = c(res, res) # new_name=expression
-        res
-    })
-    if (any(is_function)){
-        fun = functions[[1]]
+
+    if (length(formulas)==0){
         if (length(grouping_variables)){
             res = data[, lapply(.SD, fun), by = grouping_variables]
         } else {
             res = data[, lapply(.SD, fun)]
         }
     } else {
+        processed_formulas = lapply(formulas, function(each_formula){
+            res = as.character(each_formula)[-1]
+            if(length(res)==1) res = c(res, res) # new_name=expression
+            res
+        })
         expressions = vapply(processed_formulas, function(item){
             paste0('"', item[1], '" = ', item[2])
         }, FUN.VALUE = character(1))
@@ -98,7 +97,6 @@ by_groups.data.table = function(data, ...){
         } else {
             res = data[, eval(all_expressions)]
         }
-
     }
     for(each in intersect(non_grouping, colnames(res))){
         var_lab(res[[each]]) = var_lab(data[[each]])
