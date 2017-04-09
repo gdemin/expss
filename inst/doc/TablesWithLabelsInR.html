@@ -1,0 +1,2457 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="date" content="2017-04-09" />
+
+<title>Tables with labels in R</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Tables with labels in R</h1>
+<h4 class="date"><em>2017-04-09</em></h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#links">Links</a></li>
+</ul></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#cross-tablulation-examples">Cross-tablulation examples</a></li>
+<li><a href="#example-of-data-processing-with-multiple-response-variables">Example of data processing with multiple-response variables</a></li>
+<li><a href="#labels-support-for-base-r">Labels support for base R</a></li>
+<li><a href="#excel-functions-translation-guide">Excel functions translation guide</a></li>
+<li><a href="#spss-functions-translation-guide">SPSS functions translation guide</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><code>expss</code> package provides tabulation functions with support of SPSS-style labels, multiple / nested banners, weights and multiple-response variables. Additionally it offers useful functions for data processing workflow in the social / marketing research surveys - popular data transformation functions from SPSS Statistics (<code>RECODE</code>, <code>COUNT</code>, <code>COMPUTE</code>, <code>DO IF</code>, etc.) and Excel (<code>COUNTIF</code>, <code>VLOOKUP</code>, etc.). Proper methods for labelled variables add value labels support to base R and other packages. Package aimed to help people to move data processing from ‘Excel’/‘SPSS’ to R. See examples below. You can get help about any function by typing <code>?function_name</code> in the R console.</p>
+<div id="links" class="section level3">
+<h3>Links</h3>
+<ul>
+<li><a href="http://gdemin.github.io/expss/">Online intorduction</a></li>
+<li><a href="https://cran.r-project.org/package=expss">expss on CRAN</a></li>
+<li><a href="https://github.com/gdemin/expss">expss on Github</a></li>
+<li><a href="https://github.com/gdemin/expss/issues">Issues</a></li>
+</ul>
+</div>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p><code>expss</code> is on CRAN, so for installation you can print in the console <code>install.packages(&quot;expss&quot;)</code>.</p>
+</div>
+<div id="cross-tablulation-examples" class="section level2">
+<h2>Cross-tablulation examples</h2>
+<p>We will use for demonstartion well-known <code>mtcars</code> dataset. Let’s start with adding labels to the dataset. Then we can continue with tables creation.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(expss)
+<span class="kw">data</span>(mtcars)
+mtcars =<span class="st"> </span><span class="kw">apply_labels</span>(mtcars,
+                      <span class="dt">mpg =</span> <span class="st">&quot;Miles/(US) gallon&quot;</span>,
+                      <span class="dt">cyl =</span> <span class="st">&quot;Number of cylinders&quot;</span>,
+                      <span class="dt">disp =</span> <span class="st">&quot;Displacement (cu.in.)&quot;</span>,
+                      <span class="dt">hp =</span> <span class="st">&quot;Gross horsepower&quot;</span>,
+                      <span class="dt">drat =</span> <span class="st">&quot;Rear axle ratio&quot;</span>,
+                      <span class="dt">wt =</span> <span class="st">&quot;Weight (1000 lbs)&quot;</span>,
+                      <span class="dt">qsec =</span> <span class="st">&quot;1/4 mile time&quot;</span>,
+                      <span class="dt">vs =</span> <span class="st">&quot;Engine&quot;</span>,
+                      <span class="dt">vs =</span> <span class="kw">c</span>(<span class="st">&quot;V-engine&quot;</span> =<span class="st"> </span><span class="dv">0</span>,
+                             <span class="st">&quot;Straight engine&quot;</span> =<span class="st"> </span><span class="dv">1</span>),
+                      <span class="dt">am =</span> <span class="st">&quot;Transmission&quot;</span>,
+                      <span class="dt">am =</span> <span class="kw">c</span>(<span class="st">&quot;Automatic&quot;</span> =<span class="st"> </span><span class="dv">0</span>,
+                             <span class="st">&quot;Manual&quot;</span>=<span class="dv">1</span>),
+                      <span class="dt">gear =</span> <span class="st">&quot;Number of forward gears&quot;</span>,
+                      <span class="dt">carb =</span> <span class="st">&quot;Number of carburetors&quot;</span>
+)</code></pre></div>
+<p>For quick cross-tabulation there are <code>fre</code> and <code>cro</code> family of function. For simplicity we demonstrate here only <code>cro_cpct</code> which caluclates column percent. Documentation for other functions, such as <code>cro_cases</code> for counts, <code>cro_rpct</code> for row percent, <code>cro_tpct</code> for table percent and <code>cro_fun</code> for custom summary functions can be seen by typing <code>?cro</code> and <code>?cro_fun</code> in the console.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 'cro' examples</span>
+<span class="co"># multiple banners</span>
+mtcars %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">calculate</span>(<span class="kw">cro_cpct</span>(cyl, <span class="kw">list</span>(<span class="kw">total</span>(), am, vs))) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Table with multiple banners (column %).&quot;</span>)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='8' style='text-align: left;'>
+Table with multiple banners (column %).</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Engine&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;V-engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Straight engine&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='8' style='font-weight: 900;'>&nbsp;Number of cylinders&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;4&nbsp;</td>
+<td style='text-align: right;'>34.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>15.8</td>
+<td style='text-align: right;'>61.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>5.6</td>
+<td style='text-align: right;'>71.4</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;6&nbsp;</td>
+<td style='text-align: right;'>21.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>21.1</td>
+<td style='text-align: right;'>23.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7</td>
+<td style='text-align: right;'>28.6</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;8&nbsp;</td>
+<td style='text-align: right;'>43.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>63.2</td>
+<td style='text-align: right;'>15.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>77.8</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>32</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>19</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>13</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>18</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>14</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># nested banners          </span>
+mtcars %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">calculate</span>(<span class="kw">cro_cpct</span>(cyl, <span class="kw">list</span>(<span class="kw">total</span>(), am %nest%<span class="st"> </span>vs))) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Table with nested banners (column %).&quot;</span>)         </code></pre></div>
+<p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='8' style='text-align: left;'>
+Table with nested banners (column %).</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='5' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='1' style='font-weight: 900; text-align: center;'></th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='1' style='font-weight: 900; text-align: center;'></th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Engine&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Engine&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;V-engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Straight engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;V-engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Straight engine&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='8' style='font-weight: 900;'>&nbsp;Number of cylinders&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;4&nbsp;</td>
+<td style='text-align: right;'>34.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>42.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7</td>
+<td style='text-align: right;'>100</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;6&nbsp;</td>
+<td style='text-align: right;'>21.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>57.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;8&nbsp;</td>
+<td style='text-align: right;'>43.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>33.3</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>32</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>12</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>7</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>6</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>7</td>
+</tr>
+</tbody>
+</table> We have more sophisticated interface for table construction with <code>magrittr</code> piping. Documentation for this interface can be seen via <code>?tables</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(mpg, disp, hp, wt, qsec) %&gt;%
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), am) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_fun</span>(<span class="dt">Mean =</span> w_mean, <span class="st">&quot;Std. dev.&quot;</span> =<span class="st"> </span>w_sd, <span class="st">&quot;Valid N&quot;</span> =<span class="st"> </span>w_n) %&gt;%
+<span class="st">    </span><span class="kw">tab_pivot</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Table with summary statistics. Statistics labels in rows.&quot;</span>)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='5' style='text-align: left;'>
+Table with summary statistics. Statistics labels in rows.</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Miles/(US) gallon&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
+<td style='text-align: right;'>20.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>17.1</td>
+<td style='text-align: right;'>24.4</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
+<td style='text-align: right;'>6</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>3.8</td>
+<td style='text-align: right;'>6.2</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>19</td>
+<td style='text-align: right;'>13</td>
+</tr> 
+<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Displacement (cu.in.)&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
+<td style='text-align: right;'>230.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>290.4</td>
+<td style='text-align: right;'>143.5</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
+<td style='text-align: right;'>123.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>110.2</td>
+<td style='text-align: right;'>87.2</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>19</td>
+<td style='text-align: right;'>13</td>
+</tr> 
+<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Gross horsepower&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
+<td style='text-align: right;'>146.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>160.3</td>
+<td style='text-align: right;'>126.8</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
+<td style='text-align: right;'>68.6</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>53.9</td>
+<td style='text-align: right;'>84.1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>19</td>
+<td style='text-align: right;'>13</td>
+</tr> 
+<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Weight (1000 lbs)&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
+<td style='text-align: right;'>3.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>3.8</td>
+<td style='text-align: right;'>2.4</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
+<td style='text-align: right;'>1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>0.8</td>
+<td style='text-align: right;'>0.6</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>19</td>
+<td style='text-align: right;'>13</td>
+</tr> 
+<tr><td colspan='5' style='font-weight: 900;'>&nbsp;1/4 mile time&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
+<td style='text-align: right;'>17.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>18.2</td>
+<td style='text-align: right;'>17.4</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
+<td style='text-align: right;'>1.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>1.8</td>
+<td style='text-align: right;'>1.8</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>32</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>19</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>13</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(mpg, disp, hp, wt, qsec) %&gt;%
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), am) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_fun</span>(<span class="dt">Mean =</span> w_mean, <span class="st">&quot;Std. dev.&quot;</span> =<span class="st"> </span>w_sd, <span class="st">&quot;Valid N&quot;</span> =<span class="st"> </span>w_n, <span class="dt">method =</span> list) %&gt;%
+<span class="st">    </span><span class="kw">tab_pivot</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Table with the same summary statistics. Statistics labels in columns.&quot;</span>)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='12' style='text-align: left;'>
+Table with the same summary statistics. Statistics labels in columns.</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='7' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp; &nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Mean&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Std. dev.&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Valid N&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Mean&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Std. dev.&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Valid N&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Mean&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Std. dev.&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Valid N&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style='text-align: left;'>&nbsp;Miles/(US) gallon&nbsp;</td>
+<td style='text-align: right;'>20.1</td>
+<td style='text-align: right;'>6</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>17.1</td>
+<td style='text-align: right;'>3.8</td>
+<td style='text-align: right;'>19</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>24.4</td>
+<td style='text-align: right;'>6.2</td>
+<td style='text-align: right;'>13</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Displacement (cu.in.)&nbsp;</td>
+<td style='text-align: right;'>230.7</td>
+<td style='text-align: right;'>123.9</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>290.4</td>
+<td style='text-align: right;'>110.2</td>
+<td style='text-align: right;'>19</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>143.5</td>
+<td style='text-align: right;'>87.2</td>
+<td style='text-align: right;'>13</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Gross horsepower&nbsp;</td>
+<td style='text-align: right;'>146.7</td>
+<td style='text-align: right;'>68.6</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>160.3</td>
+<td style='text-align: right;'>53.9</td>
+<td style='text-align: right;'>19</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>126.8</td>
+<td style='text-align: right;'>84.1</td>
+<td style='text-align: right;'>13</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Weight (1000 lbs)&nbsp;</td>
+<td style='text-align: right;'>3.2</td>
+<td style='text-align: right;'>1</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>3.8</td>
+<td style='text-align: right;'>0.8</td>
+<td style='text-align: right;'>19</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2.4</td>
+<td style='text-align: right;'>0.6</td>
+<td style='text-align: right;'>13</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;1/4 mile time&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>17.8</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>1.8</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>32</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>18.2</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>1.8</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>19</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>17.4</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>1.8</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>13</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars %&gt;%
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), vs) %&gt;%
+<span class="st">    </span><span class="kw">tab_cells</span>(mpg) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_mean</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_valid_n</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(am) %&gt;%
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;col %&quot;</span>) %&gt;%
+<span class="st">    </span><span class="kw">tab_stat_rpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;row %&quot;</span>) %&gt;%
+<span class="st">    </span><span class="kw">tab_stat_tpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;table %&quot;</span>) %&gt;%
+<span class="st">    </span><span class="kw">tab_pivot</span>(<span class="dt">stat_position =</span> <span class="st">&quot;inside_rows&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Different statistics for differen variables.&quot;</span>)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='7' style='text-align: left;'>
+Different statistics for differen variables.</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-top: 2px solid grey; text-align: center;'></th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Engine&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;V-engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Straight engine&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='7' style='font-weight: 900;'>&nbsp;Miles/(US) gallon&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>20.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.6</td>
+<td style='text-align: right;'>24.6</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>18</td>
+<td style='text-align: right;'>14</td>
+</tr> 
+<tr><td colspan='7' style='font-weight: 900;'>&nbsp;Transmission&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Automatic&nbsp;</td>
+<td style='text-align: left;'>&nbsp;col %&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>59.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>66.7</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'>&nbsp;row %&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>63.2</td>
+<td style='text-align: right;'>36.8</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'>&nbsp;table %&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>59.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>37.5</td>
+<td style='text-align: right;'>21.9</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Manual&nbsp;</td>
+<td style='text-align: left;'>&nbsp;col %&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>40.6</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>33.3</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'>&nbsp;row %&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>46.2</td>
+<td style='text-align: right;'>53.8</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;table %&nbsp;</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>40.6</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>18.8</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>21.9</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(cyl) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), vs) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_rows</span>(am) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;above&quot;</span>,
+                  <span class="dt">total_label =</span> <span class="kw">c</span>(<span class="st">&quot;number of cases&quot;</span>, <span class="st">&quot;row %&quot;</span>),
+                  <span class="dt">total_statistic =</span> <span class="kw">c</span>(<span class="st">&quot;u_cases&quot;</span>, <span class="st">&quot;u_rpct&quot;</span>)) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_pivot</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Table with split by rows and with custom totals.&quot;</span>)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='8' style='text-align: left;'>
+Table with split by rows and with custom totals.</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='2' style='font-weight: 900; border-top: 2px solid grey; text-align: center;'></th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Engine&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;V-engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Straight engine&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='8' style='font-weight: 900;'>&nbsp;Transmission&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Automatic&nbsp;</td>
+<td style='text-align: left;'>&nbsp;Number of cylinders&nbsp;</td>
+<td style='text-align: left;'>&nbsp;#number of cases&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>19</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>12</td>
+<td style='text-align: right;'>7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='text-align: left;'>&nbsp;#row %&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>63.2</td>
+<td style='text-align: right;'>36.8</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='text-align: left;'>&nbsp;4&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>15.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>42.9</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='text-align: left;'>&nbsp;6&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>21.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>57.1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='text-align: left;'>&nbsp;8&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>63.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Manual&nbsp;</td>
+<td style='text-align: left;'>&nbsp;Number of cylinders&nbsp;</td>
+<td style='text-align: left;'>&nbsp;#number of cases&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>13</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>6</td>
+<td style='text-align: right;'>7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='text-align: left;'>&nbsp;#row %&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>46.2</td>
+<td style='text-align: right;'>53.8</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='text-align: left;'>&nbsp;4&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>61.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7</td>
+<td style='text-align: right;'>100</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;</td>
+<td style='text-align: left;'></td>
+<td style='text-align: left;'>&nbsp;6&nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>23.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: left;'></td>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;8&nbsp;</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>15.4</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>33.3</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'></td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">dtfrm</span>(mpg, disp, hp, wt, qsec)) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), am) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_fun_df</span>(
+        function(x){
+            frm =<span class="st"> </span><span class="kw">reformulate</span>(<span class="st">&quot;.&quot;</span>, <span class="dt">response =</span> <span class="kw">names</span>(x)[<span class="dv">1</span>])
+            model =<span class="st"> </span><span class="kw">lm</span>(frm, <span class="dt">data =</span> x)
+            <span class="kw">dtfrm</span>(<span class="st">'Coef.'</span> =<span class="st"> </span><span class="kw">coef</span>(model), 
+                  <span class="kw">confint</span>(model)
+            )
+        }    
+    ) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_pivot</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Linear regression by groups.&quot;</span>)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='12' style='text-align: left;'>
+Linear regression by groups.</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='7' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp; &nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Coef.&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;2.5 %&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;97.5 %&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Coef.&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;2.5 %&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;97.5 %&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Coef.&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;2.5 %&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;97.5 %&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style='text-align: left;'>&nbsp;(Intercept)&nbsp;</td>
+<td style='text-align: right;'>27.3</td>
+<td style='text-align: right;'>9.6</td>
+<td style='text-align: right;'>45.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>21.8</td>
+<td style='text-align: right;'>-1.9</td>
+<td style='text-align: right;'>45.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>13.3</td>
+<td style='text-align: right;'>-21.9</td>
+<td style='text-align: right;'>48.4</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;`Displacement (cu.in.)`&nbsp;</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>-0.1</td>
+<td style='text-align: right;'>0.1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;`Gross horsepower`&nbsp;</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>-0.1</td>
+<td style='text-align: right;'>0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>-0.1</td>
+<td style='text-align: right;'>0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;`Weight (1000 lbs)`&nbsp;</td>
+<td style='text-align: right;'>-4.6</td>
+<td style='text-align: right;'>-7.2</td>
+<td style='text-align: right;'>-2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>-2.3</td>
+<td style='text-align: right;'>-5</td>
+<td style='text-align: right;'>0.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>-7.7</td>
+<td style='text-align: right;'>-12.5</td>
+<td style='text-align: right;'>-2.9</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;`1/4 mile time`&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>0.5</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>-0.4</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>1.5</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>0.4</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>-0.7</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>1.6</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>1.6</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>-0.2</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>3.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="example-of-data-processing-with-multiple-response-variables" class="section level2">
+<h2>Example of data processing with multiple-response variables</h2>
+<p>Here we use truncated dataset with data from product test of two samples of chocolate sweets. 150 respondents tested two kinds of sweets (codenames: VSX123 and SDF546). Sample was divided into two groups (cells) of 75 respondents in each group. In cell 1 product VSX123 was presented first and then SDF546. In cell 2 sweets were presented in reversed order. Questions about respondent impressions about first product are in the block A (and about second tested product in the block B). At the end of the questionnaire there was a question about the preferences between sweets.</p>
+<p>List of variables:</p>
+<ul>
+<li><code>id</code> Respondent Id</li>
+<li><code>cell</code> First tested product (cell number)</li>
+<li><code>s2a</code> Age</li>
+<li><code>a1_1-a1_6</code> What did you like in these sweets? Multiple response. First tested product</li>
+<li><code>a22</code> Overall quality. First tested product</li>
+<li><code>b1_1-b1_6</code> What did you like in these sweets? Multiple response. Second tested product</li>
+<li><code>b22</code> Overall quality. Second tested product</li>
+<li><code>c1</code> Preferences</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(product_test)
+
+w =<span class="st"> </span>product_test <span class="co"># shorter name to save some keystrokes</span>
+
+<span class="co"># here we recode variables from first/second tested product to separate variables for each product according to their cells</span>
+<span class="co"># 'h' variables - VSX123 sample, 'p' variables - 'SDF456' sample</span>
+<span class="co"># also we recode preferences from first/second product to true names</span>
+<span class="co"># for first cell there are no changes, for second cell we should exchange 1 and 2.</span>
+w =<span class="st"> </span>w %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">do_if</span>(cell ==<span class="st"> </span><span class="dv">1</span>, {
+        <span class="kw">recode</span>(a1_1 %to%<span class="st"> </span>a1_6, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>(h1_1 %to%<span class="st"> </span>h1_6)
+        <span class="kw">recode</span>(b1_1 %to%<span class="st"> </span>b1_6, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>(p1_1 %to%<span class="st"> </span>p1_6)
+        <span class="kw">recode</span>(a22, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>h22
+        <span class="kw">recode</span>(b22, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>p22
+        c1r =<span class="st"> </span>c1
+    }) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">do_if</span>(cell ==<span class="st"> </span><span class="dv">2</span>, {
+        <span class="kw">recode</span>(a1_1 %to%<span class="st"> </span>a1_6, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>(p1_1 %to%<span class="st"> </span>p1_6)
+        <span class="kw">recode</span>(b1_1 %to%<span class="st"> </span>b1_6, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>(h1_1 %to%<span class="st"> </span>h1_6)
+        <span class="kw">recode</span>(a22, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>p22
+        <span class="kw">recode</span>(b22, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>h22
+        <span class="kw">recode</span>(c1, <span class="dv">1</span> ~<span class="st"> </span><span class="dv">2</span>, <span class="dv">2</span> ~<span class="st"> </span><span class="dv">1</span>, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>c1r
+    }) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">compute</span>({
+        <span class="co"># recode age by groups</span>
+        age_cat =<span class="st"> </span><span class="kw">recode</span>(s2a, lo %thru%<span class="st"> </span><span class="dv">25</span> ~<span class="st"> </span><span class="dv">1</span>, lo %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">2</span>)
+        <span class="co"># count number of likes</span>
+        <span class="co"># codes 2 and 99 are ignored.</span>
+        h_likes =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> |<span class="st"> </span><span class="dv">3</span> %thru%<span class="st"> </span><span class="dv">98</span>, h1_1 %to%<span class="st"> </span>h1_6) 
+        p_likes =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> |<span class="st"> </span><span class="dv">3</span> %thru%<span class="st"> </span><span class="dv">98</span>, p1_1 %to%<span class="st"> </span>p1_6) 
+    })
+
+<span class="co"># here we prepare labels for future usage</span>
+codeframe_likes =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
+<span class="st">    1 Liked everything</span>
+<span class="st">    2 Disliked everything</span>
+<span class="st">    3 Chocolate</span>
+<span class="st">    4 Appearance</span>
+<span class="st">    5 Taste</span>
+<span class="st">    6 Stuffing</span>
+<span class="st">    7 Nuts</span>
+<span class="st">    8 Consistency</span>
+<span class="st">    98 Other</span>
+<span class="st">    99 Hard to answer</span>
+<span class="st">&quot;</span>)
+
+overall_liking_scale =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
+<span class="st">    1 Extremely poor </span>
+<span class="st">    2 Very poor</span>
+<span class="st">    3 Quite poor</span>
+<span class="st">    4 Neither good, nor poor</span>
+<span class="st">    5 Quite good</span>
+<span class="st">    6 Very good</span>
+<span class="st">    7 Excellent</span>
+<span class="st">&quot;</span>)
+
+w =<span class="st"> </span><span class="kw">apply_labels</span>(w, 
+    <span class="dt">c1r =</span> <span class="st">&quot;Preferences&quot;</span>,
+    <span class="dt">c1r =</span> <span class="kw">num_lab</span>(<span class="st">&quot;</span>
+<span class="st">        1 VSX123 </span>
+<span class="st">        2 SDF456</span>
+<span class="st">        3 Hard to say</span>
+<span class="st">    &quot;</span>),
+    
+    <span class="dt">age_cat =</span> <span class="st">&quot;Age&quot;</span>,
+    <span class="dt">age_cat =</span> <span class="kw">c</span>(<span class="st">&quot;18 - 25&quot;</span> =<span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;26 - 35&quot;</span> =<span class="st"> </span><span class="dv">2</span>),
+    
+    <span class="dt">h1_1 =</span> <span class="st">&quot;Likes. VSX123&quot;</span>,
+    <span class="dt">p1_1 =</span> <span class="st">&quot;Likes. SDF456&quot;</span>,
+    <span class="dt">h1_1 =</span> codeframe_likes,
+    <span class="dt">p1_1 =</span> codeframe_likes,
+    
+    <span class="dt">h_likes =</span> <span class="st">&quot;Number of likes. VSX123&quot;</span>,
+    <span class="dt">p_likes =</span> <span class="st">&quot;Number of likes. SDF456&quot;</span>,
+    
+    <span class="dt">h22 =</span> <span class="st">&quot;Overall quality. VSX123&quot;</span>,
+    <span class="dt">p22 =</span> <span class="st">&quot;Overall quality. SDF456&quot;</span>,
+    <span class="dt">h22 =</span> overall_liking_scale,
+    <span class="dt">p22 =</span> overall_liking_scale
+)
+
+
+<span class="kw">cro</span>(w$c1r) %&gt;%<span class="st"> </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Distribution of preferences.&quot;</span> )</code></pre></div>
+<p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='2' style='text-align: left;'>
+Distribution of preferences.</td></tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='2' style='font-weight: 900;'>&nbsp;Preferences&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;VSX123&nbsp;</td>
+<td style='text-align: right;'>94</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;SDF456&nbsp;</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to say&nbsp;</td>
+<td style='text-align: right;'>6</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
+</tr>
+</tbody>
+</table> Are there any significant differences between preferences? Yes, difference is significant.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 'na_if(c1r, 3)' remove 'hard to say' from vector </span>
+w %&gt;%<span class="st"> </span><span class="kw">calculate</span>(c1r %&gt;%<span class="st"> </span><span class="kw">na_if</span>(<span class="dv">3</span>) %&gt;%<span class="st"> </span>table %&gt;%<span class="st"> </span>chisq.test) </code></pre></div>
+<pre><code>## 
+##  Chi-squared test for given probabilities
+## 
+## data:  .
+## X-squared = 13.444, df = 1, p-value = 0.0002457</code></pre>
+<p>Further we calculate answers distribution of survey questions.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), age_cat) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(c1r) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_pivot</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Preferences&quot;</span>)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='5' style='text-align: left;'>
+Preferences</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Age&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;18 - 25&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;26 - 35&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Preferences&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;VSX123&nbsp;</td>
+<td style='text-align: right;'>62.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>65.7</td>
+<td style='text-align: right;'>60</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;SDF456&nbsp;</td>
+<td style='text-align: right;'>33.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>31.4</td>
+<td style='text-align: right;'>35</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to say&nbsp;</td>
+<td style='text-align: right;'>4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2.9</td>
+<td style='text-align: right;'>5</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>70</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>80</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), age_cat, c1r) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(h22) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_mean</span>(<span class="dt">label =</span> <span class="st">&quot;&lt;b&gt;&lt;u&gt;Mean&lt;/u&gt;&lt;/b&gt;&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(p22) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_mean</span>(<span class="dt">label =</span> <span class="st">&quot;&lt;b&gt;&lt;u&gt;Mean&lt;/u&gt;&lt;/b&gt;&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_pivot</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Overall liking&quot;</span>)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='9' style='text-align: left;'>
+Overall liking</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Age&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Preferences&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;18 - 25&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;26 - 35&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;VSX123&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;SDF456&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Hard to say&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Overall quality. VSX123&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;<b><u>Mean</u></b>&nbsp;</td>
+<td style='text-align: right;'>5.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>5.4</td>
+<td style='text-align: right;'>5.6</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>5.3</td>
+<td style='text-align: right;'>5.8</td>
+<td style='text-align: right;'>5.5</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Extremely poor&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Very poor&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Quite poor&nbsp;</td>
+<td style='text-align: right;'>2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2.9</td>
+<td style='text-align: right;'>1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>3.2</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Neither good, nor poor&nbsp;</td>
+<td style='text-align: right;'>10.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>11.4</td>
+<td style='text-align: right;'>10</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>14.9</td>
+<td style='text-align: right;'>2</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Quite good&nbsp;</td>
+<td style='text-align: right;'>39.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>45.7</td>
+<td style='text-align: right;'>33.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>40.4</td>
+<td style='text-align: right;'>38</td>
+<td style='text-align: right;'>33.3</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Very good&nbsp;</td>
+<td style='text-align: right;'>33.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>24.3</td>
+<td style='text-align: right;'>41.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>30.9</td>
+<td style='text-align: right;'>38</td>
+<td style='text-align: right;'>33.3</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Excellent&nbsp;</td>
+<td style='text-align: right;'>14.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>15.7</td>
+<td style='text-align: right;'>13.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>10.6</td>
+<td style='text-align: right;'>22</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='text-align: right;'>150</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>70</td>
+<td style='text-align: right;'>80</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>94</td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>6</td>
+</tr> 
+<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Overall quality. SDF456&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;<b><u>Mean</u></b>&nbsp;</td>
+<td style='text-align: right;'>5.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>5.3</td>
+<td style='text-align: right;'>5.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>5.4</td>
+<td style='text-align: right;'>5.3</td>
+<td style='text-align: right;'>5.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Extremely poor&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Very poor&nbsp;</td>
+<td style='text-align: right;'>0.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>1.1</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Quite poor&nbsp;</td>
+<td style='text-align: right;'>2.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>4.3</td>
+<td style='text-align: right;'>1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2.1</td>
+<td style='text-align: right;'>4</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Neither good, nor poor&nbsp;</td>
+<td style='text-align: right;'>16.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>20</td>
+<td style='text-align: right;'>13.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>18.1</td>
+<td style='text-align: right;'>14</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Quite good&nbsp;</td>
+<td style='text-align: right;'>31.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>27.1</td>
+<td style='text-align: right;'>35</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>28.7</td>
+<td style='text-align: right;'>38</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Very good&nbsp;</td>
+<td style='text-align: right;'>35.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>35.7</td>
+<td style='text-align: right;'>35</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>35.1</td>
+<td style='text-align: right;'>34</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Excellent&nbsp;</td>
+<td style='text-align: right;'>13.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>12.9</td>
+<td style='text-align: right;'>13.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>14.9</td>
+<td style='text-align: right;'>10</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>70</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>80</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>94</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>50</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>6</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), age_cat, c1r) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(h_likes) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_mean</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">mrset</span>(h1_1 %to%<span class="st"> </span>h1_6)) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(p_likes) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_mean</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">mrset</span>(p1_1 %to%<span class="st"> </span>p1_6)) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_pivot</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Likes&quot;</span>) </code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='9' style='text-align: left;'>
+Likes</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Age&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Preferences&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;18 - 25&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;26 - 35&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;VSX123&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;SDF456&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Hard to say&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Number of likes. VSX123&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
+<td style='text-align: right;'>2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2</td>
+<td style='text-align: right;'>2.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>1.9</td>
+<td style='text-align: right;'>2.2</td>
+<td style='text-align: right;'>2.3</td>
+</tr> 
+<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Likes. VSX123&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Liked everything&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Disliked everything&nbsp;</td>
+<td style='text-align: right;'>3.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>1.4</td>
+<td style='text-align: right;'>5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>4.3</td>
+<td style='text-align: right;'>2</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Chocolate&nbsp;</td>
+<td style='text-align: right;'>34</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>38.6</td>
+<td style='text-align: right;'>30</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>35.1</td>
+<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>33.3</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Appearance&nbsp;</td>
+<td style='text-align: right;'>29.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>21.4</td>
+<td style='text-align: right;'>36.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>25.5</td>
+<td style='text-align: right;'>38</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Taste&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>38.6</td>
+<td style='text-align: right;'>26.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>23.4</td>
+<td style='text-align: right;'>48</td>
+<td style='text-align: right;'>33.3</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Stuffing&nbsp;</td>
+<td style='text-align: right;'>27.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>20</td>
+<td style='text-align: right;'>33.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>28.7</td>
+<td style='text-align: right;'>26</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Nuts&nbsp;</td>
+<td style='text-align: right;'>66.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>72.9</td>
+<td style='text-align: right;'>61.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>69.1</td>
+<td style='text-align: right;'>60</td>
+<td style='text-align: right;'>83.3</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Consistency&nbsp;</td>
+<td style='text-align: right;'>12</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>4.3</td>
+<td style='text-align: right;'>18.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>8.5</td>
+<td style='text-align: right;'>14</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Other&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to answer&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='text-align: right;'>150</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>70</td>
+<td style='text-align: right;'>80</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>94</td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>6</td>
+</tr> 
+<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Number of likes. SDF456&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
+<td style='text-align: right;'>2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2</td>
+<td style='text-align: right;'>2.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2</td>
+<td style='text-align: right;'>2</td>
+<td style='text-align: right;'>2</td>
+</tr> 
+<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Likes. SDF456&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Liked everything&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Disliked everything&nbsp;</td>
+<td style='text-align: right;'>1.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>1.4</td>
+<td style='text-align: right;'>1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2.1</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Chocolate&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>27.1</td>
+<td style='text-align: right;'>36.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>29.8</td>
+<td style='text-align: right;'>34</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Appearance&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>35.7</td>
+<td style='text-align: right;'>28.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>34</td>
+<td style='text-align: right;'>30</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Taste&nbsp;</td>
+<td style='text-align: right;'>39.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>42.9</td>
+<td style='text-align: right;'>36.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>36.2</td>
+<td style='text-align: right;'>44</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Stuffing&nbsp;</td>
+<td style='text-align: right;'>27.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>24.3</td>
+<td style='text-align: right;'>30</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>31.9</td>
+<td style='text-align: right;'>20</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Nuts&nbsp;</td>
+<td style='text-align: right;'>61.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>60</td>
+<td style='text-align: right;'>62.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>58.5</td>
+<td style='text-align: right;'>68</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Consistency&nbsp;</td>
+<td style='text-align: right;'>10</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>5.7</td>
+<td style='text-align: right;'>13.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>11.7</td>
+<td style='text-align: right;'>6</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Other&nbsp;</td>
+<td style='text-align: right;'>0.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>1.1</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to answer&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>70</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>80</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>94</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>50</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>6</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), c1r) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">list</span>(<span class="kw">unvr</span>(<span class="kw">mrset</span>(h1_1 %to%<span class="st"> </span>h1_6)))) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">label =</span> <span class="kw">var_lab</span>(h1_1)) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">list</span>(<span class="kw">unvr</span>(<span class="kw">mrset</span>(p1_1 %to%<span class="st"> </span>p1_6)))) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">label =</span> <span class="kw">var_lab</span>(p1_1)) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_pivot</span>(<span class="dt">stat_position =</span> <span class="st">&quot;inside_columns&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Likes - side by side comparison&quot;</span>)  </code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='12' style='text-align: left;'>
+Likes - side by side comparison</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='8' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Preferences&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp; &nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;VSX123&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;SDF456&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Hard to say&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Likes. VSX123&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Likes. SDF456&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Likes. VSX123&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Likes. SDF456&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Likes. VSX123&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Likes. SDF456&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Likes. VSX123&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Likes. SDF456&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style='text-align: left;'>&nbsp;Liked everything&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Disliked everything&nbsp;</td>
+<td style='text-align: right;'>3.3</td>
+<td style='text-align: right;'>1.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>4.3</td>
+<td style='text-align: right;'>2.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Chocolate&nbsp;</td>
+<td style='text-align: right;'>34</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>35.1</td>
+<td style='text-align: right;'>29.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>34</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>33.3</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Appearance&nbsp;</td>
+<td style='text-align: right;'>29.3</td>
+<td style='text-align: right;'>32</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>25.5</td>
+<td style='text-align: right;'>34</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>38</td>
+<td style='text-align: right;'>30</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Taste&nbsp;</td>
+<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>39.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>23.4</td>
+<td style='text-align: right;'>36.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>48</td>
+<td style='text-align: right;'>44</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>33.3</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Stuffing&nbsp;</td>
+<td style='text-align: right;'>27.3</td>
+<td style='text-align: right;'>27.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>28.7</td>
+<td style='text-align: right;'>31.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>26</td>
+<td style='text-align: right;'>20</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Nuts&nbsp;</td>
+<td style='text-align: right;'>66.7</td>
+<td style='text-align: right;'>61.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>69.1</td>
+<td style='text-align: right;'>58.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>60</td>
+<td style='text-align: right;'>68</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>83.3</td>
+<td style='text-align: right;'>50</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Consistency&nbsp;</td>
+<td style='text-align: right;'>12</td>
+<td style='text-align: right;'>10</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>8.5</td>
+<td style='text-align: right;'>11.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>14</td>
+<td style='text-align: right;'>6</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>16.7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Other&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>0.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>1.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;Hard to answer&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>94</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>94</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>50</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>50</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>6</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>6</td>
+</tr>
+</tbody>
+</table>
+<p>We can save labelled dataset as *.csv file with accompanying R code for labelling.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write_labelled_csv</span>(w, file  <span class="dt">filename =</span> <span class="st">&quot;product_test.csv&quot;</span>)</code></pre></div>
+<p>Or, we can save dataset as *.csv file with SPSS syntax to read data and apply labels.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write_labelled_spss</span>(w, file  <span class="dt">filename =</span> <span class="st">&quot;product_test.csv&quot;</span>)</code></pre></div>
+</div>
+<div id="labels-support-for-base-r" class="section level2">
+<h2>Labels support for base R</h2>
+<p>Here we demonstrate limited labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. Note that by now variable labels is not supported in such conversions.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">with</span>(mtcars, <span class="kw">table</span>(am, vs)) %&gt;%<span class="st"> </span>knitr::<span class="kw">kable</span>()</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">V-engine</th>
+<th align="right">Straight engine</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Automatic</td>
+<td align="right">12</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td>Manual</td>
+<td align="right">6</td>
+<td align="right">7</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">boxplot</span>(mpg ~<span class="st"> </span>am, <span class="dt">data =</span> mtcars)</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAAbFBMVEUAAAAAADoAAGYAOpAAZmYAZrY6AAA6ADo6AGY6OpA6kNtmAABmADpmAGZmZgBmZjpmkJBmtrZmtv+QOgCQOjqQZgCQ2/+2ZgC225C2/9u2///bkDrb2//b/7bb////tmb/25D//7b//9v///+9xMe4AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAGQElEQVR4nO2di3abRhQASVzZqd1HYremjVqjx///Y3dBD+RKHhF2AUkz58SSA/cumrPcXYtFKtbyIcXYBzB1FAQoCFAQoCBAQYCCAAUBCgIUBCgIUBCgIEBBgIIABQEKAhQEKAhQEKAgQEGAggAFAQoCFAQoCFAQoCBAQYCCAAUBCgIUBCgIUBCgIEBBgIIABQEKAhQEKAhQEKAgQEGAggAFAQoCFAQoCFAQoCBAQYCCAAUBCgIUBCgIUBCgIEBBgIIABQEKAhQEKAhQEKAgQEGAggAFAQoCFAQoCFAQoCAgsaDiYhhLUNp0+VAQoCDgFgT1qjK3IKhX2wpKtbOCUmYdPF2+tm9RUCcUBCgIuEVBU6hBq5dmDvb5e5J0aZmAoHnx2Dyptk96pUvM+IJWLzst87u33ulSM76g5dPz9ml14iS7bUET70GdyFWDNl1okjWoE5lGseVTM4qd6D8KGjrdu+QJ34UeWFD398J/qJWE0TkFVUXx6TVduvO5AEFlUTwufn5rD/h90nVk+oLKUJzLuveMMsxPXlDdbxYPUdAoE8ULEBRnP6t/1vagE8y3/aZR1TddV6YvaD1vhq+qOFGjb17Q0OlSJldQp2gFQbSCIFpBEK0giFYQRCsIohUE0QqCaAVBtIIgWkEQrSCI9qoGRNuDIFpBED1NQb3Wxt+CoJ6NKyjt7h9GKwiiFQTRlyFo0OS3IOhy1wflSvcu+c0J6lqDFJR09w+jFQTRmQQlvlfj6gSlvlfj2gSNvdJ+8oLGvldj8oJG70GTH+ZT36uRVmenbJlGscT3alyfoMTpsp6QiZoe9arG9QmaBwV1GZonGcWuTlBcBbx8mq1TCUrL+DWoGeZXL6FEK+gY24liefd2nqCeE5ecf4nknSiWszMFdUiOydLunqkGbbSE6ZCCjrKdSq9eJigoT+6sE0UFQToFQbrbq0Ed093aMN85nYIgnYIgnTUI0jmKQToFQToFQTprEKRTEKRTEKRT0C7L8bld3olir+hp9KCBG8/StIJS7ZgjnYKGbTxL06MKGhEFAQoCLkOQNWjYxrM0raBUO+ZIp6BhG8/StKNYqh1rJv29Gp3II2ja36vRiSyCkq+0v7YalPxejWsTZA8ipn2vRp6mux1jz3s1+r0HnRTnQcA0rmpMGHsQoCAg0zxofyqdmgddDDkEnV4//oOk7W95em/XP1Zn4zU+bLYfzHr6CyMGaHzQbHmzjtK4ggbNljfrKI0raNBsebOO0riCBs2WN+sVoSBAQYCCAAUBCgIUBCgIUBCgIEBBgIIABQF5BZXvFjlU/I522OXkt9nXrF42SavTSwRafJyMySpo8fD7wXWiMw6WdwmCGjHl5Quaf/7rvn14iQT99Ev8Su7lr79duqDVy6y5kFYf5PLp6329cKYqiniSLO6/PYUni/vmoxnLIj7G3+7+rV9T/MzGY1fhQsoynmPV3Z9RUBMXssdsz9umnlsbpiuo+vTafAH79qjrx6p+GbPgIm6O17DjR6OVs+3HNG5eZPPLkXVaQVBVm3ksw8M+rmlsJ6idsA85BcUXUL/GtqBmHV9wt7ivu1H943kZz5rwuBN01E1NELT48n0dIkL+Vtwm0bapdsI+ZBRUv/h1GbpHW9CirkrhZ/1k/yN2rWIvaHF/6nXVJ+5zOMPeyqYGVe1Ta3+KtTf0IKOg+WYdxfMRQeHZoaCwc13Rd4IeXk+kjWVtPgtnWN1D23EHgg429CCfoM1Ch1huuAftfjmrB60XX/7+4zUKOohrCzrc0IN8gmKJjtSVc18gWjWoJahed10VZ9ag8O9rKENB0EFcI+jx/wn7kE/QpkLEUhQ/HzfM75qj349i73rQ8imM/nGX3Sh2dLVN/Z9lnAFsetAmrhG0bepwQw+yCdqfI6FMx7Vp3+LYezAPeleDPr2WQUp5xjxoswxnU4PquF3t2TZ1sKEH/rEKKAhQEKAgQEGAggAFAQoCFAQoCFAQoCBAQYCCAAUBCgIUBCgIUBCgIEBBgIIABQEKAhQEKAhQEKAgQEGAggAFAQoCFAQoCFAQoCBAQYCCAAUBCgIUBCgIUBCgIEBBgIIABQEKAhQEKAhQEKAgQEGAggAFAQoCFAQoCFAQoCBAQYCCAAUB/wFGRSuJuqYIigAAAABJRU5ErkJggg==" /><!-- --></p>
+</div>
+<div id="excel-functions-translation-guide" class="section level2">
+<h2>Excel functions translation guide</h2>
+<p>Excel toy table:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">A</th>
+<th align="right">B</th>
+<th align="right">C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>1</strong></td>
+<td align="right">2</td>
+<td align="right">15</td>
+<td align="right">50</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>2</strong></td>
+<td align="right">1</td>
+<td align="right">70</td>
+<td align="right">80</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>3</strong></td>
+<td align="right">3</td>
+<td align="right">30</td>
+<td align="right">40</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>4</strong></td>
+<td align="right">2</td>
+<td align="right">30</td>
+<td align="right">40</td>
+</tr>
+</tbody>
+</table>
+<p>Code for creating the same table in R:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">text =</span> <span class="st">&quot;</span>
+<span class="st">a,b,c</span>
+<span class="st">2,15,50</span>
+<span class="st">1,70,80</span>
+<span class="st">3,30,40</span>
+<span class="st">2,30,40&quot;</span>
+)</code></pre></div>
+<p><code>w</code> is the name of our table.</p>
+<div id="if" class="section level5">
+<h5>IF</h5>
+<p><strong>Excel: <code>IF(B1&gt;60, 1, 0)</code></strong></p>
+<p><strong>R:</strong> Here we create new column with name <code>d</code> with results. <code>ifelse</code> function is from base R not from ‘expss’ package but included here for completeness.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">ifelse</span>(w$b&gt;<span class="dv">60</span>, <span class="dv">1</span>, <span class="dv">0</span>)</code></pre></div>
+<p>If we need to use multiple transformations it is often convenient to use <code>compute</code> function. Inside <code>compute</code> we can put arbitrary number of statements:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
+    d =<span class="st"> </span><span class="kw">ifelse</span>(b&gt;<span class="dv">60</span>, <span class="dv">1</span>, <span class="dv">0</span>)
+    e =<span class="st"> </span><span class="dv">42</span>
+    abc_sum =<span class="st"> </span><span class="kw">sum_row</span>(a, b, c)
+    abc_mean =<span class="st"> </span><span class="kw">mean_row</span>(a, b, c)
+})</code></pre></div>
+</div>
+<div id="countif" class="section level5">
+<h5>COUNTIF</h5>
+<p>Count 1’s in entire dataset.</p>
+<p><strong>Excel: <code>COUNTIF(A1:C4, 1)</code></strong></p>
+<p><strong>R:</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">count_if</span>(<span class="dv">1</span>, w)</code></pre></div>
+<p>or</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calculate</span>(w, <span class="kw">count_if</span>(<span class="dv">1</span>, a, b, c))</code></pre></div>
+<p>Count values greater than 1 in each row of dataset.</p>
+<p><strong>Excel: <code>COUNTIF(A1:C1, &quot;&gt;1&quot;)</code></strong></p>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">gt</span>(<span class="dv">1</span>), w)  </code></pre></div>
+<p>or</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
+    d =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">gt</span>(<span class="dv">1</span>), a, b, c) 
+})</code></pre></div>
+<p>Count values less than or equal to 1 in column A of dataset.</p>
+<p><strong>Excel: <code>COUNTIF(A1:A4, &quot;&lt;=1&quot;)</code></strong></p>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">count_col_if</span>(<span class="kw">le</span>(<span class="dv">1</span>), w$a)</code></pre></div>
+<p><strong>Table of criteria:</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Excel</th>
+<th>R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>“&lt;1”</td>
+<td>lt(1)</td>
+</tr>
+<tr class="even">
+<td>“&lt;=1”</td>
+<td>le(1)</td>
+</tr>
+<tr class="odd">
+<td>“&lt;&gt;1”</td>
+<td>ne(1)</td>
+</tr>
+<tr class="even">
+<td>“=1”</td>
+<td>eq(1)</td>
+</tr>
+<tr class="odd">
+<td>“&gt;=1”</td>
+<td>ge(1)</td>
+</tr>
+<tr class="even">
+<td>“&gt;1”</td>
+<td>gt(1)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sumaverage" class="section level5">
+<h5>SUM/AVERAGE</h5>
+<p>Sum all values in dataset.</p>
+<p><strong>Excel: <code>SUM(A1:C4)</code></strong></p>
+<p><strong>R:</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(w, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>Calculate average of each row of dataset.</p>
+<p><strong>Excel: <code>AVERAGE(A1:C1)</code></strong></p>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">mean_row</span>(w)  </code></pre></div>
+<p>or</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
+    d =<span class="st"> </span><span class="kw">mean_row</span>(a, b, c) 
+})</code></pre></div>
+<p>Sum values of column <code>A</code> of dataset.</p>
+<p><strong>Excel: <code>SUM(A1:A4)</code></strong></p>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_col</span>(w$a)</code></pre></div>
+</div>
+<div id="sumifaverageif" class="section level5">
+<h5>SUMIF/AVERAGEIF</h5>
+<p>Sum values greater than 40 in entire dataset.</p>
+<p><strong>Excel: <code>SUMIF(A1:C4, &quot;&gt;40&quot;)</code></strong></p>
+<p><strong>R:</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_if</span>(<span class="kw">gt</span>(<span class="dv">40</span>), w)</code></pre></div>
+<p>or</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calculate</span>(w, <span class="kw">sum_if</span>(<span class="kw">gt</span>(<span class="dv">40</span>), a, b, c))</code></pre></div>
+<p>Sum values less than 40 in each row of dataset.</p>
+<p><strong>Excel: <code>SUMIF(A1:C1, &quot;&lt;40&quot;)</code></strong></p>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">sum_row_if</span>(<span class="kw">lt</span>(<span class="dv">40</span>), w)  </code></pre></div>
+<p>or</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
+    d =<span class="st"> </span><span class="kw">sum_row_if</span>(<span class="kw">lt</span>(<span class="dv">40</span>), a, b, c) 
+})</code></pre></div>
+<p>Calculate average of <code>B</code> column with column <code>A</code> values less than 3.</p>
+<p><strong>Excel: <code>AVERAGEIF(A1:A4, &quot;&lt;3&quot;, B1:B4)</code></strong></p>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_col_if</span>(<span class="kw">lt</span>(<span class="dv">3</span>), w$a, <span class="dt">data =</span> w$b)</code></pre></div>
+<p>or, if we want calculate means for both <code>b</code> and <code>c</code> columns:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calculate</span>(w, <span class="kw">mean_col_if</span>(<span class="kw">lt</span>(<span class="dv">3</span>), a, <span class="dt">data =</span> <span class="kw">dtfrm</span>(b, c)))</code></pre></div>
+</div>
+<div id="vlookup" class="section level5">
+<h5>VLOOKUP</h5>
+<p>Our dictionary for lookup:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">X</th>
+<th align="left">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>1</strong></td>
+<td align="right">1</td>
+<td align="left">apples</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>2</strong></td>
+<td align="right">2</td>
+<td align="left">oranges</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>3</strong></td>
+<td align="right">3</td>
+<td align="left">peaches</td>
+</tr>
+</tbody>
+</table>
+<p>Code for creating the same dictionary in R:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dict =<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">text =</span> <span class="st">&quot;</span>
+<span class="st">x,y</span>
+<span class="st">1,apples</span>
+<span class="st">2,oranges</span>
+<span class="st">3,peaches&quot;</span>,
+<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>
+)</code></pre></div>
+<p><strong>Excel: <code>VLOOKUP(A1, $X$1:$Y$3, 2, FALSE)</code></strong></p>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">vlookup</span>(w$a, dict, <span class="dv">2</span>)</code></pre></div>
+<p>or, we can use column names:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">vlookup</span>(w$a, dict, <span class="st">&quot;y&quot;</span>)</code></pre></div>
+</div>
+</div>
+<div id="spss-functions-translation-guide" class="section level2">
+<h2>SPSS functions translation guide</h2>
+<div id="compute" class="section level5">
+<h5>COMPUTE</h5>
+<p><strong>SPSS</strong>:</p>
+<pre><code>COMPUTE d = 1.</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="dv">1</span></code></pre></div>
+<p>or, in specific data.frame</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
+    d =<span class="st"> </span><span class="dv">1</span>
+})</code></pre></div>
+<p>There can be arbitrary number of statements inside <code>compute</code>.</p>
+</div>
+<div id="if-1" class="section level5">
+<h5>IF</h5>
+<p><strong>SPSS</strong>:</p>
+<pre><code>IF(a = 3) d = 2.</code></pre>
+<p><strong>R</strong>:</p>
+<p>Default dataset should be already predefined as in previous example.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
+    d =<span class="st"> </span><span class="kw">ifelse</span>(a ==<span class="st"> </span><span class="dv">3</span>, <span class="dv">2</span>, <span class="ot">NA</span>)
+})</code></pre></div>
+<p>or,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
+    d =<span class="st"> </span><span class="kw">ifs</span>(a ==<span class="st"> </span><span class="dv">3</span> ~<span class="st"> </span><span class="dv">2</span>)
+})</code></pre></div>
+</div>
+<div id="do-if" class="section level5">
+<h5>DO IF</h5>
+<p><strong>SPSS</strong>:</p>
+<pre><code>DO IF (a&gt;1).
+    COMPUTE d = 4.
+END IF.</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">do_if</span>(w, a&gt;<span class="dv">1</span>, {
+    d =<span class="st"> </span><span class="dv">4</span>
+})</code></pre></div>
+<p>There can be arbitrary number of statements inside <code>do_if</code>.</p>
+</div>
+<div id="count" class="section level5">
+<h5>COUNT</h5>
+<p><strong>SPSS</strong>:</p>
+<pre><code>COUNT cnt = a1 TO a5 (LO THRU HI).</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(lo %thru%<span class="st"> </span>hi, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>COUNT cnt = a1 TO a5 (SYSMIS).</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="ot">NA</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>COUNT cnt = a1 TO a5 (1 THRU 5).</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> %thru%<span class="st"> </span><span class="dv">5</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>COUNT cnt = a1 TO a5 (1 THRU HI).</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> %thru%<span class="st"> </span>hi, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p>or,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">ge</span>(<span class="dv">1</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>COUNT cnt = a1 TO a5 (LO THRU 1).</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(lo %thru%<span class="st"> </span><span class="dv">1</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p>or,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span> (<span class="kw">le</span>(<span class="dv">1</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>COUNT cnt = a1 TO a5 (1 THRU 5, 99).</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> %thru%<span class="st"> </span><span class="dv">5</span> |<span class="st"> </span><span class="dv">99</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>COUNT cnt = a1 TO a5(1,2,3,4,5, SYSMIS).</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">5</span>, <span class="ot">NA</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<p><code>count_row_if</code> can be used with default dataset inside the <code>compute</code>.</p>
+</div>
+<div id="recode" class="section level5">
+<h5>RECODE</h5>
+<p><strong>SPSS</strong>:</p>
+<pre><code>RECODE V1 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(v1) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span> ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span> ~<span class="st"> </span><span class="dv">0</span>, <span class="dv">2</span>:<span class="dv">3</span> ~<span class="st"> </span>-<span class="dv">1</span>, <span class="dv">9</span> ~<span class="st"> </span><span class="dv">9</span>, other ~<span class="st"> </span><span class="ot">NA</span>)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(qvar) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span> %thru%<span class="st"> </span><span class="dv">5</span> ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">6</span> %thru%<span class="st"> </span><span class="dv">10</span> ~<span class="st"> </span><span class="dv">2</span>, <span class="dv">11</span> %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">3</span>, other ~<span class="st"> </span><span class="dv">0</span>)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). </code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(strngvar) =<span class="st"> </span><span class="kw">c</span>(<span class="kw">c</span>(<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>) ~<span class="st"> 'A'</span>, <span class="kw">c</span>(<span class="st">'D'</span>, <span class="st">'E'</span>, <span class="st">'F'</span>) ~<span class="st"> 'B'</span>, other ~<span class="st"> ' '</span>)</code></pre></div>
+<p><strong>SPSS</strong>:</p>
+<pre><code>RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. </code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">voter =<span class="st"> </span><span class="kw">recode</span>(age, <span class="ot">NA</span> ~<span class="st"> </span><span class="dv">9</span>, <span class="dv">18</span> %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span> %thru%<span class="st"> </span><span class="dv">18</span> ~<span class="st"> </span><span class="dv">0</span>)
+<span class="co"># or</span>
+<span class="kw">recode</span>(age, <span class="ot">NA</span> ~<span class="st"> </span><span class="dv">9</span>, <span class="dv">18</span> %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span> %thru%<span class="st"> </span><span class="dv">18</span> ~<span class="st"> </span><span class="dv">0</span>) %into%<span class="st"> </span>voter</code></pre></div>
+<p><code>recode</code> can be used inside the <code>compute</code>.</p>
+</div>
+<div id="variable-labels" class="section level5">
+<h5>VARIABLE LABELS</h5>
+<p><strong>SPSS</strong>:</p>
+<pre><code>VARIABLE LABELS a &quot;Fruits&quot;
+                b &quot;Cost&quot;
+                c &quot;Price&quot;.</code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">apply_labels</span>(w,
+                 <span class="dt">a =</span> <span class="st">&quot;Fruits&quot;</span>,
+                 <span class="dt">b =</span> <span class="st">&quot;Cost&quot;</span>,
+                 <span class="dt">c =</span> <span class="st">&quot;Price&quot;</span>
+)</code></pre></div>
+</div>
+<div id="value-labels" class="section level5">
+<h5>VALUE LABELS</h5>
+<p><strong>SPSS</strong>:</p>
+<pre><code>VALUE LABELS a
+    1 &quot;apples&quot;
+    2 &quot;oranges&quot;
+    3 &quot;peaches&quot;. </code></pre>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">apply_labels</span>(w, 
+                 <span class="dt">a =</span> <span class="kw">num_lab</span>(<span class="st">&quot;</span>
+<span class="st">                        1 apples</span>
+<span class="st">                        2 oranges</span>
+<span class="st">                        3 peaches </span>
+<span class="st">                    &quot;</span>)
+)</code></pre></div>
+<p>or,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">val_lab</span>(w$a) =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
+<span class="st">    1 apples</span>
+<span class="st">    2 oranges</span>
+<span class="st">    3 peaches </span>
+<span class="st">&quot;</span>)</code></pre></div>
+</div>
+<div id="tables" class="section level5">
+<h5>Tables</h5>
+<p><strong>R</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fre</span>(w$a) <span class="co"># Frequency of fruits</span></code></pre></div>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<th style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Fruits
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Count 
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Valid percent 
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Percent 
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Responses, % 
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Cumulative responses, % 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">
+ apples 
+</td>
+<td style="text-align: right;">
+1
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+25
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ oranges 
+</td>
+<td style="text-align: right;">
+2
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+75
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ peaches 
+</td>
+<td style="text-align: right;">
+1
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ #Total 
+</td>
+<td style="text-align: right;">
+4
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ <NA> 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_cpct</span>(w$b, w$a) <span class="co"># Column percent of cost by fruits</span></code></pre></div>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Fruits 
+</th>
+</tr>
+<tr>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ apples 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ oranges 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ peaches 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="4" style="font-weight: 900;">
+ Cost 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   15 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   30 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   70 
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+1
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+2
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_mean</span>(<span class="kw">dtfrm</span>(w$b, w$c), w$a) <span class="co"># Mean cost and price by fruits</span></code></pre></div>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Fruits 
+</th>
+</tr>
+<tr>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ apples 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ oranges 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ peaches 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">
+ Cost 
+</td>
+<td style="text-align: right;">
+70
+</td>
+<td style="text-align: right;">
+22.5
+</td>
+<td style="text-align: right;">
+30
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ Price 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+80
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+45
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+40
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
