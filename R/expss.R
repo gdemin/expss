@@ -1,8 +1,9 @@
-#' expss: Some Useful Functions from Spreadsheets and SPSS Statistics
+#' expss: Tables with Labels and Some Useful Functions from Spreadsheets and SPSS Statistics
 #' 
-#' 'expss' package implements some popular functions from spreadsheets and SPSS
-#' Statistics software. Implementations are not complete copies of their
-#' originals. I try to make them consistent with other R functions. See examples in vignette and in help.
+#' 'expss' package implements some popular functions from spreadsheets and SPSS 
+#' Statistics software. Implementations are not complete copies of their 
+#' originals. I try to make them consistent with other R functions. See examples
+#' in the vignette and in the help.
 #' 
 #' @section Excel:
 #' \itemize{
@@ -21,6 +22,7 @@
 #' \item{IFNA }{\link{if_na}}
 #' \item{MATCH }{\link{match_row}}
 #' \item{INDEX }{\link{index_row}}
+#' \item{PIVOT TABLES}{\link{tables}, \link{cro_fun}, \link{cro}}
 #' }
 #' @section SPSS:
 #' \itemize{
@@ -33,6 +35,7 @@
 #' \item{ANY }{\link{any_in_row}}
 #' \item{FREQUENCIES }{\link{fre}}
 #' \item{CROSSTABS }{\link{cro}}
+#' \item{CUSTOM TABLES}{\link{tables}}
 #' }
 #' 
 #' 
@@ -66,9 +69,9 @@ setkeyv = data.table::setkeyv
 .onAttach = function(...) {
     rnd = runif(1)
     if(rnd<0.2){
-        packageStartupMessage("\nUse \'options(expss.output = \"viewer\")\' to display tables in the RStudio Viewer.\n To return to default output use \'options(expss.output = NULL)\'.\n")
+        packageStartupMessage("\nUse \'options(expss.output = \"viewer\")\' to display tables in the RStudio Viewer.\n To return to the console output, use \'options(expss.output = NA)\'.\n")
     }
     if(rnd>0.8){
-        packageStartupMessage("\nUse \'options(expss.output = \"rnotebook\")\' to display tables inside R Notebooks.\n To return to default output use \'options(expss.output = NULL)\'.\n")
+        packageStartupMessage("\nUse \'options(expss.output = \"rnotebook\")\' to display tables inside R Notebooks.\n To return to the console output, use \'options(expss.output = NA)\'.\n")
     }
 }

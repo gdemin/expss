@@ -1,6 +1,10 @@
 0.7.0 (29.03.2017)
 ================
-* bugfixes
+* make value labels support in the base R and other packages (via 'factor' for class 'labelled')
+* radically improved performace for 'cro_*' and 'fre_*' due to 'data.table' under the hood
+* multiple/nested banners/variables suppport in 'cro_*'
+* add 'datatable' for tables representation in Shiny
+* add 'htmlTables' for tables representation in RStudio viewer and for knitting to html
 * add methods for `where` for vectors/matrices/lists
 * less cryptic message about bad number of rows in `modify`/`modify_if`
 * .N now is preferable to .n inside `modify` and etc.
@@ -17,11 +21,8 @@
 * remove 'dichotomy', 'dichotomy1' - use 'dummy', 'dummy1' instead
 * remove 'dichotomy_df', 'dichotomy_df1' - use 'as.dichotomy' instead
 * remove labelled matrix support
-* add 'datatable' for tables representation in Shiny
-* add 'htmlTables' for tables representation in RStudio viewer and for knitting to html
-* make value labels support in the base R and other packages (via 'factor' for class 'labelled')
-* radically improved performace for 'cro_*' and 'fre_*' due to 'data.table' under the hood
-* multiple/nested banners/variables suppport in 'cro_*'
+* bugfixes
+
 
 
 0.5.5 (19.10.2016)
