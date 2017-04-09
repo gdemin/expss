@@ -4,7 +4,8 @@
 #' to every subset of \code{x} and return vector of the same length as \code{x}.
 #'
 #' @param x A vector
-#' @param ... Grouping variables all of the same length as x or length 1 and one function
+#' @param ... Grouping variables all of the same length as x or length 1 and
+#'   function as last argument.
 #'
 #' @return vector of the same length as \code{x}
 #' @export
@@ -19,12 +20,9 @@
 #' detach(warpbreaks)
 window_fun = function(x, ...){
     args = list(...)
-    is_function = vapply(args, is.function, FUN.VALUE = logical(1))
-    functions = args[is_function]
-    stopif(length(functions)==0, "`window_fun` - no function among the arguments.")
-    stopif(length(functions)>1, "`window_fun` - only one function should be provided.")
-    fun = functions[[1]]
-    grouping_variables = args[!is_function]
+    stopif(length(args)==0, "'window_fun' - insufficient number of arguments.")
+    fun = match.fun(args[[length(args)]])
+    grouping_variables = args[-length(args)]
     res = NULL # to bypass R CMD check note
     if(length(grouping_variables)){
         expr = parse(text = "fun(x)")

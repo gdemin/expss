@@ -9,7 +9,8 @@ window_fun(x, ...)
 \arguments{
 \item{x}{A vector}
 
-\item{...}{Grouping variables all of the same length as x or length 1 and one function}
+\item{...}{Grouping variables all of the same length as x or length 1 and
+function as last argument.}
 }
 \value{
 vector of the same length as \code{x}

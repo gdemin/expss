@@ -2,6 +2,7 @@ context("window_fun")
 
 expect_error(window_fun(1:3))
 expect_error(window_fun(1:10, 1:2, mean))
+expect_error(window_fun(1:10, mean, 1:2))
 expect_error(window_fun(1:10, rep(1:2, 5), mean, sum))
 
 expect_identical(window_fun(1:3, mean), ave(1:3))
