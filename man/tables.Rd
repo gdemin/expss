@@ -154,12 +154,14 @@ be applied on variables specified by \code{tab_cells}. It works in the same
 manner as \link{na_if}.}
 \item{\code{tab_subgroup}}{ optional logical vector/expression which specify
 subset of data for table.}
-\item{\code{tab_stat_fun}, \code{tab_stat_fun_df}}{ \code{tab_stat_fun}
-applies function on each variable in cells separately,
-\code{tab_stat_fun_df} gives to function each data.frame in cells as a whole.
-You can provide several functions as arguments. They will be combined as with
-\link{combine_functions}. So you can use \code{method} argument. For details
-see documentation for \link{combine_functions}.}
+\item{\code{tab_stat_fun}, \code{tab_stat_fun_df}}{ \code{tab_stat_fun} 
+applies function on each variable in cells separately, \code{tab_stat_fun_df}
+gives to function each data.frame in cells as a whole
+\link[data.table]{data.table} with all names converted to variable labels (if
+labels exists). So it is not recommended to rely on original variables names
+in your \code{fun}. You can provide several functions as arguments. They will
+be combined as with \link{combine_functions}. So you can use \code{method}
+argument. For details see documentation for \link{combine_functions}. }
 \item{\code{tab_stat_cases}}{ calculate counts.}
 \item{\code{tab_stat_cpct}, \code{tab_stat_cpct_responses}}{ calculate column
 percent. These functions give different results only for multiple response

@@ -41,11 +41,14 @@
 #'   negative and zero weights are removed before calculations.
 #' @param subgroup logical vector. You can specify subgroup on which table will be computed. 
 #' @param fun custom summary function. Generally it is recommended that 
-#'   \code{fun} will always return object of the same form. Rownames/vector
-#'   names of \code{fun} result will appear in the row labels of the table and
-#'   column names/names of list will appear in the column labels. To use weight
-#'   you should have formal \code{weight} argument in \code{fun} and some logic
-#'   for its processing inside.
+#'   \code{fun} will always return object of the same form. Rownames/vector 
+#'   names of \code{fun} result will appear in the row labels of the table and 
+#'   column names/names of list will appear in the column labels. To use weight 
+#'   you should have formal \code{weight} argument in \code{fun} and some logic 
+#'   for its processing inside. For \code{cro_fun_df} \code{fun} will receive 
+#'   \link[data.table]{data.table} with all names converted to variable labels
+#'   (if labels exists). So it is not recommended to rely on original variables
+#'   names in your \code{fun}.
 #' @param ... further arguments for \code{fun}  in
 #'   \code{cro_fun}/\code{cro_fun_df} or functions for \code{combine_functions}.
 #' @param method function which will combine results of multiple functions in
