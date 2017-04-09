@@ -135,12 +135,12 @@ List of variables:
 
 data(product_test)
 
-w = product_test # shorter name to save key strokes
+w = product_test # shorter name to save some keystrokes
 
 # here we recode variables from first/second tested product to separate variables for each product according to their cells
 # 'h' variables - VSX123 sample, 'p' variables - 'SDF456' sample
 # also we recode preferences from first/second product to true names
-# for first cell there are no changes, for second cell we should change 1 and 2.
+# for first cell there are no changes, for second cell we should exchange 1 and 2.
 w = w %>% 
     do_if(cell == 1, {
         recode(a1_1 %to% a1_6, other ~ copy) %into% (h1_1 %to% h1_6)
