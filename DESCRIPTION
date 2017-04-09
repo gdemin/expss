@@ -23,7 +23,7 @@ Suggests:
     knitr
 Description: Package provides tabulation functions with support of 'SPSS'-style labels, 
     multiple / nested banners, weights and multiple-response variables. 
-    Additionally it offers useful functions for data processing workflow in the social / 
+    Additionally it offers useful functions for data processing in the social / 
     marketing research surveys - popular data transformation functions from 'SPSS' Statistics
     ('RECODE', 'COUNT', 'COMPUTE', 'DO IF', etc.) and 'Excel' ('COUNTIF', 'VLOOKUP', etc.).
     Proper methods for labelled variables add value labels support to base R and other packages.
