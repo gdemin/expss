@@ -1,7 +1,7 @@
 Package: expss
 Type: Package
 Title: Tables with Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
-Version: 0.7.0
+Version: 0.7.1
 Date: 2017-04-10
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>

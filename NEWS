@@ -1,4 +1,4 @@
-0.7.0 (29.03.2017)
+0.7.1 (10.04.2017)
 ================
 * make value labels support in the base R and other packages (via 'factor' for class 'labelled')
 * radically improved performace for 'cro_*' and 'fre_*' due to 'data.table' under the hood

@@ -4,11 +4,10 @@ date: "`r Sys.Date()`"
 output: 
     rmarkdown::html_vignette:
         toc: true
-
 vignette: >
   %\VignetteIndexEntry{Tables with labels in R}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{cp1251}
+  %\VignetteEncoding{utf8}
 ---
 
 ## Introduction
