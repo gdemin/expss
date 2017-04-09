@@ -5,7 +5,7 @@ Version: 0.7.0
 Date: 2017-04-10
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
-URL: https://github.com/gdemin/expss
+URL: http://gdemin.github.io/expss/
 BugReports: https://github.com/gdemin/expss/issues
 Depends:
     R (>= 3.3),
@@ -21,15 +21,13 @@ Imports:
     htmltools (>= 0.3.5)
 Suggests:
     knitr
-Description: Tables with support of 'SPSS'-style labels, 
-    multiple and/or nested banners, weights and multiple-response variables. 
-    marketing/social surveys. Additionally there are functions to support data processing workflow
-    in the  social/marketing research surveys: reading and writing data with labels,
-    functions for working with labels, popular data transformation functions from
-    'SPSS' Statistics ('RECODE', 'COUNT', 'COMPUTE', 'DO IF', etc.) and 
-    'Excel' ('COUNTIF', 'VLOOKUP', etc.). Package adds basic value labels support to
-    base R and other packages by providing proper methods for labelled variables.
-    Package aimed to help people to move data processing from 'Excel'/'SPSS' to R. 
+Description: Package provides tabulation functions with support of 'SPSS'-style labels, 
+    multiple / nested banners, weights and multiple-response variables. 
+    Additionally it offers useful functions for data processing workflow in the social / 
+    marketing research surveys - popular data transformation functions from 'SPSS' Statistics
+    ('RECODE', 'COUNT', 'COMPUTE', 'DO IF', etc.) and 'Excel' ('COUNTIF', 'VLOOKUP', etc.).
+    Proper methods for labelled variables add value labels support to base R and other packages.
+    Package aimed to help people to move data processing from 'Excel'/'SPSS' to R.
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
