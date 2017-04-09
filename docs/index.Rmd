@@ -1,10 +1,11 @@
 ---
-title: "Usage Examples"
+title: "expss: Tables with Labels in R"
 date: "`r Sys.Date()`"
 output: 
     html_document:
         toc: true
         toc_float: true
+        depth: 3
         
 vignette: >
   %\VignetteIndexEntry{Usage Examples}
@@ -15,6 +16,12 @@ vignette: >
 ## Introduction
 
 *expss* package implements some popular functions from spreadsheets and SPSS Statistics software. Implementations are not complete copies of their originals. I try to make them consistent with other R functions. See examples below. You can get help about any function by typing `?function_name` in the R console.
+
+### Links
+
+- [expss on CRAN](https://cran.r-project.org/package=expss)
+- [expss on Github](https://github.com/gdemin/expss)
+- [Issues](https://github.com/gdemin/expss/issues)
 
 ## Cross-tablulation examples
 
@@ -286,7 +293,7 @@ write_labelled_spss(w, file  filename = "product_test.csv")
 
 ## Labels support for base R
 
-Here we demonstrate limited labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. Note that by now variable labels is not supported in such conversions. 
+Here we demonstrate limited labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. Note that variable labels is not supported in such conversions. 
 ```{r}
 with(mtcars, table(am, vs)) %>% knitr::kable()
 
