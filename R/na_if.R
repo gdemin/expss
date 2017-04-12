@@ -1,16 +1,16 @@
 #' Replace certain values with NA
 #' 
 #' There are following options for \code{value}: 
-#' \itemize{ 
-#' \item{\code{vector}}{ Vector of values which should be
-#' replaced with \code{NA} in \code{x}. }
-#' \item{\code{logical vector/matrix/data.frame}}{ NA's will be set in places
-#' where \code{value} is TRUE. \code{value} will be recycled if needed.}
-#' \item{\code{function}}{ NA's will be set in places where \code{value(x)} is 
-#' TRUE. Function will be applied columnwise. Additionally, there are special 
-#' functions for common cases of comparison. For example \code{na_if(my_var,
-#' gt(98))} will replace all values which are greater than 98 in \code{my_var}
-#' with NA. For detailed description of special functions see \link{criteria}} }
+#' \itemize{ \item{\code{vector}}{ Vector of values which should be replaced
+#' with \code{NA} in \code{x}. } \item{\code{logical vector/matrix/data.frame}}{
+#' NA's will be set in places where \code{value} is TRUE. \code{value} will be
+#' recycled if needed.} \item{\code{function}}{ NA's will be set in places where
+#' \code{value(x)} is TRUE. Function will be applied columnwise. Additionally,
+#' there are special functions for common cases of comparison. For example
+#' \code{na_if(my_var, gt(98))} will replace all values which are greater than
+#' 98 in \code{my_var} with NA. For detailed description of special functions
+#' see \link{criteria}} } \code{mis_val} is an alias for the \code{na_if} with
+#' absolutely the same functionality.
 #' 
 #' @param x vector/matrix/data.frame/list
 #' @param value vector/matrix/data.frame/function
@@ -68,3 +68,14 @@ na_if = function(x, value){
 }
 
 
+#' @rdname na_if
+#' @export
+mis_val = na_if
+
+#' @rdname na_if
+#' @export
+'mis_val<-' = `na_if<-`
+
+#' @rdname na_if
+#' @export
+'%mis_val%' = `%na_if%`
