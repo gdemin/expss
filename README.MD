@@ -292,7 +292,7 @@ write_labelled_spss(w, file  filename = "product_test.csv")
 
 ## Labels support for base R
 
-Here we demonstrate limited labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. Note that variables labels is not supported in such conversions. 
+Here we demonstrate limited labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. Note that variables labels are not supported in such conversions. 
 ```{r}
 with(mtcars, table(am, vs)) %>% knitr::kable()
 

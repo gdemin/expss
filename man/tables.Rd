@@ -238,14 +238,14 @@ mtcars \%>\%
 mtcars \%>\% 
     tab_cells(mpg, disp, hp, wt, qsec) \%>\%
     tab_cols(am) \%>\% 
-    tab_stat_fun(Mean = w_mean, "Std. dev" = w_sd, "Valid N" = w_n) \%>\%
+    tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n) \%>\%
     tab_pivot()
 
 # summary statistics - labels in columns
 mtcars \%>\% 
     tab_cells(mpg, disp, hp, wt, qsec) \%>\%
     tab_cols(am) \%>\% 
-    tab_stat_fun(Mean = w_mean, "Std. dev" = w_sd, "Valid N" = w_n, method = list) \%>\%
+    tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n, method = list) \%>\%
     tab_pivot()
 
 # subgroup with droping empty columns
@@ -389,7 +389,7 @@ tables = mtcars \%>\%
 
 for(each in c("mpg", "disp", "hp", "qsec")){
     tables = tables \%>\% tab_cells(vars(each)) \%>\%
-        tab_stat_fun(Mean = w_mean, "Std. dev" = w_sd, "Valid N" = w_n) 
+        tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n) 
 }
 tables \%>\% tab_pivot()
 }

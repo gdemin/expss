@@ -29,7 +29,7 @@ in the vignette and in the help.
 \item{IFNA }{\link{if_na}}
 \item{MATCH }{\link{match_row}}
 \item{INDEX }{\link{index_row}}
-\item{PIVOT TABLES}{\link{tables}, \link{cro_fun}, \link{cro}}
+\item{PIVOT TABLES }{\link{tables}, \link{cro_fun}, \link{cro}}
 }
 }
 
@@ -45,7 +45,7 @@ in the vignette and in the help.
 \item{ANY }{\link{any_in_row}}
 \item{FREQUENCIES }{\link{fre}}
 \item{CROSSTABS }{\link{cro}}
-\item{CUSTOM TABLES}{\link{tables}}
+\item{CUSTOM TABLES }{\link{tables}}
 }
 }
 
