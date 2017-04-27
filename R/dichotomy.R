@@ -122,6 +122,8 @@ as.dichotomy.default = function(x, prefix = "v", keep_unused = FALSE, use_na = T
     res  
 }
 
+
+
 #' @export
 as.dichotomy.data.frame = function(x, prefix = "v", keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                                 keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
@@ -134,9 +136,12 @@ as.dichotomy.data.frame = function(x, prefix = "v", keep_unused = FALSE, use_na 
 
     res = matrix(FALSE, nrow = NROW(x), ncol = length(vallab))
     x = as.matrix(x)
-    for (i in seq_along(vallab)) res[ , i] = res[ , i] | (rowSums(x == vallab[i], na.rm = TRUE)>0)
+    for (i in seq_along(vallab)) {
+        res[ , i] = res[ , i] | rowAnys(x, value = vallab[i], na.rm = TRUE)
+    }
+
     if(use_na & NCOL(x)>0){
-        nas = rowSums(!is.na(x))==0
+        nas = rowAlls(x, value = NA)
         res[nas,] = NA
     }
     res[] = as.numeric(res)
@@ -223,9 +228,12 @@ dummy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep_values =
     
     res = matrix(FALSE, nrow = NROW(x), ncol = length(vallab))
     x = as.matrix(x)
-    for (i in seq_along(vallab)) res[ , i] = res[ , i] | (rowSums(x == vallab[i], na.rm = TRUE)>0)
-    if(use_na && NCOL(x)>0){
-        nas = rowSums(!is.na(x))==0
+    for (i in seq_along(vallab)) {
+        res[ , i] = res[ , i] | rowAnys(x, value = vallab[i], na.rm = TRUE)
+    }
+    
+    if(use_na & NCOL(x)>0){
+        nas = rowAlls(x, value = NA)
         res[nas,] = NA
     }
     res[] = as.numeric(res)
@@ -278,11 +286,11 @@ get_values_for_dichotomizing = function(x, keep_unused = FALSE, keep_values = NU
     vallab = val_lab(x)
     varlab = var_lab(x)
     x = unlab(x)
-    x = c(x, recursive = TRUE)
+    uniqs = uniq_elements(x)
     if(is.null(x)) {
         uniqs = numeric(0)
     }  else {  
-        uniqs=sort(unique(x))
+        uniqs=sort(uniqs, na.last = NA)
     }
     if(!is.null(keep_values) && keep_unused){
         uniqs = sort(union(uniqs, keep_values))
@@ -316,10 +324,6 @@ get_values_for_dichotomizing = function(x, keep_unused = FALSE, keep_values = NU
 
     vallab    
 }
-
-
-
-
 
 
 

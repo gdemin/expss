@@ -458,8 +458,8 @@ unlab=function(x){
 
 #' @export
 unlab.default=function(x){
-    x = set_var_lab(x, NULL)
-    x = set_val_lab(x, NULL, add = FALSE)
+    attr(x, "label") = NULL
+    attr(x, "labels") = NULL
     class(x) = setdiff(class(x), "labelled")
     x
 }
