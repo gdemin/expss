@@ -290,7 +290,7 @@ valid.default = function(x){
 
 #' @export
 valid.data.frame = function(x){
-    rowSums(!is.na(x))>0
+    !rowAlls(is.na(x))
 }
 
 #' @export
@@ -299,7 +299,9 @@ valid.dichotomy = function(x){
 }
 
 #' @export
-valid.matrix = valid.data.frame
+valid.matrix = function(x){
+    !rowAlls(is.na(x))
+}
 
 
 
@@ -358,17 +360,17 @@ uniq_elements.default=function(x){
 
 #' @export
 uniq_elements.matrix=function(x){
-    unique(c(x))
+    unique(c(x, use.names = FALSE))
 }
 
 #' @export
 uniq_elements.data.frame=function(x){
-    unique(unlist(lapply(x, unique)))
+    unique(unlist(lapply(x, unique), use.names = FALSE))
 }
 
 #' @export
 uniq_elements.list=function(x){
-    unique(unlist(lapply(x, uniq_elements)))
+    unique(unlist(lapply(x, uniq_elements), use.names = FALSE))
 }
 
 
