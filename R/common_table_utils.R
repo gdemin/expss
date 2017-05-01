@@ -110,7 +110,7 @@ convert_multicolumn_object_to_vector  = function(x){
             }
         }
         vallab = val_lab(x)
-        x = c(x, recursive = TRUE)
+        x = c(x, recursive = TRUE, use.names = FALSE)
         val_lab(x) = vallab
         var_lab(x) = varlab
     } 
@@ -212,8 +212,7 @@ multiples_to_single_columns_with_dummy_encoding = function(x){
                 as.list(make_value_labels_from_names(item))
             } else {
                 if(is.category(item)){
-                    item = as.dichotomy(item, keep_unused = TRUE, use_na = TRUE)
-                    na_if(item) = 0
+                    item = as.dichotomy(item, keep_unused = TRUE, use_na = FALSE, absence = NA)
                     as.list(make_value_labels_from_names(item))
                 } else {
                     if(is.data.frame(item)){
