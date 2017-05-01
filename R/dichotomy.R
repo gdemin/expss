@@ -25,6 +25,12 @@
 #'   all values will be kept. Ignored if keep_values/keep_labels are provided.
 #' @param drop_labels Numeric/character. Labels/levels that should be dropped. By
 #'   default all labels/levels will be kept. Ignored if keep_values/keep_labels are provided.
+#' @param presence numeric value which will code presence of the level. By
+#'   default it is 1. Note that all tables functions need that \code{presence}
+#'   and \code{absence} will be 1 and 0.
+#' @param absence numeric value which will code absence of the level. By default
+#'   it is 0. Note that all tables functions need that \code{presence} and
+#'   \code{absence} will be 1 and 0.
 #' @return  \code{as.dichotomy} returns data.frame of class \code{dichotomy} 
 #'   with 0,1. Columns of this data.frame have variable labels according to
 #'   value labels of original data. If label doesn't exist for particular value
@@ -72,14 +78,16 @@
 #' 
 #' @export
 as.dichotomy = function(x, prefix = "v", keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                        keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                        keep_labels = NULL, drop_values = NULL, drop_labels = NULL, 
+                        presence = 1, absence = 0){
     UseMethod("as.dichotomy")
 }
 
 
 #' @export
 as.dichotomy.default = function(x, prefix = "v", keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                                keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                                keep_labels = NULL, drop_values = NULL, drop_labels = NULL,
+                                presence = 1, absence = 0){
     # if(!is.labelled(x)) x = as.labelled(x)
     vallab = get_values_for_dichotomizing(x = x,
                                           keep_unused = keep_unused,
@@ -88,11 +96,11 @@ as.dichotomy.default = function(x, prefix = "v", keep_unused = FALSE, use_na = T
                                           drop_values = drop_values, 
                                           drop_labels = drop_labels)
     
-    res = matrix(0, nrow = NROW(x), ncol = length(vallab))
+    res = matrix(absence, nrow = NROW(x), ncol = length(vallab))
     
     row_index = seq_len(NROW(x))
     col_index = match(unlist(x, use.names = FALSE), vallab)
-    res[cbind(row_index, col_index)] = 1
+    res[cbind(row_index, col_index)] = presence
     
     if(use_na & NCOL(x)>0){
         res[!valid(x), ] = NA
@@ -124,7 +132,8 @@ as.dichotomy.default = function(x, prefix = "v", keep_unused = FALSE, use_na = T
 #' @export
 #' @rdname as.dichotomy
 dummy = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                     keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                     keep_labels = NULL, drop_values = NULL, drop_labels = NULL,
+                 presence = 1, absence = 0){
     UseMethod("dummy")
     
 }
@@ -132,7 +141,8 @@ dummy = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
 
 #' @export
 dummy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                 keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                 keep_labels = NULL, drop_values = NULL, drop_labels = NULL,
+                 presence = 1, absence = 0){
     # if(!is.labelled(x)) x = as.labelled(x)
     vallab = get_values_for_dichotomizing(x = x,
                                           keep_unused = keep_unused,
@@ -142,10 +152,10 @@ dummy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NU
                                           drop_labels = drop_labels)
     
 
-    res = matrix(0, nrow = NROW(x), ncol = length(vallab))
+    res = matrix(absence, nrow = NROW(x), ncol = length(vallab))
     row_index = seq_len(NROW(x))
     col_index = match(unlist(x, use.names = FALSE), vallab)
-    res[cbind(row_index, col_index)] = 1
+    res[cbind(row_index, col_index)] = presence
     if(use_na & NCOL(x)>0){
         res[!valid(x),] = NA
     }
@@ -165,14 +175,17 @@ dummy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NU
 #' @export
 #' @rdname as.dichotomy
 dummy1 = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                  keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+                  keep_labels = NULL, drop_values = NULL, drop_labels = NULL,
+                  presence = 1, absence = 0){
     res = dummy(x,
                 keep_unused = keep_unused,
                 use_na = use_na,
                 keep_values = keep_values, 
                 keep_labels = keep_labels, 
                 drop_values = drop_values, 
-                drop_labels = drop_labels)
+                drop_labels = drop_labels,
+                presence = presence,
+                absence = absence)
     if (NCOL(res)>1){
         res = res[, -ncol(res), drop = FALSE]
     }

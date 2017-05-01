@@ -35,12 +35,53 @@ expect_identical(dummy(vec),
                  structure(c(1, 0, 0, 0, 1, 0, 0, 0, 1), .Dim = c(3L, 3L), .Dimnames = list(
                      NULL, c("1", "2", "3")), class = c("dichotomy", "matrix")))
 
+expect_identical(dummy(vec, presence = 5, absence = -5),
+                 structure(c(5, -5, -5, -5, 5, -5, -5, -5, 5), .Dim = c(3L, 3L), .Dimnames = list(
+                     NULL, c("1", "2", "3")), class = c("dichotomy", "matrix")))
+
+expect_identical(dummy(vec, presence = "Y", absence = "N"),
+                 structure(c("Y", "N", "N", "N", "Y", "N", "N", "N", "Y"), .Dim = c(3L, 3L), .Dimnames = list(
+                     NULL, c("1", "2", "3")), class = c("dichotomy", "matrix")))
+
+expect_identical(dummy(vec, presence = FALSE, absence = TRUE),
+                 structure(c(FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE), 
+                           .Dim = c(3L, 3L), .Dimnames = list(
+                     NULL, c("1", "2", "3")), class = c("dichotomy", "matrix")))
+
+expect_identical(dummy1(vec, presence = 5, absence = -5),
+                 structure(c(5, -5, -5, -5, 5, -5), .Dim = c(3L, 2L), .Dimnames = list(
+                     NULL, c("1", "2")), class = c("dichotomy", "matrix")))
+
+expect_identical(dummy1(vec, presence = "Y", absence = "N"),
+                 structure(c("Y", "N", "N", "N", "Y", "N"), .Dim = c(3L, 2L), .Dimnames = list(
+                     NULL, c("1", "2")), class = c("dichotomy", "matrix")))
+
+expect_identical(dummy1(vec, presence = FALSE, absence = TRUE),
+                 structure(c(FALSE, TRUE, TRUE, TRUE, FALSE, TRUE), 
+                           .Dim = c(3L, 2L), .Dimnames = list(
+                               NULL, c("1", "2")), class = c("dichotomy", "matrix")))
+
 expect_identical(as.dichotomy(vec),
 structure(list(v1 = structure(c(1, 0, 0), label = "1", class = c("labelled", 
 "numeric")), v2 = structure(c(0, 1, 0), label = "2", class = c("labelled", 
 "numeric")), v3 = structure(c(0, 0, 1), label = "3", class = c("labelled", 
 "numeric"))), .Names = c("v1", "v2", "v3"), row.names = c(NA, 
                           -3L), class = c("dichotomy", "data.frame")))
+
+expect_identical(as.dichotomy(vec, presence = 5, absence = -5),
+structure(list(v1 = structure(c(5, -5, -5), label = "1", class = c("labelled", 
+"numeric")), v2 = structure(c(-5, 5, -5), label = "2", class = c("labelled", 
+"numeric")), v3 = structure(c(-5, -5, 5), label = "3", class = c("labelled", 
+"numeric"))), .Names = c("v1", "v2", "v3"), row.names = c(NA, 
+  -3L), class = c("dichotomy", "data.frame")))
+
+expect_identical(as.dichotomy(vec, presence = "Y", absence = "N"),
+structure(list(v1 = structure(c("Y", "N", "N"), label = "1", class = c("labelled", 
+"character")), v2 = structure(c("N", "Y", "N"), label = "2", class = c("labelled", 
+"character")), v3 = structure(c("N", "N", "Y"), label = "3", class = c("labelled", 
+"character"))), .Names = c("v1", "v2", "v3"), row.names = c(NA, 
+                            -3L), class = c("dichotomy", "data.frame")))
+
 
 vec = c(1:2,NA)
 expect_identical(dummy(vec),

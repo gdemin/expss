@@ -9,13 +9,15 @@
 \usage{
 as.dichotomy(x, prefix = "v", keep_unused = FALSE, use_na = TRUE,
   keep_values = NULL, keep_labels = NULL, drop_values = NULL,
-  drop_labels = NULL)
+  drop_labels = NULL, presence = 1, absence = 0)
 
 dummy(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-  keep_labels = NULL, drop_values = NULL, drop_labels = NULL)
+  keep_labels = NULL, drop_values = NULL, drop_labels = NULL,
+  presence = 1, absence = 0)
 
 dummy1(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-  keep_labels = NULL, drop_values = NULL, drop_labels = NULL)
+  keep_labels = NULL, drop_values = NULL, drop_labels = NULL,
+  presence = 1, absence = 0)
 
 is.dichotomy(x)
 }
@@ -41,6 +43,14 @@ all values will be kept. Ignored if keep_values/keep_labels are provided.}
 
 \item{drop_labels}{Numeric/character. Labels/levels that should be dropped. By
 default all labels/levels will be kept. Ignored if keep_values/keep_labels are provided.}
+
+\item{presence}{numeric value which will code presence of the level. By
+default it is 1. Note that all tables functions need that \code{presence}
+and \code{absence} will be 1 and 0.}
+
+\item{absence}{numeric value which will code absence of the level. By default
+it is 0. Note that all tables functions need that \code{presence} and
+\code{absence} will be 1 and 0.}
 }
 \value{
 \code{as.dichotomy} returns data.frame of class \code{dichotomy} 
