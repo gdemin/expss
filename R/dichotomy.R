@@ -80,7 +80,7 @@ as.dichotomy = function(x, prefix = "v", keep_unused = FALSE, use_na = TRUE, kee
 #' @export
 as.dichotomy.default = function(x, prefix = "v", keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                                 keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    if(!is.labelled(x)) x = as.labelled(x)
+    # if(!is.labelled(x)) x = as.labelled(x)
     vallab = get_values_for_dichotomizing(x = x,
                                           keep_unused = keep_unused,
                                           keep_values = keep_values, 
@@ -88,63 +88,16 @@ as.dichotomy.default = function(x, prefix = "v", keep_unused = FALSE, use_na = T
                                           drop_values = drop_values, 
                                           drop_labels = drop_labels)
     
-    not_nas = !is.na(x)
-    res = vapply(vallab,
-                 FUN = function(value) as.numeric((x == value) & not_nas),
-                 FUN.VALUE = numeric(length(x)),
-                 USE.NAMES = FALSE
-    )
-    if(length(res) > 0){
-        res = as.matrix(res)
-    } else {
-        res = matrix(NA, nrow = NROW(x), ncol = 0)
-    }
-    if(use_na && NCOL(res)>0){
-        nas = is.na(x)
-        res[nas,] = NA
-    }
-    res = as.dtfrm(res)
-    if(NCOL(res)>0){
-        colnames(res) = paste0(prefix, vallab)
-        for (each in seq_along(res)){
-            var_lab(res[[each]]) = names(vallab)[each]
-        }
-    } else {
-        if(NROW(res)>0) {
-            res[["NA"]] = NA
-        } else {
-            res[["NA"]] = logical(0)
-        }   
-    }
-
-
-    class(res) = union("dichotomy", setdiff(class(res), "category")) 
-    res  
-}
-
-
-
-#' @export
-as.dichotomy.data.frame = function(x, prefix = "v", keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                                keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    vallab = get_values_for_dichotomizing(x = x,
-                                          keep_unused = keep_unused,
-                                          keep_values = keep_values, 
-                                          keep_labels = keep_labels, 
-                                          drop_values = drop_values, 
-                                          drop_labels = drop_labels)
-
-    res = matrix(FALSE, nrow = NROW(x), ncol = length(vallab))
-    x = as.matrix(x)
-    for (i in seq_along(vallab)) {
-        res[ , i] = res[ , i] | rowAnys(x, value = vallab[i], na.rm = TRUE)
-    }
-
+    res = matrix(0, nrow = NROW(x), ncol = length(vallab))
+    
+    row_index = seq_len(NROW(x))
+    col_index = match(unlist(x, use.names = FALSE), vallab)
+    res[cbind(row_index, col_index)] = 1
+    
     if(use_na & NCOL(x)>0){
-        nas = rowAlls(x, value = NA)
-        res[nas,] = NA
+        res[!valid(x), ] = NA
     }
-    res[] = as.numeric(res)
+    
     res = as.dtfrm(res)
     if(NCOL(res)>0){
         colnames(res) = paste0(prefix, vallab)
@@ -163,8 +116,7 @@ as.dichotomy.data.frame = function(x, prefix = "v", keep_unused = FALSE, use_na 
     res  
 }
 
-#' @export
-as.dichotomy.matrix = as.dichotomy.data.frame
+
 
 
 ########################################
@@ -177,10 +129,11 @@ dummy = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
     
 }
 
+
 #' @export
 dummy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
                  keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    if(!is.labelled(x)) x = as.labelled(x)
+    # if(!is.labelled(x)) x = as.labelled(x)
     vallab = get_values_for_dichotomizing(x = x,
                                           keep_unused = keep_unused,
                                           keep_values = keep_values, 
@@ -189,54 +142,13 @@ dummy.default = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NU
                                           drop_labels = drop_labels)
     
 
-    not_nas = !is.na(x)
-    res = vapply(vallab,
-                 FUN = function(value) as.numeric((x == value) & not_nas),
-                 FUN.VALUE = numeric(length(x)),
-                 USE.NAMES = FALSE
-    )
-    if(length(res) > 0){
-        res = as.matrix(res)
-    } else {
-        res = matrix(NA, nrow = NROW(x), ncol = 0)
-    }
-    if(use_na){
-        nas = is.na(x)
-        res[nas,] = NA
-    }
-    if(NCOL(res)>0){
-        colnames(res) = names(vallab)
-    } else {
-        if(NROW(res)>0){
-            res = cbind(res, NA)
-            colnames(res) = "NA"
-        }
-    }
-    class(res) = union("dichotomy", setdiff(class(res), "category")) 
-    res  
-}
-
-#' @export
-dummy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-                                   keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
-    vallab = get_values_for_dichotomizing(x = x,
-                                          keep_unused = keep_unused,
-                                          keep_values = keep_values, 
-                                          keep_labels = keep_labels, 
-                                          drop_values = drop_values, 
-                                          drop_labels = drop_labels)
-    
-    res = matrix(FALSE, nrow = NROW(x), ncol = length(vallab))
-    x = as.matrix(x)
-    for (i in seq_along(vallab)) {
-        res[ , i] = res[ , i] | rowAnys(x, value = vallab[i], na.rm = TRUE)
-    }
-    
+    res = matrix(0, nrow = NROW(x), ncol = length(vallab))
+    row_index = seq_len(NROW(x))
+    col_index = match(unlist(x, use.names = FALSE), vallab)
+    res[cbind(row_index, col_index)] = 1
     if(use_na & NCOL(x)>0){
-        nas = rowAlls(x, value = NA)
-        res[nas,] = NA
+        res[!valid(x),] = NA
     }
-    res[] = as.numeric(res)
     if(NCOL(res)>0){
         colnames(res) = names(vallab)
     } else {
@@ -247,12 +159,8 @@ dummy.data.frame = function(x, keep_unused = FALSE, use_na = TRUE, keep_values =
     }
     class(res) = union("dichotomy", setdiff(class(res), "category")) 
     res  
-
 }
 
-
-#' @export
-dummy.matrix = dummy.data.frame
 
 #' @export
 #' @rdname as.dichotomy
@@ -290,7 +198,9 @@ get_values_for_dichotomizing = function(x, keep_unused = FALSE, keep_values = NU
     if(is.null(x)) {
         uniqs = numeric(0)
     }  else {  
-        uniqs=sort(uniqs, na.last = NA)
+        if(length(uniqs)>0) {
+            uniqs = sort(uniqs, na.last = NA)
+        }    
     }
     if(!is.null(keep_values) && keep_unused){
         uniqs = sort(union(uniqs, keep_values))

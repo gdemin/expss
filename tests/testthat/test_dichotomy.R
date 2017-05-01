@@ -2,7 +2,7 @@ context("dichotomy.default")
 
 
 expect_identical(dummy(numeric(0)),
-                 structure(logical(0), .Dim = c(0L, 0L), class = c("dichotomy", 
+                 structure(numeric(0), .Dim = c(0L, 0L), class = c("dichotomy", 
                                                                    "matrix")))
 
 expect_identical(as.dichotomy(numeric(0)),
@@ -11,7 +11,7 @@ structure(list(`NA` = logical(0)), row.names = integer(0), .Names = "NA", class 
 
 
 expect_identical(dummy(c(NA,NA,NA)),
-structure(c(NA, NA, NA), .Dim = c(3L, 1L), .Dimnames = list(
+structure(c(NA, NA, NA)*1, .Dim = c(3L, 1L), .Dimnames = list(
  NULL, "NA"), class = c("dichotomy", "matrix")))
 
 expect_identical(as.dichotomy(c(NA,NA,NA)),
@@ -473,7 +473,7 @@ expect_identical(as.dichotomy(dich),
 "data.frame")))
 
 expect_identical(dummy(dich), 
-structure(c(NA, NA, NA), 
+structure(c(NA, NA, NA)*1, 
 .Dim = c(3L, 1L), 
 .Dimnames = list(NULL, 
 "NA"), class = c("dichotomy", "matrix")))
@@ -486,13 +486,13 @@ structure(list(`NA` = c(NA)),
              "data.frame")))
 
 expect_identical(dummy(NA), 
-                 structure(NA, 
+                 structure(NA*1, 
                            .Dim = c(1L, 1L), 
                            .Dimnames = list(NULL, 
 "NA"), class = c("dichotomy", "matrix")))
 
 expect_identical(dummy1(NA), 
-structure(NA, 
+structure(NA*1, 
 .Dim = c(1L, 1L), 
 .Dimnames = list(NULL, 
 "NA"), class = c("dichotomy", "matrix")))
