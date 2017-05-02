@@ -267,6 +267,10 @@ elementary_cro_fun_df = function(cell_var,
     } else {
         dtable = raw_data[ , fun(.SD, weight = ..weight__), by = by_string, .SDcols = -"..weight__"]
     }
+    if(("row_labels" %in% colnames(dtable)) && !is.factor(dtable[["row_labels"]])){ 
+        dtable[ , row_labels := fctr(row_labels, levels = unique(row_labels),
+                          prepend_var_lab = FALSE)]
+    }
     dtable
 }    
 
@@ -307,17 +311,25 @@ make_function_for_cro_df = function(fun, ..., need_weight = TRUE){
         function(x, weight = weight){
             res = fun(x, ..., weight = weight)
             res = make_dataframe_with_row_labels(res)
-            # we need convert to factor to keep order of row_labels
-            as.list(res[, row_labels := fctr(row_labels, levels = unique(row_labels),
-                                             prepend_var_lab = FALSE)])
+            # we need convert to factor to keep all row_labels as levels in case of aggregation 
+            # of data with zero rows
+            if(nrow(x)==0){
+                res$row_labels = fctr(res[["row_labels"]], levels = unique(res[["row_labels"]]),
+                                                 prepend_var_lab = FALSE)
+            }
+            res
         }
     } else {
         function(x){
             res = fun(x, ...)
             res = make_dataframe_with_row_labels(res)
-            # we need convert to factor to keep order of row_labels
-            as.list(res[, row_labels := fctr(row_labels, levels = unique(row_labels),
-                                             prepend_var_lab = FALSE)])
+            # we need convert to factor to keep all row_labels as levels in case of aggregation 
+            # of data with zero rows
+            if(nrow(x)==0){
+                res$row_labels = fctr(res[["row_labels"]], levels = unique(res[["row_labels"]]),
+                                      prepend_var_lab = FALSE)
+            }
+            res
         }        
     }
 }
@@ -339,11 +351,15 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
                 }
                 each_res
             })
-            res = rbindlist(res, use.names = TRUE, fill = TRUE)
-            # we need convert to factor to keep order of row_labels
-            res[, row_labels := make_items_unique(row_labels)]
-            as.list(res[, row_labels := fctr(row_labels, levels = unique(row_labels),
-                                             prepend_var_lab = FALSE)])
+            res = as.dtfrm(rbindlist(res, use.names = TRUE, fill = TRUE))
+            # we need convert to factor to keep all row_labels as levels in case of aggregation 
+            # of data with zero rows
+            res$row_labels = make_items_unique(res[["row_labels"]])
+            if(nrow(x)==0){
+                res$row_labels = fctr(res[["row_labels"]], levels = unique(res[["row_labels"]]),
+                                      prepend_var_lab = FALSE)
+            }
+            res
         }
     } else {
         function(x){
@@ -356,11 +372,15 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
                 }
                 each_res
             })
-            res = rbindlist(res, use.names = TRUE, fill = TRUE)
-            # we need convert to factor to keep order of row_labels
-            res[, row_labels := make_items_unique(row_labels)]
-            as.list(res[, row_labels := fctr(row_labels, levels = unique(row_labels),
-                                             prepend_var_lab = FALSE)])
+            res = as.dtfrm(rbindlist(res, use.names = TRUE, fill = TRUE))
+            # we need convert to factor to keep all row_labels as levels in case of aggregation 
+            # of data with zero rows
+            res$row_labels = make_items_unique(res[["row_labels"]])
+            if(nrow(x)==0){
+                res$row_labels = fctr(res[["row_labels"]], levels = unique(res[["row_labels"]]),
+                                      prepend_var_lab = FALSE)
+            }
+            res
         }        
     }
 }
@@ -368,6 +388,7 @@ make_function_for_cro = function(fun, ..., need_weight = TRUE){
 #############
 make_dataframe_with_row_labels = function(res){
     if(is.table(res)){
+        ### block for 'summary' and 'table'
         dm_names = dimnames(res)
         if(is.null(dm_names)){
             dm_names[[1]] = names(res)
@@ -381,26 +402,32 @@ make_dataframe_with_row_labels = function(res){
         if(length(dm_names)>1){
             new_df = setNames(new_df, dm_names[[2]])
         } else {
-            new_df = setNames(dtfrm(new_df), rep("|", NCOL(new_df)))
+            new_df = setNames(new_df, rep("|", NCOL(new_df)))
         }
         res = new_df
     } else {
+        ####
         if(is.matrix(res) || is_list(res)) res = as.dtfrm(res)
+        ####
         if(is.data.frame(res)) {
             if("row_labels" %in% colnames(res)){
-                row_labels = res[["row_labels"]]    
-                res[["row_labels"]] = NULL
+                res[["row_labels"]] = make_items_unique(res[["row_labels"]])
             } else {
                 row_labels = rownames(res)
                 if(!is.null(row_labels) && length(row_labels)==1 && row_labels[1]==1){
                     row_labels = ""
                 }
+                res[["row_labels"]] = make_items_unique(row_labels)
             }
+            return(res)
         } else {
+        #### usual vectors and unknowns    
             row_labels = names(res)
             res = setNames(dtfrm(res), rep("|", NCOL(res)))
         } 
     }
+    
+    #######
     if(is.null(row_labels)){
         if(nrow(res)>1){
             row_labels = seq_len(nrow(res)) 
@@ -409,8 +436,8 @@ make_dataframe_with_row_labels = function(res){
         }
     } 
     row_labels = make_items_unique(as.character(row_labels))
-    data.table(row_labels = row_labels, res)
-
+    res[["row_labels"]] = row_labels
+    res
 }
 
 

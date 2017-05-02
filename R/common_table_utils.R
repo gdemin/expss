@@ -120,7 +120,7 @@ convert_multicolumn_object_to_vector  = function(x){
 #################################
 
 long_datatable_to_table = function(dtable, rows, columns, values){
-    
+    if(!is.data.table(dtable)) dtable = as.data.table(dtable)
     rows_columns = which(colnames(dtable) %in% c(rows, columns))
     for (each in rows_columns){
         curr_col = dtable[[each]]
