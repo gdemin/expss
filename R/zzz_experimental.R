@@ -220,7 +220,7 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
     } else {
         for_names = names(eval(for_names, e))
     }
-    stopif(length(for_names)==0, "Something is going wrong. Variables not found: ", deparse((substitute(x))))
+    stopif(length(for_names)==0, "Something is going wrong. Variables not found: ", expr_to_character((substitute(x))))
     res = eval(expr, e)
     data[, for_names] = res
     ref(reference) = data

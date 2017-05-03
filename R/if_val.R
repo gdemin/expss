@@ -413,7 +413,7 @@ copy = function(x) x
             if(is.character(args)){
                 new_args = eval(substitute(subst(args)), parent.frame(), baseenv())
             } else {
-                new_args = deparse(args) 
+                new_args = expr_to_character(args) 
             }
             
         } else {
@@ -424,7 +424,7 @@ copy = function(x) x
             new_args = eval(substitute(new_args), parent.frame(), baseenv())
         }
     } else {
-        if(deparse(args[[1]]) %in% c("list", "c", "qc", "lst")){
+        if(expr_to_character(args[[1]]) %in% c("list", "c", "qc", "lst")){
             new_args = list()
             for(each in seq_along(args[-1])){
                 x = args[[each+1]]
@@ -432,7 +432,7 @@ copy = function(x) x
                     if(is.character(x)){
                         new_args[[each]] = eval(substitute(subst(x)), parent.frame(), baseenv()) 
                     } else {
-                        new_args[[each]] = deparse(x) 
+                        new_args[[each]] = expr_to_character(x) 
                     }
                 } else {
                     x = substitute_symbols(x,
@@ -481,8 +481,8 @@ copy = function(x) x
     } else {
         var_names = ls(envir = parent.frame())
     }
-    e1 = deparse(substitute(e1))
-    e2 = deparse(substitute(e2))
+    e1 = expr_to_character(substitute(e1))
+    e2 = expr_to_character(substitute(e2))
     first = match(e1, var_names)[1]
     last = match(e2, var_names)[1]
     if(is.na(first) && is.na(last)){

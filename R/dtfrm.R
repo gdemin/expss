@@ -55,7 +55,7 @@ as.dtfrm = function(x, ...) {
 #' @rdname dtfrm
 lst = function(...){
     res = list(...)
-    names(res) = sapply(as.list(substitute(list(...)))[-1], deparse)
+    names(res) = sapply(as.list(substitute(list(...)))[-1], expr_to_character)
     res
  
 }

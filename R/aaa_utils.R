@@ -498,3 +498,8 @@ if_null = function(x, value){
 
 
 
+##### 
+
+expr_to_character = function(expr){
+    as.character(as.expression(expr))
+}

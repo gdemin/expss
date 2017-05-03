@@ -15,8 +15,8 @@ NULL
 #' @export
 #' @rdname deprecated
 '%in_row%'=function(criterion, x){
-    str_x = deparse(substitute(x))
-    str_criterion = deparse(substitute(criterion))
+    str_x = expr_to_character(substitute(x))
+    str_criterion = expr_to_character(substitute(criterion))
     .Deprecated(
         paste0("`%in_row%` is deprecated. Please use `", str_x, " %row_in% ", str_criterion,"` instead.")
     )
@@ -26,8 +26,8 @@ NULL
 #' @export
 #' @rdname deprecated
 '%in_col%'=function(criterion, x){
-    str_x = deparse(substitute(x))
-    str_criterion = deparse(substitute(criterion))
+    str_x = expr_to_character(substitute(x))
+    str_criterion = expr_to_character(substitute(criterion))
     .Deprecated(
         paste0("`%in_col%` is deprecated. Please use `", str_x, " %col_in% ", str_criterion,"` instead.")
     )
@@ -133,7 +133,7 @@ modify_default_dataset_light_deprecated = function(x, ...){
     } else {
         for_names = names(eval(for_names, e))
     }
-    stopif(length(for_names)==0, "Something is going wrong. Variables not found: ", deparse((substitute(x))))
+    stopif(length(for_names)==0, "Something is going wrong. Variables not found: ", expr_to_character((substitute(x))))
     res = eval(expr, e)
     data[, for_names] = res
     ref(reference) = data

@@ -136,9 +136,9 @@ cro = function(cell_vars,
                total_row_position = c("below", "above", "none")
 ){
     
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_col_vars = deparse(substitute(col_vars))
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -172,9 +172,9 @@ cro_cpct = function(cell_vars,
                     total_row_position = c("below", "above", "none")
 ){
     
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_col_vars = deparse(substitute(col_vars))
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -203,9 +203,9 @@ cro_rpct = function(cell_vars,
                     total_row_position = c("below", "above", "none")
 ){
     
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_col_vars = deparse(substitute(col_vars))
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -235,9 +235,9 @@ cro_tpct = function(cell_vars,
                     total_row_position = c("below", "above", "none")
 ){
     
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_col_vars = deparse(substitute(col_vars))
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -266,9 +266,9 @@ cro_cpct_responses = function(cell_vars,
                               total_row_position = c("below", "above", "none")
 ){
     
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_col_vars = deparse(substitute(col_vars))
-    str_row_vars = deparse(substitute(row_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)

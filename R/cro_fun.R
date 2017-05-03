@@ -153,9 +153,9 @@ cro_fun = function(cell_vars,
                    fun, 
                    ...,
                    unsafe = FALSE){
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_row_vars = deparse(substitute(row_vars))
-    str_col_vars = deparse(substitute(col_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
     
     cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -476,9 +476,9 @@ cro_fun_df = function(cell_vars,
                       fun, 
                       ...,
                       unsafe = FALSE){
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_row_vars = deparse(substitute(row_vars))
-    str_col_vars = deparse(substitute(col_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
 
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -546,9 +546,9 @@ cro_mean = function(cell_vars,
                     subgroup = NULL
 ){
     
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_row_vars = deparse(substitute(row_vars))
-    str_col_vars = deparse(substitute(col_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
     
     cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -573,9 +573,9 @@ cro_sum = function(cell_vars,
                    subgroup = NULL
 ){
 
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_row_vars = deparse(substitute(row_vars))
-    str_col_vars = deparse(substitute(col_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
     
     cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -600,9 +600,9 @@ cro_median = function(cell_vars,
                       subgroup = NULL
 ){
 
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_row_vars = deparse(substitute(row_vars))
-    str_col_vars = deparse(substitute(col_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
     
     cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -635,9 +635,9 @@ cro_pearson = function(cell_vars,
         w_pearson(x, weight = weight)[ , 1]
     }    
     
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_row_vars = deparse(substitute(row_vars))
-    str_col_vars = deparse(substitute(col_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
     
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -665,9 +665,9 @@ cro_spearman = function(cell_vars,
         w_spearman(x, weight = weight)[ , 1]
     }    
     
-    str_cell_vars = deparse(substitute(cell_vars))
-    str_row_vars = deparse(substitute(row_vars))
-    str_col_vars = deparse(substitute(col_vars))
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
     
     cell_vars = test_for_null_and_make_list(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
@@ -689,7 +689,7 @@ cro_spearman = function(cell_vars,
 #' @rdname cro_fun
 combine_functions = function(..., method = c){
     method = match.fun(method)
-    possible_names = unlist(lapply(as.list(substitute(list(...)))[-1], deparse))
+    possible_names = unlist(lapply(as.list(substitute(list(...)))[-1], expr_to_character))
     args = list(...)
     arg_names =names(args)
     if(is.null(arg_names)) {

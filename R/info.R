@@ -69,7 +69,7 @@ info.default=function(x, stats = TRUE, frequencies = TRUE, max_levels= 10){
         values=paste(paste(names(values),values,sep="="),collapse=", ")
         res = c(res, Frequency =values)
     }
-    curr_name = deparse(substitute(x))
+    curr_name = expr_to_character(substitute(x))
     stats::setNames(as.data.frame(c(curr_name,res),stringsAsFactors = FALSE, check.names = FALSE),c("Name",names(res)))
 }
 

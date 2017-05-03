@@ -1118,7 +1118,7 @@ print.intermediate_table = function(x, ...){
 ###############
 add_names_to_list = function(args, ...){
     if(length(args)==0) return(NULL)
-    possible_names = unlist(lapply(as.list(substitute(list(...)))[-1], deparse))
+    possible_names = unlist(lapply(as.list(substitute(list(...)))[-1], expr_to_character))
     arg_names = names(args)
     if(length(possible_names)>0){
         if(is.null(arg_names)) {

@@ -829,3 +829,14 @@ expect_error(
 expect_error(
     mtcars %>% tab_pivot()
 )
+
+
+context("custom table long expression as argument")
+
+
+res = mtcars %>% 
+    tab_cells(list(am, am, am, am, am, am, am, am, am, am, am, am, am, am, am, am)) %>% 
+    tab_stat_mean() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(res, "rds/ctable37.rds")

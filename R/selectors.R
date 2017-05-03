@@ -120,8 +120,8 @@ vars_list = function(...){
 #' @export
 #' @rdname vars
 .internal_to_ = function(e1, e2){
-    e1 = deparse(substitute(e1))
-    e2 = deparse(substitute(e2))
+    e1 = expr_to_character(substitute(e1))
+    e2 = expr_to_character(substitute(e2))
     res = function(y){
         first = match(e1, y)[1]
         stopif(is.na(first), "'",e1, "' not found." )
