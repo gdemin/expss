@@ -151,7 +151,8 @@ cro_fun = function(cell_vars,
                    weight = NULL,
                    subgroup = NULL,
                    fun, 
-                   ...){
+                   ...,
+                   unsafe = FALSE){
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -165,7 +166,7 @@ cro_fun = function(cell_vars,
         stopif(!("weight" %in% names(formals(fun))),
                "`weight` is provided but `fun` doesn't have formal `weight` argument.")
     }
-    fun = make_function_for_cro(fun, ..., need_weight = !is.null(weight))
+    
     
     row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
     col_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(col_vars), flat_df = TRUE)
@@ -173,9 +174,12 @@ cro_fun = function(cell_vars,
     
     check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
     
-    cell_vars = make_labels_from_names(cell_vars)
-    
-    
+    if(!unsafe){
+        cell_vars = make_labels_from_names(cell_vars)
+        fun = make_function_for_cro(fun, ..., need_weight = !is.null(weight))
+    } else {
+        cell_vars = unlab(names2labels(cell_vars))
+    }
     
     res = lapply(row_vars, function(each_row_var){
         all_col_vars = lapply(col_vars, function(each_col_var){
@@ -184,7 +188,8 @@ cro_fun = function(cell_vars,
                                            col_var = each_col_var, 
                                            weight = weight,
                                            subgroup = subgroup,
-                                           fun = fun
+                                           fun = fun,
+                                           use_lapply = unsafe
             )    
             row_var_lab = var_lab(dtable[["..row_var__"]])
             col_var_lab = var_lab(dtable[["..col_var__"]])
@@ -206,13 +211,15 @@ cro_fun = function(cell_vars,
 }
 
 
+
 ### compute statistics for single row_var and single col_var
 elementary_cro_fun_df = function(cell_var, 
                                  col_var, 
                                  weight,
                                  fun,
                                  row_var,
-                          subgroup
+                          subgroup, 
+                          use_lapply = FALSE
                           ){
     # to pass CRAN check
     ..weight__ = NULL
@@ -262,11 +269,25 @@ elementary_cro_fun_df = function(cell_var,
 
     # statistics
     by_string = "..row_var__,..col_var__"
-    if(is.null(weight)){
-        dtable = raw_data[ , fun(.SD), by = by_string]
+    if(!use_lapply){
+        if(is.null(weight)){
+            dtable = raw_data[ , fun(.SD), by = by_string]
+        } else {
+            dtable = raw_data[ , fun(.SD, weight = ..weight__), by = by_string, .SDcols = -"..weight__"]
+        }
     } else {
-        dtable = raw_data[ , fun(.SD, weight = ..weight__), by = by_string, .SDcols = -"..weight__"]
-    }
+        if(is.null(weight)){
+            dtable = raw_data[ , lapply(.SD, fun), by = by_string]
+        } else {
+            dtable = raw_data[ , lapply(.SD[, -"..weight__"], fun, weight = ..weight__), by = by_string]
+        }
+        dtable = melt(dtable, id.vars = c("..row_var__", "..col_var__"), 
+                      variable.name = "row_labels",
+                      na.rm = FALSE, variable.factor = TRUE, 
+                      value.factor = FALSE, 
+                      verbose = FALSE)
+        
+    }    
     if(("row_labels" %in% colnames(dtable)) && !is.factor(dtable[["row_labels"]])){ 
         dtable[ , row_labels := fctr(row_labels, levels = unique(row_labels),
                           prepend_var_lab = FALSE)]
@@ -410,7 +431,7 @@ make_dataframe_with_row_labels = function(res){
         if(is.matrix(res) || is_list(res)) res = as.dtfrm(res)
         ####
         if(is.data.frame(res)) {
-            if("row_labels" %in% colnames(res)){
+            if("row_labels" %in% names(res)){
                 res[["row_labels"]] = make_items_unique(res[["row_labels"]])
             } else {
                 row_labels = rownames(res)
@@ -453,7 +474,8 @@ cro_fun_df = function(cell_vars,
                       weight = NULL,
                       subgroup = NULL,
                       fun, 
-                      ...){
+                      ...,
+                      unsafe = FALSE){
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -467,8 +489,9 @@ cro_fun_df = function(cell_vars,
         stopif(!("weight" %in% names(formals(fun))),
                "`weight` is provided but `fun` doesn't have formal `weight` argument.")
     }
-    fun = make_function_for_cro_df(fun, ..., need_weight = !is.null(weight))
-    
+    if(!unsafe) {
+        fun = make_function_for_cro_df(fun, ..., need_weight = !is.null(weight))
+    }
     cell_vars = make_labels_from_names(cell_vars)
     cell_vars = flat_list(cell_vars, flat_df = FALSE)
     row_vars = flat_list(multiples_to_single_columns_with_dummy_encoding(row_vars), flat_df = TRUE)
@@ -508,7 +531,11 @@ cro_fun_df = function(cell_vars,
     res
 }
 
+
+
+
 ######################################################
+
 
 #' @export
 #' @rdname cro_fun
@@ -519,11 +546,6 @@ cro_mean = function(cell_vars,
                     subgroup = NULL
 ){
     
-    fun = function(x, weight = NULL){
-        res = vapply(x, FUN = w_mean, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
-        list(row_labels = names(x), "|" = res)
-    }
-    
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -532,12 +554,13 @@ cro_mean = function(cell_vars,
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
-    cro_fun_df(cell_vars = cell_vars, 
+    cro_fun(cell_vars = cell_vars, 
                col_vars = col_vars, 
                row_vars = row_vars, 
                weight = weight,
                subgroup = subgroup,
-               fun = fun
+               fun = w_mean,
+               unsafe = TRUE
     )
 }
 
@@ -549,11 +572,7 @@ cro_sum = function(cell_vars,
                    weight = NULL,
                    subgroup = NULL
 ){
-    fun = function(x, weight = NULL){
-        res = vapply(x, FUN = w_sum, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
-        list(row_labels = names(x), "|" = res)
-    }
-    
+
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -562,12 +581,13 @@ cro_sum = function(cell_vars,
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
-    cro_fun_df(cell_vars = cell_vars, 
-               col_vars = col_vars, 
-               row_vars = row_vars, 
-               weight = weight,
-               subgroup = subgroup,
-               fun = fun
+    cro_fun(cell_vars = cell_vars, 
+                         col_vars = col_vars, 
+                         row_vars = row_vars, 
+                         weight = weight,
+                         subgroup = subgroup,
+                         fun = w_sum,
+                         unsafe = TRUE
     )
 }
 
@@ -579,11 +599,7 @@ cro_median = function(cell_vars,
                       weight = NULL,
                       subgroup = NULL
 ){
-    fun = function(x, weight = NULL){
-        res = vapply(x, FUN = w_median, FUN.VALUE = numeric(1), weight = weight, USE.NAMES = FALSE)
-        list(row_labels = names(x), "|" = res)
-    }
-    
+
     str_cell_vars = deparse(substitute(cell_vars))
     str_row_vars = deparse(substitute(row_vars))
     str_col_vars = deparse(substitute(col_vars))
@@ -592,12 +608,13 @@ cro_median = function(cell_vars,
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
-    cro_fun_df(cell_vars = cell_vars, 
-               col_vars = col_vars, 
-               row_vars = row_vars, 
-               weight = weight,
-               subgroup = subgroup,
-               fun = fun
+    cro_fun(cell_vars = cell_vars, 
+                         col_vars = col_vars, 
+                         row_vars = row_vars, 
+                         weight = weight,
+                         subgroup = subgroup,
+                         fun = w_median,
+                         unsafe = TRUE
     )
 }
 

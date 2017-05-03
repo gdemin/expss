@@ -12,10 +12,10 @@
 \title{Cross-tabulation with custom summary function.}
 \usage{
 cro_fun(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL, fun, ...)
+  weight = NULL, subgroup = NULL, fun, ..., unsafe = FALSE)
 
 cro_fun_df(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL, fun, ...)
+  weight = NULL, subgroup = NULL, fun, ..., unsafe = FALSE)
 
 cro_mean(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)

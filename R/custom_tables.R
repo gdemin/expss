@@ -506,14 +506,16 @@ tab_subgroup.intermediate_table = function(data, subgroup = NULL){
 #' @rdname tables
 #' @export
 tab_stat_fun = function(data, ..., 
-                        label = NULL){
+                        label = NULL,
+                        unsafe = FALSE){
     UseMethod("tab_stat_fun")
 }
 
 #' @rdname tables
 #' @export
 tab_stat_fun_df = function(data, ..., 
-                           label = NULL){
+                           label = NULL,
+                           unsafe = FALSE){
     UseMethod("tab_stat_fun_df")
 }
 
@@ -570,7 +572,7 @@ tab_stat_rpct = function(data,
 ############
 #' @export
 tab_stat_fun.intermediate_table = function(data, ..., 
-                                label = NULL){
+                                label = NULL, unsafe = FALSE){
     # fun = eval(substitute(combine_functions(...)))
     args = list(...)
     if(length(args)>1 || !is.null(names(args))){
@@ -588,7 +590,8 @@ tab_stat_fun.intermediate_table = function(data, ...,
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
         subgroup = data[[SUBGROUP]],
-        fun = fun
+        fun = fun,
+        unsafe = unsafe
     )
     add_result_to_intermediate_table(data, result, label)
 }
@@ -598,7 +601,7 @@ tab_stat_fun.intermediate_table = function(data, ...,
 tab_stat_mean = function(data, label = "Mean"){
     eval(substitute(tab_stat_fun(data, 
                              w_mean, 
-                             label = label)),
+                             label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())    
 }
@@ -608,7 +611,7 @@ tab_stat_mean = function(data, label = "Mean"){
 tab_stat_median = function(data, label = "Median"){
     eval(substitute(tab_stat_fun(data, 
                              w_median, 
-                             label = label)),
+                             label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())    
 }
@@ -618,7 +621,7 @@ tab_stat_median = function(data, label = "Median"){
 tab_stat_se = function(data, label = "S. E."){
     eval(substitute(tab_stat_fun(data,
                              w_se, 
-                             label = label)),
+                             label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())    
 }
@@ -628,7 +631,7 @@ tab_stat_se = function(data, label = "S. E."){
 tab_stat_sum = function(data, label = "Sum"){
     eval(substitute(tab_stat_fun(data, 
                              w_sum, 
-                             label = label)),
+                             label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())    
 }
@@ -638,7 +641,7 @@ tab_stat_sum = function(data, label = "Sum"){
 tab_stat_min = function(data, label = "Min."){
     eval(substitute(tab_stat_fun(data, 
                                  w_min, 
-                                 label = label)),
+                                 label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())    
 }
@@ -648,7 +651,7 @@ tab_stat_min = function(data, label = "Min."){
 tab_stat_max = function(data, label = "Max."){
     eval(substitute(tab_stat_fun(data, 
                                  w_max, 
-                                 label = label)),
+                                 label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())    
 }
@@ -658,7 +661,7 @@ tab_stat_max = function(data, label = "Max."){
 tab_stat_sd = function(data, label = "Std. dev."){
     eval(substitute(tab_stat_fun(data, 
                              w_sd, 
-                             label = label)),
+                             label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())
 }
@@ -668,7 +671,7 @@ tab_stat_sd = function(data, label = "Std. dev."){
 tab_stat_valid_n = function(data, label = "Valid N"){
     eval(substitute(tab_stat_fun(data, 
                              valid_n, 
-                             label = label)),
+                             label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())    
 }
@@ -678,7 +681,7 @@ tab_stat_valid_n = function(data, label = "Valid N"){
 tab_stat_unweighted_valid_n = function(data, label = "Unw. valid N"){
     eval(substitute(tab_stat_fun(data, 
                              unweighted_valid_n, 
-                             label = label)),
+                             label = label, unsafe = TRUE)),
          envir = parent.frame(),
          enclos = baseenv())    
 }
@@ -686,7 +689,7 @@ tab_stat_unweighted_valid_n = function(data, label = "Unw. valid N"){
 
 #' @export
 tab_stat_fun_df.intermediate_table = function(data, ..., 
-                                   label = NULL){
+                                   label = NULL, unsafe = FALSE){
     
     # fun = eval(substitute(combine_functions(...)))
     args = list(...)
@@ -704,7 +707,8 @@ tab_stat_fun_df.intermediate_table = function(data, ...,
         row_vars = data[[ROW_VAR]],
         weight = data[[WEIGHT]],
         subgroup = data[[SUBGROUP]],
-        fun = fun
+        fun = fun,
+        unsafe = unsafe
     )
     add_result_to_intermediate_table(data, result, label)
 }
@@ -824,13 +828,13 @@ tab_stat_rpct.intermediate_table = function(data,
 ############
 #' @export
 tab_stat_fun.default = function(data, ..., 
-                        label = NULL){
+                        label = NULL, unsafe = FALSE){
     tab_stat_()
 }
 
 #' @export
 tab_stat_fun_df.default = function(data, ..., 
-                           label = NULL){
+                           label = NULL, unsafe = FALSE){
     tab_stat_()
 }
 
