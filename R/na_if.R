@@ -58,7 +58,9 @@ na_if = function(x, value){
 #' @rdname na_if
 #' @export
 'na_if<-' = function(x, value){
-    na_if(x, value)
+    if(!length(value)) return(x)
+    if_val(x, from=list(value)) = list(NA)
+    x
 }
 
 #' @rdname na_if
