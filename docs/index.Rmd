@@ -102,7 +102,7 @@ mtcars %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
     tab_pivot(stat_position = "inside_rows") %>% 
-    htmlTable(caption = "Different statistics for differen variables.")
+    htmlTable(caption = "Different statistics for different variables.")
 
 mtcars %>% 
     tab_cells(cyl) %>% 
