@@ -401,7 +401,13 @@ hi = Inf
 
 #' @export
 #' @rdname if_val
-copy = function(x) x
+copy = function(x) {
+    if(missing(x)){
+        copy
+    } else {
+        x
+    }
+}    
 
 #' @export
 #' @rdname if_val

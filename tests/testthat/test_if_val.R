@@ -8,6 +8,7 @@ expect_error(recode(1, ~ 42))
 
 expect_identical(recode(1:5, 1~-1), c(-1, NA, NA, NA, NA))
 expect_identical(recode(1:5, 1~-1, other ~ copy), c(-1, 2, 3, 4, 5))
+expect_identical(recode(1:5, 1~-1, other() ~ copy()), c(-1, 2, 3, 4, 5))
 b = 1:5
 recode(b) = 1~-1
 expect_identical(b, c(-1, 2, 3, 4, 5))

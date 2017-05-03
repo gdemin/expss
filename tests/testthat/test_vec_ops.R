@@ -21,7 +21,9 @@ expect_equal(c(a=1, b=4, d = 5) %d% perl(4), c(a=1, d=5))
 expect_equal(c(a=1, b=4, d = 5) %r% 2, c(a=1, b=4, d = 5, a=1, b=4, d = 5))
 
 expect_equal( c(1, 2, NA, 3) %i% other, c(1, 2, NA, 3))
+expect_equal( c(1, 2, NA, 3) %i% other(), c(1, 2, NA, 3))
 expect_equal( c(1, 2, NA, 3) %i% not_na, c(1, 2, 3))
+expect_equal( c(1, 2, NA, 3) %i% not_na(), c(1, 2, 3))
 expect_equal( v_intersect(c(1, 2, NA, 3), not_na), c(1, 2, 3))
 expect_equal( c(1, 2, NA, 3) %d% is.na, c(1, 2, 3))
 

@@ -266,7 +266,11 @@ items = function(...){
 #' @export
 #' @rdname criteria
 not_na = function(x){
-   !is.na(x) 
+    if(missing(x)){
+        not_na
+    } else {
+        !is.na(x)
+    }    
 }
 
 class(not_na) = union("criterion",class(not_na))
@@ -274,7 +278,11 @@ class(not_na) = union("criterion",class(not_na))
 #' @export
 #' @rdname criteria
 other = function(x){
-    rep(TRUE, NROW(x)) 
+    if(missing(x)){
+        other    
+    } else {
+        rep(TRUE, NROW(x)) 
+    }    
 }
 
 
