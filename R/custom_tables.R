@@ -46,12 +46,13 @@ MIS_VAL = "mis_val"
 #' subset of data for table.}
 #' \item{\code{tab_stat_fun}, \code{tab_stat_fun_df}}{ \code{tab_stat_fun} 
 #' applies function on each variable in cells separately, \code{tab_stat_fun_df}
-#' gives to function each data.frame in cells as a whole
+#' gives to function each data.frame in cells as a whole 
 #' \link[data.table]{data.table} with all names converted to variable labels (if
-#' labels exists). So it is not recommended to rely on original variables names
-#' in your \code{fun}. You can provide several functions as arguments. They will
-#' be combined as with \link{combine_functions}. So you can use \code{method}
-#' argument. For details see documentation for \link{combine_functions}. }
+#' labels exists). So it is not recommended to rely on original variables names 
+#' in your \code{fun}. For details see \link{cro_fun}. You can provide several
+#' functions as arguments. They will be combined as with
+#' \link{combine_functions}. So you can use \code{method} argument. For details
+#' see documentation for \link{combine_functions}. }
 #' \item{\code{tab_stat_cases}}{ calculate counts.}
 #' \item{\code{tab_stat_cpct}, \code{tab_stat_cpct_responses}}{ calculate column
 #' percent. These functions give different results only for multiple response
@@ -96,6 +97,14 @@ MIS_VAL = "mis_val"
 #' @param stat_label character one of the values \code{"inside"} or 
 #'   \code{"outside"}. Where will be placed labels for the statistics relative
 #'   to column names/row labels? See examples.
+#' @param unsafe logical If TRUE than \code{fun} will be evaluated as is. It can
+#'   lead to significant increase in the performance. But there are some 
+#'   limitations. For \code{tab_stat_fun} it means that your function \code{fun} 
+#'   should return vector of length one. Also there will be no attempts to make
+#'   labels for statistic.  For \code{tab_stat_fun_df} your function should return
+#'   vector of length one or list/data.frame (optionally with 'row_labels'
+#'   element - statistic labels). If \code{unsafe} is TRUE then further
+#'   arguments (\code{...}) for \code{fun} will be ignored.
 #' @return All of these functions return object of class 
 #'   \code{intermediate_table} except \code{tab_pivot} which returns final
 #'   result - object of class \code{etable}. Basically it's a data.frame but

@@ -59,8 +59,18 @@ for its processing inside. For \code{cro_fun_df} \code{fun} will receive
 (if labels exists). So it is not recommended to rely on original variables
 names in your \code{fun}.}
 
-\item{...}{further arguments for \code{fun}  in
-\code{cro_fun}/\code{cro_fun_df} or functions for \code{combine_functions}.}
+\item{...}{further arguments for \code{fun}  in 
+\code{cro_fun}/\code{cro_fun_df} or functions for \code{combine_functions}.
+Ignored in \code{cro_fun}/\code{cro_fun_df} if \code{unsafe} is TRUE.}
+
+\item{unsafe}{logical If TRUE than \code{fun} will be evaluated as is. It can
+lead to significant increase in the performance. But there are some 
+limitations. For \code{cro_fun} it means that your function \code{fun} 
+should return vector of length one. Also there will be no attempts to make
+labels for statistic.  For \code{cro_fun_df} your function should return
+vector of length one or list/data.frame (optionally with 'row_labels'
+element - statistic labels). If \code{unsafe} is TRUE then further
+arguments (\code{...}) for \code{fun} will be ignored.}
 
 \item{method}{function which will combine results of multiple functions in
 \code{combine_functions}. It will be applied as in the expression 
@@ -88,18 +98,20 @@ separately, \code{cro_fun_df} gives to \code{fun} each data.frame in
 \code{cell_vars} as a whole. So \code{cro_fun(iris[, -5], iris$Species, fun =
 mean)} gives the same result as \code{cro_fun_df(iris[, -5], iris$Species, 
 fun = colMeans)}. For \code{cro_fun_df} names of \code{cell_vars} will 
-converted to labels if they are available before \code{fun} will be applied.
-Generally it is recommended that \code{fun} will always return object of the
+converted to labels if they are available before the \code{fun} will be applied. 
+Generally it is recommended that \code{fun} will always return object of the 
 same form. Row names/vector names of \code{fun} result will appear in the row
-labels of the table and column names/names of list will appear in the column
-labels.}
+labels of the table and column names/names of list will appear in the column 
+labels. If your \code{fun} returns data.frame/matrix/list with element named
+'row_labels' then this element will be used as row labels. And it will have
+precedence over rownames.}
 \item{\code{combine_functions}}{ is auxiliary function for combining several 
 functions into one function for usage with \code{cro_fun}/\code{cro_fun_df}.
 Names of arguments will be used as statistic labels. By default, results of
 each function are combined with \link{c}. But you can provide your own method
 function with \code{method} argument. It will be applied as in the expression
 \code{do.call(method, list_of_functions_results)}. Particular useful method
-is \code{list}. When it used statistic labels will appear in the column
+is \code{list}. When it used then statistic labels will appear in the column
 labels. See examples. Also you may be interested in \code{data.frame}, 
 \code{rbind}, \code{cbind} methods.}}
 }
