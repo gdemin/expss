@@ -28,10 +28,6 @@ result_dfs$b_total = with(dfs, sum_row(b_1, b_2, b_4, b_5))
 # result_dfs$a_total = sum_row(a_1, a_2, a_4, a_5)
 
 
-expect_warning(vars_range("a_1", "a_5"))
-
-expect_warning(vars_range_list("a_1", "a_5"))
-
 expect_identical(
     with(dfs, vars(b_1 %to% b_5)), 
     with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
@@ -188,8 +184,7 @@ if(suppressWarnings(require(magrittr, quietly = TRUE))){
 
 context("vars with perl")
 
-expect_warning(vars_pattern("a_[0-9]"))
-expect_warning(vars_pattern_list("a_[0-9]"))
+
 
 expect_identical(vars(perl("a_[0-9]")), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(vars_list(perl("a_[0-9]")), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))

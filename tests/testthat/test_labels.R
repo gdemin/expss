@@ -113,17 +113,7 @@ expect_identical(labs2,num_lab("
 
 "))
 
-expect_warning(ml_left("
-    1\tBrand1
 
-\t\t2.    Brand2    
-
-3.\t\t    Brand3\t\t
-
-
-4    Brand4
-
-"))
 
 expect_identical(labs2,lab_num("
     Brand1\t      1
@@ -137,18 +127,6 @@ Brand4              4
 
 "))
 
-
-expect_warning(ml_right("
-    Brand1\t      1
-                               
-                               \t\t    Brand2   2 
-                               
-                               \t\t    Brand3\t\t3
-                               
-                               
-                               Brand4              4
-                               
-                               "))
 
 
 expect_identical(labs2_1,make_labels("
@@ -346,15 +324,6 @@ expect_identical(
     c(male = 1L, female = 2L)
     )
 
-expect_warning(
-    ml_autonum(
-        "
-        male
-        
-        
-        female
-        ")
-    )
 
 
 context("as.labelled")

@@ -16,9 +16,6 @@
 #' sorted in the alphabetic order.}}
 #' Functions with word 'list' in name return lists of variables instead of 
 #' dataframes.
-#' \code{vars_pattern}, \code{vars_pattern_list}, \code{vars_range} and 
-#' \code{vars_range_list} are deprecated and will be removed in the future
-#' version.
 #' \code{.internal_to_} is for internal usage and not documented.
 #' @seealso \link{keep}
 #' @param ... characters names of variables or criteria/logical functions
