@@ -2,9 +2,12 @@
 % Please edit documentation in R/labels.R
 \name{unlab}
 \alias{unlab}
+\alias{drop_all_labels}
 \title{Drop variable label and value labels}
 \usage{
 unlab(x)
+
+drop_all_labels(x)
 }
 \arguments{
 \item{x}{Variable(s). Vector/data.frame/list.}

@@ -7,6 +7,7 @@
 \alias{add_val_lab}
 \alias{add_val_lab<-}
 \alias{unvl}
+\alias{drop_val_labs}
 \alias{make_labels}
 \alias{drop_unused_labels}
 \alias{num_lab}
@@ -25,6 +26,8 @@ add_val_lab(x, value)
 add_val_lab(x) <- value
 
 unvl(x)
+
+drop_val_labs(x)
 
 make_labels(text, code_position = c("left", "right", "autonum"))
 

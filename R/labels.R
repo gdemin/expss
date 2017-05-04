@@ -118,8 +118,6 @@ set_var_lab.default = function(x, value){
 
 
 
-
-
 #'@rdname var_lab
 #' @export
 unvr=function(x){
@@ -143,6 +141,9 @@ unvr.list=function(x){
     x
 }
 
+#'@rdname var_lab
+#' @export
+drop_var_labs = unvr
 
 ############# value labels #######################
 
@@ -343,14 +344,15 @@ set_val_lab.list = function(x,value, add = FALSE){
 
 ######
 
-
-
 #' @export
 #' @rdname val_lab
 unvl=function(x){
     set_val_lab(x,NULL)
 }
 
+#' @export
+#' @rdname val_lab
+drop_val_labs = unvl
 
 #' @export
 #' @rdname val_lab
@@ -475,6 +477,10 @@ unlab.list=function(x){
     for (each in seq_along(x)) x[[each]] = unlab(x[[each]])
     x
 }
+
+#' @export
+#' @rdname unlab
+drop_all_labels = unlab
 
 ########
 

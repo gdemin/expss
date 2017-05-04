@@ -24,6 +24,7 @@ for (each in seq_along(test_test_ds)) var_lab(test_test_ds[[each]]) = "Age group
 
 expect_identical(set_var_lab(test_ds, "Age group"), test_test_ds)
 expect_identical(test_ds, unvr(test_test_ds))
+expect_identical(test_ds, drop_var_labs(test_test_ds))
 
 context("val_lab")
 
@@ -55,6 +56,8 @@ expect_identical(c(a=1,b=2),val_lab(dd))
 
 ### Add labels ###
 
+expect_identical(drop_all_labels(test_ds), unlab(test_ds))
+expect_identical(drop_val_labs(test_ds), unvl(test_ds))
 test_ds = unlab(test_ds) # drop all labels
 
 age_groups = c('18 - 26' = 2, '27 - 35' = 3)

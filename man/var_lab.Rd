@@ -5,6 +5,7 @@
 \alias{var_lab<-}
 \alias{set_var_lab}
 \alias{unvr}
+\alias{drop_var_labs}
 \title{Set or get variable label}
 \usage{
 var_lab(x)
@@ -14,6 +15,8 @@ var_lab(x) <- value
 set_var_lab(x, value)
 
 unvr(x)
+
+drop_var_labs(x)
 }
 \arguments{
 \item{x}{Variable. In the most cases it is numeric vector.}
