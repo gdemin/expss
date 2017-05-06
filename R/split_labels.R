@@ -57,8 +57,11 @@ split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, pe
     if(length(x)==0){
         return(matrix(NA, ncol=0, nrow = 0))
     }
-    if(length(x)==1 && x[1]=="") x[1] = " "
+    zero_length_strings = x == "" # strange behaviour of strsplit with ""
     x_split = strsplit(x, split = split, fixed = fixed, perl = perl)
+    if(any(zero_length_strings)){
+        x_split[zero_length_strings] = "" 
+    }
     max_length = max(lengths(x_split))
     x_split = lapply(x_split, function(each) {
         if(length(each)<max_length){
