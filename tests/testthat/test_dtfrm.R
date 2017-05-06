@@ -17,6 +17,18 @@ list2 = lst(a, b)
 
 expect_identical(list1, list2)
 
+list1 = list(a, b)
+names(list1) = c("a", "d")
+list2 = lst(a, d = b)
+
+expect_identical(list1, list2)
+
+list1 = list(a, b)
+names(list1) = c("a", "Very long and `complex` name")
+list2 = lst(a, "Very long and `complex` name" = b)
+
+expect_identical(list1, list2)
+
 data(iris)
 ir = iris
 default_dataset(ir)

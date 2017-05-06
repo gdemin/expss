@@ -55,7 +55,17 @@ as.dtfrm = function(x, ...) {
 #' @rdname dtfrm
 lst = function(...){
     res = list(...)
-    names(res) = sapply(as.list(substitute(list(...)))[-1], expr_to_character)
+    current_names = names(res)
+    possible_names = vapply(as.list(substitute(list(...)))[-1], 
+                        FUN = expr_to_character, 
+                        FUN.VALUE = character(1),
+                        USE.NAMES = FALSE)
+    if(!is.null(current_names)){
+        names(res)[current_names==""] = possible_names[current_names==""]
+    } else {
+        names(res) = possible_names
+    }
+    
     res
  
 }

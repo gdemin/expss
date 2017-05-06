@@ -1,3 +1,14 @@
+0.7.5 (17.05.2017)
+================
+* increase table functions performance
+* increase 'as.dichotomy'/'dummy' performance
+* add 'indirect'/'indirect_list' - aliases for 'vars'/'vars_list'
+* add 'mis_val' - alias for 'na_if'
+* add 'unsafe' argument for *_fun/*_fun_df.
+* improve 'lst' function
+* numerous small bugfixes
+
+
 0.7.1 (10.04.2017)
 ================
 * make value labels support in the base R and other packages (via 'factor' for class 'labelled')
