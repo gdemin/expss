@@ -1,3 +1,4 @@
+
 #' Merge two tables/data.frames
 #'
 #' \code{\%merge\%} is infix shortcut for base \link[base]{merge} with 
@@ -148,13 +149,25 @@ merge_table = function(x, y,
     # }
 
     ##########################################
-    
+    if(length(suffixes)>0){
+        suffix.x = suffixes[1]
+    } else {
+        suffix.x = ""
+    } 
+    if(length(suffixes)>1){
+        suffix.y = suffixes[2]
+    } else {
+        suffix.y = ""
+    } 
+    preserve_colnames = c(colnames(x)[pos1], 
+                          paste0(colnames(x)[-pos1] %d% '..order..x', suffix.x), 
+                          paste0(colnames(y)[-pos2] %d% '..order..y', suffix.y)
+    )
     res = suppressWarnings(merge.data.frame(x, y, by.x = by.x, by.y = by.y,
                                             all.x = all.x, all.y = all.y,
                                             sort = sort, suffixes = suffixes,
                                             incomparables = incomparables,
                                             ... ))
-    preserve_colnames = colnames(res) %d% c('..order..y','..order..x')
     if(need_sort){
         order.y = res[['..order..y']]
         if_na(order.y) = res[['..order..x']]
