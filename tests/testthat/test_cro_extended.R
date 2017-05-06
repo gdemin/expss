@@ -255,3 +255,12 @@ expect_equal_to_reference(
     with(df, cro_cpct(mdset(var_orange, var_banana, var_melon, var_mango), list(area))),
     "rds/cro_mdset_names_of_result.rds"
 )
+
+expect_equal_to_reference(
+    cro_cpct(mtcars$am, total(label = "|")),
+    "cro_total_empty_label.rds")
+
+expect_equal_to_reference(
+    cro_cpct(mtcars$am, total(label = "")),
+    "cro_total_empty_label.rds")
+

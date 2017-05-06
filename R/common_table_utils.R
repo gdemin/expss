@@ -148,8 +148,17 @@ long_datatable_to_table = function(dtable, rows, columns, values){
             curr_levels = levels(dtable[[each]])
             if(length(curr_levels)>0){
                 dtable[[each]][] = curr_levels[1]
-            }
+            } 
         }
+    }
+    # to prevent new name creation from empty names ("")
+    columns_number = which(colnames(dtable) %in% columns)
+    for(each in columns_number){
+        if(!is.factor(dtable[[each]])){
+            dtable[[each]] = fctr(dtable[[each]], drop_unused_labels = FALSE, 
+                                  prepend_var_lab = FALSE)    
+        } 
+        levels(dtable[[each]]) = paste0(levels(dtable[[each]]), "|")  
     }
     setkeyv(dtable, cols = c(rows, columns), verbose = FALSE)
     frm = as.formula(paste(paste(rows, collapse = "+"), "~", paste(columns, collapse = "+")))
