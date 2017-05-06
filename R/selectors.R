@@ -13,7 +13,10 @@
 #' \link{calculate}, \link{keep}, \link{except} and \link{where} support 
 #' \code{\%to\%}. Inside global environment \link[base]{with},
 #' \link[base]{within} \code{\%to\%} will take range from names of variables
-#' sorted in the alphabetic order.}}
+#' sorted in the alphabetic order.}
+#' \item{\code{indirect}/\code{indirect_list}}{ are aliases for
+#' \code{vars}/\code{vars_list}.}
+#' }
 #' Functions with word 'list' in name return lists of variables instead of 
 #' dataframes.
 #' \code{.internal_to_} is for internal usage and not documented.
@@ -72,6 +75,10 @@ vars = function(...){
 
 #' @export
 #' @rdname vars
+indirect = vars
+
+#' @export
+#' @rdname vars
 vars_list = function(...){
     if(exists(".internal_column_names0", envir = parent.frame())){
         var_names = internal_ls(parent.frame()[[".internal_column_names0"]], env = parent.frame())
@@ -87,6 +94,10 @@ vars_list = function(...){
     selected_names = keep_helper(var_names, args)
     mget(var_names[selected_names], envir = parent.frame(), inherits = TRUE)
 }
+
+#' @export
+#' @rdname vars
+indirect_list = vars_list
 
 #' @export
 #' @rdname vars

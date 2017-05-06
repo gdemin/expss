@@ -2,7 +2,9 @@
 % Please edit documentation in R/selectors.R
 \name{vars}
 \alias{vars}
+\alias{indirect}
 \alias{vars_list}
+\alias{indirect_list}
 \alias{\%to\%}
 \alias{\%to_list\%}
 \alias{.internal_to_}
@@ -10,7 +12,11 @@
 \usage{
 vars(...)
 
+indirect(...)
+
 vars_list(...)
+
+indirect_list(...)
 
 e1 \%to\% e2
 
@@ -42,7 +48,10 @@ non-standard evaluation is \code{\%to\%}. You can use \code{\%to\%} inside
 \link{calculate}, \link{keep}, \link{except} and \link{where} support 
 \code{\%to\%}. Inside global environment \link[base]{with},
 \link[base]{within} \code{\%to\%} will take range from names of variables
-sorted in the alphabetic order.}}
+sorted in the alphabetic order.}
+\item{\code{indirect}/\code{indirect_list}}{ are aliases for
+\code{vars}/\code{vars_list}.}
+}
 Functions with word 'list' in name return lists of variables instead of 
 dataframes.
 \code{.internal_to_} is for internal usage and not documented.
