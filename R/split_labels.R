@@ -139,6 +139,7 @@ split_columns.data.frame  = function(data,
         columns = which(columns)
     }
     class_data = class(data)
+    first_column_name = colnames(data)[1]
     columns = sort(unique(columns))
     for(each_column in rev(columns)){
         curr_col = data[[each_column]]
@@ -161,6 +162,9 @@ split_columns.data.frame  = function(data,
         )
     }
     if_val(colnames(data)) = perl("^\\.\\.new_columns__\\d+_\\d+$") ~ ""
+    if(NCOL(data)>0 && !(first_column_name %in% c(NA, "row_labels"))){
+        colnames(data)[1] = first_column_name
+    }
     class(data) = class_data %d% 'etable'
     data
 }
@@ -172,7 +176,12 @@ split_columns.matrix  = function(data,
                                  split = "|", 
                                  fixed = TRUE, 
                                  perl = FALSE){
+    
+    matr_colnames = colnames(data)
     data = as.dtfrm(data)
+    if(is.null(matr_colnames)){
+        colnames(data) = rep("", NCOL(data))
+    }
     split_columns(data, 
                   columns = columns, 
                   remove_repeated = remove_repeated, 

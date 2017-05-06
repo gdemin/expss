@@ -79,7 +79,15 @@ expect_equal_to_reference(split_columns(as.matrix(tabl[[1]]), remove_repeated = 
 tabl[,1] = as.factor(tabl[[1]])
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
 
+colnames(tabl)[1] = "My super table"
+expect_equal_to_reference(split_columns(tabl), "rds/split_columns1b.rds")
 
+tabl_fre = fre(mtcars$am)
+expect_equal_to_reference(
+    split_columns(tabl_fre),
+    "rds/split_columns_fre.rds")
+
+context("split_table_to_df")
 mtcars = apply_labels(mtcars,
                       cyl = "Number of cylinders",
                       vs = "Engine",
@@ -118,3 +126,18 @@ expect_equal_to_reference(split_table_to_df(tabl[, 1]),
 
 expect_equal_to_reference(split_table_to_df(tabl[, 1], remove_repeated = FALSE),
                           "rds/split_table_to_df6.rds")
+
+colnames(tabl)[1] = "My super table"
+
+expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1b.rds")
+expect_equal_to_reference(split_table_to_df(tabl, remove_repeated = FALSE),
+                          "rds/split_table_to_df2b.rds")
+
+expect_identical(split_table_to_df(tabl[, FALSE]), tabl[, FALSE])
+
+
+expect_equal_to_reference(split_table_to_df(tabl[, 1]),
+                          "rds/split_table_to_df5b.rds")
+
+expect_equal_to_reference(split_table_to_df(tabl[, 1], remove_repeated = FALSE),
+                          "rds/split_table_to_df6b.rds")
