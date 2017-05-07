@@ -9,11 +9,12 @@
 split_labels(x, remove_repeated = TRUE, split = "|", fixed = TRUE,
   perl = FALSE)
 
-split_columns(data, columns = 1, remove_repeated = TRUE, split = "|",
-  fixed = TRUE, perl = FALSE)
+split_columns(data, columns = 1, remove_repeated = TRUE,
+  subheadings = FALSE, split = "|", fixed = TRUE, perl = FALSE)
 
 split_table_to_df(data, digits = getOption("expss.digits"),
-  remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE)
+  remove_repeated = TRUE, subheadings = FALSE, split = "|",
+  fixed = TRUE, perl = FALSE)
 }
 \arguments{
 \item{x}{character vector which will be split}
