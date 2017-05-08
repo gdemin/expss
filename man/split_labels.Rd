@@ -19,7 +19,7 @@ split_table_to_df(data, digits = getOption("expss.digits"),
 \arguments{
 \item{x}{character vector which will be split}
 
-\item{remove_repeated}{logical. Should we remove repeated labels?}
+\item{remove_repeated}{logical. Default is \code{TRUE}. Should we remove repeated labels?}
 
 \item{split}{character vector (or object which can be coerced to such)
 containing regular expression(s) (unless \code{fixed = TRUE}) to use for
@@ -34,6 +34,10 @@ expressions. Has priority over \code{perl}.}
 
 \item{columns}{character/numeric/logical  columns in the data.frame
 \code{data} which should be split}
+
+\item{subheadings}{logical. Default is \code{FALSE}. Should we create table
+subheadings from labels in the first column? This argument is ignored if
+\code{columns} doesn't equal to 1 or \code{remove_repeated} is FALSE.}
 
 \item{digits}{numeric. How many digits after decimal point should be left in
 \code{split_table_to_df}?}
@@ -69,7 +73,7 @@ mtcars = apply_labels(mtcars,
 )
 
 # all row labels in the first column
-tabl = mtcars \%>\% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
+tabl = mtcars \%>\% calculate(cro_cpct(list(cyl, gear, carb), list(total(), vs, am)))
 split_labels(tabl[[1]])
 split_labels(colnames(tabl))
 
@@ -78,7 +82,11 @@ split_columns(tabl) # remove repeated
 
 split_columns(tabl, remove_repeated = FALSE)
 
+split_columns(tabl, subheadings = TRUE)
+
 split_table_to_df(tabl)
+
+split_table_to_df(tabl, subheadings = TRUE)
 }
 \seealso{
 \link[base]{strsplit}

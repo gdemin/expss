@@ -12,7 +12,10 @@
 #' @param x character vector which will be split
 #' @param columns character/numeric/logical  columns in the data.frame
 #'   \code{data} which should be split
-#' @param remove_repeated logical. Should we remove repeated labels? 
+#' @param remove_repeated logical. Default is \code{TRUE}. Should we remove repeated labels? 
+#' @param subheadings logical. Default is \code{FALSE}. Should we create table
+#'   subheadings from labels in the first column? This argument is ignored if
+#'   \code{columns} doesn't equal to 1 or \code{remove_repeated} is FALSE.
 #' @param split character vector (or object which can be coerced to such)
 #'   containing regular expression(s) (unless \code{fixed = TRUE}) to use for
 #'   splitting.
@@ -43,7 +46,7 @@
 #' )
 #' 
 #' # all row labels in the first column
-#' tabl = mtcars %>% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
+#' tabl = mtcars %>% calculate(cro_cpct(list(cyl, gear, carb), list(total(), vs, am)))
 #' split_labels(tabl[[1]])
 #' split_labels(colnames(tabl))
 #' 
@@ -52,7 +55,11 @@
 #' 
 #' split_columns(tabl, remove_repeated = FALSE)
 #' 
+#' split_columns(tabl, subheadings = TRUE)
+#' 
 #' split_table_to_df(tabl)
+#' 
+#' split_table_to_df(tabl, subheadings = TRUE)
 split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
     if(length(x)==0){
         return(matrix(NA, ncol=0, nrow = 0))
@@ -307,6 +314,7 @@ split_all_in_etable_for_print = function(data,
                                fixed = TRUE, 
                                perl = FALSE){
     if(NCOL(data) == 0) return(data)
+    data_ncol = NCOL(data)
     data = round_dataframe(data, digits = digits)
     cl_names = colnames(data)
     if(cl_names[1] == "row_labels") cl_names[1] = ""
@@ -335,11 +343,40 @@ split_all_in_etable_for_print = function(data,
         data = split_columns(data, 
                              columns = 1,
                              remove_repeated = remove_repeated,
-                             subheadings = subheadings, 
+                             subheadings = FALSE, 
                              split = split,
                              fixed = fixed,
                              perl = perl
         )
+        # if(remove_repeated && subheadings && (NCOL(data)>data_ncol)){
+        #     subheading_column = data[[1]]
+        #     data[[1]] = NULL
+        # 
+        #     has_value = !(subheading_column %in% c("", NA))
+        #     subheadings = subheading_column[has_value]
+        #     splitter = cumsum(has_value)
+        #     subtables = split(data, splitter)
+        #     add_subheader = function(x, y) {
+        #         if(!(y[1,1] %in% c("", NA))){
+        #             y = add_rows("", y)
+        #             y = add_rows("", y)
+        #         }
+        #         y[2, 1] = x
+        #         y
+        #     }
+        #     if(length(subheadings)<length(subtables)){
+        #         data = mapply(add_subheader, subheadings, subtables[-1],
+        #                       SIMPLIFY = FALSE,
+        #                       USE.NAMES = FALSE)
+        #         data = do.call(add_rows, c(subtables[1], data))
+        #     } else {
+        #         data = mapply(add_subheader, subheadings, subtables,
+        #                       SIMPLIFY = FALSE,
+        #                       USE.NAMES = FALSE)
+        #         data = do.call(add_rows, data)
+        #     }
+        # 
+        # }
     } else {
         data = as.dtfrm(header)
     }
