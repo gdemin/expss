@@ -40,10 +40,14 @@ expect_identical(split_labels(vec), matrix(vec, ncol = 1))
 context("split_columns")
 # replace first column with new columns 
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
+expect_equal_to_reference(split_columns(tabl, subheadings = TRUE), "rds/split_columns1subheadings.rds")
+expect_equal_to_reference(split_columns(tabl, "row_labels", subheadings = TRUE), "rds/split_columns1subheadings.rds")
 expect_equal_to_reference(split_columns(tabl, "row_labels"), "rds/split_columns1.rds")
 expect_equal_to_reference(split_columns(tabl, c(TRUE, rep(FALSE, ncol(tabl)-1))), "rds/split_columns1.rds")
+expect_equal_to_reference(split_columns(tabl, c(TRUE, rep(FALSE, ncol(tabl)-1)), subheadings = TRUE), "rds/split_columns1subheadings.rds")
 
 expect_equal_to_reference(split_columns(tabl, remove_repeated = FALSE), "rds/split_columns2.rds")
+expect_equal_to_reference(split_columns(tabl, remove_repeated = FALSE, subheadings = TRUE), "rds/split_columns2.rds")
 expect_equal_to_reference(split_columns(tabl, "row_labels", remove_repeated = FALSE), "rds/split_columns2.rds")
 expect_equal_to_reference(split_columns(tabl, c(TRUE, rep(FALSE, ncol(tabl)-1)), remove_repeated = FALSE), 
                           "rds/split_columns2.rds")
@@ -63,6 +67,11 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
+    split_columns(tabl2, c(1, 7, 13), subheadings = TRUE),
+    "rds/split_columns3.rds"
+)
+
+expect_equal_to_reference(
     split_columns(tabl2, c("row_labels", "add_1", "add_2")),
     "rds/split_columns3.rds"
 )
@@ -74,13 +83,16 @@ expect_equal_to_reference(
 
 
 expect_equal_to_reference(split_columns(as.matrix(tabl[[1]])), "rds/split_columns4.RDS")
+expect_equal_to_reference(split_columns(as.matrix(tabl[[1]]), subheadings = TRUE), "rds/split_columns4subheafings.RDS")
 expect_equal_to_reference(split_columns(as.matrix(tabl[[1]]), remove_repeated = FALSE), "rds/split_columns5.RDS")
 
 tabl[,1] = as.factor(tabl[[1]])
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
+expect_equal_to_reference(split_columns(tabl, subheadings = TRUE), "rds/split_columns1subheadings.rds")
 
 colnames(tabl)[1] = "My super table"
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1b.rds")
+expect_equal_to_reference(split_columns(tabl, subheadings = TRUE), "rds/split_columns1b_subheadings.rds")
 
 tabl_fre = fre(mtcars$am)
 expect_equal_to_reference(
@@ -112,11 +124,18 @@ expect_error(split_table_to_df(tabl))
 tabl = tabl %>% tab_pivot() 
 
 expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1.rds")
+expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_table_to_df1subheadings.rds")
 expect_equal_to_reference(split_table_to_df(tabl, remove_repeated = FALSE),
                           "rds/split_table_to_df2.rds")
 
+expect_equal_to_reference(split_table_to_df(tabl, remove_repeated = FALSE, subheadings = TRUE),
+                          "rds/split_table_to_df2.rds")
+
 expect_identical(split_table_to_df(tabl[, FALSE]), tabl[, FALSE])
+expect_identical(split_table_to_df(tabl[, FALSE], subheadings = TRUE), tabl[, FALSE])
 expect_equal_to_reference(split_table_to_df(tabl[FALSE, ]),
+                          "rds/split_table_to_df3.rds")
+expect_equal_to_reference(split_table_to_df(tabl[FALSE, ], subheadings = TRUE),
                           "rds/split_table_to_df3.rds")
 expect_equal_to_reference(split_table_to_df(tabl[FALSE, ], remove_repeated = FALSE),
                           "rds/split_table_to_df4.rds")
@@ -124,12 +143,16 @@ expect_equal_to_reference(split_table_to_df(tabl[FALSE, ], remove_repeated = FAL
 expect_equal_to_reference(split_table_to_df(tabl[, 1]),
                           "rds/split_table_to_df5.rds")
 
+expect_equal_to_reference(split_table_to_df(tabl[, 1], subheadings = TRUE),
+                          "rds/split_table_to_df5subheadings.rds")
+
 expect_equal_to_reference(split_table_to_df(tabl[, 1], remove_repeated = FALSE),
                           "rds/split_table_to_df6.rds")
 
 colnames(tabl)[1] = "My super table"
 
 expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1b.rds")
+expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_table_to_df1b_subheadings.rds")
 expect_equal_to_reference(split_table_to_df(tabl, remove_repeated = FALSE),
                           "rds/split_table_to_df2b.rds")
 
@@ -139,5 +162,40 @@ expect_identical(split_table_to_df(tabl[, FALSE]), tabl[, FALSE])
 expect_equal_to_reference(split_table_to_df(tabl[, 1]),
                           "rds/split_table_to_df5b.rds")
 
+expect_equal_to_reference(split_table_to_df(tabl[, 1], subheadings = TRUE),
+                          "rds/split_table_to_df5b_subheadings.rds")
+
 expect_equal_to_reference(split_table_to_df(tabl[, 1], remove_repeated = FALSE),
                           "rds/split_table_to_df6b.rds")
+
+
+context("split_columns subheading")
+
+tabl = mtcars %>% 
+    tab_cells(cyl, gear, carb) %>% 
+    tab_cols("#total", vs, am) %>%
+    tab_stat_mean(label = "|") %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(split_columns(tabl, subheadings = TRUE), "rds/split_subheadings1.rds")
+expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_subheadings2.rds")
+
+tabl = mtcars %>% 
+    tab_cols("#total", vs, am) %>%
+    tab_cells(cyl) %>% 
+    tab_stat_mean(label = "|") %>% 
+    tab_stat_cpct() %>% 
+    tab_cells(gear) %>% 
+    tab_stat_mean(label = "|") %>% 
+    tab_stat_cpct() %>% 
+    tab_cells(carb) %>% 
+    tab_stat_mean(label = "|") %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(split_columns(tabl, subheadings = TRUE), "rds/split_subheadings3.rds")
+expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_subheadings4.rds")
+
+tabl[[1]] = paste0(tabl[[1]], "|newlab")
+expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_subheadings5.rds")

@@ -166,7 +166,7 @@ split_columns.data.frame  = function(data,
             setNames(data[, -seq_len(each_column), drop = FALSE], part2_names)
         )
     }
-    if(remove_repeated && subheadings && identical(as.integer(columns), 1L) && (NCOL(data)>data_ncol)){
+    if(remove_repeated && subheadings && all(columns %in% 1) && (NCOL(data)>data_ncol)){
         subheading_column = data[[1]]
         data[[1]] = NULL
         has_value = !(subheading_column %in% c("", NA))
