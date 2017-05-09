@@ -470,6 +470,17 @@ recode(a) = c("2016-10-01" ~ "2016-10-02")
 
 expect_identical(a, as.POSIXct("2016-10-02"))
 
+a = as.POSIXct(c("2016-10-01", "2017-05-10"))
+res = as.POSIXct(c("2016-10-02", "2017-05-11"))
+b = recode(a, "2016-10-01" ~ as.POSIXct("2016-10-02"), "2017-05-10" ~ "2017-05-11")
+expect_equal(b, res)
+
+b = recode(a, "2016-10-01" ~ "2016-10-02", "2017-05-10" ~ "2017-05-11")
+expect_equal(b, as.character(res))
+
+recode(a) = "2016-10-01" ~ "2016-10-02"
+expect_identical(a, as.POSIXct(c("2016-10-02", "2017-05-10")))
+
 context("dot notation")
 
 a = 1:5
