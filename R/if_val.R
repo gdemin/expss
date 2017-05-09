@@ -547,19 +547,19 @@ make_empty_object.matrix = function(x){
     res
 }   
 
-#' @export
-make_empty_object.POSIXct = function(x){
-    res = as.POSIXct(rep(NA, length(x)))
-    names(res) = names(x)
-    res
-} 
+# #' @export
+# make_empty_object.POSIXct = function(x){
+#     res = as.POSIXct(rep(NA, length(x)))
+#     names(res) = names(x)
+#     res
+# } 
 
-#' @export
-make_empty_object.factor = function(x){
-    res = x
-    res[] = NA
-    res
-} 
+# #' @export
+# make_empty_object.factor = function(x){
+#     res = x
+#     res[] = NA
+#     res
+# } 
 
 #' @export
 make_empty_object.default = function(x){

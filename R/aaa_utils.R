@@ -184,23 +184,14 @@ column.default = function(x, column_num, condition = NULL){
 #' @export
 "column<-.data.frame" = function(x, column_num, condition = NULL, value){
     stopif(column_num>ncol(x), "Too large column_num:",column_num, " only ", ncol(x), " columns in the data.frame.")
-    
-    if(!is.null(condition)){
-        x[condition, column_num] = value
-    } else {
-        x[,column_num] = value
-    }
+    column(x[[column_num]], 1, condition = condition) = value
     x
 }
 
 #' @export
 "column<-.matrix" = function(x, column_num, condition = NULL, value){
     stopif(column_num>ncol(x), "Too large column_num:",column_num, " only ", ncol(x), " columns in the matrix.")
-    if(!is.null(condition)){
-        x[condition, column_num] = value
-    } else {
-        x[,column_num] = value
-    }
+    column(x[, column_num], 1, condition = condition) = value
     x
 }
 
@@ -212,11 +203,24 @@ column.default = function(x, column_num, condition = NULL){
 
 #' @export
 "column<-.default" = function(x, column_num, condition = NULL, value){
+    if(is.factor(value)){
+        x = as.factor(x)
+        column(x, column_num = column_num, condition) = value
+        return(x)
+    } 
+    
+    if(inherits(value, "POSIXct") && (is.logical(x) || is.numeric(x))){
+        # first assignment - we expect that x with all NA and set its class to POSIXct
+        x = as.POSIXct(x)
+        column(x, column_num = column_num, condition) = value
+        return(x)
+    } 
     if(is.null(condition)){
         x[] = value
     } else {
         x[condition] = value
-    }     
+    } 
+    
     x
 }  
 

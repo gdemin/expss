@@ -436,14 +436,15 @@ expect_identical(class(a), c("labelled", "character"))
 
 a = factor(letters[1:4])
 
-res = factor(c("z", "b", "c", "d"), levels = c("a", "b", "c", "d", "z"))
-b = recode(a, "a" ~ "z", other ~ copy)
+res = factor(c("a", "z", "c", "d"), levels = c("z", "a", "c", "d"))
+b = recode(a, "b" ~ "z", other ~ copy)
 expect_identical(b, res)
 
-b = recode(a, "a" ~ "z")
+res = factor(c("z", "b", "c", "d"), levels = c("a", "b", "c", "d", "z"))
+b = recode(a, "a" ~ factor("z"))
 res2 = res
 res2[2:4] = NA
-expect_identical(b, res2) 
+expect_identical(b, factor(res2)) 
 
 recode(a) = "a" ~ "z"
 expect_identical(a, res)
@@ -457,9 +458,13 @@ expect_identical(a, res)
 
 a = as.POSIXct("2016-10-01")
 
-b = recode(a, "2016-10-01" ~ "2016-10-02")
+b = recode(a, "2016-10-01" ~ as.POSIXct("2016-10-02"))
 
 expect_equal(b, as.POSIXct("2016-10-02"))
+
+b = recode(a, "2016-10-01" ~ "2016-10-02")
+
+expect_equal(b, "2016-10-02")
 
 recode(a) = c("2016-10-01" ~ "2016-10-02")
 
@@ -502,8 +507,7 @@ empty_iris[[1]] = NA
 empty_iris[[2]] = NA
 empty_iris[[3]] = NA
 empty_iris[[4]] = NA
-empty_iris[[5]] = iris$Species
-empty_iris[[5]][] = NA
+empty_iris[[5]] = NA
 rownames(empty_iris) = as.character(1:150)
 res = list(rep(NA, 4), rep(NA, 4), empty_iris)
 names(res) = c("a", "b", "c")
@@ -660,3 +664,15 @@ res_iris[, 1:4] =
     calc(res_iris, recode (v01 %to% v04, 1 ~ 1, 0 ~ NA))
 
 expect_identical(new_iris, res_iris)
+
+
+context("recode factor")
+
+df = data.frame(id = c(1,2,3,4,5),
+                Did_you_use_tv=factor(c("tv","","","tv","tv")),
+                Did_you_use_internet=factor(c("","","","int","int")))
+
+new_df = df
+
+recode(df[,-1], "" ~ 0, other ~ 1)
+recode(new_df[,-1]) = c("" ~ 0, other ~ 1)
