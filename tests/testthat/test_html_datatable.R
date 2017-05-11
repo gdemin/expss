@@ -137,6 +137,16 @@ options(expss.digits = NULL)
 expect_equal(datatable(mtcars_table),
                           datatable(mtcars_table, digits = 1))
 
+
+mtcars_table$row_labels[nrow(mtcars_table)] = "<b>#Total</b>"
+
+expect_equal_to_reference(datatable(mtcars_table) %n_d% c("dependencies"),
+                          "rds/html_datatable14_escape_html.rds")
+
+expect_equal_to_reference(datatable(mtcars_table, escape = FALSE) %n_d% c("dependencies"),
+                          "rds/html_datatable14_no_escape_html.rds")
+
+
 # 
 # library(testthat)
 # library(expss)

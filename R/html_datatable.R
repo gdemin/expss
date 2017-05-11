@@ -113,9 +113,9 @@ datatable.etable = function(data,
         empty_corner = NULL
     }
     args = list(...)
-    class = if_null(args[["class"]], 'stripe hover cell-border row-border order-column compact')
-    filter = if_null(args[["filter"]], "none")
-    curr_opts = if_null(args[["options"]], 
+    args[["class"]] = if_null(args[["class"]], 'stripe hover cell-border row-border order-column compact')
+    args[["filter"]] = if_null(args[["filter"]], "none")
+    args[["options"]] = if_null(args[["options"]], 
                         list(paging = FALSE,
                              searching = FALSE, 
                              sorting = FALSE, 
@@ -130,15 +130,10 @@ datatable.etable = function(data,
                              )
                         )
     )
-    
-    
-    res = DT::datatable(data, 
-                        container = header,
-                        class = class, #  
-                        rownames = FALSE,
-                        filter = filter,
-                        options = curr_opts 
-    )
+    args[["rownames"]] = if_null(args[["rownames"]], FALSE)
+    args[["container"]] = header
+    args[["data"]] = data
+    res = do.call(DT::datatable, args)
     # if(!is.null(format_bold_value)){
     #     columns = seq_len(ncol(empty_corner))-1
     #     if(length(columns)){
