@@ -131,3 +131,6 @@ res = mtcars %>% calc(cro(list(unvr(am)), list(unvr(vs))))
 expect_equal_to_reference(htmlTable(res), "rds/htmlTable18.rds")
 
 # temp = function(x) htmlTable:::print.htmlTable(x, useViewer = TRUE)
+
+res = fre(mtcars$cyl)
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable19.rds")

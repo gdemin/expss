@@ -55,6 +55,11 @@ htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
     if(NCOL(x) == 0){
         return(htmlTable(setNames(dtfrm("Table is empty"), " "), ...))
     }
+    # escape <NA>
+    colnames(x) = gsub("<NA>", "&lt;NA&gt;", colnames(x), fixed = TRUE)
+    if(is.character(x[[1]]) || is.factor(x[[1]])){
+        x[[1]] = gsub("<NA>", "&lt;NA&gt;", x[[1]], fixed = TRUE)
+    }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
     # first_lab = htmltools::htmlEscape(first_lab)
