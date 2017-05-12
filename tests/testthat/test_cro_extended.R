@@ -258,9 +258,9 @@ expect_equal_to_reference(
 
 expect_equal_to_reference(
     cro_cpct(mtcars$am, total(label = "|")),
-    "cro_total_empty_label.rds")
+    "rds/cro_total_empty_label.rds")
 
 expect_equal_to_reference(
     cro_cpct(mtcars$am, total(label = "")),
-    "cro_total_empty_label.rds")
+    "rds/cro_total_empty_label.rds")
 
