@@ -90,8 +90,9 @@ nest_xlist = function(x, y)
     vlab = var_lab(x)
     uniqs = sort(unique(c(uniq_elements(x), labs)))
     xlist = lapply(uniqs, function(item){
-        ((x == item) | NA)*item
-
+        res = (x == item) | NA
+        res[res] = item
+        res
     })
     if(!is.null(labs)){
         names(labs) = remove_unnecessary_splitters(names(labs))

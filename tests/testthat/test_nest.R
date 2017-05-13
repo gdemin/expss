@@ -10,6 +10,16 @@ expect_identical(nest(1:3, 5:7), simple_res)
 
 expect_identical(1:3 %nest% 5:7, simple_res)
 
+expect_identical(nest("a", list("b")),
+list(structure(1, labels = structure(1L, .Names = "a|b"), class = c("labelled", 
+                     "numeric"), label = ""))
+)
+expect_identical(nest(list("b"), "a"),
+structure(1, labels = structure(1L, .Names = "b|a"), class = c("labelled", 
+                        "numeric"), label = "")
+)
+
+
 m_choice = dtfrm(a1 = c(1, NA, 1), a2 = c(2,2,NA))
 
 df_res = structure(list(V1 = structure(c(1, NA, 3), labels = structure(1:6, .Names = c("1|5",
