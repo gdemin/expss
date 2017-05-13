@@ -380,6 +380,18 @@ expect_identical(as.labelled(a), b)
 var_lab(b) = "New label"
 expect_identical(as.labelled(a, "New label"), b)
 
+context("as.labelled labelled character")
+
+a = letters
+a_res = set_val_lab(1:26, setNames(1:26, letters))
+expect_identical(as.labelled(a), a_res)
+
+var_lab(a) = "Letters"
+var_lab(a_res) = "Letters"
+expect_identical(as.labelled(a), a_res)
+
+
+
 context("is.labelled")
 
 a = 1:5

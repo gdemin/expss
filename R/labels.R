@@ -547,20 +547,13 @@ as.labelled.factor = function(x, label = NULL){
 
 #' @export
 as.labelled.labelled = function(x, label = NULL){
-    if(is.factor(x)){
-        ### factor with variable label
-        return(
-            as.labelled.factor(x, label = if_null(label, var_lab(x)))
-            )
-    }
     if(is.null(val_lab(x))){
-        labels = unlab(sort(unique(x), na.last = NA))
-        names(labels) = as.character(labels)
-        val_lab(x) = labels
-    } 
-    if(!is.null(label)) var_lab(x) = label
+        label = if_null(label, var_lab(x))
+        x = as.labelled(unlab(x), label = label)
+    } else {
+        if(!is.null(label)) var_lab(x) = label    
+    }
     x
-    
 }
 
 #' @export
