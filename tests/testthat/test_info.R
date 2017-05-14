@@ -20,7 +20,12 @@ if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
     expect_equal_to_reference(info(iris),"rds/info5.rds")
     expect_equal_to_reference(info(iris,max_levels=3),"rds/info6.rds")
     expect_equal_to_reference(info(iris,frequencies = FALSE),"rds/info7.rds")
+} else {
+    expect_equal_to_reference(info(iris),"rds/info5_R3.4.rds")
+    expect_equal_to_reference(info(iris,max_levels=3),"rds/info6_R3.4.rds")
+    expect_equal_to_reference(info(iris,frequencies = FALSE),"rds/info7_R3.4.rds")    
 }
+
 expect_equal_to_reference(info(iris,stats = FALSE, frequencies = FALSE),"rds/info8.rds")
 
 vec = NA
@@ -38,4 +43,6 @@ expect_equal_to_reference(info(lst),"rds/info12.rds")
 if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
     vec = c(2, 2, 2, 1, NA, NA, NA, 3, 3)
     expect_equal_to_reference(info(vec), "rds/info13.rds")
+} else {
+    expect_equal_to_reference(info(vec), "rds/info13_R3.4.rds")
 }
