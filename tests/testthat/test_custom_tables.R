@@ -141,6 +141,8 @@ res = mtcars %>%
 
 if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
     expect_equal_to_reference(res, "rds/ctable7.rds")
+} else {
+    expect_equal_to_reference(res, "rds/ctable7_R3.4.rds")
 }
 
 res = mtcars %>% 
@@ -151,6 +153,19 @@ res = mtcars %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
     tab_cells(total(vs, label = "#Total|cases")) %>% 
     tab_stat_cases(total_row_position = "none") %>% 
+    tab_pivot(stat_position = "inside_rows") 
+
+expect_equal_to_reference(res, "rds/ctable8.rds")
+
+res = mtcars %>% 
+    tab_total_row_position("none") %>% 
+    tab_cells(vs) %>% 
+    tab_cols(total(), am) %>% 
+    tab_stat_cpct(label = "col %") %>%
+    tab_stat_rpct(label = "row %") %>%
+    tab_stat_tpct(label = "table %") %>%
+    tab_cells(total(vs, label = "#Total|cases")) %>% 
+    tab_stat_cases() %>% 
     tab_pivot(stat_position = "inside_rows") 
 
 expect_equal_to_reference(res, "rds/ctable8.rds")
@@ -268,6 +283,16 @@ res = mtcars %>%
     tab_stat_cpct(total_row_position = "none", label = "col %") %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
+    tab_pivot(stat_position = "inside_columns")
+expect_equal_to_reference(res, "rds/ctable17.rds")
+
+res = mtcars %>%
+    tab_cells(cyl) %>%
+    tab_cols(total(), am) %>%
+    tab_total_row_position("none") %>% 
+    tab_stat_cpct(label = "col %") %>%
+    tab_stat_rpct(label = "row %") %>%
+    tab_stat_tpct(label = "table %") %>%
     tab_pivot(stat_position = "inside_columns")
 expect_equal_to_reference(res, "rds/ctable17.rds")
  
@@ -517,6 +542,19 @@ expect_equal_to_reference(
     "rds/ctable20_1.rds"
 )
 
+res = pr_t %>% 
+    tab_total_statistic("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                        "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct") %>% 
+    tab_cells(mrset(a1_1 %to% a1_6), a22) %>% 
+    tab_cols(mrset(b1_1 %to% b1_6), b22) %>% 
+    tab_stat_cases() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable20_1.rds"
+)
+
 
 res = pr_t %>% 
     tab_weight(wgt) %>% 
@@ -617,6 +655,61 @@ expect_equal_to_reference(
     "rds/ctable25_sorting.rds"
 )
 
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cols(drop_unused_labels(a22), drop_unused_labels(b22)) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6)) %>% 
+    tab_total_statistic("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                        "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct") %>% 
+    tab_stat_cpct_responses() %>% 
+    tab_sort_desc() %>% 
+    tab_cells(mrset(b1_1 %to% b1_6)) %>% 
+    tab_stat_cpct_responses() %>% 
+    tab_sort_asc() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable25_sorting.rds"
+)
+
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cols(drop_unused_labels(a22), drop_unused_labels(b22)) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6)) %>% 
+    tab_total_statistic("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                        "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct") %>% 
+    tab_stat_cpct_responses() %>% 
+    tab_sort_desc() %>% 
+    tab_cells(mrset(b1_1 %to% b1_6)) %>% 
+    tab_total_label("Wow! responses") %>% 
+    tab_stat_cpct_responses(total_statistic = "u_cases") %>% 
+    tab_sort_asc() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable25_different_total.rds"
+)
+
+res = pr_t %>% 
+    tab_weight(wgt) %>% 
+    tab_cols(drop_unused_labels(a22), drop_unused_labels(b22)) %>% 
+    tab_cells(mrset(a1_1 %to% a1_6)) %>% 
+    tab_total_statistic("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+                        "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct") %>% 
+    tab_stat_cpct_responses() %>% 
+    tab_sort_desc() %>% 
+    tab_cells(mrset(b1_1 %to% b1_6)) %>% 
+    tab_total_label(paste0("Wow! responses ", var_lab(a22))) %>% 
+    tab_stat_cpct_responses(total_statistic = "u_cases") %>% 
+    tab_sort_asc() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable25_different_total2.rds"
+)
 # pr_t %>%
 #     tab_cols(total(), age_cat) %>%
 #     tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
@@ -840,3 +933,123 @@ res = mtcars %>%
     tab_pivot()
 
 expect_equal_to_reference(res, "rds/ctable37.rds")
+
+res = mtcars %>% 
+    tab_total_row_position("above") %>% 
+    tab_total_statistic("u_cases", "u_rpct") %>% 
+    tab_total_label(paste(var_lab(mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_cases() %>% 
+    tab_pivot()
+
+res2 = mtcars %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_cases(total_row_position = "above", 
+                   total_statistic = c("u_cases", "u_rpct"),
+                   total_label = paste(var_lab(mtcars$mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_pivot()
+
+expect_identical(res, res2)
+
+res = mtcars %>% 
+    tab_total_statistic("u_cases", "u_rpct") %>% 
+    tab_total_row_position("above") %>% 
+    tab_total_label(paste(var_lab(mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+res2 = mtcars %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_cpct(total_row_position = "above", 
+                   total_statistic = c("u_cases", "u_rpct"),
+                   total_label = paste(var_lab(mtcars$mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_pivot()
+
+expect_identical(res, res2)
+
+res = mtcars %>% 
+    tab_total_label(paste(var_lab(mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_total_statistic("u_cases", "u_rpct") %>% 
+    tab_total_row_position("above") %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_tpct() %>% 
+    tab_pivot()
+
+res2 = mtcars %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_tpct(total_row_position = "above", 
+                  total_statistic = c("u_cases", "u_rpct"),
+                  total_label = paste(var_lab(mtcars$mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_pivot()
+
+expect_identical(res, res2)
+
+res = mtcars %>% 
+    tab_total_label(paste(var_lab(mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_total_statistic("u_cases", "u_rpct") %>% 
+    tab_total_row_position("above") %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_rpct() %>% 
+    tab_pivot()
+
+res2 = mtcars %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_rpct(total_row_position = "above", 
+                  total_statistic = c("u_cases", "u_rpct"),
+                  total_label = paste(var_lab(mtcars$mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_pivot()
+
+expect_identical(res, res2)
+
+res = mtcars %>% 
+    tab_total_label(paste(var_lab(mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_total_statistic("u_cases", "u_rpct") %>% 
+    tab_total_row_position("above") %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_cpct_responses() %>% 
+    tab_pivot()
+
+res2 = mtcars %>% 
+    tab_cells(am) %>%
+    tab_cols(vs) %>% 
+    tab_stat_cpct_responses(total_row_position = "above", 
+                  total_statistic = c("u_cases", "u_rpct"),
+                  total_label = paste(var_lab(mtcars$mpg), c("unw. cases", "unw. row pct."))) %>% 
+    tab_pivot()
+
+expect_identical(res, res2)
+
+for(each_stat in c(tab_stat_cases, tab_stat_cpct, 
+                   tab_stat_cpct_responses, tab_stat_rpct, tab_stat_tpct)){
+    res = mtcars %>% 
+        tab_total_label(paste(var_lab(mpg), c("unw. cases", "unw. row pct."))) %>% 
+        tab_total_statistic("u_cases", "u_rpct") %>% 
+        tab_total_row_position("above") %>% 
+        tab_cells(am) %>%
+        tab_cols(vs) %>% 
+        tab_total_label() %>% 
+        tab_total_statistic() %>% 
+        tab_total_row_position() %>% 
+        each_stat() %>% 
+        tab_pivot()
+    
+    res2 = mtcars %>% 
+        tab_cells(am) %>%
+        tab_cols(vs) %>% 
+        each_stat() %>% 
+        tab_pivot()
+    
+    expect_identical(res, res2)
+}
+
+

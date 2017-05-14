@@ -7,6 +7,9 @@
 \alias{tab_rows}
 \alias{tab_weight}
 \alias{tab_mis_val}
+\alias{tab_total_label}
+\alias{tab_total_statistic}
+\alias{tab_total_row_position}
 \alias{tab_subgroup}
 \alias{tab_stat_fun}
 \alias{tab_stat_fun_df}
@@ -37,6 +40,12 @@ tab_rows(data, ...)
 tab_weight(data, weight = NULL)
 
 tab_mis_val(data, ...)
+
+tab_total_label(data, ...)
+
+tab_total_statistic(data, ...)
+
+tab_total_row_position(data, total_row_position = c("below", "above", "none"))
 
 tab_subgroup(data, subgroup = NULL)
 
@@ -92,6 +101,9 @@ tab_transpose(data)
 \item{weight}{numeric vector in \code{tab_weight}. Cases with NA's, negative
 and zero weights are removed before calculations.}
 
+\item{total_row_position}{Position of total row in the resulting table. Can
+be one of "below", "above", "none".}
+
 \item{subgroup}{logical vector in \code{tab_subgroup}. You can specify
 subgroup on which table will be computed.}
 
@@ -113,9 +125,6 @@ name for each total statistics.}
 Possible values are "u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
 "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct". "u_" means
 unweighted statistics and "w_" means weighted statistics.}
-
-\item{total_row_position}{Position of total row in the resulting table. Can
-be one of "below", "above", "none".}
 
 \item{stat_position}{character one of the values \code{"outside_rows"}, 
 \code{"inside_rows"}, \code{"outside_columns"} or \code{"inside_columns"}.
@@ -163,6 +172,17 @@ be applied on variables specified by \code{tab_cells}. It works in the same
 manner as \link{na_if}.}
 \item{\code{tab_subgroup}}{ optional logical vector/expression which specify
 subset of data for table.}
+\item{\code{tab_total_row_position}}{ Default value for
+\code{total_row_position} argument in \code{tab_stat_cases} and etc. Can be
+one of "below", "above", "none".}
+\item{\code{tab_total_label}}{ Default value for \code{total_label} argument
+in \code{tab_stat_cases} and etc. You can provide several names - each name
+for each total statistics.}
+\item{\code{tab_total_statistic}}{ Default value for \code{total_statistic}
+argument in \code{tab_stat_cases} and etc. You can provide several values.
+Possible values are "u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct", 
+"w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct". "u_" means unweighted
+statistics and "w_" means weighted statistics.}
 \item{\code{tab_stat_fun}, \code{tab_stat_fun_df}}{ \code{tab_stat_fun} 
 applies function on each variable in cells separately, \code{tab_stat_fun_df}
 gives to function each data.frame in cells as a whole 
@@ -281,18 +301,20 @@ mtcars \%>\%
 mtcars \%>\%
     tab_cells(am) \%>\%
     tab_cols(total(), vs) \%>\%
-    tab_stat_cpct(total_row_position = "none", label = "col \%") \%>\%
-    tab_stat_rpct(total_row_position = "none", label = "row \%") \%>\%
-    tab_stat_tpct(total_row_position = "none", label = "table \%") \%>\%
+    tab_total_row_position("none") \%>\% 
+    tab_stat_cpct(label = "col \%") \%>\%
+    tab_stat_rpct(label = "row \%") \%>\%
+    tab_stat_tpct(label = "table \%") \%>\%
     tab_pivot(stat_position = "inside_rows")
 
 # statistic labels inside columns             
 mtcars \%>\%
     tab_cells(am) \%>\%
     tab_cols(total(), vs) \%>\%
-    tab_stat_cpct(total_row_position = "none", label = "col \%") \%>\%
-    tab_stat_rpct(total_row_position = "none", label = "row \%") \%>\%
-    tab_stat_tpct(total_row_position = "none", label = "table \%") \%>\%
+    tab_total_row_position("none") \%>\% 
+    tab_stat_cpct(label = "col \%") \%>\%
+    tab_stat_rpct(label = "row \%") \%>\%
+    tab_stat_tpct(label = "table \%") \%>\%
     tab_pivot(stat_position = "inside_columns")
 
 # stacked statistics

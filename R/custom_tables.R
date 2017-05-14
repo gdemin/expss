@@ -10,6 +10,9 @@ SUBGROUP = "subgroup"
 WEIGHT  = "weight" 
 STAT_LABELS = "stat_labels"
 MIS_VAL = "mis_val"
+TOTAL_LABEL = "total_label"
+TOTAL_STATISTIC = "total_statistic"
+TOTAL_ROW_POSITION = "total_row_position" 
 
 #' Functions for tables constraction
 #' 
@@ -44,6 +47,17 @@ MIS_VAL = "mis_val"
 #' manner as \link{na_if}.}
 #' \item{\code{tab_subgroup}}{ optional logical vector/expression which specify
 #' subset of data for table.}
+#' \item{\code{tab_total_row_position}}{ Default value for
+#' \code{total_row_position} argument in \code{tab_stat_cases} and etc. Can be
+#' one of "below", "above", "none".}
+#' \item{\code{tab_total_label}}{ Default value for \code{total_label} argument
+#' in \code{tab_stat_cases} and etc. You can provide several names - each name
+#' for each total statistics.}
+#' \item{\code{tab_total_statistic}}{ Default value for \code{total_statistic}
+#' argument in \code{tab_stat_cases} and etc. You can provide several values.
+#' Possible values are "u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct", 
+#' "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct". "u_" means unweighted
+#' statistics and "w_" means weighted statistics.}
 #' \item{\code{tab_stat_fun}, \code{tab_stat_fun_df}}{ \code{tab_stat_fun} 
 #' applies function on each variable in cells separately, \code{tab_stat_fun_df}
 #' gives to function each data.frame in cells as a whole 
@@ -200,18 +214,20 @@ MIS_VAL = "mis_val"
 #' mtcars %>%
 #'     tab_cells(am) %>%
 #'     tab_cols(total(), vs) %>%
-#'     tab_stat_cpct(total_row_position = "none", label = "col %") %>%
-#'     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
-#'     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
+#'     tab_total_row_position("none") %>% 
+#'     tab_stat_cpct(label = "col %") %>%
+#'     tab_stat_rpct(label = "row %") %>%
+#'     tab_stat_tpct(label = "table %") %>%
 #'     tab_pivot(stat_position = "inside_rows")
 #' 
 #' # statistic labels inside columns             
 #' mtcars %>%
 #'     tab_cells(am) %>%
 #'     tab_cols(total(), vs) %>%
-#'     tab_stat_cpct(total_row_position = "none", label = "col %") %>%
-#'     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
-#'     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
+#'     tab_total_row_position("none") %>% 
+#'     tab_stat_cpct(label = "col %") %>%
+#'     tab_stat_rpct(label = "row %") %>%
+#'     tab_stat_tpct(label = "table %") %>%
 #'     tab_pivot(stat_position = "inside_columns")
 #' 
 #' # stacked statistics
@@ -478,6 +494,92 @@ tab_mis_val.intermediate_table = function(data, ...){
     data
 }
 
+############
+
+#' @rdname tables
+#' @export
+tab_total_label = function(data, ...){
+    UseMethod("tab_total_label")
+}
+
+#' @export
+tab_total_label.default = function(data, ...){
+    res = make_empty_intermediate_table(data)
+    tab_total_label(res, ...)
+}
+
+#' @export
+tab_total_label.intermediate_table = function(data, ...){
+    args = eval(substitute(calculate(data[["data"]], list(...))),
+                envir = parent.frame(),
+                enclos = baseenv())
+    if(length(args)>0){
+        data[[TOTAL_LABEL]] = unlist(args)
+    } else {
+        data[[TOTAL_LABEL]] = NULL
+    }
+    data
+}
+
+############
+
+#' @rdname tables
+#' @export
+tab_total_statistic = function(data, ...){
+    UseMethod("tab_total_statistic")
+}
+
+#' @export
+tab_total_statistic.default = function(data, ...){
+    res = make_empty_intermediate_table(data)
+    tab_total_statistic(res, ...)
+}
+
+#' @export
+tab_total_statistic.intermediate_table = function(data, ...){
+    total_statistic = unlist(list(...))
+    if(length(total_statistic)>0){
+        unknowns = total_statistic %d% TOTAL_STATISTICS
+        stopif(length(unknowns)>0, "unknown total statistics - ", 
+               paste(unknowns, collapse = ", "))
+        total_statistic = match.arg(total_statistic, TOTAL_STATISTICS, several.ok = TRUE)
+        data[[TOTAL_STATISTIC]] = total_statistic
+    } else {
+        data[[TOTAL_STATISTIC]] = NULL
+    }
+    data
+}
+
+
+
+
+############
+
+#' @rdname tables
+#' @export
+tab_total_row_position = function(data, 
+                                  total_row_position = c("below", "above", "none")){
+    UseMethod("tab_total_row_position")
+}
+
+#' @export
+tab_total_row_position.default = function(data,
+                                          total_row_position = c("below", "above", "none")){
+    res = make_empty_intermediate_table(data)
+    tab_total_row_position(res, total_row_position = total_row_position)
+}
+
+#' @export
+tab_total_row_position.intermediate_table = function(data, 
+                                                     total_row_position = c("below", "above", "none")){
+    if(!missing(total_row_position)){
+        data[[TOTAL_ROW_POSITION]] = match.arg(total_row_position)
+    } else {
+        data[[TOTAL_ROW_POSITION]] = NULL
+    }
+    data
+}
+
 #########
 
 #' @rdname tables
@@ -724,13 +826,26 @@ tab_stat_fun_df.intermediate_table = function(data, ...,
 
 #' @export
 tab_stat_cases.intermediate_table = function(data, 
-                                  total_label = NULL,
-                                  total_statistic = "u_cases",
-                                  total_row_position = c("below", "above", "none"),
-                                  label = NULL){
+                                             total_label = NULL,
+                                             total_statistic = "u_cases",
+                                             total_row_position = c("below", "above", "none"),
+                                             label = NULL){
     label = eval(substitute(calculate(data[["data"]], label)),
                  envir = parent.frame(),
                  enclos = baseenv())
+    if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
+        total_label = data[[TOTAL_LABEL]]    
+    } else {
+        total_label = eval(substitute(calculate(data[["data"]], total_label)),
+                           envir = parent.frame(),
+                           enclos = baseenv())
+    }
+    if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
+        total_statistic = data[[TOTAL_STATISTIC]]    
+    } 
+    if(missing(total_row_position) && !is.null(data[[TOTAL_ROW_POSITION]])){
+        total_row_position = data[[TOTAL_ROW_POSITION]]    
+    } 
     result = cro_cases(
         cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
@@ -753,6 +868,19 @@ tab_stat_cpct.intermediate_table = function(data,
     label = eval(substitute(calculate(data[["data"]], label)),
                  envir = parent.frame(),
                  enclos = baseenv())
+    if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
+        total_label = data[[TOTAL_LABEL]]    
+    } else {
+        total_label = eval(substitute(calculate(data[["data"]], total_label)),
+                           envir = parent.frame(),
+                           enclos = baseenv())
+    }
+    if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
+        total_statistic = data[[TOTAL_STATISTIC]]    
+    } 
+    if(missing(total_row_position) && !is.null(data[[TOTAL_ROW_POSITION]])){
+        total_row_position = data[[TOTAL_ROW_POSITION]]    
+    }
     result = cro_cpct(
         cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
@@ -776,6 +904,19 @@ tab_stat_cpct_responses.intermediate_table =function(data,
     label = eval(substitute(calculate(data[["data"]], label)),
                  envir = parent.frame(),
                  enclos = baseenv())
+    if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
+        total_label = data[[TOTAL_LABEL]]    
+    } else {
+        total_label = eval(substitute(calculate(data[["data"]], total_label)),
+                           envir = parent.frame(),
+                           enclos = baseenv())
+    }
+    if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
+        total_statistic = data[[TOTAL_STATISTIC]]    
+    } 
+    if(missing(total_row_position) && !is.null(data[[TOTAL_ROW_POSITION]])){
+        total_row_position = data[[TOTAL_ROW_POSITION]]    
+    }
     result = cro_cpct_responses(
         cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
@@ -798,6 +939,19 @@ tab_stat_tpct.intermediate_table = function(data,
     label = eval(substitute(calculate(data[["data"]], label)),
                  envir = parent.frame(),
                  enclos = baseenv())
+    if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
+        total_label = data[[TOTAL_LABEL]]    
+    } else {
+        total_label = eval(substitute(calculate(data[["data"]], total_label)),
+                           envir = parent.frame(),
+                           enclos = baseenv())
+    }
+    if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
+        total_statistic = data[[TOTAL_STATISTIC]]    
+    } 
+    if(missing(total_row_position) && !is.null(data[[TOTAL_ROW_POSITION]])){
+        total_row_position = data[[TOTAL_ROW_POSITION]]    
+    }
     result = cro_tpct(
         cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
@@ -820,6 +974,19 @@ tab_stat_rpct.intermediate_table = function(data,
     label = eval(substitute(calculate(data[["data"]], label)),
                  envir = parent.frame(),
                  enclos = baseenv())
+    if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
+        total_label = data[[TOTAL_LABEL]]    
+    } else {
+        total_label = eval(substitute(calculate(data[["data"]], total_label)),
+                           envir = parent.frame(),
+                           enclos = baseenv())
+    }
+    if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
+        total_statistic = data[[TOTAL_STATISTIC]]    
+    } 
+    if(missing(total_row_position) && !is.null(data[[TOTAL_ROW_POSITION]])){
+        total_row_position = data[[TOTAL_ROW_POSITION]]    
+    }
     result = cro_rpct(
         cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
