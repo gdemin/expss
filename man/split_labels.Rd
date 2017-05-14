@@ -4,17 +4,19 @@
 \alias{split_labels}
 \alias{split_columns}
 \alias{split_table_to_df}
+\alias{make_subheadings}
 \title{Split character vector to matrix/split columns in data.frame}
 \usage{
 split_labels(x, remove_repeated = TRUE, split = "|", fixed = TRUE,
   perl = FALSE)
 
-split_columns(data, columns = 1, remove_repeated = TRUE,
-  subheadings = FALSE, split = "|", fixed = TRUE, perl = FALSE)
+split_columns(data, columns = 1, remove_repeated = TRUE, split = "|",
+  fixed = TRUE, perl = FALSE)
 
 split_table_to_df(data, digits = getOption("expss.digits"),
-  remove_repeated = TRUE, subheadings = FALSE, split = "|",
-  fixed = TRUE, perl = FALSE)
+  remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE)
+
+make_subheadings(data, number_of_columns = 1)
 }
 \arguments{
 \item{x}{character vector which will be split}
@@ -35,12 +37,12 @@ expressions. Has priority over \code{perl}.}
 \item{columns}{character/numeric/logical  columns in the data.frame
 \code{data} which should be split}
 
+\item{digits}{numeric. How many digits after decimal point should be left in
+\code{split_table_to_df}?}
+
 \item{subheadings}{logical. Default is \code{FALSE}. Should we create table
 subheadings from labels in the first column? This argument is ignored if
 \code{columns} doesn't equal to 1 or \code{remove_repeated} is FALSE.}
-
-\item{digits}{numeric. How many digits after decimal point should be left in
-\code{split_table_to_df}?}
 }
 \value{
 \code{split_labels} returns character matrix, \code{split_columns} returns

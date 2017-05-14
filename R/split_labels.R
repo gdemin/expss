@@ -97,7 +97,6 @@ split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, pe
 split_columns  = function(data, 
                           columns = 1, 
                           remove_repeated = TRUE, 
-                          subheadings = FALSE,
                           split = "|", 
                           fixed = TRUE, 
                           perl = FALSE){
@@ -109,7 +108,6 @@ split_columns  = function(data,
 split_columns.intermediate_table = function(data, 
                                             columns = 1, 
                                             remove_repeated = TRUE, 
-                                            subheadings = FALSE,
                                             split = "|", 
                                             fixed = TRUE, 
                                             perl = FALSE
@@ -122,7 +120,6 @@ split_columns.intermediate_table = function(data,
 split_columns.data.frame  = function(data, 
                                      columns = 1, 
                                      remove_repeated = TRUE, 
-                                     subheadings = FALSE,
                                      split = "|", 
                                      fixed = TRUE, 
                                      perl = FALSE){
@@ -150,7 +147,6 @@ split_columns.data.frame  = function(data,
     }
     class_data = class(data)
     first_column_name = colnames(data)[1]
-    data_ncol = NCOL(data)
     columns = sort(unique(columns))
     for(each_column in rev(columns)){
         curr_col = data[[each_column]]
@@ -173,33 +169,6 @@ split_columns.data.frame  = function(data,
             setNames(data[, -seq_len(each_column), drop = FALSE], part2_names)
         )
     }
-    if(remove_repeated && subheadings && all(columns %in% 1) && (NCOL(data)>data_ncol)){
-        subheading_column = data[[1]]
-        data[[1]] = NULL
-        has_value = !(subheading_column %in% c("", NA))
-        subheadings = subheading_column[has_value]
-        splitter = cumsum(has_value)
-        subtables = split(data, splitter)
-        add_subheader = function(x, y) {
-            if(!(y[1,1] %in% c("", NA))){
-                y = add_rows("", y)
-            }  
-            y[1, 1] = x
-            y
-        }
-        if(length(subheadings)<length(subtables)){
-            data = mapply(add_subheader, subheadings, subtables[-1], 
-            SIMPLIFY = FALSE, 
-            USE.NAMES = FALSE) 
-            data = do.call(add_rows, c(subtables[1], data))
-        } else {
-            data = mapply(add_subheader, subheadings, subtables, 
-                          SIMPLIFY = FALSE, 
-                          USE.NAMES = FALSE) 
-            data = do.call(add_rows, data)
-        }
-        
-    }
     if_val(colnames(data)) = perl("^\\.\\.new_columns__\\d+_\\d+$") ~ ""
     if(NCOL(data)>0 && !(first_column_name %in% c(NA, "row_labels"))){
         colnames(data)[1] = first_column_name
@@ -212,7 +181,6 @@ split_columns.data.frame  = function(data,
 split_columns.matrix  = function(data, 
                                  columns = 1, 
                                  remove_repeated = TRUE, 
-                                 subheadings = FALSE,
                                  split = "|", 
                                  fixed = TRUE, 
                                  perl = FALSE){
@@ -225,7 +193,6 @@ split_columns.matrix  = function(data,
     split_columns(data, 
                   columns = columns, 
                   remove_repeated = remove_repeated, 
-                  subheadings = subheadings, 
                   split = split, 
                   fixed = fixed, 
                   perl = perl
@@ -237,7 +204,6 @@ split_columns.matrix  = function(data,
 split_table_to_df = function(data, 
                              digits = getOption("expss.digits"), 
                              remove_repeated = TRUE, 
-                             subheadings = FALSE,
                              split = "|", 
                              fixed = TRUE, 
                              perl = FALSE){
@@ -247,7 +213,6 @@ split_table_to_df = function(data,
 #' @export
 split_table_to_df.intermediate_table = function(data, digits = getOption("expss.digits"), 
                                                 remove_repeated = TRUE, 
-                                                subheadings = FALSE,
                                                 split = "|", 
                                                 fixed = TRUE, 
                                                 perl = FALSE){
@@ -258,7 +223,6 @@ split_table_to_df.intermediate_table = function(data, digits = getOption("expss.
 split_table_to_df.etable = function(data, 
                                digits = getOption("expss.digits"), 
                         remove_repeated = TRUE, 
-                        subheadings = FALSE,
                         split = "|", 
                         fixed = TRUE, 
                         perl = FALSE){
@@ -291,7 +255,6 @@ split_table_to_df.etable = function(data,
         data = split_columns(data, 
                              columns = 1,
                              remove_repeated = remove_repeated,
-                             subheadings = subheadings, 
                              split = split,
                              fixed = fixed,
                              perl = perl
@@ -305,11 +268,57 @@ split_table_to_df.etable = function(data,
     data
 }
 
+#' @export
+#' @rdname split_labels
+make_subheadings = function(data, number_of_columns = 1){
+    UseMethod("make_subheadings")       
+}
+
+#' @export
+make_subheadings.default = function(data, number_of_columns = 1){
+    subheading_column = data[, seq_len(number_of_columns), drop = FALSE]
+    data[, seq_len(number_of_columns)] = NULL
+    if_val(subheading_column) = c(NA ~ "", perl("^\\s*$") ~ "")
+    subheading_column = do.call(paste, subheading_column)
+    has_value = !grepl("^\\s*$", subheading_column, perl = TRUE)
+    subheadings = subheading_column[has_value]
+    splitter = cumsum(has_value)
+    subtables = split(data, splitter)
+    add_subheader = function(x, y) {
+        if(!(y[1,1] %in% c("", NA))){
+            if(all(vapply(y, is.character, FUN.VALUE = NA))){
+                y = add_rows("", y)
+            } else {
+                y = add_rows(NA, y)
+            }
+        }  
+        y[1, 1] = x
+        y
+    }
+    if(length(subheadings)<length(subtables)){
+        data = mapply(add_subheader, subheadings, subtables[-1], 
+                      SIMPLIFY = FALSE, 
+                      USE.NAMES = FALSE) 
+        data = do.call(add_rows, c(subtables[1], data))
+    } else {
+        data = mapply(add_subheader, subheadings, subtables, 
+                      SIMPLIFY = FALSE, 
+                      USE.NAMES = FALSE) 
+        data = do.call(add_rows, data)
+    }
+    rownames(data) = NULL
+    data
+}
+
+#' @export
+make_subheadings.etable = function(data, number_of_columns = 1){
+    
+    data
+}
 
 split_all_in_etable_for_print = function(data, 
                                digits = getOption("expss.digits"), 
                                remove_repeated = TRUE, 
-                               subheadings = FALSE,
                                split = "|", 
                                fixed = TRUE, 
                                perl = FALSE){
