@@ -13,15 +13,14 @@
 #' @param columns character/numeric/logical  columns in the data.frame
 #'   \code{data} which should be split
 #' @param remove_repeated logical. Default is \code{TRUE}. Should we remove repeated labels? 
-#' @param subheadings logical. Default is \code{FALSE}. Should we create table
-#'   subheadings from labels in the first column? This argument is ignored if
-#'   \code{columns} doesn't equal to 1 or \code{remove_repeated} is FALSE.
 #' @param split character vector (or object which can be coerced to such)
 #'   containing regular expression(s) (unless \code{fixed = TRUE}) to use for
 #'   splitting.
 #' @param fixed logical. If TRUE match split exactly, otherwise use regular
 #'   expressions. Has priority over \code{perl}.
 #' @param perl logical. Should Perl-compatible regexps be used?
+#' @param number_of_columns integer. Number of columns from row labels which
+#'   will be used as subheadings in table.
 #' @param digits numeric. How many digits after decimal point should be left in
 #'   \code{split_table_to_df}?
 #' @return \code{split_labels} returns character matrix, \code{split_columns} returns
@@ -46,7 +45,13 @@
 #' )
 #' 
 #' # all row labels in the first column
-#' tabl = mtcars %>% calculate(cro_cpct(list(cyl, gear, carb), list(total(), vs, am)))
+#' tabl = mtcars %>% 
+#'        calculate(cro_cpct(list(cyl, gear, carb), list(total(), vs, am)))
+#' 
+#' tabl # without subheadings
+#' 
+#' make_subheadings(tabl) # with subheadings
+#'               
 #' split_labels(tabl[[1]])
 #' split_labels(colnames(tabl))
 #' 
@@ -55,11 +60,13 @@
 #' 
 #' split_columns(tabl, remove_repeated = FALSE)
 #' 
-#' split_columns(tabl, subheadings = TRUE)
+#' split_columns(tabl)
 #' 
 #' split_table_to_df(tabl)
 #' 
-#' split_table_to_df(tabl, subheadings = TRUE)
+#' split_table_to_df(tabl)
+#' 
+#' 
 split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
     if(length(x)==0){
         return(matrix(NA, ncol=0, nrow = 0))
@@ -276,12 +283,26 @@ make_subheadings = function(data, number_of_columns = 1){
 
 #' @export
 make_subheadings.default = function(data, number_of_columns = 1){
-    subheading_column = data[, seq_len(number_of_columns), drop = FALSE]
+    stopif(!isTRUE(number_of_columns>0), 
+                   "Number of columns should be greater than zero but it equals to ",
+           number_of_columns, ".")
+    subheading_columns = data[, seq_len(number_of_columns), drop = FALSE]
     data[, seq_len(number_of_columns)] = NULL
-    if_val(subheading_column) = c(NA ~ "", perl("^\\s*$") ~ "")
-    subheading_column = do.call(paste, subheading_column)
-    has_value = !grepl("^\\s*$", subheading_column, perl = TRUE)
-    subheadings = subheading_column[has_value]
+    if_val(subheading_columns) = c(NA ~ "", perl("^\\s*$") ~ "")
+    last_nonempty_cell = ""
+    for(col in rev(seq_len(NCOL(subheading_columns)))[-1]){
+        for(row in seq_len(NROW(subheading_columns))){
+            if(subheading_columns[row,col]!="") {
+                last_nonempty_cell = subheading_columns[row,col]
+            }
+            if(subheading_columns[row,col]=="" & subheading_columns[row,col + 1]!=""){
+                subheading_columns[row,col] = last_nonempty_cell   
+            }
+        }    
+    }
+    subheading_columns = do.call(paste, subheading_columns)
+    has_value = !grepl("^\\s*$", subheading_columns, perl = TRUE)
+    subheadings = subheading_columns[has_value]
     splitter = cumsum(has_value)
     subtables = split(data, splitter)
     add_subheader = function(x, y) {
@@ -312,8 +333,34 @@ make_subheadings.default = function(data, number_of_columns = 1){
 
 #' @export
 make_subheadings.etable = function(data, number_of_columns = 1){
-    
-    data
+    res = split_columns(data)
+    row_labels_width = NCOL(res) - NCOL(data) + 1
+    if(row_labels_width==1) return(data)
+    stopif(row_labels_width<number_of_columns, 
+           "Too many columns for subheadings: ", number_of_columns, 
+           ". Row labels occupy only ", row_labels_width, " columns.")
+    res = make_subheadings(res, number_of_columns = number_of_columns)
+    if(row_labels_width > number_of_columns){
+        row_labels = res[, seq_len(row_labels_width - number_of_columns), drop = FALSE] # columns with row labels
+        if_val(row_labels) = NA ~ ""
+        last_nonempty_cell = ""
+        for(col in rev(seq_len(NCOL(row_labels)))[-1]){
+            for(row in seq_len(NROW(row_labels))){
+                if(row_labels[row,col]!="") {
+                    last_nonempty_cell = row_labels[row,col]
+                }
+                if(row_labels[row,col]=="" & row_labels[row,col + 1]!=""){
+                    row_labels[row,col] = last_nonempty_cell   
+                }
+            }    
+        }
+        res = res[, -seq_len(row_labels_width - number_of_columns), drop = FALSE] # columns with row labels
+        row_labels = do.call(paste, c(as.list(row_labels), list(sep = "|")))
+        row_labels = remove_unnecessary_splitters(row_labels)
+        res = dtfrm(row_labels = row_labels, res)
+    } 
+    class(res) = class(data)
+    res
 }
 
 split_all_in_etable_for_print = function(data, 
@@ -352,7 +399,6 @@ split_all_in_etable_for_print = function(data,
         data = split_columns(data, 
                              columns = 1,
                              remove_repeated = remove_repeated,
-                             subheadings = FALSE, 
                              split = split,
                              fixed = fixed,
                              perl = perl

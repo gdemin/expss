@@ -40,9 +40,8 @@ expressions. Has priority over \code{perl}.}
 \item{digits}{numeric. How many digits after decimal point should be left in
 \code{split_table_to_df}?}
 
-\item{subheadings}{logical. Default is \code{FALSE}. Should we create table
-subheadings from labels in the first column? This argument is ignored if
-\code{columns} doesn't equal to 1 or \code{remove_repeated} is FALSE.}
+\item{number_of_columns}{integer. Number of columns from row labels which
+will be used as subheadings in table.}
 }
 \value{
 \code{split_labels} returns character matrix, \code{split_columns} returns
@@ -75,7 +74,13 @@ mtcars = apply_labels(mtcars,
 )
 
 # all row labels in the first column
-tabl = mtcars \%>\% calculate(cro_cpct(list(cyl, gear, carb), list(total(), vs, am)))
+tabl = mtcars \%>\% 
+       calculate(cro_cpct(list(cyl, gear, carb), list(total(), vs, am)))
+
+tabl # without subheadings
+
+make_subheadings(tabl) # with subheadings
+              
 split_labels(tabl[[1]])
 split_labels(colnames(tabl))
 
@@ -84,11 +89,13 @@ split_columns(tabl) # remove repeated
 
 split_columns(tabl, remove_repeated = FALSE)
 
-split_columns(tabl, subheadings = TRUE)
+split_columns(tabl)
 
 split_table_to_df(tabl)
 
-split_table_to_df(tabl, subheadings = TRUE)
+split_table_to_df(tabl)
+
+
 }
 \seealso{
 \link[base]{strsplit}

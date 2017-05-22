@@ -147,7 +147,7 @@ expect_equal_to_reference(split_table_to_df(tabl[, 1], remove_repeated = FALSE),
 colnames(tabl)[1] = "My super table"
 
 expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1b.rds")
-expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_table_to_df1b_subheadings.rds")
+expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_table_to_df1b_subheadings.rds")
 expect_equal_to_reference(split_table_to_df(tabl, remove_repeated = FALSE),
                           "rds/split_table_to_df2b.rds")
 
@@ -157,7 +157,7 @@ expect_identical(split_table_to_df(tabl[, FALSE]), tabl[, FALSE])
 expect_equal_to_reference(split_table_to_df(tabl[, 1]),
                           "rds/split_table_to_df5b.rds")
 
-expect_equal_to_reference(split_table_to_df(tabl[, 1], subheadings = TRUE),
+expect_equal_to_reference(make_subheadings(split_table_to_df(tabl[, 1])),
                           "rds/split_table_to_df5b_subheadings.rds")
 
 expect_equal_to_reference(split_table_to_df(tabl[, 1], remove_repeated = FALSE),
@@ -173,8 +173,8 @@ tabl = mtcars %>%
     tab_stat_cpct() %>% 
     tab_pivot()
 
-expect_equal_to_reference(split_columns(tabl, subheadings = TRUE), "rds/split_subheadings1.rds")
-expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_subheadings2.rds")
+expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_subheadings1.rds")
+expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_subheadings2.rds")
 
 tabl = mtcars %>% 
     tab_cols("#total", vs, am) %>%
@@ -189,8 +189,140 @@ tabl = mtcars %>%
     tab_stat_cpct() %>% 
     tab_pivot()
 
-expect_equal_to_reference(split_columns(tabl, subheadings = TRUE), "rds/split_subheadings3.rds")
-expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_subheadings4.rds")
+expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_subheadings3.rds")
+expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_subheadings4.rds")
 
 tabl[[1]] = paste0(tabl[[1]], "|newlab")
-expect_equal_to_reference(split_table_to_df(tabl, subheadings = TRUE), "rds/split_subheadings5.rds")
+expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)),
+                          "rds/split_subheadings5.rds")
+
+
+mtcars = apply_labels(mtcars,
+                      cyl = "Number of cylinders",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c(automatic = 0,
+                             manual=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+tabl = mtcars %>% 
+    tab_cells(am %nest% vs) %>% 
+    tab_cols(total(), cyl) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_error(make_subheadings(split_columns(tabl), 0))
+
+expect_equal_to_reference(
+    make_subheadings(split_columns(tabl), 1),
+    "rds/split_subheadings6.rds")
+
+expect_equal_to_reference(
+    make_subheadings(split_columns(tabl), 2),
+    "rds/split_subheadings7.rds")
+
+expect_equal_to_reference(
+    make_subheadings(split_columns(tabl), 3),
+    "rds/split_subheadings8.rds")
+
+expect_equal_to_reference(
+    make_subheadings(split_columns(tabl), 4),
+    "rds/split_subheadings9.rds")
+
+
+tabl = mtcars %>% 
+    tab_cols(total(), cyl) %>% 
+    tab_cells(mpg, disp) %>% 
+    tab_stat_mean() %>% 
+    tab_cells(am %nest% vs) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    make_subheadings(split_columns(tabl), 1),
+    "rds/split_subheadings10.rds")
+
+expect_equal_to_reference(
+    make_subheadings(split_columns(tabl), 2),
+    "rds/split_subheadings11.rds")
+
+expect_equal_to_reference(
+    make_subheadings(split_columns(tabl), 3),
+    "rds/split_subheadings12.rds")
+
+expect_equal_to_reference(
+    make_subheadings(split_columns(tabl), 4),
+    "rds/split_subheadings13.rds")
+
+#############################
+context("make_subheadings etable")
+
+tabl = mtcars %>% 
+    tab_cells(am %nest% vs) %>% 
+    tab_cols(total(), cyl) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_error(make_subheadings(tabl, 0))
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 1),
+    "rds/split_subheadings14.rds")
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 2),
+    "rds/split_subheadings15.rds")
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 3),
+    "rds/split_subheadings16.rds")
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 4),
+    "rds/split_subheadings17.rds")
+
+
+tabl = mtcars %>% 
+    tab_cols(total(), cyl) %>% 
+    tab_cells(mpg, disp) %>% 
+    tab_stat_mean() %>% 
+    tab_cells(am %nest% vs) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 1),
+    "rds/split_subheadings18.rds")
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 2),
+    "rds/split_subheadings19.rds")
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 3),
+    "rds/split_subheadings20.rds")
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 4),
+    "rds/split_subheadings21.rds")
+
+expect_error(
+    make_subheadings(tabl, 5)
+)
+
+tabl = mtcars %>% 
+    tab_cols(total(), cyl) %>% 
+    tab_cells(list(unvr(vs))) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(
+    make_subheadings(tabl, 1),
+    "rds/split_subheadings22.rds")
+
+
+
