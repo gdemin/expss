@@ -294,7 +294,12 @@ valid.default = function(x){
 
 #' @export
 valid.data.frame = function(x){
-    !rowAlls(is.na(x))
+    if (length(x)) {
+        res = do.call(cbind, lapply(x, is.na))
+    } else {
+        res = matrix(FALSE, NROW(x), 0)
+    }    
+    !rowAlls(res)
 }
 
 #' @export
