@@ -89,9 +89,16 @@ modify =  function (data, expr) {
 modify.data.frame = function (data, expr) {
     # based on 'within' from base R by R Core team
     parent = parent.frame()
+    expr = substitute(expr)
+    modify_internal(data, expr, parent = parent)
+}
+
+
+modify_internal = function (data, expr, parent) {
+    # based on 'within' from base R by R Core team
     e = evalq(environment(), data, parent)
     prepare_env(e, n = nrow(data), column_names = colnames(data))
-    eval(substitute(expr), envir = e, enclos = baseenv())
+    eval(expr, envir = e, enclos = baseenv())
     clear_env(e)
     l = as.list(e, all.names = TRUE)
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
@@ -115,12 +122,10 @@ modify.data.frame = function (data, expr) {
 
 #' @export
 modify.list = function (data, expr) {
+    parent = parent.frame()
+    expr = substitute(expr)
     for(each in seq_along(data)){
-        data[[each]] = eval(
-            substitute(modify(data[[each]], expr)), 
-            envir = parent.frame(),
-            enclos = baseenv()
-        )
+        data[[each]] = modify_internal(data[[each]], expr, parent = parent)
     }
     data
 }
@@ -129,7 +134,9 @@ modify.list = function (data, expr) {
 #' @export
 #' @rdname modify
 '%modify%' = function (data, expr) {
-    eval(substitute(modify(data, expr)), envir = parent.frame(), enclos = baseenv())
+    parent = parent.frame()
+    expr = substitute(expr)
+    modify_internal(data, expr, parent = parent)
 }
 
 #' @export
@@ -155,14 +162,18 @@ do_if = modify_if
 modify_if.data.frame = function (data, cond, expr) {
     # based on 'within' from base R by R Core team
     cond = substitute(cond)
-    e = evalq(environment(), data, parent.frame())
+    expr = substitute(expr)
+    parent = parent.frame()
+    modify_if_internal(data, cond, expr, parent = parent)
+}
+
+modify_if_internal = function (data, cond, expr, parent) {
+    # based on 'within' from base R by R Core team
+    e = evalq(environment(), data, parent)
     prepare_env(e, n = NROW(data), column_names = colnames(data))
     cond = calc_cond(cond, envir = e)
     
-    new_data = eval(substitute(modify(data[cond,, drop = FALSE], expr)),
-                    envir = parent.frame(),
-                    enclos = baseenv()
-                    )
+    new_data = modify_internal(data[cond,, drop = FALSE], expr, parent)
     del = setdiff(names(data), names(new_data))
     if(length(del)){
         data[, del] = NULL
@@ -174,17 +185,14 @@ modify_if.data.frame = function (data, cond, expr) {
     data
 }
 
-
-
 #' @export
 modify_if.list = function (data, cond, expr) {
-
+    
+    cond = substitute(cond)
+    expr = substitute(expr)
+    parent = parent.frame()
     for(each in seq_along(data)){
-        data[[each]] = eval(
-            substitute(modify_if(data[[each]], cond, expr)), 
-            envir = parent.frame(),
-            enclos = baseenv()
-        )
+        data[[each]] = modify_if_internal(data[[each]], cond, expr, parent = parent)
     }
     data
 }
@@ -200,21 +208,24 @@ calculate =  function (data, expr) {
 #' @export
 calculate.data.frame = function (data, expr) {
     # based on 'within' from base R by R Core team
+    expr = substitute(expr)
     parent = parent.frame()
+    calculate_internal(data, expr, parent)
+}
+
+calculate_internal = function (data, expr, parent) {
+    # based on 'within' from base R by R Core team
     e = evalq(environment(), data, parent)
     prepare_env(e, n = nrow(data), column_names = colnames(data))
-    eval(substitute(expr), envir = e, enclos = baseenv())
+    eval(expr, envir = e, enclos = baseenv())
 }
 
 #' @export
 calculate.list = function (data, expr) {
-
+    expr = substitute(expr)
+    parent = parent.frame()
     for(each in seq_along(data)){
-        data[[each]] = eval(
-            substitute(calculate(data[[each]], expr)), 
-            envir = parent.frame(),
-            enclos = baseenv()
-        )
+        data[[each]] = calculate_internal(data[[each]], expr, parent)
     }
     data
 }
@@ -223,7 +234,9 @@ calculate.list = function (data, expr) {
 #' @export
 #' @rdname modify
 '%calculate%' = function (data, expr) {
-    eval(substitute(calculate(data, expr)), envir = parent.frame(), enclos = baseenv())
+    expr = substitute(expr)
+    parent = parent.frame()
+    calculate_internal(data, expr, parent)
 }
 
 #' @export
