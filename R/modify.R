@@ -82,19 +82,18 @@
 #' 
 #' @export
 modify =  function (data, expr) {
-    UseMethod("modify")
-}
-
-#' @export
-modify.data.frame = function (data, expr) {
-    # based on 'within' from base R by R Core team
     parent = parent.frame()
     expr = substitute(expr)
     modify_internal(data, expr, parent = parent)
 }
 
 
-modify_internal = function (data, expr, parent) {
+modify_internal =  function (data, expr, parent) {
+    UseMethod("modify_internal")
+}
+
+#' @export
+modify_internal.data.frame = function (data, expr, parent) {
     # based on 'within' from base R by R Core team
     e = evalq(environment(), data, parent)
     prepare_env(e, n = nrow(data), column_names = colnames(data))
@@ -121,9 +120,7 @@ modify_internal = function (data, expr, parent) {
 }
 
 #' @export
-modify.list = function (data, expr) {
-    parent = parent.frame()
-    expr = substitute(expr)
+modify_internal.list = function (data, expr, parent) {
     for(each in seq_along(data)){
         data[[each]] = modify_internal(data[[each]], expr, parent = parent)
     }
@@ -150,7 +147,10 @@ compute = modify
 #' @export
 #' @rdname modify
 modify_if = function (data, cond, expr){
-    UseMethod("modify_if")
+    cond = substitute(cond)
+    expr = substitute(expr)
+    parent = parent.frame()
+    modify_if_internal(data, cond, expr, parent = parent)
 }
 
 
@@ -158,16 +158,12 @@ modify_if = function (data, cond, expr){
 #' @rdname modify
 do_if = modify_if
 
-#' @export
-modify_if.data.frame = function (data, cond, expr) {
-    # based on 'within' from base R by R Core team
-    cond = substitute(cond)
-    expr = substitute(expr)
-    parent = parent.frame()
-    modify_if_internal(data, cond, expr, parent = parent)
-}
+modify_if_internal = function (data, cond, expr, parent){
+    UseMethod("modify_if_internal")
+} 
 
-modify_if_internal = function (data, cond, expr, parent) {
+#' @export
+modify_if_internal.data.frame = function (data, cond, expr, parent) {
     # based on 'within' from base R by R Core team
     e = evalq(environment(), data, parent)
     prepare_env(e, n = NROW(data), column_names = colnames(data))
@@ -186,11 +182,7 @@ modify_if_internal = function (data, cond, expr, parent) {
 }
 
 #' @export
-modify_if.list = function (data, cond, expr) {
-    
-    cond = substitute(cond)
-    expr = substitute(expr)
-    parent = parent.frame()
+modify_if_internal.list = function (data, cond, expr, parent) {
     for(each in seq_along(data)){
         data[[each]] = modify_if_internal(data[[each]], cond, expr, parent = parent)
     }
@@ -202,18 +194,18 @@ modify_if.list = function (data, cond, expr) {
 #' @export
 #' @rdname modify
 calculate =  function (data, expr) {
-    UseMethod("calculate")
-}
-
-#' @export
-calculate.data.frame = function (data, expr) {
-    # based on 'within' from base R by R Core team
     expr = substitute(expr)
     parent = parent.frame()
     calculate_internal(data, expr, parent)
 }
 
-calculate_internal = function (data, expr, parent) {
+
+calculate_internal =  function (data, expr, parent) {
+    UseMethod("calculate_internal")
+}
+
+#' @export
+calculate_internal.data.frame = function (data, expr, parent) {
     # based on 'within' from base R by R Core team
     e = evalq(environment(), data, parent)
     prepare_env(e, n = nrow(data), column_names = colnames(data))
@@ -221,9 +213,7 @@ calculate_internal = function (data, expr, parent) {
 }
 
 #' @export
-calculate.list = function (data, expr) {
-    expr = substitute(expr)
-    parent = parent.frame()
+calculate_internal.list = function (data, expr, parent) {
     for(each in seq_along(data)){
         data[[each]] = calculate_internal(data[[each]], expr, parent)
     }

@@ -129,12 +129,9 @@
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
     data = ref(reference)
-    # expr = substitute(expr)
-    data = eval(substitute(modify(data, expr)),
-                envir = parent.frame(),
-                enclos = baseenv()
-                )
-    ref(reference) = data
+    parent = parent.frame()
+    expr = substitute(expr)
+    ref(reference) = modify_internal(data, expr, parent)
     invisible(data)
 }
 
@@ -146,13 +143,10 @@
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
     data = ref(reference)
-    # cond = substitute(cond)
-    # expr = substitute(expr)
-    data = eval(substitute(modify_if(data, cond, expr)),
-                envir = parent.frame(),
-                enclos = baseenv()               
-               )
-    ref(reference) = data
+    cond = substitute(cond)
+    expr = substitute(expr)
+    parent = parent.frame()
+    ref(reference) = modify_if_internal(data, cond, expr, parent)
     invisible(data)
 }
 
@@ -188,7 +182,9 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
     reference = suppressMessages(default_dataset() )
     # expr = substitute(expr)
     data = ref(reference)
-    eval(substitute(calculate(data, expr, ...)), envir = parent.frame(), enclos = baseenv())
+    expr = substitute(expr)
+    parent = parent.frame()
+    calculate_internal(data, expr, parent)
 } 
 
 #' @export

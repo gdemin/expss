@@ -381,9 +381,14 @@ res = lapply(iris_list, function(dfs) {dfs$aggr = sum(dfs$Sepal.Length); dfs})
 res0 = modify(iris_list, {aggr = sum(Sepal.Length)})
 expect_identical(res0, res)
 
+res0 = iris_list %modify% {aggr = sum(Sepal.Length)}
+expect_identical(res0, res)
+
 res_calc = calc(iris_list, sum(Sepal.Length))
 expect_identical(res_calc, lapply(iris_list, function(dfs){sum(dfs$Sepal.Length)}))
 
+res_calc = iris_list %calc% sum(Sepal.Length)
+expect_identical(res_calc, lapply(iris_list, function(dfs){sum(dfs$Sepal.Length)}))
 
 
 res = lapply(iris_list, function(dfs) {

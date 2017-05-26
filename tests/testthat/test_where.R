@@ -180,3 +180,7 @@ curr_name = 1
 expect_identical(where(iris_list,  curr_name),
                  list(iris_list[[1]][1, , drop = FALSE], iris_list[[2]][1, , drop = FALSE])
 )
+
+expect_identical(iris_list %where% curr_name,
+                 list(iris_list[[1]][1, , drop = FALSE], iris_list[[2]][1, , drop = FALSE])
+)
