@@ -6,8 +6,13 @@ if(isTRUE(options("covr")[[1]])){
     bbb = suppressWarnings(read_spss("data/2014-2016final.sav"))
     nsk = suppressWarnings(read_spss("data/NSK_all.sav"))
     nsk2 = suppressWarnings(read_spss("file:///data/NSK_all.sav"))
-    expect_equal_to_reference(nsk, "rds/nsk.rds")
-    expect_equal_to_reference(nsk2, "rds/nsk.rds")
+    if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
+        expect_equal_to_reference(nsk, "rds/nsk.rds")
+        expect_equal_to_reference(nsk2, "rds/nsk.rds")
+    } else {
+        expect_equal_to_reference(nsk, "rds/nsk_R3.4.rds")
+        expect_equal_to_reference(nsk2, "rds/nsk_R3.4.rds")        
+    }
     aaa2 = cbind(aaa, empty = NA, fac = factor("a"), fractional = 1.2345)
     write_labelled_spss(aaa2, "data/prelaunch.csv")
     dat = readLines("data/prelaunch.csv")
