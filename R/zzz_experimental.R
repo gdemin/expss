@@ -180,7 +180,6 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 #' @rdname experimental
 .calculate = function (expr, ...) {
     reference = suppressMessages(default_dataset() )
-    # expr = substitute(expr)
     data = ref(reference)
     expr = substitute(expr)
     parent = parent.frame()
