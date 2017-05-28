@@ -10,3 +10,12 @@ prop_pvalue = function(prop1, prop2, base1, base2, common_base = 0){
 } 
 
 
+
+header_groups = function(header){
+    
+    header = t(split_labels(header, remove_repeated = FALSE))    
+    res = matrix_to_cgroup(header)
+    
+}
+
+matrix_to_cgroup(temp[,-1])
