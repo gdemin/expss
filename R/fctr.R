@@ -71,15 +71,12 @@ fctr.labelled = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = T
         names(vallab) = make_items_unique(names(vallab), with_warning = "duplicated labels: ")
     }
     ### premature optimization
-    if(is.numeric(x) && !is.object(x)){
-        ordered = if_null(list(...)$ordered, FALSE)
-        res = match(x, vallab)
-        levels(res) = names(vallab)
-        class(res) = c(if (ordered) "ordered", "factor")
-        res     
-    } else {
-        base::factor(x = x, levels = as.character(vallab), labels=names(vallab), ...)
-    }
+    ordered = if_null(list(...)$ordered, FALSE)
+    res = match(x, vallab)
+    levels(res) = names(vallab)
+    class(res) = c(if (ordered) "ordered", "factor")
+    res     
+
 }
 
 

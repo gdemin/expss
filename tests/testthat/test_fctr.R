@@ -95,3 +95,4 @@ a = 1:3
 val_lab(a) = c("1" = 3)
 expect_warning(fctr(a))
 suppressWarnings(expect_identical(fctr(a), factor(c("1", "2", "1_1"), levels = c("1", "2", "1_1"))))
+
