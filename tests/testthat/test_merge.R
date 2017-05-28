@@ -14,6 +14,13 @@ expect_equal_to_reference(with(mtcars, {
      merge(counts, percents)
      }), "rds/merge1.rds")
 
+
+expect_equal_to_reference(with(mtcars, {
+    counts = cro(list(vs, am, gear, carb), list("Count"), total_row_position = "none")
+    percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
+    merge(counts, percents, suffixes = c("_first_table", "_second_table"))
+}), "rds/merge1a.rds")
+
 ### weird
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am, gear, am), list("Count"), total_row_position = "none")
