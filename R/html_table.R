@@ -69,8 +69,8 @@ htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
     header_last_row = t(split_labels(colnames(x),
                                      split = "|", 
                                      remove_repeated = TRUE))[NROW(header), , drop = FALSE]
-    header[] = htmltools::htmlEscape(header)
-    header_last_row[] = htmltools::htmlEscape(header_last_row)
+    # header[] = htmltools::htmlEscape(header)
+    # header_last_row[] = htmltools::htmlEscape(header_last_row)
     for(each in seq_len(NCOL(header))){
         curr_col = header[, each]
         ok = !is.na(curr_col) & curr_col!=""
