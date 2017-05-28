@@ -1,5 +1,6 @@
 context("dichotomy.default")
 
+expect_error(as.dichotomy(NULL))
 
 expect_identical(dummy(numeric(0)),
                  structure(numeric(0), .Dim = c(0L, 0L), class = c("dichotomy", 

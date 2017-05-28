@@ -204,17 +204,16 @@ is.dichotomy = function(x){
 # returns values+labels that will be used during dichotomizing
 get_values_for_dichotomizing = function(x, keep_unused = FALSE, keep_values = NULL,
                             keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
+    
+    stopif(is.null(x), "'as.dichotomy' - 'x' is NULL. Possibly variable doesn't exist.")
     vallab = val_lab(x)
     varlab = var_lab(x)
     x = unlab(x)
     uniqs = uniq_elements(x)
-    if(is.null(x)) {
-        uniqs = numeric(0)
-    }  else {  
-        if(length(uniqs)>0) {
-            uniqs = sort(uniqs, na.last = NA)
-        }    
-    }
+    if(length(uniqs)>0) {
+        uniqs = sort(uniqs, na.last = NA)
+    }    
+
     if(!is.null(keep_values) && keep_unused){
         uniqs = sort(union(uniqs, keep_values))
     }
