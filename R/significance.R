@@ -1,3 +1,7 @@
+PROP_COMPARE_TYPE = c("subtable", "subtable_bonferrony",
+                      "first_column", "first_column_adjusted", 
+                      "previous_column")
+
 #' Title
 #'
 #' @param x gddfg
@@ -33,76 +37,91 @@ significance_cpct = function(x,
 significance_cpct.etable = function(x, 
                                     sig_level = 0.95, 
                                     min_base = 2,
-                                    compare_type = c("subtable", "subtable_bonferrony",
-                                                     "first_column", "first_column_adjusted", 
-                                                     "previous_column"),
+                                    compare_type = "subtable",
                                     sig_labels = LETTERS,
-                                    sig_labels_previous_column = c("-", "+"),
+                                    sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
-                                    na_as_zero = FALSE,
+                                    na_as_zero = TRUE,
                                     total_marker = "#",
                                     total_row = 1
 ){
     
-    compare_type = match.arg(compare_type, several.ok = TRUE)
+    compare_type = match.arg(compare_type, choices = PROP_COMPARE_TYPE, several.ok = TRUE)
     expss:::stopif(sum(compare_type %in% c("subtable", "subtable_bonferrony"))>1, 
-           "mutually exclusive compare types in significance testing:  'subtable' and 'subtable_bonferrony'." )
+                   "mutually exclusive compare types in significance testing:  'subtable' and 'subtable_bonferrony'." )
     expss:::stopif(sum(compare_type %in% c("first_column", "first_column_adjusted"))>1, 
-           "mutually exclusive compare types in significance testing:  'first_column' and 'first_column_adjusted'.")
+                   "mutually exclusive compare types in significance testing:  'first_column' and 'first_column_adjusted'.")
     
     if(any(c("subtable", "subtable_bonferrony") %in% compare_type)){
         if(!is.null(sig_labels)){
             x = add_letters(x, labels = sig_labels)
         }  
         all_column_labels = get_category_labels(colnames(x))
-        groups = header_groups(colnames(x))
-        sections = split_table_by_row_sections(x, total_marker = total_marker)
-        res = lapply(sections, function(each_section){
-            # browser()
-            sig_section = each_section[[1]]
-            curr_props = each_section[[1]]
-            curr_props[,-1] = curr_props[,-1]/100
-            if(na_as_zero){
-                if_na(curr_props[,-1]) = 0
-            }
-            sig_section[, -1] = ""
-            curr_base = each_section[[2]]
-            if(is.character(total_row)){
-                curr_base = curr_base[grepl(total_row, curr_base[[1]], perl = TRUE), , drop = FALSE]
-                expss:::stopif(nrow(curr_base)<1, "significance testing - base not found: ", total_row)
-            } else {
-                curr_base = curr_base[total_row, , drop = FALSE]
-            }
-            if_na(curr_base) = 0
-            for(each_group in groups){
-                if(length(each_group)>1){
-                    for(col1 in each_group[-length(each_group)]){
-                        for(col2 in col1:each_group[length(each_group)]){
-                            base1 = curr_base[[col1]][1]
-                            base2 = curr_base[[col2]][1]
-                            if(base1>min_base & base2>min_base){
-                                pval = prop_pvalue(curr_props[[col1]], curr_props[[col2]], 
-                                                   curr_base[[col1]][1], curr_base[[col2]][1])
-                                if_na(pval) = Inf
-                                sig_section[[col1]] = ifelse(curr_props[[col1]]>curr_props[[col2]] & pval<sig_level,
-                                                             paste(sig_section[[col1]], all_column_labels[[col2]], sep = " "),
-                                                             sig_section[[col1]]
-                                                             )
-                                sig_section[[col2]] = ifelse(curr_props[[col2]]>curr_props[[col1]] & pval<sig_level,
-                                                             paste(sig_section[[col2]], all_column_labels[[col1]], sep = " "),
-                                                             sig_section[[col2]]
-                                )
-                            }
-                            
-                        }                        
-                    }        
-                }
-            }
-            sig_section
-        })
     }
-    res = do.call(add_rows, res)
-    list(x, res)
+    groups = header_groups(colnames(x))
+    sections = split_table_by_row_sections(x, total_marker = total_marker)
+    res = lapply(sections, function(each_section){
+        # browser()
+        sig_section = each_section[[1]]
+        curr_props = each_section[[1]]
+        curr_props[,-1] = curr_props[,-1]/100
+        if(na_as_zero){
+            if_na(curr_props[,-1]) = 0
+        }
+        sig_section[, -1] = ""
+        curr_base = each_section[[2]]
+        if(is.character(total_row)){
+            curr_base = curr_base[grepl(total_row, curr_base[[1]], perl = TRUE), , drop = FALSE]
+            expss:::stopif(nrow(curr_base)<1, "significance testing - base not found: ", total_row)
+        } else {
+            curr_base = curr_base[total_row, , drop = FALSE]
+        }
+        recode(curr_base) = lt(min_base) ~ NA
+        section_sig_prop(sig_section = sig_section, 
+                         curr_props = curr_props, 
+                         curr_base = curr_base,
+                         groups = groups,
+                         all_column_labels = all_column_labels,
+                         sig_level = sig_level,
+                         bonferroni = "subtable_bonferrony" %in% compare_type)
+    })
+    
+    do.call(add_rows, res)
+}
+
+section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
+                            all_column_labels,sig_level, bonferroni) {
+    for(each_group in groups){
+        if(length(each_group)>1){
+            if(bonferroni) {
+                valid_columns = !is.na(unlist(curr_base[ ,each_group, drop = FALSE][1, ]))
+                bonferroni_coef = sum(valid_columns)*(sum(valid_columns) - 1)/2*NROW(curr_props)
+            } else {
+                bonferroni_coef = 1
+            }    
+            for(col1 in each_group[-length(each_group)]){
+                for(col2 in col1:each_group[length(each_group)]){
+                    base1 = curr_base[[col1]][1]
+                    base2 = curr_base[[col2]][1]
+                    pval = prop_pvalue(curr_props[[col1]], curr_props[[col2]], 
+                                       curr_base[[col1]][1], curr_base[[col2]][1])
+                    pval = pmin(pval*bonferroni_coef, 1)
+                    if_na(pval) = Inf
+                    sig_section[[col1]] = ifelse(curr_props[[col1]]>curr_props[[col2]] & pval<sig_level,
+                                                 paste(sig_section[[col1]], all_column_labels[[col2]], sep = " "),
+                                                 sig_section[[col1]]
+                    )
+                    sig_section[[col2]] = ifelse(curr_props[[col2]]>curr_props[[col1]] & pval<sig_level,
+                                                 paste(sig_section[[col2]], all_column_labels[[col1]], sep = " "),
+                                                 sig_section[[col2]]
+                    )
+                    
+                    
+                }                        
+            }        
+        }
+    }
+    sig_section
 }
 
 get_category_labels = function(header){
