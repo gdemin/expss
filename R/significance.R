@@ -18,7 +18,7 @@ PROP_COMPARE_TYPE = c("subtable", "subtable_bonferrony",
 #' @examples
 #' 1
 significance_cpct = function(x, 
-                             sig_level = 0.95, 
+                             sig_level = 0.05, 
                              min_base = 2,
                              compare_type = c("subtable", "subtable_bonferrony",
                                               "first_column", "first_column_adjusted", 
@@ -28,22 +28,26 @@ significance_cpct = function(x,
                              sig_labels_first_column = c("-", "+"),
                              na_as_zero = FALSE,
                              total_marker = "#",
-                             total_row = 1
+                             total_row = 1,
+                             only_labels = FALSE,
+                             digits = getOption("expss.digits")
                              ){
     UseMethod("significance_cpct")
 }
 
 #' @export
 significance_cpct.etable = function(x, 
-                                    sig_level = 0.95, 
+                                    sig_level = 0.05, 
                                     min_base = 2,
                                     compare_type = "subtable",
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
-                                    na_as_zero = TRUE,
+                                    na_as_zero = FALSE,
                                     total_marker = "#",
-                                    total_row = 1
+                                    total_row = 1,
+                                    only_labels = FALSE,
+                                    digits = getOption("expss.digits")
 ){
     
     compare_type = match.arg(compare_type, choices = PROP_COMPARE_TYPE, several.ok = TRUE)
@@ -68,7 +72,11 @@ significance_cpct.etable = function(x,
         if(na_as_zero){
             if_na(curr_props[,-1]) = 0
         }
-        sig_section[, -1] = ""
+        if(only_labels){
+            sig_section[, -1] = ""
+        } else {
+            sig_section = round_dataframe(sig_section, digits)
+        }
         curr_base = each_section[[2]]
         if(is.character(total_row)){
             curr_base = curr_base[grepl(total_row, curr_base[[1]], perl = TRUE), , drop = FALSE]
@@ -77,20 +85,40 @@ significance_cpct.etable = function(x,
             curr_base = curr_base[total_row, , drop = FALSE]
         }
         recode(curr_base) = lt(min_base) ~ NA
-        section_sig_prop(sig_section = sig_section, 
-                         curr_props = curr_props, 
-                         curr_base = curr_base,
-                         groups = groups,
-                         all_column_labels = all_column_labels,
-                         sig_level = sig_level,
-                         bonferroni = "subtable_bonferrony" %in% compare_type)
+        if(any(c("first_column", "first_column_adjusted") %in% compare_type)){
+            sig_section = section_sig_first_column(sig_section = sig_section, 
+                                                   curr_props = curr_props, 
+                                                   curr_base = curr_base,
+                                                   groups = groups,
+                                                   sig_labels_first_column = sig_labels_first_column,
+                                                   sig_level = sig_level,
+                                                   adjust_common_base = "first_column_adjusted" %in% compare_type)
+        }
+        if(any(c("previous_column") %in% compare_type)){
+            sig_section = section_sig_previous_column(sig_section = sig_section, 
+                                                      curr_props = curr_props, 
+                                                      curr_base = curr_base,
+                                                      groups = groups,
+                                                      sig_labels_previous_column = sig_labels_previous_column,
+                                                      sig_level = sig_level)
+        }
+        if(any(c("subtable", "subtable_bonferrony") %in% compare_type)){
+            sig_section = section_sig_prop(sig_section = sig_section, 
+                                           curr_props = curr_props, 
+                                           curr_base = curr_base,
+                                           groups = groups,
+                                           all_column_labels = all_column_labels,
+                                           sig_level = sig_level,
+                                           bonferroni = "subtable_bonferrony" %in% compare_type)
+        }
+        sig_section
     })
     
     do.call(add_rows, res)
 }
 
 section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
-                            all_column_labels,sig_level, bonferroni) {
+                            all_column_labels, sig_level, bonferroni) {
     for(each_group in groups){
         if(length(each_group)>1){
             if(bonferroni) {
@@ -100,18 +128,20 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
                 bonferroni_coef = 1
             }    
             for(col1 in each_group[-length(each_group)]){
+                prop1 = curr_props[[col1]]
+                base1 = curr_base[[col1]][1]
                 for(col2 in col1:each_group[length(each_group)]){
-                    base1 = curr_base[[col1]][1]
+                    prop2 = curr_props[[col2]]
                     base2 = curr_base[[col2]][1]
-                    pval = prop_pvalue(curr_props[[col1]], curr_props[[col2]], 
-                                       curr_base[[col1]][1], curr_base[[col2]][1])
+                    pval = prop_pvalue(prop1, prop2, 
+                                       base1, base2)
                     pval = pmin(pval*bonferroni_coef, 1)
                     if_na(pval) = Inf
-                    sig_section[[col1]] = ifelse(curr_props[[col1]]>curr_props[[col2]] & pval<sig_level,
+                    sig_section[[col1]] = ifelse(prop1>prop2 & pval<sig_level,
                                                  paste(sig_section[[col1]], all_column_labels[[col2]], sep = " "),
                                                  sig_section[[col1]]
                     )
-                    sig_section[[col2]] = ifelse(curr_props[[col2]]>curr_props[[col1]] & pval<sig_level,
+                    sig_section[[col2]] = ifelse(prop2>prop1 & pval<sig_level,
                                                  paste(sig_section[[col2]], all_column_labels[[col1]], sep = " "),
                                                  sig_section[[col2]]
                     )
@@ -123,6 +153,68 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
     }
     sig_section
 }
+
+
+section_sig_previous_column = function(sig_section, curr_props,  curr_base, groups,
+                                       sig_labels_previous_column, sig_level) {
+    for(each_group in groups){
+        if(length(each_group)>1){
+            # col1 - current column
+            # col2 - previous column
+            for(col1 in each_group[-1]){
+                col2 = col1  - 1
+                prop1 = curr_props[[col1]]
+                base1 = curr_base[[col1]][1]
+                prop2 = curr_props[[col2]]
+                base2 = curr_base[[col2]][1]
+                pval = prop_pvalue(prop1, prop2, 
+                                   base1, base2)
+                if_na(pval) = Inf
+                sig_section[[col1]] = ifelse(pval<sig_level,
+                                             # previous value is greater
+                                             ifelse(prop2>prop1,
+                                                    paste(sig_section[[col1]], sig_labels_previous_column[[1]], sep = " "),
+                                                    # previous value is smaller
+                                                    paste(sig_section[[col1]], sig_labels_previous_column[[2]], sep = " ")
+                                             ),
+                                             sig_section[[col1]]
+                )
+            }        
+        }
+    }
+    sig_section
+}
+
+section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
+                                    sig_labels_first_column, sig_level, adjust_common_base = FALSE) {
+    groups = unlist(groups)
+    # col1 - first column
+    # col2 - other columns
+    if(length(groups)>1){
+        col1 = groups[1]
+        prop1 = curr_props[[col1]]
+        base1 = curr_base[[col1]][1]
+        for(col2 in groups[-1]){
+            prop2 = curr_props[[col2]]
+            base2 = curr_base[[col2]][1]
+            pval = prop_pvalue(prop1, prop2, 
+                               base1, base2,
+                               common_base = base2*adjust_common_base)
+            if_na(pval) = Inf
+            sig_section[[col2]] = ifelse(pval<sig_level,
+                                         # previous value is greater
+                                         ifelse(prop1>prop2,
+                                                paste(sig_section[[col2]], sig_labels_first_column[[1]], sep = " "),
+                                                # previous value is smaller
+                                                paste(sig_section[[col2]], sig_labels_first_column[[2]], sep = " ")
+                                         ),
+                                         sig_section[[col2]]
+            )
+        }        
+    }
+    sig_section
+}
+
 
 get_category_labels = function(header){
     header = t(split_labels(header, remove_repeated = FALSE)) 
