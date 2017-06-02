@@ -24,13 +24,11 @@ significance_cpct = function(x,
                                               "first_column", "first_column_adjusted", 
                                               "previous_column"),
                              sig_labels = LETTERS,
-                             sig_labels_previous_column = c("-", "+"),
+                             sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
                              na_as_zero = FALSE,
                              total_marker = "#",
-                             total_row = 1,
-                             only_labels = FALSE,
-                             digits = getOption("expss.digits")
+                             total_row = 1
                              ){
     UseMethod("significance_cpct")
 }
@@ -45,9 +43,7 @@ significance_cpct.etable = function(x,
                                     sig_labels_first_column = c("-", "+"),
                                     na_as_zero = FALSE,
                                     total_marker = "#",
-                                    total_row = 1,
-                                    only_labels = FALSE,
-                                    digits = getOption("expss.digits")
+                                    total_row = 1
 ){
     
     compare_type = match.arg(compare_type, choices = PROP_COMPARE_TYPE, several.ok = TRUE)
@@ -58,7 +54,7 @@ significance_cpct.etable = function(x,
     
     if(any(c("subtable", "subtable_bonferrony") %in% compare_type)){
         if(!is.null(sig_labels)){
-            x = add_letters(x, labels = sig_labels)
+            x = add_letters(x, sig_labels = sig_labels)
         }  
         all_column_labels = get_category_labels(colnames(x))
     }
@@ -72,11 +68,7 @@ significance_cpct.etable = function(x,
         if(na_as_zero){
             if_na(curr_props[,-1]) = 0
         }
-        if(only_labels){
-            sig_section[, -1] = ""
-        } else {
-            sig_section = round_dataframe(sig_section, digits)
-        }
+        sig_section[, -1] = ""
         curr_base = each_section[[2]]
         if(is.character(total_row)){
             curr_base = curr_base[grepl(total_row, curr_base[[1]], perl = TRUE), , drop = FALSE]
@@ -117,6 +109,8 @@ significance_cpct.etable = function(x,
     do.call(add_rows, res)
 }
 
+########################
+
 section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
                             all_column_labels, sig_level, bonferroni) {
     for(each_group in groups){
@@ -154,6 +148,7 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
     sig_section
 }
 
+########################
 
 section_sig_previous_column = function(sig_section, curr_props,  curr_base, groups,
                                        sig_labels_previous_column, sig_level) {
@@ -185,6 +180,8 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
     sig_section
 }
 
+########################
+
 section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
                                     sig_labels_first_column, sig_level, adjust_common_base = FALSE) {
     groups = unlist(groups)
@@ -215,6 +212,7 @@ section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
     sig_section
 }
 
+########################
 
 get_category_labels = function(header){
     header = t(split_labels(header, remove_repeated = FALSE)) 
@@ -231,6 +229,8 @@ get_category_labels = function(header){
     })
     c(res, recursive = TRUE, use.names = FALSE)
 }
+
+########################
 
 header_groups = function(header){
     header = header[-1]
@@ -261,6 +261,8 @@ header_groups = function(header){
 }
 
 
+########################
+
 split_table_by_row_sections = function(tbl, total_marker = "#"){
     totals = grepl(total_marker, tbl[[1]], perl = TRUE)
     if_na(totals) = FALSE
@@ -282,17 +284,21 @@ split_table_by_row_sections = function(tbl, total_marker = "#"){
     unname(res)
 }
 
-add_letters = function(tbl, labels = LETTERS){
+
+########################
+
+#' @export
+add_letters = function(tbl, sig_labels = LETTERS){
     header = colnames(tbl)
     groups = header_groups(header)   
     for(each_group in groups){
-        if(length(each_group)<=length(labels)){
+        if(length(each_group)<=length(sig_labels)){
             header[each_group] = paste0(header[each_group], "|", 
-                                        labels[each_group - min(each_group)+1])
+                                        sig_labels[each_group - min(each_group)+1])
         } else {
-            numbers = seq_len(length(each_group)/length(labels) + 1)
-            long_labels = rep(labels, length(numbers))
-            numbers = rep(numbers, each = length(labels))
+            numbers = seq_len(length(each_group)/length(sig_labels) + 1)
+            long_labels = rep(sig_labels, length(numbers))
+            numbers = rep(numbers, each = length(sig_labels))
             long_labels = paste0(long_labels, numbers)
             header[each_group] = paste0(header[each_group], "|", 
                                         long_labels[each_group - min(each_group)+1])
@@ -305,13 +311,36 @@ add_letters = function(tbl, labels = LETTERS){
 }
 
 
+########################
+
 prop_pvalue = function(prop1, prop2, base1, base2, common_base = 0){
     # ftp://public.dhe.ibm.com/software/analytics/spss/documentation/statistics/20.0/en/client/Manuals/IBM_SPSS_Statistics_Algorithms.pdf
     # IBM SPSS Statistics Algorithms v20, p. 263
-    base1 = round(base1)
-    base2 = round(base2)
     pooled_prop = (prop1*base1 + prop2*base2)/(base1 + base2)
     z_statistic = (prop1 - prop2)/
         sqrt(pooled_prop*(1 - pooled_prop)*(1/base1 + 1/base2 - 2*common_base/base1/base2))
     2*(1 - pnorm(abs(z_statistic)))
+} 
+
+########################
+
+means_pvalue = function(mean1, mean2, sd1, sd2, base1, base2, common_base = 0, var_equal = FALSE){
+    # ftp://public.dhe.ibm.com/software/analytics/spss/documentation/statistics/20.0/en/client/Manuals/IBM_SPSS_Statistics_Algorithms.pdf
+    # IBM SPSS Statistics Algorithms v20, p. 267
+    if(common_base>0 || var_equal){
+        pooled_sd = sqrt((sd1*sd1*(base1 - 1) + sd2*sd2*(base2 - 1))/(base1 + base2 - 2))
+        t_statistic = (mean1 - mean2)/
+            pooled_sd/sqrt(1/base1 + 1/base2 - 2*common_base/base1/base2)
+        2*pt(-abs(t_statistic), df = base1 + base2 - common_base - 2)
+    } else {
+        # R Core Team (2017). R: A language and environment for statistical computing. R Foundation for
+        # Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+        # t.test(..., var.equal = FALSE)
+        stderr1 = sd1/sqrt(base1)
+        stderr2 = sd2/sqrt(base2)
+        stderr = sqrt(stderr1^2 + stderr2^2)
+        df = stderr^4/(stderr1^4/(base1 - 1) + stderr2^4/(base2 - 1))
+        t_statistic = (mean1 - mean2)/stderr
+        2 * pt(-abs(t_statistic), df)
+    }
 } 

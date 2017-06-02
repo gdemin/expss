@@ -7,9 +7,8 @@
 significance_cpct(x, sig_level = 0.05, min_base = 2,
   compare_type = c("subtable", "subtable_bonferrony", "first_column",
   "first_column_adjusted", "previous_column"), sig_labels = LETTERS,
-  sig_labels_previous_column = c("-", "+"), sig_labels_first_column = c("-",
-  "+"), na_as_zero = FALSE, total_marker = "#", total_row = 1,
-  only_labels = FALSE, digits = getOption("expss.digits"))
+  sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
+  "+"), na_as_zero = FALSE, total_marker = "#", total_row = 1)
 }
 \arguments{
 \item{x}{gddfg}
