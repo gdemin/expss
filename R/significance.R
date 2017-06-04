@@ -1,4 +1,4 @@
-PROP_COMPARE_TYPE = c("subtable", "subtable_bonferrony",
+PROP_COMPARE_TYPE = c("subtable",
                       "first_column", "first_column_adjusted", 
                       "previous_column")
 
@@ -20,9 +20,8 @@ PROP_COMPARE_TYPE = c("subtable", "subtable_bonferrony",
 significance_cpct = function(x, 
                              sig_level = 0.05, 
                              min_base = 2,
-                             compare_type = c("subtable", "subtable_bonferrony",
-                                              "first_column", "first_column_adjusted", 
-                                              "previous_column"),
+                             compare_type ="subtable",
+                             bonferroni = FALSE,
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
@@ -38,6 +37,7 @@ significance_cpct.etable = function(x,
                                     sig_level = 0.05, 
                                     min_base = 2,
                                     compare_type = "subtable",
+                                    bonferroni = FALSE,
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
@@ -47,35 +47,27 @@ significance_cpct.etable = function(x,
 ){
     
     compare_type = match.arg(compare_type, choices = PROP_COMPARE_TYPE, several.ok = TRUE)
-    expss:::stopif(sum(compare_type %in% c("subtable", "subtable_bonferrony"))>1, 
-                   "mutually exclusive compare types in significance testing:  'subtable' and 'subtable_bonferrony'." )
     expss:::stopif(sum(compare_type %in% c("first_column", "first_column_adjusted"))>1, 
                    "mutually exclusive compare types in significance testing:  'first_column' and 'first_column_adjusted'.")
     
-    if(any(c("subtable", "subtable_bonferrony") %in% compare_type)){
+    if("subtable" %in% compare_type){
         if(!is.null(sig_labels)){
-            x = add_letters(x, sig_labels = sig_labels)
+            x = add_sig_labels(x, sig_labels = sig_labels)
         }  
         all_column_labels = get_category_labels(colnames(x))
     }
     groups = header_groups(colnames(x))
-    sections = split_table_by_row_sections(x, total_marker = total_marker)
+    sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
     res = lapply(sections, function(each_section){
         # browser()
-        sig_section = each_section[[1]]
-        curr_props = each_section[[1]]
+        sig_section = each_section$section
+        curr_props = each_section$section
         curr_props[,-1] = curr_props[,-1]/100
         if(na_as_zero){
             if_na(curr_props[,-1]) = 0
         }
         sig_section[, -1] = ""
-        curr_base = each_section[[2]]
-        if(is.character(total_row)){
-            curr_base = curr_base[grepl(total_row, curr_base[[1]], perl = TRUE), , drop = FALSE]
-            expss:::stopif(nrow(curr_base)<1, "significance testing - base not found: ", total_row)
-        } else {
-            curr_base = curr_base[total_row, , drop = FALSE]
-        }
+        curr_base = each_section$total
         recode(curr_base) = lt(min_base) ~ NA
         if(any(c("first_column", "first_column_adjusted") %in% compare_type)){
             sig_section = section_sig_first_column(sig_section = sig_section, 
@@ -84,6 +76,7 @@ significance_cpct.etable = function(x,
                                                    groups = groups,
                                                    sig_labels_first_column = sig_labels_first_column,
                                                    sig_level = sig_level,
+                                                   bonferroni = bonferroni,
                                                    adjust_common_base = "first_column_adjusted" %in% compare_type)
         }
         if(any(c("previous_column") %in% compare_type)){
@@ -92,16 +85,17 @@ significance_cpct.etable = function(x,
                                                       curr_base = curr_base,
                                                       groups = groups,
                                                       sig_labels_previous_column = sig_labels_previous_column,
-                                                      sig_level = sig_level)
+                                                      sig_level = sig_level,
+                                                      bonferroni = bonferroni)
         }
-        if(any(c("subtable", "subtable_bonferrony") %in% compare_type)){
+        if("subtable" %in% compare_type){
             sig_section = section_sig_prop(sig_section = sig_section, 
                                            curr_props = curr_props, 
                                            curr_base = curr_base,
                                            groups = groups,
                                            all_column_labels = all_column_labels,
                                            sig_level = sig_level,
-                                           bonferroni = "subtable_bonferrony" %in% compare_type)
+                                           bonferroni = bonferroni)
         }
         sig_section
     })
@@ -116,21 +110,21 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
     for(each_group in groups){
         if(length(each_group)>1){
             if(bonferroni) {
-                valid_columns = !is.na(unlist(curr_base[ ,each_group, drop = FALSE][1, ]))
+                valid_columns = !is.na(curr_base[each_group])
                 bonferroni_coef = sum(valid_columns)*(sum(valid_columns) - 1)/2*NROW(curr_props)
             } else {
                 bonferroni_coef = 1
             }    
             for(col1 in each_group[-length(each_group)]){
                 prop1 = curr_props[[col1]]
-                base1 = curr_base[[col1]][1]
+                base1 = curr_base[[col1]]
                 for(col2 in col1:each_group[length(each_group)]){
                     prop2 = curr_props[[col2]]
-                    base2 = curr_base[[col2]][1]
-                    pval = prop_pvalue(prop1, prop2, 
+                    base2 = curr_base[[col2]]
+                    pval = compare_proportions(prop1, prop2, 
                                        base1, base2)
+                    if_na(pval) = 1
                     pval = pmin(pval*bonferroni_coef, 1)
-                    if_na(pval) = Inf
                     sig_section[[col1]] = ifelse(prop1>prop2 & pval<sig_level,
                                                  paste(sig_section[[col1]], all_column_labels[[col2]], sep = " "),
                                                  sig_section[[col1]]
@@ -151,20 +145,27 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
 ########################
 
 section_sig_previous_column = function(sig_section, curr_props,  curr_base, groups,
-                                       sig_labels_previous_column, sig_level) {
+                                       sig_labels_previous_column, sig_level, bonferroni) {
     for(each_group in groups){
         if(length(each_group)>1){
             # col1 - current column
             # col2 - previous column
+            if(bonferroni) {
+                valid_columns = !is.na(curr_base[each_group])
+                bonferroni_coef = (sum(valid_columns) - 1)*NROW(curr_props)
+            } else {
+                bonferroni_coef = 1
+            } 
             for(col1 in each_group[-1]){
                 col2 = col1  - 1
                 prop1 = curr_props[[col1]]
-                base1 = curr_base[[col1]][1]
+                base1 = curr_base[[col1]]
                 prop2 = curr_props[[col2]]
-                base2 = curr_base[[col2]][1]
-                pval = prop_pvalue(prop1, prop2, 
+                base2 = curr_base[[col2]]
+                pval = compare_proportions(prop1, prop2, 
                                    base1, base2)
-                if_na(pval) = Inf
+                if_na(pval) = 1
+                pval = pmin(pval*bonferroni_coef, 1)
                 sig_section[[col1]] = ifelse(pval<sig_level,
                                              # previous value is greater
                                              ifelse(prop2>prop1,
@@ -183,18 +184,25 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
 ########################
 
 section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
-                                    sig_labels_first_column, sig_level, adjust_common_base = FALSE) {
+                                    sig_labels_first_column, sig_level, bonferroni,
+                                    adjust_common_base = FALSE) {
     groups = unlist(groups)
     # col1 - first column
     # col2 - other columns
-    if(length(groups)>1){
-        col1 = groups[1]
-        prop1 = curr_props[[col1]]
-        base1 = curr_base[[col1]][1]
+    col1 = groups[1]
+    prop1 = curr_props[[col1]]
+    base1 = curr_base[[col1]]
+    if(length(groups)>1 & !is.na(base1)){
+        if(bonferroni) {
+            valid_columns = !is.na(curr_base)
+            bonferroni_coef = (sum(valid_columns) - 1)*NROW(curr_props)
+        } else {
+            bonferroni_coef = 1
+        } 
         for(col2 in groups[-1]){
             prop2 = curr_props[[col2]]
             base2 = curr_base[[col2]][1]
-            pval = prop_pvalue(prop1, prop2, 
+            pval = compare_proportions(prop1, prop2, 
                                base1, base2,
                                common_base = base2*adjust_common_base)
             if_na(pval) = Inf
@@ -263,7 +271,7 @@ header_groups = function(header){
 
 ########################
 
-split_table_by_row_sections = function(tbl, total_marker = "#"){
+split_table_by_row_sections = function(tbl, total_marker = "#", total_row = 1){
     totals = grepl(total_marker, tbl[[1]], perl = TRUE)
     if_na(totals) = FALSE
     expss:::stopif(!any(totals), "significance testing - total rows not found.")
@@ -276,8 +284,19 @@ split_table_by_row_sections = function(tbl, total_marker = "#"){
     sections = split(tbl, sections)
     res = lapply(sections, function(curr_section) {
         curr_totals = grepl(total_marker, curr_section[[1]], perl = TRUE)
-        list(section = curr_section[!curr_totals, drop = FALSE],
-             totals = curr_section[curr_totals, drop = FALSE]
+        total = curr_section[curr_totals,, drop = FALSE]
+        curr_section = curr_section[!curr_totals, drop = FALSE]
+        
+        if(is.character(total_row)){
+            total = total[grepl(total_row, total[[1]], perl = TRUE), , drop = FALSE]
+            expss:::stopif(nrow(total)<1, "significance testing - base not found: ", total_row)
+        } else {
+            total = total[total_row, , drop = FALSE]
+        }
+        total[[1]] = NA # it is supposed to be character (row_labels) so we change it
+        total = unlist(total[1,])  # [1,] if we by occasion select several rows 
+        list(section = curr_section,
+             total = total
              )
         
     })
@@ -287,8 +306,9 @@ split_table_by_row_sections = function(tbl, total_marker = "#"){
 
 ########################
 
+#' @rdname significance_cpct
 #' @export
-add_letters = function(tbl, sig_labels = LETTERS){
+add_sig_labels = function(tbl, sig_labels = LETTERS){
     header = colnames(tbl)
     groups = header_groups(header)   
     for(each_group in groups){
@@ -313,7 +333,9 @@ add_letters = function(tbl, sig_labels = LETTERS){
 
 ########################
 
-prop_pvalue = function(prop1, prop2, base1, base2, common_base = 0){
+#' @rdname significance_cpct
+#' @export
+compare_proportions = function(prop1, prop2, base1, base2, common_base = 0){
     # ftp://public.dhe.ibm.com/software/analytics/spss/documentation/statistics/20.0/en/client/Manuals/IBM_SPSS_Statistics_Algorithms.pdf
     # IBM SPSS Statistics Algorithms v20, p. 263
     pooled_prop = (prop1*base1 + prop2*base2)/(base1 + base2)
@@ -324,7 +346,9 @@ prop_pvalue = function(prop1, prop2, base1, base2, common_base = 0){
 
 ########################
 
-means_pvalue = function(mean1, mean2, sd1, sd2, base1, base2, common_base = 0, var_equal = FALSE){
+#' @rdname significance_cpct
+#' @export
+compare_means = function(mean1, mean2, sd1, sd2, base1, base2, common_base = 0, var_equal = FALSE){
     # ftp://public.dhe.ibm.com/software/analytics/spss/documentation/statistics/20.0/en/client/Manuals/IBM_SPSS_Statistics_Algorithms.pdf
     # IBM SPSS Statistics Algorithms v20, p. 267
     if(common_base>0 || var_equal){
