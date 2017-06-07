@@ -3,8 +3,10 @@
 \name{vars}
 \alias{vars}
 \alias{indirect}
+\alias{indirect<-}
+\alias{._}
+\alias{._<-}
 \alias{vars_list}
-\alias{indirect_list}
 \alias{\%to\%}
 \alias{\%to_list\%}
 \alias{.internal_to_}
@@ -12,11 +14,15 @@
 \usage{
 vars(...)
 
-indirect(...)
+indirect(name)
+
+indirect(name) <- value
+
+._(name)
+
+._(name) <- value
 
 vars_list(...)
-
-indirect_list(...)
 
 e1 \%to\% e2
 
@@ -37,12 +43,10 @@ data.frame/list with variables
 \description{
 \itemize{
 \item{\code{vars}}{ returns all variables by their names or by criteria (see 
-\link{criteria}). Expressions in backticks inside characters will be expanded
-as with \link{subst}. \code{a`1:2`} will be translated to \code{'a1', 'a2'}. 
-There is no non-standard evaluation in this function by design so use quotes 
-for names of your variables or use \link{qc}. The only exception with 
-non-standard evaluation is \code{\%to\%}. You can use \code{\%to\%} inside 
-\code{vars} or independently.}
+\link{criteria}). There is no non-standard evaluation in this function by
+design so use quotes for names of your variables or use \link{qc}. The only
+exception with non-standard evaluation is \code{\%to\%}. You can use
+\code{\%to\%} inside \code{vars} or independently.}
 \item{\code{\%to\%}}{ returns range of variables between \code{e1} and 
 \code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if}, 
 \link{calculate}, \link{keep}, \link{except} and \link{where} support 
@@ -55,6 +59,10 @@ sorted in the alphabetic order.}
 Functions with word 'list' in name return lists of variables instead of 
 dataframes.
 \code{.internal_to_} is for internal usage and not documented.
+
+#' @export
+#' @rdname vars
+indirect_list = vars_list
 }
 \examples{
 
@@ -70,9 +78,8 @@ dfs = data.frame(
 )
 
 # calculate sum of b_* variables
-modify(dfs, {
+compute(dfs, {
     b_total = sum_row(b_1 \%to\% b_5)
-    b_total2 = sum_row(vars("b_`1:5`"))
 })
 
 # In global environement
@@ -86,7 +93,6 @@ a5 = rep(5, 5)
 
 # identical results
 a1 \%to\% a5
-vars("a`1:5`")
 vars(perl("^a[0-9]$"))
 
 # sum each row

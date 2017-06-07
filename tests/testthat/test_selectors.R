@@ -187,9 +187,9 @@ context("vars with perl")
 
 
 expect_identical(vars(perl("a_[0-9]")), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
-expect_identical(indirect(perl("a_[0-9]")), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+# expect_identical(indirect(perl("a_[0-9]")), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(vars_list(perl("a_[0-9]")), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
-expect_identical(indirect_list(perl("a_[0-9]")), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+# expect_identical(indirect_list(perl("a_[0-9]")), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 
 expect_identical(
     with(dfs, vars(perl("b_[0-9]"))), 
@@ -247,3 +247,5 @@ expect_error(vars("a_`c(1:2,4:5)`", "z`1:5`"))
 # expect_error(a_1a %to% a_5)
 # expect_error(rep("a_1",2) %to% rep("a_5",2))
 # expect_error(d_1 %to% d_5)
+
+

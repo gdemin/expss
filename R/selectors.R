@@ -2,12 +2,10 @@
 #' 
 #' \itemize{
 #' \item{\code{vars}}{ returns all variables by their names or by criteria (see 
-#' \link{criteria}). Expressions in backticks inside characters will be expanded
-#' as with \link{subst}. \code{a`1:2`} will be translated to \code{'a1', 'a2'}. 
-#' There is no non-standard evaluation in this function by design so use quotes 
-#' for names of your variables or use \link{qc}. The only exception with 
-#' non-standard evaluation is \code{\%to\%}. You can use \code{\%to\%} inside 
-#' \code{vars} or independently.}
+#' \link{criteria}). There is no non-standard evaluation in this function by
+#' design so use quotes for names of your variables or use \link{qc}. The only
+#' exception with non-standard evaluation is \code{\%to\%}. You can use
+#' \code{\%to\%} inside \code{vars} or independently.}
 #' \item{\code{\%to\%}}{ returns range of variables between \code{e1} and 
 #' \code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if}, 
 #' \link{calculate}, \link{keep}, \link{except} and \link{where} support 
@@ -41,9 +39,8 @@
 #' )
 #' 
 #' # calculate sum of b_* variables
-#' modify(dfs, {
+#' compute(dfs, {
 #'     b_total = sum_row(b_1 %to% b_5)
-#'     b_total2 = sum_row(vars("b_`1:5`"))
 #' })
 #' 
 #' # In global environement
@@ -57,7 +54,6 @@
 #' 
 #' # identical results
 #' a1 %to% a5
-#' vars("a`1:5`")
 #' vars(perl("^a[0-9]$"))
 #' 
 #' # sum each row
@@ -73,9 +69,55 @@ vars = function(...){
     as.dtfrm(res)
 }
 
+internal_indirect_set = function(name, value, envir){
+    stopif(length(name)!=1, "'indirect - 'name' should be a vector of length 1.")
+    name = as.character(name)
+    assign(name, value = value, pos = envir, inherits = FALSE)
+    name
+}
+
+internal_indirect_get = function(name, envir){
+    stopif(length(name)!=1, "'indirect - 'name' should be a vector of length 1.")
+    name = as.character(name)
+    get(name, pos = envir, inherits = TRUE)
+}
+
 #' @export
 #' @rdname vars
-indirect = vars
+indirect = function(name) {
+    internal_indirect_get(name, envir = parent.frame())
+}    
+
+#' @export
+#' @rdname vars
+'indirect<-' = function(name, value){
+    internal_indirect_set(name, value, envir = parent.frame())
+}
+
+class(indirect) = "indirect"
+
+
+#' @export
+'$.indirect' = function(x, name){
+    name = internal_indirect_get(name, envir = parent.frame())  
+    internal_indirect_get(name, envir = parent.frame())  
+}
+
+#' @export
+'$<-.indirect' = function(x, name, value){
+    name = internal_indirect_get(name, envir = parent.frame())
+    internal_indirect_set(name, value, envir = parent.frame())
+    x
+}
+
+
+#' @export
+#' @rdname vars
+'._' = indirect
+
+#' @export
+#' @rdname vars
+'._<-' = `indirect<-`
 
 #' @export
 #' @rdname vars
@@ -95,9 +137,9 @@ vars_list = function(...){
     mget(var_names[selected_names], envir = parent.frame(), inherits = TRUE)
 }
 
-#' @export
-#' @rdname vars
-indirect_list = vars_list
+#' #' @export
+#' #' @rdname vars
+#' indirect_list = vars_list
 
 #' @export
 #' @rdname vars

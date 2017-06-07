@@ -320,6 +320,7 @@ valid.matrix = function(x){
 prepare_env = function(env, n, column_names){
     env$.n = n
     env$.N = n
+    env$._ = expss::._
     env$set = set_generator(env$.N)
     if(!is.null(column_names)){
         env$.internal_column_names0 = column_names
@@ -332,14 +333,14 @@ prepare_env = function(env, n, column_names){
 }
 
 clear_env = function(env){
-    rm(".n", "set", ".N", envir = env)  
+    rm(".n", "set", ".N", "._", envir = env)  
     if(exists(".internal_column_names0", envir = env)) rm(".internal_column_names0", envir = env)
 }
 
 # we need this function to keep variables in order of data.frame
 internal_ls = function(column_names, env = parent.frame()){
         curr = ls(envir = env, all.names = TRUE, sorted = FALSE)
-        curr = curr %d% c(".n", "set", ".N", ".internal_column_names0")
+        curr = curr %d% c(".n", "set", ".N", ".internal_column_names0", "._")
         # removed = names(curr)[vapply(curr, is.null, NA, USE.NAMES = FALSE)]
         # curr = names(curr) %d% removed # remove deleted variables?
         new_names = column_names %i% curr 
