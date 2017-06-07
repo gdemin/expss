@@ -4,7 +4,7 @@
 \alias{expss.options}
 \alias{expss_digits}
 \alias{expss_enable_value_labels_support}
-\alias{expss_disbale_value_labels_support}
+\alias{expss_disable_value_labels_support}
 \alias{expss_output_default}
 \alias{expss_output_raw}
 \alias{expss_output_viewer}
@@ -15,7 +15,7 @@ expss_digits(digits = NULL)
 
 expss_enable_value_labels_support()
 
-expss_disbale_value_labels_support()
+expss_disable_value_labels_support()
 
 expss_output_default()
 

@@ -3,14 +3,14 @@
 #' This is method for rendering results of \link{fre}/\link{cro}/\link{tables} in
 #' Shiny/RMarkdown and etc. For detailed description of function and its
 #' arguments see \link[htmlTable]{htmlTable}. You may be interested in
-#' \code{options(expss.output = "viewer")} for automatical rendering tables
-#' in the RStudio viewer or  \code{options(expss.output = "rnotebook")} for
+#' \code{expss_output_viewer()} for automatical rendering tables
+#' in the RStudio viewer or  \code{expss_output_rnotebook()} for
 #' rendering in the R notebooks. See \link{expss.options}.
 #'
 #' @param x a data object (result of \link{fre}/\link{cro} and etc)
 #' @param digits integer By default, all numeric columns are rounded to one digit after
-#'   decimal separator. Also you can set this argument by option 'expss.digits'
-#'   - for example, \code{option(expss.digits = 2)}. If it is NA than all
+#'   decimal separator. Also you can set this argument by setting option 'expss.digits'
+#'   - for example, \code{expss_digits(2)}. If it is NA than all
 #'   numeric columns remain unrounded.
 #' @param ... further parameters for \link[htmlTable]{htmlTable}.
 #'
@@ -38,7 +38,7 @@
 #'                       carb = "Number of carburetors"
 #' )
 #' 
-#' options(expss.output = "viewer")
+#' expss_output_viewer()
 #' mtcars %>% 
 #'      tab_cols(total(), am %nest% vs) %>% 
 #'      tab_cells(mpg, hp) %>% 
@@ -47,7 +47,7 @@
 #'      tab_stat_cpct() %>% 
 #'      tab_pivot()
 #'      
-#' options(expss.output = NA)   
+#' expss_output_default()   
 #'  
 #' }
 htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){

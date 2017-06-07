@@ -60,18 +60,13 @@ setkeyv = data.table::setkeyv
 # '[.data.table' = data.table::`[.data.table`
 
 
-.onLoad = function(...){
-    options(expss.output = "")
-    options(expss.digits = 1)
-    options(expss.enable_value_labels_support = 1)
-}
 
 .onAttach = function(...) {
     rnd = runif(1)
     if(rnd<0.2){
-        packageStartupMessage("\nUse \'options(expss.output = \"viewer\")\' to display tables in the RStudio Viewer.\n To return to the console output, use \'options(expss.output = NA)\'.\n")
+        packageStartupMessage("\nUse 'expss_output_viewer()' to display tables in the RStudio Viewer.\n To return to the console output, use 'expss_output_default()'.\n")
     }
     if(rnd>0.8){
-        packageStartupMessage("\nUse \'options(expss.output = \"rnotebook\")\' to display tables inside R Notebooks.\n To return to the console output, use \'options(expss.output = NA)\'.\n")
+        packageStartupMessage("\nUse 'expss_output_rnotebook()' to display tables inside R Notebooks.\n To return to the console output, use 'expss_output_default()'.\n")
     }
 }

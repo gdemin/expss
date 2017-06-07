@@ -51,7 +51,7 @@ expss_enable_value_labels_support = function(){
 
 #' @rdname expss.options
 #' @export
-expss_disbale_value_labels_support = function(){
+expss_disable_value_labels_support = function(){
     options(expss.enable_value_labels_support = 0)
 }
 
