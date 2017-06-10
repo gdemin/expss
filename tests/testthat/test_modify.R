@@ -24,7 +24,7 @@ dfs = data.frame(
 
 expect_error(modify(dfs, {.n = 42}))
 expect_error(modify(dfs, {.N = 42}))
-expect_error(modify(dfs, {set = 42}))
+
 
 
 
@@ -245,7 +245,7 @@ expect_error(
 )
 expect_error(modify_if(dfs2,test %in% 2:4,  {.n = 42}))
 expect_error(modify_if(dfs2,test %in% 2:4,  {.N = 42}))
-expect_error(modify_if(dfs2,test %in% 2:4,  {set = 42}))
+
 
 
 result_dfs2$random_numer = NULL

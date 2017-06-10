@@ -69,7 +69,7 @@ test_iris[, paste0(letters[3], seq_len(3))] = 3
 
 res_iris = do_repeat(iris, i = c(1, 2, 3),
                      {
-                         set(paste0(letters[i], seq_len(i)), i)
+                         i %into% paste0(letters[i], seq_len(i))
                      })
 
 

@@ -24,13 +24,7 @@
 #' condition. See \link{where}, \link[base]{subset}.}
 #' \item{\code{.recode}}{ Change, rearrange or consolidate the values of an existing
 #' variable inside default data.frame. See \link{recode}.}
-#' \item{\code{.if_val}}{ Shortcut for \code{.recode}. See \link{recode}.}
-#' \item{\code{.set}}{ Set variables values in the default dataset with given 
-#' names filled with \code{value}. It is possible to set multiple variables at 
-#' once. Expressions inside backticks in \code{varnames} will be expanded as
-#' with \link{subst}. \code{set} (without dot) is also available inside
-#' \code{.compute}, \code{.modify}, \code{.modify_if}, \code{.do_if},
-#' \link{modify}, \link{modify_if}.} }
+#' \item{\code{.if_val}}{ Shortcut for \code{.recode}. See \link{recode}.} }
 #' Other functions:
 #' \itemize{
 #' \item{\code{.var_lab}}{ Return variable label from default dataset. See
@@ -274,6 +268,7 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 #' @export
 #' @rdname experimental
 .set = function(varnames, value = NA){
+    .Deprecated("", msg = "Use assignment inside `.compute`. For multiassignement use `%into%`.")
     reference = suppressMessages(default_dataset() )
     dd_name = all.vars(reference)
     stopif(length(dd_name)!=1,"Reference should have only one variable name, e. g. ref_var = ~a")
@@ -299,6 +294,7 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 set_generator = function(number_of_rows){
     force(number_of_rows)
     function(varnames, value = NA){
+        .Deprecated("'%into%'")
         value = eval(substitute(value), envir = parent.frame(), enclos = baseenv())
         varnames = subst(varnames)
         num_of_vars = length(varnames)

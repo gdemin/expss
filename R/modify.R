@@ -19,10 +19,7 @@
 #' There is a special constant \code{.N} which equals to number of cases in
 #' \code{data} for usage in expression inside \code{modify}/\code{calculate}.
 #' Inside \code{modify_if} \code{.N} gives number of rows which will be affected
-#' by expressions. Inside these functions you can use \code{set} function which 
-#' creates variables with given name/set values to existing variables - 
-#' \link{.set}. It is possible with \code{set} to assign values to multiple 
-#' variables at once. \code{compute} is an alias for \code{modify}, \code{do_if}
+#' by expressions. \code{compute} is an alias for \code{modify}, \code{do_if}
 #' is an alias for \code{modify_if} and \code{calc} is an alias for 
 #' \code{calculate}.
 #' 
@@ -58,17 +55,10 @@
 #' # calculate sum of b* variables and return it
 #' calculate(dfs, sum_row(b_, b_1 %to% b_5))
 #' 
-#' # 'set' function
-#' # new variables filled with NA
-#' modify(dfs, {
-#'     set('new_b`1:5`')
-#' })
 #' 
-#' # 'set' function
 #' # set values to existing/new variables
-#' # expression in backticks will be expanded - see ?subst
 #' modify(dfs, {
-#'     set('new_b`1:5`', b_1 %to% b_5)
+#'     (b_1 %to% b_5) %into% subst('new_b`1:5`')
 #' })
 #' 
 #' 
