@@ -45,9 +45,7 @@
 #' @param expr set of expressions  in curly brackets which will be evaluated in
 #'   the context of default dataset
 #' @param cond logical vector/expression
-#' @param varnames character vector. Names of variables which should be created
-#'   in the default dataset. Expressions inside backticks in \code{varnames}
-#'   will be expanded as with \link{subst}.
+#' @param varnames character vector. Deprecated.
 #' @param value value/vector/matrix/data.frame. Value for newly created/existing
 #'   variables.
 #' @param ... further arguments 

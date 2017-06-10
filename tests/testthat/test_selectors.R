@@ -215,17 +215,17 @@ expect_identical(
 
 
 context("vars")
-expect_identical(vars("a_`c(1:2,4:5)`"), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
-expect_identical(vars_list("a_`c(1:2,4:5)`"), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+expect_identical(vars(subst("a_`c(1:2,4:5)`")), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+expect_identical(vars_list(subst("a_`c(1:2,4:5)`")), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 
 
 expect_identical(
-    with(dfs, vars("b_`c(1:2,4:5)`")), 
+    with(dfs, vars(subst("b_`c(1:2,4:5)`"))), 
     with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
 )
 expect_identical(
     within(dfs, {
-        b_total = sum_row(vars("b_`c(1:2,4:5)`"))
+        b_total = sum_row(vars(subst("b_`c(1:2,4:5)`")))
     }), 
     result_dfs
 )
@@ -233,7 +233,7 @@ expect_identical(
 
 expect_identical(
     transform(dfs,
-              b_total = sum_row(vars("b_`c(1:2,4:5)`"))
+              b_total = sum_row(vars(subst("b_`c(1:2,4:5)`")))
     ), 
     result_dfs
 )
@@ -241,8 +241,8 @@ expect_identical(
 
 
 
-expect_error(vars("z`1:5`"))
-expect_error(vars("a_`c(1:2,4:5)`", "z`1:5`"))
+expect_error(vars(subst("z`1:5`")))
+expect_error(vars(subst("a_`c(1:2,4:5)`"), subst("z`1:5`")))
 # expect_error(a_5 %to% a_1)
 # expect_error(a_1a %to% a_5)
 # expect_error(rep("a_1",2) %to% rep("a_5",2))

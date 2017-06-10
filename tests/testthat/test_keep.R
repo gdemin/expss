@@ -107,36 +107,36 @@ dfs = data.frame(
 
 aaa = paste0("b_", 1:5)
 bbb = c("aa", "b_")
-expect_identical(keep(dfs, "b_`1:5`"), dfs[, aaa])
-expect_identical(dfs %keep% "b_`1:5`", dfs[, aaa])
+expect_identical(keep(dfs, subst("b_`1:5`")), dfs[, aaa])
+expect_identical(dfs %keep% subst("b_`1:5`"), dfs[, aaa])
 
-expect_identical(except(dfs, "b_`1:5`"), dfs[, bbb])
-expect_identical(dfs %except% "b_`1:5`", dfs[, bbb])
+expect_identical(except(dfs, subst("b_`1:5`")), dfs[, bbb])
+expect_identical(dfs %except% subst("b_`1:5`"), dfs[, bbb])
 
 i = 1:5
-expect_identical(keep(dfs, "b_`i`"), dfs[, aaa])
-expect_identical(dfs %keep% "b_`i`", dfs[, aaa])
+expect_identical(keep(dfs, subst("b_`i`")), dfs[, aaa])
+expect_identical(dfs %keep% subst("b_`i`"), dfs[, aaa])
 
-expect_identical(except(dfs, "b_`i`"), dfs[, bbb])
-expect_identical(dfs %except% "b_`i`", dfs[, bbb])
+expect_identical(except(dfs, subst("b_`i`")), dfs[, bbb])
+expect_identical(dfs %except% subst("b_`i`"), dfs[, bbb])
 
 ex1 = function(){
     items = 1:5
-    keep(dfs, "b_`items`")
+    keep(dfs, subst("b_`items`"))
 
 }
 
 
 ex2 = function(){
     items = 1:5
-    dfs %keep% "b_`items`"
+    dfs %keep% subst("b_`items`")
 
 }
 
 global_items = 2:3
 
 ex3 = function(){
-    dfs %keep% "b_`global_items`"
+    dfs %keep% subst("b_`global_items`")
     
 }
 
@@ -147,11 +147,11 @@ expect_identical(ex3(), dfs[, aaa[2:3]])
 def_dfs = dfs
 default_dataset(def_dfs)
 
-.keep("b_`i`")
+.keep(subst("b_`i`"))
 expect_identical(def_dfs, dfs[, aaa])
 
 def_dfs = dfs
-.except("b_`i`")
+.except(subst("b_`i`"))
 expect_identical(def_dfs, dfs[, bbb])
 
 context("keep edge cases")

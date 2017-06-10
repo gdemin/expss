@@ -37,8 +37,7 @@ criteria (see \link{criteria}). \code{except} drops  variables/elements from
 data.frame by their names or by criteria. There is no non-standard evaluation
 in these functions by design so use quotes for names of your variables or use
 \link{qc}. The only exception with non-standard evaluation is \code{\%to\%}. 
-See example. Character arguments will be expanded as with \link{subst}. 
-\code{a`1:2`} will be translated to \code{'a1', 'a2'}. 
+See example.  
 \code{\%keep\%}/\code{\%except\%} are infix versions of these functions.
 Methods for list will apply \code{keep}/\code{except} to each element of
 the list separately. \code{.keep}/\code{.except} are versions which works
@@ -84,6 +83,6 @@ dfs = data.frame(
      b_5 = 15 \%r\% 5 
  )
  i = 1:5
- keep(dfs, "b_`i`")
+ keep(dfs, subst("b_`i`"))
  keep(dfs, b_1 \%to\% b_5) # the same result
 }

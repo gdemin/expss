@@ -77,9 +77,7 @@ the context of default dataset}
 
 \item{x}{vector/data.frame - variable names in the scope of default dataset}
 
-\item{varnames}{character vector. Names of variables which should be created
-in the default dataset. Expressions inside backticks in \code{varnames}
-will be expanded as with \link{subst}.}
+\item{varnames}{character vector. Deprecated.}
 
 \item{value}{value/vector/matrix/data.frame. Value for newly created/existing
 variables.}
