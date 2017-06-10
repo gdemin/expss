@@ -1,4 +1,4 @@
-#' Get variables by pattern/by name or range of variables.
+#' Get variables/range of variables by name/by pattern.
 #' 
 #' \itemize{
 #' \item{\code{vars}}{ returns all variables by their names or by criteria (see 
@@ -12,25 +12,21 @@
 #' \code{\%to\%}. Inside global environment \link[base]{with},
 #' \link[base]{within} \code{\%to\%} will take range from names of variables
 #' sorted in the alphabetic order.}
-#' \item{\code{indirect}/\code{indirect_list}}{ are aliases for
+#' \item{\code{indirect}}{ are aliases for
 #' \code{vars}/\code{vars_list}.}
 #' }
 #' Functions with word 'list' in name return lists of variables instead of 
 #' dataframes.
 #' \code{.internal_to_} is for internal usage and not documented.
-#' @seealso \link{keep}
+#' @seealso \link{keep}, \link{except}, \link{do_repeat}, \link{compute}
 #' @param ... characters names of variables or criteria/logical functions
 #' @param e1 unquoted name of start variable (e. g. a_1)
 #' @param e2 unquoted name of start variable (e. g. a_5) 
-#'
 #' @return  data.frame/list with variables
-#' 
 #' @examples
-#' 
 #' # In data.frame
 #' dfs = data.frame(
-#'     aa = rep(10, 5),
-#'     b_ = rep(20, 5),
+#'     a = rep(10, 5),
 #'     b_1 = rep(11, 5),
 #'     b_2 = rep(12, 5),
 #'     b_3 = rep(13, 5),
@@ -44,8 +40,7 @@
 #' })
 #' 
 #' # In global environement
-#' aa = rep(10, 5)
-#' b = rep(20, 5)
+#' a = rep(10, 5)
 #' a1 = rep(1, 5)
 #' a2 = rep(2, 5)
 #' a3 = rep(3, 5)
@@ -59,6 +54,46 @@
 #' # sum each row
 #' sum_row(a1 %to% a5)
 #' 
+#' # variable substitution
+#' name1 = "a"
+#' name2 = "new_var"
+#' 
+#' # example with short notation but it can be applied only for simple cases - 
+#' # when 'name' is vector of length 1
+#' compute(dfs, {
+#'      ._$name2 = ._$name1*2    
+#' })
+#' 
+#' compute(dfs, {
+#'      for(name1 in paste0("b_", 1:5)){
+#'          name2 = paste0("new_", name1) 
+#'          ._$name2 = ._$name1*2 
+#'      }
+#'      rm(name1, name2) # we don't need this variables as columns in 'dfs'
+#' })
+#' 
+#' # square brackets notation
+#' compute(dfs, {
+#'      ._[name2] = ._[name1]*2  
+#' })
+#' 
+#' compute(dfs, {
+#'      for(name1 in paste0("b_", 1:5)){
+#'          ._[paste0("new_", name1)] = ._$name1*2 
+#'      }
+#'      rm(name1) # we don't need this variable as column in 'dfs'
+#' })
+#' 
+#' # '._$' doesn't work for case below so we need to use square brackets form
+#' name1 = paste0("b_", 1:5)
+#' name2 = paste0("new_", name1)
+#' compute(dfs, {
+#'      for(i in 1:5){
+#'          ._[name2[i]] = ._[name1[i]]*3
+#'      }
+#'      rm(i) # we don't need this variable as column in 'dfs'
+#' })
+#' 
 #' @export
 vars = function(...){
     # args = substitute(list(...))
@@ -69,55 +104,53 @@ vars = function(...){
     as.dtfrm(res)
 }
 
-internal_indirect_set = function(name, value, envir){
-    stopif(length(name)!=1, "'indirect - 'name' should be a vector of length 1.")
+
+internal_parameter_set = function(name, value, envir){
+    stopif(length(name)!=1, "'._' - variable name should be a vector of length 1.")
     name = as.character(name)
     assign(name, value = value, pos = envir, inherits = FALSE)
     name
 }
 
-internal_indirect_get = function(name, envir){
-    stopif(length(name)!=1, "'indirect - 'name' should be a vector of length 1.")
+internal_parameter_get = function(name, envir){
+    stopif(length(name)!=1, "'._' - variable name should be a vector of length 1.")
     name = as.character(name)
     get(name, pos = envir, inherits = TRUE)
 }
 
 #' @export
 #' @rdname vars
-indirect = function(name) {
-    internal_indirect_get(name, envir = parent.frame())
-}    
+'._' = 'Object for variable substitution. Usage: `._$varname` or `._["varname"]`'
 
-#' @export
-#' @rdname vars
-'indirect<-' = function(name, value){
-    internal_indirect_set(name, value, envir = parent.frame())
-}
-
-class(indirect) = "indirect"
+class(._) = "parameter"
 
 
 #' @export
-'$.indirect' = function(x, name){
-    name = internal_indirect_get(name, envir = parent.frame())  
-    internal_indirect_get(name, envir = parent.frame())  
+'$.parameter' = function(x, name){
+    name = internal_parameter_get(name, envir = parent.frame())  
+    internal_parameter_get(name, envir = parent.frame())  
 }
 
 #' @export
-'$<-.indirect' = function(x, name, value){
-    name = internal_indirect_get(name, envir = parent.frame())
-    internal_indirect_set(name, value, envir = parent.frame())
+'$<-.parameter' = function(x, name, value){
+    name = internal_parameter_get(name, envir = parent.frame())
+    internal_parameter_set(name, value, envir = parent.frame())
     x
 }
 
 
 #' @export
-#' @rdname vars
-'._' = indirect
+'[.parameter' = function(x, name){
+    internal_parameter_get(name, envir = parent.frame())  
+}
 
 #' @export
-#' @rdname vars
-'._<-' = `indirect<-`
+'[<-.parameter' = function(x, name, value){
+    internal_parameter_set(name, value, envir = parent.frame())
+    x
+}
+
+
 
 #' @export
 #' @rdname vars
@@ -137,9 +170,14 @@ vars_list = function(...){
     mget(var_names[selected_names], envir = parent.frame(), inherits = TRUE)
 }
 
-#' #' @export
-#' #' @rdname vars
-#' indirect_list = vars_list
+#' @export
+#' @rdname vars
+indirect = vars
+
+#' @export
+#' @rdname vars
+indirect_list = vars_list
+
 
 #' @export
 #' @rdname vars

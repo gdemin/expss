@@ -1,4 +1,4 @@
-context("indirect")
+context("._")
 
 data(iris)
 
@@ -14,7 +14,7 @@ res_iris = compute(iris,
                        i = qc(i1, i2, i3)
                        value = c(10, 20, 30)
                        for(j in 1:3){
-                           indirect(i[j]) = value[j]
+                           ._[i[j]] = value[j]
                        }
                        rm(i, value, j)
                    })
@@ -22,21 +22,6 @@ res_iris = compute(iris,
 
 
 expect_identical(res_iris, test_iris)
-
-res_iris = compute(iris,  
-                   {
-                       i = qc(i1, i2, i3)
-                       value = c(10, 20, 30)
-                       for(j in 1:3){
-                           ._(i[j]) = value[j]
-                       }
-                       rm(i, value, j)
-                   })
-
-
-
-expect_identical(res_iris, test_iris)
-
 
 
 
@@ -46,17 +31,6 @@ test_iris$i1 = 42
 test_iris$i2 = 42
 test_iris$i3 = 42
 
-
-res_iris = compute(iris, 
-                   {
-                       for(i in qc(i1, i2, i3)){
-                           indirect(i) = k
-                       }
-                       rm(i)
-                   })
-
-
-expect_identical(res_iris, test_iris)
 
 res_iris = compute(iris, 
                    {
@@ -80,16 +54,6 @@ test_iris[, paste0(letters[2], seq_len(2))] = 2
 test_iris[, paste0(letters[3], seq_len(3))] = 3
 
 
-res_iris = compute(iris, {
-                         for(i in c(1, 2, 3)){
-                             new_name = paste0(letters[i], seq_len(i))
-                             for(each in new_name) indirect(each) = i
-                         }
-                         rm(i, new_name, each)
-                     })
-
-
-expect_identical(res_iris, test_iris)
 
 res_iris = compute(iris, {
     for(i in c(1, 2, 3)){
@@ -132,8 +96,23 @@ i = qc(log, exp)
 fun = qc(log, exp)
 res_iris = compute(res_iris, {
 
-    for(j in 1:2) ._(i[j]) = ._(fun[j])(Sepal.Length)
-    rm(i, j)
+    for(j in 1:2) ._[i[j]] = ._[fun[j]](Sepal.Length)
+    rm(j)
+})
+
+expect_identical(res_iris, test_iris)
+
+test_iris = iris
+test_iris$log = iris$Sepal.Length
+test_iris$exp = iris$Sepal.Length
+
+res_iris = iris
+curr = "Sepal.Length"
+
+res_iris = compute(res_iris, {
+    
+    for(j in 1:2) ._[i[j]] = ._$curr
+    rm(j)
 })
 
 expect_identical(res_iris, test_iris)
@@ -142,9 +121,9 @@ expect_identical(res_iris, test_iris)
 data(iris)
 test_iris = iris[, "Species", drop = FALSE]
 
-
+to_delete = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 res_iris = compute(iris, {
-    for(i in qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)){
+    for(i in to_delete){
         ._$i = NULL
     } 
     rm(i)
