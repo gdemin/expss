@@ -559,19 +559,19 @@ expect_identical(b3_recoded, c(10, 2, 3, 4, 5))
 expect_identical(b4_recoded, rev( c(10, 2, 3, 4, 5)))
 
 
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  'v`1:3`'
+recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  subst('v`1:3`')
 expect_identical(v1, c(10, 2, 3, 4, 5))
 expect_identical(v2, c(10, 2, 3, 4, 5))
 expect_identical(v3, rev( c(10, 2, 3, 4, 5)))
 i = 1:3
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  'ww`i`'
+recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  subst('ww`i`')
 expect_identical(ww1, c(10, 2, 3, 4, 5))
 expect_identical(ww2, c(10, 2, 3, 4, 5))
 expect_identical(ww3, rev( c(10, 2, 3, 4, 5)))
 
 i = 1:2
 j = 3
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  c('xx`i`', 'y`j`')
+recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  subst(c('xx`i`', 'y`j`'))
 expect_identical(xx1, c(10, 2, 3, 4, 5))
 expect_identical(xx2, c(10, 2, 3, 4, 5))
 expect_identical(y3, rev( c(10, 2, 3, 4, 5)))

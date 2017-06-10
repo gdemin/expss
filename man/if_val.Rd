@@ -114,8 +114,7 @@ assignment form \code{recode() = ...} because this form don't modify values
 which are not satisfying any of the conditions.}}
 \code{\%into\%} tries to mimic SPSS 'INTO'. Values from left-hand side will 
 be assigned to right-hand side. You can use \code{\%to\%} expression in the 
-RHS of \code{\%into\%}. Characters in the RHS will be expanded as with
-\link{subst}. See examples.
+RHS of \code{\%into\%}. See examples.
 \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 \code{if_val} is an alias for \code{recode}.
@@ -165,7 +164,7 @@ recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% (x_rec_1 \%to\% x_rec_3)
 fre(x_rec_1)
 # the same operation with characters expansion
 i = 1:3
-recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% 'x_rec2_`i`'
+recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% subst('x_rec2_`i`')
 fre(x_rec2_1)
 
 # example with function in RHS

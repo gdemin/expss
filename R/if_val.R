@@ -55,8 +55,7 @@
 #' which are not satisfying any of the conditions.}}
 #' \code{\%into\%} tries to mimic SPSS 'INTO'. Values from left-hand side will 
 #' be assigned to right-hand side. You can use \code{\%to\%} expression in the 
-#' RHS of \code{\%into\%}. Characters in the RHS will be expanded as with
-#' \link{subst}. See examples.
+#' RHS of \code{\%into\%}. See examples.
 #' \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 #' can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 #' \code{if_val} is an alias for \code{recode}.
@@ -120,7 +119,7 @@
 #' fre(x_rec_1)
 #' # the same operation with characters expansion
 #' i = 1:3
-#' recode(x1 %to% x3, gt(0.5) ~ 1, other ~ 0) %into% 'x_rec2_`i`'
+#' recode(x1 %to% x3, gt(0.5) ~ 1, other ~ 0) %into% subst('x_rec2_`i`')
 #' fre(x_rec2_1)
 #' 
 #' # example with function in RHS
@@ -412,64 +411,56 @@ copy = function(x) {
 #' @export
 #' @rdname if_val
 '%into%' = function(e1, e2){
-    args = substitute(e2)
-    if(length(args)==1){
-        if(length(all.names(args))==length(all.vars(args))){
+    variable_names = substitute(e2)
+    if(length(variable_names)==1){
+        if(length(all.names(variable_names))==length(all.vars(variable_names))){
             # there is no functions
-            if(is.character(args)){
-                new_args = eval(substitute(subst(args)), parent.frame(), baseenv())
-            } else {
-                new_args = expr_to_character(args) 
-            }
-            
+            processed_variables_names = expr_to_character(variable_names) 
+
         } else {
             # we have functions
-            new_args = substitute_symbols(args,
+            processed_variables_names = substitute_symbols(variable_names,
                                           list("%to%" = ".into_helper_")
             )
-            new_args = eval(substitute(new_args), parent.frame(), baseenv())
+            processed_variables_names = eval(processed_variables_names, parent.frame(), baseenv())
         }
     } else {
-        if(expr_to_character(args[[1]]) %in% c("list", "c", "qc", "lst")){
-            new_args = list()
-            for(each in seq_along(args[-1])){
-                x = args[[each+1]]
+        if(expr_to_character(variable_names[[1]]) %in% c("list", "c", "qc", "lst")){
+            processed_variables_names = list()
+            for(each in seq_along(variable_names[-1])){
+                x = variable_names[[each+1]]
                 if(length(all.names(x))==length(all.vars(x))){
-                    if(is.character(x)){
-                        new_args[[each]] = eval(substitute(subst(x)), parent.frame(), baseenv()) 
-                    } else {
-                        new_args[[each]] = expr_to_character(x) 
-                    }
+                    processed_variables_names[[each]] = expr_to_character(x)
                 } else {
                     x = substitute_symbols(x,
                                            list("%to%" = ".into_helper_")
                     )
-                    x = eval(substitute(x), parent.frame(), baseenv())
-                    new_args[[each]] = x
+                    x = eval(x, parent.frame(), baseenv())
+                    processed_variables_names[[each]] = x
                 }
             }
         } else {
-            new_args = substitute_symbols(args,
+            processed_variables_names = substitute_symbols(variable_names,
                                       list("%to%" = ".into_helper_")
             )
-            new_args = eval(substitute(new_args), parent.frame(), baseenv())
+            processed_variables_names = eval(processed_variables_names, parent.frame(), baseenv())
         }
     }
-    args = unlist(new_args)
-    if(length(args)==1){
-        assign(args[[1]], e1, envir = parent.frame())
+    processed_variables_names = unlist(processed_variables_names)
+    if(length(processed_variables_names)==1){
+        assign(processed_variables_names[[1]], e1, envir = parent.frame())
     } else {
         if(is.list(e1)){
             n_elements = length(e1)
         } else {
             n_elements = NCOL(e1)
         }
-        stopif(!((n_elements==length(args)) || (n_elements==1)),
-               "'%into%' - you provide ",length(args), " names and ", n_elements,
+        stopif(!((n_elements==length(processed_variables_names)) || (n_elements==1)),
+               "'%into%' - you provide ",length(processed_variables_names), " names and ", n_elements,
                " items for them. Number of items should be equal to number of the names or equal to one."
         )
-        for(each in seq_along(args)){
-            assign(args[[each]], column(e1, each), envir = parent.frame())
+        for(each in seq_along(processed_variables_names)){
+            assign(processed_variables_names[[each]], column(e1, each), envir = parent.frame())
         }
     }
     invisible(NULL)

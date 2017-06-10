@@ -5,8 +5,10 @@
 * add 'indirect'/'indirect_list' - aliases for 'vars'/'vars_list'
 * add 'mis_val' - alias for 'na_if'
 * add 'unsafe' argument for *_fun/*_fun_df.
-* improve 'lst' function
+* add '._' object for parameter substitution inside 'compute' and etc. Usage: '._$param_name'. For details: ?._ * improve 'lst' function
 * numerous small bugfixes
+* '.set'/'set' inside 'compute' and etc. are deprecated. Use '%into%' instead.
+* Expansion of variables in backticks inside 'vars'/'vars_list'/'%into%' are removed. Use explicit 'subst' instead'
 
 
 0.7.1 (10.04.2017)
