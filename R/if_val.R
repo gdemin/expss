@@ -411,44 +411,43 @@ copy = function(x) {
 #' @export
 #' @rdname if_val
 '%into%' = function(e1, e2){
-    variable_names = substitute(e2)
-    if(length(variable_names)==1){
-        if(length(all.names(variable_names))==length(all.vars(variable_names))){
-            # there is no functions
-            processed_variables_names = expr_to_character(variable_names) 
+    variables_names = substitute(e2)
+    into_internal(e1, variables_names, parent.frame())
+}
 
-        } else {
-            # we have functions
-            processed_variables_names = substitute_symbols(variable_names,
-                                          list("%to%" = ".into_helper_")
-            )
-            processed_variables_names = eval(processed_variables_names, parent.frame(), baseenv())
-        }
+# characters -> characters, symbols -> characters, evaluate functions
+process_variables_names = function(variables_names, envir){
+    if(length(all.names(variables_names))==length(all.vars(variables_names))){
+        # there is no functions
+        processed_variables_names = expr_to_character(variables_names) 
+        
     } else {
-        if(expr_to_character(variable_names[[1]]) %in% c("list", "c", "qc", "lst")){
+        # we have functions
+        processed_variables_names = substitute_symbols(variables_names,
+                                                       list("%to%" = ".into_helper_")
+        )
+        processed_variables_names = eval(processed_variables_names, envir, baseenv())
+    }    
+    processed_variables_names
+}
+
+into_internal = function(e1, variables_names, envir){
+    if(length(variables_names)==1){
+        processed_variables_names = process_variables_names(variables_names, envir)
+    } else {
+        if(expr_to_character(variables_names[[1]]) %in% c("list", "c", "qc", "lst")){
             processed_variables_names = list()
-            for(each in seq_along(variable_names[-1])){
-                x = variable_names[[each+1]]
-                if(length(all.names(x))==length(all.vars(x))){
-                    processed_variables_names[[each]] = expr_to_character(x)
-                } else {
-                    x = substitute_symbols(x,
-                                           list("%to%" = ".into_helper_")
-                    )
-                    x = eval(x, parent.frame(), baseenv())
-                    processed_variables_names[[each]] = x
-                }
+            for(each in seq_along(variables_names[-1])){
+                processed_variables_names[[each]] = 
+                    process_variables_names(variables_names[[each+1]], envir)
             }
         } else {
-            processed_variables_names = substitute_symbols(variable_names,
-                                      list("%to%" = ".into_helper_")
-            )
-            processed_variables_names = eval(processed_variables_names, parent.frame(), baseenv())
+            processed_variables_names = process_variables_names(variables_names, envir)
         }
     }
     processed_variables_names = unlist(processed_variables_names)
     if(length(processed_variables_names)==1){
-        assign(processed_variables_names[[1]], e1, envir = parent.frame())
+        assign(processed_variables_names[[1]], e1, envir = envir)
     } else {
         if(is.list(e1)){
             n_elements = length(e1)
@@ -460,13 +459,11 @@ copy = function(x) {
                " items for them. Number of items should be equal to number of the names or equal to one."
         )
         for(each in seq_along(processed_variables_names)){
-            assign(processed_variables_names[[each]], column(e1, each), envir = parent.frame())
+            assign(processed_variables_names[[each]], column(e1, each), envir = envir)
         }
     }
     invisible(NULL)
 }
-
-
 
 
 # version of %to% for usage inside %into%'
