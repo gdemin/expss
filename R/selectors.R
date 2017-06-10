@@ -96,58 +96,9 @@
 #' 
 #' @export
 vars = function(...){
-    # args = substitute(list(...))
-    res = eval(substitute(expss::vars_list(...)),
-               envir = parent.frame(),
-               enclos = baseenv()
-    )
+    variables_names = substitute(list(...))
+    res = internal_vars_list(variables_names, parent.frame())
     as.dtfrm(res)
-}
-
-
-internal_parameter_set = function(name, value, envir){
-    stopif(length(name)!=1, "'._' - variable name should be a vector of length 1.")
-    name = as.character(name)
-    assign(name, value = value, pos = envir, inherits = FALSE)
-    name
-}
-
-internal_parameter_get = function(name, envir){
-    stopif(length(name)!=1, "'._' - variable name should be a vector of length 1.")
-    name = as.character(name)
-    get(name, pos = envir, inherits = TRUE)
-}
-
-#' @export
-#' @rdname vars
-'._' = 'Object for variable substitution. Usage: `._$varname` or `._["varname"]`'
-
-class(._) = "parameter"
-
-
-#' @export
-'$.parameter' = function(x, name){
-    name = internal_parameter_get(name, envir = parent.frame())  
-    internal_parameter_get(name, envir = parent.frame())  
-}
-
-#' @export
-'$<-.parameter' = function(x, name, value){
-    name = internal_parameter_get(name, envir = parent.frame())
-    internal_parameter_set(name, value, envir = parent.frame())
-    x
-}
-
-
-#' @export
-'[.parameter' = function(x, name){
-    internal_parameter_get(name, envir = parent.frame())  
-}
-
-#' @export
-'[<-.parameter' = function(x, name, value){
-    internal_parameter_set(name, value, envir = parent.frame())
-    x
 }
 
 
@@ -155,19 +106,18 @@ class(._) = "parameter"
 #' @export
 #' @rdname vars
 vars_list = function(...){
-    if(exists(".internal_column_names0", envir = parent.frame())){
-        var_names = internal_ls(parent.frame()[[".internal_column_names0"]], env = parent.frame())
+    variables_names = substitute(list(...))
+    internal_vars_list(variables_names, parent.frame())
+}
+
+internal_vars_list = function(variables_names, envir){
+    if(exists(".internal_column_names0", envir = envir)){
+        curr_names = internal_ls(envir[[".internal_column_names0"]], env = envir)
     } else {
-        var_names = ls(envir = parent.frame())
+        curr_names = ls(envir = envir)
     }
-    args = substitute(list(...))
-    args = substitute_symbols(args,
-                              list("%to%" = ".internal_to_")
-    )
-    args = eval(args, envir = parent.frame(),
-                enclos = baseenv())
-    selected_names = keep_helper(var_names, args)
-    mget(var_names[selected_names], envir = parent.frame(), inherits = TRUE)
+    new_vars = keep_helper(curr_names, variables_names, envir = envir)
+    mget(curr_names[new_vars], envir = envir, inherits = TRUE)
 }
 
 #' @export
@@ -222,5 +172,51 @@ indirect_list = vars_list
     class(res) = union("criterion",class(res))
     res
     
+}
+
+###################################
+internal_parameter_set = function(name, value, envir){
+    stopif(length(name)!=1, "'._' - variable name should be a vector of length 1.")
+    name = as.character(name)
+    assign(name, value = value, pos = envir, inherits = FALSE)
+    name
+}
+
+internal_parameter_get = function(name, envir){
+    stopif(length(name)!=1, "'._' - variable name should be a vector of length 1.")
+    name = as.character(name)
+    get(name, pos = envir, inherits = TRUE)
+}
+
+#' @export
+#' @rdname vars
+'._' = 'Object for variable substitution. Usage: `._$varname` or `._["varname"]`'
+
+class(._) = "parameter"
+
+
+#' @export
+'$.parameter' = function(x, name){
+    name = internal_parameter_get(name, envir = parent.frame())  
+    internal_parameter_get(name, envir = parent.frame())  
+}
+
+#' @export
+'$<-.parameter' = function(x, name, value){
+    name = internal_parameter_get(name, envir = parent.frame())
+    internal_parameter_set(name, value, envir = parent.frame())
+    x
+}
+
+
+#' @export
+'[.parameter' = function(x, name){
+    internal_parameter_get(name, envir = parent.frame())  
+}
+
+#' @export
+'[<-.parameter' = function(x, name, value){
+    internal_parameter_set(name, value, envir = parent.frame())
+    x
 }
 

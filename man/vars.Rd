@@ -3,19 +3,17 @@
 \docType{data}
 \name{vars}
 \alias{vars}
-\alias{._}
 \alias{vars_list}
 \alias{indirect}
 \alias{indirect_list}
 \alias{\%to\%}
 \alias{\%to_list\%}
 \alias{.internal_to_}
+\alias{._}
 \title{Get variables/range of variables by name/by pattern.}
 \format{An object of class \code{parameter} of length 1.}
 \usage{
 vars(...)
-
-._
 
 vars_list(...)
 
@@ -28,6 +26,8 @@ e1 \%to\% e2
 e1 \%to_list\% e2
 
 .internal_to_(e1, e2)
+
+._
 }
 \arguments{
 \item{...}{characters names of variables or criteria/logical functions}

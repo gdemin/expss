@@ -92,19 +92,14 @@ keep.list = function(data, ...){
 
 #' @export
 keep.data.frame = function(data, ...){
-    vars = colnames(data)
-    args = substitute(list(...))
-    args = substitute_symbols(args,
-                              list("%to%" = ".internal_to_")
-                              )
-    args = eval(args, envir = parent.frame(),
-                enclos = baseenv())
-    new_vars = keep_helper(vars, args)
+    curr_names = colnames(data)
+    variables_names = substitute(list(...))
+    new_vars = keep_helper(curr_names, variables_names, envir = parent.frame())
     if(is.data.table(data)){
         res = data[ , new_vars, with = FALSE]
     } else {
         res = data[ , new_vars, drop = FALSE]
-        colnames(res) = vars[new_vars] # prevents names correction    
+        colnames(res) = curr_names[new_vars] # prevents names correction    
     }
    
     res
@@ -112,16 +107,11 @@ keep.data.frame = function(data, ...){
 
 #' @export
 keep.matrix = function(data, ...){
-    vars = colnames(data)
-    args = substitute(list(...))
-    args = substitute_symbols(args,
-                              list("%to%" = ".internal_to_")
-    )
-    args = eval(args, envir = parent.frame(),
-                enclos = baseenv())
-    new_vars = keep_helper(vars, args)
+    curr_names = colnames(data)
+    variables_names = substitute(list(...))
+    new_vars = keep_helper(curr_names, variables_names, envir = parent.frame())
     res = data[ , new_vars, drop = FALSE]
-    colnames(res) = vars[new_vars] # prevents names correction
+    colnames(res) = curr_names[new_vars] # prevents names correction
     res
 }
 
@@ -133,19 +123,19 @@ except = function(data, ...){
 
 # # @export
 # except.default = function(data, ...){
-#     vars = names(data)
+#     curr_names = names(data)
 #     args = substitute(list(...))
 #     args = substitute_symbols(args,
 #                               list("%to%" = ".internal_to_")
 #     )
 #     args = eval(args)
-#     new_vars = keep_helper(vars, args)
+#     new_vars = keep_helper(curr_names, args)
 #     new_vars = -unique(new_vars)
 #     if(length(new_vars)==0){
 #         return(data)
 #     }
 #     res = data[new_vars]
-#     names(res) = vars[new_vars] # prevents names correction
+#     names(res) = curr_names[new_vars] # prevents names correction
 #     res
 # }
 
@@ -163,14 +153,9 @@ except.list = function(data, ...){
 
 #' @export
 except.data.frame = function(data, ...){
-    vars = colnames(data)
-    args = substitute(list(...))
-    args = substitute_symbols(args,
-                              list("%to%" = ".internal_to_")
-    )
-    args = eval(args, envir = parent.frame(),
-                enclos = baseenv())
-    new_vars = keep_helper(vars, args)
+    curr_names = colnames(data)
+    variables_names = substitute(list(...))
+    new_vars = keep_helper(curr_names, variables_names, envir = parent.frame())
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
@@ -179,49 +164,49 @@ except.data.frame = function(data, ...){
         res = data[ , new_vars, with = FALSE]
     } else {
         res = data[ , new_vars, drop = FALSE]
-        colnames(res) = vars[new_vars] # prevents names correction    
+        colnames(res) = curr_names[new_vars] # prevents names correction    
     }
     res
 }
 
 #' @export
 except.matrix = function(data, ...){
-    vars = colnames(data)
-    args = substitute(list(...))
-    args = substitute_symbols(args,
-                              list("%to%" = ".internal_to_")
-    )
-    args = eval(args, envir = parent.frame(),
-                enclos = baseenv())
-    new_vars = keep_helper(vars, args)
+    curr_names = colnames(data)
+    variables_names = substitute(list(...))
+    new_vars = keep_helper(curr_names, variables_names, envir = parent.frame())
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
     }
     res = data[ , new_vars, drop = FALSE]
-    colnames(res) = vars[new_vars] # prevents names correction
+    colnames(res) = curr_names[new_vars] # prevents names correction
     res
 }
 
 
 
-keep_helper = function(old_names, args){
+keep_helper = function(curr_names, variables_names, envir){
+    variables_names = substitute_symbols(variables_names,
+                              list("%to%" = ".internal_to_")
+    )
+    variables_names = eval(variables_names, envir = envir,
+                enclos = baseenv())
     keep_names = numeric(0)
-    new_names = rapply(args, function(each){
+    new_names = rapply(variables_names, function(each){
         if(!is.function(each) && !is.character(each)){
             as.character(each)
         } else {
             each
         }
     }, how = "unlist")
-    # new_names = c(args, recursive = TRUE)
+    # new_names = c(variables_names, recursive = TRUE)
     characters_names = character(0) # for checking non-existing names
     for (each in new_names){
         if(is.character(each)){
-            next_names = which(old_names %in% each)
+            next_names = which(curr_names %in% each)
             characters_names = c(characters_names, each)
         } else {
-            next_names = which(old_names %in% (old_names %i% each))
+            next_names = which(curr_names %in% (curr_names %i% each))
         }
         keep_names = c(keep_names, next_names %d% keep_names)
     }
@@ -232,8 +217,8 @@ keep_helper = function(old_names, args){
                 
         )
     }
-    stopif(any(!(characters_names %in% old_names)), 
-           "names not found: '", paste(characters_names %d% old_names, collapse = "', '"),"'")
+    stopif(any(!(characters_names %in% curr_names)), 
+           "names not found: '", paste(characters_names %d% curr_names, collapse = "', '"),"'")
     keep_names
     
 }
