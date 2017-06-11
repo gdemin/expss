@@ -424,7 +424,7 @@ process_variables_names = function(variables_names, envir){
     } else {
         # we have functions
         processed_variables_names = substitute_symbols(variables_names,
-                                                       list("%to%" = ".into_helper_")
+                                                       list("%to%" = as.name(".into_helper_"))
         )
         processed_variables_names = eval(processed_variables_names, envir, baseenv())
     }    

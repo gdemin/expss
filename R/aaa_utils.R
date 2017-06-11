@@ -513,3 +513,36 @@ if_null = function(x, value){
 expr_to_character = function(expr){
     as.character(as.expression(expr))
 }
+
+# if item of list is character then it will be convereted to name
+convert_characters_to_names = function(list_of_items){
+    lapply(list_of_items, function(curr_symbol) {
+        if(is.character(curr_symbol)){
+            as.name(curr_symbol)
+        } else {
+            curr_symbol   
+        }
+    })
+}
+
+
+# expr - expression as after 'substitute'
+# symbols - named list  - names will be substituted with values 
+substitute_symbols = function (substitute_result, symbols, top_level_only = FALSE) {
+    as.call(lapply(as.list(substitute_result), function(elem){
+        if(length(elem)<=1){
+            str_elem = as.character(elem)
+            if(is.symbol(elem) && (str_elem %in% names(symbols))){
+                symbols[[str_elem]] 
+            } else {
+                elem
+            }
+        } else {
+            if(top_level_only){
+                elem    
+            } else {
+                substitute_symbols(elem, symbols) 
+            }    
+        }
+    }))
+}

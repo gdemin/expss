@@ -98,7 +98,7 @@ do_repeat.data.frame = function(data, ...){
         e$.item_num = each_item
         lockBinding(".item_num", e)
         names(curr_loop) = items_names
-        
+        curr_loop = convert_characters_to_names(curr_loop)
         substituted_expr = substitute_symbols(expr, curr_loop)
         eval(substituted_expr, e, enclos = baseenv())
         rm(".item_num", envir = e)
@@ -137,29 +137,7 @@ do_repeat.list = function(data, ...){
     data    
 }
 
-# expr - expression as after 'substitute'
-# symbols - named list  - names will be substituted with values 
-substitute_symbols = function (expr, symbols) {
-    as.call(rapply(as.list(expr), function(elem){
-        if(length(elem)<=1){
-            str_elem = as.character(elem)
-            if(is.symbol(elem) && (str_elem %in% names(symbols))){
-                curr_symbol = symbols[[str_elem]] 
-                if(is.character(curr_symbol)){
-                    as.name(curr_symbol)
-                } else {
-                    curr_symbol   
-                }
-            } else {
-                elem
-            }
-        } else {
-            substitute_symbols(elem, symbols) 
-        }
-    },
-    classes = "ANY",
-    how = "replace"))
-}
+
 
 
 

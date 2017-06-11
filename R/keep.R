@@ -186,7 +186,7 @@ except_internal.matrix = function(data, variables_names, envir){
 
 keep_helper = function(curr_names, variables_names, envir){
     variables_names = substitute_symbols(variables_names,
-                              list("%to%" = ".internal_to_")
+                              list("%to%" = as.name(".internal_to_"))
     )
     variables_names = eval(variables_names, envir = envir,
                 enclos = baseenv())
