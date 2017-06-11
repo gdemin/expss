@@ -55,12 +55,7 @@ where = function (data, cond) {
 
 #' @rdname where
 #' @export
-'%where%' = function(data, cond){
-    cond = substitute(cond)
-    parent = parent.frame()
-    where_internal(data, cond, parent)
-}
-
+'%where%' = where
 
 #' @rdname where
 #' @export

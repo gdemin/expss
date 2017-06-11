@@ -7,7 +7,7 @@
 \usage{
 by_groups(data, ...)
 
-data \%by_groups\% args
+data \%by_groups\% ...
 }
 \arguments{
 \item{data}{data for aggregation}
@@ -18,9 +18,6 @@ such as \code{mean_x ~ mean(x)}. Instead of the formulas it can be single
 function as last argument - it will be applied to all non-grouping columns.
 Note that there is no non-standard evaluation by design so use quotes for
 names of your variables or use \link{qc}.}
-
-\item{args}{list The same as \code{...} but for infix the version
-\code{\%by_groups\%}.}
 }
 \value{
 aggregated data.frame/data.table

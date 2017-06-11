@@ -65,9 +65,7 @@ na_if = function(x, value){
 
 #' @rdname na_if
 #' @export
-'%na_if%' = function(x, value){
-    na_if(x, value)    
-}
+'%na_if%' = na_if
 
 
 #' @rdname na_if
@@ -80,4 +78,4 @@ mis_val = na_if
 
 #' @rdname na_if
 #' @export
-'%mis_val%' = `%na_if%`
+'%mis_val%' = na_if

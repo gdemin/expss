@@ -85,9 +85,7 @@ if_na = function(x, value){
 
 #' @export
 #' @rdname if_na
-'%if_na%' = function(x, value){
-    if_na(x, value)
-}
+'%if_na%' = if_na
 
 #' @export
 if_na.default = function(x, value){

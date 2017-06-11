@@ -11,8 +11,6 @@
 #'   function as last argument - it will be applied to all non-grouping columns.
 #'   Note that there is no non-standard evaluation by design so use quotes for
 #'   names of your variables or use \link{qc}.
-#' @param args list The same as \code{...} but for infix the version
-#'   \code{\%by_groups\%}.
 #' @return aggregated data.frame/data.table
 #' @export
 #'
@@ -119,7 +117,5 @@ by_groups.default = function(data, ...){
 
 #' @export
 #' @rdname by_groups
-'%by_groups%' = function(data, args){
-    do.call(by_groups, c(list(data = data), args))
-}
+'%by_groups%' = by_groups
 

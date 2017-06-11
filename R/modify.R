@@ -120,19 +120,15 @@ modify_internal.list = function (data, expr, parent) {
 
 #' @export
 #' @rdname modify
-'%modify%' = function (data, expr) {
-    parent = parent.frame()
-    expr = substitute(expr)
-    modify_internal(data, expr, parent = parent)
-}
-
+'%modify%' = modify 
+    
 #' @export
 #' @rdname modify
 compute = modify
 
 #' @export
 #' @rdname modify
-'%compute%' = `%modify%`
+'%compute%' = modify
 
 #' @export
 #' @rdname modify
@@ -213,11 +209,7 @@ calculate_internal.list = function (data, expr, parent) {
 
 #' @export
 #' @rdname modify
-'%calculate%' = function (data, expr) {
-    expr = substitute(expr)
-    parent = parent.frame()
-    calculate_internal(data, expr, parent)
-}
+'%calculate%' = calculate
 
 #' @export
 #' @rdname modify
@@ -225,7 +217,7 @@ calc = calculate
 
 #' @export
 #' @rdname modify
-'%calc%' = `%calculate%`
+'%calc%' = calculate
 
 
 
