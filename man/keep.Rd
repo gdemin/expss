@@ -2,22 +2,22 @@
 % Please edit documentation in R/keep.R
 \name{keep}
 \alias{keep}
-\alias{except}
 \alias{\%keep\%}
-\alias{\%except\%}
 \alias{.keep}
+\alias{except}
+\alias{\%except\%}
 \alias{.except}
 \title{Keep or drop elements by name/criteria in data.frame/matrix/list/vector}
 \usage{
 keep(data, ...)
 
-except(data, ...)
-
-data \%keep\% variables
-
-data \%except\% variables
+data \%keep\% ...
 
 .keep(...)
+
+except(data, ...)
+
+data \%except\% ...
 
 .except(...)
 }
@@ -25,8 +25,6 @@ data \%except\% variables
 \item{data}{data.frame/matrix/list/vector}
 
 \item{...}{column names/element names of type character or criteria/logical functions}
-
-\item{variables}{column names/element names of type character or criteria/logical functions}
 }
 \value{
 object of the same type as \code{data}

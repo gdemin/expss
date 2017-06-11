@@ -13,7 +13,6 @@
 #'
 #' @param data data.frame/matrix/list/vector
 #' @param ... column names/element names of type character or criteria/logical functions
-#' @param variables column names/element names of type character or criteria/logical functions
 #'
 #' @return object of the same type as \code{data}
 #' @export
@@ -61,40 +60,26 @@
 #'  keep(dfs, subst("b_`i`"))
 #'  keep(dfs, b_1 %to% b_5) # the same result
 keep = function(data, ...){
-    UseMethod("keep")
+    variables_names = substitute(list(...))
+    keep_internal(data, variables_names, envir = parent.frame())
 }
 
-# # @export
-# keep.default = function(data, ...){
-#     vars = names(data)
-#     args = substitute(list(...))
-#     args = substitute_symbols(args,
-#                               list("%to%" = ".internal_to_")
-#     )
-#     args = eval(args)
-#     new_vars = keep_helper(vars, args)
-#     res = data[new_vars]
-#     names(res) = vars[new_vars] # prevents names correction
-#     res
-# }
+keep_internal = function(data, variables_names, envir){
+    UseMethod("keep_internal")
+}
 
 #' @export
-keep.list = function(data, ...){
+keep_internal.list = function(data, variables_names, envir){
     for(each in seq_along(data)){
-        data[[each]] = eval(
-            substitute(keep(data[[each]], ...)), 
-            envir = parent.frame(),
-            enclos = baseenv()
-        )
+        data[[each]] = keep_internal(data[[each]], variables_names, envir = envir)
     }
     data
 }
 
 #' @export
-keep.data.frame = function(data, ...){
+keep_internal.data.frame = function(data, variables_names, envir){
     curr_names = colnames(data)
-    variables_names = substitute(list(...))
-    new_vars = keep_helper(curr_names, variables_names, envir = parent.frame())
+    new_vars = keep_helper(curr_names, variables_names, envir = envir)
     if(is.data.table(data)){
         res = data[ , new_vars, with = FALSE]
     } else {
@@ -106,10 +91,9 @@ keep.data.frame = function(data, ...){
 }
 
 #' @export
-keep.matrix = function(data, ...){
+keep_internal.matrix = function(data, variables_names, envir){
     curr_names = colnames(data)
-    variables_names = substitute(list(...))
-    new_vars = keep_helper(curr_names, variables_names, envir = parent.frame())
+    new_vars = keep_helper(curr_names, variables_names, envir = envir)
     res = data[ , new_vars, drop = FALSE]
     colnames(res) = curr_names[new_vars] # prevents names correction
     res
@@ -117,45 +101,45 @@ keep.matrix = function(data, ...){
 
 #' @export
 #' @rdname keep
-except = function(data, ...){
-    UseMethod("except")
-}
-
-# # @export
-# except.default = function(data, ...){
-#     curr_names = names(data)
-#     args = substitute(list(...))
-#     args = substitute_symbols(args,
-#                               list("%to%" = ".internal_to_")
-#     )
-#     args = eval(args)
-#     new_vars = keep_helper(curr_names, args)
-#     new_vars = -unique(new_vars)
-#     if(length(new_vars)==0){
-#         return(data)
-#     }
-#     res = data[new_vars]
-#     names(res) = curr_names[new_vars] # prevents names correction
-#     res
-# }
+'%keep%' = keep
 
 #' @export
-except.list = function(data, ...){
+#' @rdname keep
+.keep = function(...){
+    reference = suppressMessages(default_dataset() )
+    data = ref(reference)
+    variables_names = substitute(list(...))
+    data = keep_internal(data, variables_names, envir = parent.frame())
+    ref(reference) = data
+    invisible(data)
+}
+
+
+#' @export
+#' @rdname keep
+except = function(data, ...){
+    variables_names = substitute(list(...))
+    except_internal(data, variables_names, envir = parent.frame())
+}
+
+
+except_internal = function(data, variables_names, envir){
+    UseMethod("except_internal")
+}
+
+
+#' @export
+except_internal.list = function(data, variables_names, envir){
     for(each in seq_along(data)){
-        data[[each]] = eval(
-            substitute(except(data[[each]], ...)), 
-            envir = parent.frame(),
-            enclos = baseenv()
-        )
+        data[[each]] = except_internal(data[[each]], variables_names, envir = envir)
     }
     data
 }
 
 #' @export
-except.data.frame = function(data, ...){
+except_internal.data.frame = function(data, variables_names, envir){
     curr_names = colnames(data)
-    variables_names = substitute(list(...))
-    new_vars = keep_helper(curr_names, variables_names, envir = parent.frame())
+    new_vars = keep_helper(curr_names, variables_names, envir = envir)
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
@@ -170,10 +154,9 @@ except.data.frame = function(data, ...){
 }
 
 #' @export
-except.matrix = function(data, ...){
+except_internal.matrix = function(data, variables_names, envir){
     curr_names = colnames(data)
-    variables_names = substitute(list(...))
-    new_vars = keep_helper(curr_names, variables_names, envir = parent.frame())
+    new_vars = keep_helper(curr_names, variables_names, envir = envir)
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
@@ -184,6 +167,22 @@ except.matrix = function(data, ...){
 }
 
 
+#' @export
+#' @rdname keep
+'%except%' = except
+
+
+
+#' @export
+#' @rdname keep
+.except = function(...){
+    reference = suppressMessages(default_dataset() )
+    data = ref(reference)
+    variables_names = substitute(list(...))
+    data = except_internal(data, variables_names, envir = parent.frame())
+    ref(reference) = data
+    invisible(data)
+}
 
 keep_helper = function(curr_names, variables_names, envir){
     variables_names = substitute_symbols(variables_names,
@@ -225,56 +224,5 @@ keep_helper = function(curr_names, variables_names, envir){
 
 
     
-#' @export
-#' @rdname keep
-'%keep%' = function(data, variables){
-    # data = substitute(data)
-    # variables = substitute(variables)
-    eval(
-       substitute(keep(data, variables)),
-        envir = parent.frame(),
-        enclos = baseenv()
-    )
-}
 
-#' @export
-#' @rdname keep
-'%except%' = function(data, variables){
-    # data = substitute(data)
-    # variables = substitute(variables)
-    eval(
-        substitute(except(data, variables)),
-        envir = parent.frame(),
-        enclos = baseenv()
-    )
-}
 
-#' @export
-#' @rdname keep
-.keep = function(...){
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    # args = substitute(list(...))
-    data = eval(
-        substitute(keep(data, ...)), 
-        envir = parent.frame(),
-        enclos = baseenv()                
-    )
-    ref(reference) = data
-    invisible(data)
-}
-
-#' @export
-#' @rdname keep
-.except = function(...){
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    # args = substitute(list(...))
-    data = eval(
-        substitute(except(data, ...)), 
-        envir = parent.frame(),
-        enclos = baseenv()                
-    )
-    ref(reference) = data
-    invisible(data)
-}
