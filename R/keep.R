@@ -2,50 +2,33 @@
 #' 
 #' \code{keep} selects variables/elements from data.frame by their names or by 
 #' criteria (see \link{criteria}). \code{except} drops  variables/elements from 
-#' data.frame by their names or by criteria. There is no non-standard evaluation
-#' in these functions by design so use quotes for names of your variables or use
-#' \link{qc}. The only exception with non-standard evaluation is \code{\%to\%}. 
-#' See example.  
-#' \code{\%keep\%}/\code{\%except\%} are infix versions of these functions.
-#' Methods for list will apply \code{keep}/\code{except} to each element of
-#' the list separately. \code{.keep}/\code{.except} are versions which works
-#' with \link{default_dataset}.
+#' data.frame by their names or by criteria. For non-infix versions of functions
+#' names at the top-level will be used as is (non-standard evaluation). For 
+#' standard evaluation of parameters you can surround them by round brackets.
+#' See example. Methods for list will apply \code{keep}/\code{except} to each
+#' element of the list separately. \code{.keep}/\code{.except} are versions
+#' which works with \link{default_dataset}.
 #'
 #' @param data data.frame/matrix/list/vector
-#' @param ... column names/element names of type character or criteria/logical functions
+#' @param ... column names of type character/numeric or criteria/logical functions
 #'
 #' @return object of the same type as \code{data}
 #' @export
 #'
 #' @examples
-#' keep(iris, "Sepal.Length", "Sepal.Width")  
-#' keep(iris, qc(Sepal.Length, Sepal.Width)) # same result with non-standard eval 
-#' except(iris, "Species")
+#' keep(iris, Sepal.Length, Sepal.Width)  
+#' except(iris, Species)
 #' 
-#' keep(iris, "Species", other) # move 'Species' to the first position
+#' keep(iris, Species, other()) # move 'Species' to the first position
 #' keep(iris, to("Petal.Width")) # keep all columns up to 'Species'
 #' 
 #' except(iris, perl("^Petal")) # remove columns which names start with 'Petal'
 #' 
-#' except(iris, items(5)) # remove fifth column
+#' except(iris, 5) # remove fifth column
 #' 
+#' data(airquality)
 #' keep(airquality, from("Ozone") & to("Wind")) # keep columns from 'Ozone' to 'Wind'
-#' 
-#' # the same examples with infix operators
-#' 
-#' iris %keep% c("Sepal.Length", "Sepal.Width") 
-#' iris %keep% qc(Sepal.Length, Sepal.Width) # same result with non-standard eval
-#' iris %except% "Species"
-#' 
-#' iris %keep% c("Species", other) # move 'Species' to the first position
-#' iris %keep% to("Petal.Width")   # keep all columns except 'Species'
-#' 
-#' iris %except% perl("^Petal")    # remove columns which names start with 'Petal'
-#' 
-#' airquality %keep% (from("Ozone") & to("Wind")) # keep columns from 'Ozone' to 'Wind'
-#'     
-#' keep(airquality, Ozone %to% Wind) # the same result 
-#' airquality %keep% (Ozone %to% Wind) # the same result 
+#' keep(airquality, Ozone %to% Wind) # the same result
 #' 
 #' # character expansion
 #' dfs = data.frame(
@@ -57,8 +40,21 @@
 #'      b_5 = 15 %r% 5 
 #'  )
 #'  i = 1:5
-#'  keep(dfs, subst("b_`i`"))
-#'  keep(dfs, b_1 %to% b_5) # the same result
+#'  keep(dfs, b_1 %to% b_5) 
+#'  keep(dfs, subst("b_`i`")) # the same result
+#'  
+#'  # standard and non-standard evaluation
+#'  data(mtcars)
+#'  # generally it is not recommended to name parameter as column in data.frame
+#'  am = "vs" 
+#'  # non-standard evaluation of top-level items
+#'  keep(mtcars, am) # we get 'am' column
+#'  # but standard evaluation of other items
+#'  keep(mtcars, (am)) # we get 'vs' column
+#'  
+#'  many_vars = c("am", "vs", "cyl")
+#'  keep(mtcars, (many_vars))
+#'  
 keep = function(data, ...){
     variables_names = substitute(list(...))
     keep_internal(data, variables_names, envir = parent.frame())
@@ -184,41 +180,63 @@ except_internal.matrix = function(data, variables_names, envir){
     invisible(data)
 }
 
+## return vector of integers - positions of columns
 keep_helper = function(curr_names, variables_names, envir){
     variables_names = substitute_symbols(variables_names,
                               list("%to%" = as.name(".internal_to_"))
     )
-    variables_names = eval(variables_names, envir = envir,
+    variables_names = substitute_symbols(variables_names,
+                                         setNames(curr_names, curr_names),
+                                         top_level_only = TRUE
+    )
+    variables_names = as.list(variables_names)
+    variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
+    variables_names = eval(as.call(variables_names), envir = envir,
                 enclos = baseenv())
-    keep_names = numeric(0)
-    new_names = rapply(variables_names, function(each){
-        if(!is.function(each) && !is.character(each)){
-            as.character(each)
+    variables_names = rapply(variables_names, function(item) {
+        if(length(item)>1) {
+            as.list(item)
         } else {
-            each
+            item
         }
-    }, how = "unlist")
-    # new_names = c(variables_names, recursive = TRUE)
+    }, how = "replace")
+    variables_names = flat_list(variables_names)
+    keep_indexes = numeric(0)
     characters_names = character(0) # for checking non-existing names
-    for (each in new_names){
+    numeric_indexes = numeric(0) # for checking non-existing indexes
+    for (each in variables_names){
         if(is.character(each)){
-            next_names = which(curr_names %in% each)
+            next_indexes = which(curr_names %in% each)
             characters_names = c(characters_names, each)
         } else {
-            next_names = which(curr_names %in% (curr_names %i% each))
+            if(is.numeric(each)){
+                next_indexes = each
+                numeric_indexes = c(numeric_indexes, each)
+            } else {
+                next_indexes = which(curr_names %in% (curr_names %i% each))
+            }
         }
-        keep_names = c(keep_names, next_names %d% keep_names)
+        keep_indexes = c(keep_indexes, next_indexes %d% keep_indexes)
     }
     if(anyDuplicated(characters_names)){
-        warning("duplicated names: ", 
+        warning("duplicated names: ",
                 paste(characters_names[duplicated(characters_names)], collapse = ","),
                 ". Repeated names are ignored."
+
+        )
+    }
+    if(anyDuplicated(numeric_indexes)){
+        warning("duplicated indexes: ",
+                paste(numeric_indexes[duplicated(numeric_indexes)], collapse = ","),
+                ". Repeated indexes are ignored."
                 
         )
     }
     stopif(any(!(characters_names %in% curr_names)), 
-           "names not found: '", paste(characters_names %d% curr_names, collapse = "', '"),"'")
-    keep_names
+           "'keep'/'except' - names not found: '", paste(characters_names %d% curr_names, collapse = "', '"),"'")
+    stopif(any(numeric_indexes > length(curr_names), na.rm = TRUE), 
+           "'keep'/'except' - indexes are greater then number of columns: '", paste(numeric_indexes %i% gt(length(curr_names)), collapse = "', '"),"'")
+    keep_indexes
     
 }
 

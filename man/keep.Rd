@@ -24,7 +24,7 @@ data \%except\% ...
 \arguments{
 \item{data}{data.frame/matrix/list/vector}
 
-\item{...}{column names/element names of type character or criteria/logical functions}
+\item{...}{column names of type character/numeric or criteria/logical functions}
 }
 \value{
 object of the same type as \code{data}
@@ -32,44 +32,27 @@ object of the same type as \code{data}
 \description{
 \code{keep} selects variables/elements from data.frame by their names or by 
 criteria (see \link{criteria}). \code{except} drops  variables/elements from 
-data.frame by their names or by criteria. There is no non-standard evaluation
-in these functions by design so use quotes for names of your variables or use
-\link{qc}. The only exception with non-standard evaluation is \code{\%to\%}. 
-See example.  
-\code{\%keep\%}/\code{\%except\%} are infix versions of these functions.
-Methods for list will apply \code{keep}/\code{except} to each element of
-the list separately. \code{.keep}/\code{.except} are versions which works
-with \link{default_dataset}.
+data.frame by their names or by criteria. For non-infix versions of functions
+names at the top-level will be used as is (non-standard evaluation). For 
+standard evaluation of parameters you can surround them by round brackets.
+See example. Methods for list will apply \code{keep}/\code{except} to each
+element of the list separately. \code{.keep}/\code{.except} are versions
+which works with \link{default_dataset}.
 }
 \examples{
-keep(iris, "Sepal.Length", "Sepal.Width")  
-keep(iris, qc(Sepal.Length, Sepal.Width)) # same result with non-standard eval 
-except(iris, "Species")
+keep(iris, Sepal.Length, Sepal.Width)  
+except(iris, Species)
 
-keep(iris, "Species", other) # move 'Species' to the first position
+keep(iris, Species, other()) # move 'Species' to the first position
 keep(iris, to("Petal.Width")) # keep all columns up to 'Species'
 
 except(iris, perl("^Petal")) # remove columns which names start with 'Petal'
 
-except(iris, items(5)) # remove fifth column
+except(iris, 5) # remove fifth column
 
+data(airquality)
 keep(airquality, from("Ozone") & to("Wind")) # keep columns from 'Ozone' to 'Wind'
-
-# the same examples with infix operators
-
-iris \%keep\% c("Sepal.Length", "Sepal.Width") 
-iris \%keep\% qc(Sepal.Length, Sepal.Width) # same result with non-standard eval
-iris \%except\% "Species"
-
-iris \%keep\% c("Species", other) # move 'Species' to the first position
-iris \%keep\% to("Petal.Width")   # keep all columns except 'Species'
-
-iris \%except\% perl("^Petal")    # remove columns which names start with 'Petal'
-
-airquality \%keep\% (from("Ozone") & to("Wind")) # keep columns from 'Ozone' to 'Wind'
-    
-keep(airquality, Ozone \%to\% Wind) # the same result 
-airquality \%keep\% (Ozone \%to\% Wind) # the same result 
+keep(airquality, Ozone \%to\% Wind) # the same result
 
 # character expansion
 dfs = data.frame(
@@ -81,6 +64,19 @@ dfs = data.frame(
      b_5 = 15 \%r\% 5 
  )
  i = 1:5
- keep(dfs, subst("b_`i`"))
- keep(dfs, b_1 \%to\% b_5) # the same result
+ keep(dfs, b_1 \%to\% b_5) 
+ keep(dfs, subst("b_`i`")) # the same result
+ 
+ # standard and non-standard evaluation
+ data(mtcars)
+ # generally it is not recommended to name parameter as column in data.frame
+ am = "vs" 
+ # non-standard evaluation of top-level items
+ keep(mtcars, am) # we get 'am' column
+ # but standard evaluation of other items
+ keep(mtcars, (am)) # we get 'vs' column
+ 
+ many_vars = c("am", "vs", "cyl")
+ keep(mtcars, (many_vars))
+ 
 }

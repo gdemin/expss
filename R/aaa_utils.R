@@ -546,3 +546,13 @@ substitute_symbols = function (substitute_result, symbols, top_level_only = FALS
         }
     }))
 }
+
+convert_top_level_symbols_to_characters = function (as_list_substitute) {
+    lapply(as_list_substitute, function(elem){
+             if((length(elem)<=1) && is.symbol(elem)){
+                as.character(elem) 
+            } else {
+                elem
+            }
+    })
+}

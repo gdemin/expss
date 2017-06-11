@@ -4,39 +4,50 @@ context("keep")
 
 data(iris)
 expect_identical(keep(iris, items(5)), iris[, "Species", drop = FALSE])
+expect_identical(keep(iris, 5), iris[, "Species", drop = FALSE])
 expect_identical(except(iris, items(5)), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_identical(except(iris, 5), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 expect_identical(except(iris, items(1, 2, 3, 4)), iris[, "Species", drop = FALSE])
+expect_identical(except(iris, 1, 2, 3, 4), iris[, "Species", drop = FALSE])
 expect_identical(keep(iris, items(1, 2, 3, 4)), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_identical(keep(iris, 1, 2, 3, 4), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 
-expect_identical(keep(iris, "Species", other), iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
-expect_warning(keep(iris, "Species", other, "Species"))
-expect_identical(keep(iris, "Species", perl("^Sepal")), iris[, c("Species", "Sepal.Length", "Sepal.Width")])
-expect_identical(keep(iris, "Species", perl("Length$")), iris[, c("Species", "Sepal.Length", "Petal.Length")])
-expect_identical(keep(iris, "Species", fixed("Length")), iris[, c("Species", "Sepal.Length", "Petal.Length")])
-expect_identical(keep(iris, "Species", fixed("Length"), fixed("Width")), 
+expect_identical(keep(iris, "Species", other()), iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_identical(keep(iris, Species, other()), iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_error(keep(iris, Species, other))
+expect_warning(keep(iris, Species, (other), "Species"))
+expect_identical(keep(iris, Species, perl("^Sepal")), iris[, c("Species", "Sepal.Length", "Sepal.Width")])
+expect_identical(keep(iris, Species, perl("Length$")), iris[, c("Species", "Sepal.Length", "Petal.Length")])
+expect_identical(keep(iris, Species, fixed("Length")), iris[, c("Species", "Sepal.Length", "Petal.Length")])
+expect_identical(keep(iris, Species, fixed("Length"), fixed("Width")), 
                  iris[, c("Species", "Sepal.Length", "Petal.Length", "Sepal.Width", "Petal.Width")])
 
 expect_identical(keep(iris, qc(Species, Sepal.Length, Petal.Length)), iris[, c("Species", "Sepal.Length", "Petal.Length")])
+expect_identical(keep(iris, Species, Sepal.Length, Petal.Length), iris[, c("Species", "Sepal.Length", "Petal.Length")])
 expect_identical(keep(data.table::data.table(iris), qc(Species, Sepal.Length, Petal.Length)),
                  data.table::data.table(iris)[, c("Species", "Sepal.Length", "Petal.Length")])
 expect_identical(iris %keep% qc(Species, Sepal.Length, Petal.Length), iris[, c("Species", "Sepal.Length", "Petal.Length")])
 expect_identical(keep(iris, "Species"), iris[, c("Species"), drop = FALSE])
-expect_identical(keep(iris, "Species"), iris[, c("Species"), drop = FALSE])
+expect_identical(keep(iris, Species), iris[, c("Species"), drop = FALSE])
 expect_error(keep(iris, "Species", "not_exists"))
 
-expect_identical(keep(as.matrix(iris), "Species", perl("^Sepal")), 
+expect_identical(keep(as.matrix(iris), Species, perl("^Sepal")), 
                  as.matrix(iris)[, c("Species", "Sepal.Length", "Sepal.Width")])
 
 
 context("except")
-expect_identical(except(iris, "Species", other), iris[, FALSE, drop = FALSE])
+expect_identical(except(iris, "Species", (other)), iris[, FALSE, drop = FALSE])
+expect_identical(except(iris, Species, other()), iris[, FALSE, drop = FALSE])
 expect_identical(except(iris, "Species"), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+expect_identical(except(iris, Species), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 expect_identical(except(iris, "Species", perl("^Sepal")), iris[, c("Petal.Length", "Petal.Width")])
+expect_identical(except(iris, Species, perl("^Sepal")), iris[, c("Petal.Length", "Petal.Width")])
 expect_identical(iris %except% c("Species", perl("^Sepal")), iris[, c("Petal.Length", "Petal.Width")])
 expect_identical(except(iris, fixed("Length"), fixed("Width")), 
                  iris[, c("Species"), drop = FALSE])
 
 expect_identical(except(iris, qc(Species, Sepal.Length, Petal.Length)), iris[, c("Sepal.Width", "Petal.Width")])
+expect_identical(except(iris, Species, Sepal.Length, Petal.Length), iris[, c("Sepal.Width", "Petal.Width")])
 expect_identical(except(data.table::data.table(iris), qc(Species, Sepal.Length, Petal.Length)),
                  data.table::data.table(iris)[, c("Sepal.Width", "Petal.Width")])
 
@@ -54,11 +65,17 @@ context("keep default_dataset")
 data(iris)
 aaa = iris
 default_dataset(aaa)
-.keep("Species", other)
+.keep("Species", other())
 expect_identical(aaa, iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 
 aaa = iris
-.except("Species", other)
+default_dataset(aaa)
+.keep(Species, other())
+expect_identical(aaa, iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
+
+
+aaa = iris
+.except("Species", other())
 expect_identical(aaa, iris[, FALSE, drop = FALSE])
 
 aaa = iris
@@ -71,7 +88,10 @@ ex_iris = iris[,-5]
 colnames(ex_iris) = c("a", "a", "a", "a")
 
 expect_identical(ex_iris %keep% "a", ex_iris)
+expect_identical(keep(ex_iris, a), ex_iris)
 expect_identical(ex_iris %except% "a", ex_iris[, FALSE, drop = FALSE])
+expect_identical(ex_iris %except% a, ex_iris[, FALSE, drop = FALSE])
+expect_identical(except(ex_iris, a), ex_iris[, FALSE, drop = FALSE])
 
 context("keep/except %to%")
 data(mtcars)
