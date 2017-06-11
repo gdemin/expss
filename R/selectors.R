@@ -61,35 +61,35 @@
 #' # example with short notation but it can be applied only for simple cases - 
 #' # when 'name' is vector of length 1
 #' compute(dfs, {
-#'      ._$name2 = ._$name1*2    
+#'      ..$name2 = ..$name1*2    
 #' })
 #' 
 #' compute(dfs, {
 #'      for(name1 in paste0("b_", 1:5)){
 #'          name2 = paste0("new_", name1) 
-#'          ._$name2 = ._$name1*2 
+#'          ..$name2 = ..$name1*2 
 #'      }
 #'      rm(name1, name2) # we don't need this variables as columns in 'dfs'
 #' })
 #' 
 #' # square brackets notation
 #' compute(dfs, {
-#'      ._[name2] = ._[name1]*2  
+#'      ..[name2] = ..[name1]*2  
 #' })
 #' 
 #' compute(dfs, {
 #'      for(name1 in paste0("b_", 1:5)){
-#'          ._[paste0("new_", name1)] = ._$name1*2 
+#'          ..[paste0("new_", name1)] = ..$name1*2 
 #'      }
 #'      rm(name1) # we don't need this variable as column in 'dfs'
 #' })
 #' 
-#' # '._$' doesn't work for case below so we need to use square brackets form
+#' # '..$' doesn't work for case below so we need to use square brackets form
 #' name1 = paste0("b_", 1:5)
 #' name2 = paste0("new_", name1)
 #' compute(dfs, {
 #'      for(i in 1:5){
-#'          ._[name2[i]] = ._[name1[i]]*3
+#'          ..[name2[i]] = ..[name1[i]]*3
 #'      }
 #'      rm(i) # we don't need this variable as column in 'dfs'
 #' })
@@ -176,23 +176,23 @@ indirect_list = vars_list
 
 ###################################
 internal_parameter_set = function(name, value, envir){
-    stopif(length(name)!=1, "'._' - variable name should be a vector of length 1.")
+    stopif(length(name)!=1, "'..' - variable name should be a vector of length 1.")
     name = as.character(name)
     assign(name, value = value, pos = envir, inherits = FALSE)
     name
 }
 
 internal_parameter_get = function(name, envir){
-    stopif(length(name)!=1, "'._' - variable name should be a vector of length 1.")
+    stopif(length(name)!=1, "'..' - variable name should be a vector of length 1.")
     name = as.character(name)
     get(name, pos = envir, inherits = TRUE)
 }
 
 #' @export
 #' @rdname vars
-'._' = 'Object for variable substitution. Usage: `._$varname` or `._["varname"]`'
+'..' = 'Object for variable substitution. Usage: `..$varname` or `..["varname"]`'
 
-class(._) = "parameter"
+class(..) = "parameter"
 
 
 #' @export

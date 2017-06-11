@@ -1,4 +1,4 @@
-context("._")
+context("..")
 
 data(iris)
 
@@ -14,7 +14,7 @@ res_iris = compute(iris,
                        i = qc(i1, i2, i3)
                        value = c(10, 20, 30)
                        for(j in 1:3){
-                           ._[i[j]] = value[j]
+                           ..[i[j]] = value[j]
                        }
                        rm(i, value, j)
                    })
@@ -35,7 +35,7 @@ test_iris$i3 = 42
 res_iris = compute(iris, 
                    {
                        for(i in qc(i1, i2, i3)){
-                           ._$i = k
+                           ..$i = k
                        }
                        
                        rm(i)
@@ -58,7 +58,7 @@ test_iris[, paste0(letters[3], seq_len(3))] = 3
 res_iris = compute(iris, {
     for(i in c(1, 2, 3)){
         new_name = paste0(letters[i], seq_len(i))
-        for(each in new_name) ._$each = i
+        for(each in new_name) ..$each = i
     }
     rm(i, new_name, each)
 })
@@ -79,7 +79,7 @@ test_iris$i3 = runif(nrow(iris))
 set.seed(123)
 res_iris = compute(iris,  
                      {
-                         for(i in qc(i1, i2, i3)) ._$i = runif(.N)
+                         for(i in qc(i1, i2, i3)) ..$i = runif(.N)
                          rm(i)
                      })
 
@@ -96,7 +96,7 @@ i = qc(log, exp)
 fun = qc(log, exp)
 res_iris = compute(res_iris, {
 
-    for(j in 1:2) ._[i[j]] = ._[fun[j]](Sepal.Length)
+    for(j in 1:2) ..[i[j]] = ..[fun[j]](Sepal.Length)
     rm(j)
 })
 
@@ -111,7 +111,7 @@ curr = "Sepal.Length"
 
 res_iris = compute(res_iris, {
     
-    for(j in 1:2) ._[i[j]] = ._$curr
+    for(j in 1:2) ..[i[j]] = ..$curr
     rm(j)
 })
 
@@ -124,7 +124,7 @@ test_iris = iris[, "Species", drop = FALSE]
 to_delete = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 res_iris = compute(iris, {
     for(i in to_delete){
-        ._$i = NULL
+        ..$i = NULL
     } 
     rm(i)
 })
