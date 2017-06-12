@@ -36,18 +36,8 @@ test_scoping = function(){
 expect_identical(test_scoping(), list(iris[iris$Species == "setosa", ]))
 
 
-
-test_scoping = function(item){
-    filt = item
-    list_iris %where% (Species == filt)
-}
-expect_identical(test_scoping(item), list(iris[iris$Species == item, ]))
-
-
 expect_identical(where(iris, 1:5), iris[1:5, ])
 
-expect_identical(iris %where% (Species == "setosa"), iris[iris$Species == "setosa", ])
-expect_identical(iris %where% (iris$Species == "setosa"), iris[iris$Species == "setosa", ])
 
 list_iris = list(iris$Species) 
 test_scoping = function(){
@@ -58,8 +48,6 @@ expect_identical(test_scoping(), list(iris[iris$Species == "setosa", "Species"])
 
 
 a = 150
-# expect_identical(iris %where% (a < 51), iris[iris$Species == "setosa", ])
-expect_identical(iris %where% 1:5, iris[1:5, ])
 
 d_iris = iris
 
@@ -93,19 +81,10 @@ expect_identical(where(iris, sample(.N, 10)), iris[rows, ])
 set.seed(123)
 expect_identical(where(iris, -sample(.N, 10)), iris[-rows, ])
 
-set.seed(123)
-expect_identical(iris %where% sample(.n, 10), iris[rows, ])
-set.seed(123)
-expect_identical(iris %where% -sample(.n, 10), iris[-rows, ])
 
-set.seed(123)
-expect_identical(iris %where% sample(.N, 10), iris[rows, ])
-set.seed(123)
-expect_identical(iris %where% -sample(.N, 10), iris[-rows, ])
 
 expect_error(.where("a"))
 expect_error(where(iris, "a"))
-expect_error(iris %where% "a")
 
 #### vectors
 set.seed(123)
@@ -181,6 +160,3 @@ expect_identical(where(iris_list,  curr_name),
                  list(iris_list[[1]][1, , drop = FALSE], iris_list[[2]][1, , drop = FALSE])
 )
 
-expect_identical(iris_list %where% curr_name,
-                 list(iris_list[[1]][1, , drop = FALSE], iris_list[[2]][1, , drop = FALSE])
-)

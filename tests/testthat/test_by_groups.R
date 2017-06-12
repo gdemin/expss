@@ -1,5 +1,6 @@
 context("by_groups")
 # library(data.table)
+data(iris)
 expect_error(by_groups(iris, "Species"))
 expect_error(by_groups(iris, "Species", mean, b ~ sum(Sepal.Width)))
 expect_error(by_groups(iris, "Species", mean, sum))
@@ -138,26 +139,11 @@ expect_identical(
 
 context("by_groups special")
 data(iris)
-expect_identical(iris %by_groups% c("Species", mean), aggregate( . ~ Species , data = iris, FUN = mean))
-expect_identical(iris[,-5]  %by_groups%  mean, as.data.frame(t(colMeans(iris[,-5]))))
+
 expect_identical(by_groups(iris[,-5], character(0), mean), as.data.frame(t(colMeans(iris[,-5]))))
 
 expect_identical(by_groups(iris, "Species", function(x){mean(x)}),
                  aggregate( . ~ Species , data = iris, FUN = function(x){mean(x)}))
 
-expect_identical(iris %by_groups% list("Species",  ~ mean(Sepal.Width), ~ sum(Sepal.Length)),
-                 as.data.frame(data.table::data.table(iris)[, list("mean(Sepal.Width)" = mean(Sepal.Width), "sum(Sepal.Length)" = sum(Sepal.Length)), by = "Species"]))
 
-
-dt_iris = data.table::data.table(iris)
-
-
-expect_equal(dt_iris %by_groups% c("Species", mean),
-             data.table::as.data.table(aggregate( . ~ Species , data = iris, FUN = mean)))
-
-
-dt_iris = data.table::data.table(iris)
-
-expect_equal(dt_iris %by_groups% c("Species", mean),
-             data.table::as.data.table(aggregate( . ~ Species , data = iris, FUN = mean)))
 

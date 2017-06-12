@@ -3,7 +3,6 @@
 #' \code{sort_asc} sorts in ascending order and \code{sort_desc} sorts in 
 #' descending order. There is no non-standard evaluation in these functions by 
 #' design so use quotes for names of your variables or use \link{qc}.
-#' \code{\%sort_asc\%}/\code{\%sort_desc\%} are infix versions of these functions. 
 #' \code{.sort_asc}/\code{.sort_desc} are versions for working with
 #' \link{default_dataset}.
 #'
@@ -15,9 +14,6 @@
 #' @param na.last for controlling the treatment of NAs. If TRUE, missing values
 #'   in the data are put last; if FALSE, they are put first; if NA, they are
 #'   removed.
-#' @param value character/numeric. Column names/numbers for data.frame/matrix by
-#'   which object will be sorted. The same as \code{...} but for assignment
-#'   versions of functions.
 #'
 #' @return sorted \code{data}
 #' @export
@@ -34,11 +30,6 @@
 #' 
 #' # 'qc'  usage
 #' sort_asc(mtcars, qc(cyl, mpg)) 
-#' 
-#' # infix version
-#' mtcars %sort_asc% "mpg"
-#' mtcars %sort_asc% c("cyl", "mpg")
-#' mtcars %sort_asc% qc(cyl, mpg) 
 #' 
 sort_asc = function(data, ..., na.last = FALSE){
     UseMethod("sort_asc")
@@ -93,11 +84,7 @@ sort_asc.list= function(data, ..., na.last = FALSE){
     stop("Sorting not yet implemented for lists.")
 }
 
-#' @rdname sort_asc
-#' @export
-'%sort_asc%' = function(data, variables){
-    sort_asc(data, variables)
-}
+
 
 
 #' @rdname sort_asc
@@ -110,12 +97,7 @@ sort_asc.list= function(data, ..., na.last = FALSE){
     invisible(data)
 }
 
-#' @rdname sort_asc
-#' @export
-"sort_asc<-" = function(data, value){
-    if(!is.list(value)) value = as.list(value)
-    do.call(sort_asc, c(list(data), value))
-}
+
 ######### sort_desc ##############
 
 #' @rdname sort_asc
@@ -152,19 +134,6 @@ sort_desc.matrix = function(data, ..., na.last = TRUE){
 #' @export
 sort_desc.list= function(data, ..., na.last = TRUE){
     stop("Sorting in not implemented for lists.")
-}
-
-#' @rdname sort_asc
-#' @export
-'%sort_desc%' = function(data, variables){
-    sort_desc(data, variables)
-}
-
-#' @rdname sort_asc
-#' @export
-"sort_desc<-" = function(data, value){
-    if(!is.list(value)) value = as.list(value)
-    do.call(sort_desc, c(list(data), value))
 }
 
 

@@ -1,8 +1,7 @@
 #' Aggregate dataset by grouping variable(s).
 #'
 #' Splits the data by groups, computes summary statistics for each, and returns
-#' \code{data.frame}/\code{data.table}. \code{\%by_groups\%} is infix version of
-#' the function. 
+#' \code{data.frame}/\code{data.table}. 
 #'
 #' @param data data for aggregation
 #' @param ... aggregation parameters. It should be names of variables in quotes 
@@ -44,10 +43,6 @@
 #'
 #' by_groups(mtcars, group1, group2, statistic1, statistic2)
 #'
-#' # infix version
-#' iris %by_groups% c("Species", mean)
-#'
-#' mtcars %by_groups%  c("cyl", "am", mean_hp ~ mean(hp), median_mpg ~ median(mpg))
 #'
 by_groups = function(data, ...){
     UseMethod("by_groups")
@@ -114,8 +109,4 @@ by_groups.default = function(data, ...){
 
 }
 
-
-#' @export
-#' @rdname by_groups
-'%by_groups%' = by_groups
 

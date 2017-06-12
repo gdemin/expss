@@ -8,7 +8,8 @@
 * add '._' object for parameter substitution inside 'compute' and etc. Usage: '._$param_name'. For details: ?._ * improve 'lst' function
 * numerous small bugfixes
 * '.set'/'set' inside 'compute' and etc. are deprecated. Use '%into%' instead.
-* Expansion of variables in backticks inside 'vars'/'vars_list'/'%into%' are removed. Use explicit 'subst' instead'
+* expansion of variables in backticks inside 'vars'/'vars_list'/'%into%' is removed. Use explicit 'subst' instead
+* infix/assignment versions removed: '%modify%', '%compute%', '%calc%', '%calculate%', '%sort_asc%', '%sort_desc%', '%keep%', '%except%', '%where%', '%by_groups%'
 
 
 0.7.1 (10.04.2017)

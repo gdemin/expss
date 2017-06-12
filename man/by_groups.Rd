@@ -2,12 +2,9 @@
 % Please edit documentation in R/grouping.R
 \name{by_groups}
 \alias{by_groups}
-\alias{\%by_groups\%}
 \title{Aggregate dataset by grouping variable(s).}
 \usage{
 by_groups(data, ...)
-
-data \%by_groups\% ...
 }
 \arguments{
 \item{data}{data for aggregation}
@@ -24,8 +21,7 @@ aggregated data.frame/data.table
 }
 \description{
 Splits the data by groups, computes summary statistics for each, and returns
-\code{data.frame}/\code{data.table}. \code{\%by_groups\%} is infix version of
-the function.
+\code{data.frame}/\code{data.table}.
 }
 \examples{
 # compute mean of the every column for every value of the Species
@@ -57,9 +53,5 @@ by_groups(mtcars, group2, statistic2)
 
 by_groups(mtcars, group1, group2, statistic1, statistic2)
 
-# infix version
-iris \%by_groups\% c("Species", mean)
-
-mtcars \%by_groups\%  c("cyl", "am", mean_hp ~ mean(hp), median_mpg ~ median(mpg))
 
 }

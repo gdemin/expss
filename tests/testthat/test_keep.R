@@ -26,7 +26,6 @@ expect_identical(keep(iris, qc(Species, Sepal.Length, Petal.Length)), iris[, c("
 expect_identical(keep(iris, Species, Sepal.Length, Petal.Length), iris[, c("Species", "Sepal.Length", "Petal.Length")])
 expect_identical(keep(data.table::data.table(iris), qc(Species, Sepal.Length, Petal.Length)),
                  data.table::data.table(iris)[, c("Species", "Sepal.Length", "Petal.Length")])
-expect_identical(iris %keep% qc(Species, Sepal.Length, Petal.Length), iris[, c("Species", "Sepal.Length", "Petal.Length")])
 expect_identical(keep(iris, "Species"), iris[, c("Species"), drop = FALSE])
 expect_identical(keep(iris, Species), iris[, c("Species"), drop = FALSE])
 expect_error(keep(iris, "Species", "not_exists"))
@@ -42,7 +41,6 @@ expect_identical(except(iris, "Species"), iris[, c("Sepal.Length", "Sepal.Width"
 expect_identical(except(iris, Species), iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
 expect_identical(except(iris, "Species", perl("^Sepal")), iris[, c("Petal.Length", "Petal.Width")])
 expect_identical(except(iris, Species, perl("^Sepal")), iris[, c("Petal.Length", "Petal.Width")])
-expect_identical(iris %except% c("Species", perl("^Sepal")), iris[, c("Petal.Length", "Petal.Width")])
 expect_identical(except(iris, fixed("Length"), fixed("Width")), 
                  iris[, c("Species"), drop = FALSE])
 
@@ -56,9 +54,9 @@ expect_error(except(iris, "Species", "not_exists"))
 expect_identical(except(as.matrix(iris), "Species", perl("^Sepal")), as.matrix(iris)[, c("Petal.Length", "Petal.Width")])
 
 data("airquality")
-expect_identical(airquality %keep% from("Wind"), airquality[, c("Wind", "Temp", "Month", "Day")])
-expect_identical(airquality %except% to("Wind"), airquality[, c("Temp", "Month", "Day")])
-expect_identical(airquality %keep% (from("Ozone") & to("Wind")), airquality[, c("Ozone", "Solar.R", "Wind")])
+expect_identical(keep(airquality, from("Wind")), airquality[, c("Wind", "Temp", "Month", "Day")])
+expect_identical(except(airquality, to("Wind")), airquality[, c("Temp", "Month", "Day")])
+expect_identical(keep(airquality, from("Ozone") & to("Wind")), airquality[, c("Ozone", "Solar.R", "Wind")])
 
 
 context("keep default_dataset")
@@ -87,10 +85,7 @@ data(iris)
 ex_iris = iris[,-5]
 colnames(ex_iris) = c("a", "a", "a", "a")
 
-expect_identical(ex_iris %keep% "a", ex_iris)
 expect_identical(keep(ex_iris, a), ex_iris)
-expect_identical(ex_iris %except% "a", ex_iris[, FALSE, drop = FALSE])
-expect_identical(ex_iris %except% a, ex_iris[, FALSE, drop = FALSE])
 expect_identical(except(ex_iris, a), ex_iris[, FALSE, drop = FALSE])
 
 context("keep/except %to%")
@@ -102,12 +97,7 @@ expect_identical(except(mtcars, am %to% carb), except(mtcars, from("am") & to("c
 expect_identical(except(mtcars, am %to% carb, hp %to% drat),
                  except(mtcars, from("am") & to("carb"), from("hp") & to("drat"))) 
 
-expect_identical(mtcars %keep% (am %to% carb), keep(mtcars, from("am") & to("carb"))) 
-expect_identical(mtcars %keep% list(am %to% carb, hp %to% drat),
-                 keep(mtcars, from("am") & to("carb"), from("hp") & to("drat"))) 
-expect_identical(mtcars %except% (am %to% carb), except(mtcars, from("am") & to("carb"))) 
-expect_identical(mtcars %except% list(am %to% carb, hp %to% drat),
-                 except(mtcars, from("am") & to("carb"), from("hp") & to("drat"))) 
+
 
 expect_error(keep(mtcars, am1 %to% carb))
 expect_error(keep(mtcars, am %to% carb1))
@@ -128,17 +118,13 @@ dfs = data.frame(
 aaa = paste0("b_", 1:5)
 bbb = c("aa", "b_")
 expect_identical(keep(dfs, subst("b_`1:5`")), dfs[, aaa])
-expect_identical(dfs %keep% subst("b_`1:5`"), dfs[, aaa])
 
 expect_identical(except(dfs, subst("b_`1:5`")), dfs[, bbb])
-expect_identical(dfs %except% subst("b_`1:5`"), dfs[, bbb])
 
 i = 1:5
 expect_identical(keep(dfs, subst("b_`i`")), dfs[, aaa])
-expect_identical(dfs %keep% subst("b_`i`"), dfs[, aaa])
 
 expect_identical(except(dfs, subst("b_`i`")), dfs[, bbb])
-expect_identical(dfs %except% subst("b_`i`"), dfs[, bbb])
 
 ex1 = function(){
     items = 1:5
@@ -147,22 +133,14 @@ ex1 = function(){
 }
 
 
-ex2 = function(){
-    items = 1:5
-    dfs %keep% subst("b_`items`")
 
-}
 
 global_items = 2:3
 
-ex3 = function(){
-    dfs %keep% subst("b_`global_items`")
-    
-}
+
 
 expect_identical(ex1(), dfs[, aaa])
-expect_identical(ex2(), dfs[, aaa])
-expect_identical(ex3(), dfs[, aaa[2:3]])
+
     
 def_dfs = dfs
 default_dataset(def_dfs)
@@ -176,14 +154,12 @@ expect_identical(def_dfs, dfs[, bbb])
 
 context("keep edge cases")
 
-expect_identical(iris %keep% NULL, iris[, FALSE, drop = FALSE])
-expect_identical(iris %except% NULL, iris)
-expect_identical(as.matrix(iris) %except% NULL, as.matrix(iris))
-# expect_identical(1:5 %except% NULL, 1:5)
-# expect_identical(1:5 %keep% NULL, integer(0))
+expect_identical(keep(iris, NULL), iris[, FALSE, drop = FALSE])
+expect_identical(except(iris, NULL), iris)
+expect_identical(except(as.matrix(iris), NULL), as.matrix(iris))
 
-expect_identical(iris %keep% factor("Species"), iris[, 5, drop = FALSE])
-expect_identical(iris %except% factor("Species"), iris[,-5])
+expect_identical(keep(iris, factor("Species")), iris[, 5, drop = FALSE])
+expect_identical(except(iris, factor("Species")), iris[,-5])
 
 
 
@@ -212,16 +188,6 @@ expect_identical(except(iris_list,  Petal.Length %to% Petal.Width),
 
 
 
-# curr = "Petal.Length"
-# # 
-# expect_identical(keep(iris_list,  curr),
-#                  list(iris[,"Petal.Length", drop = FALSE], iris[,"Petal.Length", drop = FALSE])
-# )
-#     
-# 
-# expect_identical(except(iris_list,  curr),
-#                  list(iris_list[[1]] %except% curr, iris_list[[2]] %except% curr)
-# )
 
 
 

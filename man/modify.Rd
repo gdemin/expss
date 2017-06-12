@@ -2,24 +2,16 @@
 % Please edit documentation in R/modify.R
 \name{modify}
 \alias{modify}
-\alias{\%modify\%}
 \alias{compute}
-\alias{\%compute\%}
 \alias{modify_if}
 \alias{do_if}
 \alias{calculate}
-\alias{\%calculate\%}
 \alias{calc}
-\alias{\%calc\%}
 \title{Modify data.frame/modify subset of the data.frame}
 \usage{
 modify(data, expr)
 
-data \%modify\% expr
-
 compute(data, expr)
-
-data \%compute\% expr
 
 modify_if(data, cond, expr)
 
@@ -27,11 +19,7 @@ do_if(data, cond, expr)
 
 calculate(data, expr)
 
-data \%calculate\% expr
-
 calc(data, expr)
-
-data \%calc\% expr
 }
 \arguments{
 \item{data}{data.frame/list of data.frames. If \code{data} is list of

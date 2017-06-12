@@ -118,17 +118,11 @@ modify_internal.list = function (data, expr, parent) {
 }
 
 
-#' @export
-#' @rdname modify
-'%modify%' = modify 
-    
+
 #' @export
 #' @rdname modify
 compute = modify
 
-#' @export
-#' @rdname modify
-'%compute%' = modify
 
 #' @export
 #' @rdname modify
@@ -209,15 +203,9 @@ calculate_internal.list = function (data, expr, parent) {
 
 #' @export
 #' @rdname modify
-'%calculate%' = calculate
-
-#' @export
-#' @rdname modify
 calc = calculate
 
-#' @export
-#' @rdname modify
-'%calc%' = calculate
+
 
 
 

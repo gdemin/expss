@@ -2,22 +2,16 @@
 % Please edit documentation in R/keep.R
 \name{keep}
 \alias{keep}
-\alias{\%keep\%}
 \alias{.keep}
 \alias{except}
-\alias{\%except\%}
 \alias{.except}
 \title{Keep or drop elements by name/criteria in data.frame/matrix/list/vector}
 \usage{
 keep(data, ...)
 
-data \%keep\% ...
-
 .keep(...)
 
 except(data, ...)
-
-data \%except\% ...
 
 .except(...)
 }
@@ -32,12 +26,12 @@ object of the same type as \code{data}
 \description{
 \code{keep} selects variables/elements from data.frame by their names or by 
 criteria (see \link{criteria}). \code{except} drops  variables/elements from 
-data.frame by their names or by criteria. For non-infix versions of functions
-names at the top-level will be used as is (non-standard evaluation). For 
-standard evaluation of parameters you can surround them by round brackets.
-See example. Methods for list will apply \code{keep}/\code{except} to each
-element of the list separately. \code{.keep}/\code{.except} are versions
-which works with \link{default_dataset}.
+data.frame by their names or by criteria. Names at the top-level can be
+unquoted (non-standard evaluation). For standard evaluation of parameters you
+can surround them by round brackets. See examples. Methods for list will apply
+\code{keep}/\code{except} to each element of the list separately.
+\code{.keep}/\code{.except} are versions which works with
+\link{default_dataset}.
 }
 \examples{
 keep(iris, Sepal.Length, Sepal.Width)  
@@ -69,14 +63,10 @@ dfs = data.frame(
  
  # standard and non-standard evaluation
  data(mtcars)
- # generally it is not recommended to name parameter as column in data.frame
- am = "vs" 
- # non-standard evaluation of top-level items
- keep(mtcars, am) # we get 'am' column
- # but standard evaluation of other items
- keep(mtcars, (am)) # we get 'vs' column
- 
  many_vars = c("am", "vs", "cyl")
- keep(mtcars, (many_vars))
- 
+ \dontrun{
+ keep(mtcars, many_vars) # error - names not found: 'many_vars'  
+  }
+ keep(mtcars, (many_vars)) # ok
+  
 }

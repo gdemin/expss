@@ -2,12 +2,12 @@
 #' 
 #' \code{keep} selects variables/elements from data.frame by their names or by 
 #' criteria (see \link{criteria}). \code{except} drops  variables/elements from 
-#' data.frame by their names or by criteria. For non-infix versions of functions
-#' names at the top-level will be used as is (non-standard evaluation). For 
-#' standard evaluation of parameters you can surround them by round brackets.
-#' See example. Methods for list will apply \code{keep}/\code{except} to each
-#' element of the list separately. \code{.keep}/\code{.except} are versions
-#' which works with \link{default_dataset}.
+#' data.frame by their names or by criteria. Names at the top-level can be
+#' unquoted (non-standard evaluation). For standard evaluation of parameters you
+#' can surround them by round brackets. See examples. Methods for list will apply
+#' \code{keep}/\code{except} to each element of the list separately.
+#' \code{.keep}/\code{.except} are versions which works with
+#' \link{default_dataset}.
 #'
 #' @param data data.frame/matrix/list/vector
 #' @param ... column names of type character/numeric or criteria/logical functions
@@ -45,16 +45,12 @@
 #'  
 #'  # standard and non-standard evaluation
 #'  data(mtcars)
-#'  # generally it is not recommended to name parameter as column in data.frame
-#'  am = "vs" 
-#'  # non-standard evaluation of top-level items
-#'  keep(mtcars, am) # we get 'am' column
-#'  # but standard evaluation of other items
-#'  keep(mtcars, (am)) # we get 'vs' column
-#'  
 #'  many_vars = c("am", "vs", "cyl")
-#'  keep(mtcars, (many_vars))
-#'  
+#'  \dontrun{
+#'  keep(mtcars, many_vars) # error - names not found: 'many_vars'  
+#'   }
+#'  keep(mtcars, (many_vars)) # ok
+#'   
 keep = function(data, ...){
     variables_names = substitute(list(...))
     keep_internal(data, variables_names, envir = parent.frame())
@@ -95,9 +91,6 @@ keep_internal.matrix = function(data, variables_names, envir){
     res
 }
 
-#' @export
-#' @rdname keep
-'%keep%' = keep
 
 #' @export
 #' @rdname keep
@@ -163,9 +156,6 @@ except_internal.matrix = function(data, variables_names, envir){
 }
 
 
-#' @export
-#' @rdname keep
-'%except%' = except
 
 
 

@@ -47,7 +47,6 @@ expect_identical(calc(dfs, sum_row(b_1 %to% b_5)), result_dfs$b_total)
 default_dataset(dfs)
 expect_identical(.calc(sum_row(b_1 %to% b_5)), result_dfs$b_total)
 
-expect_identical(dfs %calc% sum_row(b_1 %to% b_5), result_dfs$b_total)
 set.seed(1)
 expect_identical(calc(dfs, runif(.N)), result_dfs$random_numer)
 
@@ -88,25 +87,6 @@ expect_error(
 )
 
 
-set.seed(1)
-expect_identical(
-    dfs %modify% {
-        b_total = sum_row(vars(b_1 %to% b_5))
-        random_numer = runif(.n)
-    }, 
-    result_dfs
-)
-
-
-set.seed(1)
-expect_identical(
-    dfs %compute% {
-        b_total = sum_row(vars(from("b_1") & to("b_5")))
-        random_numer = runif(.n)
-    }, 
-    result_dfs
-)
-
 
 
 
@@ -118,13 +98,6 @@ expect_identical(
     result_dfs
 )
 
-result_dfs$random_numer = NULL
-expect_identical(
-    dfs %modify% {
-        b_total = sum_row(b_1 %to% b_5)
-    }, 
-    result_dfs
-)
 
 context("modify magrittr")
 if(suppressWarnings(require(magrittr, quietly = TRUE))){
@@ -312,16 +285,6 @@ expect_identical(
     result_dfs3
 )
 
-expect_identical(
-    dfs %modify% {
-        b_total = sum_row(b_1, b_2, b_4, b_5)
-        var_lab(aa) = "my label"
-        val_lab(aa) = c(one = 1, two = 2)
-        
-        
-    },
-    result_dfs3
-)
 
 
 result_dfs3$b_total = NULL
@@ -356,11 +319,7 @@ iris2 = modify(iris2, {Species = NULL})
 
 expect_identical(iris2, iris[,-5])
 
-iris2 = iris
 
-iris2 = iris2 %modify% {Species = NULL}
-
-expect_identical(iris2, iris[,-5])
 
 iris2 = iris
 
@@ -381,14 +340,11 @@ res = lapply(iris_list, function(dfs) {dfs$aggr = sum(dfs$Sepal.Length); dfs})
 res0 = modify(iris_list, {aggr = sum(Sepal.Length)})
 expect_identical(res0, res)
 
-res0 = iris_list %modify% {aggr = sum(Sepal.Length)}
-expect_identical(res0, res)
+
 
 res_calc = calc(iris_list, sum(Sepal.Length))
 expect_identical(res_calc, lapply(iris_list, function(dfs){sum(dfs$Sepal.Length)}))
 
-res_calc = iris_list %calc% sum(Sepal.Length)
-expect_identical(res_calc, lapply(iris_list, function(dfs){sum(dfs$Sepal.Length)}))
 
 
 res = lapply(iris_list, function(dfs) {

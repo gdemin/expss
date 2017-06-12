@@ -2,13 +2,10 @@
 % Please edit documentation in R/where.R
 \name{where}
 \alias{where}
-\alias{\%where\%}
 \alias{.where}
 \title{Subset (filter) data.frames/matrices/vectors/lists}
 \usage{
 where(data, cond)
-
-data \%where\% cond
 
 .where(cond)
 }
@@ -28,8 +25,7 @@ So columns can be referred as variables in the expression (see the examples).
 If \code{data} is list then \code{where} will be applied to each element of 
 the list. For other types (vector/matrix) there is no non-standard
 evaluation. There is a special constant \code{.N} which equals to number of
-rows in \code{data} for usage in \code{cond} expression. \code{\%where\%} is
-infix function with the same functional. See examples. \code{.where} is
+rows in \code{data} for usage in \code{cond} expression. \code{.where} is
 version for working with default dataset. See \link{default_dataset}.
 }
 \examples{
@@ -38,20 +34,14 @@ where(iris, Species == "setosa")
 # leave only first five rows
 where(iris, 1:5)
 
-# infix version
-# note that '\%where\%' have higher precendence than '=='
-# so we need to put condition inside brackets
-iris \%where\% (Species == "setosa")
-
-iris \%where\% 1:5
 
 # example of .N usage. 
 set.seed(42)
-train = iris \%where\% sample(.N, 100)
+train = where(iris, sample(.N, 100))
 str(train)
 
 set.seed(42)
-test = iris \%where\% -sample(.N, 100)
+test = where(iris, -sample(.N, 100))
 str(test)
 
 # list example
