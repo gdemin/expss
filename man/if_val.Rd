@@ -31,7 +31,7 @@ hi
 
 copy(x)
 
-e1 \%into\% e2
+values \%into\% names
 
 .into_helper_(e1, e2)
 }
@@ -50,10 +50,10 @@ format as RHS of formulas).}
 \item{value}{list with formulas which describe recodings in assignment form
 of function/\code{to} list if \code{from}/\code{to} notation is used.}
 
-\item{e1}{object which will be assigned to right-hand side of \code{\%into\%}
+\item{values}{object(-s) which will be assigned to right-hand side of \code{\%into\%}
 expression.}
 
-\item{e2}{names which will be given to LHS of \code{\%into\%} expression.}
+\item{names}{name(-s) which will be given to LHS of \code{\%into\%} expression.}
 }
 \value{
 object of same form as \code{x} with recoded values
@@ -66,8 +66,8 @@ SPSS. Sequence of recodings provided in the form of formulas. For example,
 recoded only once. In the assignment form \code{recode(...) = ...} of this
 function values which doesn't meet any condition remain unchanged. In case of
 the usual form \code{... = recode(...)} values which doesn't meet any
-condition will be replaced with NA. As a condition one can use just values or
-more sophisticated logical values and functions. There are several special
+condition will be replaced with NA. As a condition one can use values or
+more sophisticated logical conditions and functions. There are several special
 functions for usage as criteria - for details see \link{criteria}. Simple
 common usage looks like: \code{recode(x, 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}.
 For more information, see details and examples.
@@ -79,7 +79,7 @@ as \code{recode} - e. g. with formulas or with from/to notation. But conditions
 should be only logical and it doesn't operate on multicolumn objects.
 }
 \details{
-Input conditions - possible values for left hand side (LHS) of formula or
+Input conditions - possible values for left-hand side (LHS) of formula or
 element of \code{from} list:
 \itemize{
 \item{vector/single value}{ All values in \code{x} which equal to elements of
@@ -94,7 +94,7 @@ will be recoded. Logical vector will be recycled across all columns of
 \code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
 will be used for corresponding column/element of \code{x}.}
 }
-Output values - possible values for right hand side (RHS) of formula or
+Output values - possible values for right-hand side (RHS) of formula or
 element of \code{to} list:
 \itemize{
 \item{value}{ replace elements of \code{x}. This value will be
@@ -198,7 +198,7 @@ recode(dfs,
       )
 
 # replace NA with row means
-# some rows which contain all NaN remain unchanged because mean_row for them also is NaN
+# some rows which contain only NaN's remain unchanged because mean_row for them also is NaN
 recode(dfs, NA ~ mean_row(dfs), other ~ copy) 
 
 # some of the above examples with from/to notation

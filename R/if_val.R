@@ -7,8 +7,8 @@
 #' recoded only once. In the assignment form \code{recode(...) = ...} of this
 #' function values which doesn't meet any condition remain unchanged. In case of
 #' the usual form \code{... = recode(...)} values which doesn't meet any
-#' condition will be replaced with NA. As a condition one can use just values or
-#' more sophisticated logical values and functions. There are several special
+#' condition will be replaced with NA. As a condition one can use values or
+#' more sophisticated logical conditions and functions. There are several special
 #' functions for usage as criteria - for details see \link{criteria}. Simple
 #' common usage looks like: \code{recode(x, 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}.
 #' For more information, see details and examples.
@@ -20,7 +20,7 @@
 #' should be only logical and it doesn't operate on multicolumn objects.
 #' 
 #' @details 
-#' Input conditions - possible values for left hand side (LHS) of formula or
+#' Input conditions - possible values for left-hand side (LHS) of formula or
 #' element of \code{from} list:
 #' \itemize{
 #' \item{vector/single value}{ All values in \code{x} which equal to elements of
@@ -35,7 +35,7 @@
 #' \code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
 #' will be used for corresponding column/element of \code{x}.}
 #' }
-#' Output values - possible values for right hand side (RHS) of formula or
+#' Output values - possible values for right-hand side (RHS) of formula or
 #' element of \code{to} list:
 #' \itemize{
 #' \item{value}{ replace elements of \code{x}. This value will be
@@ -69,9 +69,9 @@
 #'   same format as LHS of formulas).
 #' @param to list of values into which old values should be recoded (in the same
 #'   format as RHS of formulas).
-#' @param e1 object which will be assigned to right-hand side of \code{\%into\%}
+#' @param values object(-s) which will be assigned to right-hand side of \code{\%into\%}
 #'   expression.
-#' @param e2 names which will be given to LHS of \code{\%into\%} expression. 
+#' @param names name(-s) which will be given to LHS of \code{\%into\%} expression. 
 #'
 #' @return object of same form as \code{x} with recoded values
 #' @examples
@@ -153,7 +153,7 @@
 #'       )
 #' 
 #' # replace NA with row means
-#' # some rows which contain all NaN remain unchanged because mean_row for them also is NaN
+#' # some rows which contain only NaN's remain unchanged because mean_row for them also is NaN
 #' recode(dfs, NA ~ mean_row(dfs), other ~ copy) 
 #' 
 #' # some of the above examples with from/to notation
@@ -336,16 +336,10 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
 }
 
 
-
-
-
-
 #' @export
 if_val.list = function(x, ..., from = NULL, to = NULL){
     lapply(x, if_val, ..., from = from, to = to)
 }
-
-
 
 
 
@@ -410,56 +404,40 @@ copy = function(x) {
 
 #' @export
 #' @rdname if_val
-'%into%' = function(e1, e2){
-    variables_names = substitute(e2)
-    into_internal(e1, variables_names, parent.frame())
-}
-
-# characters -> characters, symbols -> characters, evaluate functions
-process_variables_names = function(variables_names, envir){
-    if(length(all.names(variables_names))==length(all.vars(variables_names))){
-        # there is no functions
-        processed_variables_names = expr_to_character(variables_names) 
-        
-    } else {
-        # we have functions
-        processed_variables_names = substitute_symbols(variables_names,
-                                                       list("%to%" = as.name(".into_helper_"))
-        )
-        processed_variables_names = eval(processed_variables_names, envir, baseenv())
-    }    
-    processed_variables_names
-}
-
-into_internal = function(e1, variables_names, envir){
+'%into%' = function(values, names){
+    variables_names = substitute(names)
     if(length(variables_names)==1){
-        processed_variables_names = process_variables_names(variables_names, envir)
-    } else {
-        if(expr_to_character(variables_names[[1]]) %in% c("list", "c", "qc", "lst")){
-            processed_variables_names = list()
-            for(each in seq_along(variables_names[-1])){
-                processed_variables_names[[each]] = 
-                    process_variables_names(variables_names[[each+1]], envir)
-            }
-        } else {
-            processed_variables_names = process_variables_names(variables_names, envir)
-        }
+        variables_names = substitute(list(names))
     }
-    processed_variables_names = unlist(processed_variables_names)
-    if(length(processed_variables_names)==1){
-        assign(processed_variables_names[[1]], e1, envir = envir)
+    into_internal(values, variables_names, parent.frame())
+}
+
+
+
+into_internal = function(values, variables_names, envir){
+    variables_names = substitute_symbols(variables_names,
+                       list("%to%" = as.name(".into_helper_"))
+                       )
+    variables_names = as.list(variables_names)
+    variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
+    variables_names = as.call(variables_names)
+    variables_names = eval(variables_names, envir = envir,
+                       enclos = baseenv())
+    variables_names = unlist(variables_names)
+    if(length(variables_names)==1){
+        assign(variables_names[[1]], values, envir = envir)
     } else {
-        if(is.list(e1)){
-            n_elements = length(e1)
+        if(is.list(values)){
+            n_elements = length(values)
         } else {
-            n_elements = NCOL(e1)
+            n_elements = NCOL(values)
         }
-        stopif(!((n_elements==length(processed_variables_names)) || (n_elements==1)),
-               "'%into%' - you provide ",length(processed_variables_names), " names and ", n_elements,
+        stopif(!((n_elements==length(variables_names)) || (n_elements==1)),
+               "'%into%' - you provide ", length(variables_names), " names and ", n_elements,
                " items for them. Number of items should be equal to number of the names or equal to one."
         )
-        for(each in seq_along(processed_variables_names)){
-            assign(processed_variables_names[[each]], column(e1, each), envir = envir)
+        for(each in seq_along(variables_names)){
+            assign(variables_names[[each]], column(values, each), envir = envir)
         }
     }
     invisible(NULL)
