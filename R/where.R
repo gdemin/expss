@@ -46,8 +46,6 @@ where = function (data, cond) {
 }
 
 
-
-
 #' @rdname where
 #' @export
 .where = function (cond) {

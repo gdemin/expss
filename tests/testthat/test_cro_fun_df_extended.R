@@ -25,7 +25,7 @@ mtcars = modify(mtcars,{
 })
 
 expect_equal_to_reference(
-    mtcars %calc% cro_fun_df(mpg, 
+    mtcars %$% cro_fun_df(mpg, 
                              col_vars = vs, 
                              fun = w_mean, 
                              row_vars = am
@@ -36,7 +36,7 @@ expect_equal_to_reference(
 # test for empty rowlabels
 
 expect_equal_to_reference(
-    mtcars %calc% cro_fun_df(dtfrm(mpg, disp, hp, qsec), 
+    mtcars %$% cro_fun_df(dtfrm(mpg, disp, hp, qsec), 
                              col_vars = vs, 
                              fun = function(x) {res = colMeans(x, na.rm = TRUE); unname(res)}, 
                              row_vars = am
@@ -45,7 +45,7 @@ expect_equal_to_reference(
 )
 
 expect_error(
-    mtcars %calc% cro_fun_df(mpg, 
+    mtcars %$% cro_fun_df(mpg, 
                                    col_vars = vs[1:2], 
                                    fun = w_mean, 
                                    row_vars = am
@@ -53,7 +53,7 @@ expect_error(
 )
 
 expect_error(
-    mtcars %calc% cro_fun_df(mpg[1:2], 
+    mtcars %$% cro_fun_df(mpg[1:2], 
                                    col_vars = vs, 
                                    fun = w_mean, 
                                    row_vars = am
@@ -61,7 +61,7 @@ expect_error(
 )
 
 expect_error(
-    mtcars %calc% cro_fun_df(mpg, 
+    mtcars %$% cro_fun_df(mpg, 
                                    col_vars = vs, 
                                    fun = w_mean, 
                                    row_vars = am[1:2]
@@ -69,7 +69,7 @@ expect_error(
 )
 
 expect_error(
-    mtcars %calc% cro_fun_df(mpg, 
+    mtcars %$% cro_fun_df(mpg, 
                                    col_vars = vs, 
                                    fun = w_mean, 
                                    row_vars = am,
@@ -80,7 +80,7 @@ expect_error(
 
 
 expect_equal_to_reference(
-    mtcars %calc% cro_fun_df(mpg, 
+    mtcars %$% cro_fun_df(mpg, 
                                    col_vars = vs, 
                                    fun = colMeans, 
                                    row_vars = am
@@ -89,7 +89,7 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    mtcars %calc% cro_fun_df(mpg, 
+    mtcars %$% cro_fun_df(mpg, 
                                    col_vars = vs, 
                                    fun = function(x) numeric(0), 
                                    row_vars = am
@@ -98,7 +98,7 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    mtcars %calc% cro_fun_df(mpg, 
+    mtcars %$% cro_fun_df(mpg, 
                                    col_vars = vs, 
                                    fun = function(x, weight = NULL) numeric(0), 
                                    row_vars = am, weight = 1
@@ -107,13 +107,13 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am) %>% set_var_lab("|") %>% as.list, 
+    cro_fun_df(mtcars %n_d% qc(vs, am) %>% set_var_lab("|") %>% as.list, 
                col_vars = mtcars$am, fun = colMeans)
     ,"rds/table_summary_df1.rds"
 )
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, fun = function(x){
+    cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = mtcars$am, fun = function(x){
 
         dtfrm(parameter = names(x), mean = colMeans(x))
     })
@@ -121,18 +121,18 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am) %>% unvr, col_vars = mtcars$am, fun = colMeans
+    cro_fun_df(mtcars %n_d% qc(vs, am) %>% unvr, col_vars = mtcars$am, fun = colMeans
     )
     ,"rds/table_summary_df3.rds"
 )
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am), col_vars = mtcars$am,  fun = colMeans)
+    cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = mtcars$am,  fun = colMeans)
     ,"rds/table_summary_df4.rds"
 )
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, row_vars = mtcars$vs,
+    cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = mtcars$am, row_vars = mtcars$vs,
                      fun = colMeans
                      )
     ,"rds/table_summary_df5.rds"
@@ -140,7 +140,7 @@ expect_equal_to_reference(
 
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am), col_vars = dtfrm("Total", mtcars$am), 
+    cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = dtfrm("Total", mtcars$am), 
                      row_vars = dtfrm("Total",mtcars$vs),
                      fun = colMeans
     )
@@ -149,24 +149,24 @@ expect_equal_to_reference(
 
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), col_vars = am, 
+    mtcars[FALSE,] %>%  calculate(cro_fun_df(vars(!fixed("vs") & !fixed("am")), col_vars = am, 
                                            row_vars = vs,
                      fun = colMeans
-    )
+    ))
     ,"rds/table_summary_df5a.rds"
 )
 
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[FALSE,] %>% calc(cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = am, 
                                                  fun = colMeans
-    )
+    ))
     ,"rds/table_summary_df5b.rds"
 )
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[FALSE,] %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = list(total(1), am), 
                                            fun = colMeans
     )
@@ -174,12 +174,12 @@ expect_equal_to_reference(
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[FALSE,] %$% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = list(total(1), am), 
                                            fun = colMeans
     )
     ,
-    mtcars %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars %$% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = list(total(1), am), 
                                            fun = colMeans,
                              subgroup = FALSE
@@ -187,11 +187,11 @@ expect_identical(
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[FALSE,] %$% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = am, 
                                            fun = colMeans
     )
-    ,    mtcars %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    ,    mtcars %$% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                                 col_vars = am, 
                                                 fun = colMeans,
                                   subgroup = FALSE
@@ -201,7 +201,7 @@ expect_identical(
 
 
 expect_identical(
-    mtcars %where% (cyl == 6) %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars %>% where(cyl == 6) %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = am, 
                                            fun = colMeans
     ),
@@ -217,7 +217,7 @@ expect_identical(
 
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, row_vars = mtcars$vs,
+    cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = mtcars$am, row_vars = mtcars$vs,
                      fun = function(x, weight = NULL){
                          w_cor(x, weight = weight)[,1]
                          
@@ -227,7 +227,7 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, row_vars = mtcars$vs,
+    cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = mtcars$am, row_vars = mtcars$vs,
                      fun = function(x, weight = NULL){
                          res = w_cor(x, weight = weight)
                          means = unlist(lapply(x, w_mean, weight = weight))
@@ -241,14 +241,14 @@ expect_equal_to_reference(
 
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am) %>% unvr, col_vars = mtcars$am,
+    cro_fun_df(mtcars %n_d% qc(vs, am) %>% unvr, col_vars = mtcars$am,
                      fun = colSums
                      )
     ,"rds/table_summary_df9.rds"
 )
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% qc(vs, am) %>% unvr, col_vars = mtcars$am,
+    cro_fun_df(mtcars %n_d% qc(vs, am) %>% unvr, col_vars = mtcars$am,
                      fun = function(x, weight = NULL){
                          if(is.null(weight)) weight = 1
                          colSums(x*weight)
@@ -258,14 +258,14 @@ expect_equal_to_reference(
 
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% c("cyl", "am")   , 
+    cro_fun_df(mtcars %n_d% c("cyl", "am")   , 
                col_vars = list("Total", mtcars$am), fun = colMeans),
     "rds/table_summary_df11.rds"
 )
 
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %except% c("cyl", "am") %>% set_var_lab("|") %>% as.list,
+    cro_fun_df(mtcars %n_d% c("cyl", "am") %>% set_var_lab("|") %>% as.list,
                      col_vars = list("Total", unvr(mtcars$am)),
                      fun = colMeans
                      ),
@@ -274,7 +274,7 @@ expect_equal_to_reference(
 
 
 expect_error(
-    cro_fun_df(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = colMeans, weight = 2)
+    cro_fun_df(mtcars %n_d% c("cyl", "am"), col_vars = mtcars$am, fun = colMeans, weight = 2)
 )
 
 
@@ -286,63 +286,63 @@ context("table correlations")
 
 val_lab(mtcars$am) = val_lab(mtcars$am)[1:2] 
 expect_equal_to_reference(
-    cro_pearson(mtcars %except% qc(vs, am), col_vars = mtcars$am)
+    cro_pearson(mtcars %n_d% qc(vs, am), col_vars = mtcars$am)
     ,"rds/table_cor_1.rds"
 )
 
 expect_equal_to_reference(
-    cro_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am)
+    cro_spearman(mtcars %n_d% qc(vs, am), col_vars = mtcars$am)
     ,"rds/table_cor_2.rds"
 )
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %>% where(FALSE) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds"
 )
 
 
 expect_equal_to_reference(
-    mtcars %where% FALSE %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %>% where(FALSE) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds"
 )
 
 expect_equal_to_reference(
-    cro_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am)
+    cro_spearman(mtcars %n_d% qc(vs, am), col_vars = mtcars$am)
     ,"rds/table_cor_2.rds"
 )
 
 expect_equal_to_reference(
-    cro_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = 1)
+    cro_spearman(mtcars %n_d% qc(vs, am), col_vars = mtcars$am, weight = 1)
     ,"rds/table_cor_2.rds"
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %>% where(FALSE) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars %where% FALSE %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars %>% where(FALSE) %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars %where% (cyl == 8) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars %>% where(cyl == 8) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )
 
 
 expect_identical(
-    mtcars %where% (cyl > 4) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
+    mtcars %>% where(cyl > 4) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
     ,
     mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl, subgroup = (cyl > 4))
 )
 
 expect_identical(
-    mtcars %where% (cyl == 8) %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars %>% where(cyl == 8) %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )
@@ -350,19 +350,19 @@ expect_identical(
 set.seed(1)
 weight = runif(nrow(mtcars), 1,2)
 expect_equal_to_reference(
-    cro_pearson(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = weight)
+    cro_pearson(mtcars %>% except(vs, am), col_vars = mtcars$am, weight = weight)
     ,"rds/table_cor_3.rds"
 )
 expect_equal_to_reference(
-    cro_spearman(mtcars %except% qc(vs, am), col_vars = mtcars$am, weight = weight)
+    cro_spearman(mtcars %>% except(vs, am), col_vars = mtcars$am, weight = weight)
     ,"rds/table_cor_4.rds"
 )
 
 
-expect_equal(cro_pearson(mtcars %except% qc(vs, am), col_vars = "Total")[[2]],
-             unname(cor(mtcars %except% qc(vs, am))[,1]))
-expect_equal(cro_spearman(mtcars %except% qc(vs, am), col_vars = "Total")[[2]],
-             unname(cor(mtcars %except% qc(vs, am), method = "spearman")[,1]))
+expect_equal(cro_pearson(mtcars %>% except(vs, am), col_vars = "Total")[[2]],
+             unname(cor(mtcars %>% except(vs, am))[,1]))
+expect_equal(cro_spearman(mtcars %>% except(vs, am), col_vars = "Total")[[2]],
+             unname(cor(mtcars %>% except(vs, am), method = "spearman")[,1]))
 
 
 context("table_summary_df datetime")

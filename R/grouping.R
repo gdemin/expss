@@ -19,7 +19,7 @@
 #' by_groups(iris, "Species", mean)
 #'
 #' # compute mean of the every numeric column
-#' by_groups(iris %except% "Species", mean)
+#' iris %>% except(Species) %>% by_groups(mean)
 #'
 #' # compute different functions for different columns
 #' # automatic naming

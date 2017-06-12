@@ -24,9 +24,6 @@ which object will be sorted. Ignored for vectors.}
 \item{na.last}{for controlling the treatment of NAs. If TRUE, missing values
 in the data are put last; if FALSE, they are put first; if NA, they are
 removed.}
-
-\item{variables}{character/numeric. Column names/numbers for data.frame/matrix by
-which object will be sorted for infix functions. Ignored for vectors.}
 }
 \value{
 sorted \code{data}

@@ -2,10 +2,11 @@
 #' 
 #' \itemize{
 #' \item{\code{vars}}{ returns all variables by their names or by criteria (see 
-#' \link{criteria}). There is no non-standard evaluation in this function by
-#' design so use quotes for names of your variables or use \link{qc}. The only
-#' exception with non-standard evaluation is \code{\%to\%}. You can use
-#' \code{\%to\%} inside \code{vars} or independently.}
+#' \link{criteria}). There is no non-standard evaluation in this function by 
+#' design so use quotes for names of your variables. This function is intended
+#' to get variables by parameter/criteria. The only exception with non-standard
+#' evaluation is \code{\%to\%}. You can use \code{\%to\%} inside \code{vars} or
+#' independently.}
 #' \item{\code{\%to\%}}{ returns range of variables between \code{e1} and 
 #' \code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if}, 
 #' \link{calculate}, \link{keep}, \link{except} and \link{where} support 
@@ -116,7 +117,10 @@ internal_vars_list = function(variables_names, envir){
     } else {
         curr_names = ls(envir = envir)
     }
-    new_vars = keep_helper(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, 
+                                          variables_names, 
+                                          envir = envir, 
+                                          symbols_to_characters = FALSE)
     mget(curr_names[new_vars], envir = envir, inherits = TRUE)
 }
 

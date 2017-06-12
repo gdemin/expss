@@ -9,7 +9,7 @@
 * numerous small bugfixes
 * '.set'/'set' inside 'compute' and etc. are deprecated. Use '%into%' instead.
 * expansion of variables in backticks inside 'vars'/'vars_list'/'%into%' is removed. Use explicit 'subst' instead
-* infix/assignment versions removed: '%modify%', '%compute%', '%calc%', '%calculate%', '%sort_asc%', '%sort_desc%', '%keep%', '%except%', '%where%', '%by_groups%'
+* infix/assignment versions removed: '%modify%', '%compute%', '%sort_asc%', '%sort_desc%', '%keep%', '%except%', '%where%', '%by_groups%'
 
 
 0.7.1 (10.04.2017)

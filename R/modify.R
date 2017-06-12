@@ -205,6 +205,13 @@ calculate_internal.list = function (data, expr, parent) {
 #' @rdname modify
 calc = calculate
 
+#' @export
+#' @rdname modify
+'%calc%' = calculate
+
+#' @export
+#' @rdname modify
+'%calculate%' = calculate
 
 
 

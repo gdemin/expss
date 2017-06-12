@@ -183,8 +183,14 @@ expect_identical(except(iris_list,  Petal.Length %to% Petal.Width),
                  list(iris[,c(2,5)], iris[,1:2])
 )
 
+data(mtcars)
+
+many_vars = c("am", "vs", "cyl")
+
+expect_error(keep(mtcars, many_vars)) 
 
 
+expect_identical(keep(mtcars, (many_vars)),  mtcars[ , many_vars])
 
 
 

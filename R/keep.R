@@ -71,7 +71,7 @@ keep_internal.list = function(data, variables_names, envir){
 #' @export
 keep_internal.data.frame = function(data, variables_names, envir){
     curr_names = colnames(data)
-    new_vars = keep_helper(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
     if(is.data.table(data)){
         res = data[ , new_vars, with = FALSE]
     } else {
@@ -85,7 +85,7 @@ keep_internal.data.frame = function(data, variables_names, envir){
 #' @export
 keep_internal.matrix = function(data, variables_names, envir){
     curr_names = colnames(data)
-    new_vars = keep_helper(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
     res = data[ , new_vars, drop = FALSE]
     colnames(res) = curr_names[new_vars] # prevents names correction
     res
@@ -128,7 +128,7 @@ except_internal.list = function(data, variables_names, envir){
 #' @export
 except_internal.data.frame = function(data, variables_names, envir){
     curr_names = colnames(data)
-    new_vars = keep_helper(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
@@ -145,7 +145,7 @@ except_internal.data.frame = function(data, variables_names, envir){
 #' @export
 except_internal.matrix = function(data, variables_names, envir){
     curr_names = colnames(data)
-    new_vars = keep_helper(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
@@ -170,65 +170,7 @@ except_internal.matrix = function(data, variables_names, envir){
     invisible(data)
 }
 
-## return vector of integers - positions of columns
-keep_helper = function(curr_names, variables_names, envir){
-    variables_names = substitute_symbols(variables_names,
-                              list("%to%" = as.name(".internal_to_"))
-    )
-    variables_names = substitute_symbols(variables_names,
-                                         setNames(curr_names, curr_names),
-                                         top_level_only = TRUE
-    )
-    variables_names = as.list(variables_names)
-    variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
-    variables_names = eval(as.call(variables_names), envir = envir,
-                enclos = baseenv())
-    variables_names = rapply(variables_names, function(item) {
-        if(length(item)>1) {
-            as.list(item)
-        } else {
-            item
-        }
-    }, how = "replace")
-    variables_names = flat_list(variables_names)
-    keep_indexes = numeric(0)
-    characters_names = character(0) # for checking non-existing names
-    numeric_indexes = numeric(0) # for checking non-existing indexes
-    for (each in variables_names){
-        if(is.character(each)){
-            next_indexes = which(curr_names %in% each)
-            characters_names = c(characters_names, each)
-        } else {
-            if(is.numeric(each)){
-                next_indexes = each
-                numeric_indexes = c(numeric_indexes, each)
-            } else {
-                next_indexes = which(curr_names %in% (curr_names %i% each))
-            }
-        }
-        keep_indexes = c(keep_indexes, next_indexes %d% keep_indexes)
-    }
-    if(anyDuplicated(characters_names)){
-        warning("duplicated names: ",
-                paste(characters_names[duplicated(characters_names)], collapse = ","),
-                ". Repeated names are ignored."
 
-        )
-    }
-    if(anyDuplicated(numeric_indexes)){
-        warning("duplicated indexes: ",
-                paste(numeric_indexes[duplicated(numeric_indexes)], collapse = ","),
-                ". Repeated indexes are ignored."
-                
-        )
-    }
-    stopif(any(!(characters_names %in% curr_names)), 
-           "'keep'/'except' - names not found: '", paste(characters_names %d% curr_names, collapse = "', '"),"'")
-    stopif(any(numeric_indexes > length(curr_names), na.rm = TRUE), 
-           "'keep'/'except' - indexes are greater then number of columns: '", paste(numeric_indexes %i% gt(length(curr_names)), collapse = "', '"),"'")
-    keep_indexes
-    
-}
 
 
     

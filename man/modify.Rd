@@ -7,6 +7,8 @@
 \alias{do_if}
 \alias{calculate}
 \alias{calc}
+\alias{\%calc\%}
+\alias{\%calculate\%}
 \title{Modify data.frame/modify subset of the data.frame}
 \usage{
 modify(data, expr)
@@ -20,6 +22,10 @@ do_if(data, cond, expr)
 calculate(data, expr)
 
 calc(data, expr)
+
+data \%calc\% expr
+
+data \%calculate\% expr
 }
 \arguments{
 \item{data}{data.frame/list of data.frames. If \code{data} is list of

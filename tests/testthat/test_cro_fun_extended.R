@@ -21,38 +21,38 @@ mtcars = modify(mtcars,{
 # row_labels = c("row_vars", "row_vars_values", "summary_vars", "fun_names", "stat_names"),
 # col_labels = c("col_vars", "col_vars_values")
 
-# table_summary(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean)
-# table_means(mtcars %except% c("cyl", "am"), col_vars = mtcars$am)
-# table_medians(mtcars %except% c("cyl", "am"), col_vars = mtcars$am)
-# table_sums(mtcars %except% c("cyl", "am"), col_vars = mtcars$am)
-# table_sums(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, weight = 2)
-# expect_error(cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, 
+# table_summary(mtcars %>% except("cyl", "am"), col_vars = mtcars$am, fun = mean)
+# table_means(mtcars %>% except("cyl", "am"), col_vars = mtcars$am)
+# table_medians(mtcars %>% except("cyl", "am"), col_vars = mtcars$am)
+# table_sums(mtcars %>% except("cyl", "am"), col_vars = mtcars$am)
+# table_sums(mtcars %>% except("cyl", "am"), col_vars = mtcars$am, weight = 2)
+# expect_error(cro_fun(mtcars %>% except("cyl", "am"), col_vars = mtcars$am, 
 #                      fun = mean)
 #              )
-# expect_error(cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean))
-# expect_error(cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean,
+# expect_error(cro_fun(mtcars %>% except("cyl", "am"), col_vars = mtcars$am, fun = mean))
+# expect_error(cro_fun(mtcars %>% except("cyl", "am"), col_vars = mtcars$am, fun = mean,
 #               row_labels = c("stat_names", "col_vars_values", "row_vars", "row_vars_values", "summary_vars",  "col_vars"),
 #               col_labels = c("adasd", "rvtrvtt")
 # ))
-# expect_error(cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean,
+# expect_error(cro_fun(mtcars %>% except("cyl", "am"), col_vars = mtcars$am, fun = mean,
 #               col_labels = c("stat_names", "col_vars_values", "row_vars", "row_vars_values", "summary_vars",  "col_vars"),
 #               row_labels = c("adasd", "rvtrvtt")
 # ))
 
 #######
 expect_error(
-    cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = mean, weight = 2)
+    cro_fun(mtcars %>% except("cyl", "am"), col_vars = mtcars$am, fun = mean, weight = 2)
     )
 
 
 
 expect_equal_to_reference(
-    cro_fun(mtcars %except% c("cyl", "am"), col_vars = mtcars$am, fun = combine_functions(w_mean), weight = 2),
+    cro_fun(mtcars %>% except("cyl", "am"), col_vars = mtcars$am, fun = combine_functions(w_mean), weight = 2),
                           "rds/table_summary0.rds")
 
 
 expect_equal_to_reference(
-    cro_fun(mtcars %except% c("cyl", "am"), col_vars = list("Total", mtcars$am), 
+    cro_fun(mtcars %>% except("cyl", "am"), col_vars = list("Total", mtcars$am), 
             fun = combine_functions(mean)),
     "rds/table_summary1.rds"
     )
@@ -60,7 +60,7 @@ expect_equal_to_reference(
 
 add_val_lab(mtcars$am) = c(HardToSay = 3)
 expect_equal_to_reference(
-    cro_fun(mtcars %except% c("cyl", "am"), col_vars = list("Total", mtcars$am), 
+    cro_fun(mtcars %>% except("cyl", "am"), col_vars = list("Total", mtcars$am), 
             fun = combine_functions(mean))
     ,"rds/table_summary2.rds"
 )
@@ -84,19 +84,19 @@ mtcars = modify(mtcars,{
 
 add_val_lab(mtcars$am) = c(HardToSay = 3)
 expect_equal_to_reference(
-cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
               fun = combine_functions(mean))
 ,"rds/table_summary3.rds"
 )
 
 expect_equal_to_reference(
-cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
         fun = mean)
 ,"rds/table_summary4.rds"
 )
 
 expect_equal_to_reference(
-cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+cro_fun_df(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
                fun = function(x) {
                    res = t(colMeans(x) )
                    rownames(res) = "mean"
@@ -106,7 +106,7 @@ cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
 )
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+# cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_labels = c("row_vars", "row_vars_values", "stat_names"),
 #               col_labels = c("col_vars", "summary_vars", "col_vars_values"), fun = mean)
 # ,"rds/table_summary6.rds"
@@ -116,7 +116,7 @@ cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
 ########## rowlabels
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+# cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs,
 #              fun = combine_functions(mean))
 # ,"rds/table_summary7.rds"
@@ -124,7 +124,7 @@ cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
 
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+# cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values", "summary_vars"),
 #               col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
@@ -132,7 +132,7 @@ cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
 # )
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), 
+# cro_fun(mtcars %>% except("vs", "am"), 
 #               col_vars = mtcars$vs,
 #         row_vars = list("Total", mtcars$am), 
 #         fun = mean)
@@ -140,7 +140,7 @@ cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
 # )
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+# cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values",  "col_vars_values", "summary_vars", "stat_names"),
 #               col_labels = c("col_vars"), fun = mean)
@@ -150,13 +150,13 @@ cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
 add_val_lab(mtcars$vs) = c("Don't know" = 88)
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+# cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs, fun = combine_functions(mean))
 # ,"rds/table_summary11.rds"
 # )
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+# cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values", "summary_vars"),
 #               col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
@@ -165,7 +165,7 @@ add_val_lab(mtcars$vs) = c("Don't know" = 88)
 
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+# cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values", "summary_vars", "stat_names"),
 #               col_labels = c("col_vars", "col_vars_values", "summary_vars"), fun = mean)
@@ -174,7 +174,7 @@ add_val_lab(mtcars$vs) = c("Don't know" = 88)
 
 
 expect_equal_to_reference(
-cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+cro_fun_df(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
               row_vars = mtcars$vs, 
         fun = function(x) {
             res = t(colMeans(x) )
@@ -186,7 +186,7 @@ cro_fun_df(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
 
 
 # expect_equal_to_reference(
-# cro_fun(mtcars %except% c("vs", "am"), col_vars = list("Total", mtcars$am),
+# cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values",  "col_vars_values", "summary_vars", "stat_names"),
 #               col_labels = c("col_vars"), fun = mean)

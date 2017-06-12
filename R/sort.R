@@ -9,8 +9,6 @@
 #' @param data data.frame/matrix/vector
 #' @param ... character/numeric. Column names/numbers for data.frame/matrix by
 #'   which object will be sorted. Ignored for vectors.
-#' @param variables character/numeric. Column names/numbers for data.frame/matrix by
-#'   which object will be sorted for infix functions. Ignored for vectors.
 #' @param na.last for controlling the treatment of NAs. If TRUE, missing values
 #'   in the data are put last; if FALSE, they are put first; if NA, they are
 #'   removed.

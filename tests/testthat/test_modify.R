@@ -43,6 +43,8 @@ result_dfs2$b_total = ifelse(dfs2$test %in% 2:4, with(dfs, sum_row(b_1, b_2, b_4
 result_dfs2$aa = ifelse(dfs2$test %in% 2:4, result_dfs2$aa+1, result_dfs2$aa)
 
 expect_identical(calc(dfs, sum_row(b_1 %to% b_5)), result_dfs$b_total)
+expect_identical(dfs %calc% sum_row(b_1 %to% b_5), result_dfs$b_total)
+expect_identical(dfs %calculate% sum_row(b_1 %to% b_5), result_dfs$b_total)
 
 default_dataset(dfs)
 expect_identical(.calc(sum_row(b_1 %to% b_5)), result_dfs$b_total)

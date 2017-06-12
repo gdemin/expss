@@ -28,11 +28,21 @@ result_dfs$b_total = with(dfs, sum_row(b_1, b_2, b_4, b_5))
 # result_dfs$a_total = sum_row(a_1, a_2, a_4, a_5)
 
 
+expect_error(calc(dfs, vars(wah)))
+expect_error(calc(dfs, vars("wah")))
+
+wah = "zz"
+expect_identical(calc(dfs, vars(wah)), dfs[,"zz", drop = FALSE])
+
 expect_identical(
     with(dfs, vars(b_1 %to% b_5)), 
     with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
 )
 
+expect_identical(
+    calc(dfs, vars(1)), 
+    dfs[, 1, drop = FALSE]
+)
 
 expect_identical(
     within(dfs, {

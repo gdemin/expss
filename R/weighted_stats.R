@@ -42,7 +42,7 @@
 #'
 #' @examples
 #' data(mtcars)
-#' dfs = mtcars %keep% qc(mpg, disp, hp, wt)
+#' dfs = mtcars %>% keep(mpg, disp, hp, wt)
 #'
 #' with(dfs, w_mean(hp, weight = 1/wt))
 #'

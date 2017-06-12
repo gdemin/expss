@@ -345,7 +345,7 @@ expect_output_file(print(tbl),
 #     var_lab(carb) = "Number of carburetors"
 # })
 # 
-# tbl_df = table_summary_df(mtcars %except% qc(vs, am), col_vars = mtcars$am, fun = function(x){
+# tbl_df = table_summary_df(mtcars %>% except(vs, am), col_vars = mtcars$am, fun = function(x){
 #     
 #     dtfrm(res_num = seq_along(x), parameter = names(x), mean = colMeans(x))
 # },  row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
@@ -365,7 +365,7 @@ expect_output_file(print(tbl),
 # class(df) = class(df) %d% c("etable",  "table_summary_df") 
 # # expect_equal_to_reference(rbind(tbl_df, df), "rds/cbind8.rds")
 # 
-# simple_df = cro_mean(mtcars %except% qc(vs, am), mtcars$am)
+# simple_df = cro_mean(mtcars %>% except(vs, am), mtcars$am)
 # 
 # expect_equal_to_reference(cbind(simple_df, simple_df), "rds/cbind9.rds")
 # expect_equal_to_reference(cbind(simple_df, new_col = 42), "rds/cbind10.rds")
