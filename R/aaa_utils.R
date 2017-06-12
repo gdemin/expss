@@ -528,7 +528,7 @@ convert_characters_to_names = function(list_of_items){
 
 # expr - expression as after 'substitute'
 # symbols - named list  - names will be substituted with values 
-substitute_symbols = function (substitute_result, symbols, top_level_only = FALSE) {
+substitute_symbols = function (substitute_result, symbols) {
     as.call(lapply(as.list(substitute_result), function(elem){
         if(length(elem)<=1){
             str_elem = as.character(elem)
@@ -538,11 +538,7 @@ substitute_symbols = function (substitute_result, symbols, top_level_only = FALS
                 elem
             }
         } else {
-            if(top_level_only){
-                elem    
-            } else {
-                substitute_symbols(elem, symbols) 
-            }    
+            substitute_symbols(elem, symbols) 
         }
     }))
 }
@@ -612,7 +608,7 @@ variables_names_to_indexes = function(curr_names, variables_names, envir, symbol
     stopif(any(!(characters_names %in% curr_names)), 
            "names not found: '", paste(characters_names %d% curr_names, collapse = "', '"),"'")
     stopif(any(numeric_indexes > length(curr_names), na.rm = TRUE), 
-           "indexes are greater then number of items: '", paste(numeric_indexes %i% gt(length(curr_names)), collapse = "', '"),"'")
+           "indexes are greater then number of items: ", paste(numeric_indexes %i% gt(length(curr_names)), collapse = ", "))
     keep_indexes
     
 }
