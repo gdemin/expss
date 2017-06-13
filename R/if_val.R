@@ -55,7 +55,8 @@
 #' which are not satisfying any of the conditions.}}
 #' \code{\%into\%} tries to mimic SPSS 'INTO'. Values from left-hand side will 
 #' be assigned to right-hand side. You can use \code{\%to\%} expression in the 
-#' RHS of \code{\%into\%}. See examples.
+#' RHS of \code{\%into\%}. See examples. \code{\%set\%} works in opposite
+#' direction and assign values from right to left - as usual assignment.
 #' \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 #' can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
 #' \code{if_val} is an alias for \code{recode}.
@@ -69,9 +70,12 @@
 #'   same format as LHS of formulas).
 #' @param to list of values into which old values should be recoded (in the same
 #'   format as RHS of formulas).
-#' @param values object(-s) which will be assigned to right-hand side of \code{\%into\%}
-#'   expression.
-#' @param names name(-s) which will be given to LHS of \code{\%into\%} expression. 
+#' @param values object(-s) which will be assigned to \code{names}. For 
+#'   \code{\%set\%} and \code{\%into\%}. \code{\%set\%} assigns values from 
+#'   right to left - as usual assignment. \code{\%into\%} works in opposite 
+#'   direction - from left to right.
+#' @param names name(-s) which will be given to \code{values} expression. For
+#'   \code{\%set\%} and \code{\%into\%}. 
 #'
 #' @return object of same form as \code{x} with recoded values
 #' @examples
@@ -405,6 +409,16 @@ copy = function(x) {
 #' @export
 #' @rdname if_val
 '%into%' = function(values, names){
+    variables_names = substitute(names)
+    if(length(variables_names)==1){
+        variables_names = substitute(list(names))
+    }
+    into_internal(values, variables_names, parent.frame())
+}
+
+#' @export
+#' @rdname if_val
+'%set%' = function(names, values){
     variables_names = substitute(names)
     if(length(variables_names)==1){
         variables_names = substitute(list(names))

@@ -528,58 +528,71 @@ expect_identical(mk_emtpy_obj(ab), res)
 
 context("%into%")
 
-if(exists("x")){
-    rm(x)
+remove_if_exists = function(...){
+    for(each in unlist(list(...))){
+        if(exists(each, envir = parent.frame(), inherits = FALSE)){
+            rm(list = each, pos = parent.frame())
+        }
+    }
+    invisible(NULL)
 }
+remove_if_exists("x")
 1 %into% x
 expect_identical(x, 1)
 
-if(exists("y")){
-    rm(y)
-}
+remove_if_exists("y")
 x = "y"
 
 1 %into% ((x))
 expect_identical(x, "y")
 expect_identical(y, 1)
 
-
-if(exists("x")){
-    rm(x)
-}
-if(exists("y")){
-    rm(y)
-}
-if(exists("z")){
-    rm(z)
-}
+remove_if_exists("x", "y", "z")
 many_vars = function() c("x", "y", "z")
 list(1,2,3) %into% many_vars()
 expect_identical(x, 1)
 expect_identical(y, 2)
 expect_identical(z, 3)
-if(exists("x")){
-    rm(x)
-}
-if(exists("y")){
-    rm(y)
-}
-if(exists("z")){
-    rm(z)
-}
+
+remove_if_exists("x", "y", "z")
 1:3 %into% many_vars()
 expect_identical(x, 1:3)
 expect_identical(y, 1:3)
 expect_identical(z, 1:3)
-if(exists("x")){
-    rm(x)
-}
-if(exists("y")){
-    rm(y)
-}
-if(exists("z")){
-    rm(z)
-}
+
+remove_if_exists("x", "y", "z")
+
+x %set% 1
+expect_identical(x, 1)
+
+remove_if_exists("y")
+x = "y"
+
+((x)) %set% 1 
+expect_identical(x, "y")
+expect_identical(y, 1)
+
+
+remove_if_exists("x", "y", "z")
+many_vars = function() c("x", "y", "z")
+many_vars() %set% list(1,2,3) 
+expect_identical(x, 1)
+expect_identical(y, 2)
+expect_identical(z, 3)
+
+remove_if_exists("x", "y", "z")
+many_vars() %set% 1:3 
+expect_identical(x, 1:3)
+expect_identical(y, 1:3)
+expect_identical(z, 1:3)
+
+remove_if_exists("x", "y", "z")
+remove_if_exists("x1", "x2", "x3")
+
+(x1 %to% x3) %set% list(1:2, letters, TRUE)
+expect_identical(x1, 1:2)
+expect_identical(x2, letters)
+expect_identical(x3, TRUE)
 
 b = 1:5
 b2 = rev(b)
