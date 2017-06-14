@@ -222,7 +222,9 @@ dots2data_frame = function(...){
     if(length(args)==1 && is.data.frame(args[[1]])) return(args[[1]])
     zero_length = lengths(args)==0
     args[zero_length] = NA
-    as.data.frame(args,stringsAsFactors=FALSE, check.names = FALSE)
+    suppressWarnings(
+        as.data.frame(args,stringsAsFactors=FALSE, check.names = FALSE)
+    )
     
 }
     
