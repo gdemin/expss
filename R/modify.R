@@ -1,7 +1,7 @@
 #' Modify data.frame/modify subset of the data.frame
 #' 
 #' \itemize{
-#' \item{{\code{modify}}{ evaluates expression \code{expr} in the context of data.frame 
+#' \item{{\code{compute}}{ evaluates expression \code{expr} in the context of data.frame 
 #' \code{data} and return original data possibly modified. It works similar to
 #' \code{\link[base]{within}} in base R but try to return new variables in order
 #' of their occurrence in the expression and make available
@@ -10,18 +10,19 @@
 #' data.frame \code{data} and return value of the evaluated expression. It works
 #' similar to \code{\link[base]{with}} in base R but make available
 #' full-featured \code{\%to\%} and \code{.N} in the expressions. See \link{vars}.}}
-#' \item{{\code{modify_if}}{ modifies only rows for which \code{cond} equals to
+#' \item{{\code{do_if}}{ modifies only rows for which \code{cond} equals to
 #' TRUE. Other rows remain unchanged. Newly created variables also will have
 #' values only in rows for which \code{cond} have TRUE. There will be NA's in
 #' other rows. This function tries to mimic SPSS "DO IF(). ... END IF."
 #' statement.}}
 #' }
-#' There is a special constant \code{.N} which equals to number of cases in
-#' \code{data} for usage in expression inside \code{modify}/\code{calculate}.
-#' Inside \code{modify_if} \code{.N} gives number of rows which will be affected
-#' by expressions. \code{compute} is an alias for \code{modify}, \code{do_if}
-#' is an alias for \code{modify_if} and \code{calc} is an alias for 
-#' \code{calculate}.
+#' There is a special constant \code{.N} which equals to number of cases in 
+#' \code{data} for usage in expression inside \code{compute}/\code{calculate}. 
+#' Inside \code{do_if} \code{.N} gives number of rows which will be affected by
+#' expressions. For parametrization (variable substitution) see \link{..} or
+#' examples. 
+#' \code{modify} is an alias for \code{compute}, \code{modify_if} is
+#' an alias for \code{do_if} and \code{calc} is an alias for \code{calculate}.
 #' 
 #' @param data data.frame/list of data.frames. If \code{data} is list of
 #'   data.frames then expression \code{expr} will be evaluated inside each
@@ -29,14 +30,13 @@
 #' @param expr expression that should be evaluated in the context of data.frame \code{data}
 #' @param cond logical vector or expression. Expression will be evaluated in the context of the data.  
 #'
-#' @return \code{modify} and \code{modify_if} functions return modified 
+#' @return \code{compute} and \code{do_if} functions return modified 
 #'   data.frame/list of modified data.frames, \code{calculate} returns value of
 #'   the evaluated expression/list of values.
 #' @examples
 #' dfs = data.frame(
 #'     test = 1:5,
-#'     aa = rep(10, 5),
-#'     b_ = rep(20, 5),
+#'     a = rep(10, 5),
 #'     b_1 = rep(11, 5),
 #'     b_2 = rep(12, 5),
 #'     b_3 = rep(13, 5),
@@ -46,30 +46,69 @@
 #' 
 #' 
 #' # compute sum of b* variables and attach it to 'dfs'
-#' modify(dfs, {
-#'     b_total = sum_row(b_, b_1 %to% b_5)
+#' compute(dfs, {
+#'     b_total = sum_row(b_1 %to% b_5)
 #'     var_lab(b_total) = "Sum of b"
 #'     random_numbers = runif(.N) # .N usage
 #' })
 #' 
 #' # calculate sum of b* variables and return it
-#' calculate(dfs, sum_row(b_, b_1 %to% b_5))
+#' calculate(dfs, sum_row(b_1 %to% b_5))
 #' 
 #' 
 #' # set values to existing/new variables
-#' modify(dfs, {
+#' compute(dfs, {
 #'     (b_1 %to% b_5) %into% subst('new_b`1:5`')
 #' })
 #' 
 #' 
 #' # conditional modification
-#' modify_if(dfs, test %in% 2:4, {
-#'     aa = aa + 1    
-#'     a_b = aa + b_    
-#'     b_total = sum_row(b_, b_1 %to% b_5)
+#' do_if(dfs, test %in% 2:4, {
+#'     a = a + 1    
+#'     b_total = sum_row(b_1 %to% b_5)
 #'     random_numbers = runif(.N) # .N usage
 #' })
 #' 
+#' 
+#' # variable substitution
+#' name1 = "a"
+#' name2 = "new_var"
+#' 
+#' # example with short notation but it can be applied only for simple cases - 
+#' # when 'name' is vector of length 1
+#' compute(dfs, {
+#'      ..$name2 = ..$name1*2    
+#' })
+#' 
+#' compute(dfs, {
+#'      for(name1 in paste0("b_", 1:5)){
+#'          name2 = paste0("new_", name1) 
+#'          ..$name2 = ..$name1*2 
+#'      }
+#'      rm(name1, name2) # we don't need this variables as columns in 'dfs'
+#' })
+#' 
+#' # square brackets notation
+#' compute(dfs, {
+#'      ..[name2] = ..[name1]*2  
+#' })
+#' 
+#' compute(dfs, {
+#'      for(name1 in paste0("b_", 1:5)){
+#'          ..[paste0("new_", name1)] = ..$name1*2 
+#'      }
+#'      rm(name1) # we don't need this variable as column in 'dfs'
+#' })
+#' 
+#' # '..$' doesn't work for case below so we need to use square brackets form
+#' name1 = paste0("b_", 1:5)
+#' name2 = paste0("new_", name1)
+#' compute(dfs, {
+#'      for(i in 1:5){
+#'          ..[name2[i]] = ..[name1[i]]*3
+#'      }
+#'      rm(i) # we don't need this variable as column in 'dfs'
+#' })
 #' @export
 modify =  function (data, expr) {
     parent = parent.frame()
