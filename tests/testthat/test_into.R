@@ -35,6 +35,41 @@ ir = modify(ir, {
 expect_identical(ir, ir_test)
 
 ###########
+data(iris)
+ir = iris
+colnames(ir)[1:4] = subst("v`1:4`")
+ir_test = ir
+
+ir_test[,subst("vr`1:4`")] = ir[,subst("v`1:4`")]
+
+name1  = "vr1"
+name2  = "vr4"
+
+ir_res = modify(ir, {
+    v1 %to% v4 %into% ((name1) %to% (name2))
+    
+}
+)
+
+expect_identical(ir_res, ir_test)
+
+ir_res = modify(ir, {
+    v1 %to% v4 %into% (..$name1 %to% ..$name2)
+    
+}
+)
+
+expect_identical(ir_res, ir_test)
+
+ir_res = modify(ir, {
+    v1 %to% v4 %into% (..[name1] %to% ..[name2])
+    
+}
+)
+
+expect_identical(ir_res, ir_test)
+
+###########
 
 data(iris)
 ir = iris

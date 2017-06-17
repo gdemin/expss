@@ -91,6 +91,12 @@ sum_row(a1 \%to\% a5)
 name1 = "a"
 name2 = "new_var"
 
+# in global environment
+..$name1 # give as variable 'a'
+
+..$name2 = ..$name1 # create variable 'new_var' which is equal to 'a'
+new_var
+
 # example with short notation but it can be applied only for simple cases - 
 # when 'name' is vector of length 1
 compute(dfs, {

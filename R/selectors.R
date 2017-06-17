@@ -58,8 +58,13 @@
 #' name1 = "a"
 #' name2 = "new_var"
 #' 
-#' # example with short notation but it can be applied only for simple cases - 
-#' # when 'name' is vector of length 1
+#' # in global environment
+#' ..$name1 # give as variable 'a'
+#' 
+#' ..$name2 = ..$name1 * 2 # create variable 'new_var' which is equal to 'a' times 2
+#' new_var
+#' 
+#' # example with short notation but it can be applied only for simple cases
 #' compute(dfs, {
 #'      ..$name2 = ..$name1*2    
 #' })
@@ -159,9 +164,17 @@ indirect_list = vars_list
 
 # version of %to% for usage inside 'keep'/'except'/'vars'
 # \code{.internal_to_} is for internal usage and not documented.
-.internal_to_ = function(e1, e2){
-    e1 = expr_to_character(substitute(e1))
-    e2 = expr_to_character(substitute(e2))
+
+
+.internal_to_ =function(e1, e2){
+    e1 = substitute(list(e1))
+    e2 = substitute(list(e2))
+    e1 = evaluate_variable_names(e1, envir = parent.frame(), symbols_to_characters = TRUE)
+    e2 = evaluate_variable_names(e2, envir = parent.frame(), symbols_to_characters = TRUE)
+    stopif(length(e1)>1, "'%to%' - length of name of first variable is greater than one.")
+    stopif(length(e2)>1, "'%to%' - length of name of second variable is greater than one.")
+    e1 = e1[[1]]
+    e2 = e2[[1]]
     res = function(y){
         first = match(e1, y)[1]
         stopif(is.na(first), "'",e1, "' not found." )
@@ -201,13 +214,6 @@ internal_parameter_get = function(name, envir){
 
 
 class(..) = "parameter"
-
-#' @export
-print.parameter = function(x, ...){
-    cat(x, '\n')
-    invisible(x)
-}
-
 
 
 #' @export
@@ -249,7 +255,7 @@ print.parameter = function(x, ...){
 
 class(.internal_parameter_) = "internal_parameter"
 
-expr_.internal_parameter_ = as.call(list(as.name(":::"), as.name("expss"), as.name(".internal_parameter_")))
+expr_internal_parameter = as.call(list(as.name(":::"), as.name("expss"), as.name(".internal_parameter_")))
 
 
 
@@ -261,7 +267,7 @@ expr_.internal_parameter_ = as.call(list(as.name(":::"), as.name("expss"), as.na
 
 #' @export
 '$<-.internal_parameter' = function(x, name, value){
-    .NotYetUsed('$<-.internal_parameter', error = TRUE)
+    .NotYetImplemented()
 }
 
 
@@ -272,5 +278,5 @@ expr_.internal_parameter_ = as.call(list(as.name(":::"), as.name("expss"), as.na
 
 #' @export
 '[<-.internal_parameter' = function(x, name, value){
-    .NotYetUsed('[<-.internal_parameter', error = TRUE)
+    .NotYetImplemented()
 }

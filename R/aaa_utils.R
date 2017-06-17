@@ -556,24 +556,9 @@ convert_top_level_symbols_to_characters = function (as_list_substitute) {
 ##################################
 ## return vector of integers - positions of columns
 variables_names_to_indexes = function(curr_names, variables_names, envir, symbols_to_characters = TRUE){
-    variables_names = substitute_symbols(variables_names,
-                                         list("%to%" = expr_internal_to)
-    )
-    if(symbols_to_characters){
-        variables_names = as.list(variables_names)
-        variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
-        variables_names = as.call(variables_names)
-    }
-    variables_names = eval(variables_names, envir = envir,
-                           enclos = baseenv())
-    variables_names = rapply(variables_names, function(item) {
-        if(length(item)>1) {
-            as.list(item)
-        } else {
-            item
-        }
-    }, how = "replace")
-    variables_names = flat_list(variables_names)
+    variables_names = evaluate_variable_names(variables_names, 
+                                              envir = envir, 
+                                              symbols_to_characters = symbols_to_characters)
     keep_indexes = numeric(0)
     characters_names = character(0) # for checking non-existing names
     numeric_indexes = numeric(0) # for checking non-existing indexes
@@ -611,4 +596,26 @@ variables_names_to_indexes = function(curr_names, variables_names, envir, symbol
            "indexes are greater then number of items: ", paste(numeric_indexes %i% gt(length(curr_names)), collapse = ", "))
     keep_indexes
     
+}
+
+evaluate_variable_names = function(variables_names, envir, symbols_to_characters = TRUE){
+    variables_names = substitute_symbols(variables_names,
+                                         list("%to%" = expr_internal_to,
+                                              ".." = expr_internal_parameter)
+    )
+    if(symbols_to_characters){
+        variables_names = as.list(variables_names)
+        variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
+        variables_names = as.call(variables_names)
+    }
+    variables_names = eval(variables_names, envir = envir,
+                           enclos = baseenv())
+    variables_names = rapply(variables_names, function(item) {
+        if(length(item)>1) {
+            as.list(item)
+        } else {
+            item
+        }
+    }, how = "replace")
+    flat_list(variables_names)
 }

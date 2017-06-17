@@ -132,3 +132,119 @@ res_iris = compute(iris, {
 expect_identical(res_iris, test_iris)
 
 
+context(".. internal")
+
+data(iris)
+
+test_iris = iris
+test_iris$i3 = 100
+test_iris$i1 = 10
+test_iris$i2 = 20
+test_iris$i4 = 30
+
+
+name1 = "i1"
+name2 = "i2"
+name3 = "i4"
+
+res_iris = test_iris[, c(name1, name2, name3)]
+res_iris2 = test_iris
+res_iris2$new = 60
+
+
+expect_identical(
+    keep(test_iris, ..$name1 %to% ..$name3),
+    res_iris)
+expect_identical(
+    keep(test_iris, ..[name1] %to% ..[name3]),
+    res_iris)
+expect_identical(
+    keep(test_iris, ..$name1, ..$name2, ..$name3),
+    res_iris)
+expect_identical(
+    keep(test_iris, ..[name1], ..[name2], ..[name3]),
+    res_iris)
+
+expect_identical(
+    keep(test_iris, ..$name1 %to% ..$name3, i3),
+    dtfrm(res_iris, i3 = test_iris$i3))
+
+expect_identical(
+    calc(test_iris, ..$name1 %to% ..$name3),
+    res_iris)
+
+expect_identical(
+    calc(test_iris, ..[name1] %to% ..[name3]),
+    res_iris)
+
+expect_identical(
+    calc(test_iris, vars(..$name1 %to% ..$name3)),
+    res_iris)
+
+expect_identical(
+    calc(test_iris, vars(..[name1] %to% ..[name3])),
+    res_iris)
+
+expect_identical(
+    calc(test_iris, vars(..$name1, ..$name2, ..$name3)),
+    res_iris)
+
+expect_identical(
+    calc(test_iris, vars(..[name1], ..[name2], ..[name3])),
+    res_iris)
+
+################
+
+expect_identical(
+    compute(test_iris, {
+        new = sum_row(..$name1, ..$name2, ..$name3)
+    }),
+    res_iris2)
+
+expect_identical(
+    compute(test_iris, {
+        new = sum_row(..[name1], ..[name2], ..[name3])
+    }),
+    res_iris2)
+
+expect_identical(
+    compute(test_iris, {
+        new = sum_row(..[name1] %to% ..[name3])
+    }),
+    res_iris2)
+
+expect_identical(
+    compute(test_iris, {
+        new = sum_row(vars(..$name1 %to% ..$name3))
+    }),
+    res_iris2)
+
+expect_identical(
+    compute(test_iris, {
+        new = sum_row(vars(..[name1] %to% ..[name3]))
+    }),
+    res_iris2)
+
+expect_identical(
+    compute(test_iris, {
+        new = sum_row(vars(..$name1, ..$name2, ..$name3))
+    }),
+    res_iris2)
+
+expect_identical(
+    compute(test_iris, {
+        new = sum_row(vars(..[name1], ..[name2], ..[name3]))
+    }),
+    res_iris2)
+
+
+#####
+expect_identical(
+    capture.output(print(..)), 'Object for variable substitution. Usage: `..$varname` or `..["varname"]`. '
+)
+
+a = "a"
+class(a) = "internal_parameter"
+
+expect_error({a$a = 5})
+expect_error({a[a] = 5})

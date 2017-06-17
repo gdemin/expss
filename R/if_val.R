@@ -430,7 +430,8 @@ copy = function(x) {
 
 into_internal = function(values, variables_names, envir){
     variables_names = substitute_symbols(variables_names,
-                       list("%to%" = expr_into_helper)
+                       list("%to%" = expr_into_helper,
+                            ".." = expr_internal_parameter)
                        )
     variables_names = as.list(variables_names)
     variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
@@ -465,8 +466,14 @@ into_internal = function(values, variables_names, envir){
     } else {
         var_names = ls(envir = parent.frame())
     }
-    e1 = expr_to_character(substitute(e1))
-    e2 = expr_to_character(substitute(e2))
+    e1 = substitute(list(e1))
+    e2 = substitute(list(e2))
+    e1 = evaluate_variable_names(e1, envir = parent.frame(), symbols_to_characters = TRUE)
+    e2 = evaluate_variable_names(e2, envir = parent.frame(), symbols_to_characters = TRUE)
+    stopif(length(e1)>1, "'%to%' - length of name of first variable is greater than one.")
+    stopif(length(e2)>1, "'%to%' - length of name of second variable is greater than one.")
+    e1 = e1[[1]]
+    e2 = e2[[1]]
     first = match(e1, var_names)[1]
     last = match(e2, var_names)[1]
     if(is.na(first) && is.na(last)){
