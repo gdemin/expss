@@ -557,7 +557,7 @@ convert_top_level_symbols_to_characters = function (as_list_substitute) {
 ## return vector of integers - positions of columns
 variables_names_to_indexes = function(curr_names, variables_names, envir, symbols_to_characters = TRUE){
     variables_names = substitute_symbols(variables_names,
-                                         list("%to%" = as.name(".internal_to_"))
+                                         list("%to%" = expr_internal_to)
     )
     if(symbols_to_characters){
         variables_names = as.list(variables_names)

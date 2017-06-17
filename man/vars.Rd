@@ -8,7 +8,6 @@
 \alias{indirect_list}
 \alias{\%to\%}
 \alias{\%to_list\%}
-\alias{.internal_to_}
 \alias{..}
 \title{Get variables/range of variables by name/by pattern.}
 \format{An object of class \code{parameter} of length 1.}
@@ -24,8 +23,6 @@ indirect_list(...)
 e1 \%to\% e2
 
 e1 \%to_list\% e2
-
-.internal_to_(e1, e2)
 
 ..
 }
@@ -58,7 +55,6 @@ sorted in the alphabetic order.}
 }
 Functions with word 'list' in name return lists of variables instead of 
 dataframes.
-\code{.internal_to_} is for internal usage and not documented.
 }
 \examples{
 # In data.frame

@@ -14,7 +14,7 @@ b_5 = -5 %r% 5
 
 dfs = data.frame(
     zz = 10,
-    # b_3 = 42,
+    b_3 = 42,
     aa = 10 %r% 5,
     b_ = 20 %r% 5,
     b_1 = 11 %r% 5,
@@ -25,6 +25,9 @@ dfs = data.frame(
 
 result_dfs = dfs
 result_dfs$b_total = with(dfs, sum_row(b_1, b_2, b_4, b_5))
+
+result_dfs_b_3 = dfs
+result_dfs_b_3$b_total = with(dfs, sum_row(b_3, b_1, b_2, b_4, b_5))
 # result_dfs$a_total = sum_row(a_1, a_2, a_4, a_5)
 
 
@@ -36,6 +39,11 @@ expect_identical(calc(dfs, vars(wah)), dfs[,"zz", drop = FALSE])
 
 expect_identical(
     with(dfs, vars(b_1 %to% b_5)), 
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_3 = b_3, b_4 = b_4, b_5 = b_5))
+)
+
+expect_identical(
+    calc(dfs, vars(b_1 %to% b_5)), 
     with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
 )
 
@@ -45,7 +53,7 @@ expect_identical(
 )
 
 expect_identical(
-    within(dfs, {
+    compute(dfs, {
            b_total = sum_row(vars(b_1 %to% b_5))
            }), 
     result_dfs
@@ -53,9 +61,9 @@ expect_identical(
 
 expect_identical(
     transform(dfs,
-        b_total = sum_row(vars(b_1 %to% b_5))
+        b_total = sum_row(vars("b_3", b_1 %to% b_5))
     ), 
-    result_dfs
+    result_dfs_b_3
 )
 
 
@@ -73,13 +81,13 @@ expect_error(
 
 expect_identical(
     with(dfs, b_1 %to% b_5), 
-    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_3 = b_3, b_4 = b_4, b_5 = b_5))
 )
 expect_identical(
     within(dfs, {
         b_total = sum_row(b_1 %to% b_5)
     }), 
-    result_dfs
+    result_dfs_b_3
 )
 
 
@@ -89,7 +97,7 @@ expect_identical(
 
               
     ), 
-    result_dfs
+    result_dfs_b_3
 )
 
 
@@ -123,12 +131,12 @@ expect_error(d_1 %to% d_5)
 context("magrittr")
 if(suppressWarnings(require(magrittr, quietly = TRUE))){
     expect_identical(
-        dfs %>% with(vars(b_1 %to% b_5)), 
+        dfs %>% calc(vars(b_1 %to% b_5)), 
         with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
     )
 
     expect_identical(
-        dfs %>% within( {
+        dfs %>% compute( {
             b_total = sum_row(vars(b_1 %to% b_5))
         }), 
         result_dfs
@@ -140,28 +148,28 @@ if(suppressWarnings(require(magrittr, quietly = TRUE))){
 
             
         ), 
-        result_dfs
+        result_dfs_b_3
     )
 
     expect_identical(
         dfs %$% {
             sum_row(vars(b_1 %to% b_5))
         }, 
-        result_dfs$b_total
+        result_dfs_b_3$b_total
     )
     
     context("magrittr %to% ")
     
     expect_identical(
-        dfs %>% with(b_1 %to% b_5), 
-        with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+        dfs %>% calc(b_1 %to% b_5), 
+        calc(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
     )
 
     expect_identical(
         dfs %>% within( {
             b_total = sum_row(b_1 %to% b_5)
         }), 
-        result_dfs
+        result_dfs_b_3
     )
     
     expect_identical(
@@ -169,13 +177,13 @@ if(suppressWarnings(require(magrittr, quietly = TRUE))){
             b_total = sum_row(b_1 %to% b_5)
             
         ), 
-        result_dfs
+        result_dfs_b_3
     )
     expect_identical(
         dfs %$% {
             sum_row(b_1 %to% b_5)
         }, 
-        result_dfs$b_total
+        result_dfs_b_3$b_total
     )
    
     
@@ -203,7 +211,7 @@ expect_identical(indirect_list(perl("a_[0-9]")), list(a_1 = a_1, a_2 = a_2, a_4 
 
 expect_identical(
     with(dfs, vars(perl("b_[0-9]"))), 
-    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_3 = b_3, b_4 = b_4, b_5 = b_5))
 )
 
 
@@ -211,7 +219,7 @@ expect_identical(
     within(dfs, {
         b_total = sum_row(vars(perl("b_[0-9]")))
     }), 
-    result_dfs
+    result_dfs_b_3
 )
 
 expect_identical(
@@ -219,7 +227,7 @@ expect_identical(
               b_total = sum_row(vars(perl("b_[0-9]")))
               
     ), 
-    result_dfs
+    result_dfs_b_3
 )
 
 

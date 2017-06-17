@@ -18,7 +18,6 @@
 #' }
 #' Functions with word 'list' in name return lists of variables instead of 
 #' dataframes.
-#' \code{.internal_to_} is for internal usage and not documented.
 #' @seealso \link{keep}, \link{except}, \link{do_repeat}, \link{compute}
 #' @param ... characters names of variables or criteria/logical functions
 #' @param e1 unquoted name of start variable (e. g. a_1)
@@ -159,8 +158,7 @@ indirect_list = vars_list
 
 
 # version of %to% for usage inside 'keep'/'except'/'vars'
-#' @export
-#' @rdname vars
+# \code{.internal_to_} is for internal usage and not documented.
 .internal_to_ = function(e1, e2){
     e1 = expr_to_character(substitute(e1))
     e2 = expr_to_character(substitute(e2))
@@ -178,6 +176,11 @@ indirect_list = vars_list
     
 }
 
+# expr of .internal_to_
+
+expr_internal_to = as.call(list(as.name(":::"), as.name("expss"), as.name(".internal_to_")))
+
+
 ###################################
 internal_parameter_set = function(name, value, envir){
     stopif(length(name)!=1, "'..' - variable name should be a vector of length 1.")
@@ -194,10 +197,24 @@ internal_parameter_get = function(name, envir){
 
 #' @export
 #' @rdname vars
-'..' = 'Object for variable substitution. Usage: `..$varname` or `..["varname"]`'
+'..' = 'Object for variable substitution. Usage: `..$varname` or `..["varname"]`.'
+
 
 class(..) = "parameter"
 
+#' @export
+print.parameter = function(x, ...){
+    cat(x, '\n')
+    invisible(x)
+}
+
+
+
+#' @export
+print.parameter = function(x, ...){
+    cat(x, '\n')
+    invisible(x)
+}
 
 #' @export
 '$.parameter' = function(x, name){
@@ -224,3 +241,36 @@ class(..) = "parameter"
     x
 }
 
+
+############################################
+
+'.internal_parameter_' = "Object for internal variable substitution. Don't use it."
+
+
+class(.internal_parameter_) = "internal_parameter"
+
+expr_.internal_parameter_ = as.call(list(as.name(":::"), as.name("expss"), as.name(".internal_parameter_")))
+
+
+
+#' @export
+'$.internal_parameter' = function(x, name){
+    name = internal_parameter_get(name, envir = parent.frame())  
+    x[name]  
+}
+
+#' @export
+'$<-.internal_parameter' = function(x, name, value){
+    .NotYetUsed('$<-.internal_parameter', error = TRUE)
+}
+
+
+#' @export
+'[.internal_parameter' = function(x, name){
+    name  
+}
+
+#' @export
+'[<-.internal_parameter' = function(x, name, value){
+    .NotYetUsed('[<-.internal_parameter', error = TRUE)
+}
