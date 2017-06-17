@@ -12,7 +12,6 @@
 \alias{copy}
 \alias{\%into\%}
 \alias{\%set\%}
-\alias{.into_helper_}
 \title{Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
 \usage{
@@ -35,8 +34,6 @@ copy(x)
 values \%into\% names
 
 names \%set\% values
-
-.into_helper_(e1, e2)
 }
 \arguments{
 \item{x}{vector/matrix/data.frame/list}

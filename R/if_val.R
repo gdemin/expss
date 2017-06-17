@@ -430,7 +430,7 @@ copy = function(x) {
 
 into_internal = function(values, variables_names, envir){
     variables_names = substitute_symbols(variables_names,
-                       list("%to%" = as.name(".into_helper_"))
+                       list("%to%" = expr_into_helper)
                        )
     variables_names = as.list(variables_names)
     variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
@@ -459,8 +459,6 @@ into_internal = function(values, variables_names, envir){
 
 
 # version of %to% for usage inside %into%'
-#' @export
-#' @rdname if_val
 .into_helper_ = function(e1, e2){
     if(exists(".internal_column_names0", envir = parent.frame())){
         var_names = internal_ls(parent.frame()[[".internal_column_names0"]], env = parent.frame())
@@ -497,6 +495,8 @@ into_internal = function(values, variables_names, envir){
     } 
 }
 
+
+expr_into_helper = as.call(list(as.name(":::"), as.name("expss"), as.name(".into_helper_")))
 
 
 # make object with the same shape as its argument but filled with NA and logical type
