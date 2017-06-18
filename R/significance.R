@@ -2,17 +2,31 @@ PROP_COMPARE_TYPE = c("subtable",
                       "first_column", "first_column_adjusted", 
                       "previous_column")
 
-#' Title
+#' Mark significant differences between columns of the table
 #'
-#' @param x gddfg
-#' @param sig_level dfgdfg 
-#' @param min_base dfgfg
-#' @param compare_type dfg
-#' @param sig_labels dfg
-#' @param sig_labels_previous_column dfgdfg
-#' @param sig_labels_first_column dfgdfgfd
+#' @param x table with proportions and bases - result of \link{cro_cpct} for \code{significance_cpct}
+#' @param sig_level significance level - by default it equals to \code{0.05}
+#' @param min_base integer number. Significance test will be conducted if both
+#'   columns have bases greater than \code{min_base}. By default it equals to \code{2}.
+#' @param compare_type Type of compare between columns. By default it is 
+#'   \code{subtable} - comparisons will be conducted between columns of each 
+#'   subtable. Other possible values are: \code{first_column},
+#'   \code{first_column_adjusted} and \code{previous_column}
+#' @param bonferroni logical. \code{FALSE} by default. Should we use Bonferrony
+#'   adjustment for multiple comparisons?
+#' @param sig_labels character vector. Labels for marking differences between columns of subtable.
+#' @param sig_labels_previous_column character vector with two elements. Labels
+#'   for marking difference with previous column. First mark means 'lower' (by
+#'   default it is \code{v}) and the second means greater (\code{^}).
+#' @param sig_labels_first_column character vector with two elements. Labels
+#'   for marking difference with first column of the table. First mark means 'lower' (by
+#'   default it is \code{-}) and the second means 'greater' (\code{+}).
+#' @param na_as_zero logical. \code{FALSE} by default. Should we treat \code{NA}'s as zero cases?
+#' @param total_marker character. Mark of total rows in table.
+#' @param total_row integer number. In case of several totals per subtable it is
+#'   number of total row for significance calculation.
 #'
-#' @return fsdgsdg
+#' @return Object of class \code{etable} with marks of significant differences between columns.
 #' @export
 #'
 #' @examples
@@ -333,38 +347,3 @@ add_sig_labels = function(tbl, sig_labels = LETTERS){
 
 ########################
 
-#' @rdname significance_cpct
-#' @export
-compare_proportions = function(prop1, prop2, base1, base2, common_base = 0){
-    # ftp://public.dhe.ibm.com/software/analytics/spss/documentation/statistics/20.0/en/client/Manuals/IBM_SPSS_Statistics_Algorithms.pdf
-    # IBM SPSS Statistics Algorithms v20, p. 263
-    pooled_prop = (prop1*base1 + prop2*base2)/(base1 + base2)
-    z_statistic = (prop1 - prop2)/
-        sqrt(pooled_prop*(1 - pooled_prop)*(1/base1 + 1/base2 - 2*common_base/base1/base2))
-    2*(1 - pnorm(abs(z_statistic)))
-} 
-
-########################
-
-#' @rdname significance_cpct
-#' @export
-compare_means = function(mean1, mean2, sd1, sd2, base1, base2, common_base = 0, var_equal = FALSE){
-    # ftp://public.dhe.ibm.com/software/analytics/spss/documentation/statistics/20.0/en/client/Manuals/IBM_SPSS_Statistics_Algorithms.pdf
-    # IBM SPSS Statistics Algorithms v20, p. 267
-    if(common_base>0 || var_equal){
-        pooled_sd = sqrt((sd1*sd1*(base1 - 1) + sd2*sd2*(base2 - 1))/(base1 + base2 - 2))
-        t_statistic = (mean1 - mean2)/
-            pooled_sd/sqrt(1/base1 + 1/base2 - 2*common_base/base1/base2)
-        2*pt(-abs(t_statistic), df = base1 + base2 - common_base - 2)
-    } else {
-        # R Core Team (2017). R: A language and environment for statistical computing. R Foundation for
-        # Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
-        # t.test(..., var.equal = FALSE)
-        stderr1 = sd1/sqrt(base1)
-        stderr2 = sd2/sqrt(base2)
-        stderr = sqrt(stderr1^2 + stderr2^2)
-        df = stderr^4/(stderr1^4/(base1 - 1) + stderr2^4/(base2 - 1))
-        t_statistic = (mean1 - mean2)/stderr
-        2 * pt(-abs(t_statistic), df)
-    }
-} 

@@ -3,10 +3,8 @@
 \name{significance_cpct}
 \alias{significance_cpct}
 \alias{add_sig_labels}
-\alias{compare_proportions}
-\alias{compare_means}
 \alias{significance_means}
-\title{Title}
+\title{Mark significant differences between columns of the table}
 \usage{
 significance_cpct(x, sig_level = 0.05, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
@@ -15,36 +13,49 @@ significance_cpct(x, sig_level = 0.05, min_base = 2,
 
 add_sig_labels(tbl, sig_labels = LETTERS)
 
-compare_proportions(prop1, prop2, base1, base2, common_base = 0)
-
-compare_means(mean1, mean2, sd1, sd2, base1, base2, common_base = 0,
-  var_equal = FALSE)
-
 significance_means(x, sig_level = 0.05, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
   "+"), stat_order = c("mean", "sd", "n"), var_equal = FALSE)
 }
 \arguments{
-\item{x}{gddfg}
+\item{x}{table with proportions and bases - result of \link{cro_cpct} for \code{significance_cpct}}
 
-\item{sig_level}{dfgdfg}
+\item{sig_level}{significance level - by default it equals to \code{0.05}}
 
-\item{min_base}{dfgfg}
+\item{min_base}{integer number. Significance test will be conducted if both
+columns have bases greater than \code{min_base}. By default it equals to \code{2}.}
 
-\item{compare_type}{dfg}
+\item{compare_type}{Type of compare between columns. By default it is 
+\code{subtable} - comparisons will be conducted between columns of each 
+subtable. Other possible values are: \code{first_column},
+\code{first_column_adjusted} and \code{previous_column}}
 
-\item{sig_labels}{dfg}
+\item{bonferroni}{logical. \code{FALSE} by default. Should we use Bonferrony
+adjustment for multiple comparisons?}
 
-\item{sig_labels_previous_column}{dfgdfg}
+\item{sig_labels}{character vector. Labels for marking differences between columns of subtable.}
 
-\item{sig_labels_first_column}{dfgdfgfd}
+\item{sig_labels_previous_column}{character vector with two elements. Labels
+for marking difference with previous column. First mark means 'lower' (by
+default it is \code{v}) and the second means greater (\code{^}).}
+
+\item{sig_labels_first_column}{character vector with two elements. Labels
+for marking difference with first column of the table. First mark means 'lower' (by
+default it is \code{-}) and the second means 'greater' (\code{+}).}
+
+\item{na_as_zero}{logical. \code{FALSE} by default. Should we treat \code{NA}'s as zero cases?}
+
+\item{total_marker}{character. Mark of total rows in table.}
+
+\item{total_row}{integer number. In case of several totals per subtable it is
+number of total row for significance calculation.}
 }
 \value{
-fsdgsdg
+Object of class \code{etable} with marks of significant differences between columns.
 }
 \description{
-Title
+Mark significant differences between columns of the table
 }
 \examples{
 1
