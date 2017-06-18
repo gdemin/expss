@@ -350,9 +350,8 @@ tab_cols.data.frame = function(data, ...){
 
 #' @export
 tab_cols.intermediate_table = function(data, ...){
-    args = eval(substitute(calculate(data[["data"]], list(...))),
-                envir = parent.frame(),
-                enclos = baseenv())
+    expr = substitute(list(...))
+    args = calculate_internal(data[["data"]], expr, parent.frame())
     args = add_names_to_list(args, ...)
     if(length(args)>0){
         args = flat_list(args, flat_df = FALSE)
@@ -382,12 +381,8 @@ tab_cells.data.frame = function(data, ...){
 
 #' @export
 tab_cells.intermediate_table = function(data, ...){
-    # expr = substitute(create_list_with_names(...))
-    # args = eval(bquote(calculate(data[["data"]], .(expr))))
-    # expr = substitute(list(...))
-    args = eval(substitute(calculate(data[["data"]], list(...))),
-                envir = parent.frame(),
-                enclos = baseenv())
+    expr = substitute(list(...))
+    args = calculate_internal(data[["data"]], expr, parent.frame())
     args = add_names_to_list(args, ...)
     if(length(args)>0){
         args = flat_list(args, flat_df = FALSE)
@@ -417,12 +412,8 @@ tab_rows.default = function(data, ...){
 
 #' @export
 tab_rows.intermediate_table = function(data, ...){
-    # expr = substitute(create_list_with_names(...))
-    # args = eval(bquote(calculate(data[["data"]], .(expr))))
-    # expr = substitute(list(...))
-    args = eval(substitute(calculate(data[["data"]], list(...))),
-                envir = parent.frame(),
-                enclos = baseenv())
+    expr = substitute(list(...))
+    args = calculate_internal(data[["data"]], expr, parent.frame())
     args = add_names_to_list(args, ...)
     if(length(args)>0){
         args = flat_list(multiples_to_single_columns_with_dummy_encoding(args),
@@ -482,10 +473,8 @@ tab_mis_val.default = function(data, ...){
 
 #' @export
 tab_mis_val.intermediate_table = function(data, ...){
-    # expr = substitute(weight)
-    args = eval(substitute(calculate(data[["data"]], list(...))),
-                envir = parent.frame(),
-                enclos = baseenv())
+    expr = substitute(list(...))
+    args = calculate_internal(data[["data"]], expr, parent.frame())
     if(length(args)>0){
         data[[MIS_VAL]] = unlist(args)
     } else {
@@ -510,9 +499,8 @@ tab_total_label.default = function(data, ...){
 
 #' @export
 tab_total_label.intermediate_table = function(data, ...){
-    args = eval(substitute(calculate(data[["data"]], list(...))),
-                envir = parent.frame(),
-                enclos = baseenv())
+    expr = substitute(list(...))
+    args = calculate_internal(data[["data"]], expr, parent.frame())
     if(length(args)>0){
         data[[TOTAL_LABEL]] = unlist(args)
     } else {
@@ -691,7 +679,7 @@ tab_stat_fun.intermediate_table = function(data, ...,
     } else {
         fun = args[[1]]
     }
-    # label = substitute(label)
+    label = substitute(label)
     label = eval(substitute(calculate(data[["data"]], label)),
                  envir = parent.frame(),
                  enclos = baseenv())
@@ -802,7 +790,6 @@ tab_stat_unweighted_valid_n = function(data, label = "Unw. valid N"){
 tab_stat_fun_df.intermediate_table = function(data, ..., 
                                    label = NULL, unsafe = FALSE){
     
-    # fun = eval(substitute(combine_functions(...)))
     args = list(...)
     if(length(args)>1 || !is.null(names(args))){
         fun = combine_functions(...)
