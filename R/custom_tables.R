@@ -436,25 +436,25 @@ tab_weight = function(data, weight = NULL){
 #' @export
 tab_weight.default = function(data, weight = NULL){
     res = make_empty_intermediate_table(data)
-    # expr = substitute(weight)
-    eval(substitute(tab_weight(res, weight)),
-         envir = parent.frame(),
-         enclos = baseenv())
+    expr = substitute(weight)
+    tab_weight_internal(res, expr, parent.frame())
 }
 
 #' @export
 tab_weight.intermediate_table = function(data, weight = NULL){
-    # expr = substitute(weight)
-    weight = eval(substitute(calculate(data[["data"]], weight)),
-                  envir = parent.frame(),
-                  enclos = baseenv())
+    expr = substitute(weight)
+    tab_weight_internal(data, expr, parent.frame())
+}
+
+tab_weight_internal = function(data, expr, parent){
+    weight = calculate_internal(data[["data"]], expr, parent)
     if(is.null(weight)){
         data[[WEIGHT]] = NULL
     } else {
         stopif(!is.numeric(weight) && !is.logical(weight), "'weight' should be numeric or logical.")
         data[[WEIGHT]] = weight
     }
-    data
+    data    
 }
 
 ############
@@ -579,25 +579,25 @@ tab_subgroup = function(data, subgroup = NULL){
 #' @export
 tab_subgroup.default = function(data, subgroup = NULL){
     res = make_empty_intermediate_table(data)
-    # expr = substitute(subgroup)
-    eval(substitute(tab_subgroup(res, subgroup)),
-         envir = parent.frame(),
-         enclos = baseenv())
+    expr = substitute(subgroup)
+    tab_subgroup_internal(res, expr, parent.frame())
 }
 
 #' @export
 tab_subgroup.intermediate_table = function(data, subgroup = NULL){
-    # expr = substitute(subgroup)
-    subgroup = eval(substitute(calculate(data[["data"]], subgroup)),
-                  envir = parent.frame(),
-                  enclos = baseenv())
+    expr = substitute(subgroup)
+    tab_subgroup_internal(data, expr, parent.frame())
+}
+
+tab_subgroup_internal = function(data, expr, parent){
+    subgroup = calculate_internal(data[["data"]], expr, parent)
     if(is.null(subgroup)){
         data[[SUBGROUP]] = NULL
     } else {
         stopif(!is.numeric(subgroup) && !is.logical(subgroup), "'subgroup' should be numeric or logical.")
         data[[SUBGROUP]] = subgroup
     }
-    data
+    data 
 }
 
 
@@ -671,18 +671,24 @@ tab_stat_rpct = function(data,
 ############
 #' @export
 tab_stat_fun.intermediate_table = function(data, ..., 
-                                label = NULL, unsafe = FALSE){
-    # fun = eval(substitute(combine_functions(...)))
+                                           label = NULL, unsafe = FALSE){
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          ..., 
+                          label_expr = label, 
+                          unsafe = unsafe, 
+                          parent = parent.frame()
+    )
+}
+
+tab_stat_fun_internal = function(data, ..., label_expr, unsafe, parent){
     args = list(...)
     if(length(args)>1 || !is.null(names(args))){
         fun = combine_functions(...)
     } else {
         fun = args[[1]]
     }
-    label = substitute(label)
-    label = eval(substitute(calculate(data[["data"]], label)),
-                 envir = parent.frame(),
-                 enclos = baseenv())
+    label = calculate_internal(data[["data"]], label_expr, parent)
     result = cro_fun(
         cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
@@ -693,96 +699,115 @@ tab_stat_fun.intermediate_table = function(data, ...,
         unsafe = unsafe
     )
     add_result_to_intermediate_table(data, result, label)
+    
 }
 
 #' @rdname tables
 #' @export
 tab_stat_mean = function(data, label = "Mean"){
-    eval(substitute(tab_stat_fun(data, 
-                             w_mean, 
-                             label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())    
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          w_mean, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    ) 
 }
 
 #' @rdname tables
 #' @export
 tab_stat_median = function(data, label = "Median"){
-    eval(substitute(tab_stat_fun(data, 
-                             w_median, 
-                             label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())    
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          w_median, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    )  
 }
 
 #' @rdname tables
 #' @export
 tab_stat_se = function(data, label = "S. E."){
-    eval(substitute(tab_stat_fun(data,
-                             w_se, 
-                             label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())    
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          w_se, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    )    
 }
 
 #' @rdname tables
 #' @export
 tab_stat_sum = function(data, label = "Sum"){
-    eval(substitute(tab_stat_fun(data, 
-                             w_sum, 
-                             label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())    
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          w_sum, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    )   
 }
 
 #' @rdname tables
 #' @export
 tab_stat_min = function(data, label = "Min."){
-    eval(substitute(tab_stat_fun(data, 
-                                 w_min, 
-                                 label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())    
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          w_min, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    )    
 }
 
 #' @rdname tables
 #' @export
 tab_stat_max = function(data, label = "Max."){
-    eval(substitute(tab_stat_fun(data, 
-                                 w_max, 
-                                 label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())    
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          w_max, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    )   
 }
 
 #' @rdname tables
 #' @export
 tab_stat_sd = function(data, label = "Std. dev."){
-    eval(substitute(tab_stat_fun(data, 
-                             w_sd, 
-                             label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          w_sd, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    ) 
 }
 
 #' @rdname tables
 #' @export
 tab_stat_valid_n = function(data, label = "Valid N"){
-    eval(substitute(tab_stat_fun(data, 
-                             valid_n, 
-                             label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())    
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          valid_n, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    )  
 }
 
 #' @rdname tables
 #' @export
 tab_stat_unweighted_valid_n = function(data, label = "Unw. valid N"){
-    eval(substitute(tab_stat_fun(data, 
-                             unweighted_valid_n, 
-                             label = label, unsafe = TRUE)),
-         envir = parent.frame(),
-         enclos = baseenv())    
+    label = substitute(label)
+    tab_stat_fun_internal(data, 
+                          unweighted_valid_n, 
+                          label_expr = label, 
+                          unsafe = TRUE, 
+                          parent = parent.frame()
+    )  
 }
 
 
@@ -790,15 +815,23 @@ tab_stat_unweighted_valid_n = function(data, label = "Unw. valid N"){
 tab_stat_fun_df.intermediate_table = function(data, ..., 
                                    label = NULL, unsafe = FALSE){
     
+    label = substitute(label)
+    tab_stat_fun_df_internal(data, 
+                          ..., 
+                          label_expr = label, 
+                          unsafe = unsafe, 
+                          parent = parent.frame()
+    )    
+}
+
+tab_stat_fun_df_internal = function(data, ..., label_expr, unsafe, parent){
     args = list(...)
     if(length(args)>1 || !is.null(names(args))){
         fun = combine_functions(...)
     } else {
         fun = args[[1]]
     }
-    label = eval(substitute(calculate(data[["data"]], label)),
-                 envir = parent.frame(),
-                 enclos = baseenv())
+    label = calculate_internal(data[["data"]], label_expr, parent)
     result = cro_fun_df(
         cell_vars = get_cells(data),
         col_vars = data[[COL_VAR]],
@@ -809,6 +842,7 @@ tab_stat_fun_df.intermediate_table = function(data, ...,
         unsafe = unsafe
     )
     add_result_to_intermediate_table(data, result, label)
+    
 }
 
 #' @export
@@ -817,15 +851,13 @@ tab_stat_cases.intermediate_table = function(data,
                                              total_statistic = "u_cases",
                                              total_row_position = c("below", "above", "none"),
                                              label = NULL){
-    label = eval(substitute(calculate(data[["data"]], label)),
-                 envir = parent.frame(),
-                 enclos = baseenv())
+    label = substitute(label)
+    label = calculate_internal(data[["data"]], label, parent.frame())
     if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
         total_label = data[[TOTAL_LABEL]]    
     } else {
-        total_label = eval(substitute(calculate(data[["data"]], total_label)),
-                           envir = parent.frame(),
-                           enclos = baseenv())
+        total_label = substitute(total_label)
+        total_label = calculate_internal(data[["data"]], total_label, parent.frame())
     }
     if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
         total_statistic = data[[TOTAL_STATISTIC]]    
@@ -852,15 +884,13 @@ tab_stat_cpct.intermediate_table = function(data,
                                  total_statistic = "u_cases",
                                  total_row_position = c("below", "above", "none"),
                                  label = NULL){
-    label = eval(substitute(calculate(data[["data"]], label)),
-                 envir = parent.frame(),
-                 enclos = baseenv())
+    label = substitute(label)
+    label = calculate_internal(data[["data"]], label, parent.frame())
     if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
         total_label = data[[TOTAL_LABEL]]    
     } else {
-        total_label = eval(substitute(calculate(data[["data"]], total_label)),
-                           envir = parent.frame(),
-                           enclos = baseenv())
+        total_label = substitute(total_label)
+        total_label = calculate_internal(data[["data"]], total_label, parent.frame())
     }
     if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
         total_statistic = data[[TOTAL_STATISTIC]]    
@@ -888,15 +918,13 @@ tab_stat_cpct_responses.intermediate_table =function(data,
                                           total_statistic = "u_responses",
                                           total_row_position = c("below", "above", "none"),
                                           label = NULL){
-    label = eval(substitute(calculate(data[["data"]], label)),
-                 envir = parent.frame(),
-                 enclos = baseenv())
+    label = substitute(label)
+    label = calculate_internal(data[["data"]], label, parent.frame())
     if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
         total_label = data[[TOTAL_LABEL]]    
     } else {
-        total_label = eval(substitute(calculate(data[["data"]], total_label)),
-                           envir = parent.frame(),
-                           enclos = baseenv())
+        total_label = substitute(total_label)
+        total_label = calculate_internal(data[["data"]], total_label, parent.frame())
     }
     if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
         total_statistic = data[[TOTAL_STATISTIC]]    
@@ -923,15 +951,13 @@ tab_stat_tpct.intermediate_table = function(data,
                                  total_statistic = "u_cases",
                                  total_row_position = c("below", "above", "none"),
                                  label = NULL){
-    label = eval(substitute(calculate(data[["data"]], label)),
-                 envir = parent.frame(),
-                 enclos = baseenv())
+    label = substitute(label)
+    label = calculate_internal(data[["data"]], label, parent.frame())
     if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
         total_label = data[[TOTAL_LABEL]]    
     } else {
-        total_label = eval(substitute(calculate(data[["data"]], total_label)),
-                           envir = parent.frame(),
-                           enclos = baseenv())
+        total_label = substitute(total_label)
+        total_label = calculate_internal(data[["data"]], total_label, parent.frame())
     }
     if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
         total_statistic = data[[TOTAL_STATISTIC]]    
@@ -958,15 +984,13 @@ tab_stat_rpct.intermediate_table = function(data,
                                             total_statistic = "u_cases",
                                             total_row_position = c("below", "above", "none"),
                                             label = NULL){
-    label = eval(substitute(calculate(data[["data"]], label)),
-                 envir = parent.frame(),
-                 enclos = baseenv())
+    label = substitute(label)
+    label = calculate_internal(data[["data"]], label, parent.frame())
     if(missing(total_label) && !is.null(data[[TOTAL_LABEL]])){
         total_label = data[[TOTAL_LABEL]]    
     } else {
-        total_label = eval(substitute(calculate(data[["data"]], total_label)),
-                           envir = parent.frame(),
-                           enclos = baseenv())
+        total_label = substitute(total_label)
+        total_label = calculate_internal(data[["data"]], total_label, parent.frame())
     }
     if(missing(total_statistic) && !is.null(data[[TOTAL_STATISTIC]])){
         total_statistic = data[[TOTAL_STATISTIC]]    

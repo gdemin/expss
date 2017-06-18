@@ -94,11 +94,10 @@ name2 = "new_var"
 # in global environment
 ..$name1 # give as variable 'a'
 
-..$name2 = ..$name1 # create variable 'new_var' which is equal to 'a'
+..$name2 = ..$name1 * 2 # create variable 'new_var' which is equal to 'a' times 2
 new_var
 
-# example with short notation but it can be applied only for simple cases - 
-# when 'name' is vector of length 1
+# example with short notation but it can be applied only for simple cases
 compute(dfs, {
      ..$name2 = ..$name1*2    
 })
