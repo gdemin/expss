@@ -1,6 +1,5 @@
 ### constants for intermediate_table
 
-
 DATA  = "data"   
 RESULT = "result"    
 COL_VAR = "col_var"  
@@ -13,6 +12,7 @@ MIS_VAL = "mis_val"
 TOTAL_LABEL = "total_label"
 TOTAL_STATISTIC = "total_statistic"
 TOTAL_ROW_POSITION = "total_row_position" 
+SIGNIFICANCE_OPTIONS = "significance_options" 
 
 #' Functions for tables constraction
 #' 
@@ -457,6 +457,8 @@ tab_weight_internal = function(data, expr, parent){
     data    
 }
 
+
+
 ############
 
 #' @rdname tables
@@ -568,6 +570,76 @@ tab_total_row_position.intermediate_table = function(data,
     data
 }
 
+#################
+
+#' @rdname tables
+#' @export
+tab_significance_options = function(data, 
+                                    sig_level = 0.05, 
+                                    min_base = 2,
+                                    compare_type ="subtable",
+                                    bonferroni = FALSE,
+                                    sig_labels = LETTERS,
+                                    sig_labels_previous_column = c("v", "^"),
+                                    sig_labels_first_column = c("-", "+"),
+                                    na_as_zero = FALSE,
+                                    total_marker = "#",
+                                    total_row = 1){
+    UseMethod("tab_significance_options")
+}
+
+#' @export
+tab_significance_options.default = function(data, 
+                                            sig_level = 0.05, 
+                                            min_base = 2,
+                                            compare_type ="subtable",
+                                            bonferroni = FALSE,
+                                            sig_labels = LETTERS,
+                                            sig_labels_previous_column = c("v", "^"),
+                                            sig_labels_first_column = c("-", "+"),
+                                            na_as_zero = FALSE,
+                                            total_marker = "#",
+                                            total_row = 1){
+    res = make_empty_intermediate_table(data)
+    tab_significance_options(res, 
+                             sig_level = sig_level, 
+                             min_base = min_base,
+                             compare_type = compare_type,
+                             bonferroni = bonferroni,
+                             sig_labels = sig_labels,
+                             sig_labels_previous_column = sig_labels_previous_column,
+                             sig_labels_first_column = sig_labels_first_column,
+                             na_as_zero = na_as_zero,
+                             total_marker = total_marker,
+                             total_row = total_row)
+}
+
+#' @export
+tab_significance_options.intermediate_table = function(data,  
+                                                       sig_level = 0.05, 
+                                                       min_base = 2,
+                                                       compare_type ="subtable",
+                                                       bonferroni = FALSE,
+                                                       sig_labels = LETTERS,
+                                                       sig_labels_previous_column = c("v", "^"),
+                                                       sig_labels_first_column = c("-", "+"),
+                                                       na_as_zero = FALSE,
+                                                       total_marker = "#",
+                                                       total_row = 1){
+    data[[SIGNIFICANCE_OPTIONS]] = list(sig_level = sig_level, 
+                                        min_base = min_base,
+                                        compare_type = compare_type,
+                                        bonferroni = bonferroni,
+                                        sig_labels = sig_labels,
+                                        sig_labels_previous_column = sig_labels_previous_column,
+                                        sig_labels_first_column = sig_labels_first_column,
+                                        na_as_zero = na_as_zero,
+                                        total_marker = total_marker,
+                                        total_row = total_row)
+    data
+}
+
+
 #########
 
 #' @rdname tables
@@ -636,6 +708,23 @@ tab_stat_cpct = function(data,
                          total_row_position = c("below", "above", "none"),
                          label = NULL){
     UseMethod("tab_stat_cpct")
+}
+
+#' @rdname tables
+#' @export
+tab_stat_cpct_significance = function(data, 
+                                      sig_level = 0.05, 
+                                      min_base = 2,
+                                      compare_type ="subtable",
+                                      bonferroni = FALSE,
+                                      sig_labels = LETTERS,
+                                      sig_labels_previous_column = c("v", "^"),
+                                      sig_labels_first_column = c("-", "+"),
+                                      na_as_zero = FALSE,
+                                      total_marker = "#",
+                                      total_row = 1,
+                                      label = NULL){
+    UseMethod("tab_stat_cpct_significance")
 }
 
 #' @rdname tables
@@ -911,6 +1000,28 @@ tab_stat_cpct.intermediate_table = function(data,
     add_result_to_intermediate_table(data, result, label)
 }
 
+#' @export
+tab_stat_cpct_significance.intermediate_table = function(data, 
+                                                         sig_level = 0.05, 
+                                                         min_base = 2,
+                                                         compare_type ="subtable",
+                                                         bonferroni = FALSE,
+                                                         sig_labels = LETTERS,
+                                                         sig_labels_previous_column = c("v", "^"),
+                                                         sig_labels_first_column = c("-", "+"),
+                                                         na_as_zero = FALSE,
+                                                         total_marker = "#",
+                                                         total_row = 1,
+                                                         label = NULL){
+    
+    # TODO prototype must to rewrite
+    label = substitute(label)
+    label = calculate_internal(data[["data"]], label, parent.frame())
+    last_result = get_last_result(data)
+    data = replace_last_result(data, add_sig_labels(last_result))
+    add_result_to_intermediate_table(data, significance_cpct(last_result), label)
+}
+
 
 #' @export
 tab_stat_cpct_responses.intermediate_table =function(data, 
@@ -1043,6 +1154,22 @@ tab_stat_cpct.default = function(data,
     tab_stat_()
 }
 
+#' @rdname tables
+#' @export
+tab_stat_cpct_significance.default = function(data, 
+                                      sig_level = 0.05, 
+                                      min_base = 2,
+                                      compare_type ="subtable",
+                                      bonferroni = FALSE,
+                                      sig_labels = LETTERS,
+                                      sig_labels_previous_column = c("v", "^"),
+                                      sig_labels_first_column = c("-", "+"),
+                                      na_as_zero = FALSE,
+                                      total_marker = "#",
+                                      total_row = 1,
+                                      label = NULL){
+    tab_stat_()
+}
 
 #' @export
 tab_stat_cpct_responses.default =function(data, 
@@ -1279,6 +1406,18 @@ make_empty_intermediate_table = function(data){
     res[[MIS_VAL]] = NULL
     res[[RESULT]] = list()
     res[[STAT_LABELS]] = character(0)
+    res[[SIGNIFICANCE_OPTIONS]] = list(
+        sig_level = 0.05, 
+        min_base = 2,
+        compare_type ="subtable",
+        bonferroni = FALSE,
+        sig_labels = LETTERS,
+        sig_labels_previous_column = c("v", "^"),
+        sig_labels_first_column = c("-", "+"),
+        na_as_zero = FALSE,
+        total_marker = "#",
+        total_row = 1
+    )
     class(res) = union("intermediate_table", class(res))
     res
     
@@ -1295,6 +1434,19 @@ get_cells = function(intermediate_table){
     na_if(cells, mis_val)
 }
 
+
+get_last_result = function(intermediate_table){
+    results = intermediate_table[[RESULT]]
+    stopif(length(results)==0, "There are no results yet. Use at least one of 'tab_stat_*' functions.")
+    results[[length(results)]]
+}
+
+replace_last_result = function(intermediate_table, new_result){
+    results = intermediate_table[[RESULT]]
+    stopif(length(results)==0, "There are no results yet. Use at least one of 'tab_stat_*' functions.")
+    intermediate_table[[RESULT]][[length(results)]] = new_result
+    intermediate_table
+}
 ##############
 
 #' @export

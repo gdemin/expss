@@ -10,11 +10,13 @@
 \alias{tab_total_label}
 \alias{tab_total_statistic}
 \alias{tab_total_row_position}
+\alias{tab_significance_options}
 \alias{tab_subgroup}
 \alias{tab_stat_fun}
 \alias{tab_stat_fun_df}
 \alias{tab_stat_cases}
 \alias{tab_stat_cpct}
+\alias{tab_stat_cpct_significance}
 \alias{tab_stat_cpct_responses}
 \alias{tab_stat_tpct}
 \alias{tab_stat_rpct}
@@ -27,6 +29,7 @@
 \alias{tab_stat_sd}
 \alias{tab_stat_valid_n}
 \alias{tab_stat_unweighted_valid_n}
+\alias{tab_stat_cpct_significance.default}
 \alias{tab_pivot}
 \alias{tab_transpose}
 \title{Functions for tables constraction}
@@ -47,6 +50,11 @@ tab_total_statistic(data, ...)
 
 tab_total_row_position(data, total_row_position = c("below", "above", "none"))
 
+tab_significance_options(data, sig_level = 0.05, min_base = 2,
+  compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
+  sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
+  "+"), na_as_zero = FALSE, total_marker = "#", total_row = 1)
+
 tab_subgroup(data, subgroup = NULL)
 
 tab_stat_fun(data, ..., label = NULL, unsafe = FALSE)
@@ -58,6 +66,12 @@ tab_stat_cases(data, total_label = NULL, total_statistic = "u_cases",
 
 tab_stat_cpct(data, total_label = NULL, total_statistic = "u_cases",
   total_row_position = c("below", "above", "none"), label = NULL)
+
+tab_stat_cpct_significance(data, sig_level = 0.05, min_base = 2,
+  compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
+  sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
+  "+"), na_as_zero = FALSE, total_marker = "#", total_row = 1,
+  label = NULL)
 
 tab_stat_cpct_responses(data, total_label = NULL,
   total_statistic = "u_responses", total_row_position = c("below", "above",
@@ -86,6 +100,12 @@ tab_stat_sd(data, label = "Std. dev.")
 tab_stat_valid_n(data, label = "Valid N")
 
 tab_stat_unweighted_valid_n(data, label = "Unw. valid N")
+
+\method{tab_stat_cpct_significance}{default}(data, sig_level = 0.05,
+  min_base = 2, compare_type = "subtable", bonferroni = FALSE,
+  sig_labels = LETTERS, sig_labels_previous_column = c("v", "^"),
+  sig_labels_first_column = c("-", "+"), na_as_zero = FALSE,
+  total_marker = "#", total_row = 1, label = NULL)
 
 tab_pivot(data, stat_position = c("outside_rows", "inside_rows",
   "outside_columns", "inside_columns"), stat_label = c("inside", "outside"))
