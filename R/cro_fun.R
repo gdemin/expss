@@ -576,6 +576,35 @@ cro_mean = function(cell_vars,
     )
 }
 
+
+#' @export
+#' @rdname cro_fun
+cro_mean_sd_n = function(cell_vars, 
+                    col_vars = total(), 
+                    row_vars = total(label = ""),
+                    weight = NULL,
+                    subgroup = NULL,
+                    labels = c()
+){
+    
+    str_cell_vars = expr_to_character(substitute(cell_vars))
+    str_row_vars = expr_to_character(substitute(row_vars))
+    str_col_vars = expr_to_character(substitute(col_vars))
+    
+    cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
+    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    
+    cro_fun_df(cell_vars = cell_vars, 
+            col_vars = col_vars, 
+            row_vars = row_vars, 
+            weight = weight,
+            subgroup = subgroup,
+            fun = w_mean
+    )
+}
+
+
 #' @export
 #' @rdname cro_fun
 cro_sum = function(cell_vars, 

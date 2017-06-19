@@ -4,6 +4,7 @@
 \alias{cro_fun}
 \alias{cro_fun_df}
 \alias{cro_mean}
+\alias{cro_mean_sd_n}
 \alias{cro_sum}
 \alias{cro_median}
 \alias{cro_pearson}
@@ -19,6 +20,9 @@ cro_fun_df(cell_vars, col_vars = total(), row_vars = total(label = ""),
 
 cro_mean(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
+
+cro_mean_sd_n(cell_vars, col_vars = total(), row_vars = total(label = ""),
+  weight = NULL, subgroup = NULL, labels = c())
 
 cro_sum(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
