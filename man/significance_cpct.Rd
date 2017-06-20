@@ -9,7 +9,8 @@
 significance_cpct(x, sig_level = 0.05, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
-  "+"), na_as_zero = FALSE, total_marker = "#", total_row = 1)
+  "+"), show_numbers = c("none", "significant", "all"), na_as_zero = FALSE,
+  total_marker = "#", total_row = 1)
 
 add_sig_labels(tbl, sig_labels = LETTERS)
 

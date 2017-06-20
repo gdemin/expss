@@ -39,6 +39,7 @@ significance_cpct = function(x,
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
+                             show_numbers = c("none", "significant", "all"),
                              na_as_zero = FALSE,
                              total_marker = "#",
                              total_row = 1
@@ -55,13 +56,14 @@ significance_cpct.etable = function(x,
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
+                                    show_numbers = c("none", "significant", "all"),
                                     na_as_zero = FALSE,
                                     total_marker = "#",
                                     total_row = 1
 ){
     
     compare_type = match.arg(compare_type, choices = PROP_COMPARE_TYPE, several.ok = TRUE)
-    expss:::stopif(sum(compare_type %in% c("first_column", "first_column_adjusted"))>1, 
+    stopif(sum(compare_type %in% c("first_column", "first_column_adjusted"))>1, 
                    "mutually exclusive compare types in significance testing:  'first_column' and 'first_column_adjusted'.")
     
     if("subtable" %in% compare_type){
@@ -264,7 +266,7 @@ header_groups = function(header){
         # '+ 1' because of first column with row_labels
         return(list(seq_len(NCOL(header))+1))
     }
-    res = expss:::matrix_to_cgroup(header)$n.cgroup
+    res = matrix_to_cgroup(header)$n.cgroup
     is_section_header = res %row_in% gt(1)
     if(!any(is_section_header)){
         # '+ 1' because of first column with row_labels
@@ -288,7 +290,7 @@ header_groups = function(header){
 split_table_by_row_sections = function(tbl, total_marker = "#", total_row = 1){
     totals = grepl(total_marker, tbl[[1]], perl = TRUE)
     if_na(totals) = FALSE
-    expss:::stopif(!any(totals), "significance testing - total rows not found.")
+    stopif(!any(totals), "significance testing - total rows not found.")
     total_above = totals[1]
     if(total_above){
         sections = cumsum(totals)
@@ -303,7 +305,7 @@ split_table_by_row_sections = function(tbl, total_marker = "#", total_row = 1){
         
         if(is.character(total_row)){
             total = total[grepl(total_row, total[[1]], perl = TRUE), , drop = FALSE]
-            expss:::stopif(nrow(total)<1, "significance testing - base not found: ", total_row)
+            stopif(nrow(total)<1, "significance testing - base not found: ", total_row)
         } else {
             total = total[total_row, , drop = FALSE]
         }
@@ -326,20 +328,22 @@ add_sig_labels = function(tbl, sig_labels = LETTERS){
     header = colnames(tbl)
     groups = header_groups(header)   
     for(each_group in groups){
-        if(length(each_group)<=length(sig_labels)){
-            header[each_group] = paste0(header[each_group], "|", 
-                                        sig_labels[each_group - min(each_group)+1])
-        } else {
-            numbers = seq_len(length(each_group)/length(sig_labels) + 1)
-            long_labels = rep(sig_labels, length(numbers))
-            numbers = rep(numbers, each = length(sig_labels))
-            long_labels = paste0(long_labels, numbers)
-            header[each_group] = paste0(header[each_group], "|", 
-                                        long_labels[each_group - min(each_group)+1])
-            
+        if(length(each_group)>1){
+            if(length(each_group)<=length(sig_labels)){
+                header[each_group] = paste0(header[each_group], "|", 
+                                            sig_labels[each_group - min(each_group)+1])
+            } else {
+                numbers = seq_len(length(each_group)/length(sig_labels) + 1)
+                long_labels = rep(sig_labels, length(numbers))
+                numbers = rep(numbers, each = length(sig_labels))
+                long_labels = paste0(long_labels, numbers)
+                header[each_group] = paste0(header[each_group], "|", 
+                                            long_labels[each_group - min(each_group)+1])
+                
+            }
         }
     }
-    expss:::remove_unnecessary_splitters(header)
+    remove_unnecessary_splitters(header)
     colnames(tbl) = header
     tbl
 }
