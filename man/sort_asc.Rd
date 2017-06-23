@@ -18,8 +18,11 @@ sort_desc(data, ..., na.last = TRUE)
 \arguments{
 \item{data}{data.frame/matrix/vector}
 
-\item{...}{character/numeric. Column names/numbers for data.frame/matrix by
-which object will be sorted. Ignored for vectors.}
+\item{...}{character/numeric or criteria/logical functions (see
+\link{criteria}). Column names/numbers for data.frame/matrix by which
+object will be sorted. Names at the top-level can be unquoted (non-standard
+evaluation). For standard evaluation of parameters you can surround them by
+round brackets. See examples. Ignored for vectors.}
 
 \item{na.last}{for controlling the treatment of NAs. If TRUE, missing values
 in the data are put last; if FALSE, they are put first; if NA, they are
@@ -30,22 +33,21 @@ sorted \code{data}
 }
 \description{
 \code{sort_asc} sorts in ascending order and \code{sort_desc} sorts in 
-descending order. There is no non-standard evaluation in these functions by 
-design so use quotes for names of your variables or use \link{qc}.
-\code{.sort_asc}/\code{.sort_desc} are versions for working with
-\link{default_dataset}.
+descending order. \code{.sort_asc}/\code{.sort_desc} are versions for working
+with \link{default_dataset}.
 }
 \examples{
 data(mtcars)
-sort_asc(mtcars, "mpg")
-sort_asc(mtcars, "cyl", "mpg") # by two column
+sort_asc(mtcars, mpg)
+sort_asc(mtcars, cyl, mpg) # by two column
 
 # same results with column nums
 sort_asc(mtcars, 1)
 sort_asc(mtcars, 2:1) # by two column
 sort_asc(mtcars, 2, 1) # by two column
 
-# 'qc'  usage
-sort_asc(mtcars, qc(cyl, mpg)) 
+# call with parameter
+sorting_columns = c("cyl", "mpg")
+sort_asc(mtcars, (sorting_columns)) 
 
 }

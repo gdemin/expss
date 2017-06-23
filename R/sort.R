@@ -1,14 +1,15 @@
 #' Sort data.frames/matrices/vectors
 #' 
 #' \code{sort_asc} sorts in ascending order and \code{sort_desc} sorts in 
-#' descending order. There is no non-standard evaluation in these functions by 
-#' design so use quotes for names of your variables or use \link{qc}.
-#' \code{.sort_asc}/\code{.sort_desc} are versions for working with
-#' \link{default_dataset}.
+#' descending order. \code{.sort_asc}/\code{.sort_desc} are versions for working
+#' with \link{default_dataset}.
 #'
 #' @param data data.frame/matrix/vector
-#' @param ... character/numeric. Column names/numbers for data.frame/matrix by
-#'   which object will be sorted. Ignored for vectors.
+#' @param ... character/numeric or criteria/logical functions (see
+#'   \link{criteria}). Column names/numbers for data.frame/matrix by which
+#'   object will be sorted. Names at the top-level can be unquoted (non-standard
+#'   evaluation). For standard evaluation of parameters you can surround them by
+#'   round brackets. See examples. Ignored for vectors.
 #' @param na.last for controlling the treatment of NAs. If TRUE, missing values
 #'   in the data are put last; if FALSE, they are put first; if NA, they are
 #'   removed.
@@ -18,16 +19,17 @@
 #'
 #' @examples
 #' data(mtcars)
-#' sort_asc(mtcars, "mpg")
-#' sort_asc(mtcars, "cyl", "mpg") # by two column
+#' sort_asc(mtcars, mpg)
+#' sort_asc(mtcars, cyl, mpg) # by two column
 #' 
 #' # same results with column nums
 #' sort_asc(mtcars, 1)
 #' sort_asc(mtcars, 2:1) # by two column
 #' sort_asc(mtcars, 2, 1) # by two column
 #' 
-#' # 'qc'  usage
-#' sort_asc(mtcars, qc(cyl, mpg)) 
+#' # call with parameter
+#' sorting_columns = c("cyl", "mpg")
+#' sort_asc(mtcars, (sorting_columns)) 
 #' 
 sort_asc = function(data, ..., na.last = FALSE){
     UseMethod("sort_asc")
@@ -40,38 +42,28 @@ sort_asc.default = function(data, ..., na.last = FALSE){
 
 #' @export
 sort_asc.data.frame = function(data, ..., na.last = FALSE){
-    sort_internal(data, ..., decreasing = FALSE, na.last = na.last)
+    sort_internal(data, ..., decreasing = FALSE, na.last = na.last, envir = parent.frame())
 }
 
 #' @export
 sort_asc.matrix = function(data, ..., na.last = FALSE){
-    sort_internal(data, ..., decreasing = FALSE, na.last = na.last)
+    sort_internal(data, ..., decreasing = FALSE, na.last = na.last, envir = parent.frame())
 }
 
 
-sort_internal = function(data, ..., decreasing, na.last){
-    args = list(...)
-    if(any(sapply(args, is.list))){
-        args = unlist(args, recursive = FALSE)
+sort_internal = function(data, ..., decreasing, na.last, envir){
+    variables_names = substitute(list(...))
+    curr_names = colnames(data)
+    if(is.null(curr_names)){
+        curr_names = rep("", NCOL(data))
     }
-    numeric_args = args 
-    colnum = ncol(data)    
-    varnames = colnames(data)
-    for(each in seq_along(args)){
-        curr = args[[each]]
-        if(is.character(curr) & length(curr)>0){
-            stopif(!all(curr %in% varnames), "some column names don't exist in 'data': ", curr %d% varnames)
-            numeric_args[[each]] = match(curr, varnames)        
-        }
-    }
-    numeric_args = unlist(numeric_args)
-    stopif(length(args)==0, "Column name or column number should be provided for data.frame/matrix.")
-    stopif(max(numeric_args, na.rm = TRUE) > colnum,
-        "some column numbers are larger than number of columns in 'data': ", numeric_args[numeric_args>colnum])
+    var_indexes = variables_names_to_indexes(curr_names, variables_names, envir = envir)
+    stopif(length(var_indexes)==0, 
+           "Column name or column number should be provided for data.frame/matrix.")
     if(is.matrix(data)){
-        columns_list = lapply(numeric_args, function(each_col) data[, each_col]) 
+        columns_list = lapply(var_indexes, function(each_col) data[, each_col]) 
     } else {
-        columns_list = lapply(numeric_args, function(each_col) data[[each_col]])   
+        columns_list = as.list(data[, var_indexes, drop = FALSE])   
     }
     new_order = do.call(order, c(columns_list, decreasing = decreasing, na.last = na.last))
     data[new_order, , drop = FALSE]    
@@ -90,7 +82,7 @@ sort_asc.list= function(data, ..., na.last = FALSE){
 .sort_asc = function(..., na.last = FALSE){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    data = sort_asc(data, ..., na.last = na.last)
+    data = sort_internal(data, ..., decreasing = FALSE, na.last = na.last, envir = parent.frame())
     ref(reference) = data
     invisible(data)
 }
@@ -109,7 +101,7 @@ sort_desc = function(data, ..., na.last = TRUE){
 .sort_desc = function(..., na.last = TRUE){
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    data = sort_desc(data, ..., na.last = na.last)
+    data = sort_internal(data, ..., decreasing = TRUE, na.last = na.last, envir = parent.frame())
     ref(reference) = data
     invisible(data)
 }
@@ -121,12 +113,12 @@ sort_desc.default = function(data, ..., na.last = TRUE){
 
 #' @export
 sort_desc.data.frame = function(data, ..., na.last = TRUE){
-    sort_internal(data, ..., decreasing = TRUE, na.last = na.last)
+    sort_internal(data, ..., decreasing = TRUE, na.last = na.last, envir = parent.frame())
 }
 
 #' @export
 sort_desc.matrix = function(data, ..., na.last = TRUE){
-    sort_internal(data, ..., decreasing = TRUE, na.last = na.last)
+    sort_internal(data, ..., decreasing = TRUE, na.last = na.last, envir = parent.frame())
 }
 
 #' @export

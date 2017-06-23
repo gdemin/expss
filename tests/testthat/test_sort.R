@@ -19,27 +19,34 @@ data(iris)
 
 expect_error(sort_asc(iris))
 
-expect_identical(sort_asc(iris, "Sepal.Length"), iris[order(iris$Sepal.Length, decreasing = FALSE), ])
-expect_identical(sort_asc(iris, "Sepal.Length", 2), iris[order(iris$Sepal.Length, iris$Sepal.Width, decreasing = FALSE), ])
-expect_identical(sort_asc(iris, qc(Sepal.Length, Sepal.Width), 3:4), 
+expect_identical(sort_asc(iris, Sepal.Length), iris[order(iris$Sepal.Length, decreasing = FALSE), ])
+expect_identical(sort_asc(iris, Sepal.Length, 2), iris[order(iris$Sepal.Length, iris$Sepal.Width, decreasing = FALSE), ])
+expect_identical(sort_asc(iris, Sepal.Length, Sepal.Width, 3:4), 
                  iris[order(iris$Sepal.Length, iris$Sepal.Width, iris$Petal.Length, iris$Petal.Width, decreasing = FALSE), ])
 
-expect_identical(sort_asc(iris, 3:4, qc(Sepal.Length, Sepal.Width)), 
+param = qc(Sepal.Length, Sepal.Width)
+expect_error(sort_asc(iris, param, 3:4))
+expect_identical(sort_asc(iris, (param), 3:4), 
+                 iris[order(iris$Sepal.Length, iris$Sepal.Width, iris$Petal.Length, iris$Petal.Width, decreasing = FALSE), ])
+
+
+
+expect_identical(sort_asc(iris, 3:4, Sepal.Length, Sepal.Width), 
                  iris[order(iris$Petal.Length, iris$Petal.Width, iris$Sepal.Length, iris$Sepal.Width,  decreasing = FALSE), ])
 
 
-expect_identical(sort_desc(iris, "Sepal.Length"), iris[order(iris$Sepal.Length, decreasing = TRUE), ])
-expect_identical(sort_desc(iris, "Sepal.Length", 2), iris[order(iris$Sepal.Length, iris$Sepal.Width, decreasing = TRUE), ])
+expect_identical(sort_desc(iris, Sepal.Length), iris[order(iris$Sepal.Length, decreasing = TRUE), ])
+expect_identical(sort_desc(iris, Sepal.Length, 2), iris[order(iris$Sepal.Length, iris$Sepal.Width, decreasing = TRUE), ])
 expect_identical(sort_desc(iris, qc(Sepal.Length, Sepal.Width), 3:4), 
                  iris[order(iris$Sepal.Length, iris$Sepal.Width, iris$Petal.Length, iris$Petal.Width, decreasing = TRUE), ])
 
-expect_identical(sort_desc(iris, 3:4, qc(Sepal.Length, Sepal.Width)), 
+expect_identical(sort_desc(iris, 3:4, Sepal.Length, Sepal.Width), 
                  iris[order(iris$Petal.Length, iris$Petal.Width, iris$Sepal.Length, iris$Sepal.Width,  decreasing = TRUE), ])
 
 single_col = iris[,"Sepal.Length", drop = FALSE]
-expect_identical(sort_asc(single_col, "Sepal.Length"), 
+expect_identical(sort_asc(single_col, Sepal.Length), 
                  single_col[order(single_col$Sepal.Length, decreasing = FALSE), , drop = FALSE])
-expect_identical(sort_desc(single_col, "Sepal.Length"), 
+expect_identical(sort_desc(single_col, Sepal.Length), 
                  single_col[order(single_col$Sepal.Length, decreasing = TRUE), , drop = FALSE])
 ############################
 
@@ -49,12 +56,12 @@ expect_identical(sort_asc(mtcars, 2:1), sort_asc(mtcars, "cyl", "mpg"))
 
 iris[1:5,1] = NA
 
-expect_identical(sort_asc(iris, "Sepal.Length"), iris[order(iris$Sepal.Length, decreasing = FALSE, na.last = FALSE), ])
-expect_identical(sort_desc(iris, "Sepal.Length"), iris[order(iris$Sepal.Length, decreasing = TRUE, na.last = TRUE), ])
+expect_identical(sort_asc(iris, Sepal.Length), iris[order(iris$Sepal.Length, decreasing = FALSE, na.last = FALSE), ])
+expect_identical(sort_desc(iris, Sepal.Length), iris[order(iris$Sepal.Length, decreasing = TRUE, na.last = TRUE), ])
 
-expect_identical(sort_asc(iris, "Sepal.Length", na.last = TRUE), 
+expect_identical(sort_asc(iris, Sepal.Length, na.last = TRUE), 
                  iris[order(iris$Sepal.Length, decreasing = FALSE, na.last = TRUE), ])
-expect_identical(sort_desc(iris, "Sepal.Length", na.last = FALSE), 
+expect_identical(sort_desc(iris, Sepal.Length, na.last = FALSE), 
                  iris[order(iris$Sepal.Length, decreasing = TRUE, na.last = FALSE), ])
 
 #################
@@ -62,22 +69,23 @@ expect_identical(sort_desc(iris, "Sepal.Length", na.last = FALSE),
 def = iris
 default_dataset(def)
 
-.sort_asc("Sepal.Length")
+.sort_asc(Sepal.Length)
 expect_identical(def, iris[order(iris$Sepal.Length, decreasing = FALSE, na.last = FALSE), ])
 
-.sort_desc("Sepal.Length")
+.sort_desc(Sepal.Length)
 expect_identical(def, iris[order(iris$Sepal.Length, decreasing = TRUE, na.last = TRUE), ])
 
-.sort_asc("Sepal.Length", na.last = TRUE)
+.sort_asc(Sepal.Length, na.last = TRUE)
 expect_identical(def, 
                  iris[order(iris$Sepal.Length, decreasing = FALSE, na.last = TRUE), ])
 
-.sort_desc("Sepal.Length", na.last = FALSE)
+.sort_desc(Sepal.Length, na.last = FALSE)
 expect_identical(def, 
                  iris[order(iris$Sepal.Length, decreasing = TRUE, na.last = FALSE), ])
 
 
 expect_error(sort_asc(iris, "not_exists"))
+expect_error(sort_asc(iris, not_exists))
 expect_error(sort_asc(iris, 12))
 
 expect_error(sort_asc(as.list(1:3)))
@@ -101,8 +109,9 @@ expect_identical(sort_asc(mat[,1,drop = FALSE], 1), mat[,1,drop = FALSE][order(m
 
 colnames(mat) = paste0('v',1:3)
 expect_identical(sort_asc(mat, "v1"), mat[order(mat[,1], decreasing = FALSE), ])
-expect_identical(sort_desc(mat, 1,"v2"), mat[order(mat[,1], mat[,2], decreasing = TRUE), ])
-expect_identical(sort_desc(mat, list(1,"v2")), mat[order(mat[,1], mat[,2], decreasing = TRUE), ])
+expect_identical(sort_asc(mat, v1), mat[order(mat[,1], decreasing = FALSE), ])
+expect_identical(sort_desc(mat, 1, v2), mat[order(mat[,1], mat[,2], decreasing = TRUE), ])
+expect_identical(sort_desc(mat, list(1, "v2")), mat[order(mat[,1], mat[,2], decreasing = TRUE), ])
 
 
 
