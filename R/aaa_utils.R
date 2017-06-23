@@ -560,6 +560,11 @@ variables_names_to_indexes = function(curr_names, variables_names, envir, symbol
     variables_names = evaluate_variable_names(variables_names, 
                                               envir = envir, 
                                               symbols_to_characters = symbols_to_characters)
+    create_indexes_from_evaluated_names(curr_names, variables_names)
+   
+}
+
+create_indexes_from_evaluated_names = function(curr_names, variables_names){
     keep_indexes = numeric(0)
     characters_names = character(0) # for checking non-existing names
     numeric_indexes = numeric(0) # for checking non-existing indexes
@@ -596,9 +601,9 @@ variables_names_to_indexes = function(curr_names, variables_names, envir, symbol
     stopif(any(numeric_indexes > length(curr_names), na.rm = TRUE), 
            "indexes are greater then number of items: ", paste(numeric_indexes %i% gt(length(curr_names)), collapse = ", "))
     keep_indexes
-    
 }
 
+## variables_names = substitute(list(...))
 evaluate_variable_names = function(variables_names, envir, symbols_to_characters = TRUE){
     variables_names = substitute_symbols(variables_names,
                                          list("%to%" = expr_internal_to,
@@ -612,7 +617,7 @@ evaluate_variable_names = function(variables_names, envir, symbols_to_characters
     variables_names = eval(variables_names, envir = envir,
                            enclos = baseenv())
     variables_names = rapply(variables_names, function(item) {
-        if(length(item)>1) {
+        if(length(item)>1 && !inherits(item, "formula") && !is.function(item)) {
             as.list(item)
         } else {
             item

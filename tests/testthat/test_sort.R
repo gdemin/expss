@@ -24,6 +24,11 @@ expect_identical(sort_asc(iris, Sepal.Length, 2), iris[order(iris$Sepal.Length, 
 expect_identical(sort_asc(iris, Sepal.Length, Sepal.Width, 3:4), 
                  iris[order(iris$Sepal.Length, iris$Sepal.Width, iris$Petal.Length, iris$Petal.Width, decreasing = FALSE), ])
 
+var_name = "Sepal.Length"
+expect_identical(sort_asc(iris, ..$var_name), iris[order(iris$Sepal.Length, decreasing = FALSE), ])
+expect_identical(sort_asc(iris, ..[var_name]), iris[order(iris$Sepal.Length, decreasing = FALSE), ])
+
+
 param = qc(Sepal.Length, Sepal.Width)
 expect_error(sort_asc(iris, param, 3:4))
 expect_identical(sort_asc(iris, (param), 3:4), 
