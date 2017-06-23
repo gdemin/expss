@@ -5,15 +5,19 @@
 \alias{tab_sort_desc}
 \title{Partially (inside blocks) sort tables/data.frames}
 \usage{
-tab_sort_asc(x, columns = 2, excluded_rows = "#", na.last = FALSE)
+tab_sort_asc(x, ..., excluded_rows = "#", na.last = FALSE)
 
-tab_sort_desc(x, columns = 2, excluded_rows = "#", na.last = TRUE)
+tab_sort_desc(x, ..., excluded_rows = "#", na.last = TRUE)
 }
 \arguments{
 \item{x}{data.frame}
 
-\item{columns}{character/numeric. Column names/numbers for data.frame/table
-by which object will be sorted. By default it is 2 - the first column with 
+\item{...}{character/numeric or criteria/logical functions (see 
+\link{criteria}). Column names/numbers for data.frame/matrix by which 
+object will be sorted. Names at the top-level can be unquoted (non-standard
+evaluation). For standard evaluation of parameters you can surround them by
+round brackets. See examples. If this argument is missing then table will 
+be sorted by second column. Usually second column is the first column with
 numbers in the table (there are row labels in the first column).}
 
 \item{excluded_rows}{character/logical/numeric rows which won't be sorted. 
@@ -34,9 +38,7 @@ sorted table('etable')/data.frame
 \description{
 \code{tab_sort_asc}/\code{tab_sort_desc} sort tables (usually result of 
 \link{cro}/\link{tables}) in ascending/descending order between specified
-rows (by default, it is row which contain '#' in the first column). There is
-no non-standard evaluation in these functions by design so use quotes for
-names of your columns or use \link{qc}.
+rows (by default, it is rows which contain '#' in the first column).
 }
 \examples{
 data(mtcars)
@@ -61,4 +63,12 @@ mtcars \%>\% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
 mtcars \%>\% 
     calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am))) \%>\% 
     tab_sort_desc
+    
+# sort by parameter
+sorting_column = "Engine|V-engine"
+
+mtcars \%>\% 
+    calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am))) \%>\% 
+    tab_sort_desc((sorting_column))
+    
 }

@@ -112,13 +112,30 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    tab_sort_asc(tab, columns = "Engine|V-engine"),
+    tab_sort_asc(tab, "Engine|V-engine"),
     "rds/tab_sort_10.rds"
 )
 
 expect_equal_to_reference(
-    tab_sort_desc(tab, columns = "Engine|V-engine"),
+    tab_sort_desc(tab, "Engine|V-engine"),
     "rds/tab_sort_11.rds"
+)
+
+param = "Engine|V-engine"
+
+expect_error(
+    tab_sort_desc(tab, param)
+)
+
+
+expect_equal_to_reference(
+    tab_sort_desc(tab, (param)),
+    "rds/tab_sort_11.rds"
+)
+
+expect_equal_to_reference(
+    tab_sort_asc(tab, perl("V-engine")),
+    "rds/tab_sort_10.rds"
 )
 
 expect_identical(
