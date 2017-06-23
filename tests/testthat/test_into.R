@@ -197,3 +197,30 @@ expect_identical(ir, ir_test)
 
 # }
 
+tbl1 = dtfrm(
+    id = c(1, 2, 3),
+    num_a = c(1, NA, 4),
+    num_b = c(NA, 99, 100),
+    col_c = c("d", "e", NA)
+)
+
+tbl2 = tbl1
+
+if_na(tbl2[ ,qc(num_a, num_b)]) = 0
+expect_identical(
+    compute(tbl1, {
+        
+        vars(perl("^num_")) %>% if_na(0) %into% perl("^num_")
+        
+    }), tbl2
+)
+
+tbl2[ ,qc(num_a, num_b)] = tbl2[ ,qc(num_b, num_a)]
+
+expect_identical(
+    compute(tbl1, {
+        
+        vars(perl("^num_")) %>% if_na(0) %into% c(fixed("num_b"), perl("^num_"))
+        
+    }), tbl2
+)

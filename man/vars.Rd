@@ -50,7 +50,7 @@ independently.}
 \code{\%to\%}. Inside global environment \link[base]{with},
 \link[base]{within} \code{\%to\%} will take range from names of variables
 sorted in the alphabetic order.}
-\item{\code{indirect}}{ are aliases for
+\item{\code{indirect}/\code{indirect_list}}{ are aliases for
 \code{vars}/\code{vars_list}.}
 }
 Functions with word 'list' in name return lists of variables instead of 

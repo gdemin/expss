@@ -338,14 +338,20 @@ clear_env = function(env){
 }
 
 # we need this function to keep variables in order of data.frame
-internal_ls = function(column_names, env = parent.frame()){
-        curr = ls(envir = env, all.names = TRUE, sorted = FALSE)
-        curr = curr %d% c(".n", "set", ".N", ".internal_column_names0", "..")
-        # removed = names(curr)[vapply(curr, is.null, NA, USE.NAMES = FALSE)]
-        # curr = names(curr) %d% removed # remove deleted variables?
-        new_names = column_names %i% curr 
-        curr = curr %d% new_names
-        new_names %u% rev(curr)
+get_current_variables = function(envir){
+        if(exists(".internal_column_names0", envir =envir)){
+            column_names = envir[[".internal_column_names0"]]
+            curr = ls(envir = envir, all.names = TRUE, sorted = FALSE)
+            curr = curr %d% c(".n", "set", ".N", ".internal_column_names0", "..")
+            # removed = names(curr)[vapply(curr, is.null, NA, USE.NAMES = FALSE)]
+            # curr = names(curr) %d% removed # remove deleted variables?
+            new_names = column_names %i% curr 
+            curr = curr %d% new_names
+            new_names %u% rev(curr)
+        } else {
+            ls(envir = envir)
+        }
+
     }
 
 
