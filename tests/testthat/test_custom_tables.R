@@ -1053,3 +1053,15 @@ for(each_stat in c(tab_stat_cases, tab_stat_cpct,
 }
 
 
+res = mtcars %>% 
+    tab_row_label("Table!", "Start!") %>% 
+    tab_cells(vs) %>% 
+    tab_cols(total(), am) %>% 
+    tab_stat_mean() %>% 
+    tab_row_label("Wow! Percent! %%%", label = var_lab(vs)) %>% 
+    tab_stat_cpct(total_row_position = "none") %>%
+    tab_row_label(var_lab(am), var_lab(mpg)) %>% 
+    tab_row_label("### the end ###") %>% 
+    tab_pivot() 
+
+expect_equal_to_reference(res, "rds/ctable38.rds")

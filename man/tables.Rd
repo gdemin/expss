@@ -12,6 +12,7 @@
 \alias{tab_total_row_position}
 \alias{tab_significance_options}
 \alias{tab_subgroup}
+\alias{tab_row_label}
 \alias{tab_stat_fun}
 \alias{tab_stat_fun_df}
 \alias{tab_stat_cases}
@@ -56,6 +57,8 @@ tab_significance_options(data, sig_level = 0.05, min_base = 2,
   "+"), na_as_zero = FALSE, total_marker = "#", total_row = 1)
 
 tab_subgroup(data, subgroup = NULL)
+
+tab_row_label(data, ..., label = NULL)
 
 tab_stat_fun(data, ..., label = NULL, unsafe = FALSE)
 
@@ -192,6 +195,8 @@ be applied on variables specified by \code{tab_cells}. It works in the same
 manner as \link{na_if}.}
 \item{\code{tab_subgroup}}{ optional logical vector/expression which specify
 subset of data for table.}
+\item{\code{tab_row_label}}{ Add to table empty row with specified row
+labels. It is usefull for making section headings and etc.}
 \item{\code{tab_total_row_position}}{ Default value for
 \code{total_row_position} argument in \code{tab_stat_cases} and etc. Can be
 one of "below", "above", "none".}
@@ -344,6 +349,18 @@ mtcars \%>\%
     tab_stat_mean() \%>\%
     tab_stat_se() \%>\% 
     tab_stat_valid_n() \%>\% 
+    tab_stat_cpct() \%>\% 
+    tab_pivot()
+    
+# stacked statistics with section headings
+mtcars \%>\% 
+    tab_cells(cyl) \%>\% 
+    tab_cols(total(), am) \%>\% 
+    tab_row_label("#Summary statistics") \%>\% 
+    tab_stat_mean() \%>\%
+    tab_stat_se() \%>\% 
+    tab_stat_valid_n() \%>\% 
+    tab_row_label("#Column percent") \%>\% 
     tab_stat_cpct() \%>\% 
     tab_pivot()
 

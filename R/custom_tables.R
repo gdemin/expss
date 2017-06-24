@@ -47,6 +47,8 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #' manner as \link{na_if}.}
 #' \item{\code{tab_subgroup}}{ optional logical vector/expression which specify
 #' subset of data for table.}
+#' \item{\code{tab_row_label}}{ Add to table empty row with specified row
+#' labels. It is usefull for making section headings and etc.}
 #' \item{\code{tab_total_row_position}}{ Default value for
 #' \code{total_row_position} argument in \code{tab_stat_cases} and etc. Can be
 #' one of "below", "above", "none".}
@@ -237,6 +239,18 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #'     tab_stat_mean() %>%
 #'     tab_stat_se() %>% 
 #'     tab_stat_valid_n() %>% 
+#'     tab_stat_cpct() %>% 
+#'     tab_pivot()
+#'     
+#' # stacked statistics with section headings
+#' mtcars %>% 
+#'     tab_cells(cyl) %>% 
+#'     tab_cols(total(), am) %>% 
+#'     tab_row_label("#Summary statistics") %>% 
+#'     tab_stat_mean() %>%
+#'     tab_stat_se() %>% 
+#'     tab_stat_valid_n() %>% 
+#'     tab_row_label("#Column percent") %>% 
 #'     tab_stat_cpct() %>% 
 #'     tab_pivot()
 #' 
@@ -670,6 +684,47 @@ tab_subgroup_internal = function(data, expr, parent){
         data[[SUBGROUP]] = subgroup
     }
     data 
+}
+
+#####################
+#' @rdname tables
+#' @export
+tab_row_label = function(data, ..., 
+                         label = NULL){
+    UseMethod("tab_row_label")
+}
+
+#' @export
+tab_row_label.default = function(data, ...,
+                                 label = NULL){
+    res = make_empty_intermediate_table(data)
+    label = substitute(label)
+    tab_row_label_internal(res, 
+                           ..., 
+                           label_expr = label, 
+                           parent = parent.frame()
+    )
+}
+
+#' @export
+tab_row_label.intermediate_table = function(data, ..., 
+                                            label = NULL){
+    label = substitute(label)
+    tab_row_label_internal(data, 
+                           ..., 
+                           label_expr = label, 
+                           parent = parent.frame()
+    )
+}
+
+
+tab_row_label_internal = function(data, ..., label_expr, parent){
+    args = substitute(paste(..., sep = "|"))
+    row_labels = calculate_internal(data[["data"]], args, parent)
+    label = calculate_internal(data[["data"]], label_expr, parent)
+    result = dtfrm(row_labels = row_labels)
+    class(result) = union("etable", class(result))
+    add_result_to_intermediate_table(data, result, label)
 }
 
 
