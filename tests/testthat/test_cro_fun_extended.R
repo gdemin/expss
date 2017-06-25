@@ -303,3 +303,39 @@ expect_identical(
                       fun = combine_functions(w_mean)))
 )
 # calc(w, fre(a1_1 %to% a1_6))
+context("cro_mean_sd_n")
+
+data(mtcars)
+mtcars = modify(mtcars,{
+    var_lab(mpg) = "Miles/(US) gallon"
+    var_lab(cyl) = "Number of cylinders"
+    var_lab(disp) = "Displacement (cu.in.)"
+    var_lab(hp) = "Gross horsepower"
+    var_lab(drat) = "Rear axle ratio"
+    var_lab(wt) = "Weight (lb/1000)"
+    var_lab(qsec) = "1/4 mile time"
+    var_lab(vs) = "V/S"
+    val_lab(vs) = c("Straight" = 0, "V" = 1)
+    var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
+    val_lab(am) = c(" automatic" = 0, " manual" =  1)
+    var_lab(gear) = "Number of forward gears"
+    var_lab(carb) = "Number of carburetors"
+})
+
+expect_equal_to_reference(
+    mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs)),
+    "rds/cro_mean_sd_n1.rds"
+)
+expect_equal_to_reference(
+    mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs), weight = 0.1,
+                                weighted_valid_n = TRUE),
+    "rds/cro_mean_sd_n2.rds"
+)
+
+expect_equal_to_reference(
+    mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs), 
+                                labels = c("m", "s", "n"),
+                                weight = 0.1,
+                                weighted_valid_n = TRUE),
+    "rds/cro_mean_sd_n3.rds"
+)

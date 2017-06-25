@@ -22,7 +22,9 @@ cro_mean(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
 
 cro_mean_sd_n(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL, labels = c())
+  weight = NULL, subgroup = NULL, weighted_valid_n = FALSE,
+  labels = c("Mean", "Std. dev.", ifelse(weighted_valid_n, "Valid N",
+  "Unw. valid N")))
 
 cro_sum(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
@@ -76,6 +78,12 @@ vector of length one or list/data.frame (optionally with 'row_labels'
 element - statistic labels). If \code{unsafe} is TRUE then further
 arguments (\code{...}) for \code{fun} will be ignored.}
 
+\item{weighted_valid_n}{logical. Sould we show weighted valid N in
+\code{cro_mean_sd_n}? By default it is FALSE.}
+
+\item{labels}{character vector of length 3. Labels for mean, standard
+deviation and valid N in \code{cro_mean_sd_n}.}
+
 \item{method}{function which will combine results of multiple functions in
 \code{combine_functions}. It will be applied as in the expression 
 \code{do.call(method, list_of_functions_results)}. By default it is
@@ -89,6 +97,8 @@ object of class 'etable'. Basically it's a data.frame but class
 \itemize{
 \item{\code{cro_mean}, \code{cro_sum}, \code{cro_median}}{ calculate 
 mean/sum/median by groups. NA's are always omitted.}
+\item{\code{cro_mean_sd_n}}{ calculates mean, standard deviation and N
+simultaneously. Mainly intended for usage with \link{significance_means}.}
 \item{\code{cro_pearson}, \code{cro_spearman}}{ calculate correlation of 
 first variable in each data.frame in \code{cell_vars} with other variables. 
 NA's are removed pairwise.}

@@ -3,6 +3,8 @@
 #' \itemize{
 #' \item{\code{cro_mean}, \code{cro_sum}, \code{cro_median}}{ calculate 
 #' mean/sum/median by groups. NA's are always omitted.}
+#' \item{\code{cro_mean_sd_n}}{ calculates mean, standard deviation and N
+#' simultaneously. Mainly intended for usage with \link{significance_means}.}
 #' \item{\code{cro_pearson}, \code{cro_spearman}}{ calculate correlation of 
 #' first variable in each data.frame in \code{cell_vars} with other variables. 
 #' NA's are removed pairwise.}
@@ -54,6 +56,10 @@
 #' @param ... further arguments for \code{fun}  in 
 #'   \code{cro_fun}/\code{cro_fun_df} or functions for \code{combine_functions}.
 #'   Ignored in \code{cro_fun}/\code{cro_fun_df} if \code{unsafe} is TRUE.
+#' @param weighted_valid_n logical. Sould we show weighted valid N in
+#'   \code{cro_mean_sd_n}? By default it is FALSE.
+#' @param labels character vector of length 3. Labels for mean, standard
+#'   deviation and valid N in \code{cro_mean_sd_n}.
 #' @param method function which will combine results of multiple functions in
 #'   \code{combine_functions}. It will be applied as in the expression 
 #'   \code{do.call(method, list_of_functions_results)}. By default it is
@@ -584,7 +590,10 @@ cro_mean_sd_n = function(cell_vars,
                     row_vars = total(label = ""),
                     weight = NULL,
                     subgroup = NULL,
-                    labels = c()
+                    weighted_valid_n = FALSE,
+                    labels = c("Mean", "Std. dev.", 
+                               ifelse(weighted_valid_n, "Valid N", "Unw. valid N")) 
+                    
 ){
     
     str_cell_vars = expr_to_character(substitute(cell_vars))
@@ -594,13 +603,20 @@ cro_mean_sd_n = function(cell_vars,
     cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
-    
-    cro_fun_df(cell_vars = cell_vars, 
+    if(weighted_valid_n){
+        fun = list(w_mean, w_sd, valid_n)
+    } else {
+        fun = list(w_mean, w_sd, unweighted_valid_n)
+    }
+    names(fun) = labels
+    fun = do.call(combine_functions, fun)
+    cro_fun(cell_vars = cell_vars, 
             col_vars = col_vars, 
             row_vars = row_vars, 
             weight = weight,
             subgroup = subgroup,
-            fun = w_mean
+            fun = fun,
+            unsafe = FALSE
     )
 }
 
@@ -745,8 +761,11 @@ combine_functions = function(..., method = c){
                        paste0("`weight` is provided but function`", names(args)[each],
                               "` doesn't have formal `weight` argument."))
             }    
+            res = lapply(args, function(f) f(x, weight = weight))
+        } else {
+            res = lapply(args, function(f) f(x))    
         }
-        res = lapply(args, function(f) f(x))
+        
         do.call(method, res)
     }
 }
