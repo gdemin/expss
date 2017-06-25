@@ -233,7 +233,7 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
 
 
 #' @export
-print.etable = function(x, digits = getOption("expss.digits"), remove_repeated = TRUE, ...,  right = TRUE){
+print.etable = function(x, digits = get_expss_digits(), remove_repeated = TRUE, ...,  right = TRUE){
     curr_output = getOption("expss.output")
     if(!is.null(curr_output)){
         if("rnotebook" %in% curr_output){

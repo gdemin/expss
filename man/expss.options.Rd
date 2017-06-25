@@ -3,6 +3,7 @@
 \name{expss.options}
 \alias{expss.options}
 \alias{expss_digits}
+\alias{get_expss_digits}
 \alias{expss_enable_value_labels_support}
 \alias{expss_disable_value_labels_support}
 \alias{expss_output_default}
@@ -12,6 +13,8 @@
 \title{Options for contolling behaviour of the package}
 \usage{
 expss_digits(digits = NULL)
+
+get_expss_digits()
 
 expss_enable_value_labels_support()
 

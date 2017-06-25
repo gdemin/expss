@@ -8,7 +8,7 @@
 datatable(data, ...)
 
 \method{datatable}{etable}(data, repeat_row_labels = FALSE,
-  show_row_numbers = FALSE, digits = getOption("expss.digits"), ...)
+  show_row_numbers = FALSE, digits = get_expss_digits(), ...)
 }
 \arguments{
 \item{data}{a data object (result of \link{tables}/\link{fre}/\link{cro}).}
@@ -22,7 +22,7 @@ the every row? Default is FALSE.}
 
 \item{digits}{integer By default, all numeric columns are rounded to one digit after
 decimal separator. Also you can set this argument by option 'expss.digits'
-- for example, \code{option(expss.digits = 2)}. If it is NA than all
+- for example, \code{expss_digits(2)}. If it is NA than all
 numeric columns remain unrounded.}
 }
 \value{

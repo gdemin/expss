@@ -5,9 +5,9 @@
 \alias{knit_print.etable}
 \title{Outputting HTML tables in RStudio viewer/R Notebooks}
 \usage{
-\method{htmlTable}{etable}(x, digits = getOption("expss.digits"), ...)
+\method{htmlTable}{etable}(x, digits = get_expss_digits(), ...)
 
-knit_print.etable(x, digits = getOption("expss.digits"), ...)
+knit_print.etable(x, digits = get_expss_digits(), ...)
 }
 \arguments{
 \item{x}{a data object (result of \link{fre}/\link{cro} and etc)}

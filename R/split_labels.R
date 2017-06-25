@@ -209,7 +209,7 @@ split_columns.matrix  = function(data,
 #' @export
 #' @rdname split_labels
 split_table_to_df = function(data, 
-                             digits = getOption("expss.digits"), 
+                             digits = get_expss_digits(), 
                              remove_repeated = TRUE, 
                              split = "|", 
                              fixed = TRUE, 
@@ -218,7 +218,7 @@ split_table_to_df = function(data,
 }
 
 #' @export
-split_table_to_df.intermediate_table = function(data, digits = getOption("expss.digits"), 
+split_table_to_df.intermediate_table = function(data, digits = get_expss_digits(), 
                                                 remove_repeated = TRUE, 
                                                 split = "|", 
                                                 fixed = TRUE, 
@@ -228,7 +228,7 @@ split_table_to_df.intermediate_table = function(data, digits = getOption("expss.
 
 #' @export
 split_table_to_df.etable = function(data, 
-                               digits = getOption("expss.digits"), 
+                               digits = get_expss_digits(), 
                         remove_repeated = TRUE, 
                         split = "|", 
                         fixed = TRUE, 
@@ -364,7 +364,7 @@ make_subheadings.etable = function(data, number_of_columns = 1){
 }
 
 split_all_in_etable_for_print = function(data, 
-                               digits = getOption("expss.digits"), 
+                               digits = get_expss_digits(), 
                                remove_repeated = TRUE, 
                                split = "|", 
                                fixed = TRUE, 

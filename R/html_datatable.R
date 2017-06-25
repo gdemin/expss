@@ -10,7 +10,7 @@
 #' @param show_row_numbers logical Default is FALSE.
 #' @param digits integer By default, all numeric columns are rounded to one digit after
 #'   decimal separator. Also you can set this argument by option 'expss.digits'
-#'   - for example, \code{option(expss.digits = 2)}. If it is NA than all
+#'   - for example, \code{expss_digits(2)}. If it is NA than all
 #'   numeric columns remain unrounded.
 #' @param ... further parameters for \link[DT]{datatable}
 #'
@@ -71,7 +71,7 @@ datatable.default = function(data, ...){
 datatable.etable = function(data, 
                             repeat_row_labels = FALSE, 
                             show_row_numbers = FALSE,
-                            digits = getOption("expss.digits"),
+                            digits = get_expss_digits(),
                             ...){
     data = round_dataframe(data, digits = digits)
     # first_lab = htmltools::htmlEscape(colnames(data)[1])

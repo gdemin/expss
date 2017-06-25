@@ -45,6 +45,15 @@ expss_digits = function(digits = NULL){
 
 #' @rdname expss.options
 #' @export
+get_expss_digits = function(){
+    digits = getOption("expss.digits")
+    digits = if_null(digits, 1)
+    digits
+}
+
+
+#' @rdname expss.options
+#' @export
 expss_enable_value_labels_support = function(){
     options(expss.enable_value_labels_support = NULL)
 }

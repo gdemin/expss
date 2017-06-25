@@ -50,7 +50,7 @@
 #' expss_output_default()   
 #'  
 #' }
-htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
+htmlTable.etable = function(x, digits = get_expss_digits(), ...){
     x = round_dataframe(x, digits = digits)
     if(NCOL(x) == 0){
         return(htmlTable(setNames(dtfrm("Table is empty"), " "), ...))
@@ -59,6 +59,12 @@ htmlTable.etable = function(x, digits = getOption("expss.digits"), ...){
     colnames(x) = gsub("<NA>", "&lt;NA&gt;", colnames(x), fixed = TRUE)
     if(is.character(x[[1]]) || is.factor(x[[1]])){
         x[[1]] = gsub("<NA>", "&lt;NA&gt;", x[[1]], fixed = TRUE)
+    }
+    ## for significance marks
+    for(i in seq_along(x)[-1]){
+        if(is.character(x[[i]]) || is.factor(x[[i]])){
+            x[[i]] = gsub("\\s", "&nbsp;", x[[i]], perl = TRUE)
+        }
     }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
@@ -226,7 +232,7 @@ matrix_to_cgroup = function(header){
 
 #' @export
 #' @rdname htmlTable.etable
-knit_print.etable = function(x, digits = getOption("expss.digits"), ...){
+knit_print.etable = function(x, digits = get_expss_digits(), ...){
     res = htmlTable(x, digits = digits, ...)
     # res = fix_cyrillic_for_rstudio(res)
     knitr::asis_output(res)
