@@ -13,8 +13,8 @@ split_labels(x, remove_repeated = TRUE, split = "|", fixed = TRUE,
 split_columns(data, columns = 1, remove_repeated = TRUE, split = "|",
   fixed = TRUE, perl = FALSE)
 
-split_table_to_df(data, digits = getOption("expss.digits"),
-  remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE)
+split_table_to_df(data, digits = get_expss_digits(), remove_repeated = TRUE,
+  split = "|", fixed = TRUE, perl = FALSE)
 
 make_subheadings(data, number_of_columns = 1)
 }

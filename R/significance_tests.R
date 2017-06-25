@@ -1,6 +1,6 @@
 #' Calculate significance (p-values) of differences between proportions/means
 #'
-#' @param prop1 fsdfdf
+#' @param prop1 numerci
 #' @param prop2 sfs
 #' @param mean1 fsdfdf
 #' @param mean2 sfs

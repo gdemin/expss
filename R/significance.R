@@ -39,12 +39,30 @@ significance_cpct = function(x,
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
-                             show_numbers = c("none", "significant", "all"),
+                             keep_numbers = FALSE,
+                             keep_bases = keep_numbers,
                              na_as_zero = FALSE,
                              total_marker = "#",
-                             total_row = 1
+                             total_row = 1,
+                             digits = get_expss_digits()
                              ){
     UseMethod("significance_cpct")
+}
+
+paste_non_empty = function(x, y, sep = ""){
+    res = paste(x, y, sep = sep)
+    recode(res) = (x %in% c("", NA)) ~ y
+    recode(res) = (y %in% c("", NA)) ~ x
+    res
+}
+
+paste_df_non_empty = function(df1, df2, sep = ""){
+    for(i in seq_along(df1)){
+        max_width = max(nchar( df2[[i]]), na.rm = TRUE)
+        df2[[i]] = format(df2[[i]], width = max_width) # , flag = "+"
+        df1[[i]] = paste_non_empty(df1[[i]], df2[[i]], sep = sep)
+    }
+    df1
 }
 
 #' @export
@@ -56,12 +74,15 @@ significance_cpct.etable = function(x,
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
-                                    show_numbers = c("none", "significant", "all"),
+                                    keep_numbers = TRUE,
+                                    keep_bases = keep_numbers,
                                     na_as_zero = FALSE,
                                     total_marker = "#",
-                                    total_row = 1
+                                    total_row = 1,
+                                    digits = get_expss_digits()
 ){
     
+    if(NCOL(x)<3) return(x)
     compare_type = match.arg(compare_type, choices = PROP_COMPARE_TYPE, several.ok = TRUE)
     stopif(sum(compare_type %in% c("first_column", "first_column_adjusted"))>1, 
                    "mutually exclusive compare types in significance testing:  'first_column' and 'first_column_adjusted'.")
@@ -69,22 +90,24 @@ significance_cpct.etable = function(x,
     if("subtable" %in% compare_type){
         if(!is.null(sig_labels)){
             x = add_sig_labels(x, sig_labels = sig_labels)
-        }  
+        } 
         all_column_labels = get_category_labels(colnames(x))
     }
     groups = header_groups(colnames(x))
     sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
     res = lapply(sections, function(each_section){
         # browser()
-        sig_section = each_section$section
-        curr_props = each_section$section
+        curr_base = extract_total_from_section(each_section, total_marker = total_marker, total_row = total_row)
+        recode(curr_base) = lt(min_base) ~ NA
+        
+        total_rows_indicator = get_total_rows_indicator(each_section, total_marker = total_marker)
+        sig_section = each_section[!total_rows_indicator, ]
+        sig_section[, -1] = ""
+        curr_props = each_section[!total_rows_indicator, ]
         curr_props[,-1] = curr_props[,-1]/100
         if(na_as_zero){
             if_na(curr_props[,-1]) = 0
         }
-        sig_section[, -1] = ""
-        curr_base = each_section$total
-        recode(curr_base) = lt(min_base) ~ NA
         if(any(c("first_column", "first_column_adjusted") %in% compare_type)){
             sig_section = section_sig_first_column(sig_section = sig_section, 
                                                    curr_props = curr_props, 
@@ -113,10 +136,30 @@ significance_cpct.etable = function(x,
                                            sig_level = sig_level,
                                            bonferroni = bonferroni)
         }
-        sig_section
+        each_section[,-1] = ""
+        each_section[!total_rows_indicator,-1] = sig_section[,-1]
+        each_section
     })
     
-    do.call(add_rows, res)
+    res = do.call(add_rows, res)
+    total_rows_indicator = get_total_rows_indicator(x, total_marker = total_marker)
+    x = round_dataframe(x, digits = digits)
+    if(keep_numbers){
+        x[!total_rows_indicator, ] = format_to_character(x[!total_rows_indicator, ], 
+                                                        digits = digits)    
+        x[, -1] = paste_df_non_empty(
+            x[, -1, drop = FALSE], 
+            res[, -1, drop = FALSE],
+            sep = " "
+        )
+    } else {
+        x[!total_rows_indicator, -1] = res[!total_rows_indicator, -1, drop = FALSE]
+    }
+    if(keep_bases) {
+        x
+    } else {
+        x[!total_rows_indicator, ]
+    }
 }
 
 ########################
@@ -138,15 +181,19 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
                     prop2 = curr_props[[col2]]
                     base2 = curr_base[[col2]]
                     pval = compare_proportions(prop1, prop2, 
-                                       base1, base2)
+                                               base1, base2)
                     if_na(pval) = 1
                     pval = pmin(pval*bonferroni_coef, 1)
                     sig_section[[col1]] = ifelse(prop1>prop2 & pval<sig_level,
-                                                 paste(sig_section[[col1]], all_column_labels[[col2]], sep = " "),
+                                                 paste_non_empty(sig_section[[col1]],
+                                                                 all_column_labels[[col2]],
+                                                                 sep = " "),
                                                  sig_section[[col1]]
                     )
                     sig_section[[col2]] = ifelse(prop2>prop1 & pval<sig_level,
-                                                 paste(sig_section[[col2]], all_column_labels[[col1]], sep = " "),
+                                                 paste_non_empty(sig_section[[col2]], 
+                                                                 all_column_labels[[col1]], 
+                                                                 sep = " "),
                                                  sig_section[[col2]]
                     )
                     
@@ -185,9 +232,13 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
                 sig_section[[col1]] = ifelse(pval<sig_level,
                                              # previous value is greater
                                              ifelse(prop2>prop1,
-                                                    paste(sig_section[[col1]], sig_labels_previous_column[[1]], sep = " "),
+                                                    paste_non_empty(sig_section[[col1]], 
+                                                          sig_labels_previous_column[[1]], 
+                                                          sep = " "),
                                                     # previous value is smaller
-                                                    paste(sig_section[[col1]], sig_labels_previous_column[[2]], sep = " ")
+                                                    paste_non_empty(sig_section[[col1]], 
+                                                                    sig_labels_previous_column[[2]], 
+                                                                    sep = " ")
                                              ),
                                              sig_section[[col1]]
                 )
@@ -225,9 +276,13 @@ section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
             sig_section[[col2]] = ifelse(pval<sig_level,
                                          # previous value is greater
                                          ifelse(prop1>prop2,
-                                                paste(sig_section[[col2]], sig_labels_first_column[[1]], sep = " "),
+                                                paste_non_empty(sig_section[[col2]], 
+                                                      sig_labels_first_column[[1]], 
+                                                      sep = " "),
                                                 # previous value is smaller
-                                                paste(sig_section[[col2]], sig_labels_first_column[[2]], sep = " ")
+                                                paste_non_empty(sig_section[[col2]], 
+                                                      sig_labels_first_column[[2]], 
+                                                      sep = " ")
                                          ),
                                          sig_section[[col2]]
             )
@@ -259,9 +314,10 @@ get_category_labels = function(header){
 header_groups = function(header){
     header = header[-1]
     header = t(split_labels(header, remove_repeated = FALSE))   
-    if(NCOL(header)<2){
-        return(list(numeric(0)))
-    }
+    # impossible situation because we doesn't test tables with num. of. cols.<=2  
+    # if(NCOL(header)<2){
+    #     return(list(numeric(0)))
+    # }
     if(NROW(header)<2){
         # '+ 1' because of first column with row_labels
         return(list(seq_len(NCOL(header))+1))
@@ -288,37 +344,39 @@ header_groups = function(header){
 ########################
 
 split_table_by_row_sections = function(tbl, total_marker = "#", total_row = 1){
-    totals = grepl(total_marker, tbl[[1]], perl = TRUE)
+    totals = get_total_rows_indicator(tbl, total_marker)
     if_na(totals) = FALSE
-    stopif(!any(totals), "significance testing - total rows not found.")
+    stopif(!any(totals), 
+           "significance testing - total rows not found. Incorrect total marker: ","'", total_marker, "'")
     total_above = totals[1]
     if(total_above){
-        sections = cumsum(totals)
+        splitter = c(FALSE, totals[-length(totals)] < totals[-1])
     } else {
-        sections = -rev(cumsum(rev(totals)))
+        splitter = c(FALSE, totals[-length(totals)] > totals[-1])
     }
-    sections = split(tbl, sections)
-    res = lapply(sections, function(curr_section) {
-        curr_totals = grepl(total_marker, curr_section[[1]], perl = TRUE)
-        total = curr_section[curr_totals,, drop = FALSE]
-        curr_section = curr_section[!curr_totals, drop = FALSE]
-        
-        if(is.character(total_row)){
-            total = total[grepl(total_row, total[[1]], perl = TRUE), , drop = FALSE]
-            stopif(nrow(total)<1, "significance testing - base not found: ", total_row)
-        } else {
-            total = total[total_row, , drop = FALSE]
-        }
-        total[[1]] = NA # it is supposed to be character (row_labels) so we change it
-        total = unlist(total[1,])  # [1,] if we by occasion select several rows 
-        list(section = curr_section,
-             total = total
-             )
-        
-    })
-    unname(res)
+    sections = cumsum(splitter)
+    unname(split(tbl, sections))
 }
 
+extract_total_from_section = function(section, total_marker = "#", total_row = 1){
+    curr_totals = get_total_rows_indicator(tbl = section, total_marker = total_marker)
+    total = section[curr_totals,, drop = FALSE]
+    if(is.character(total_row)){
+        total = total[grepl(total_row, total[[1]], perl = TRUE), , drop = FALSE]
+        stopif(nrow(total)<1, "significance testing - base not found: ", total_row)
+    } else {
+        stopif(nrow(total)<total_row, 
+               "significance testing - base not found, too large 'total_row': ", total_row)
+        total = total[total_row, , drop = FALSE]
+    }
+    total[[1]] = NA # it is supposed to be character (row_labels) so we change it
+    unlist(total[1,])  # [1,] if we by occasion select several rows 
+}
+
+
+get_total_rows_indicator = function(tbl, total_marker = "#"){
+    grepl(total_marker, tbl[[1]], perl = TRUE)
+}
 
 ########################
 

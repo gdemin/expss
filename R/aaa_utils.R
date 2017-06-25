@@ -481,6 +481,14 @@ round_dataframe = function(x, digits = NULL){
     x
 }
 
+format_to_character = function(x, digits = NULL){
+    if(is.null(digits)) digits = 1
+    if(is.na(digits)) return(x)
+    res = format(x, nsmall = digits)
+    res[is.na(x)] = ""
+    res
+}
+
 
 
 #####
