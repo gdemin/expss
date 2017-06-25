@@ -112,9 +112,12 @@ mtcars = apply_labels(mtcars,
 )
 
 # without sorting
+mtcars$tot = 1
+var_lab(mtcars$tot ) = "#total"
+val_lab(mtcars$tot ) = c("#total" = 1)
 tabl = mtcars %>% 
     tab_cells(cyl, gear, carb) %>% 
-    tab_cols("#total", vs, am) %>% 
+    tab_cols(tot, vs, am) %>% 
     tab_stat_cpct()
 
 expect_error(split_columns(tabl))
@@ -168,7 +171,7 @@ context("split_columns subheading")
 
 tabl = mtcars %>% 
     tab_cells(cyl, gear, carb) %>% 
-    tab_cols("#total", vs, am) %>%
+    tab_cols(tot, vs, am) %>%
     tab_stat_mean(label = "|") %>% 
     tab_stat_cpct() %>% 
     tab_pivot()
@@ -177,7 +180,7 @@ expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_subh
 expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_subheadings2.rds")
 
 tabl = mtcars %>% 
-    tab_cols("#total", vs, am) %>%
+    tab_cols(tot, vs, am) %>%
     tab_cells(cyl) %>% 
     tab_stat_mean(label = "|") %>% 
     tab_stat_cpct() %>% 
