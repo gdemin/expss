@@ -525,7 +525,9 @@ if_null = function(x, value){
 ##### 
 
 expr_to_character = function(expr){
-    as.character(as.expression(expr))
+    res = deparse(expr, width.cutoff = 500L)
+    if(length(res)>1) res = paste(res, collapse = " ")
+    res
 }
 
 # if item of list is character then it will be convereted to name
