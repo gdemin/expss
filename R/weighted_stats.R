@@ -149,6 +149,8 @@ unweighted_valid_n = function(x, weight = NULL) {
         sum(res, na.rm = TRUE)    
     } else {
         weight = set_negative_and_na_to_zero(weight)
+        res = recycle_if_single_row(res, NROW(weight))
+        weight = recycle_if_single_row(weight, NROW(res))
         sum(res[weight>0], na.rm = TRUE)
     }
 }
@@ -161,7 +163,9 @@ valid_n = function(x, weight = NULL) {
         sum(res, na.rm = TRUE)
     } else {
         weight = set_negative_and_na_to_zero(weight)
-        sum(weight[res])
+        res = recycle_if_single_row(res, NROW(weight))
+        weight = recycle_if_single_row(weight, NROW(res))
+        sum(weight[res], na.rm = TRUE)
     }
 }
 
