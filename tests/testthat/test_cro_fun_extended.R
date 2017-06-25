@@ -339,3 +339,29 @@ expect_equal_to_reference(
                                 weighted_valid_n = TRUE),
     "rds/cro_mean_sd_n3.rds"
 )
+
+
+context("cro_fun unsafe labels")
+
+fun = function(x) c(sum(x), mean(x), length(x))
+
+fun2 = combine_functions(sum = sum, mean = mean, length = length)
+
+expect_identical(cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt), 
+                         list(total(), mtcars$am, mtcars$vs), 
+                               fun = fun,
+                               unsafe = c("sum", "mean", "length")),
+                 cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt), 
+                         list(total(), mtcars$am, mtcars$vs), 
+                         fun = fun2)
+)
+
+expect_error(cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt), 
+                     list(total(), mtcars$am, mtcars$vs), 
+                     fun = fun,
+                     unsafe = c("sum", "mean", "length","ffaafa")))
+
+expect_error(cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt), 
+                     list(total(), mtcars$am, mtcars$vs), 
+                     fun = fun,
+                     unsafe = c("sum", "length", "length")))

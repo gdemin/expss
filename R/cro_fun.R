@@ -192,7 +192,7 @@ cro_fun = function(cell_vars,
     
     check_sizes("'cro_fun'", cell_vars, row_vars, col_vars, weight, subgroup)
     
-    if(!unsafe){
+    if(is.logical(unsafe) && !unsafe){
         cell_vars = make_labels_from_names(cell_vars)
         fun = make_function_for_cro(fun, ..., need_weight = !is.null(weight))
     } else {
@@ -287,7 +287,7 @@ elementary_cro_fun_df = function(cell_var,
 
     # statistics
     by_string = "..row_var__,..col_var__"
-    if(!use_lapply){
+    if(is.logical(use_lapply) && !use_lapply){
         if(is.null(weight)){
             dtable = raw_data[ , fun(.SD), by = by_string]
         } else {
@@ -304,6 +304,15 @@ elementary_cro_fun_df = function(cell_var,
                       na.rm = FALSE, variable.factor = TRUE, 
                       value.factor = FALSE, 
                       verbose = FALSE)
+        if(is.character(use_lapply)){
+            labels_length = length(use_lapply)
+            stopif(labels_length==0 || (NROW(dtable) %% labels_length)!=0, 
+                   "'cro_fun'/'cro_fun_df' - length of labels provided with 'unsafe' is incorrect: ", 
+                   labels_length)
+            stopif(anyDuplicated(use_lapply),  "'cro_fun'/'cro_fun_df' - duplicated labels provided with 'unsafe': ", 
+                   paste(unique(use_lapply[duplicated(use_lapply)])), collapse = ", ")
+            dtable[ , row_labels := paste(row_labels, use_lapply, sep = "|")]
+        }
         
     }    
     if(("row_labels" %in% colnames(dtable)) && !is.factor(dtable[["row_labels"]])){ 
@@ -507,7 +516,7 @@ cro_fun_df = function(cell_vars,
         stopif(!("weight" %in% names(formals(fun))),
                "`weight` is provided but `fun` doesn't have formal `weight` argument.")
     }
-    if(!unsafe) {
+    if(is.logical(unsafe) && !unsafe) {
         fun = make_function_for_cro_df(fun, ..., need_weight = !is.null(weight))
     }
     cell_vars = make_labels_from_names(cell_vars)
@@ -604,19 +613,21 @@ cro_mean_sd_n = function(cell_vars,
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     if(weighted_valid_n){
-        fun = list(w_mean, w_sd, valid_n)
+        fun = function(x, weight = NULL) {
+            c(w_mean(x, weight), w_sd(x, weight), valid_n(x, weight))
+        }
     } else {
-        fun = list(w_mean, w_sd, unweighted_valid_n)
+        fun = function(x, weight = NULL) {
+            c(w_mean(x, weight), w_sd(x, weight), unweighted_valid_n(x, weight))
+        }
     }
-    names(fun) = labels
-    fun = do.call(combine_functions, fun)
     cro_fun(cell_vars = cell_vars, 
             col_vars = col_vars, 
             row_vars = row_vars, 
             weight = weight,
             subgroup = subgroup,
             fun = fun,
-            unsafe = FALSE
+            unsafe = labels
     )
 }
 
