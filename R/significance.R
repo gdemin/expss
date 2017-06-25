@@ -3,34 +3,88 @@ PROP_COMPARE_TYPE = c("subtable",
                       "previous_column")
 
 #' Mark significant differences between columns of the table
-#'
-#' @param x table with proportions and bases - result of \link{cro_cpct} for \code{significance_cpct}
+#' 
+#' \itemize{
+#' \item{\code{significance_cpct}}{ conducts z-tests beetween column percents in
+#' the result of \link{cro_cpct}. Results are calculated with the same formula 
+#' as in \link[stats]{prop.test} without continuity correction. There are four 
+#' type of comparisons which can be conducted simultaneously (argument 
+#' \code{compare_type}). \code{subtable} - comparison between all columns inside
+#' each subtable. \code{first_column} - comparison of table first column with
+#' all other columns. \code{first_column_adjusted} is comparison with first
+#' column but with adjustment for common base. It is useful if first column is
+#' total column and other columns are subgroup of this total.
+#' \code{previous_column} - comparison of each column in the subtable with
+#' previuos column. It is useful if columns are periods or wave of survey.}}
+#' @param x table with proportions and bases - result of \link{cro_cpct} for
+#'   \code{significance_cpct}.
 #' @param sig_level significance level - by default it equals to \code{0.05}
-#' @param min_base integer number. Significance test will be conducted if both
+#' @param min_base numeric. Significance test will be conducted if both
 #'   columns have bases greater than \code{min_base}. By default it equals to \code{2}.
 #' @param compare_type Type of compare between columns. By default it is 
 #'   \code{subtable} - comparisons will be conducted between columns of each 
-#'   subtable. Other possible values are: \code{first_column},
-#'   \code{first_column_adjusted} and \code{previous_column}
+#'   subtable. Other possible values are: \code{first_column}, 
+#'   \code{first_column_adjusted} and \code{previous_column}. We can conduct
+#'   several tests simultaneously.
 #' @param bonferroni logical. \code{FALSE} by default. Should we use Bonferrony
 #'   adjustment for multiple comparisons?
-#' @param sig_labels character vector. Labels for marking differences between columns of subtable.
+#' @param sig_labels character vector. Labels for marking differences between
+#'   columns of subtable.
 #' @param sig_labels_previous_column character vector with two elements. Labels
 #'   for marking difference with previous column. First mark means 'lower' (by
 #'   default it is \code{v}) and the second means greater (\code{^}).
 #' @param sig_labels_first_column character vector with two elements. Labels
 #'   for marking difference with first column of the table. First mark means 'lower' (by
 #'   default it is \code{-}) and the second means 'greater' (\code{+}).
-#' @param na_as_zero logical. \code{FALSE} by default. Should we treat \code{NA}'s as zero cases?
+#' @param keep_percent logical. \code{TRUE} by default. Should we show original
+#'   column percent along with significance marks?
+#' @param keep_bases logical. By default equals to \code{keep_percent}. Should
+#'   we drop total rows?
+#' @param na_as_zero logical. \code{FALSE} by default. Should we treat
+#'   \code{NA}'s as zero cases?
 #' @param total_marker character. Mark of total rows in table.
-#' @param total_row integer number. In case of several totals per subtable it is
-#'   number of total row for significance calculation.
+#' @param total_row integer/character. In case of several totals per subtable it is
+#'   number or name of total row for significance calculation.
 #'
-#' @return Object of class \code{etable} with marks of significant differences between columns.
+#' @return Object of class \code{etable} with marks of significant differences
+#'   between columns.
 #' @export
 #'
 #' @examples
-#' 1
+#' data(mtcars)
+#' mtcars = apply_labels(mtcars,
+#'                       mpg = "Miles/(US) gallon",
+#'                       cyl = "Number of cylinders",
+#'                       disp = "Displacement (cu.in.)",
+#'                       hp = "Gross horsepower",
+#'                       drat = "Rear axle ratio",
+#'                       wt = "Weight (lb/1000)",
+#'                       qsec = "1/4 mile time",
+#'                       vs = "Engine",
+#'                       vs = c("V-engine" = 0,
+#'                              "Straight engine" = 1),
+#'                       am = "Transmission",
+#'                       am = c("Automatic" = 0,
+#'                              "Manual"=1),
+#'                       gear = "Number of forward gears",
+#'                       carb = "Number of carburetors"
+#' )
+#' 
+#' mtcars_table = cro_cpct(list(mtcars$cyl, mtcars$gear),
+#'                         list(total(), mtcars$vs, mtcars$am))
+#' 
+#' significance_cpct(mtcars_table)
+#' 
+#' # comparison with first column
+#' significance_cpct(mtcars_table, compare_type = "first_column")
+#' 
+#' # comparison with first column and inside subtable
+#' significance_cpct(mtcars_table, 
+#'             compare_type = c("first_column", "subtable"))
+#' 
+#' # only significance marks
+#' significance_cpct(mtcars_table, keep_percent = FALSE)
+#' 
 significance_cpct = function(x, 
                              sig_level = 0.05, 
                              min_base = 2,
@@ -39,8 +93,8 @@ significance_cpct = function(x,
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
-                             keep_numbers = FALSE,
-                             keep_bases = keep_numbers,
+                             keep_percent = TRUE,
+                             keep_bases = keep_percent,
                              na_as_zero = FALSE,
                              total_marker = "#",
                              total_row = 1,
@@ -49,21 +103,6 @@ significance_cpct = function(x,
     UseMethod("significance_cpct")
 }
 
-paste_non_empty = function(x, y, sep = ""){
-    res = paste(x, y, sep = sep)
-    recode(res) = (x %in% c("", NA)) ~ y
-    recode(res) = (y %in% c("", NA)) ~ x
-    res
-}
-
-paste_df_non_empty = function(df1, df2, sep = ""){
-    for(i in seq_along(df1)){
-        max_width = max(nchar( df2[[i]]), na.rm = TRUE)
-        df2[[i]] = format(df2[[i]], width = max_width) # , flag = "+"
-        df1[[i]] = paste_non_empty(df1[[i]], df2[[i]], sep = sep)
-    }
-    df1
-}
 
 #' @export
 significance_cpct.etable = function(x, 
@@ -74,8 +113,8 @@ significance_cpct.etable = function(x,
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
-                                    keep_numbers = TRUE,
-                                    keep_bases = keep_numbers,
+                                    keep_percent = TRUE,
+                                    keep_bases = keep_percent,
                                     na_as_zero = FALSE,
                                     total_marker = "#",
                                     total_row = 1,
@@ -144,7 +183,7 @@ significance_cpct.etable = function(x,
     res = do.call(add_rows, res)
     total_rows_indicator = get_total_rows_indicator(x, total_marker = total_marker)
     x = round_dataframe(x, digits = digits)
-    if(keep_numbers){
+    if(keep_percent){
         x[!total_rows_indicator, ] = format_to_character(x[!total_rows_indicator, ], 
                                                         digits = digits)    
         x[, -1] = paste_df_non_empty(
@@ -161,6 +200,35 @@ significance_cpct.etable = function(x,
         x[!total_rows_indicator, ]
     }
 }
+
+########################
+
+#' @rdname significance_cpct
+#' @export
+add_sig_labels = function(tbl, sig_labels = LETTERS){
+    header = colnames(tbl)
+    groups = header_groups(header)   
+    for(each_group in groups){
+        if(length(each_group)>1){
+            if(length(each_group)<=length(sig_labels)){
+                header[each_group] = paste0(header[each_group], "|", 
+                                            sig_labels[each_group - min(each_group)+1])
+            } else {
+                numbers = seq_len(length(each_group)/length(sig_labels) + 1)
+                long_labels = rep(sig_labels, length(numbers))
+                numbers = rep(numbers, each = length(sig_labels))
+                long_labels = paste0(long_labels, numbers)
+                header[each_group] = paste0(header[each_group], "|", 
+                                            long_labels[each_group - min(each_group)+1])
+                
+            }
+        }
+    }
+    remove_unnecessary_splitters(header)
+    colnames(tbl) = header
+    tbl
+}
+
 
 ########################
 
@@ -347,7 +415,8 @@ split_table_by_row_sections = function(tbl, total_marker = "#", total_row = 1){
     totals = get_total_rows_indicator(tbl, total_marker)
     if_na(totals) = FALSE
     stopif(!any(totals), 
-           "significance testing - total rows not found. Incorrect total marker: ","'", total_marker, "'")
+           "significance testing - total rows not found. Incorrect total marker: ","'",
+           total_marker, "'")
     total_above = totals[1]
     if(total_above){
         splitter = c(FALSE, totals[-length(totals)] < totals[-1])
@@ -378,34 +447,22 @@ get_total_rows_indicator = function(tbl, total_marker = "#"){
     grepl(total_marker, tbl[[1]], perl = TRUE)
 }
 
+
+
 ########################
 
-#' @rdname significance_cpct
-#' @export
-add_sig_labels = function(tbl, sig_labels = LETTERS){
-    header = colnames(tbl)
-    groups = header_groups(header)   
-    for(each_group in groups){
-        if(length(each_group)>1){
-            if(length(each_group)<=length(sig_labels)){
-                header[each_group] = paste0(header[each_group], "|", 
-                                            sig_labels[each_group - min(each_group)+1])
-            } else {
-                numbers = seq_len(length(each_group)/length(sig_labels) + 1)
-                long_labels = rep(sig_labels, length(numbers))
-                numbers = rep(numbers, each = length(sig_labels))
-                long_labels = paste0(long_labels, numbers)
-                header[each_group] = paste0(header[each_group], "|", 
-                                            long_labels[each_group - min(each_group)+1])
-                
-            }
-        }
-    }
-    remove_unnecessary_splitters(header)
-    colnames(tbl) = header
-    tbl
+paste_non_empty = function(x, y, sep = ""){
+    res = paste(x, y, sep = sep)
+    recode(res) = (x %in% c("", NA)) ~ y
+    recode(res) = (y %in% c("", NA)) ~ x
+    res
 }
 
-
-########################
-
+paste_df_non_empty = function(df1, df2, sep = ""){
+    for(i in seq_along(df1)){
+        max_width = max(nchar( df2[[i]]), na.rm = TRUE)
+        df2[[i]] = format(df2[[i]], width = max_width) # , flag = "+"
+        df1[[i]] = paste_non_empty(df1[[i]], df2[[i]], sep = sep)
+    }
+    df1
+}
