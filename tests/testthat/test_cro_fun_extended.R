@@ -356,6 +356,17 @@ expect_identical(cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt),
                          fun = fun2)
 )
 
+fun2 = combine_functions("1" = sum, "2" = mean, "3" = length)
+
+expect_identical(cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt), 
+                         list(total(), mtcars$am, mtcars$vs), 
+                         fun = fun,
+                         unsafe = 1:3),
+                 cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt), 
+                         list(total(), mtcars$am, mtcars$vs), 
+                         fun = fun2)
+)
+
 expect_error(cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt), 
                      list(total(), mtcars$am, mtcars$vs), 
                      fun = fun,

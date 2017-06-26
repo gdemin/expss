@@ -69,14 +69,17 @@ names in your \code{fun}.}
 \code{cro_fun}/\code{cro_fun_df} or functions for \code{combine_functions}.
 Ignored in \code{cro_fun}/\code{cro_fun_df} if \code{unsafe} is TRUE.}
 
-\item{unsafe}{logical If TRUE than \code{fun} will be evaluated as is. It can
-lead to significant increase in the performance. But there are some 
-limitations. For \code{cro_fun} it means that your function \code{fun} 
-should return vector of length one. Also there will be no attempts to make
-labels for statistic.  For \code{cro_fun_df} your function should return
-vector of length one or list/data.frame (optionally with 'row_labels'
-element - statistic labels). If \code{unsafe} is TRUE then further
-arguments (\code{...}) for \code{fun} will be ignored.}
+\item{unsafe}{logical/character If not FALSE than \code{fun} will be 
+evaluated as is. It can lead to significant increase in the performance. 
+But there are some limitations. For \code{cro_fun} it means that your 
+function \code{fun} should return vector. If length of this vector is
+greater than one than you should provide with \code{unsafe} argument vector
+of unique labels for each element of this vector. There will be no attempts
+to automatically make labels for the results of \code{fun}. For 
+\code{cro_fun_df} your function should return vector or list/data.frame
+(optionally with 'row_labels' element - statistic labels). If \code{unsafe}
+is TRUE or not logical then further arguments (\code{...}) for \code{fun}
+will be ignored.}
 
 \item{weighted_valid_n}{logical. Sould we show weighted valid N in
 \code{cro_mean_sd_n}? By default it is FALSE.}
