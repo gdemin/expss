@@ -1,4 +1,4 @@
-PROP_COMPARE_TYPE = c("subtable",
+COMPARE_TYPE = c("subtable",
                       "first_column", "first_column_adjusted", 
                       "previous_column")
 
@@ -122,7 +122,7 @@ significance_cpct.etable = function(x,
 ){
     
     if(NCOL(x)<3) return(x)
-    compare_type = match.arg(compare_type, choices = PROP_COMPARE_TYPE, several.ok = TRUE)
+    compare_type = match.arg(compare_type, choices = COMPARE_TYPE, several.ok = TRUE)
     stopif(sum(compare_type %in% c("first_column", "first_column_adjusted"))>1, 
                    "mutually exclusive compare types in significance testing:  'first_column' and 'first_column_adjusted'.")
     

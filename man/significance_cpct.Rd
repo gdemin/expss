@@ -9,33 +9,38 @@
 significance_cpct(x, sig_level = 0.05, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
-  "+"), show_numbers = c("none", "significant", "all"), na_as_zero = FALSE,
-  total_marker = "#", total_row = 1)
+  "+"), keep_percent = TRUE, keep_bases = keep_percent,
+  na_as_zero = FALSE, total_marker = "#", total_row = 1,
+  digits = get_expss_digits())
 
 add_sig_labels(tbl, sig_labels = LETTERS)
 
 significance_means(x, sig_level = 0.05, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
-  "+"), stat_order = c("mean", "sd", "n"), var_equal = FALSE)
+  "+"), keep_means = TRUE, keep_sd = keep_means, keep_bases = keep_means,
+  var_equal = FALSE, digits = get_expss_digits())
 }
 \arguments{
-\item{x}{table with proportions and bases - result of \link{cro_cpct} for \code{significance_cpct}}
+\item{x}{table with proportions and bases - result of \link{cro_cpct} for
+\code{significance_cpct}.}
 
 \item{sig_level}{significance level - by default it equals to \code{0.05}}
 
-\item{min_base}{integer number. Significance test will be conducted if both
+\item{min_base}{numeric. Significance test will be conducted if both
 columns have bases greater than \code{min_base}. By default it equals to \code{2}.}
 
 \item{compare_type}{Type of compare between columns. By default it is 
 \code{subtable} - comparisons will be conducted between columns of each 
-subtable. Other possible values are: \code{first_column},
-\code{first_column_adjusted} and \code{previous_column}}
+subtable. Other possible values are: \code{first_column}, 
+\code{first_column_adjusted} and \code{previous_column}. We can conduct
+several tests simultaneously.}
 
 \item{bonferroni}{logical. \code{FALSE} by default. Should we use Bonferrony
 adjustment for multiple comparisons?}
 
-\item{sig_labels}{character vector. Labels for marking differences between columns of subtable.}
+\item{sig_labels}{character vector. Labels for marking differences between
+columns of subtable.}
 
 \item{sig_labels_previous_column}{character vector with two elements. Labels
 for marking difference with previous column. First mark means 'lower' (by
@@ -45,19 +50,71 @@ default it is \code{v}) and the second means greater (\code{^}).}
 for marking difference with first column of the table. First mark means 'lower' (by
 default it is \code{-}) and the second means 'greater' (\code{+}).}
 
-\item{na_as_zero}{logical. \code{FALSE} by default. Should we treat \code{NA}'s as zero cases?}
+\item{keep_percent}{logical. \code{TRUE} by default. Should we show original
+column percent along with significance marks?}
+
+\item{keep_bases}{logical. By default equals to \code{keep_percent}. Should
+we drop total rows?}
+
+\item{na_as_zero}{logical. \code{FALSE} by default. Should we treat
+\code{NA}'s as zero cases?}
 
 \item{total_marker}{character. Mark of total rows in table.}
 
-\item{total_row}{integer number. In case of several totals per subtable it is
-number of total row for significance calculation.}
+\item{total_row}{integer/character. In case of several totals per subtable it is
+number or name of total row for significance calculation.}
 }
 \value{
-Object of class \code{etable} with marks of significant differences between columns.
+Object of class \code{etable} with marks of significant differences
+  between columns.
 }
 \description{
-Mark significant differences between columns of the table
+\itemize{
+\item{\code{significance_cpct}}{ conducts z-tests beetween column percents in
+the result of \link{cro_cpct}. Results are calculated with the same formula 
+as in \link[stats]{prop.test} without continuity correction. There are four 
+type of comparisons which can be conducted simultaneously (argument 
+\code{compare_type}). \code{subtable} - comparison between all columns inside
+each subtable. \code{first_column} - comparison of table first column with
+all other columns. \code{first_column_adjusted} is comparison with first
+column but with adjustment for common base. It is useful if first column is
+total column and other columns are subgroup of this total.
+\code{previous_column} - comparison of each column in the subtable with
+previuos column. It is useful if columns are periods or wave of survey.}}
 }
 \examples{
-1
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (lb/1000)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+mtcars_table = cro_cpct(list(mtcars$cyl, mtcars$gear),
+                        list(total(), mtcars$vs, mtcars$am))
+
+significance_cpct(mtcars_table)
+
+# comparison with first column
+significance_cpct(mtcars_table, compare_type = "first_column")
+
+# comparison with first column and inside subtable
+significance_cpct(mtcars_table, 
+            compare_type = c("first_column", "subtable"))
+
+# only significance marks
+significance_cpct(mtcars_table, keep_percent = FALSE)
+
 }
