@@ -11,7 +11,7 @@ compare_means(mean1, mean2, sd1, sd2, base1, base2, common_base = 0,
   var_equal = FALSE)
 }
 \arguments{
-\item{prop1}{fsdfdf}
+\item{prop1}{numerci}
 
 \item{prop2}{sfs}
 

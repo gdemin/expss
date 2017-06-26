@@ -134,3 +134,9 @@ expect_equal_to_reference(htmlTable(res), "rds/htmlTable18.rds")
 
 res = fre(mtcars$cyl)
 expect_equal_to_reference(htmlTable(res), "rds/htmlTable19.rds")
+
+
+mtcars_table = cro_cpct(list(mtcars$cyl, mtcars$gear),
+                        list(total(), mtcars$vs, mtcars$am))
+
+# res = sig
