@@ -5,7 +5,7 @@
 \alias{vlookup_df}
 \title{Look up values in dictionary.}
 \usage{
-vlookup(lookup_value, dict, result_column, lookup_column = 1)
+vlookup(lookup_value, dict, result_column = 2, lookup_column = 1)
 
 vlookup_df(lookup_value, dict, result_column = NULL, lookup_column = 1)
 }
@@ -14,29 +14,31 @@ vlookup_df(lookup_value, dict, result_column = NULL, lookup_column = 1)
 
 \item{dict}{Dictionary. Should be vector/matrix or data.frame}
 
-\item{result_column}{Resulting columns of dict. Should be numeric or 
-character vector. There are special values:
-'row.names', 'rownames', 'names'. If result_column equals to one of these
-special values and dict is matrix/data.frame then row names of dict will be
-returned. If dict is vector then names of 
-vector will be returned. For \code{vlookup_df} default result_column is NULL and result 
-will be entire rows. For \code{vlookup} result_column = NULL gives error.}
+\item{result_column}{numeric or character. Resulting columns of \code{dict}.
+There are special values: 'row.names', 'rownames', 'names'. If
+\code{result_column} equals to one of these special values and \code{dict}
+is matrix/data.frame then row names of \code{dict} will be returned. If
+\code{dict} is vector then names of vector will be returned. For
+\code{vlookup_df} default \code{result_column} is NULL and result will be
+entire rows. For \code{vlookup} defaut \code{result_column} is 2 - for
+frequent case of dictionary with keys in the first column and results in
+the second column.}
 
-\item{lookup_column}{Column of dict in which lookup value will be searched. 
-By default it is the first column of the dict. There are special values: 
-'row.names', 'rownames', 'names'. If lookup_column equals to one of these 
-special values and dict is matrix/data.frame then values will be searched
-in the row names of dict. If dict is vector then values will be searched in
-names of the dict.}
+\item{lookup_column}{Column of \code{dict} in which lookup value will be
+searched. By default it is the first column of the \code{dict}. There are
+special values: 'row.names', 'rownames', 'names'. If lookup_column equals
+to one of these special values and \code{dict} is matrix/data.frame then
+values will be searched in the row names of \code{dict}. If \code{dict} is
+vector then values will be searched in names of the \code{dict}.}
 }
 \value{
 \code{vlookup} always return vector, \code{vlookup_df} always returns
   data.frame.
 }
 \description{
-This function is inspired by VLOOKUP spreadsheet function. It looks for a
-lookup_value in the lookup_column of the dict, and then returns values in the
-same rows from result_column.
+This function is inspired by VLOOKUP spreadsheet function. It looks for a 
+\code{lookup_value} in the \code{lookup_column} of the \code{dict}, and then
+returns values in the same rows from \code{result_column}.
 }
 \examples{
 # with data.frame
