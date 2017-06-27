@@ -40,8 +40,8 @@ significance_means.etable = function(x,
     
     if(NCOL(x)<3) return(x)
     compare_type = match.arg(compare_type, choices = COMPARE_TYPE, several.ok = TRUE)
-    stopif(sum(compare_type %in% c("first_column", "first_column_adjusted"))>1, 
-           "mutually exclusive compare types in significance testing:  'first_column' and 'first_column_adjusted'.")
+    stopif(sum(compare_type %in% c("first_column", "adjusted_first_column"))>1, 
+           "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")
     
     if("subtable" %in% compare_type){
         if(!is.null(sig_labels)){
@@ -65,7 +65,7 @@ significance_means.etable = function(x,
         if(na_as_zero){
             if_na(curr_props[,-1]) = 0
         }
-        if(any(c("first_column", "first_column_adjusted") %in% compare_type)){
+        if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
             sig_section = section_sig_first_column(sig_section = sig_section, 
                                                    curr_props = curr_props, 
                                                    curr_base = curr_base,
@@ -73,7 +73,7 @@ significance_means.etable = function(x,
                                                    sig_labels_first_column = sig_labels_first_column,
                                                    sig_level = sig_level,
                                                    bonferroni = bonferroni,
-                                                   adjust_common_base = "first_column_adjusted" %in% compare_type)
+                                                   adjust_common_base = "adjusted_first_column" %in% compare_type)
         }
         if(any(c("previous_column") %in% compare_type)){
             sig_section = section_sig_previous_column(sig_section = sig_section, 

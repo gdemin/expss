@@ -6,7 +6,7 @@
 \alias{significance_means}
 \title{Mark significant differences between columns of the table}
 \usage{
-significance_cpct(x, sig_level = 0.05, min_base = 2,
+significance_cpct(x, sig_level = 0.05, delta = 0, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
   "+"), keep_percent = TRUE, keep_bases = keep_percent,
@@ -25,7 +25,12 @@ significance_means(x, sig_level = 0.05, min_base = 2,
 \item{x}{table with proportions and bases - result of \link{cro_cpct} for
 \code{significance_cpct}.}
 
-\item{sig_level}{significance level - by default it equals to \code{0.05}}
+\item{sig_level}{numeric. significance level - by default it equals to \code{0.05}.}
+
+\item{delta}{numeric. Minimal delta between values for which we mark 
+significant differences - by default it equals to zero. Note that, for
+example, for minimal 5 percent difference delta should be equals 5, not
+0.05.}
 
 \item{min_base}{numeric. Significance test will be conducted if both
 columns have bases greater than \code{min_base}. By default it equals to \code{2}.}
@@ -33,7 +38,7 @@ columns have bases greater than \code{min_base}. By default it equals to \code{2
 \item{compare_type}{Type of compare between columns. By default it is 
 \code{subtable} - comparisons will be conducted between columns of each 
 subtable. Other possible values are: \code{first_column}, 
-\code{first_column_adjusted} and \code{previous_column}. We can conduct
+\code{adjusted_first_column} and \code{previous_column}. We can conduct
 several tests simultaneously.}
 
 \item{bonferroni}{logical. \code{FALSE} by default. Should we use Bonferrony
@@ -76,7 +81,7 @@ as in \link[stats]{prop.test} without continuity correction. There are four
 type of comparisons which can be conducted simultaneously (argument 
 \code{compare_type}). \code{subtable} - comparison between all columns inside
 each subtable. \code{first_column} - comparison of table first column with
-all other columns. \code{first_column_adjusted} is comparison with first
+all other columns. \code{adjusted_first_column} is comparison with first
 column but with adjustment for common base. It is useful if first column is
 total column and other columns are subgroup of this total.
 \code{previous_column} - comparison of each column in the subtable with
