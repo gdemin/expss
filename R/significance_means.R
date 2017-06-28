@@ -6,6 +6,7 @@ N_IND =     c(FALSE, FALSE, TRUE)
 #' @export
 significance_means = function(x, 
                              sig_level = 0.05, 
+                             delta_means = 0,
                              min_base = 2,
                              compare_type ="subtable",
                              bonferroni = FALSE,
@@ -25,6 +26,7 @@ significance_means = function(x,
 #' @export
 significance_means.etable = function(x, 
                                      sig_level = 0.05, 
+                                     delta_means = 0,
                                      min_base = 2,
                                      compare_type ="subtable",
                                      bonferroni = FALSE,
@@ -38,7 +40,10 @@ significance_means.etable = function(x,
                                      digits = get_expss_digits()
 ){
     
+    stopif(NROW(x) %% 3 !=0, 
+           "Incorrect table. Table should have rows with means, standard deviations and valid N.")
     if(NCOL(x)<3) return(x)
+    
     compare_type = match.arg(compare_type, choices = COMPARE_TYPE, several.ok = TRUE)
     stopif(sum(compare_type %in% c("first_column", "adjusted_first_column"))>1, 
            "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")
@@ -51,62 +56,54 @@ significance_means.etable = function(x,
     }
     groups = header_groups(colnames(x))
     
-    sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
-    res = lapply(sections, function(each_section){
-        # browser()
-        curr_base = extract_total_from_section(each_section, total_marker = total_marker, total_row = total_row)
-        recode(curr_base) = lt(min_base) ~ NA
-        
-        total_rows_indicator = get_total_rows_indicator(each_section, total_marker = total_marker)
-        sig_section = each_section[!total_rows_indicator, ]
-        sig_section[, -1] = ""
-        curr_props = each_section[!total_rows_indicator, ]
-        curr_props[,-1] = curr_props[,-1]/100
-        if(na_as_zero){
-            if_na(curr_props[,-1]) = 0
-        }
-        if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
-            sig_section = section_sig_first_column(sig_section = sig_section, 
-                                                   curr_props = curr_props, 
-                                                   curr_base = curr_base,
-                                                   groups = groups,
-                                                   sig_labels_first_column = sig_labels_first_column,
-                                                   sig_level = sig_level,
-                                                   bonferroni = bonferroni,
-                                                   adjust_common_base = "adjusted_first_column" %in% compare_type)
-        }
-        if(any(c("previous_column") %in% compare_type)){
-            sig_section = section_sig_previous_column(sig_section = sig_section, 
-                                                      curr_props = curr_props, 
-                                                      curr_base = curr_base,
-                                                      groups = groups,
-                                                      sig_labels_previous_column = sig_labels_previous_column,
-                                                      sig_level = sig_level,
-                                                      bonferroni = bonferroni)
-        }
-        if("subtable" %in% compare_type){
-            sig_section = section_sig_prop(sig_section = sig_section, 
+    # some types (data.table) doesn't support recycling of logicals
+    means_ind = rep_len(MEANS_IND, nrow(x))
+    sd_ind = rep_len(SD_IND, nrow(x))
+    n_ind = rep_len(N_IND, nrow(x))
+    all_means = x[means_ind, ,drop = FALSE]
+    all_sds = x[sd_ind, ,drop = FALSE]
+    all_ns = x[N_IND, ,drop = FALSE]
+
+    recode(all_ns) = lt(min_base) ~ NA
+    
+    sig_table = x
+    sig_table[, -1] = ""
+    
+    if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
+        sig_table = means_sig_first_column(sig_table = sig_table, 
                                            curr_props = curr_props, 
                                            curr_base = curr_base,
                                            groups = groups,
-                                           all_column_labels = all_column_labels,
+                                           sig_labels_first_column = sig_labels_first_column,
                                            sig_level = sig_level,
-                                           bonferroni = bonferroni)
-        }
-        each_section[,-1] = ""
-        each_section[!total_rows_indicator,-1] = sig_section[,-1]
-        each_section
-    })
-    
-    res = do.call(add_rows, res)
-    total_rows_indicator = get_total_rows_indicator(x, total_marker = total_marker)
+                                           bonferroni = bonferroni,
+                                           adjust_common_base = "adjusted_first_column" %in% compare_type)
+    }
+    if(any(c("previous_column") %in% compare_type)){
+        sig_table = means_sig_previous_column(sig_table = sig_table, 
+                                              curr_props = curr_props, 
+                                              curr_base = curr_base,
+                                              groups = groups,
+                                              sig_labels_previous_column = sig_labels_previous_column,
+                                              sig_level = sig_level,
+                                              bonferroni = bonferroni)
+    }
+    if("subtable" %in% compare_type){
+        sig_table = means_sig_prop(sig_table = sig_table, 
+                                   curr_props = curr_props, 
+                                   curr_base = curr_base,
+                                   groups = groups,
+                                   all_column_labels = all_column_labels,
+                                   sig_level = sig_level,
+                                   bonferroni = bonferroni)
+    }
+        
     x = round_dataframe(x, digits = digits)
-    if(keep_percent){
-        x[!total_rows_indicator, ] = format_to_character(x[!total_rows_indicator, ], 
-                                                         digits = digits)    
+    if(keep_means){
+        x = format_to_character(x, digits = digits)    
         x[, -1] = paste_df_non_empty(
             x[, -1, drop = FALSE], 
-            res[, -1, drop = FALSE],
+            sig_table[, -1, drop = FALSE],
             sep = " "
         )
     } else {
