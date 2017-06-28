@@ -125,7 +125,7 @@ expect_equal_to_reference(
     "rds/signif_cpct11.rds")
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, delta = 50),
+    significance_cpct(mtcars_table, delta_cpct = 50),
     "rds/signif_cpct11_delta.rds")
 
 expect_equal_to_reference(
@@ -160,14 +160,14 @@ expect_equal_to_reference(
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
-                      delta = 65,
+                      delta_cpct = 65,
                       compare_type = c("previous_column"), 
                       keep_percent = TRUE),
     "rds/signif_cpct16_delta.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
-                      delta = 65,
+                      delta_cpct = 65,
                       na_as_zero = TRUE,
                       compare_type = c("previous_column"), 
                       keep_percent = TRUE),
@@ -218,7 +218,7 @@ expect_equal_to_reference(
     significance_cpct(mtcars_table, 
                       compare_type = c("subtable", "first_column"), 
                       keep_percent = TRUE,
-                      delta = 30,
+                      delta_cpct = 30,
                       digits = 2),
     "rds/signif_cpct21_delta.rds")
 

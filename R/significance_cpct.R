@@ -19,10 +19,10 @@ COMPARE_TYPE = c("subtable",
 #' @param x table with proportions and bases - result of \link{cro_cpct} for
 #'   \code{significance_cpct}.
 #' @param sig_level numeric. significance level - by default it equals to \code{0.05}.
-#' @param delta numeric. Minimal delta between values for which we mark 
-#'   significant differences - by default it equals to zero. Note that, for
-#'   example, for minimal 5 percent difference delta should be equals 5, not
-#'   0.05.
+#' @param delta_cpct numeric. Minimal delta between values for which we mark 
+#'   significant differences - by default it equals to zero. Note that, for 
+#'   example, for minimal 5 percent difference \code{delta_cpct} should be equals
+#'   5, not 0.05.
 #' @param min_base numeric. Significance test will be conducted if both
 #'   columns have bases greater than \code{min_base}. By default it equals to \code{2}.
 #' @param compare_type Type of compare between columns. By default it is 
@@ -91,7 +91,7 @@ COMPARE_TYPE = c("subtable",
 #' 
 significance_cpct = function(x, 
                              sig_level = 0.05, 
-                             delta = 0,
+                             delta_cpct = 0,
                              min_base = 2,
                              compare_type ="subtable",
                              bonferroni = FALSE,
@@ -112,7 +112,7 @@ significance_cpct = function(x,
 #' @export
 significance_cpct.etable = function(x, 
                                     sig_level = 0.05, 
-                                    delta = 0,
+                                    delta_cpct = 0,
                                     min_base = 2,
                                     compare_type = "subtable",
                                     bonferroni = FALSE,
@@ -132,7 +132,7 @@ significance_cpct.etable = function(x,
     stopif(sum(compare_type %in% c("first_column", "adjusted_first_column"))>1, 
                    "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")
     
-    delta = delta/100
+    delta_cpct = delta_cpct/100
     if("subtable" %in% compare_type){
         if(!is.null(sig_labels)){
             x = add_sig_labels(x, sig_labels = sig_labels)
@@ -161,7 +161,7 @@ significance_cpct.etable = function(x,
                                                    groups = groups,
                                                    sig_labels_first_column = sig_labels_first_column,
                                                    sig_level = sig_level,
-                                                   delta = delta,
+                                                   delta_cpct = delta_cpct,
                                                    bonferroni = bonferroni,
                                                    adjust_common_base = "adjusted_first_column" %in% compare_type)
         }
@@ -172,7 +172,7 @@ significance_cpct.etable = function(x,
                                                       groups = groups,
                                                       sig_labels_previous_column = sig_labels_previous_column,
                                                       sig_level = sig_level,
-                                                      delta = delta,
+                                                      delta_cpct = delta_cpct,
                                                       bonferroni = bonferroni)
         }
         if("subtable" %in% compare_type){
@@ -182,7 +182,7 @@ significance_cpct.etable = function(x,
                                            groups = groups,
                                            all_column_labels = all_column_labels,
                                            sig_level = sig_level,
-                                           delta = delta,
+                                           delta_cpct = delta_cpct,
                                            bonferroni = bonferroni)
         }
         each_section[,-1] = ""
@@ -243,7 +243,7 @@ add_sig_labels = function(tbl, sig_labels = LETTERS){
 ########################
 
 section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
-                            all_column_labels, sig_level, delta, bonferroni) {
+                            all_column_labels, sig_level, delta_cpct, bonferroni) {
     for(each_group in groups){
         if(length(each_group)>1){
             if(bonferroni) {
@@ -262,13 +262,13 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
                                                base1, base2)
                     if_na(pval) = 1
                     pval = pmin(pval*bonferroni_coef, 1)
-                    sig_section[[col1]] = ifelse(prop1>prop2 & pval<sig_level & abs(prop1 - prop2)>delta,
+                    sig_section[[col1]] = ifelse(prop1>prop2 & pval<sig_level & abs(prop1 - prop2)>delta_cpct,
                                                  paste_non_empty(sig_section[[col1]],
                                                                  all_column_labels[[col2]],
                                                                  sep = " "),
                                                  sig_section[[col1]]
                     )
-                    sig_section[[col2]] = ifelse(prop2>prop1 & pval<sig_level & abs(prop1 - prop2)>delta,
+                    sig_section[[col2]] = ifelse(prop2>prop1 & pval<sig_level & abs(prop1 - prop2)>delta_cpct,
                                                  paste_non_empty(sig_section[[col2]], 
                                                                  all_column_labels[[col1]], 
                                                                  sep = " "),
@@ -287,7 +287,7 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
 
 section_sig_previous_column = function(sig_section, curr_props,  curr_base, groups,
                                        sig_labels_previous_column, 
-                                       sig_level, delta, bonferroni) {
+                                       sig_level, delta_cpct, bonferroni) {
     for(each_group in groups){
         if(length(each_group)>1){
             # col1 - current column
@@ -308,7 +308,7 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
                                    base1, base2)
                 if_na(pval) = 1
                 pval = pmin(pval*bonferroni_coef, 1)
-                sig_section[[col1]] = ifelse(pval<sig_level & abs(prop1 - prop2)>delta,
+                sig_section[[col1]] = ifelse(pval<sig_level & abs(prop1 - prop2)>delta_cpct,
                                              # previous value is greater
                                              ifelse(prop2>prop1,
                                                     paste_non_empty(sig_section[[col1]], 
@@ -331,7 +331,7 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
 
 section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
                                     sig_labels_first_column, sig_level,
-                                    delta, bonferroni,
+                                    delta_cpct, bonferroni,
                                     adjust_common_base = FALSE) {
     groups = unlist(groups)
     # col1 - first column
@@ -353,7 +353,7 @@ section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
                                base1, base2,
                                common_base = base2*adjust_common_base)
             if_na(pval) = Inf
-            sig_section[[col2]] = ifelse(pval<sig_level & abs(prop1 - prop2)>delta,
+            sig_section[[col2]] = ifelse(pval<sig_level & abs(prop1 - prop2)>delta_cpct,
                                          # previous value is greater
                                          ifelse(prop1>prop2,
                                                 paste_non_empty(sig_section[[col2]], 
