@@ -495,6 +495,8 @@ into_internal = function(values, variables_names, envir){
                    digits1, ", '", digits2, "'.")
             padding = nchar(digits1)
         }
+        digits1 = as.numeric(digits1)
+        digits2 = as.numeric(digits2)
         stopif(digits1>digits2, "Name of start variables greater than name of end variables: '", e1,"' > '",e2,"'.")
         all_digits = digits1:digits2
         if(padding>0) all_digits = formatC(all_digits, width = padding, format = "d", flag = "0")

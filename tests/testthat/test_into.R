@@ -224,3 +224,19 @@ expect_identical(
         
     }), tbl2
 )
+
+#####################
+
+set.seed(123)
+a = as.data.frame(matrix(rnorm(30), ncol = 15))
+
+
+b = compute(a, {
+    
+    recode(V1 %to% V10, other ~ copy) %into% (Vr2 %to% Vr11)
+    
+})
+
+new_var = setNames(a[, 1:10], paste0("Vr", 2:11))
+
+expect_identical(b, cbind(a, new_var))
