@@ -67,12 +67,13 @@
 #' split_table_to_df(tabl)
 #' 
 #' 
-split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, perl = FALSE){
+split_labels = function(x, remove_repeated = TRUE, split = "\\|", fixed = FALSE, perl = FALSE){
     if(length(x)==0){
         return(matrix(NA, ncol=0, nrow = 0))
     }
     zero_length_strings = x == "" # strange behaviour of strsplit with ""
-    x_split = strsplit(x, split = split, fixed = fixed, perl = perl)
+    x_split = strsplit(x, split = split, fixed = fixed, perl = perl)  
+
     if(any(zero_length_strings)){
         x_split[zero_length_strings] = "" 
     }
@@ -104,8 +105,8 @@ split_labels = function(x, remove_repeated = TRUE, split = "|", fixed = TRUE, pe
 split_columns  = function(data, 
                           columns = 1, 
                           remove_repeated = TRUE, 
-                          split = "|", 
-                          fixed = TRUE, 
+                          split = "\\|", 
+                          fixed = FALSE, 
                           perl = FALSE){
    UseMethod("split_columns")
 }
@@ -115,8 +116,8 @@ split_columns  = function(data,
 split_columns.intermediate_table = function(data, 
                                             columns = 1, 
                                             remove_repeated = TRUE, 
-                                            split = "|", 
-                                            fixed = TRUE, 
+                                            split = "\\|", 
+                                            fixed = FALSE, 
                                             perl = FALSE
                                             ){
     stop("No results for splitting. Use 'split_columns' after 'tab_pivot'.")
@@ -127,8 +128,8 @@ split_columns.intermediate_table = function(data,
 split_columns.data.frame  = function(data, 
                                      columns = 1, 
                                      remove_repeated = TRUE, 
-                                     split = "|", 
-                                     fixed = TRUE, 
+                                     split = "\\|", 
+                                     fixed = FALSE, 
                                      perl = FALSE){
     stopif(!is.numeric(columns) && !is.character(columns) &&
                !is.logical(columns),
@@ -188,8 +189,8 @@ split_columns.data.frame  = function(data,
 split_columns.matrix  = function(data, 
                                  columns = 1, 
                                  remove_repeated = TRUE, 
-                                 split = "|", 
-                                 fixed = TRUE, 
+                                 split = "\\|", 
+                                 fixed = FALSE, 
                                  perl = FALSE){
     
     matr_colnames = colnames(data)
@@ -211,8 +212,8 @@ split_columns.matrix  = function(data,
 split_table_to_df = function(data, 
                              digits = get_expss_digits(), 
                              remove_repeated = TRUE, 
-                             split = "|", 
-                             fixed = TRUE, 
+                             split = "\\|", 
+                             fixed = FALSE, 
                              perl = FALSE){
     UseMethod("split_table_to_df")
 }
@@ -220,8 +221,8 @@ split_table_to_df = function(data,
 #' @export
 split_table_to_df.intermediate_table = function(data, digits = get_expss_digits(), 
                                                 remove_repeated = TRUE, 
-                                                split = "|", 
-                                                fixed = TRUE, 
+                                                split = "\\|", 
+                                                fixed = FALSE, 
                                                 perl = FALSE){
     stop("No results for splitting. Use 'split_table_to_df' after 'tab_pivot'.")
 }
@@ -230,8 +231,8 @@ split_table_to_df.intermediate_table = function(data, digits = get_expss_digits(
 split_table_to_df.etable = function(data, 
                                digits = get_expss_digits(), 
                         remove_repeated = TRUE, 
-                        split = "|", 
-                        fixed = TRUE, 
+                        split = "\\|", 
+                        fixed = FALSE, 
                         perl = FALSE){
     if(NCOL(data) == 0) return(data)
     data = round_dataframe(data, digits = digits)
@@ -366,8 +367,8 @@ make_subheadings.etable = function(data, number_of_columns = 1){
 split_all_in_etable_for_print = function(data, 
                                digits = get_expss_digits(), 
                                remove_repeated = TRUE, 
-                               split = "|", 
-                               fixed = TRUE, 
+                               split = "\\|", 
+                               fixed = FALSE, 
                                perl = FALSE){
     if(NCOL(data) == 0) return(data)
     data_ncol = NCOL(data)

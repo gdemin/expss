@@ -18,6 +18,14 @@ mtcars = apply_labels(mtcars,
 # without sorting
 tabl = mtcars %>% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am), total_label = "#Total"))
 expect_equal_to_reference(split_labels(tabl[[1]]), "rds/split_labels1.RDS")
+
+expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", perl = TRUE), "rds/split_labels1.RDS")
+expect_equal_to_reference(split_labels(tabl[[1]], split = "|", fixed = TRUE), "rds/split_labels1.RDS")
+expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE), "rds/split_labels1.RDS")
+expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE, perl = TRUE), "rds/split_labels1.RDS")
+expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE, perl = FALSE), "rds/split_labels1.RDS")
+expect_equal_to_reference(split_labels(tabl[[1]], split = "|", fixed = TRUE, perl = FALSE), "rds/split_labels1.RDS")
+expect_warning(split_labels(tabl[[1]], split = "\\|", fixed = TRUE, perl = TRUE))
 expect_equal_to_reference(split_labels(colnames(tabl)), "rds/split_labels2.RDS")
 
 expect_equal_to_reference(split_labels(tabl[[1]], remove_repeated = FALSE), "rds/split_labels3.RDS")
@@ -40,6 +48,8 @@ expect_identical(split_labels(vec), matrix(vec, ncol = 1))
 context("split_columns")
 # replace first column with new columns 
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
+expect_equal_to_reference(split_columns(tabl, split = "|", fixed = TRUE), "rds/split_columns1.rds")
+expect_equal_to_reference(split_columns(tabl, split = "\\|", perl = TRUE), "rds/split_columns1.rds")
 expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_columns1subheadings.rds")
 expect_equal_to_reference(split_columns(tabl, "row_labels"), "rds/split_columns1.rds")
 expect_equal_to_reference(split_columns(tabl, c(TRUE, rep(FALSE, ncol(tabl)-1))), "rds/split_columns1.rds")

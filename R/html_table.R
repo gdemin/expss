@@ -71,9 +71,10 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ...){
     # first_lab = htmltools::htmlEscape(first_lab)
     row_labels = x[[1]]  # htmltools::htmlEscape(x[[1]])
     x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
-    header = t(split_labels(colnames(x), split = "|", remove_repeated = FALSE))
+    header = t(split_labels(colnames(x), split = "|", fixed = TRUE, remove_repeated = FALSE))
     header_last_row = t(split_labels(colnames(x),
                                      split = "|", 
+                                     fixed = TRUE,
                                      remove_repeated = TRUE))[NROW(header), , drop = FALSE]
     # header[] = htmltools::htmlEscape(header)
     # header_last_row[] = htmltools::htmlEscape(header_last_row)
@@ -107,7 +108,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ...){
         
     }
     align = rep("r", NCOL(x))
-    row_labels = split_labels(row_labels)
+    row_labels = split_labels(row_labels, split = "|", fixed = TRUE)
     for(each in seq_len(NCOL(row_labels))){
         curr_col = row_labels[, each]
         ok = !is.na(curr_col) & curr_col!=""
