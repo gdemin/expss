@@ -204,24 +204,43 @@ section_sig_previous_column_means = function(sig_section,
             # col1 - current column
             # col2 - previous column
             if(bonferroni) {
-                valid_columns = !is.na(curr_base[each_group])
-                bonferroni_coef = (sum(valid_columns) - 1)*NROW(curr_props)
+                comparable_values = !(is.na(curr_means[,each_group, drop = FALSE]) |
+                                          is.na(curr_sds[,each_group, drop = FALSE]) |
+                                          is.na(curr_ns[,each_group, drop = FALSE]))
+                # count number of comaprisons
+                number_of_comparisons_in_row = 0
+                for(col1 in seq_len(ncol(comparable_values))[-1]){
+                    col2 = col1  - 1
+                    number_of_comparisons_in_row = number_of_comparisons_in_row + 
+                        comparable_values[col2] & comparable_values[col1]
+                }    
+                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+                bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
             } 
             for(col1 in each_group[-1]){
                 col2 = col1  - 1
-                prop1 = curr_props[[col1]]
-                base1 = curr_base[[col1]]
-                prop2 = curr_props[[col2]]
-                base2 = curr_base[[col2]]
-                pval = compare_proportions(prop1, prop2, 
-                                           base1, base2)
+                mean1 = curr_means[[col1]] 
+                sd1 = curr_sds[[col1]]
+                n1 = curr_ns[[col1]]
+                mean2 = curr_means[[col2]] 
+                sd2 = curr_sds[[col2]]
+                n2 = curr_ns[[col2]]
+                pval = compare_means(mean1 = mean1,
+                                     mean2 = mean2,
+                                     sd1 = sd1,
+                                     sd2 = sd2,
+                                     base1 = n1,
+                                     base2 = n2,
+                                     common_base = 0,
+                                     var_equal = var_equal
+                )
                 if_na(pval) = 1
                 pval = pmin(pval*bonferroni_coef, 1)
                 sig_section[[col1]] = ifelse(pval<sig_level,
                                              # previous value is greater
-                                             ifelse(prop2>prop1,
+                                             ifelse(mean2>mean1,
                                                     paste_non_empty(sig_section[[col1]], 
                                                                     sig_labels_previous_column[[1]], 
                                                                     sep = " "),
@@ -254,21 +273,34 @@ section_sig_first_column_means = function(sig_section,
     # col1 - first column
     # col2 - other columns
     col1 = groups[1]
-    prop1 = curr_props[[col1]]
-    base1 = curr_base[[col1]]
-    if(length(groups)>1 & !is.na(base1)){
+    mean1 = curr_means[[col1]]
+    sd1 = curr_sds[[col1]]
+    base1 = curr_ns[[col1]]
+    if(length(groups)>1){
         if(bonferroni) {
-            valid_columns = !is.na(curr_base)
-            bonferroni_coef = (sum(valid_columns) - 1)*NROW(curr_props)
+            comparable_values = !(is.na(curr_means[,groups, drop = FALSE]) |
+                                      is.na(curr_sds[,groups, drop = FALSE]) |
+                                      is.na(curr_ns[,groups, drop = FALSE]))
+            # count number of comaprisons
+            number_of_comparisons_in_row = comparable_values[,1]
+            for(col1 in seq_len(ncol(comparable_values))[-1]){
+                number_of_comparisons_in_row = number_of_comparisons_in_row + 
+                    comparable_values[1] & comparable_values[col1]
+            }    
+            bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+            bonferroni_coef[bonferroni_coef==0] = 1
         } else {
             bonferroni_coef = 1
         } 
         for(col2 in groups[-1]){
-            prop2 = curr_props[[col2]]
-            base2 = curr_base[[col2]][1]
-            pval = compare_proportions(prop1, prop2, 
-                                       base1, base2,
-                                       common_base = base2*adjust_common_base)
+            mean2 = curr_means[[col2]]
+            sd2 = curr_sds[[col2]]
+            base2 = curr_ns[[col2]]
+            pval = compare_means(mean1, mean2,
+                                 sd1, sd2, 
+                                 base1, base2,
+                                 common_base = base2*adjust_common_base,
+                                 var_equal = var_equal)
             if_na(pval) = Inf
             sig_section[[col2]] = ifelse(pval<sig_level,
                                          # previous value is greater
