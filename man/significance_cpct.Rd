@@ -28,9 +28,9 @@ significance_means(x, sig_level = 0.05, delta_means = 0, min_base = 2,
 \item{sig_level}{numeric. significance level - by default it equals to \code{0.05}.}
 
 \item{delta_cpct}{numeric. Minimal delta between values for which we mark 
-significant differences - by default it equals to zero. Note that, for 
-example, for minimal 5 percent difference \code{delta_cpct} should be equals
-5, not 0.05.}
+significant differences (in percent points) - by default it equals to zero.
+Note that, for example, for minimal 5 percent points difference
+\code{delta_cpct} should be equals 5, not 0.05.}
 
 \item{min_base}{numeric. Significance test will be conducted if both
 columns have bases greater than \code{min_base}. By default it equals to \code{2}.}

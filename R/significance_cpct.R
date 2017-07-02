@@ -20,9 +20,9 @@ COMPARE_TYPE = c("subtable",
 #'   \code{significance_cpct}.
 #' @param sig_level numeric. significance level - by default it equals to \code{0.05}.
 #' @param delta_cpct numeric. Minimal delta between values for which we mark 
-#'   significant differences - by default it equals to zero. Note that, for 
-#'   example, for minimal 5 percent difference \code{delta_cpct} should be equals
-#'   5, not 0.05.
+#'   significant differences (in percent points) - by default it equals to zero.
+#'   Note that, for example, for minimal 5 percent points difference
+#'   \code{delta_cpct} should be equals 5, not 0.05.
 #' @param min_base numeric. Significance test will be conducted if both
 #'   columns have bases greater than \code{min_base}. By default it equals to \code{2}.
 #' @param compare_type Type of compare between columns. By default it is 
@@ -247,15 +247,22 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
     for(each_group in groups){
         if(length(each_group)>1){
             if(bonferroni) {
-                valid_columns = !is.na(curr_base[each_group])
-                bonferroni_coef = sum(valid_columns)*(sum(valid_columns) - 1)/2*NROW(curr_props)
+                invalid_columns = is.na(curr_base[each_group])
+                comparable_values = !is.na(curr_props[,each_group, drop = FALSE])
+                comparable_values[,invalid_columns] = FALSE
+                # count number of comaprisons
+                valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
+                number_of_comparisons_in_row = valid_values_in_row*(valid_values_in_row-1)/2
+                number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
+                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+                bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
             }    
             for(col1 in each_group[-length(each_group)]){
                 prop1 = curr_props[[col1]]
                 base1 = curr_base[[col1]]
-                for(col2 in col1:each_group[length(each_group)]){
+                for(col2 in (col1+1):each_group[length(each_group)]){
                     prop2 = curr_props[[col2]]
                     base2 = curr_base[[col2]]
                     pval = compare_proportions(prop1, prop2, 
@@ -293,8 +300,15 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
             # col1 - current column
             # col2 - previous column
             if(bonferroni) {
-                valid_columns = !is.na(curr_base[each_group])
-                bonferroni_coef = (sum(valid_columns) - 1)*NROW(curr_props)
+                invalid_columns = is.na(curr_base[each_group])
+                comparable_values = !is.na(curr_props[,each_group, drop = FALSE])
+                comparable_values[,invalid_columns] = FALSE
+                # count number of comaprisons
+                valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
+                number_of_comparisons_in_row = valid_values_in_row - 1
+                number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
+                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+                bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
             } 
@@ -341,8 +355,15 @@ section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
     base1 = curr_base[[col1]]
     if(length(groups)>1 & !is.na(base1)){
         if(bonferroni) {
-            valid_columns = !is.na(curr_base)
-            bonferroni_coef = (sum(valid_columns) - 1)*NROW(curr_props)
+            invalid_columns = is.na(curr_base[-1])
+            comparable_values = !is.na(curr_props[,-1, drop = FALSE])
+            comparable_values[,invalid_columns] = FALSE
+            # count number of comaprisons
+            valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
+            number_of_comparisons_in_row = valid_values_in_row
+            number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
+            bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+            bonferroni_coef[bonferroni_coef==0] = 1
         } else {
             bonferroni_coef = 1
         } 
