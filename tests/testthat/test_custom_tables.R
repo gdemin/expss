@@ -1065,3 +1065,13 @@ res = mtcars %>%
     tab_pivot() 
 
 expect_equal_to_reference(res, "rds/ctable38.rds")
+
+
+
+res = mtcars %>% 
+    tab_cells(vs) %>% 
+    tab_cols(total(), am) %>% 
+    tab_stat_mean() %>% 
+    tab_row_label("Wow! Percent! %%%") %>% 
+    tab_stat_cpct() %>%
+    tab_pivot() 

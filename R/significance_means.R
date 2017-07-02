@@ -71,31 +71,37 @@ significance_means.etable = function(x,
     
     if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
         sig_table = means_sig_first_column(sig_table = sig_table, 
-                                           curr_props = curr_props, 
-                                           curr_base = curr_base,
+                                           curr_means = all_means, 
+                                           curr_sds = all_sds,
+                                           curr_ns = all_ns,
                                            groups = groups,
                                            sig_labels_first_column = sig_labels_first_column,
                                            sig_level = sig_level,
                                            bonferroni = bonferroni,
+                                           var_equal = var_equal,
                                            adjust_common_base = "adjusted_first_column" %in% compare_type)
     }
     if(any(c("previous_column") %in% compare_type)){
         sig_table = means_sig_previous_column(sig_table = sig_table, 
-                                              curr_props = curr_props, 
-                                              curr_base = curr_base,
+                                              curr_means = all_means, 
+                                              curr_sds = all_sds,
+                                              curr_ns = all_ns,
                                               groups = groups,
                                               sig_labels_previous_column = sig_labels_previous_column,
                                               sig_level = sig_level,
-                                              bonferroni = bonferroni)
+                                              bonferroni = bonferroni,
+                                              var_equal = var_equal)
     }
     if("subtable" %in% compare_type){
         sig_table = means_sig_prop(sig_table = sig_table, 
-                                   curr_props = curr_props, 
-                                   curr_base = curr_base,
+                                   curr_means = all_means, 
+                                   curr_sds = all_sds,
+                                   curr_ns = all_ns,
                                    groups = groups,
                                    all_column_labels = all_column_labels,
                                    sig_level = sig_level,
-                                   bonferroni = bonferroni)
+                                   bonferroni = bonferroni,
+                                   var_equal = var_equal)
     }
         
     x = round_dataframe(x, digits = digits)
@@ -118,33 +124,56 @@ significance_means.etable = function(x,
 
 ########################
 
-section_sig_means = function(sig_section, curr_props,  curr_base, groups,
-                            all_column_labels, sig_level, bonferroni) {
+section_sig_means = function(sig_section, 
+                             curr_means, 
+                             curr_sds,
+                             curr_ns,
+                             groups,
+                            all_column_labels, 
+                            sig_level, 
+                            bonferroni,
+                            var_equal) {
     for(each_group in groups){
         if(length(each_group)>1){
             if(bonferroni) {
-                valid_columns = !is.na(curr_base[each_group])
-                bonferroni_coef = sum(valid_columns)*(sum(valid_columns) - 1)/2*NROW(curr_props)
+                comparable_values = !(is.na(curr_means[,each_group, drop = FALSE]) |
+                    is.na(curr_sds[,each_group, drop = FALSE]) |
+                    is.na(curr_ns[,each_group, drop = FALSE]))
+                # count number of comaprisons
+                valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
+                number_of_comparisons_in_row = valid_values_in_row*(valid_values_in_row-1)/2
+                number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
+                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+                bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
-            }    
+            } 
             for(col1 in each_group[-length(each_group)]){
-                prop1 = curr_props[[col1]]
-                base1 = curr_base[[col1]]
-                for(col2 in col1:each_group[length(each_group)]){
-                    prop2 = curr_props[[col2]]
-                    base2 = curr_base[[col2]]
-                    pval = compare_proportions(prop1, prop2, 
-                                               base1, base2)
+                mean1 = curr_means[[col1]] 
+                sd1 = curr_sds[[col1]]
+                n1 = curr_ns[[col1]]
+                for(col2 in (col1 + 1):each_group[length(each_group)]){
+                    mean2 = curr_means[[col2]] 
+                    sd2 = curr_sds[[col2]]
+                    n2 = curr_ns[[col2]]
+                    pval = compare_means(mean1 = mean1,
+                                         mean2 = mean2,
+                                         sd1 = sd1,
+                                         sd2 = sd2,
+                                         base1 = n1,
+                                         base2 = n2,
+                                         common_base = 0,
+                                         var_equal = var_equal
+                                         )
                     if_na(pval) = 1
                     pval = pmin(pval*bonferroni_coef, 1)
-                    sig_section[[col1]] = ifelse(prop1>prop2 & pval<sig_level,
+                    sig_section[[col1]] = ifelse(mean1>mean2 & pval<sig_level,
                                                  paste_non_empty(sig_section[[col1]],
                                                                  all_column_labels[[col2]],
                                                                  sep = " "),
                                                  sig_section[[col1]]
                     )
-                    sig_section[[col2]] = ifelse(prop2>prop1 & pval<sig_level,
+                    sig_section[[col2]] = ifelse(mean2>mean1 & pval<sig_level,
                                                  paste_non_empty(sig_section[[col2]], 
                                                                  all_column_labels[[col1]], 
                                                                  sep = " "),
@@ -161,8 +190,15 @@ section_sig_means = function(sig_section, curr_props,  curr_base, groups,
 
 ########################
 
-section_sig_previous_column_means = function(sig_section, curr_props,  curr_base, groups,
-                                       sig_labels_previous_column, sig_level, bonferroni) {
+section_sig_previous_column_means = function(sig_section, 
+                                             curr_means, 
+                                             curr_sds,
+                                             curr_ns,
+                                             groups,
+                                       sig_labels_previous_column, 
+                                       sig_level, 
+                                       bonferroni,
+                                       var_equal) {
     for(each_group in groups){
         if(length(each_group)>1){
             # col1 - current column
@@ -204,8 +240,15 @@ section_sig_previous_column_means = function(sig_section, curr_props,  curr_base
 
 ########################
 
-section_sig_first_column_means = function(sig_section, curr_props,  curr_base, groups,
-                                    sig_labels_first_column, sig_level, bonferroni,
+section_sig_first_column_means = function(sig_section,
+                                          curr_means, 
+                                          curr_sds,
+                                          curr_ns, 
+                                          groups,
+                                    sig_labels_first_column,
+                                    sig_level, 
+                                    bonferroni,
+                                    var_equal,
                                     adjust_common_base = FALSE) {
     groups = unlist(groups)
     # col1 - first column

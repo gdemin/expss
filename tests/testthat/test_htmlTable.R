@@ -96,6 +96,12 @@ options(expss.digits = NULL)
 expect_equal(htmlTable(mtcars_table),
              htmlTable(mtcars_table, digits = 1))
 
+
+# simple_table = cro(list(1:5), list(1:5))
+# 
+# expss_output_viewer()
+# htmlTable(simple_table)
+
 data("product_test")
 res = product_test %>%
     tab_cols(c1) %>%
