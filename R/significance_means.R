@@ -70,7 +70,7 @@ significance_means.etable = function(x,
     sig_table[, -1] = ""
     
     if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
-        sig_table = means_sig_first_column(sig_table = sig_table, 
+        sig_table[means_ind, ] = section_sig_first_column_means(sig_section = sig_table[means_ind, ], 
                                            curr_means = all_means, 
                                            curr_sds = all_sds,
                                            curr_ns = all_ns,
@@ -82,7 +82,7 @@ significance_means.etable = function(x,
                                            adjust_common_base = "adjusted_first_column" %in% compare_type)
     }
     if(any(c("previous_column") %in% compare_type)){
-        sig_table = means_sig_previous_column(sig_table = sig_table, 
+        sig_table[means_ind, ] = section_sig_previous_column_means(sig_section = sig_table[means_ind, ], 
                                               curr_means = all_means, 
                                               curr_sds = all_sds,
                                               curr_ns = all_ns,
@@ -93,7 +93,7 @@ significance_means.etable = function(x,
                                               var_equal = var_equal)
     }
     if("subtable" %in% compare_type){
-        sig_table = means_sig_prop(sig_table = sig_table, 
+        sig_table[means_ind, ] = section_sig_means(sig_section = sig_table[means_ind, ], 
                                    curr_means = all_means, 
                                    curr_sds = all_sds,
                                    curr_ns = all_ns,
@@ -106,20 +106,18 @@ significance_means.etable = function(x,
         
     x = round_dataframe(x, digits = digits)
     if(keep_means){
-        x = format_to_character(x, digits = digits)    
+        x[, -1] = format_to_character(x[, -1], digits = digits)    
         x[, -1] = paste_df_non_empty(
             x[, -1, drop = FALSE], 
             sig_table[, -1, drop = FALSE],
             sep = " "
         )
     } else {
-        x[!total_rows_indicator, -1] = res[!total_rows_indicator, -1, drop = FALSE]
+        x[means_ind, -1] = res[means_ind, -1, drop = FALSE]
     }
-    if(keep_bases) {
-        x
-    } else {
-        x[!total_rows_indicator, ]
-    }
+    x[means_ind | (keep_sd & sd_ind) | (keep_bases & n_ind), ]
+    # class(x) = union("etable", class(x))
+    # x
 }
 
 ########################
