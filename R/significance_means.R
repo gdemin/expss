@@ -77,6 +77,7 @@ significance_means.etable = function(x,
                                            groups = groups,
                                            sig_labels_first_column = sig_labels_first_column,
                                            sig_level = sig_level,
+                                           delta_means = delta_means,
                                            bonferroni = bonferroni,
                                            var_equal = var_equal,
                                            adjust_common_base = "adjusted_first_column" %in% compare_type)
@@ -89,6 +90,7 @@ significance_means.etable = function(x,
                                               groups = groups,
                                               sig_labels_previous_column = sig_labels_previous_column,
                                               sig_level = sig_level,
+                                              delta_means = delta_means,
                                               bonferroni = bonferroni,
                                               var_equal = var_equal)
     }
@@ -100,6 +102,7 @@ significance_means.etable = function(x,
                                    groups = groups,
                                    all_column_labels = all_column_labels,
                                    sig_level = sig_level,
+                                   delta_means = delta_means,
                                    bonferroni = bonferroni,
                                    var_equal = var_equal)
     }
@@ -113,7 +116,7 @@ significance_means.etable = function(x,
             sep = " "
         )
     } else {
-        x[means_ind, -1] = res[means_ind, -1, drop = FALSE]
+        x[means_ind, -1] = sig_table[means_ind, -1, drop = FALSE]
     }
     x[means_ind | (keep_sd & sd_ind) | (keep_bases & n_ind), ]
     # class(x) = union("etable", class(x))
@@ -129,6 +132,7 @@ section_sig_means = function(sig_section,
                              groups,
                             all_column_labels, 
                             sig_level, 
+                            delta_means,
                             bonferroni,
                             var_equal) {
     for(each_group in groups){
@@ -165,13 +169,17 @@ section_sig_means = function(sig_section,
                                          )
                     if_na(pval) = 1
                     pval = pmin(pval*bonferroni_coef, 1)
-                    sig_section[[col1]] = ifelse(mean1>mean2 & pval<sig_level,
+                    sig_section[[col1]] = ifelse(abs(mean1 - mean2)>delta_means & 
+                                                     mean1>mean2 & 
+                                                     pval<sig_level,
                                                  paste_non_empty(sig_section[[col1]],
                                                                  all_column_labels[[col2]],
                                                                  sep = " "),
                                                  sig_section[[col1]]
                     )
-                    sig_section[[col2]] = ifelse(mean2>mean1 & pval<sig_level,
+                    sig_section[[col2]] = ifelse(abs(mean1 - mean2)>delta_means & 
+                                                     mean2>mean1 & 
+                                                     pval<sig_level,
                                                  paste_non_empty(sig_section[[col2]], 
                                                                  all_column_labels[[col1]], 
                                                                  sep = " "),
@@ -195,6 +203,7 @@ section_sig_previous_column_means = function(sig_section,
                                              groups,
                                        sig_labels_previous_column, 
                                        sig_level, 
+                                       delta_means,
                                        bonferroni,
                                        var_equal) {
     for(each_group in groups){
@@ -236,7 +245,7 @@ section_sig_previous_column_means = function(sig_section,
                 )
                 if_na(pval) = 1
                 pval = pmin(pval*bonferroni_coef, 1)
-                sig_section[[col1]] = ifelse(pval<sig_level,
+                sig_section[[col1]] = ifelse(abs(mean1 - mean2)>delta_means & pval<sig_level,
                                              # previous value is greater
                                              ifelse(mean2>mean1,
                                                     paste_non_empty(sig_section[[col1]], 
@@ -264,6 +273,7 @@ section_sig_first_column_means = function(sig_section,
                                           groups,
                                     sig_labels_first_column,
                                     sig_level, 
+                                    delta_means,
                                     bonferroni,
                                     var_equal,
                                     adjust_common_base = FALSE) {
@@ -300,9 +310,9 @@ section_sig_first_column_means = function(sig_section,
                                  common_base = base2*adjust_common_base,
                                  var_equal = var_equal)
             if_na(pval) = Inf
-            sig_section[[col2]] = ifelse(pval<sig_level,
+            sig_section[[col2]] = ifelse(abs(mean1 - mean2)>delta_means & pval<sig_level,
                                          # previous value is greater
-                                         ifelse(prop1>prop2,
+                                         ifelse(mean1 > mean2,
                                                 paste_non_empty(sig_section[[col2]], 
                                                                 sig_labels_first_column[[1]], 
                                                                 sep = " "),
