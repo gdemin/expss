@@ -356,3 +356,36 @@ res = lapply(iris_list, function(dfs) {
 
 res0 = modify_if(iris_list, Sepal.Width>mean(Sepal.Width), {aggr = 1})
 expect_identical(res0, res)
+
+
+context("modify new_var")
+# data(iris)
+test_iris = iris
+test_iris$new_var = NA
+test_iris$new_logi = FALSE
+test_iris$new_num = 0
+test_iris$new_char = ""
+
+res_iris = modify(iris, {
+    new_var = .new_var()
+    new_logi = .new_logical()
+    new_num = .new_numeric()
+    new_char = .new_character()
+})
+
+expect_identical(res_iris, test_iris)
+
+test_iris = iris
+test_iris[1:50, "new_var"] = NA
+test_iris[1:50, "new_logi"] = FALSE
+test_iris[1:50, "new_num"] = 0
+test_iris[1:50, "new_char"] = ""
+
+res_iris = modify_if(iris, Species == "setosa", {
+    new_var = .new_var()
+    new_logi = .new_logical()
+    new_num = .new_numeric()
+    new_char = .new_character()
+})
+
+expect_identical(res_iris, test_iris)

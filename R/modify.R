@@ -18,9 +18,11 @@
 #' }
 #' There is a special constant \code{.N} which equals to number of cases in 
 #' \code{data} for usage in expression inside \code{compute}/\code{calculate}. 
-#' Inside \code{do_if} \code{.N} gives number of rows which will be affected by
-#' expressions. For parametrization (variable substitution) see \link{..} or
-#' examples. 
+#' Inside \code{do_if} \code{.N} gives number of rows which will be affected by 
+#' expressions. For parametrization (variable substitution) see \link{..} or 
+#' examples. Sometimes it is useful to create new empty variable inside compute.
+#' You can use \code{.new_var} function for this task. This function creates
+#' variable of length \code{.N} filled with NA. See examples.
 #' \code{modify} is an alias for \code{compute}, \code{modify_if} is
 #' an alias for \code{do_if} and \code{calc} is an alias for \code{calculate}.
 #' 
@@ -61,6 +63,11 @@
 #'     (b_1 %to% b_5) %into% subst('new_b`1:5`')
 #' })
 #' 
+#' # .new_var usage
+#' compute(dfs, {
+#'     new_var = .new_var()
+#'     new_var[1] = 1 # this is not possible without preliminary variable creation
+#' })
 #' 
 #' # conditional modification
 #' do_if(dfs, test %in% 2:4, {

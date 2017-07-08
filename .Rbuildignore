@@ -6,6 +6,7 @@
 ^SupplementaryMaterials
 README.MD
 tests/testthat/data
+tests/testthat/test_write_labels.R
 tests/test_all.R
 docs
 
