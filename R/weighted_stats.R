@@ -174,7 +174,7 @@ valid_n = function(x, weight = NULL) {
 w_max = function(x, weight = NULL, na.rm = TRUE){
     internal_w_stat(x = x,  weight = weight, na.rm = na.rm, fun = function(x, w, na.rm){
         res = max(x, na.rm = TRUE)
-        res[!is.finite(res)] = NA
+        res[!is.finite(res)] = NA_real_
         res
     })
 }
@@ -184,7 +184,7 @@ w_max = function(x, weight = NULL, na.rm = TRUE){
 w_min = function(x, weight = NULL, na.rm = TRUE){
     internal_w_stat(x = x,  weight = weight, na.rm = na.rm, fun = function(x, w, na.rm){
         res = min(x, na.rm = TRUE)
-        res[!is.finite(res)] = NA
+        res[!is.finite(res)] = NA_real_
         res
     })
 }
@@ -356,10 +356,9 @@ internal_w_cov = function (x, weight){
 }
 
 matrix_of_na = function(x){
-    res = matrix(NA*1, nrow = ncol(x), ncol = ncol(x))
+    res = matrix(NA_real_, nrow = ncol(x), ncol = ncol(x))
     colnames(res) = colnames(x)
     rownames(res) = colnames(x)
-    res[] = NA
     res
 }
 
@@ -381,7 +380,7 @@ internal_w_stat = function(x, weight, na.rm, check_weight_sum = FALSE, fun){
         weight = weight[positive_weight]
         if(check_weight_sum && (sum(weight[!is.na(x)])<1)) {
             # warning("Sum of weights is less than one. NA will be returned.")
-            return(NA)
+            return(NA_real_) # for data.table - it cannot combine logical and numeric in single column
         }
     }
     fun(x = x, w = weight, na.rm = na.rm)

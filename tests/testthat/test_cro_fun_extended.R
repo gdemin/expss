@@ -376,3 +376,14 @@ expect_error(cro_fun(list(mtcars$mpg, mtcars$disp, mtcars$wt),
                      list(total(), mtcars$am, mtcars$vs), 
                      fun = fun,
                      unsafe = c("sum", "length", "length")))
+
+
+#################
+
+expect_equal(
+cro_fun(c(1:3, NA, NA, NA), c(1,1,1,2,2,2), weight = 1.9, fun = w_sd),
+structure(list(row_labels = "c(1:3, NA, NA, NA)", `c(1, 1, 1, 2, 2, 2)|1` = 0.899172196132572, 
+`c(1, 1, 1, 2, 2, 2)|2` = NA_real_), .Names = c("row_labels", 
+"c(1, 1, 1, 2, 2, 2)|1", "c(1, 1, 1, 2, 2, 2)|2"), row.names = c(NA, 
+-1L), class = c("etable", "data.frame"))
+)

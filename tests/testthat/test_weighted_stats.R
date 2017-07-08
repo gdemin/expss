@@ -421,11 +421,11 @@ expect_equal(w_spearman(mat, weight = TRUE, use = "complete.obs"), w_spearman(ma
 #############
 
 
-expect_equal(w_sd(x, weight = w/100), NA)
-expect_equal(w_var(x, weight = w/100), NA)
-expect_equal(w_se(x, weight = w/100), NA)
+expect_equal(w_sd(x, weight = w/100), NA_real_)
+expect_equal(w_var(x, weight = w/100), NA_real_)
+expect_equal(w_se(x, weight = w/100), NA_real_)
 
-na_mat = matrix(NA, 3, 3)*1.2
+na_mat = matrix(NA_real_, 3, 3)*1.2
 colnames(na_mat) = c("x", "y", "z")
 rownames(na_mat) = c("x", "y", "z")
 expect_equal(w_cov(mat, weight = w/100, use = "pairwise"), na_mat)
