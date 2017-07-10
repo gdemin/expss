@@ -154,3 +154,101 @@ do_repeat.list = function(data, ...){
     invisible(data)
 
 }
+
+
+internal_draft = function(values, names){
+    variables_names = substitute(names)
+    if(length(variables_names)==1){
+        variables_names = substitute(list(names))
+    }
+    into_internal(values, variables_names, parent.frame())
+}
+
+#' @export
+#' @rdname do_repeat
+as_is = function(...){
+    I(list(...))
+}
+
+looping_values = function(variables_names, envir){
+    variables_names = substitute_symbols(variables_names,
+                                         list("%to%" = expr_into_helper,
+                                              ".." = expr_internal_parameter)
+    )
+    existing_vars = get_current_variables(envir)
+    variables_names = as.list(variables_names)
+    variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
+    variables_names = as.call(variables_names)
+    variables_names = eval(variables_names, envir = envir,
+                           enclos = baseenv())
+    variables_names
+}    
+
+
+
+do_repeat_internal = function(data, args, parent){
+    UseMethod("do_repeat_internal")    
+    
+}    
+    
+do_repeat_internal.data.frame = function(data, args, parent){    
+    expr = args[[length(args)]]
+    args[length(args)] = NULL
+    
+    e = evalq(environment(), envir = data, enclos = parent)
+    prepare_env(e, n = nrow(data), column_names = colnames(data))
+    items = looping_values(args, envir = e)
+
+    items_names = names(items)[-1]
+    stopif(is.null(items_names) || any(is.na(items_names) | items_names==""), 
+           "All variables among '...' should be named.")
+    
+    for(i in items_names){
+        each_name = items_names[[i]]
+        if(is.function(each_name)){
+            variables_names[[i]] = v_intersect(existing_vars, each_name)
+            existing_vars = v_diff(existing_vars, each_name)
+        } 
+    }
+    variables_names = unlist(variables_names)
+    items_lengths = lengths(items) 
+    stopif(!all(items_lengths %in% c(1, max(items_lengths))),
+           "All variables should have equal length or length 1")
+    
+    expr = substitute(expr)
+    for(each_item in seq_len(max(items_lengths))){
+        curr_loop = lapply(items, function(item){
+            if(length(item)>1){
+                item[[each_item]]
+            } else {
+                item[[1]]  
+            }
+        })
+        e$.item_num = each_item
+        lockBinding(".item_num", e)
+        names(curr_loop) = items_names
+        curr_loop = convert_characters_to_names(curr_loop)
+        substituted_expr = substitute_symbols(expr, curr_loop)
+        eval(substituted_expr, e, enclos = baseenv())
+        rm(".item_num", envir = e)
+    }
+    clear_env(e)
+    l = as.list(e, all.names = TRUE)
+    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
+    del = setdiff(names(data), names(l))
+    if(length(del)){
+        data[, del] = NULL
+    }
+    nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
+    wrong_rows = nrows!=1L & nrows!=nrow(data)
+    if(any(wrong_rows)){
+        er_message = utils::head(paste0("'", names(l)[wrong_rows], "' has ", nrows[wrong_rows], " rows"), 5)
+        er_message = paste(er_message, collapse = ", ")
+        stop(paste0("Bad number of rows: ", er_message, " instead of ", nrow(data), " rows."))
+    }
+    
+    new_vars = rev(names(l)[!(names(l) %in% names(data))])
+    nl = c(names(data), new_vars)
+    data[nl] = l[nl]
+    data    
+}    
