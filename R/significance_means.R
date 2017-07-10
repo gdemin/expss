@@ -145,7 +145,7 @@ section_sig_means = function(sig_section,
                 valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
                 number_of_comparisons_in_row = valid_values_in_row*(valid_values_in_row-1)/2
                 number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
-                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+                bonferroni_coef = number_of_comparisons_in_row #sum(number_of_comparisons_in_row, na.rm = TRUE)
                 bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
@@ -221,7 +221,7 @@ section_sig_previous_column_means = function(sig_section,
                     number_of_comparisons_in_row = number_of_comparisons_in_row + 
                         comparable_values[col2] & comparable_values[col1]
                 }    
-                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+                bonferroni_coef = number_of_comparisons_in_row #sum(number_of_comparisons_in_row, na.rm = TRUE)
                 bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
@@ -295,7 +295,7 @@ section_sig_first_column_means = function(sig_section,
                 number_of_comparisons_in_row = number_of_comparisons_in_row + 
                     comparable_values[1] & comparable_values[col1]
             }    
-            bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+            bonferroni_coef = number_of_comparisons_in_row # sum(number_of_comparisons_in_row, na.rm = TRUE)
             bonferroni_coef[bonferroni_coef==0] = 1
         } else {
             bonferroni_coef = 1

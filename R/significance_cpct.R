@@ -127,70 +127,74 @@ significance_cpct.etable = function(x,
                                     digits = get_expss_digits()
 ){
     
-    if(NCOL(x)<3) return(x)
+    
     compare_type = match.arg(compare_type, choices = COMPARE_TYPE, several.ok = TRUE)
     stopif(sum(compare_type %in% c("first_column", "adjusted_first_column"))>1, 
                    "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")
-    
-    delta_cpct = delta_cpct/100
-    if("subtable" %in% compare_type){
-        if(!is.null(sig_labels)){
-            x = add_sig_labels(x, sig_labels = sig_labels)
-        } 
-        all_column_labels = get_category_labels(colnames(x))
-    }
-    groups = header_groups(colnames(x))
-    sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
-    res = lapply(sections, function(each_section){
-        # browser()
-        curr_base = extract_total_from_section(each_section, total_marker = total_marker, total_row = total_row)
-        recode(curr_base) = lt(min_base) ~ NA
-        
-        total_rows_indicator = get_total_rows_indicator(each_section, total_marker = total_marker)
-        sig_section = each_section[!total_rows_indicator, ]
-        sig_section[, -1] = ""
-        curr_props = each_section[!total_rows_indicator, ]
-        curr_props[,-1] = curr_props[,-1]/100
-        if(na_as_zero){
-            if_na(curr_props[,-1]) = 0
-        }
-        if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
-            sig_section = section_sig_first_column(sig_section = sig_section, 
-                                                   curr_props = curr_props, 
-                                                   curr_base = curr_base,
-                                                   groups = groups,
-                                                   sig_labels_first_column = sig_labels_first_column,
-                                                   sig_level = sig_level,
-                                                   delta_cpct = delta_cpct,
-                                                   bonferroni = bonferroni,
-                                                   adjust_common_base = "adjusted_first_column" %in% compare_type)
-        }
-        if(any(c("previous_column") %in% compare_type)){
-            sig_section = section_sig_previous_column(sig_section = sig_section, 
-                                                      curr_props = curr_props, 
-                                                      curr_base = curr_base,
-                                                      groups = groups,
-                                                      sig_labels_previous_column = sig_labels_previous_column,
-                                                      sig_level = sig_level,
-                                                      delta_cpct = delta_cpct,
-                                                      bonferroni = bonferroni)
-        }
+    if(NCOL(x)>2) {
+        delta_cpct = delta_cpct/100
         if("subtable" %in% compare_type){
-            sig_section = section_sig_prop(sig_section = sig_section, 
-                                           curr_props = curr_props, 
-                                           curr_base = curr_base,
-                                           groups = groups,
-                                           all_column_labels = all_column_labels,
-                                           sig_level = sig_level,
-                                           delta_cpct = delta_cpct,
-                                           bonferroni = bonferroni)
+            if(!is.null(sig_labels)){
+                x = add_sig_labels(x, sig_labels = sig_labels)
+            } 
+            all_column_labels = get_category_labels(colnames(x))
         }
-        each_section[,-1] = ""
-        each_section[!total_rows_indicator,-1] = sig_section[,-1]
-        each_section
-    })
-    
-    res = do.call(add_rows, res)
+        groups = header_groups(colnames(x))
+        sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
+        res = lapply(sections, function(each_section){
+            # browser()
+            curr_base = extract_total_from_section(each_section, total_marker = total_marker, total_row = total_row)
+            recode(curr_base) = lt(min_base) ~ NA
+            
+            total_rows_indicator = get_total_rows_indicator(each_section, total_marker = total_marker)
+            sig_section = each_section[!total_rows_indicator, ]
+            sig_section[, -1] = ""
+            curr_props = each_section[!total_rows_indicator, ]
+            curr_props[,-1] = curr_props[,-1]/100
+            if(na_as_zero){
+                if_na(curr_props[,-1]) = 0
+            }
+            if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
+                sig_section = section_sig_first_column(sig_section = sig_section, 
+                                                       curr_props = curr_props, 
+                                                       curr_base = curr_base,
+                                                       groups = groups,
+                                                       sig_labels_first_column = sig_labels_first_column,
+                                                       sig_level = sig_level,
+                                                       delta_cpct = delta_cpct,
+                                                       bonferroni = bonferroni,
+                                                       adjust_common_base = "adjusted_first_column" %in% compare_type)
+            }
+            if(any(c("previous_column") %in% compare_type)){
+                sig_section = section_sig_previous_column(sig_section = sig_section, 
+                                                          curr_props = curr_props, 
+                                                          curr_base = curr_base,
+                                                          groups = groups,
+                                                          sig_labels_previous_column = sig_labels_previous_column,
+                                                          sig_level = sig_level,
+                                                          delta_cpct = delta_cpct,
+                                                          bonferroni = bonferroni)
+            }
+            if("subtable" %in% compare_type){
+                sig_section = section_sig_prop(sig_section = sig_section, 
+                                               curr_props = curr_props, 
+                                               curr_base = curr_base,
+                                               groups = groups,
+                                               all_column_labels = all_column_labels,
+                                               sig_level = sig_level,
+                                               delta_cpct = delta_cpct,
+                                               bonferroni = bonferroni)
+            }
+            each_section[,-1] = ""
+            each_section[!total_rows_indicator,-1] = sig_section[,-1]
+            each_section
+        })
+        
+        res = do.call(add_rows, res)
+    } else {
+        res = x
+        res[, -1] = ""
+    }
     total_rows_indicator = get_total_rows_indicator(x, total_marker = total_marker)
     x = round_dataframe(x, digits = digits)
     if(keep_percent){
@@ -254,7 +258,7 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
                 valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
                 number_of_comparisons_in_row = valid_values_in_row*(valid_values_in_row-1)/2
                 number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
-                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+                bonferroni_coef = number_of_comparisons_in_row # sum(number_of_comparisons_in_row, na.rm = TRUE)
                 bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
@@ -307,7 +311,7 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
                 valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
                 number_of_comparisons_in_row = valid_values_in_row - 1
                 number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
-                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+                bonferroni_coef = number_of_comparisons_in_row #sum(number_of_comparisons_in_row, na.rm = TRUE)
                 bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
@@ -362,7 +366,7 @@ section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
             valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
             number_of_comparisons_in_row = valid_values_in_row
             number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
-            bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
+            bonferroni_coef = number_of_comparisons_in_row #sum(number_of_comparisons_in_row, na.rm = TRUE)
             bonferroni_coef[bonferroni_coef==0] = 1
         } else {
             bonferroni_coef = 1

@@ -196,16 +196,33 @@ expect_equal_to_reference(
                       sig_level = 0.9),
     "rds/signif_cpct19.rds")
 
+#####################
+mtcars_table2 = cro_cpct(list(mtcars$vs, mtcars$am),
+                        list(total(), mtcars$cyl))
+
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, 
+    significance_cpct(mtcars_table2, 
+                      compare_type = c("first_column", 
+                                       "previous_column",
+                                       "subtable"),
+                      bonferroni = FALSE,
+                      na_as_zero = FALSE, 
+                      keep_percent = TRUE,
+                      sig_level = 0.1),
+    "rds/signif_cpct20.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table2, 
                       compare_type = c("first_column", 
                                        "previous_column",
                                        "subtable"),
                       bonferroni = TRUE,
-                      na_as_zero = TRUE, 
+                      na_as_zero = FALSE, 
                       keep_percent = TRUE,
-                      sig_level = 0.9),
-    "rds/signif_cpct20.rds")
+                      sig_level = 0.1),
+    "rds/signif_cpct20boneferrony.rds")
+
+#####################
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
