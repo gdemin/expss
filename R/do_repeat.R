@@ -68,77 +68,9 @@
 #' 
 #' 
 do_repeat = function(data, ...){
-    UseMethod("do_repeat")    
-}
-
-#' @export
-do_repeat.data.frame = function(data, ...){
     args = substitute(list(...))
-    expr = args[[length(args)]]
-    args[length(args)] = NULL
-    items = eval(args, envir = parent.frame(), enclos = baseenv())
-    items_lengths = lengths(items)
-    stopif(!all(items_lengths %in% c(1, max(items_lengths))),
-           "All variables should have equal length or length 1")
-    items_names = names(items)
-    stopif(is.null(items_names) || any(is.na(items_names) | items_names==""), 
-           "All variables among '...' should be named.")
-    parent = parent.frame()
-    e = evalq(environment(), data, parent)
-    prepare_env(e, n = nrow(data), column_names = colnames(data))
-    expr = substitute(expr)
-    for(each_item in seq_len(max(items_lengths))){
-        curr_loop = lapply(items, function(item){
-            if(length(item)>1){
-                item[[each_item]]
-            } else {
-                item[[1]]  
-            }
-        })
-        e$.item_num = each_item
-        lockBinding(".item_num", e)
-        names(curr_loop) = items_names
-        curr_loop = convert_characters_to_names(curr_loop)
-        substituted_expr = substitute_symbols(expr, curr_loop)
-        eval(substituted_expr, e, enclos = baseenv())
-        rm(".item_num", envir = e)
-    }
-    clear_env(e)
-    l = as.list(e, all.names = TRUE)
-    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
-    del = setdiff(names(data), names(l))
-    if(length(del)){
-        data[, del] = NULL
-    }
-    nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
-    wrong_rows = nrows!=1L & nrows!=nrow(data)
-    if(any(wrong_rows)){
-        er_message = utils::head(paste0("'", names(l)[wrong_rows], "' has ", nrows[wrong_rows], " rows"), 5)
-        er_message = paste(er_message, collapse = ", ")
-        stop(paste0("Bad number of rows: ", er_message, " instead of ", nrow(data), " rows."))
-    }
-    
-    new_vars = rev(names(l)[!(names(l) %in% names(data))])
-    nl = c(names(data), new_vars)
-    data[nl] = l[nl]
-    data    
-      
+    do_repeat_internal(data, args, parent = parent.frame())   
 }
-
-#' @export
-do_repeat.list = function(data, ...){
-    for(each in seq_along(data)){
-        data[[each]] = eval(
-            substitute(do_repeat(data[[each]], ...)), 
-            envir = parent.frame(),
-            enclos = baseenv()
-        )
-    }
-    data    
-}
-
-
-
 
 
 
@@ -147,22 +79,14 @@ do_repeat.list = function(data, ...){
 .do_repeat = function (...) {
     reference = suppressMessages(default_dataset())
     data = ref(reference)
-    data = eval(substitute(do_repeat(data, ...)), 
-                envir = parent.frame(), 
-                enclos = baseenv())
+    args = substitute(list(...))
+    data = do_repeat_internal(data, args, parent = parent.frame())
     ref(reference) = data
     invisible(data)
 
 }
 
 
-internal_draft = function(values, names){
-    variables_names = substitute(names)
-    if(length(variables_names)==1){
-        variables_names = substitute(list(names))
-    }
-    into_internal(values, variables_names, parent.frame())
-}
 
 #' @export
 #' @rdname do_repeat
@@ -190,7 +114,8 @@ do_repeat_internal = function(data, args, parent){
     UseMethod("do_repeat_internal")    
     
 }    
-    
+
+#' @export    
 do_repeat_internal.data.frame = function(data, args, parent){    
     expr = args[[length(args)]]
     args[length(args)] = NULL
@@ -199,18 +124,28 @@ do_repeat_internal.data.frame = function(data, args, parent){
     prepare_env(e, n = nrow(data), column_names = colnames(data))
     items = looping_values(args, envir = e)
 
-    items_names = names(items)[-1]
+    items_names = names(items)
     stopif(is.null(items_names) || any(is.na(items_names) | items_names==""), 
            "All variables among '...' should be named.")
     
     for(i in items_names){
-        each_name = items_names[[i]]
-        if(is.function(each_name)){
-            variables_names[[i]] = v_intersect(existing_vars, each_name)
-            existing_vars = v_diff(existing_vars, each_name)
-        } 
+        curr_item = items[[i]]
+        if(inherits(curr_item, "AsIs")){
+            curr_item = eval(args[[i]], envir = e, enclos = baseenv())
+        } else {
+            curr_item = unlist(curr_item, recursive = TRUE, use.names = FALSE)
+            existing_vars = colnames(data)
+            for(each_element in seq_along(curr_item)){
+                each_name = curr_item[[each_element]]
+                if(is.function(each_name)){
+                    curr_item[[each_element]] = v_intersect(existing_vars, each_name)
+                    existing_vars = v_diff(existing_vars, each_name)
+                } 
+            }
+            curr_item = convert_characters_to_names(curr_item)
+        }
+        items[[i]] = unlist(curr_item, recursive = TRUE, use.names = FALSE)
     }
-    variables_names = unlist(variables_names)
     items_lengths = lengths(items) 
     stopif(!all(items_lengths %in% c(1, max(items_lengths))),
            "All variables should have equal length or length 1")
@@ -225,12 +160,14 @@ do_repeat_internal.data.frame = function(data, args, parent){
             }
         })
         e$.item_num = each_item
+        e$.item_value = curr_loop
         lockBinding(".item_num", e)
+        lockBinding(".item_value", e)
         names(curr_loop) = items_names
-        curr_loop = convert_characters_to_names(curr_loop)
         substituted_expr = substitute_symbols(expr, curr_loop)
         eval(substituted_expr, e, enclos = baseenv())
         rm(".item_num", envir = e)
+        rm(".item_value", envir = e)
     }
     clear_env(e)
     l = as.list(e, all.names = TRUE)
@@ -252,3 +189,11 @@ do_repeat_internal.data.frame = function(data, args, parent){
     data[nl] = l[nl]
     data    
 }    
+
+#' @export    
+do_repeat_internal.list = function(data, args, parent){ 
+    for(each in seq_along(data)){
+        data[[each]] = do_repeat_internal(data[[each]], args = args,  parent = parent)
+    }
+    data    
+}

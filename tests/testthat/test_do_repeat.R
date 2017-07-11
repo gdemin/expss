@@ -14,10 +14,40 @@ res_iris = do_repeat(iris, i = qc(i1, i2, i3), value = c(10, 20, 30),
     i = value
 })
 
+expect_identical(res_iris, test_iris)
 
+res_iris = do_repeat(iris, i = i1 %to% i3, value = c(10, 20, 30), 
+                     {
+                         i = value
+                     })
 
 expect_identical(res_iris, test_iris)
 
+res_iris = do_repeat(iris, i = i1 %to% i3, value = as_is(10, 20, 30), 
+                     {
+                         i = value
+                     })
+
+expect_identical(res_iris, test_iris)
+
+test_iris = iris
+test_iris$i1 = iris$Sepal.Length
+test_iris$i2 = iris$Sepal.Width
+test_iris$i3 = iris$Petal.Length
+
+res_iris = do_repeat(iris, i = i1 %to% i3, value = Sepal.Length %to% Petal.Length, 
+                     {
+                         i = value
+                     })
+
+expect_identical(res_iris, test_iris)
+
+res_iris = do_repeat(iris, i = i1 %to% i3, value = to("Petal.Length"), 
+                     {
+                         i = value
+                     })
+
+expect_identical(res_iris, test_iris)
 
 test_iris$i1 = 1L
 test_iris$i2 = 2L
