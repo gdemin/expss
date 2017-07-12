@@ -554,13 +554,17 @@ expr_to_character = function(expr){
 
 # if item of list is character then it will be convereted to name
 convert_characters_to_names = function(list_of_items){
-    lapply(list_of_items, function(curr_symbol) {
-        if(is.character(curr_symbol)){
-            as.name(curr_symbol)
+    flat_list(lapply(list_of_items, function(curr_symbol) {
+        if(length(curr_symbol)>1){
+            convert_characters_to_names(curr_symbol)
         } else {
-            curr_symbol   
+            if(is.character(curr_symbol)){
+                as.name(curr_symbol)
+            } else {
+                curr_symbol   
+            }
         }
-    })
+    }))
 }
 
 

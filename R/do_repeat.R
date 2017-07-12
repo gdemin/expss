@@ -134,6 +134,7 @@ do_repeat_internal.data.frame = function(data, args, parent){
             curr_item = eval(args[[i]], envir = e, enclos = baseenv())
         } else {
             curr_item = unlist(curr_item, recursive = TRUE, use.names = FALSE)
+            if(is.function(curr_item)) curr_item = list(curr_item)
             existing_vars = colnames(data)
             for(each_element in seq_along(curr_item)){
                 each_name = curr_item[[each_element]]
