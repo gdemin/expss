@@ -1,8 +1,12 @@
-#' Prepend values/variable names to value labels/variable labels
+#' Prepend values/variable names to value/variable labels
 #' 
-#' These functions add values/variable names as prefix to value labels/variable names.
-#' Functions which starts with \code{tab_} intended for usage with tables. See \link{tables}. 
-#'
+#' These functions add values/variable names as prefixes to value/variable 
+#' labels. Functions which start with \code{tab_} intended for usage inside 
+#' table creation sequences. See examples and \link{tables}. It is recommended
+#' to use \code{tab_prepend_*} at the start of sequence of tables creation. If
+#' you use it in the middle of the sequence then previous statements will not be
+#' affected.
+#' 
 #' @param x vector/data.frame. \code{prepend_names} can be applied only to data.frames.
 #' @param data data.frame/intermediate result of tables construction. See \link{tables}.
 #'
@@ -29,10 +33,36 @@
 #'                       carb = "Number of carburetors"
 #' )
 #' 
-#' mtcars %>% prepend_names
-#'        %>% calculate(
+#' # prepend names and 'cro_cpct'
+#' mtcars %>% 
+#'        prepend_names %>% 
+#'        calculate(
 #'               cro_cpct(list(cyl, gear), list(total(), vs, am))
 #'            )
+#'      
+#' # prepend values to value labels                 
+#' mtcars %>% 
+#'    tab_prepend_values %>% 
+#'    tab_cols(total(), vs, am) %>% 
+#'    tab_cells(cyl, gear) %>% 
+#'    tab_stat_cpct() %>% 
+#'    tab_pivot()
+#'
+#' # prepend names and labels
+#' mtcars %>% 
+#'    tab_prepend_all %>% 
+#'    tab_cols(total(), vs, am) %>% 
+#'    tab_cells(cyl, gear) %>% 
+#'    tab_stat_cpct() %>% 
+#'    tab_pivot() 
+#'    
+#' # variable in rows without prefixes
+#' mtcars %>% 
+#'    tab_cells(cyl, gear) %>% 
+#'    tab_prepend_all %>% 
+#'    tab_cols(total(), vs, am) %>% 
+#'    tab_stat_cpct() %>% 
+#'    tab_pivot()   
 prepend_values = function(x){
     UseMethod("prepend_values")
 }

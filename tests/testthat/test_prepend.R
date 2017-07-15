@@ -3,7 +3,7 @@ context("prepend_names/prepend_values")
 data(mtcars)
 
 res = mtcars %>% 
-    prepend_names %>% 
+    prepend_names() %>% 
     calculate(
         cro_cpct(list(cyl, gear), list(total(), vs, am))
     )
@@ -11,7 +11,7 @@ res = mtcars %>%
 expect_equal_to_reference(res, "rds/prepend1.rds")
 
 res = mtcars %>% 
-    prepend_values %>% 
+    prepend_values() %>% 
     calculate(
         cro_cpct(list(cyl, gear), list(total(), vs, am))
     )
@@ -19,12 +19,104 @@ res = mtcars %>%
 expect_equal_to_reference(res, "rds/prepend2.rds")
 
 res = mtcars %>% 
-    prepend_all %>% 
+    prepend_all() %>% 
     calculate(
         cro_cpct(list(cyl, gear), list(total(), vs, am))
     )
 
 expect_equal_to_reference(res, "rds/prepend1.rds")
+
+#########
+
+res = mtcars %>% 
+    tab_prepend_names() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+   
+
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+res = mtcars %>% 
+    tab_prepend_values() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+res = mtcars %>% 
+    tab_prepend_all() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+#########
+
+res = mtcars %>% 
+    tab_prepend_names() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+res = mtcars %>% 
+    tab_prepend_values() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+res = mtcars %>% 
+    tab_prepend_all() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+#########
+
+res = mtcars %>% 
+    tab_mis_val(99) %>% 
+    tab_prepend_names() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+res = mtcars %>% 
+    tab_mis_val(99) %>% 
+    tab_prepend_values() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+res = mtcars %>% 
+    tab_mis_val(99) %>% 
+    tab_prepend_all() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+expect_equal_to_reference(res, "rds/prepend1.rds")
+
+##########################
 
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",
@@ -45,7 +137,7 @@ mtcars = apply_labels(mtcars,
 )
 
 res = mtcars %>% 
-    prepend_names %>% 
+    prepend_names() %>% 
     calculate(
         cro_cpct(list(cyl, gear), list(total(), vs, am))
     )
@@ -53,7 +145,7 @@ res = mtcars %>%
 expect_equal_to_reference(res, "rds/prepend3.rds")
 
 res = mtcars %>% 
-    prepend_values %>% 
+    prepend_values() %>% 
     calculate(
         cro_cpct(list(cyl, gear), list(total(), vs, am))
     )
@@ -61,9 +153,63 @@ res = mtcars %>%
 expect_equal_to_reference(res, "rds/prepend4.rds")
 
 res = mtcars %>% 
-    prepend_all %>% 
+    prepend_all() %>% 
     calculate(
         cro_cpct(list(cyl, gear), list(total(), vs, am))
     )
 
+expect_equal_to_reference(res, "rds/prepend5.rds")
+
+################
+#########
+
+res = mtcars %>% 
+    tab_prepend_names() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+
+expect_equal_to_reference(res, "rds/prepend3.rds")
+
+res = mtcars %>% 
+    tab_prepend_values() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
 expect_equal_to_reference(res, "rds/prepend4.rds")
+
+res = mtcars %>% 
+    tab_prepend_all() %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+expect_equal_to_reference(res, "rds/prepend5.rds")
+
+############################
+
+expect_error(prepend_names(mtcars$am))
+
+res = mtcars %>% 
+    calculate(
+        cro_cpct(prepend_values(list(cyl, gear)), 
+                 list(total(), prepend_all(vs), 
+                        prepend_values(am)))
+    )
+
+expect_equal_to_reference(res, "rds/prepend4.rds")
+
+#######################################
+
+res = mtcars %>% 
+        tab_cells(cyl, gear) %>% 
+        tab_prepend_all() %>% 
+        tab_cols(total(), vs, am) %>% 
+        tab_stat_cpct() %>% 
+        tab_pivot()     
+
+expect_equal_to_reference(res, "rds/prepend6.rds")
