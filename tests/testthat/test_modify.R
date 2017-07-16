@@ -389,3 +389,45 @@ res_iris = modify_if(iris, Species == "setosa", {
 })
 
 expect_identical(res_iris, test_iris)
+
+context("use_labels")
+
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                   mpg = "Miles/(US) gallon",
+                   cyl = "Number of cylinders",
+                   disp = "Displacement (cu.in.)",
+                   hp = "Gross horsepower",
+                   drat = "Rear axle ratio",
+                   wt = "Weight (lb/1000)",
+                   qsec = "1/4 mile time",
+                   vs = "Engine",
+                   vs = c("V-engine" = 0,
+                          "Straight engine" = 1),
+                   am = "Transmission",
+                   am = c("Automatic" = 0,
+                          "Manual"=1),
+                   gear = "Number of forward gears",
+                   carb = "Number of carburetors"
+)
+
+res = with(mtcars, table(am, vs))
+
+names(dimnames(res)) = c(var_lab(mtcars$am), var_lab(mtcars$vs))
+expect_identical(
+    use_labels(mtcars, table(am, vs)), 
+    res
+)
+
+default_dataset(mtcars)
+
+expect_identical(
+    .calculate(table(am, vs), use_labels = TRUE), 
+    res
+)
+
+expect_identical(
+    use_labels(iris, summary(Sepal.Length)), 
+    summary(iris$Sepal.Length)
+)
+

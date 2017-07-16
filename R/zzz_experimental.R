@@ -48,6 +48,9 @@
 #' @param varnames character vector. Deprecated.
 #' @param value value/vector/matrix/data.frame. Value for newly created/existing
 #'   variables.
+#' @param use_labels logical. Experimental feature. If it equals to \code{TRUE} 
+#'   then we will try to replace variable names with labels. So many base R
+#'   functions which show variable names will show labels.
 #' @param ... further arguments 
 #'
 #' @examples 
@@ -170,12 +173,12 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 
 #' @export
 #' @rdname experimental
-.calculate = function (expr, ...) {
+.calculate = function (expr, use_labels = FALSE) {
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
     expr = substitute(expr)
     parent = parent.frame()
-    calculate_internal(data, expr, parent)
+    calculate_internal(data, expr, parent, use_labels = use_labels)
 } 
 
 #' @export

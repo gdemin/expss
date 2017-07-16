@@ -33,9 +33,9 @@
 
 .compute(expr)
 
-.calculate(expr, ...)
+.calculate(expr, use_labels = FALSE)
 
-.calc(expr, ...)
+.calc(expr, use_labels = FALSE)
 
 .val_lab(...)
 
@@ -72,6 +72,10 @@
 the context of default dataset}
 
 \item{cond}{logical vector/expression}
+
+\item{use_labels}{logical. Experimental feature. If it equals to \code{TRUE} 
+then we will try to replace variable names with labels. So many base R
+functions which show variable names will show labels.}
 
 \item{...}{further arguments}
 

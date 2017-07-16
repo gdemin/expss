@@ -6,8 +6,10 @@
 \alias{modify_if}
 \alias{do_if}
 \alias{calculate}
+\alias{use_labels}
 \alias{calc}
 \alias{\%calc\%}
+\alias{\%use_labels\%}
 \alias{\%calculate\%}
 \title{Modify data.frame/modify subset of the data.frame}
 \usage{
@@ -19,11 +21,15 @@ modify_if(data, cond, expr)
 
 do_if(data, cond, expr)
 
-calculate(data, expr)
+calculate(data, expr, use_labels = FALSE)
 
-calc(data, expr)
+use_labels(data, expr)
+
+calc(data, expr, use_labels = FALSE)
 
 data \%calc\% expr
+
+data \%use_labels\% expr
 
 data \%calculate\% expr
 }
@@ -35,6 +41,10 @@ data.frame separately.}
 \item{expr}{expression that should be evaluated in the context of data.frame \code{data}}
 
 \item{cond}{logical vector or expression. Expression will be evaluated in the context of the data.}
+
+\item{use_labels}{logical. Experimental feature. If it equals to \code{TRUE} 
+then we will try to replace variable names with labels. So many base R
+functions which show variable names will show labels.}
 }
 \value{
 \code{compute} and \code{do_if} functions return modified 
@@ -48,10 +58,12 @@ data.frame separately.}
 \code{\link[base]{within}} in base R but try to return new variables in order
 of their occurrence in the expression and make available
 full-featured \code{\%to\%} and \code{.N} in the expressions. See \link{vars}.}}
-\item{{\code{calculate}}{ evaluates expression \code{expr} in the context of
+\item{{\code{calculate}}{ evaluates expression \code{expr} in the context of 
 data.frame \code{data} and return value of the evaluated expression. It works
-similar to \code{\link[base]{with}} in base R but make available
-full-featured \code{\%to\%} and \code{.N} in the expressions. See \link{vars}.}}
+similar to \code{\link[base]{with}} in base R but make available 
+full-featured \code{\%to\%} and \code{.N} in the expressions. See 
+\link{vars}. Function \code{use_labels} is shortcut for \code{calculate} with
+argument \code{use_labels} set to \code{TRUE}.}}
 \item{{\code{do_if}}{ modifies only rows for which \code{cond} equals to
 TRUE. Other rows remain unchanged. Newly created variables also will have
 values only in rows for which \code{cond} have TRUE. There will be NA's in
@@ -149,4 +161,35 @@ compute(dfs, {
      }
      rm(i) # we don't need this variable as column in 'dfs'
 })
+
+# 'use_labels' examples. Utilization of labels in base R.
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (lb/1000)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+use_labels(mtcars, table(am, vs))
+
+\dontrun{
+use_labels(mtcars, plot(mpg, hp))
+}
+
+mtcars \%>\% 
+       use_labels(lm(mpg ~ disp + hp + wt)) \%>\% 
+       summary()
+
 }
