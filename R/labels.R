@@ -99,6 +99,9 @@ set_var_lab.matrix = function(x, value){
 
 #' @export
 set_var_lab.default = function(x, value){
+    if(is.list(x)){
+        return(set_var_lab.list(x, value = value))
+    }
     # this conversion is needed to avoid strange bug (incorrect residuals)
     # with 'lm' with labelled integers 
     if (length(value)==0){
@@ -290,6 +293,9 @@ add_val_lab = function(x, value) set_val_lab(x, value, add = TRUE)
 
 #' @export
 set_val_lab.default = function(x, value, add = FALSE){
+     if(is.list(x)){
+        return(set_val_lab.list(x, value = value, add = add))
+     }
      if (length(value)==0){
         if(!add){
             attr(x, "labels") = NULL
@@ -454,12 +460,15 @@ autonum = function(text) make_labels(text = text, code_position = "autonum")
 #' val_lab(var_with_lab) = c("Low"=1,"High"=2)
 #' identical(raw_var,unlab(var_with_lab)) # should be TRUE
 unlab=function(x){
-    if(is.null(x)) return(x)
     UseMethod("unlab")
 }
 
 #' @export
 unlab.default=function(x){
+    if(is.null(x)) return(x)
+    if(is.list(x)){
+        return(unlab.list(x))
+    }
     attr(x, "label") = NULL
     attr(x, "labels") = NULL
     class(x) = setdiff(class(x), "labelled")

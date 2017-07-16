@@ -416,3 +416,31 @@ expect_identical(set_var_lab(aaa, NULL), aaa)
 expect_error(as.labelled(aaa, NULL))
 expect_error(as.labelled(as.list(aaa), NULL))
 expect_error(as.labelled(as.data.frame(aaa), NULL))
+
+#### with strange lists ####
+context("labels on lists")
+
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (lb/1000)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+model = use_labels(mtcars, lm(mpg ~ vs + am + hp + wt))
+
+expect_equal_to_reference(unlab(model), "rds/unlab_list.rds")
+expect_equal_to_reference(unvr(model), "rds/unvr_list.rds")
+expect_equal_to_reference(unvl(model), "rds/unvl_list.rds")
