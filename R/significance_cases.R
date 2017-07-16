@@ -3,7 +3,7 @@
 significance_cases = function(x, 
                              min_base = 2,
                              keep_cases = TRUE,
-                             keep_bases = keep_percent,
+                             keep_bases = keep_cases,
                              total_marker = "#",
                              total_row = 1
 ){
@@ -15,7 +15,7 @@ significance_cases = function(x,
 significance_cases.etable = function(x, 
                                     min_base = 2,
                                     keep_cases = TRUE,
-                                    keep_bases = keep_percent,
+                                    keep_bases = keep_cases,
                                     total_marker = "#",
                                     total_row = 1
 ){
@@ -71,33 +71,6 @@ significance_cases.etable = function(x,
     }
 }
 
-########################
-
-#' @rdname significance_cpct
-#' @export
-add_sig_labels = function(tbl, sig_labels = LETTERS){
-    header = colnames(tbl)
-    groups = header_groups(header)   
-    for(each_group in groups){
-        if(length(each_group)>1){
-            if(length(each_group)<=length(sig_labels)){
-                header[each_group] = paste0(header[each_group], "|", 
-                                            sig_labels[each_group - min(each_group)+1])
-            } else {
-                numbers = seq_len(length(each_group)/length(sig_labels) + 1)
-                long_labels = rep(sig_labels, length(numbers))
-                numbers = rep(numbers, each = length(sig_labels))
-                long_labels = paste0(long_labels, numbers)
-                header[each_group] = paste0(header[each_group], "|", 
-                                            long_labels[each_group - min(each_group)+1])
-                
-            }
-        }
-    }
-    remove_unnecessary_splitters(header)
-    colnames(tbl) = header
-    tbl
-}
 
 
 ########################

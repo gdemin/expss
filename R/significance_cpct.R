@@ -308,9 +308,11 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
                 comparable_values = !is.na(curr_props[,each_group, drop = FALSE])
                 comparable_values[,invalid_columns] = FALSE
                 # count number of comaprisons
-                valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
-                number_of_comparisons_in_row = valid_values_in_row - 1
-                number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
+                for(col1 in seq_len(ncol(comparable_values))[-1]){
+                    col2 = col1  - 1
+                    number_of_comparisons_in_row = number_of_comparisons_in_row + 
+                        (comparable_values[ ,col2] & comparable_values[ ,col1])
+                } 
                 bonferroni_coef = number_of_comparisons_in_row #sum(number_of_comparisons_in_row, na.rm = TRUE)
                 bonferroni_coef[bonferroni_coef==0] = 1
             } else {
@@ -378,6 +380,7 @@ section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
                                base1, base2,
                                common_base = base2*adjust_common_base)
             if_na(pval) = Inf
+            pval = pmin(pval*bonferroni_coef, 1)
             sig_section[[col2]] = ifelse(pval<sig_level & abs(prop1 - prop2)>delta_cpct,
                                          # previous value is greater
                                          ifelse(prop1>prop2,

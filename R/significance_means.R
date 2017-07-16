@@ -214,12 +214,12 @@ section_sig_previous_column_means = function(sig_section,
                 comparable_values = !(is.na(curr_means[,each_group, drop = FALSE]) |
                                           is.na(curr_sds[,each_group, drop = FALSE]) |
                                           is.na(curr_ns[,each_group, drop = FALSE]))
-                # count number of comaprisons
+                # count number of comparisons
                 number_of_comparisons_in_row = 0
                 for(col1 in seq_len(ncol(comparable_values))[-1]){
                     col2 = col1  - 1
                     number_of_comparisons_in_row = number_of_comparisons_in_row + 
-                        comparable_values[col2] & comparable_values[col1]
+                        (comparable_values[ ,col2] & comparable_values[ ,col1])
                 }    
                 bonferroni_coef = number_of_comparisons_in_row #sum(number_of_comparisons_in_row, na.rm = TRUE)
                 bonferroni_coef[bonferroni_coef==0] = 1
@@ -289,13 +289,8 @@ section_sig_first_column_means = function(sig_section,
             comparable_values = !(is.na(curr_means[,groups, drop = FALSE]) |
                                       is.na(curr_sds[,groups, drop = FALSE]) |
                                       is.na(curr_ns[,groups, drop = FALSE]))
-            # count number of comaprisons
-            number_of_comparisons_in_row = comparable_values[,1]
-            for(col1 in seq_len(ncol(comparable_values))[-1]){
-                number_of_comparisons_in_row = number_of_comparisons_in_row + 
-                    comparable_values[1] & comparable_values[col1]
-            }    
-            bonferroni_coef = number_of_comparisons_in_row # sum(number_of_comparisons_in_row, na.rm = TRUE)
+            # count number of comparisons
+             bonferroni_coef = rowSums(comparable_values[,-1]) # sum(number_of_comparisons_in_row, na.rm = TRUE)
             bonferroni_coef[bonferroni_coef==0] = 1
         } else {
             bonferroni_coef = 1
@@ -310,6 +305,7 @@ section_sig_first_column_means = function(sig_section,
                                  common_base = base2*adjust_common_base,
                                  var_equal = var_equal)
             if_na(pval) = Inf
+            pval = pmin(pval*bonferroni_coef, 1)
             sig_section[[col2]] = ifelse(abs(mean1 - mean2)>delta_means & pval<sig_level,
                                          # previous value is greater
                                          ifelse(mean1 > mean2,

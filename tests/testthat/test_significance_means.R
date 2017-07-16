@@ -46,29 +46,38 @@ expect_equal_to_reference(
                        keep_means = FALSE,
                       sig_labels = NULL),
     "rds/signif_means4.rds")
+
 expect_equal_to_reference(
     significance_means(mtcars_table, keep_means = FALSE,
-                      compare_type = c("subtable", "first_column")),
+                      compare_type = c("subtable", "first_column"),
+                      sig_level = 0.4
+                      ),
+    
     "rds/signif_means5.rds")
 expect_equal_to_reference(
     significance_means(mtcars_table, keep_means = FALSE,
-                      compare_type = c("subtable", "adjusted_first_column")),
+                      compare_type = c("subtable", "adjusted_first_column"),
+                      sig_level = 0.4),
     "rds/signif_means6.rds")
 expect_equal_to_reference(
     significance_means(mtcars_table, keep_means = FALSE,
                       compare_type = c("subtable", "first_column"),
+                      sig_level = 0.4,
                       var_equal = TRUE
     ),
     "rds/signif_means7.rds")
 
 expect_equal_to_reference(
     significance_means(mtcars_table, keep_means = FALSE
-                      , compare_type = c("previous_column")),
+                      , compare_type = c("previous_column"),
+                      sig_level = 0.2
+                      ),
     "rds/signif_means8.rds")
 
 expect_equal_to_reference(
     significance_means(mtcars_table, keep_means = FALSE,
                       compare_type = c("previous_column"),
+                      sig_level = 0.2,
                       var_equal = TRUE),
     "rds/signif_means9.rds")
 
@@ -108,6 +117,7 @@ expect_equal_to_reference(
 expect_equal_to_reference(
     significance_means(mtcars_table, 
                       compare_type = c("subtable", "adjusted_first_column"), 
+                      
                       keep_means = TRUE),
     "rds/signif_means14.rds")
 expect_equal_to_reference(
@@ -127,7 +137,7 @@ expect_equal_to_reference(
 expect_equal_to_reference(
     significance_means(mtcars_table, 
                       delta_means = 10,
-                      compare_type = c("previous_column"), 
+                       compare_type = c("previous_column"), 
                       keep_means = TRUE),
     "rds/signif_means16_delta.rds")
 
@@ -165,10 +175,23 @@ expect_equal_to_reference(
                       compare_type = c("first_column", 
                                        "previous_column",
                                        "subtable"),
-                      bonferroni = TRUE,
+                      bonferroni = FALSE,
                       keep_means = TRUE,
-                      sig_level = 0.9),
+                      sig_level = 0.05),
     "rds/signif_means20.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
+                       bonferroni = TRUE,
+                       keep_means = TRUE,
+                       sig_level = 0.05),
+    "rds/signif_means20bonferroni.rds")
+
+
+############################################
 
 expect_equal_to_reference(
     significance_means(mtcars_table, 
