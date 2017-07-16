@@ -4,31 +4,45 @@ dict = data.frame(num=1:26,small=letters,cap=LETTERS,stringsAsFactors = FALSE)
 dict_mat = cbind(num=1:26,small=letters,cap=LETTERS)
 rownames(dict) = paste0('rows',1:26)
 rownames(dict_mat) = paste0('rows',1:26)
-expect_identical(vlookup_df(1:3,dict),dict[1:3,]) 
-expect_identical(vlookup(1:3,dict),dict[1:3,2]) 
+reset_rownames = function(x){
+    rownames(x) = seq_len(NROW(x))
+    x
+}
+expect_identical(vlookup_df(1:3,dict),reset_rownames(dict[1:3,])) 
+expect_identical(vlookup(1:3,dict), dict[1:3,2]) 
+
+
 
 expect_identical(vlookup(c(45,1:3,58,NA),dict,result_column='cap'),
                  c(NA,"A", "B", "C", NA,NA))
 expect_identical(vlookup(c(45,1:3,58,NA),dict_mat,result_column='cap'),
                  c(NA,"A", "B", "C", NA,NA))
 expect_identical(vlookup_df(c('z','d','f','d'),dict,lookup_column = 'small'),
-                 dict[c(26,4,6,4),])
+                 reset_rownames(dict[c(26,4,6,4),]))
 expect_identical(vlookup_df(c('rows1','rows5','rows2','rows2'),
                             dict,result_column = c("small","cap"),lookup_column = 'row.names'),
-                 dict[c(1,5,2,2),c("small","cap")])
+                 reset_rownames(dict[c(1,5,2,2),c("small","cap")]))
 
 expect_identical(vlookup_df(c('rows1','rows5','rows2','rows2'),
                             dict,result_column = c("small","cap", "names"),
                             lookup_column = 'row.names'),
-                 dtfrm(dict[c(1,5,2,2),c("small","cap")], row_names = rownames(dict)[c(1,5,2,2)]))
+                 reset_rownames(
+                 dtfrm(dict[c(1,5,2,2),c("small","cap")], row_names = rownames(dict)[c(1,5,2,2)])))
 
-expect_identical(vlookup_df(c('rows1','rows5','rows2','rows2'), dict, result_column = c("row.names", "small","cap"),
+expect_identical(vlookup_df(c('rows1','rows5','rows2','rows2'), 
+                            dict, result_column = c("row.names", "small","cap"),
                             lookup_column = 'row.names'),
-                 dtfrm(row_names = rownames(dict)[c(1,5,2,2)], dict[c(1,5,2,2),c("small","cap")]))
+                 reset_rownames(
+                     dtfrm(
+                         row_names = rownames(dict)[c(1,5,2,2)], 
+                         dict[c(1,5,2,2),c("small","cap")])))
 
-expect_identical(vlookup_df(c('z','d','f','d'),dict_mat,lookup_column = 'small'),as.dtfrm(dict_mat)[c(26,4,6,4),, drop = FALSE])
+expect_identical(vlookup_df(c('z','d','f','d'),
+                            dict_mat,
+                            lookup_column = 'small'),
+                 reset_rownames(as.dtfrm(dict_mat)[c(26,4,6,4),, drop = FALSE]))
 expect_identical(vlookup_df(c('rows1','rows5','rows2','rows2'),dict_mat,result_column = c("small","cap"),lookup_column = 'row.names'),
-                 as.dtfrm(dict)[c(1,5,2,2),c("small","cap")])
+                 reset_rownames(as.dtfrm(dict)[c(1,5,2,2),c("small","cap")]))
 
 expect_error(vlookup(iris, mtcars))
 expect_error(vlookup(c('rows1','rows5','rows2','rows2'),dict,result_column = c("small","cap"),lookup_column = 'row.names'))

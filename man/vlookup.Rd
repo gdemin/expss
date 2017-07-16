@@ -33,7 +33,8 @@ vector then values will be searched in names of the \code{dict}.}
 }
 \value{
 \code{vlookup} always return vector, \code{vlookup_df} always returns
-  data.frame.
+  data.frame. \code{row.names} in result of \code{vlookup_df} are not
+  preserved.
 }
 \description{
 This function is inspired by VLOOKUP spreadsheet function. It looks for a 

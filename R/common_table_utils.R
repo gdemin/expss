@@ -1,14 +1,29 @@
 
 ###########################
 universal_subset = function(data, index, drop = TRUE){
-    if(is.matrix(data) || is.data.frame(data)){
+    if(is.matrix(data)){
         data =  data[index, , drop = drop]
+    } else if(is.data.frame(data)){
+        data = subset_dataframe(data, index, drop = drop)
     } else {
         data =  data[index]
     }
     data
 }
 
+###################
+# x should be data.frame
+# j numeric or logical
+# row.names are ignored
+subset_dataframe = function(x, j, drop = TRUE){
+    if(drop && NCOL(x)<2){
+        return(unlist(x, use.names = FALSE)[j])
+    }
+    res = lapply(x, `[`, j)
+    class(res) = class(x)
+    attr(res, "row.names") <- seq_len(NROW(res[[1]]))
+    res
+}
 #########################################
 
 recycle_if_single_row = function(data, nrows){
@@ -17,7 +32,7 @@ recycle_if_single_row = function(data, nrows){
     }    
     if(NROW(data)==1){
         if(is.matrix(data) || is.data.frame(data)){
-            data =  data[rep(1, nrows), ]
+            data =  universal_subset(data, rep(1, nrows))
         } else {
             data =  rep(data, nrows)
         }

@@ -25,7 +25,8 @@ SPECIALS = c('row.names', 'rownames', 'names')
 #'   vector then values will be searched in names of the \code{dict}.
 #'   
 #' @return \code{vlookup} always return vector, \code{vlookup_df} always returns
-#'   data.frame.
+#'   data.frame. \code{row.names} in result of \code{vlookup_df} are not
+#'   preserved.
 #'   
 #' @export
 #' @examples
@@ -184,17 +185,17 @@ vlookup_internal = function(lookup_value, dict, result_column = NULL, lookup_col
             ind = match(lookup_value, dict[[lookup_column]], incomparables = NA) 
         }
     } else stop("lookup_column shoud be character or numeric.")
-    ### caclulate result
+    ### calculate result
     if(df){
         if (is.null(result_column)){
-            result = dict[ind, , drop = FALSE]
+            result = subset_dataframe(dict, ind, drop = FALSE)
         } else {
             
-            result = dict[ind, result_column, drop = FALSE]
+            result = subset_dataframe(dict, ind, drop = FALSE)[, result_column, drop = FALSE]
             
         }
         colnames(result)[colnames(result) %in% "...RRRLLL..."] = "row_names"
-        if(dict_was_vector) rownames(result) = NULL
+        # if(dict_was_vector) rownames(result) = NULL
     } else {
         if (is.null(result_column)){
             result = ind
