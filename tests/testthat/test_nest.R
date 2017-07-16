@@ -203,6 +203,8 @@ expect_identical(nest(b, 1),
                  set_val_lab(nest(5:7, 1), setNames(1:3, paste0(bb, "|", 1)))
 )
 
+expect_identical(nest(b), b)
+
 expect_error(nest(b, 1:2))
 expect_error(nest(1:2, b))
 

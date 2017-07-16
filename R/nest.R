@@ -41,7 +41,7 @@
 #' with(mtcars, cro(nest(am, vs, carb), cyl))
 nest = function(...){
     arg = list(...)
-    if (length(arg)<2) return(arg)
+    if (length(arg)<2) return(arg[[1]])
     x = to_labelled(arg[[1]])
     y = to_labelled(arg[[2]])
     if (!is_list(x)) x = list(x) else x = flat_list(x)
