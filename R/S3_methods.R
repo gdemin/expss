@@ -295,11 +295,19 @@ print.etable = function(x, digits = get_expss_digits(), remove_repeated = TRUE, 
             print(res)
             return(invisible(NULL))
         }
+
     }
     if(!("raw" %in% curr_output)){
         x = split_all_in_etable_for_print(x,
                                           digits = digits, 
                                           remove_repeated = remove_repeated)
+    }
+    if("commented" %in% curr_output){
+        if(NROW(x)>0 && NCOL(x)>0){
+            x = cbind("#" = "#", x)
+            colnames(x) = rep("", length(x))
+        } 
+        
     }
     print.data.frame(x, ...,  right = right, row.names = FALSE)
 }

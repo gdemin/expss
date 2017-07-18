@@ -7,6 +7,7 @@
 \alias{expss_enable_value_labels_support}
 \alias{expss_disable_value_labels_support}
 \alias{expss_output_default}
+\alias{expss_output_commented}
 \alias{expss_output_raw}
 \alias{expss_output_viewer}
 \alias{expss_output_rnotebook}
@@ -21,6 +22,8 @@ expss_enable_value_labels_support()
 expss_disable_value_labels_support()
 
 expss_output_default()
+
+expss_output_commented()
 
 expss_output_raw()
 
@@ -40,7 +43,7 @@ with special functions (see below). You can get value of option with
 \item{\code{expss.digits} }{ Number of digits after decimal separator which
 will be shown for tables. This parameter is supported in the
 \link[expss]{datatable}, \link[expss]{htmlTable.etable} and \code{print}
-methods. \code{NULL} is default and means 1 digit. \code{NA} means no
+methods. \code{NULL} is default and means one digit. \code{NA} means no
 rounding. There is convenience function for this option:
 \code{expss_digits}.}
 \item{\code{expss.enable_value_labels_support} }{By default, all labelled 
@@ -52,14 +55,17 @@ class \code{labelled} - \code{as.character} and \code{unique} - on which
 option to zero: \code{options(expss.enable_value_labels_support = 0)}. There
 are shortcuts for these options: \code{expss_enable_value_labels_support()}
 and \code{expss_disable_value_labels_support()}.}
-\item{\code{expss.output} }{ By default tables are printed in the console.
-You can change this behavior by setting this option. There are three possible
-values: \code{'rnotebook'}, \code{'viewer'} or  \code{'raw'}. First option is
-useful when you run your code in the R Notebook - output will be rendered to
-nice HTML. The second option will render tables to RStudio viewer.
-\code{knitr} is supported automatically via \code{knit_print} method. Option
-\code{raw} disables any formatting and all tables are printed as data.frames.
-Shortcuts for options: \code{expss_output_default()},
-\code{expss_output_raw()}, \code{expss_output_viewer()} and
-\code{expss_output_rnotebook()}.}}
+\item{\code{expss.output} }{ By default tables are printed in the console. 
+You can change this behavior by setting this option. There are four possible
+values: \code{'rnotebook'}, \code{'viewer'}, \code{'commented'} or 
+\code{'raw'}. First option is useful when you run your code in the R Notebook
+- output will be rendered to nice HTML. The second option will render tables 
+to RStudio viewer. \code{knitr} is supported automatically via 
+\code{knit_print} method. \code{'commented'} prints default output to the 
+console with comment symbol (\code{#}) at the beginning of the each line.
+With comment symbol you can easily copy and paste your output into the
+script. Option \code{raw} disables any formatting and all tables are printed
+as data.frames. Shortcuts for options: \code{expss_output_default()}, 
+\code{expss_output_raw()}, \code{expss_output_viewer()},
+\code{expss_output_commented()} and \code{expss_output_rnotebook()}.}}
 }

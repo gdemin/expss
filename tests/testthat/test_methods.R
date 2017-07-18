@@ -274,9 +274,35 @@ expect_output_file(print(tbl[FALSE, FALSE]),
 expect_output_file(print(tbl[, 1]), 
                    "rds/print_etable_single_column.txt")
 
+
+##############################
+
+expss_output_commented()
+
+expect_output_file(print(tbl),
+                   "rds/print_etable_commented_1.txt")
+
+expect_output_file(print(tbl[, 1:3]), 
+                   "rds/print_etable_commented_2.txt")
+expect_output_file(print(tbl[, 1:4], remove_repeated = FALSE),
+                   "rds/print_etable_commented_3.txt")
+expect_output_file(print(tbl[, FALSE]), 
+                   "rds/print_etable_zero_columns_commented.txt")
+
+expect_output_file(print(tbl[FALSE, ]), 
+                   "rds/print_etable_zero_rows_commented.txt")
+
+expect_output_file(print(tbl[FALSE, FALSE]), 
+                   "rds/print_etable_zero_commented.txt")
+
+expss_output_default()
+
+################################
 colnames(tbl)[1] = "my custom label"
 expect_output_file(print(tbl[, 1:3]), 
                    "rds/print_etable_custom_label.txt")
+
+#################################
 
 options(expss.digits = 4)
 expect_output_file(print(cro_mean(iris[,-5], list(iris$Species, total()))), 
