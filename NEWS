@@ -2,11 +2,18 @@
 ================
 * increase table functions performance
 * increase 'as.dichotomy'/'dummy' performance
+* increase 'vlookup'/'vlookup_df' performance
+* add 'use_labels' function for experimental support variable labels in base R functions and third party packages
+* numerous bugfixes
+* now 'keep'/'except'/'by_groups' operate with NSE. For standard evaluation just surround you variable with round brackets
+* add print options 'commented' for printing tables to console with '#'
+* add functions 'split_separate'/'split_off'
+* add 'prepend_names'/'prepend_labels' - issue #2
 * add 'indirect'/'indirect_list' - aliases for 'vars'/'vars_list'
 * add 'mis_val' - alias for 'na_if'
 * add 'unsafe' argument for *_fun/*_fun_df.
-* add '._' object for parameter substitution inside 'compute' and etc. Usage: '._$param_name'. For details: ?._ * improve 'lst' function
-* numerous small bugfixes
+* add '..' object for parameter substitution inside 'compute' and etc. Usage: '..$param_name'. For details: ?..
+* improve 'lst' function
 * '.set'/'set' inside 'compute' and etc. are deprecated. Use '%into%' instead.
 * expansion of variables in backticks inside 'vars'/'vars_list'/'%into%' is removed. Use explicit 'subst' instead
 * infix/assignment versions removed: '%modify%', '%compute%', '%sort_asc%', '%sort_desc%', '%keep%', '%except%', '%where%', '%by_groups%'
