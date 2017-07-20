@@ -7,7 +7,7 @@
 \usage{
 split_separate(data, ..., drop = TRUE)
 
-split_off(data, add_group = FALSE, add_rownames = FALSE)
+split_off(data, groups = NULL, rownames = NULL)
 }
 \arguments{
 \item{data}{data.frame for \code{split_separate}/list for \code{split_off}}
@@ -18,11 +18,14 @@ will be split into list.}
 \item{drop}{should we drop combination of levels with zero observation? TRUE
 by default.}
 
-\item{add_group}{Should we add group values as \code{.group} variable to
-result of \code{split_off}? FALSE by default.}
+\item{groups}{character If it is not \code{NULL} then we add list
+names as variable to result of \code{split_off} with the name specified by
+\code{groups}. If it is \code{TRUE} then name will be \code{.groups}.}
 
-\item{add_rownames}{Should we add rownames as \code{.rownames} variable to
-result of \code{split_off}? FALSE by default.}
+\item{rownames}{character If it is not \code{NULL} then we add data.frames
+rownames as variable to result of \code{split_off} with the name specified
+by \code{rownames}. If it is \code{TRUE} then name will be 
+\code{.rownames}.}
 }
 \value{
 \code{split_separate} returns list of data.frames/\code{split_off}
@@ -37,7 +40,6 @@ only with lists of data frames (assumed to have compatible structure).
 Resulting rows will be sorted in order of the split variables.
 }
 \examples{
-
 # example from base R 'split'
 data(airquality)
 airquality2 = airquality \%>\% 
@@ -46,8 +48,35 @@ airquality2 = airquality \%>\%
         Ozone_zscore = scale(Ozone)
     }) \%>\% 
     split_off() 
+    
 head(airquality2)
-        
+
+# usage of 'groups', 'rownames'
+data(mtcars)
+# add labels to dataset
+mtcars \%>\% 
+    apply_labels(mpg = "Miles/(US) gallon",
+                 disp = "Displacement (cu.in.)",
+                 wt = "Weight",
+                 hp = "Gross horsepower",
+                 vs = "Engine",
+                 vs = num_lab(" 
+                                   0 V-engine
+                                   1 Straight engine
+                                   "),
+                 
+                 am = "Transmission",
+                 am = num_lab(" 
+                                   0 Automatic
+                                   1 Manual
+                                   ")
+    ) \%>\% 
+    split_separate(am, vs) \%>\% 
+    use_labels({
+        res = lm(mpg ~ hp + disp + wt)
+        dtfrm(Coef. = coef(res), confint(res))
+    }) \%>\% 
+    split_off(groups = TRUE, rownames = "variable")
 }
 \seealso{
 \link[base]{split}, \link{compute}, \link{calculate},

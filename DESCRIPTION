@@ -10,7 +10,7 @@ BugReports: https://github.com/gdemin/expss/issues
 Depends:
     R (>= 3.3),
     magrittr (>= 1.5),
-    htmlTable (>= 1.9),
+    htmlTable (>= 1.9)
 Imports:
     foreign,
     utils,

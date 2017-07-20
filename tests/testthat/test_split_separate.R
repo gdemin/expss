@@ -1,27 +1,71 @@
 context("split_separate")
 
 data(airquality)
-airquality2 = airquality %>% 
+aq_list = airquality %>% 
     split_separate(Month) %>% 
     compute({
         Ozone_zscore = scale(Ozone)
-    }) %>% 
-    split_off()
+    }) 
 
-mtcars %>% 
-    split_separate(am, vs) %>% 
-    calculate({
-        res = lm(mpg ~ hp + disp + wt)
-        dtfrm(coef(res), confint(res))
-    }) %>% 
-    split_off()
+expect_equal_to_reference(aq_list, "rds/split_separate1.rds")
 
-mtcars %>% 
-    compute({
-        add_val_lab(am) = c("undefined" = 99)
-    }) %>% 
-    split_separate(am, vs, drop = FALSE) %>% 
+
+aq2 = aq_list %>% split_off()
+expect_equal_to_reference(aq2, "rds/split_separate2.rds")
+
+data(mtcars)
+# add labels to dataset
+mtcars = apply_labels(mtcars, 
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      carb = NULL,
+                      qsec = "1/4 mile time",
+                      hp = "Gross horsepower",
+                      vs = "Engine",
+                      vs = num_lab(" 
+                                   0 V-engine
+                                   1 Straight engine
+                                   "),
+                      
+                      am = "Transmission",
+                      am = num_lab(" 
+                                   0 Automatic
+                                   1 Manual
+                                   99 Not specified
+                                   ")
+                      )
+
+mtcars_list = mtcars %>% split_separate(am, vs, drop = FALSE)
+expect_equal_to_reference(mtcars_list, "rds/split_separate4.rds")
+
+mtcars_list = mtcars %>% split_separate(am, vs)
+expect_equal_to_reference(mtcars_list, "rds/split_separate3.rds")
+
+
+regr = mtcars_list %>% 
     use_labels({
-        as.dtfrm(table(cyl, carb))
+        res = lm(mpg ~ hp + disp + wt)
+        dtfrm(Estimate = coef(res), confint(res))
     }) %>% 
-    split_off()
+    split_off(groups = TRUE, rownames = TRUE)
+expect_equal_to_reference(regr, "rds/split_separate5.rds")
+
+regr = mtcars_list %>% 
+    use_labels({
+        res = lm(mpg ~ hp + disp + wt)
+        dtfrm(Estimate = coef(res), confint(res))
+    }) %>% 
+    split_off(groups = "transmission-engine", rownames = "variables")
+expect_equal_to_reference(mtcars_list, "rds/split_separate6.rds")
+
+regr = mtcars_list %>% 
+    unname() %>% 
+    use_labels({
+        res = lm(mpg ~ hp + disp + wt)
+        dtfrm(Estimate = coef(res), confint(res))
+    }) %>% 
+    split_off(groups = "transmission-engine", rownames = "variables")
+expect_equal_to_reference(mtcars_list, "rds/split_separate7.rds")
+
+
