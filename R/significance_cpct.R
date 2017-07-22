@@ -308,6 +308,7 @@ section_sig_previous_column = function(sig_section, curr_props,  curr_base, grou
                 comparable_values = !is.na(curr_props[,each_group, drop = FALSE])
                 comparable_values[,invalid_columns] = FALSE
                 # count number of comaprisons
+                number_of_comparisons_in_row = 0
                 for(col1 in seq_len(ncol(comparable_values))[-1]){
                     col2 = col1  - 1
                     number_of_comparisons_in_row = number_of_comparisons_in_row + 

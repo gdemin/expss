@@ -104,7 +104,8 @@ expect_equal_to_reference(
     "rds/signif_means11_delta.rds")
 
 expect_equal_to_reference(
-    significance_means(mtcars_table, keep_means = TRUE, keep_sd = FALSE, keep_bases = FALSE),
+    significance_means(mtcars_table, keep_means = TRUE, 
+                       keep_sd = FALSE, keep_bases = FALSE),
     "rds/signif_means12.rds")
 
 
@@ -189,6 +190,30 @@ expect_equal_to_reference(
                        keep_means = TRUE,
                        sig_level = 0.05),
     "rds/signif_means20bonferroni.rds")
+
+
+mtcars_table2 = cro_mean_sd_n(list(mtcars$mpg, mtcars$hp),
+                             list(total(), mtcars$cyl))
+
+expect_equal_to_reference(
+    significance_means(mtcars_table2, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
+                       bonferroni = FALSE,
+                       keep_means = TRUE,
+                       sig_level = 0.0005),
+    "rds/signif_means20_2.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table2, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
+                       bonferroni = TRUE,
+                       keep_means = TRUE,
+                       sig_level = 0.0005),
+    "rds/signif_means20bonferroni_2.rds")
 
 
 ############################################

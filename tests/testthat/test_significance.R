@@ -208,7 +208,7 @@ expect_equal_to_reference(
                       bonferroni = FALSE,
                       na_as_zero = FALSE, 
                       keep_percent = TRUE,
-                      sig_level = 0.1),
+                      sig_level = 0.004),
     "rds/signif_cpct20.rds")
 
 expect_equal_to_reference(
@@ -219,8 +219,30 @@ expect_equal_to_reference(
                       bonferroni = TRUE,
                       na_as_zero = FALSE, 
                       keep_percent = TRUE,
-                      sig_level = 0.1),
+                      sig_level = 0.004),
     "rds/signif_cpct20boneferrony.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table2, 
+                      compare_type = c("first_column", 
+                                       "previous_column",
+                                       "subtable"),
+                      bonferroni = FALSE,
+                      na_as_zero = FALSE, 
+                      keep_percent = TRUE,
+                      sig_level = 0.002),
+    "rds/signif_cpct20_2.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table2, 
+                      compare_type = c("first_column", 
+                                       "previous_column",
+                                       "subtable"),
+                      bonferroni = TRUE,
+                      na_as_zero = FALSE, 
+                      keep_percent = TRUE,
+                      sig_level = 0.002),
+    "rds/signif_cpct20boneferrony_2.rds")
 
 #####################
 
