@@ -36,7 +36,8 @@ Splits data.frame into list of data.frames that can be analyzed separately.
 These data.frames are sets of cases that have the same values for the 
 specified split variables. Any missing values in split variables are dropped 
 together with the corresponding values of \code{data}. \code{split_off} works
-only with lists of data frames (assumed to have compatible structure).
+with lists of data.frames or objects that can be coerced to
+data.frame and assumed to have compatible structure.
 Resulting rows will be sorted in order of the split variables.
 }
 \examples{
@@ -74,7 +75,7 @@ mtcars \%>\%
     split_separate(am, vs) \%>\% 
     use_labels({
         res = lm(mpg ~ hp + disp + wt)
-        dtfrm(Coef. = coef(res), confint(res))
+        cbind(Coef. = coef(res), confint(res))
     }) \%>\% 
     split_off(groups = TRUE, rownames = "variable")
 }

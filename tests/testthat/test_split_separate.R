@@ -59,6 +59,8 @@ regr = mtcars_list %>%
     split_off(groups = "transmission-engine", rownames = "variables")
 expect_equal_to_reference(mtcars_list, "rds/split_separate6.rds")
 
+
+
 regr = mtcars_list %>% 
     unname() %>% 
     use_labels({
@@ -68,4 +70,33 @@ regr = mtcars_list %>%
     split_off(groups = "transmission-engine", rownames = "variables")
 expect_equal_to_reference(mtcars_list, "rds/split_separate7.rds")
 
+regr = mtcars_list %>% 
+    use_labels({
+        res = lm(mpg ~ hp + disp + wt)
+        cbind(Estimate = coef(res), confint(res))
+    }) %>% 
+    split_off(groups = "transmission-engine", rownames = "variables")
+expect_equal_to_reference(mtcars_list, "rds/split_separate7.rds")
 
+regr = mtcars_list %>% 
+    use_labels({
+        res = lm(mpg ~ hp + disp + wt)
+        list(Estimate = coef(res), confint(res))
+    }) %>% 
+    split_off(groups = "transmission-engine", rownames = "variables")
+expect_equal_to_reference(mtcars_list, "rds/split_separate7.rds")
+
+regr = mtcars_list %>% 
+    use_labels({
+        res = lm(mpg ~ hp + disp + wt)
+        coef(res)
+    }) %>% 
+    split_off(groups = "transmission-engine", rownames = "variables")
+expect_equal_to_reference(mtcars_list, "rds/split_separate8.rds")
+
+regr = mtcars_list %>% 
+    use_labels({
+        cor(cbind(mpg, hp, disp, wt, qsec))
+    }) %>% 
+    split_off(groups = "transmission-engine", rownames = "variables")
+expect_equal_to_reference(mtcars_list, "rds/split_separate9.rds")

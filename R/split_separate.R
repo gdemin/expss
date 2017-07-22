@@ -4,7 +4,8 @@
 #' These data.frames are sets of cases that have the same values for the 
 #' specified split variables. Any missing values in split variables are dropped 
 #' together with the corresponding values of \code{data}. \code{split_off} works
-#' only with lists of data frames (assumed to have compatible structure).
+#' with lists of data.frames or objects that can be coerced to
+#' data.frame and assumed to have compatible structure.
 #' Resulting rows will be sorted in order of the split variables.
 #' 
 #' @param data data.frame for \code{split_separate}/list for \code{split_off}
@@ -60,7 +61,7 @@
 #'     split_separate(am, vs) %>% 
 #'     use_labels({
 #'         res = lm(mpg ~ hp + disp + wt)
-#'         dtfrm(Coef. = coef(res), confint(res))
+#'         cbind(Coef. = coef(res), confint(res))
 #'     }) %>% 
 #'     split_off(groups = TRUE, rownames = "variable")
 split_separate = function(data, ..., drop = TRUE){
@@ -93,7 +94,16 @@ split_off = function(data, groups = NULL, rownames = NULL){
 
 #' @export
 split_off.list = function(data, groups = NULL, rownames = NULL){
-     if(!is.null(groups)){
+    for(each in seq_along(data)){
+        if(!is.data.frame(data[[each]])){
+            if(is.vector(data[[each]])){
+                data[[each]] = dtfrm(value = data[[each]])    
+            } else {
+                data[[each]] = as.dtfrm(data[[each]])
+            }
+        }
+    }
+    if(!is.null(groups)){
         group_names = if_null(names(data), NA)
         if(isTRUE(groups)){
             groups = ".groups"
