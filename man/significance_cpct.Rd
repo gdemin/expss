@@ -8,8 +8,9 @@
 \alias{significance_means}
 \title{Mark significant differences between columns of the table}
 \usage{
-significance_cases(x, min_base = 2, keep_cases = TRUE,
-  keep_bases = keep_cases, total_marker = "#", total_row = 1)
+significance_cases(x, sig_level = 0.05, min_base = 2, keep_cases = TRUE,
+  keep_bases = keep_cases, total_marker = "#", total_row = 1,
+  digits = get_expss_digits())
 
 significance_cpct(x, sig_level = 0.05, delta_cpct = 0, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
@@ -30,6 +31,8 @@ significance_means(x, sig_level = 0.05, delta_means = 0, min_base = 2,
 \item{x}{table with proportions and bases - result of \link{cro_cpct} for
 \code{significance_cpct}.}
 
+\item{sig_level}{numeric. significance level - by default it equals to \code{0.05}.}
+
 \item{min_base}{numeric. Significance test will be conducted if both
 columns have bases greater than \code{min_base}. By default it equals to \code{2}.}
 
@@ -40,8 +43,6 @@ we drop total rows?}
 
 \item{total_row}{integer/character. In case of several totals per subtable it is
 number or name of total row for significance calculation.}
-
-\item{sig_level}{numeric. significance level - by default it equals to \code{0.05}.}
 
 \item{delta_cpct}{numeric. Minimal delta between values for which we mark 
 significant differences (in percent points) - by default it equals to zero.

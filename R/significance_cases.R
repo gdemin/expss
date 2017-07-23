@@ -1,11 +1,13 @@
 #' @export
 #' @rdname significance_cpct
 significance_cases = function(x, 
-                             min_base = 2,
-                             keep_cases = TRUE,
-                             keep_bases = keep_cases,
-                             total_marker = "#",
-                             total_row = 1
+                              sig_level = 0.05, 
+                              min_base = 2,
+                              keep_cases = TRUE,
+                              keep_bases = keep_cases,
+                              total_marker = "#",
+                              total_row = 1,
+                              digits = get_expss_digits()
 ){
     UseMethod("significance_cases")
 }
@@ -13,112 +15,115 @@ significance_cases = function(x,
 
 #' @export
 significance_cases.etable = function(x, 
-                                    min_base = 2,
-                                    keep_cases = TRUE,
-                                    keep_bases = keep_cases,
-                                    total_marker = "#",
-                                    total_row = 1
+                                     sig_level = 0.05, 
+                                     min_base = 2,
+                                     keep_cases = TRUE,
+                                     keep_bases = keep_cases,
+                                     total_marker = "#",
+                                     total_row = 1,
+                                     digits = get_expss_digits()
 ){
     
-    if(NCOL(x)>1) {
-        groups = header_groups(colnames(x))
-        sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
-        res = lapply(sections, function(each_section){
-            # browser()
-            curr_base = extract_total_from_section(each_section, 
-                                                   total_marker = total_marker, 
-                                                   total_row = total_row)
-            recode(curr_base) = lt(min_base) ~ NA
-            
-            total_rows_indicator = get_total_rows_indicator(each_section, total_marker = total_marker)
-            sig_section = each_section[!total_rows_indicator, ]
-            curr_cases = each_section[!total_rows_indicator, ]
-            curr_cases[,-1] = lapply(curr_cases[,-1], round)
-            if_na(curr_cases[,-1]) = 0
-            sig_section = section_sig_chisq(sig_section = sig_section, 
-                                           curr_props = curr_props, 
-                                           curr_base = curr_base,
-                                           groups = groups,
-                                           sig_level = sig_level)
-            
-            each_section[,-1] = ""
-            each_section[!total_rows_indicator,-1] = sig_section[,-1]
-            each_section
-        })
+    groups = header_groups(colnames(x))
+    sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
+    res = lapply(sections, function(each_section){
+        # browser()
+        curr_base = extract_total_from_section(each_section, 
+                                               total_marker = total_marker, 
+                                               total_row = total_row)
+        recode(curr_base) = lt(min_base) ~ NA
         
-        res = do.call(add_rows, res)
-    } else {
-        res = x
-        res[, -1] = ""
-    }
-    total_rows_indicator = get_total_rows_indicator(x, total_marker = total_marker)
-    x = round_dataframe(x, digits = digits)
-    if(keep_percent){
-        x[!total_rows_indicator, ] = format_to_character(x[!total_rows_indicator, ], 
-                                                         digits = digits)    
-        x[, -1] = paste_df_non_empty(
-            x[, -1, drop = FALSE], 
-            res[, -1, drop = FALSE],
-            sep = " "
-        )
-    } else {
-        x[!total_rows_indicator, -1] = res[!total_rows_indicator, -1, drop = FALSE]
-    }
-    if(keep_bases) {
-        x
-    } else {
-        x[!total_rows_indicator, ]
-    }
+        total_rows_indicator = get_total_rows_indicator(each_section, total_marker = total_marker)
+        curr_cases = each_section[!total_rows_indicator, ]
+        curr_cases[,-1] = lapply(curr_cases[,-1], round)
+        if_na(curr_cases[,-1]) = 0
+        chisq_row = section_sig_chisq(curr_cases = curr_cases, 
+                                      curr_base = curr_base,
+                                      groups = groups,
+                                      sig_level = sig_level)
+        
+        # we need total only as template so we take first row
+        total = each_section[total_rows_indicator, ][1, ]
+        chisq_row = make_chisq_row(total, chisq_row, total_marker)
+        if(total_rows_indicator[1]){
+            #total above
+            if(keep_cases){
+                chisq_row = rbind(
+                    chisq_row,
+                    format_to_character(each_section[!total_rows_indicator, ],
+                                        digits = digits)    
+                )    
+            }
+            if(keep_bases){
+                chisq_row = rbind(
+                    format_to_character(each_section[total_rows_indicator, ],
+                                        digits = digits),
+                    chisq_row
+                )      
+            }
+        } else {
+            #total below
+            if(keep_cases){
+                chisq_row = rbind(
+                    format_to_character(each_section[!total_rows_indicator, ],
+                                        digits = digits),
+                    chisq_row
+                )    
+            }
+            if(keep_bases){
+                chisq_row = rbind(
+                    chisq_row,
+                    format_to_character(each_section[total_rows_indicator, ],
+                                        digits = digits)
+                )      
+            }
+        }
+        chisq_row
+    })
+    res = do.call(add_rows, res)
+    class(res) = union("etable", class(res))
+    
+    res
+}
+
+########################
+
+make_chisq_row = function(total, chisq_row, total_marker){
+    # curr_label = chisq_result_row[[1]][1]
+    label = unlist(strsplit(total[[1]], split = total_marker, fixed = TRUE))
+    label[length(label)] = "Chi-squared p-value"
+    total[[1]] = paste(label, collapse = total_marker)
+    total[,-1] = chisq_row[-1]
+    total
 }
 
 
 
 ########################
 
-section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
-                            all_column_labels, sig_level, delta_cpct, bonferroni) {
+section_sig_chisq = function(curr_cases, curr_base, groups, sig_level) {
+    chisq_result_row = curr_base
+    chisq_result_row[] = NA
     for(each_group in groups){
-        if(length(each_group)>1){
-            if(bonferroni) {
-                invalid_columns = is.na(curr_base[each_group])
-                comparable_values = !is.na(curr_props[,each_group, drop = FALSE])
-                comparable_values[,invalid_columns] = FALSE
-                # count number of comaprisons
-                valid_values_in_row = rowSums(comparable_values, na.rm = TRUE)
-                number_of_comparisons_in_row = valid_values_in_row*(valid_values_in_row-1)/2
-                number_of_comparisons_in_row[number_of_comparisons_in_row<0] = 0
-                bonferroni_coef = sum(number_of_comparisons_in_row, na.rm = TRUE)
-                bonferroni_coef[bonferroni_coef==0] = 1
-            } else {
-                bonferroni_coef = 1
-            }    
-            for(col1 in each_group[-length(each_group)]){
-                prop1 = curr_props[[col1]]
-                base1 = curr_base[[col1]]
-                for(col2 in (col1+1):each_group[length(each_group)]){
-                    prop2 = curr_props[[col2]]
-                    base2 = curr_base[[col2]]
-                    pval = compare_proportions(prop1, prop2, 
-                                               base1, base2)
-                    if_na(pval) = 1
-                    pval = pmin(pval*bonferroni_coef, 1)
-                    sig_section[[col1]] = ifelse(prop1>prop2 & pval<sig_level & abs(prop1 - prop2)>delta_cpct,
-                                                 paste_non_empty(sig_section[[col1]],
-                                                                 all_column_labels[[col2]],
-                                                                 sep = " "),
-                                                 sig_section[[col1]]
-                    )
-                    sig_section[[col2]] = ifelse(prop2>prop1 & pval<sig_level & abs(prop1 - prop2)>delta_cpct,
-                                                 paste_non_empty(sig_section[[col2]], 
-                                                                 all_column_labels[[col1]], 
-                                                                 sep = " "),
-                                                 sig_section[[col2]]
-                    )
-                    
-                    
-                }                        
-            }        
+        bases = curr_base[each_group]
+        cases = curr_cases[, each_group, drop = FALSE]
+        cases = as.matrix(cases[,!is.na(bases)])
+        first_group_column = each_group[1]
+        if(length(cases)>1){
+            chisq = suppressWarnings(chisq.test(cases, correct = FALSE))
+            pvalue = chisq$p.value
+            expected = chisq$expected
+            df = chisq$parameter
+            if(pvalue<sig_level){
+                chisq_result_row[first_group_column] = paste0("<", sig_level)
+            }
+            if(any(expected<5) && is.finite(df)){
+                chisq_result_row[first_group_column] = paste0(
+                    chisq_result_row[first_group_column], 
+                    " (warn.)"
+                )
+            }
         }
     }
-    sig_section
+    chisq_result_row
 }
