@@ -137,14 +137,16 @@ vlookup_internal = function(lookup_value, dict, result_column = NULL, lookup_col
            "'vlookup' - incorrect 'lookup_value'. 'lookup_value' should be vector but its class is ", 
            paste(class(lookup_value), collapse = ", "))
     # validate lookup_column
-    stopif(length(lookup_column)!=1L,"lookup_column shoud be vector of length 1.")
+    stopif(length(lookup_column)!=1L,"'vlookup' - 'lookup_column' shoud be vector of length 1.")
+    stopif(!is.numeric(lookup_column) && !is.character(lookup_column),
+           "'vlookup' - 'lookup_column' shoud be character or numeric.")
     stopif(is.numeric(lookup_column) && max(lookup_column,na.rm = TRUE)>NCOL(dict),
-           "lookup_column is greater than number of columns in the dict.")
+           "'vlookup' - 'lookup_column' is greater than number of columns in the dict.")
     stopif(is.numeric(lookup_column) && any(lookup_column <= 0),
-           "lookup_column should be positive.")
+           "'vlookup' - 'lookup_column' should be positive.")
     stopif(is.character(lookup_column) && (is.data.frame(dict) || is.matrix(dict)) && 
                !all(setdiff(lookup_column, SPECIALS) %in% colnames(dict)),
-           "lookup_column doesn't exists in column names of the dict.")
+           "'vlookup' - 'lookup_column' doesn't exists in column names of the dict.")
     
     
     # validate result_column
@@ -177,14 +179,7 @@ vlookup_internal = function(lookup_value, dict, result_column = NULL, lookup_col
         if(any(SPECIALS %in% lookup_column)) lookup_column[lookup_column %in% SPECIALS] = "...RRRLLL..."
     }
     # calculate index
-    if (is.numeric(lookup_column) || is.character(lookup_column)){
-        if(is.character(lookup_value) && is.character(dict[[lookup_column]])){
-            ind = chmatch(lookup_value, dict[[lookup_column]]) 
-            ind[is.na(lookup_value)] = NA
-        } else {
-            ind = match(lookup_value, dict[[lookup_column]], incomparables = NA) 
-        }
-    } else stop("lookup_column shoud be character or numeric.")
+    ind = fast_match(lookup_value, dict[[lookup_column]], NA_incomparable = TRUE)
     ### calculate result
     if(df){
         if (is.null(result_column)){
