@@ -411,6 +411,7 @@ drop_unused_labels = function(x){
 #' @export
 drop_unused_labels.default = function(x){
     curr_labs = val_lab(x)
+    if(is.null(curr_labs)) return(x)
     curr_values = uniq_elements(x)
     set_val_lab(x, curr_labs[curr_labs %in% curr_values])
 }
@@ -418,6 +419,7 @@ drop_unused_labels.default = function(x){
 #' @export
 drop_unused_labels.category = function(x){
     curr_labs = val_lab(x)
+    if(is.null(curr_labs)) return(x)
     curr_values = uniq_elements(x)
     set_val_lab(x, curr_labs[curr_labs %in% curr_values])
 }
@@ -519,7 +521,7 @@ as.labelled = function(x, label = NULL){
 as.labelled.default = function(x, label = NULL){
     labels = sort(unique(x), na.last = NA)
     values = seq_along(labels)
-    res = match(x, labels)
+    res = fast_match(x, labels)
     names(values) = as.character(labels)
     val_lab(res) = values
     if(!is.null(label)) var_lab(res) = label

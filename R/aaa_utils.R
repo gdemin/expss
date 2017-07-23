@@ -421,13 +421,16 @@ integer_encoding=function(x, dict = NULL)
 #' @export
 integer_encoding.default=function(x, dict = NULL){
     if(is.null(dict)) dict = sort(uniq_elements(x))
-    matrix(match(x, dict, incomparables=NA), nrow = NROW(x))
+    matrix(fast_match(x, dict, NA_incomparable = TRUE), nrow = NROW(x))
 }
 
 #' @export
 integer_encoding.data.frame=function(x, dict = NULL){
     if(is.null(dict)) dict = sort(uniq_elements(x))
-    matrix(match(c(x, recursive = TRUE), dict, incomparables=NA), nrow = nrow(x))
+    matrix(fast_match(c(x, recursive = TRUE, use.names = FALSE), 
+                      dict, 
+                      NA_incomparable = TRUE),
+           nrow = nrow(x))
 }
 
 ## Flatten list
@@ -670,3 +673,24 @@ evaluate_variable_names = function(variables_names, envir, symbols_to_characters
 
 
 
+####################
+
+fast_match = function(x, table, nomatch = NA_integer_, NA_incomparable = FALSE){
+    if(is.character(x) && is.character(table)){
+        ind = chmatch(x, table, nomatch = nomatch) 
+        if(NA_incomparable) {
+            ind[is.na(x)] = nomatch
+        }
+    } else {
+        if(NA_incomparable) {
+            ind = match(x, table, 
+                        nomatch = nomatch, 
+                        incomparables = NA)
+        } else {
+            ind = match(x, table,
+                        nomatch = nomatch, 
+                        incomparables = NULL)
+        }    
+    }
+    ind
+}

@@ -38,7 +38,7 @@ fctr = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
 
 #' @export
 fctr.default = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
-    base::factor(x = x, ...)  
+    fast_factor(x = x, ...)  
 }  
 
 #' @export
@@ -52,7 +52,7 @@ fctr.factor = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRU
 
 #' @export
 fctr.labelled = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = TRUE){
-    x = as.labelled(x) # if we have only variable label 
+    x = as.labelled(x) # if we have only variable label
     vallab = val_lab(x)
     varlab = var_lab(x)
     x = unlab(x)
@@ -72,7 +72,7 @@ fctr.labelled = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = T
     }
     ### premature optimization
     ordered = if_null(list(...)$ordered, FALSE)
-    res = match(x, vallab)
+    res = fast_match(x, vallab)
     levels(res) = names(vallab)
     class(res) = c(if (ordered) "ordered", "factor")
     res     
@@ -80,3 +80,32 @@ fctr.labelled = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = T
 }
 
 
+
+
+fast_factor = function (x = character(), levels, labels = levels, exclude = NA, 
+                        ordered = is.ordered(x), nmax = NA) {
+    if (is.null(x)) x = character()
+    nx = names(x)
+    if (missing(levels)) {
+        y = unique(x, nmax = nmax)
+        ind = sort.list(y)
+        levels = y[ind]
+    }
+    force(ordered)
+    # if (!is.character(x)) 
+    #     x <- as.character(x)
+    levels = levels[is.na(match(levels, exclude))]
+    f = fast_match(x, levels)
+    if (!is.null(nx)) 
+        names(f) = nx
+    nl = length(labels)
+    nL = length(levels)
+    if (!any(nl == c(1L, nL))) 
+        stop(gettextf("invalid 'labels'; length %d should be 1 or %d", 
+                      nl, nL), domain = NA)
+    levels(f) = if (nl == nL) 
+        as.character(labels)
+    else paste0(labels, seq_along(levels))
+    class(f) <- c(if (ordered) "ordered", "factor")
+    f
+}

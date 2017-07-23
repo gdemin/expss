@@ -74,10 +74,10 @@ split_separate.data.frame = function(data, ..., drop = TRUE){
     stopif(length(variables_names)==0, "'split_separate' - no grouping variables.")
     splitter = keep_internal(data, variables_names, envir = parent.frame())
     splitter = do.call(nest, splitter)
-    if(drop){
+    if(drop && is.labelled(splitter)){
         splitter = drop_unused_labels(splitter)
     }
-    splitter = fctr(splitter, drop_unused_labels = FALSE, prepend_var_lab = TRUE)
+    splitter = fctr(splitter, drop_unused_labels = drop, prepend_var_lab = TRUE)
     index = split(seq_len(NROW(data)), splitter)
     lapply(index, function(ind) universal_subset(data, ind, drop = FALSE))
 }
