@@ -45,6 +45,13 @@ expect_equal_to_reference(
 vec = c("", "")
 expect_identical(split_labels(vec), matrix(vec, ncol = 1))
 
+vec = c(NA, NA, "1 6", NA)
+
+expect_identical(
+    split_labels(vec, split = " "),
+    cbind(c("", "", "1", ""), c("", "", "6", ""))
+)
+
 context("split_columns")
 # replace first column with new columns 
 expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
