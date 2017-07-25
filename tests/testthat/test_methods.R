@@ -411,3 +411,19 @@ expect_output_file(print(tbl),
 
 # expect_equal_to_reference(rbind(tbl_df, simple_df), "rds/cbind17.rds")
 # expect_equal_to_reference(rbind(simple_df, tbl_df), "rds/cbind18.rds")
+
+
+context("as.etable")
+
+data(mtcars)
+res = mtcars
+expect_false(is.etable(res))
+class(res) = union("etable", class(res))
+expect_true(is.etable(res))
+
+expect_identical(as.etable(mtcars), res)
+
+res = as.dtfrm(matrix(1:9, 3))
+colnames(res) = rep("", 3)
+class(res) = union("etable", class(res))
+expect_identical(as.etable(matrix(1:9, 3)), res)

@@ -71,6 +71,7 @@ split_labels = function(x, remove_repeated = TRUE, split = "\\|", fixed = FALSE,
     if(length(x)==0){
         return(matrix(NA, ncol=0, nrow = 0))
     }
+    if(!is.character(x)) x = as.character(x)
     zero_length_strings = (x == "") & !is.na(x) # strange behaviour of strsplit with ""
     x_split = strsplit(x, split = split, fixed = fixed, perl = perl)  
 
