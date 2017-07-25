@@ -414,3 +414,26 @@ expect_equal_to_reference(
                       compare_type = c("first_column", "subtable"),
                       keep_percent = TRUE),
     "rds/signif_cpct33.rds")
+
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table[ ,1],
+                      keep_percent = TRUE),
+    "rds/signif_cpct34.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table[ ,1],
+                      keep_percent = FALSE,
+                      keep_bases = TRUE),
+    "rds/signif_cpct34.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table[ ,1],
+                      keep_percent = FALSE,
+                      keep_bases = FALSE),
+    "rds/signif_cpct35.rds")
+
+
+expect_equal_to_reference(
+    significance_cpct(cro_cpct(NA)),
+    "rds/signif_cpct36.rds")

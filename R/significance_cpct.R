@@ -130,19 +130,19 @@ significance_cpct.etable = function(x,
     
     compare_type = match.arg(compare_type, choices = COMPARE_TYPE, several.ok = TRUE)
     stopif(sum(compare_type %in% c("first_column", "adjusted_first_column"))>1, 
-                   "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")
-    if(NCOL(x)>2) {
-        delta_cpct = delta_cpct/100
-        if("subtable" %in% compare_type){
-            if(!is.null(sig_labels)){
-                x = add_sig_labels(x, sig_labels = sig_labels)
-            } 
-            all_column_labels = get_category_labels(colnames(x))
-        }
+           "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")
+    
+    delta_cpct = delta_cpct/100
+    if("subtable" %in% compare_type){
+        if(!is.null(sig_labels)){
+            x = add_sig_labels(x, sig_labels = sig_labels)
+        } 
+        all_column_labels = get_category_labels(colnames(x))
+    }
+    if(NCOL(x)>1){
         groups = header_groups(colnames(x))
         sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
         res = lapply(sections, function(each_section){
-            # browser()
             curr_base = extract_total_from_section(each_section, total_marker = total_marker, total_row = total_row)
             recode(curr_base) = lt(min_base) ~ NA
             
@@ -193,13 +193,12 @@ significance_cpct.etable = function(x,
         res = do.call(add_rows, res)
     } else {
         res = x
-        res[, -1] = ""
     }
     total_rows_indicator = get_total_rows_indicator(x, total_marker = total_marker)
     x = round_dataframe(x, digits = digits)
     if(keep_percent){
         x[!total_rows_indicator, ] = format_to_character(x[!total_rows_indicator, ], 
-                                                        digits = digits)    
+                                                         digits = digits)    
         x[, -1] = paste_df_non_empty(
             x[, -1, drop = FALSE], 
             res[, -1, drop = FALSE],
