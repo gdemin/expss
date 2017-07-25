@@ -103,7 +103,7 @@ make_chisq_row = function(total, chisq_row, total_marker){
 
 section_sig_chisq = function(curr_cases, curr_base, groups, sig_level) {
     chisq_result_row = curr_base
-    chisq_result_row[] = NA
+    chisq_result_row[] = ""
     for(each_group in groups){
         bases = curr_base[each_group]
         cases = curr_cases[, each_group, drop = FALSE]
@@ -112,12 +112,14 @@ section_sig_chisq = function(curr_cases, curr_base, groups, sig_level) {
         if(length(cases)>1){
             chisq = suppressWarnings(chisq.test(cases, correct = FALSE))
             pvalue = chisq$p.value
+            if_na(pvalue) = 1
             expected = chisq$expected
+            if_na(expected) = 0
             df = chisq$parameter
             if(pvalue<sig_level){
                 chisq_result_row[first_group_column] = paste0("<", sig_level)
             }
-            if(any(expected<5) && is.finite(df)){
+            if(any(expected<5, na.rm = TRUE) && is.finite(df)){
                 chisq_result_row[first_group_column] = paste0(
                     chisq_result_row[first_group_column], 
                     " (warn.)"
