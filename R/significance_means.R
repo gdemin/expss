@@ -40,10 +40,9 @@ significance_means.etable = function(x,
                                      digits = get_expss_digits()
 ){
     
-    stopif(NROW(x) %% 3 !=0, 
+    stopif((NROW(x) %% 3 !=0) || NROW(x) == 0, 
            "Incorrect table. Table should have rows with means, standard deviations and valid N.")
-    if(NCOL(x)<3) return(x)
-    
+ 
     compare_type = match.arg(compare_type, choices = COMPARE_TYPE, several.ok = TRUE)
     stopif(sum(compare_type %in% c("first_column", "adjusted_first_column"))>1, 
            "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")

@@ -321,3 +321,37 @@ expect_equal_to_reference(
                       compare_type = c("first_column", "subtable"),
                       keep_means = TRUE),
     "rds/signif_means33.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table[ ,1],
+                       keep_means = FALSE,
+                       keep_sd = FALSE,
+                       keep_bases = FALSE
+                       ),
+    "rds/signif_means34.rds")
+
+
+expect_equal_to_reference(
+    significance_means(mtcars_table[ ,1],
+                       keep_means = TRUE,
+                       keep_sd = FALSE,
+                       keep_bases = FALSE
+    ),
+    "rds/signif_means34.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table[ ,1],
+                       keep_means = TRUE,
+                       keep_sd = TRUE,
+                       keep_bases = FALSE
+    ),
+    "rds/signif_means35.rds")
+
+
+expect_equal_to_reference(
+    significance_means(mtcars_table[ ,1],
+                       keep_means = FALSE,
+                       keep_sd = FALSE,
+                       keep_bases = TRUE
+    ),
+    "rds/signif_means36.rds")
