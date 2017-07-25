@@ -156,3 +156,9 @@ expect_equal_to_reference(
     significance_cases(mtcars_table),
     "rds/significance_cases16.rds"
 )
+
+
+expect_equal_to_reference(
+    significance_cases(cro_cases(NA)),
+    "rds/significance_cases17.rds"
+)
