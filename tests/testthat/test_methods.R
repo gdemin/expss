@@ -427,3 +427,51 @@ res = as.dtfrm(matrix(1:9, 3))
 colnames(res) = rep("", 3)
 class(res) = union("etable", class(res))
 expect_identical(as.etable(matrix(1:9, 3)), res)
+
+mtcars = unlab(mtcars)
+
+expect_equal_to_reference(
+    calc(mtcars, as.etable(table(am))),
+    "rds/as.etable1.rds")
+expect_equal_to_reference(
+    calc(mtcars, as.etable(table(am, vs))),
+    "rds/as.etable2.rds")
+expect_equal_to_reference(
+    calc(mtcars, as.etable(table(am, vs, cyl))),
+    "rds/as.etable3.rds")
+expect_equal_to_reference(
+    calc(mtcars, as.etable(table(am, vs, cyl, gear))),
+    "rds/as.etable4.rds")
+
+mtcars = apply_labels(mtcars, 
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      gear = "Number of forward gears",
+                      carb = "Carbureuter",
+                      hp = "Gross horsepower",
+                      vs = "Engine",
+                      vs = num_lab(" 
+                                   0 V-engine
+                                   1 Straight engine
+                                   "),
+                      
+                      am = "Transmission",
+                      am = num_lab(" 
+                                   0 Automatic
+                                   1 Manual
+                                   ")
+)
+
+expect_equal_to_reference(
+    use_labels(mtcars, as.etable(table(am))),
+    "rds/as.etable5.rds")
+expect_equal_to_reference(
+    use_labels(mtcars, as.etable(table(am, vs))),
+    "rds/as.etable6.rds")
+expect_equal_to_reference(
+    use_labels(mtcars, as.etable(table(am, vs, cyl))),
+    "rds/as.etable7.rds")
+expect_equal_to_reference(
+    use_labels(mtcars, as.etable(table(am, vs, cyl, gear))),
+    "rds/as.etable8.rds")
