@@ -278,10 +278,19 @@ calculate_internal =  function (data, expr, parent, use_labels = FALSE) {
 calculate_internal.data.frame = function (data, expr, parent, use_labels = FALSE) {
     # based on 'within' from base R by R Core team
     if(use_labels){
-        substitution_list = extract_var_labs_as_list_with_symbols(data)
-        data = names2labels(data) 
-        if(length(substitution_list)>0){
+        all_labs = all_labels(data)
+        if(length(all_labs)>0){
+            if(anyDuplicated(names(all_labs))){
+                dupl = duplicated(names(all_labs)) | duplicated(names(all_labs), fromLast = TRUE)
+                all_labs = all_labs[dupl]
+                names(all_labs) = paste(names(all_labs), colnames(data)[all_labs])
+                for(each in seq_along(all_labs)){
+                    var_lab(data[[all_labs[each]]]) = names(all_labs)[each]
+                }
+            }
+            substitution_list = extract_var_labs_as_list_with_symbols(data)
             expr = substitute_symbols(expr, substitution_list)
+            data = names2labels(data) 
         }
     }
     e = evalq(environment(), data, parent)
@@ -295,6 +304,21 @@ calculate_internal.list = function (data, expr, parent, use_labels = FALSE) {
         data[[each]] = calculate_internal(data[[each]], expr, parent, use_labels)
     }
     data
+}
+
+all_labels = function(data){
+    res = lapply(data, function(x) {
+        new_name = var_lab(x)
+        if(!is.null(new_name) && !is.na(new_name) && new_name!=""){
+            new_name
+        } else {
+            NULL
+        }
+    }) 
+    indexes = seq_along(data)
+    indexes = indexes[lengths(res)>0]
+    res = res[lengths(res)>0]
+    setNames(indexes, unlist(res))
 }
 
 extract_var_labs_as_list_with_symbols = function(data){

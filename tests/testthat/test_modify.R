@@ -413,6 +413,8 @@ mtcars = apply_labels(mtcars,
 
 res = with(mtcars, table(am, vs))
 
+expect_identical(use_labels(unvr(mtcars), table(am, vs)), res)
+
 names(dimnames(res)) = c(var_lab(mtcars$am), var_lab(mtcars$vs))
 expect_identical(
     use_labels(mtcars, table(am, vs)), 
@@ -431,3 +433,10 @@ expect_identical(
     summary(iris$Sepal.Length)
 )
 
+var_lab(mtcars$am) = "Duplicated label"
+var_lab(mtcars$vs) = "Duplicated label"
+names(dimnames(res)) = c("Duplicated label am",  "Duplicated label vs")
+expect_identical(
+    use_labels(mtcars, table(am, vs)), 
+    res
+)
