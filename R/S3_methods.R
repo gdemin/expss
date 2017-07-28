@@ -401,17 +401,10 @@ t.etable = function(x){
 # 
 
 
-# #' @export
-# as.etable = function(x, ...){
-#     UseMethod("as.etable")
-# }
-# 
-# #' @export
-# as.etable.default = function(x, ...){
-#     class(x) = union("etable", x)
-#     x
-# }
-# 
 
 
+#' @export
+repr_html.etable = function(obj, digits = get_expss_digits(), ...){
+    html_table_no_row_groups(obj, digits = digits, ...)
 
+}

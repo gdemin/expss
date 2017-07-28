@@ -243,5 +243,123 @@ knit_print.etable = function(x, digits = get_expss_digits(), ...){
 
 
 
+## for Jupyter notebooks where row headings not rendered correctly
+html_table_no_row_groups = function(x, digits = get_expss_digits(), ...){
+    x = round_dataframe(x, digits = digits)
+    if(NCOL(x) == 0){
+        return(htmlTable(setNames(dtfrm("Table is empty"), " "), ...))
+    }
+    # escape <NA>
+    colnames(x) = gsub("<NA>", "&lt;NA&gt;", colnames(x), fixed = TRUE)
+    if(is.character(x[[1]]) || is.factor(x[[1]])){
+        x[[1]] = gsub("<NA>", "&lt;NA&gt;", x[[1]], fixed = TRUE)
+    }
+    ## for significance marks
+    for(i in seq_along(x)[-1]){
+        if(is.character(x[[i]]) || is.factor(x[[i]])){
+            x[[i]] = gsub("\\s", "&nbsp;", x[[i]], perl = TRUE)
+        }
+    }
+    first_lab = colnames(x)[1]
+    if(first_lab == "row_labels") first_lab = ""
+    # first_lab = htmltools::htmlEscape(first_lab)
+    row_labels = x[[1]]  # htmltools::htmlEscape(x[[1]])
+    x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
+    header = t(split_labels(colnames(x), split = "|", fixed = TRUE, remove_repeated = FALSE))
+    header_last_row = t(split_labels(colnames(x),
+                                     split = "|", 
+                                     fixed = TRUE,
+                                     remove_repeated = TRUE))[NROW(header), , drop = FALSE]
+    # header[] = htmltools::htmlEscape(header)
+    # header_last_row[] = htmltools::htmlEscape(header_last_row)
+    for(each in seq_len(NCOL(header))){
+        curr_col = header[, each]
+        ok = !is.na(curr_col) & curr_col!=""
+        header[ok, each] = 
+            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+    }
+    for(each in seq_len(NCOL(header_last_row))){
+        curr_col = header_last_row[, each]
+        ok = !is.na(curr_col) & curr_col!=""
+        header_last_row[ok, each] = 
+            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+    }
+    if(NCOL(header)>0){
+        
+        html_header = header_last_row
+        if(NROW(header)>1){
+            cgroup_list = matrix_to_cgroup(header[-NROW(header), ,drop = FALSE])
+            cgroup = cgroup_list[["cgroup"]]
+            n.cgroup = cgroup_list[["n.cgroup"]]
+        } else {
+            cgroup = matrix(character(0), 0, 0)
+            n.cgroup = matrix(0, 1, 1)    
+        }
+    } else {
+        html_header = character(0)
+        cgroup = matrix(character(0), 0, 0)
+        n.cgroup = matrix(0, 1, 1)
+        
+    }
+    align = rep("r", NCOL(x))
+    row_labels = split_labels(row_labels, split = "|", fixed = TRUE)
+    for(each in seq_len(NCOL(row_labels))){
+        curr_col = row_labels[, each]
+        ok = !is.na(curr_col) & curr_col!=""
+        row_labels[ok, each] = 
+            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+    }
+    if(NCOL(row_labels)==0) row_labels = matrix("", 1, 1)
+    if(NCOL(row_labels) == 1){
+        rnames = row_labels[,1] 
+    } else {
+        if(NCOL(row_labels) > 1){
+            x = dtfrm(row_labels[, -1], x)
+            html_header = c(rep("", NCOL(row_labels) - 1), html_header)
+            align = c(rep("l", NCOL(row_labels) - 1), align)
+            if(NCOL(header)>0){
+                cgroup = cbind("", cgroup)
+                n.cgroup = cbind(NCOL(row_labels) - 1, n.cgroup)
+            } else {
+                cgroup = matrix("", 1, 1) 
+                n.cgroup = matrix(NCOL(row_labels) - 1, 1, 1)
+            }
+        }
+        rnames = row_labels[,1]
+    }
+    # cgroup = cgroup[-NROW(cgroup), ,drop = FALSE]
+    # n.cgroup = n.cgroup[-NROW(n.cgroup), , drop = FALSE]
+    if(NCOL(x)>0){
+        if(NROW(cgroup)>0){
+            cgroup = cgroup[,colSums(!is.na(cgroup))>0, drop = FALSE]
+            n.cgroup = n.cgroup[,colSums(!is.na(n.cgroup))>0, drop = FALSE]
+                htmlTable(as.dtfrm(x), 
+                          header = html_header,
+                          cgroup = cgroup, 
+                          align = align,
+                          n.cgroup = n.cgroup, 
+                          rnames = rnames, 
+                          rowlabel = first_lab,
+                          ...)   
+            
+        } else {
 
-
+                htmlTable(as.dtfrm(x), 
+                          header = html_header,
+                          align = align,
+                          rnames = rnames, 
+                          rowlabel = first_lab,
+                          ...)   
+            
+        }
+    } else {
+        x = rep("", NROW(x))
+        htmlTable(dtfrm(x), 
+                  header = "",
+                  rnames = rnames, 
+                  rowlabel = first_lab,
+                  ...) 
+        
+    }
+    
+}

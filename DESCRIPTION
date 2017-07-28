@@ -21,7 +21,8 @@ Imports:
     htmltools (>= 0.3.5)
 Suggests:
     knitr,
-    testthat
+    testthat,
+    repr
 Description: Package provides tabulation functions with support of 'SPSS'-style labels, 
     multiple / nested banners, weights and multiple-response variables. 
     Additionally it offers useful functions for data processing in the social / 
