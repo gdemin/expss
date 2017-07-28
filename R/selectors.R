@@ -116,6 +116,8 @@ vars_list = function(...){
 }
 
 internal_vars_list = function(variables_names, envir){
+    stopif(length(variables_names)<2, 
+           "'vars'/'vars_list' - you should provide at least one argument.")
     curr_names = get_current_variables(envir)
     new_vars = variables_names_to_indexes(curr_names, 
                                           variables_names, 

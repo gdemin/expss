@@ -258,7 +258,7 @@ expect_identical(
 
 
 
-
+expect_error(vars())
 expect_error(vars(subst("z`1:5`")))
 expect_error(vars(subst("a_`c(1:2,4:5)`"), subst("z`1:5`")))
 # expect_error(a_5 %to% a_1)
