@@ -73,6 +73,13 @@ expect_equal_to_reference(
     significance_cpct(mtcars_table, keep_percent = FALSE),
     "rds/signif_cpct1.rds")
 expect_equal_to_reference(
+    significance_cpct(mtcars_table, keep_percent = FALSE, subtable_marks = "less"),
+    "rds/signif_cpct1_less.rds")
+expect_equal_to_reference(
+    significance_cpct(mtcars_table, keep_percent = FALSE, subtable_marks = "both"),
+    "rds/signif_cpct1_both.rds")
+
+expect_equal_to_reference(
     significance_cpct(mtcars_table, keep_percent = FALSE, na_as_zero = TRUE),
     "rds/signif_cpct2.rds")
 expect_equal_to_reference(
@@ -210,6 +217,32 @@ expect_equal_to_reference(
                       keep_percent = TRUE,
                       sig_level = 0.004),
     "rds/signif_cpct20.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table2, 
+                      compare_type = c("first_column", 
+                                       "previous_column",
+                                       "subtable"),
+                      sig_level = 0.1),
+    "rds/signif_cpct20greater.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table2, 
+                      compare_type = c("first_column", 
+                                       "previous_column",
+                                       "subtable"),
+                      subtable_marks = "less",
+                      sig_level = 0.1),
+    "rds/signif_cpct20less.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table2, 
+                      compare_type = c("first_column", 
+                                       "previous_column",
+                                       "subtable"),
+                      subtable_marks = "both",
+                      sig_level = 0.1),
+    "rds/signif_cpct20both.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table2, 
@@ -420,6 +453,22 @@ expect_equal_to_reference(
     significance_cpct(mtcars_table[ ,1],
                       keep_percent = TRUE),
     "rds/signif_cpct34.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table[ ,1],
+                      keep_percent = TRUE,
+                      subtable_marks = "both"
+                      ),
+    "rds/signif_cpct34.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table[ ,1],
+                      keep_percent = TRUE,
+                      compare_type = c("previous", "first", "subtable"),
+                      subtable_marks = "both"
+    ),
+    "rds/signif_cpct34.rds")
+
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table[ ,1],

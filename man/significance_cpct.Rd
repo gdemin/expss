@@ -13,7 +13,8 @@ significance_cases(x, sig_level = 0.05, min_base = 2, keep_cases = TRUE,
   digits = get_expss_digits())
 
 significance_cpct(x, sig_level = 0.05, delta_cpct = 0, min_base = 2,
-  compare_type = "subtable", bonferroni = FALSE, sig_labels = LETTERS,
+  compare_type = "subtable", bonferroni = FALSE,
+  subtable_marks = c("greater", "both", "less"), sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
   "+"), keep_percent = TRUE, keep_bases = keep_percent,
   na_as_zero = FALSE, total_marker = "#", total_row = 1,

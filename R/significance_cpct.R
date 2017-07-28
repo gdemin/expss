@@ -95,6 +95,7 @@ significance_cpct = function(x,
                              min_base = 2,
                              compare_type ="subtable",
                              bonferroni = FALSE,
+                             subtable_marks = c("greater", "both", "less"),
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
@@ -116,6 +117,7 @@ significance_cpct.etable = function(x,
                                     min_base = 2,
                                     compare_type = "subtable",
                                     bonferroni = FALSE,
+                                    subtable_marks = c("greater", "both", "less"),
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
@@ -131,7 +133,9 @@ significance_cpct.etable = function(x,
     compare_type = match.arg(compare_type, choices = COMPARE_TYPE, several.ok = TRUE)
     stopif(sum(compare_type %in% c("first_column", "adjusted_first_column"))>1, 
            "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")
-    
+    subtable_marks = match.arg(subtable_marks)
+    mark_greater = subtable_marks %in% c("greater", "both")
+    mark_less = subtable_marks %in% c("both", "less")
     delta_cpct = delta_cpct/100
     if("subtable" %in% compare_type){
         if(!is.null(sig_labels)){
@@ -147,15 +151,16 @@ significance_cpct.etable = function(x,
             recode(curr_base) = lt(min_base) ~ NA
             
             total_rows_indicator = get_total_rows_indicator(each_section, total_marker = total_marker)
-            sig_section = each_section[!total_rows_indicator, ]
-            sig_section[, -1] = ""
+            empty_sig_section = each_section[!total_rows_indicator, ]
+            empty_sig_section[, -1] = ""
+            sig_section = empty_sig_section
             curr_props = each_section[!total_rows_indicator, ]
             curr_props[,-1] = curr_props[,-1]/100
             if(na_as_zero){
                 if_na(curr_props[,-1]) = 0
             }
             if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
-                sig_section = section_sig_first_column(sig_section = sig_section, 
+                sig_section = section_sig_first_column(sig_section = empty_sig_section, 
                                                        curr_props = curr_props, 
                                                        curr_base = curr_base,
                                                        groups = groups,
@@ -176,14 +181,51 @@ significance_cpct.etable = function(x,
                                                           bonferroni = bonferroni)
             }
             if("subtable" %in% compare_type){
-                sig_section = section_sig_prop(sig_section = sig_section, 
-                                               curr_props = curr_props, 
-                                               curr_base = curr_base,
-                                               groups = groups,
-                                               all_column_labels = all_column_labels,
-                                               sig_level = sig_level,
-                                               delta_cpct = delta_cpct,
-                                               bonferroni = bonferroni)
+                prepend = ""
+                if(mark_greater){
+                    if(mark_greater & mark_less) {
+                        prepend = ">"    
+                    }
+                    subtable_sig_section = section_sig_prop(sig_section = empty_sig_section, 
+                                                            curr_props = curr_props, 
+                                                            curr_base = curr_base,
+                                                            groups = groups,
+                                                            all_column_labels = all_column_labels,
+                                                            sig_level = sig_level,
+                                                            delta_cpct = delta_cpct,
+                                                            bonferroni = bonferroni,
+                                                            mark_greater = TRUE,
+                                                            prepend = prepend
+                    )
+                    for(i in seq_along(sig_section)[-1]){
+                        sig_section[[i]] = paste_non_empty(sig_section[[i]], 
+                                                           subtable_sig_section[[i]],
+                                                           sep = " "
+                        )
+                    }
+                }
+                if(mark_less){
+                    if(mark_greater & mark_less) {
+                        prepend = "<"    
+                    }
+                    subtable_sig_section = section_sig_prop(sig_section = empty_sig_section, 
+                                                            curr_props = curr_props, 
+                                                            curr_base = curr_base,
+                                                            groups = groups,
+                                                            all_column_labels = all_column_labels,
+                                                            sig_level = sig_level,
+                                                            delta_cpct = delta_cpct,
+                                                            bonferroni = bonferroni,
+                                                            mark_greater = FALSE,
+                                                            prepend = prepend
+                    )
+                    for(i in seq_along(sig_section)[-1]){
+                        sig_section[[i]] = paste_non_empty(sig_section[[i]], 
+                                                           subtable_sig_section[[i]],
+                                                           sep = " "
+                        )
+                    }
+                }
             }
             each_section[,-1] = ""
             each_section[!total_rows_indicator,-1] = sig_section[,-1]
@@ -246,7 +288,8 @@ add_sig_labels = function(tbl, sig_labels = LETTERS){
 ########################
 
 section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
-                            all_column_labels, sig_level, delta_cpct, bonferroni) {
+                            all_column_labels, sig_level, delta_cpct, bonferroni, 
+                            mark_greater, prepend) {
     for(each_group in groups){
         if(length(each_group)>1){
             if(bonferroni) {
@@ -261,7 +304,7 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
                 bonferroni_coef[bonferroni_coef==0] = 1
             } else {
                 bonferroni_coef = 1
-            }    
+            } 
             for(col1 in each_group[-length(each_group)]){
                 prop1 = curr_props[[col1]]
                 base1 = curr_base[[col1]]
@@ -272,13 +315,19 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
                                                base1, base2)
                     if_na(pval) = 1
                     pval = pmin(pval*bonferroni_coef, 1)
-                    sig_section[[col1]] = ifelse(prop1>prop2 & pval<sig_level & abs(prop1 - prop2)>delta_cpct,
+                    if(mark_greater) {
+                        comparison = prop1>prop2
+                    } else {
+                        comparison = prop2>prop1
+                    }    
+                    delta =  abs(prop1 - prop2)
+                    sig_section[[col1]] = ifelse(comparison & pval<sig_level & delta>delta_cpct,
                                                  paste_non_empty(sig_section[[col1]],
                                                                  all_column_labels[[col2]],
                                                                  sep = " "),
                                                  sig_section[[col1]]
                     )
-                    sig_section[[col2]] = ifelse(prop2>prop1 & pval<sig_level & abs(prop1 - prop2)>delta_cpct,
+                    sig_section[[col2]] = ifelse(!comparison & pval<sig_level & delta>delta_cpct,
                                                  paste_non_empty(sig_section[[col2]], 
                                                                  all_column_labels[[col1]], 
                                                                  sep = " "),
@@ -287,8 +336,13 @@ section_sig_prop = function(sig_section, curr_props,  curr_base, groups,
                     
                     
                 }                        
-            }        
+            } 
         }
+        
+        
+    }
+    if(prepend!=""){
+        recode(sig_section[,-1]) = neq("") ~ function(x) paste(prepend, x)
     }
     sig_section
 }
