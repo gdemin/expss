@@ -8,17 +8,16 @@
 \alias{significance_means}
 \title{Mark significant differences between columns of the table}
 \usage{
-significance_cases(x, sig_level = 0.05, min_base = 2, keep_cases = TRUE,
-  keep_bases = keep_cases, total_marker = "#", total_row = 1,
+significance_cases(x, sig_level = 0.05, min_base = 2, keep = c("cases",
+  "bases"), total_marker = "#", total_row = 1,
   digits = get_expss_digits())
 
 significance_cpct(x, sig_level = 0.05, delta_cpct = 0, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE,
   subtable_marks = c("greater", "both", "less"), sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
-  "+"), keep_percent = TRUE, keep_bases = keep_percent,
-  na_as_zero = FALSE, total_marker = "#", total_row = 1,
-  digits = get_expss_digits())
+  "+"), keep = c("percent", "bases"), na_as_zero = FALSE,
+  total_marker = "#", total_row = 1, digits = get_expss_digits())
 
 add_sig_labels(tbl, sig_labels = LETTERS)
 
@@ -26,8 +25,8 @@ significance_means(x, sig_level = 0.05, delta_means = 0, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE,
   subtable_marks = c("greater", "both", "less"), sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
-  "+"), keep_means = TRUE, keep_sd = keep_means, keep_bases = keep_means,
-  var_equal = FALSE, digits = get_expss_digits())
+  "+"), keep = c("means", "sd", "bases"), var_equal = FALSE,
+  digits = get_expss_digits())
 }
 \arguments{
 \item{x}{table with proportions and bases - result of \link{cro_cpct} for
@@ -37,9 +36,6 @@ significance_means(x, sig_level = 0.05, delta_means = 0, min_base = 2,
 
 \item{min_base}{numeric. Significance test will be conducted if both
 columns have bases greater than \code{min_base}. By default it equals to \code{2}.}
-
-\item{keep_bases}{logical. By default equals to \code{keep_percent}. Should
-we drop total rows?}
 
 \item{total_marker}{character. Mark of total rows in table.}
 
@@ -71,11 +67,14 @@ default it is \code{v}) and the second means greater (\code{^}).}
 for marking difference with first column of the table. First mark means 'lower' (by
 default it is \code{-}) and the second means 'greater' (\code{+}).}
 
+\item{na_as_zero}{logical. \code{FALSE} by default. Should we treat
+\code{NA}'s as zero cases?}
+
 \item{keep_percent}{logical. \code{TRUE} by default. Should we show original
 column percent along with significance marks?}
 
-\item{na_as_zero}{logical. \code{FALSE} by default. Should we treat
-\code{NA}'s as zero cases?}
+\item{keep_bases}{logical. By default equals to \code{keep_percent}. Should
+we drop total rows?}
 }
 \value{
 Object of class \code{etable} with marks of significant differences

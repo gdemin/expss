@@ -70,61 +70,61 @@ mtcars_table = cro_cpct(list(mtcars$cyl, mtcars$gear),
 
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE),
+    significance_cpct(mtcars_table, keep = "none"),
     "rds/signif_cpct1.rds")
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE, subtable_marks = "less"),
+    significance_cpct(mtcars_table, keep = "none", subtable_marks = "less"),
     "rds/signif_cpct1_less.rds")
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE, subtable_marks = "both"),
+    significance_cpct(mtcars_table, keep = "none", subtable_marks = "both"),
     "rds/signif_cpct1_both.rds")
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE, na_as_zero = TRUE),
+    significance_cpct(mtcars_table, keep = "none", na_as_zero = TRUE),
     "rds/signif_cpct2.rds")
 expect_equal_to_reference(
     significance_cpct(mtcars_table,
-                      keep_percent = FALSE,
+                      keep = "none",
                       sig_labels = paste0("(",letters, ")")),
     "rds/signif_cpct3.rds")
 expect_equal_to_reference(
     significance_cpct(mtcars_table,
-                      keep_percent = FALSE,
+                      keep = "none",
                       sig_labels = NULL),
     "rds/signif_cpct4.rds")
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE,
+    significance_cpct(mtcars_table, keep = "none",
                       compare_type = c("subtable", "first_column")),
     "rds/signif_cpct5.rds")
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE,
+    significance_cpct(mtcars_table, keep = "none",
                       compare_type = c("subtable", "adjusted_first_column")),
     "rds/signif_cpct6.rds")
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE,
+    significance_cpct(mtcars_table, keep = "none",
                       compare_type = c("subtable", "adjusted_first_column"),
                       na_as_zero = TRUE
                       ),
     "rds/signif_cpct7.rds")
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE
+    significance_cpct(mtcars_table, keep = "none"
                       , compare_type = c("previous_column")),
     "rds/signif_cpct8.rds")
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE,
+    significance_cpct(mtcars_table, keep = "none",
                       compare_type = c("previous_column"),
                       na_as_zero = TRUE),
     "rds/signif_cpct9.rds")
 
 #####################
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = FALSE, keep_bases = TRUE),
+    significance_cpct(mtcars_table, keep = "bases"),
     "rds/signif_cpct10.rds")
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = TRUE),
+    significance_cpct(mtcars_table),
     "rds/signif_cpct11.rds")
 
 expect_equal_to_reference(
@@ -136,70 +136,61 @@ expect_equal_to_reference(
     "rds/signif_cpct11_delta.rds")
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table, keep_percent = TRUE, keep_bases = FALSE),
+    significance_cpct(mtcars_table, keep = "percent"),
     "rds/signif_cpct12.rds")
 
 
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
-                      compare_type = c("subtable", "first_column"), 
-                      keep_percent = TRUE),
+                      compare_type = c("subtable", "first_column")),
     "rds/signif_cpct13.rds")
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
-                      compare_type = c("subtable", "adjusted_first_column"), 
-                      keep_percent = TRUE),
+                      compare_type = c("subtable", "adjusted_first_column")),
     "rds/signif_cpct14.rds")
 expect_equal_to_reference(
     significance_cpct(mtcars_table,
                       compare_type = c("subtable", "adjusted_first_column"),
-                      na_as_zero = TRUE, 
-                      keep_percent = TRUE
+                      na_as_zero = TRUE
     ),
     "rds/signif_cpct15.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
-                      compare_type = c("previous_column"), 
-                      keep_percent = TRUE),
+                      compare_type = c("previous_column")),
     "rds/signif_cpct16.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
                       delta_cpct = 65,
-                      compare_type = c("previous_column"), 
-                      keep_percent = TRUE),
+                      compare_type = c("previous_column")),
     "rds/signif_cpct16_delta.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
                       delta_cpct = 65,
                       na_as_zero = TRUE,
-                      compare_type = c("previous_column"), 
-                      keep_percent = TRUE),
+                      compare_type = c("previous_column")),
     "rds/signif_cpct16_delta2.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
                       compare_type = c("previous_column"), 
-                      na_as_zero = TRUE, 
-                      keep_percent = TRUE),
+                      na_as_zero = TRUE),
     "rds/signif_cpct17.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
                       compare_type = c("previous_column"), 
-                      na_as_zero = TRUE, 
-                      keep_percent = TRUE,
+                      na_as_zero = TRUE,
                       min_base = 14),
     "rds/signif_cpct18.rds")
 
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
-                      na_as_zero = TRUE, 
-                      keep_percent = TRUE,
+                      na_as_zero = TRUE,
                       sig_level = 0.9),
     "rds/signif_cpct19.rds")
 
@@ -214,7 +205,6 @@ expect_equal_to_reference(
                                        "subtable"),
                       bonferroni = FALSE,
                       na_as_zero = FALSE, 
-                      keep_percent = TRUE,
                       sig_level = 0.004),
     "rds/signif_cpct20.rds")
 
@@ -251,7 +241,6 @@ expect_equal_to_reference(
                                        "subtable"),
                       bonferroni = TRUE,
                       na_as_zero = FALSE, 
-                      keep_percent = TRUE,
                       sig_level = 0.004),
     "rds/signif_cpct20boneferrony.rds")
 
@@ -262,7 +251,6 @@ expect_equal_to_reference(
                                        "subtable"),
                       bonferroni = FALSE,
                       na_as_zero = FALSE, 
-                      keep_percent = TRUE,
                       sig_level = 0.002),
     "rds/signif_cpct20_2.rds")
 
@@ -273,7 +261,6 @@ expect_equal_to_reference(
                                        "subtable"),
                       bonferroni = TRUE,
                       na_as_zero = FALSE, 
-                      keep_percent = TRUE,
                       sig_level = 0.002),
     "rds/signif_cpct20boneferrony_2.rds")
 
@@ -282,14 +269,12 @@ expect_equal_to_reference(
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
                       compare_type = c("subtable", "first_column"), 
-                      keep_percent = TRUE,
                       digits = 2),
     "rds/signif_cpct21.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, 
                       compare_type = c("subtable", "first_column"), 
-                      keep_percent = TRUE,
                       delta_cpct = 30,
                       digits = 2),
     "rds/signif_cpct21_delta.rds")
@@ -299,7 +284,6 @@ expect_error(
                       compare_type = c("first_column", 
                                        "previous_column",
                                        "subtable"), 
-                      keep_percent = TRUE,
                       total_marker = "@"))
 
 mtcars_table2 = mtcars_table
@@ -309,7 +293,6 @@ expect_equal_to_reference(
                       compare_type = c("first_column", 
                                        "previous_column",
                                        "subtable"), 
-                      keep_percent = TRUE,
                       total_marker = "@"),
     "rds/signif_cpct22.rds")
 
@@ -318,7 +301,6 @@ significance_cpct(mtcars_table2,
                   compare_type = c("first_column", 
                                    "previous_column",
                                    "subtable"), 
-                  keep_percent = TRUE,
                   total_marker = "@",
                   total_row = 2))
 
@@ -333,8 +315,7 @@ expect_equal_to_reference(
 significance_cpct(mtcars_table3, 
                   compare_type = c("first_column", 
                                    "previous_column",
-                                   "subtable"), 
-                  keep_percent = TRUE),
+                                   "subtable")),
 "rds/signif_cpct23.rds")
 
 expect_equal_to_reference(
@@ -342,8 +323,7 @@ expect_equal_to_reference(
                       compare_type = c("first_column", 
                                        "previous_column",
                                        "subtable"), 
-                      total_row = 2,
-                      keep_percent = TRUE),
+                      total_row = 2),
     "rds/signif_cpct24.rds")
 
 expect_equal_to_reference(
@@ -351,8 +331,7 @@ expect_equal_to_reference(
                       compare_type = c("first_column", 
                                        "previous_column",
                                        "subtable"), 
-                      total_row = "#Total cases",
-                      keep_percent = TRUE),
+                      total_row = "#Total cases"),
     "rds/signif_cpct24.rds")
 
 mtcars_table3 = cro_cpct(list(mtcars$cyl, mtcars$gear),
@@ -361,11 +340,11 @@ mtcars_table3 = cro_cpct(list(mtcars$cyl, mtcars$gear),
 )
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table3, keep_percent = FALSE),
+    significance_cpct(mtcars_table3, keep = "none"),
     "rds/signif_cpct1a.rds")
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table3, keep_percent = FALSE, sig_labels = "a"),
+    significance_cpct(mtcars_table3, keep = "none", sig_labels = "a"),
     "rds/signif_cpct25.rds")
 
 mtcars_table3 = cro_cpct(list(mtcars$cyl, mtcars$gear),
@@ -376,21 +355,18 @@ mtcars_table3 = cro_cpct(list(mtcars$cyl, mtcars$gear),
 expect_equal_to_reference(
     significance_cpct(mtcars_table3,
                       compare_type = c("previous_column", "subtable"),
-                      keep_percent = TRUE, 
                       sig_labels = "a"),
     "rds/signif_cpct26.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table3,
                       compare_type = c("previous_column", "subtable"),
-                      keep_percent = TRUE, 
                       sig_labels = NULL),
     "rds/signif_cpct26a.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table3,
-                      compare_type = c("previous_column", "subtable"),
-                      keep_percent = TRUE),
+                      compare_type = c("previous_column", "subtable")),
     "rds/signif_cpct27.rds")
 
 mtcars_table3 = cro_cpct(list(mtcars$cyl),
@@ -400,22 +376,19 @@ mtcars_table3 = cro_cpct(list(mtcars$cyl),
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table3,
-                      compare_type = c("previous_column", "subtable"),
-                      keep_percent = TRUE),
+                      compare_type = c("previous_column", "subtable")),
     "rds/signif_cpct28.rds")
 
 colnames(mtcars_table3) = rep("", NCOL(mtcars_table3))
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table3,
-                      compare_type = c("previous_column", "subtable"),
-                      keep_percent = TRUE),
+                      compare_type = c("previous_column", "subtable")),
     "rds/signif_cpct29.rds")
 
 expect_error(
     significance_cpct(mtcars_table3,
-                      compare_type = c("first_column", "adjusted_first_column"),
-                      keep_percent = TRUE)
+                      compare_type = c("first_column", "adjusted_first_column"))
 )
 
 mtcars_table3 = cro_cpct(list(mtcars$cyl),
@@ -425,45 +398,38 @@ mtcars_table3 = cro_cpct(list(mtcars$cyl),
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table3[ ,1],
-                      compare_type = c("first_column", "subtable"),
-                      keep_percent = TRUE),
+                      compare_type = c("first_column", "subtable")),
     "rds/signif_cpct30.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table3[ ,1:2],
-                      compare_type = c("first_column", "subtable"),
-                      keep_percent = TRUE),
+                      compare_type = c("first_column", "subtable")),
     "rds/signif_cpct31.rds")
 
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table3[ ,1:3],
-                      compare_type = c("first_column", "subtable"),
-                      keep_percent = TRUE),
+                      compare_type = c("first_column", "subtable")),
     "rds/signif_cpct32.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table3[ ,c(1:2,4,5)],
-                      compare_type = c("first_column", "subtable"),
-                      keep_percent = TRUE),
+                      compare_type = c("first_column", "subtable")),
     "rds/signif_cpct33.rds")
 
 
 expect_equal_to_reference(
-    significance_cpct(mtcars_table[ ,1],
-                      keep_percent = TRUE),
+    significance_cpct(mtcars_table[ ,1]),
     "rds/signif_cpct34.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table[ ,1],
-                      keep_percent = TRUE,
                       subtable_marks = "both"
                       ),
     "rds/signif_cpct34.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table[ ,1],
-                      keep_percent = TRUE,
                       compare_type = c("previous", "first", "subtable"),
                       subtable_marks = "both"
     ),
@@ -472,17 +438,17 @@ expect_equal_to_reference(
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table[ ,1],
-                      keep_percent = FALSE,
-                      keep_bases = TRUE),
+                      keep = "bases"),
     "rds/signif_cpct34.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table[ ,1],
-                      keep_percent = FALSE,
-                      keep_bases = FALSE),
+                      keep = "none"),
     "rds/signif_cpct35.rds")
 
 
 expect_equal_to_reference(
     significance_cpct(cro_cpct(NA)),
     "rds/signif_cpct36.rds")
+
+

@@ -2,6 +2,8 @@ COMPARE_TYPE = c("subtable",
                       "first_column", "adjusted_first_column", 
                       "previous_column")
 
+KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
+
 #' Mark significant differences between columns of the table
 #' 
 #' \itemize{
@@ -99,8 +101,7 @@ significance_cpct = function(x,
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
-                             keep_percent = TRUE,
-                             keep_bases = keep_percent,
+                             keep = c("percent", "bases"), 
                              na_as_zero = FALSE,
                              total_marker = "#",
                              total_row = 1,
@@ -121,8 +122,7 @@ significance_cpct.etable = function(x,
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
-                                    keep_percent = TRUE,
-                                    keep_bases = keep_percent,
+                                    keep = c("percent", "bases"), 
                                     na_as_zero = FALSE,
                                     total_marker = "#",
                                     total_row = 1,
@@ -143,6 +143,9 @@ significance_cpct.etable = function(x,
         } 
         all_column_labels = get_category_labels(colnames(x))
     }
+    keep = match.arg(keep, KEEP_STAT, several.ok = TRUE)
+    keep_percent = "percent" %in% keep
+    keep_bases = "bases" %in% keep
     if(NCOL(x)>1){
         groups = header_groups(colnames(x))
         sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)

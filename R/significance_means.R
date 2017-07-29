@@ -14,9 +14,7 @@ significance_means = function(x,
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
-                             keep_means = TRUE,
-                             keep_sd = keep_means,
-                             keep_bases = keep_means,
+                             keep = c("means", "sd", "bases"), 
                              var_equal = FALSE,
                              digits = get_expss_digits()
 ){
@@ -35,9 +33,7 @@ significance_means.etable = function(x,
                                      sig_labels = LETTERS,
                                      sig_labels_previous_column = c("v", "^"),
                                      sig_labels_first_column = c("-", "+"),
-                                     keep_means = TRUE,
-                                     keep_sd = keep_means,
-                                     keep_bases = keep_means,
+                                     keep = c("means", "sd", "bases"), 
                                      var_equal = FALSE,
                                      digits = get_expss_digits()
 ){
@@ -57,7 +53,10 @@ significance_means.etable = function(x,
         } 
         all_column_labels = get_category_labels(colnames(x))
     }
-    
+    keep = match.arg(keep, KEEP_STAT, several.ok = TRUE)
+    keep_means = "means" %in% keep
+    keep_sd = "sd" %in% keep
+    keep_bases = "bases" %in% keep
     groups = header_groups(colnames(x))
     
     # some types (data.table) doesn't support recycling of logicals

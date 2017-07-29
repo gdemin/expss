@@ -40,19 +40,19 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    significance_cases(mtcars_table, sig_level = 0.1, keep_cases = FALSE),
+    significance_cases(mtcars_table, sig_level = 0.1, keep = "none"),
     "rds/significance_cases4.rds"
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, sig_level = 0.1, 
-                       keep_cases = TRUE, keep_bases = FALSE),
+                       keep = "cases"),
     "rds/significance_cases5.rds"
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, sig_level = 0.1, 
-                       keep_cases = FALSE, keep_bases = TRUE),
+                       keep = "bases"),
     "rds/significance_cases6.rds"
 )
 
@@ -63,19 +63,19 @@ expect_equal_to_reference(
 
 
 expect_equal_to_reference(
-    significance_cases(mtcars_table[,1], sig_level = 0.1, keep_cases = FALSE),
+    significance_cases(mtcars_table[,1], sig_level = 0.1, keep = "none"),
     "rds/significance_cases8.rds"
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table[,1], sig_level = 0.1, 
-                       keep_cases = TRUE, keep_bases = FALSE),
+                       keep = "cases"),
     "rds/significance_cases9.rds"
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table[,1], sig_level = 0.1, 
-                       keep_cases = FALSE, keep_bases = TRUE),
+                       keep = "bases"),
     "rds/significance_cases10.rds"
 )
 
@@ -105,25 +105,24 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    significance_cases(mtcars_table, total_row = 2, keep_cases = FALSE, sig_level = 0.1),
+    significance_cases(mtcars_table, total_row = 2, keep = "none", sig_level = 0.1),
     "rds/significance_cases4.rds"
 )
 
 expect_equal_to_reference(
-    significance_cases(mtcars_table, total_row = 2, keep_cases = FALSE, keep_bases = TRUE),
+    significance_cases(mtcars_table, total_row = 2, keep = "bases"),
     "rds/significance_cases13.rds"
 )
 
 expect_equal_to_reference(
-    significance_cases(mtcars_table, total_row = 2, keep_cases = TRUE,
-                       keep_bases = FALSE, sig_level = 0.1),
+    significance_cases(mtcars_table, total_row = 2, keep = "cases", sig_level = 0.1),
     "rds/significance_cases14.rds"
 )
 
 
 expect_equal_to_reference(
-    significance_cases(mtcars_table, min_base = 20, total_row = 2, keep_cases = TRUE,
-                       keep_bases = FALSE, sig_level = 0.1),
+    significance_cases(mtcars_table, min_base = 20, total_row = 2, keep = "cases", 
+                       sig_level = 0.1),
     "rds/significance_cases15.rds"
 )
 

@@ -3,8 +3,7 @@
 significance_cases = function(x, 
                               sig_level = 0.05, 
                               min_base = 2,
-                              keep_cases = TRUE,
-                              keep_bases = keep_cases,
+                              keep = c("cases", "bases"), 
                               total_marker = "#",
                               total_row = 1,
                               digits = get_expss_digits()
@@ -17,8 +16,7 @@ significance_cases = function(x,
 significance_cases.etable = function(x, 
                                      sig_level = 0.05, 
                                      min_base = 2,
-                                     keep_cases = TRUE,
-                                     keep_bases = keep_cases,
+                                     keep = c("cases", "bases"), 
                                      total_marker = "#",
                                      total_row = 1,
                                      digits = get_expss_digits()
@@ -26,6 +24,9 @@ significance_cases.etable = function(x,
     
     groups = header_groups(colnames(x))
     sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
+    keep = match.arg(keep, KEEP_STAT, several.ok = TRUE)
+    keep_cases = "cases" %in% keep
+    keep_bases = "bases" %in% keep
     res = lapply(sections, function(each_section){
         # browser()
         curr_base = extract_total_from_section(each_section, 
