@@ -72,12 +72,28 @@ mtcars_table = cro_cpct(list(mtcars$cyl, mtcars$gear),
 expect_equal_to_reference(
     significance_cpct(mtcars_table, keep = "none"),
     "rds/signif_cpct1.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table, inequality_sign = TRUE,  keep = "none"),
+    "rds/signif_cpct1_greater_sign.rds")
+
 expect_equal_to_reference(
     significance_cpct(mtcars_table, keep = "none", subtable_marks = "less"),
     "rds/signif_cpct1_less.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table, inequality_sign = TRUE,
+                      keep = "none", subtable_marks = "less"),
+    "rds/signif_cpct1_less_sign.rds")
+
 expect_equal_to_reference(
     significance_cpct(mtcars_table, keep = "none", subtable_marks = "both"),
     "rds/signif_cpct1_both.rds")
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table, inequality_sign = FALSE,
+                      keep = "none", subtable_marks = "both"),
+    "rds/signif_cpct1_both_no_signs.rds")
 
 expect_equal_to_reference(
     significance_cpct(mtcars_table, keep = "none", na_as_zero = TRUE),

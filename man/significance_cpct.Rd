@@ -14,7 +14,8 @@ significance_cases(x, sig_level = 0.05, min_base = 2, keep = c("cases",
 
 significance_cpct(x, sig_level = 0.05, delta_cpct = 0, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE,
-  subtable_marks = c("greater", "both", "less"), sig_labels = LETTERS,
+  subtable_marks = c("greater", "both", "less"), inequality_sign = "both"
+  \%in\% subtable_marks, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
   "+"), keep = c("percent", "bases"), na_as_zero = FALSE,
   total_marker = "#", total_row = 1, digits = get_expss_digits())
@@ -23,7 +24,8 @@ add_sig_labels(tbl, sig_labels = LETTERS)
 
 significance_means(x, sig_level = 0.05, delta_means = 0, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE,
-  subtable_marks = c("greater", "both", "less"), sig_labels = LETTERS,
+  subtable_marks = c("greater", "both", "less"), inequality_sign = "both"
+  \%in\% subtable_marks, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
   "+"), keep = c("means", "sd", "bases"), var_equal = FALSE,
   digits = get_expss_digits())

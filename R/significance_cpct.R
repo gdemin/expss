@@ -98,6 +98,7 @@ significance_cpct = function(x,
                              compare_type ="subtable",
                              bonferroni = FALSE,
                              subtable_marks = c("greater", "both", "less"),
+                             inequality_sign = "both" %in% subtable_marks,
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
@@ -119,6 +120,7 @@ significance_cpct.etable = function(x,
                                     compare_type = "subtable",
                                     bonferroni = FALSE,
                                     subtable_marks = c("greater", "both", "less"),
+                                    inequality_sign = "both" %in% subtable_marks,
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
@@ -186,7 +188,7 @@ significance_cpct.etable = function(x,
             if("subtable" %in% compare_type){
                 prepend = ""
                 if(mark_greater){
-                    if(mark_greater & mark_less) {
+                    if(inequality_sign) {
                         prepend = ">"    
                     }
                     subtable_sig_section = section_sig_prop(sig_section = empty_sig_section, 
@@ -208,7 +210,7 @@ significance_cpct.etable = function(x,
                     }
                 }
                 if(mark_less){
-                    if(mark_greater & mark_less) {
+                    if(inequality_sign) {
                         prepend = "<"    
                     }
                     subtable_sig_section = section_sig_prop(sig_section = empty_sig_section, 

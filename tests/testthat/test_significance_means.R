@@ -214,6 +214,16 @@ expect_equal_to_reference(
                        compare_type = c("first_column", 
                                         "previous_column",
                                         "subtable"),
+                       inequality_sign = TRUE,
+                       subtable_marks = "greater",
+                       sig_level = 0.05),
+    "rds/signif_means20_2_greater_sign.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table2, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
                        subtable_marks = "less",
                        sig_level = 0.05),
     "rds/signif_means20_2_less.rds")
@@ -223,9 +233,30 @@ expect_equal_to_reference(
                        compare_type = c("first_column", 
                                         "previous_column",
                                         "subtable"),
+                       inequality_sign = TRUE,
+                       subtable_marks = "less",
+                       sig_level = 0.05),
+    "rds/signif_means20_2_less_sign.rds")
+
+
+expect_equal_to_reference(
+    significance_means(mtcars_table2, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
                        subtable_marks = "both",
                        sig_level = 0.05),
     "rds/signif_means20_2_both.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table2, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
+                       inequality_sign = FALSE,
+                       subtable_marks = "both",
+                       sig_level = 0.05),
+    "rds/signif_means20_2_both_no_sign.rds")
 
 expect_equal_to_reference(
     significance_means(mtcars_table2, 
