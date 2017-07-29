@@ -11,32 +11,75 @@ compare_means(mean1, mean2, sd1, sd2, base1, base2, common_base = 0,
   var_equal = FALSE)
 }
 \arguments{
-\item{prop1}{numerci}
+\item{prop1}{a numeric vector of proportions in the group 1. Values should be
+between 0 and 1}
 
-\item{prop2}{sfs}
+\item{prop2}{a numeric vector of proportions in the group 2. Values should be
+between 0 and 1}
 
-\item{base1}{sfsf}
+\item{base1}{a numeric vector for \code{compare_means} and single number for 
+\code{compare_proportions}. Number of valid cases for each mean in the first group for 
+\code{compare_means} and number of cases for \code{compare_proportions}.}
 
-\item{base2}{sfsf}
+\item{base2}{a numeric vector for \code{compare_means} and single number for 
+\code{compare_proportions}. Number of valid cases for each mean in the
+second group for \code{compare_means} and number of cases for
+\code{compare_proportions}.}
 
-\item{common_base}{sfsf}
+\item{common_base}{numeric. Number of cases that belong to both values in the
+first and the second argument. It can occur in the case of overlapping
+samples. Calculations are made according to algorithm in IBM SPSS Statistics
+Algorithms v20, p. 263. Note that with these adjustments t-tests between
+means are made with equal variance assumed (as with \code{var_equal =
+TRUE}).}
 
-\item{mean1}{fsdfdf}
+\item{mean1}{a numeric vector of the means in the first group.}
 
-\item{mean2}{sfs}
+\item{mean2}{a numeric vector of the means in the second group.}
 
-\item{sd1}{fsdfdf}
+\item{sd1}{a numeric vector of the standard deviations in the first group.
+Values should be non-negative.}
 
-\item{sd2}{sfs}
+\item{sd2}{a numeric vector of the standard deviations in the second group.
+Values should be non-negative.}
 
-\item{var_equal}{sfsf}
+\item{var_equal}{a logical variable indicating whether to treat the variances
+in the groups as being equal. For details see \link[stats]{t.test}.}
 }
 \value{
 numeric vector with p-values
 }
 \description{
-Calculate significance (p-values) of differences between proportions/means
+\code{compare_proportions} calculates p-values (via z-test) for comparison
+between each proportion in the \code{prop1} and \code{prop2}. Results are calculated
+with the same formula as in \link[stats]{prop.test} without continuity
+correction.
+\code{compare_means} calculates p-values (via t-test) for comparison between 
+each mean in the \code{mean1} and \code{mean2}. Results are calculated on the
+aggregated statistics (means, std. devs, N) with the same formula as in
+\link[stats]{t.test}.
+These functions mainly intended for usage inside \link{significance_cpct} and
+\link{significance_means}.
 }
 \examples{
-1
+# proportions
+data(mtcars)
+counts = table(mtcars$am, mtcars$vs)
+props = prop.table(counts)
+compare_proportions(props[,1], props[,2], 
+                    colSums(counts)[1], colSums(counts)[1])
+                    
+# means
+t.test(mpg ~ am, data = mtcars)$p.value 
+# the same result
+calculate(mtcars, 
+          compare_means(
+              mean(mpg[am==0]), mean(mpg[am==1]), 
+              sd(mpg[am==0]),  sd(mpg[am==1]),
+              length(mpg[am==0]), length(mpg[am==1])
+          ))
+}
+\seealso{
+\link{significance_cpct}, \link{significance_means}, 
+  \link[stats]{prop.test}, \link[stats]{t.test}
 }
