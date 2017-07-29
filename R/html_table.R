@@ -13,6 +13,7 @@
 #'   - for example, \code{expss_digits(2)}. If it is NA than all
 #'   numeric columns remain unrounded.
 #' @param ... further parameters for \link[htmlTable]{htmlTable}.
+#' @param row_groups logical Should we create row groups? TRUE by default.
 #'
 #' @return Returns a string of class htmlTable
 #' @export
@@ -50,7 +51,10 @@
 #' expss_output_default()   
 #'  
 #' }
-htmlTable.etable = function(x, digits = get_expss_digits(), ...){
+htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TRUE){
+    if(!row_groups){
+        return(html_table_no_row_groups(x = x, digits = digits, ...))
+    }
     x = round_dataframe(x, digits = digits)
     if(NCOL(x) == 0){
         return(htmlTable(setNames(dtfrm("Table is empty"), " "), ...))

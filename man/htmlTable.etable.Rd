@@ -5,7 +5,8 @@
 \alias{knit_print.etable}
 \title{Outputting HTML tables in RStudio viewer/R Notebooks}
 \usage{
-\method{htmlTable}{etable}(x, digits = get_expss_digits(), ...)
+\method{htmlTable}{etable}(x, digits = get_expss_digits(), ...,
+  row_groups = TRUE)
 
 knit_print.etable(x, digits = get_expss_digits(), ...)
 }
@@ -18,6 +19,8 @@ decimal separator. Also you can set this argument by setting option 'expss.digit
 numeric columns remain unrounded.}
 
 \item{...}{further parameters for \link[htmlTable]{htmlTable}.}
+
+\item{row_groups}{logical Should we create row groups? TRUE by default.}
 }
 \value{
 Returns a string of class htmlTable

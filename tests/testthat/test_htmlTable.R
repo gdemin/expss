@@ -38,6 +38,12 @@ expect_equal_to_reference(htmlTable(mtcars_table[, FALSE, drop = FALSE])  ,
 expect_equal_to_reference(htmlTable(mtcars_table, digits = 0) ,
                           "rds/htmlTable3.rds")
 
+expect_equal_to_reference(htmlTable(mtcars_table, digits = 1, row_groups = FALSE) ,
+                          "rds/htmlTable3_no_rowgroups.rds")
+
+expect_equal_to_reference(expss:::repr_html.etable(mtcars_table, digits = 1),
+                          "rds/htmlTable3_no_rowgroups.rds")
+
 mtcars_table = calculate(mtcars,
                          cro_mean(list(mpg, hp), list(am %nest% vs)) )
 expect_equal_to_reference(htmlTable(mtcars_table) ,
@@ -50,6 +56,10 @@ expect_equal_to_reference(htmlTable(mtcars_table) ,
 mtcars_table = cro_cpct(list(unvr(mtcars$vs)), list(mtcars$vs %nest% mtcars$am, "#Total"))
 expect_equal_to_reference(htmlTable(mtcars_table) ,
                           "rds/htmlTable12.rds")
+
+expect_equal_to_reference(htmlTable(mtcars_table, digits = 1, row_groups = FALSE) ,
+                          "rds/htmlTable12_no_rowgroups.rds")
+
 
 expect_equal_to_reference(htmlTable(mtcars_table[,1]) ,    #####
                           "rds/htmlTable12single.rds")
