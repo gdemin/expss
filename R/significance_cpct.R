@@ -160,7 +160,7 @@ significance_cpct.etable = function(x,
                 if_na(curr_props[,-1]) = 0
             }
             if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
-                sig_section = section_sig_first_column(sig_section = empty_sig_section, 
+                sig_section = section_sig_first_column(sig_section = sig_section, 
                                                        curr_props = curr_props, 
                                                        curr_base = curr_base,
                                                        groups = groups,

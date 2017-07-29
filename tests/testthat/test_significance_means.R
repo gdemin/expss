@@ -30,6 +30,14 @@ expect_equal_to_reference(
     "rds/signif_means1.rds")
 
 expect_equal_to_reference(
+    significance_means(mtcars_table, subtable_marks = "less"),
+    "rds/signif_means1_less.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table, subtable_marks = "both"),
+    "rds/signif_means1_both.rds")
+
+expect_equal_to_reference(
     significance_means(mtcars_table, sig_level = 1e-3),
     "rds/signif_means1b.rds")
 
@@ -204,6 +212,33 @@ expect_equal_to_reference(
                        keep_means = TRUE,
                        sig_level = 0.0005),
     "rds/signif_means20_2.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table2, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
+                       subtable_marks = "greater",
+                       sig_level = 0.05),
+    "rds/signif_means20_2_greater.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table2, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
+                       subtable_marks = "less",
+                       sig_level = 0.05),
+    "rds/signif_means20_2_less.rds")
+
+expect_equal_to_reference(
+    significance_means(mtcars_table2, 
+                       compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
+                       subtable_marks = "both",
+                       sig_level = 0.05),
+    "rds/signif_means20_2_both.rds")
 
 expect_equal_to_reference(
     significance_means(mtcars_table2, 

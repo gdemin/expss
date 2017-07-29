@@ -10,6 +10,7 @@ significance_means = function(x,
                              min_base = 2,
                              compare_type ="subtable",
                              bonferroni = FALSE,
+                             subtable_marks = c("greater", "both", "less"),
                              sig_labels = LETTERS,
                              sig_labels_previous_column = c("v", "^"),
                              sig_labels_first_column = c("-", "+"),
@@ -30,6 +31,7 @@ significance_means.etable = function(x,
                                      min_base = 2,
                                      compare_type ="subtable",
                                      bonferroni = FALSE,
+                                     subtable_marks = c("greater", "both", "less"),
                                      sig_labels = LETTERS,
                                      sig_labels_previous_column = c("v", "^"),
                                      sig_labels_first_column = c("-", "+"),
@@ -46,13 +48,16 @@ significance_means.etable = function(x,
     compare_type = match.arg(compare_type, choices = COMPARE_TYPE, several.ok = TRUE)
     stopif(sum(compare_type %in% c("first_column", "adjusted_first_column"))>1, 
            "mutually exclusive compare types in significance testing:  'first_column' and 'adjusted_first_column'.")
-    
+    subtable_marks = match.arg(subtable_marks)
+    mark_greater = subtable_marks %in% c("greater", "both")
+    mark_less = subtable_marks %in% c("both", "less")
     if("subtable" %in% compare_type){
         if(!is.null(sig_labels)){
             x = add_sig_labels(x, sig_labels = sig_labels)
         } 
         all_column_labels = get_category_labels(colnames(x))
     }
+    
     groups = header_groups(colnames(x))
     
     # some types (data.table) doesn't support recycling of logicals
@@ -65,11 +70,11 @@ significance_means.etable = function(x,
 
     recode(all_ns) = lt(min_base) ~ NA
     
-    sig_table = x
+    sig_table = x[means_ind, ]
     sig_table[, -1] = ""
-    
+    empty_sig_table = sig_table
     if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
-        sig_table[means_ind, ] = section_sig_first_column_means(sig_section = sig_table[means_ind, ], 
+        sig_table = section_sig_first_column_means(sig_section = sig_table, 
                                            curr_means = all_means, 
                                            curr_sds = all_sds,
                                            curr_ns = all_ns,
@@ -82,7 +87,7 @@ significance_means.etable = function(x,
                                            adjust_common_base = "adjusted_first_column" %in% compare_type)
     }
     if(any(c("previous_column") %in% compare_type)){
-        sig_table[means_ind, ] = section_sig_previous_column_means(sig_section = sig_table[means_ind, ], 
+        sig_table = section_sig_previous_column_means(sig_section = sig_table, 
                                               curr_means = all_means, 
                                               curr_sds = all_sds,
                                               curr_ns = all_ns,
@@ -94,28 +99,68 @@ significance_means.etable = function(x,
                                               var_equal = var_equal)
     }
     if("subtable" %in% compare_type){
-        sig_table[means_ind, ] = section_sig_means(sig_section = sig_table[means_ind, ], 
-                                   curr_means = all_means, 
-                                   curr_sds = all_sds,
-                                   curr_ns = all_ns,
-                                   groups = groups,
-                                   all_column_labels = all_column_labels,
-                                   sig_level = sig_level,
-                                   delta_means = delta_means,
-                                   bonferroni = bonferroni,
-                                   var_equal = var_equal)
+        prepend = ""
+        if(mark_greater){
+            if(mark_greater & mark_less) {
+                prepend = ">"    
+            }
+            subtable_sig_table = section_sig_means(sig_section = empty_sig_table, 
+                                                       curr_means = all_means, 
+                                                       curr_sds = all_sds,
+                                                       curr_ns = all_ns,
+                                                       groups = groups,
+                                                       all_column_labels = all_column_labels,
+                                                       sig_level = sig_level,
+                                                       delta_means = delta_means,
+                                                       bonferroni = bonferroni,
+                                                       mark_greater = TRUE,
+                                                       prepend = prepend,
+                                                       var_equal = var_equal)
+            for(i in seq_along(sig_table)[-1]){
+                sig_table[[i]] = paste_non_empty(sig_table[[i]], 
+                                                 subtable_sig_table[[i]],
+                                                   sep = " "
+                )
+            }
+        }
+        if(mark_less){
+            if(mark_greater & mark_less) {
+                prepend = "<"    
+            }
+            subtable_sig_table = section_sig_means(sig_section = empty_sig_table, 
+                                                   curr_means = all_means, 
+                                                   curr_sds = all_sds,
+                                                   curr_ns = all_ns,
+                                                   groups = groups,
+                                                   all_column_labels = all_column_labels,
+                                                   sig_level = sig_level,
+                                                   delta_means = delta_means,
+                                                   bonferroni = bonferroni,
+                                                   mark_greater = FALSE,
+                                                   prepend = prepend,
+                                                   var_equal = var_equal)
+            for(i in seq_along(sig_table)[-1]){
+                sig_table[[i]] = paste_non_empty(sig_table[[i]], 
+                                                 subtable_sig_table[[i]],
+                                                 sep = " "
+                )
+            }
+        }
     }
         
     x = round_dataframe(x, digits = digits)
+    sig_table_with_rows = x
+    sig_table_with_rows[,-1] = ""
+    sig_table_with_rows[means_ind, -1] = sig_table[, -1, drop = FALSE]
     if(keep_means){
         x[, -1] = format_to_character(x[, -1], digits = digits)    
         x[, -1] = paste_df_non_empty(
             x[, -1, drop = FALSE], 
-            sig_table[, -1, drop = FALSE],
+            sig_table_with_rows[, -1, drop = FALSE],
             sep = " "
         )
     } else {
-        x[means_ind, -1] = sig_table[means_ind, -1, drop = FALSE]
+        x[means_ind, -1] = sig_table_with_rows[means_ind, -1, drop = FALSE]
     }
     x[means_ind | (keep_sd & sd_ind) | (keep_bases & n_ind), ]
     # class(x) = union("etable", class(x))
@@ -133,6 +178,8 @@ section_sig_means = function(sig_section,
                             sig_level, 
                             delta_means,
                             bonferroni,
+                            mark_greater, 
+                            prepend,
                             var_equal) {
     for(each_group in groups){
         if(length(each_group)>1){
@@ -168,16 +215,22 @@ section_sig_means = function(sig_section,
                                          )
                     if_na(pval) = 1
                     pval = pmin(pval*bonferroni_coef, 1)
-                    sig_section[[col1]] = ifelse(abs(mean1 - mean2)>delta_means & 
-                                                     mean1>mean2 & 
+                    if(mark_greater) {
+                        comparison = mean1 > mean2
+                    } else {
+                        comparison = mean2 > mean1
+                    }    
+                    delta =  abs(mean1 - mean2)
+                    sig_section[[col1]] = ifelse(delta>delta_means & 
+                                                     comparison & 
                                                      pval<sig_level,
                                                  paste_non_empty(sig_section[[col1]],
                                                                  all_column_labels[[col2]],
                                                                  sep = " "),
                                                  sig_section[[col1]]
                     )
-                    sig_section[[col2]] = ifelse(abs(mean1 - mean2)>delta_means & 
-                                                     mean2>mean1 & 
+                    sig_section[[col2]] = ifelse(delta>delta_means & 
+                                                     !comparison & 
                                                      pval<sig_level,
                                                  paste_non_empty(sig_section[[col2]], 
                                                                  all_column_labels[[col1]], 
@@ -189,6 +242,9 @@ section_sig_means = function(sig_section,
                 }                        
             }        
         }
+    }
+    if(prepend!=""){
+        recode(sig_section[,-1]) = neq("") ~ function(x) paste(prepend, x)
     }
     sig_section
 }
