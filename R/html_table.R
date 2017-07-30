@@ -256,6 +256,29 @@ repr_html.etable = function(obj, digits = get_expss_digits(), ...){
     
 }
 
+#' @export
+#' @rdname htmlTable.etable
+repr_text.etable = function(obj, digits = get_expss_digits(), ...){
+    curr_output = getOption("expss.output")
+    if(!("raw" %in% curr_output)){
+        obj = split_all_in_etable_for_print(obj,
+                                          digits = digits, 
+                                          remove_repeated = TRUE)
+    }
+    if("commented" %in% curr_output){
+        if(NROW(obj)>0 && NCOL(obj)>0){
+            obj = cbind("#" = "#", obj)
+            colnames(obj) = rep("", length(obj))
+        } 
+        
+    }
+    width = getOption("width")
+    on.exit(options(width = width))
+    options(width = 1000)
+    paste(capture.output(print.data.frame(obj, ...,  right = TRUE, row.names = FALSE)),
+          collapse = "\n")
+    
+}
 
 ## for Jupyter notebooks where row headings not rendered correctly
 html_table_no_row_groups = function(x, digits = get_expss_digits(), ...){

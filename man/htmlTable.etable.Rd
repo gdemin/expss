@@ -4,6 +4,7 @@
 \alias{htmlTable.etable}
 \alias{knit_print.etable}
 \alias{repr_html.etable}
+\alias{repr_text.etable}
 \title{Outputting HTML tables in RStudio viewer/R Notebooks}
 \usage{
 \method{htmlTable}{etable}(x, digits = get_expss_digits(), ...,
@@ -12,6 +13,8 @@
 knit_print.etable(x, digits = get_expss_digits(), ...)
 
 repr_html.etable(obj, digits = get_expss_digits(), ...)
+
+repr_text.etable(obj, digits = get_expss_digits(), ...)
 }
 \arguments{
 \item{x}{a data object of class 'etable' - result of \link{fre}/\link{cro} and etc.}
