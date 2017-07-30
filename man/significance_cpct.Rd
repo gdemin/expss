@@ -125,6 +125,9 @@ other columns are subgroup of this total. Adjustments are made according to
 algorithm in IBM SPSS Statistics Algorithms v20, p. 263. Note that with these
 adjustments t-tests between means are made with equal variance assumed (as
 with \code{var_equal = TRUE}).
+By now there is no adjustments for multiple-response variables (results of 
+\link{mrset}) in the table columns so significance tests are rather 
+approximate for such cases.
 }
 \examples{
 data(mtcars)
