@@ -137,7 +137,7 @@ tab_sort_internal = function(x, ..., excluded_rows, na.last, decreasing, envir){
 tab_sort_asc.intermediate_table = function(x, ..., excluded_rows = "#", na.last = FALSE){
     result_num = length(x[[RESULT]])
     stopif(result_num==0, 
-           "No results for sorting. Use 'tab_format_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
+           "No results for sorting. Use 'tab_sort_*' after 'tab_stat_*' or after 'tab_pivot'.")
     x[[RESULT]][[result_num]] = tab_sort_internal(x[[RESULT]][[result_num]], 
                                                   ..., 
                                                   excluded_rows = excluded_rows, 

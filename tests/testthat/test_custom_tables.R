@@ -923,6 +923,9 @@ expect_error(
     mtcars %>% tab_pivot()
 )
 
+expect_error(
+    1:5 %>% tab_cells(42)
+)
 
 context("custom table long expression as argument")
 
