@@ -340,7 +340,11 @@ calc = calculate
 
 #' @export
 #' @rdname modify
-'%calc%' = calculate
+'%calc%' = function (data, expr) {
+    expr = substitute(expr)
+    parent = parent.frame()
+    calculate_internal(data, expr, parent, use_labels = FALSE)
+}
 
 #' @export
 #' @rdname modify
@@ -348,7 +352,11 @@ calc = calculate
 
 #' @export
 #' @rdname modify
-'%calculate%' = calculate
+'%calculate%' = function (data, expr) {
+    expr = substitute(expr)
+    parent = parent.frame()
+    calculate_internal(data, expr, parent, use_labels = FALSE)
+}
 
 
 
