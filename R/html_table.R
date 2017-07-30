@@ -1,13 +1,18 @@
 #' Outputting HTML tables in RStudio viewer/R Notebooks
 #' 
-#' This is method for rendering results of \link{fre}/\link{cro}/\link{tables} in
-#' Shiny/RMarkdown and etc. For detailed description of function and its
-#' arguments see \link[htmlTable]{htmlTable}. You may be interested in
-#' \code{expss_output_viewer()} for automatical rendering tables
-#' in the RStudio viewer or  \code{expss_output_rnotebook()} for
-#' rendering in the R notebooks. See \link{expss.options}.
+#' This is method for rendering results of \link{fre}/\link{cro}/\link{tables} 
+#' in Shiny/RMarkdown/Jupyter notebooks and etc. For detailed description of 
+#' function and its arguments see \link[htmlTable]{htmlTable}. You may be 
+#' interested in \code{expss_output_viewer()} for automatical rendering tables 
+#' in the RStudio viewer or  \code{expss_output_rnotebook()} for rendering in 
+#' the R notebooks. See \link{expss.options}. \code{repr_html} is method for 
+#' rendering table in the Jupyter notebooks and \code{knit_print} is method for 
+#' rendering table in the \code{knitr} HTML-documents. Jupyter notebooks and 
+#' \code{knitr} documents are supported automatically but in the R notebooks it 
+#' is needed to set output to notebook via \code{expss_output_rnotebook()}.
 #'
-#' @param x a data object (result of \link{fre}/\link{cro} and etc)
+#' @param x a data object of class 'etable' - result of \link{fre}/\link{cro} and etc.
+#' @param obj a data object of class 'etable' - result of \link{fre}/\link{cro} and etc.
 #' @param digits integer By default, all numeric columns are rounded to one digit after
 #'   decimal separator. Also you can set this argument by setting option 'expss.digits'
 #'   - for example, \code{expss_digits(2)}. If it is NA than all
@@ -244,7 +249,12 @@ knit_print.etable = function(x, digits = get_expss_digits(), ...){
 }
 
 
-
+#' @export
+#' @rdname htmlTable.etable
+repr_html.etable = function(obj, digits = get_expss_digits(), ...){
+    html_table_no_row_groups(obj, digits = digits, ...)
+    
+}
 
 
 ## for Jupyter notebooks where row headings not rendered correctly

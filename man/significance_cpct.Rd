@@ -20,7 +20,7 @@ significance_cpct(x, sig_level = 0.05, delta_cpct = 0, min_base = 2,
   "+"), keep = c("percent", "bases"), na_as_zero = FALSE,
   total_marker = "#", total_row = 1, digits = get_expss_digits())
 
-add_sig_labels(tbl, sig_labels = LETTERS)
+add_sig_labels(x, sig_labels = LETTERS)
 
 significance_means(x, sig_level = 0.05, delta_means = 0, min_base = 2,
   compare_type = "subtable", bonferroni = FALSE,

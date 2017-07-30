@@ -314,8 +314,8 @@ significance_cpct.etable = function(x,
 
 #' @rdname significance_cpct
 #' @export
-add_sig_labels = function(tbl, sig_labels = LETTERS){
-    header = colnames(tbl)
+add_sig_labels = function(x, sig_labels = LETTERS){
+    header = colnames(x)
     groups = header_groups(header)   
     for(each_group in groups){
         if(length(each_group)>1){
@@ -334,8 +334,8 @@ add_sig_labels = function(tbl, sig_labels = LETTERS){
         }
     }
     remove_unnecessary_splitters(header)
-    colnames(tbl) = header
-    tbl
+    colnames(x) = header
+    x
 }
 
 
