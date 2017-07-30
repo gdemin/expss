@@ -5,6 +5,10 @@
 #' then it will be converted to data.frame.
 #'
 #' @param x data.frame/matrix
+#' @param rownames_as_row_labels logical. If it is TRUE than rownames of 
+#'   \code{x} will be added to result as first column with name 
+#'   \code{row_labels}. By default row names will be added if they are not NULL
+#'   and are not sequential numerics.
 #'
 #' @return object of class \code{etable}
 #' @export
@@ -15,23 +19,47 @@
 #' is.etable(etable_mtcars) #TRUE
 #' 
 #' etable_mtcars #another 'print' method is used
-as.etable = function(x){
+#' 
+#' cor(mtcars) %>% as.etable()
+as.etable = function(x, rownames_as_row_labels = NULL){
     UseMethod("as.etable")
 }
 
 #' @export
-as.etable.data.frame = function(x){
+as.etable.etable = function(x, rownames_as_row_labels = NULL){
+    x
+}
+
+#' @export
+as.etable.default = function(x, rownames_as_row_labels = NULL){
+    as.etable(as.dtfrm(x), rownames_as_row_labels = rownames_as_row_labels)
+}
+
+#' @export
+as.etable.data.frame = function(x, rownames_as_row_labels = NULL){
+    rownames_as_row_labels = if_null(rownames_as_row_labels, has_rownames(x))
+    if(rownames_as_row_labels){
+        x = dtfrm(row_labels = rownames(x), x)
+    }
     class(x) = union("etable", class(x))
     x
 }
 
 #' @export
-as.etable.matrix = function(x){
+as.etable.matrix = function(x, rownames_as_row_labels = NULL){
     res = as.dtfrm(x)
     if(is.null(colnames(x))){
         colnames(res) = rep("", NCOL(res))
     }
-    as.etable(res)
+    as.etable(res, rownames_as_row_labels = rownames_as_row_labels)
+}
+
+# return FALSE if rownames are trivial
+has_rownames = function(x){
+   curr  = rownames(x)
+   !(is.null(curr) |
+       identical(as.character(curr), as.character(seq_len(NROW(x))))
+   )
 }
 
 #' @export

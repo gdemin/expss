@@ -421,7 +421,14 @@ expect_false(is.etable(res))
 class(res) = union("etable", class(res))
 expect_true(is.etable(res))
 
+expect_identical(as.etable(mtcars, rownames_as_row_labels = FALSE), res)
+
+
+res = dtfrm(row_labels = rownames(mtcars), mtcars)
+class(res) = union("etable", class(res))
+expect_identical(as.etable(mtcars, rownames_as_row_labels = TRUE), res)
 expect_identical(as.etable(mtcars), res)
+expect_identical(as.etable(1:3), as.etable(as.dtfrm(x = 1:3)))
 
 res = as.dtfrm(matrix(1:9, 3))
 colnames(res) = rep("", 3)
@@ -462,6 +469,8 @@ mtcars = apply_labels(mtcars,
                                    1 Manual
                                    ")
 )
+
+expect_identical(as.etable(cro(mtcars$am, mtcars$vs)), cro(mtcars$am, mtcars$vs))
 
 expect_equal_to_reference(
     use_labels(mtcars, as.etable(table(am))),

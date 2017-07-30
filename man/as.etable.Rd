@@ -5,12 +5,17 @@
 \alias{is.etable}
 \title{Convert data.frame/matrix to object of class 'etable'}
 \usage{
-as.etable(x)
+as.etable(x, rownames_as_row_labels = NULL)
 
 is.etable(x)
 }
 \arguments{
 \item{x}{data.frame/matrix}
+
+\item{rownames_as_row_labels}{logical. If it is TRUE than rownames of 
+\code{x} will be added to result as first column with name 
+\code{row_labels}. By default row names will be added if they are not NULL
+and are not sequential numerics.}
 }
 \value{
 object of class \code{etable}
@@ -26,4 +31,6 @@ etable_mtcars = as.etable(mtcars)
 is.etable(etable_mtcars) #TRUE
 
 etable_mtcars #another 'print' method is used
+
+cor(mtcars) \%>\% as.etable()
 }
