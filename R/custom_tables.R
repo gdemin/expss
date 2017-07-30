@@ -938,19 +938,22 @@ tab_vstack = function(data, stat_position = c("outside_rows",
     stat_position = match.arg(stat_position)
     label = substitute(label)
     label = calculate_internal(data[[DATA]], label, parent.frame())
-    two_items = data[[RESULT]][(result_length-1):result_length]
+    two_items = list()
+    two_items[[RESULT]] = data[[RESULT]][(result_length-1):result_length]
+    two_items[[STAT_LABELS]] = data[[STAT_LABELS]][(result_length-1):result_length] 
     data[[RESULT]][(result_length-1):result_length] = NULL
+    data[[STAT_LABELS]] = data[[STAT_LABELS]][-((result_length-1):result_length)]
     res = switch(stat_position, 
-                 outside_rows = pivot_rows(data, stat_position = "outside", 
+                 outside_rows = pivot_rows(two_items, stat_position = "outside", 
                                            stat_label = stat_label),
-                 inside_rows = pivot_rows(data, stat_position = "inside", 
+                 inside_rows = pivot_rows(two_items, stat_position = "inside", 
                                           stat_label = stat_label)
                  
     )
     res[["row_labels"]] = remove_unnecessary_splitters(res[["row_labels"]])
     colnames(res) = remove_unnecessary_splitters(colnames(res))
     rownames(res) = NULL
-    add_result_to_intermediate_table(data, result, label)
+    add_result_to_intermediate_table(data, res, label)
 }
 
 #' @rdname tables
@@ -967,19 +970,22 @@ tab_hstack = function(data, stat_position = c("outside_columns",
     stat_position = match.arg(stat_position)
     label = substitute(label)
     label = calculate_internal(data[[DATA]], label, parent.frame())
-    two_items = data[[RESULT]][(result_length-1):result_length]
+    two_items = list()
+    two_items[[RESULT]] = data[[RESULT]][(result_length-1):result_length]
+    two_items[[STAT_LABELS]] = data[[STAT_LABELS]][(result_length-1):result_length] 
     data[[RESULT]][(result_length-1):result_length] = NULL
+    data[[STAT_LABELS]] = data[[STAT_LABELS]][-((result_length-1):result_length)]
     res = switch(stat_position, 
-                 outside_columns = pivot_columns(data, stat_position = "outside", 
+                 outside_columns = pivot_columns(two_items, stat_position = "outside", 
                                                  stat_label = stat_label),
-                 inside_columns = pivot_columns(data, stat_position = "inside", 
+                 inside_columns = pivot_columns(two_items, stat_position = "inside", 
                                                 stat_label = stat_label)
                  
     )
     res[["row_labels"]] = remove_unnecessary_splitters(res[["row_labels"]])
     colnames(res) = remove_unnecessary_splitters(colnames(res))
     rownames(res) = NULL
-    add_result_to_intermediate_table(data, result, label)
+    add_result_to_intermediate_table(data, res, label)
 }
 
 ########

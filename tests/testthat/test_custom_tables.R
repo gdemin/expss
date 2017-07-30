@@ -513,8 +513,7 @@ pr_t = compute(product_test, {
     wgt = runif(.N, 0.25, 4)
 })
 
-# write_labelled_spss(pr_t, "product_test.csv")
-# options(expss.digits = 3)
+
 
 expect_error(
 pr_t %>% 
@@ -710,6 +709,8 @@ expect_equal_to_reference(
     res,
     "rds/ctable25_different_total2.rds"
 )
+
+
 # pr_t %>%
 #     tab_cols(total(), age_cat) %>%
 #     tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
@@ -1078,3 +1079,45 @@ res = mtcars %>%
     tab_row_label("Wow! Percent! %%%") %>% 
     tab_stat_cpct() %>%
     tab_pivot() 
+
+context("tab_vstack/tab_hstack")
+
+res = pr_t %>% tab_cols(total(), age_cat) %>% 
+    tab_cells("Mean" = unlab(a22)) %>% 
+    tab_stat_mean(label = var_lab(a22)) %>% 
+    tab_cells("Mean" = unlab(b22)) %>% 
+    tab_stat_mean(label = var_lab(b22)) %>% 
+    tab_hstack(stat_position = "inside_columns") %>% 
+    tab_cells("Column %" = unlab(a22)) %>% 
+    tab_stat_cpct(label = var_lab(a22)) %>% 
+    tab_cells("Column %" = unlab(b22)) %>% 
+    tab_stat_cpct(label = var_lab(b22)) %>% 
+    tab_hstack(stat_position = "inside_columns") %>%
+    tab_pivot() %>% 
+    make_subheadings()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable40.rds"
+)
+
+res = pr_t %>% tab_cols(total(), age_cat) %>% 
+    tab_cells("Mean" = unlab(a22)) %>% 
+    tab_stat_mean(label = var_lab(a22)) %>% 
+    tab_cells("Mean" = unlab(b22)) %>% 
+    tab_stat_mean(label = var_lab(b22)) %>% 
+    tab_hstack(stat_position = "outside_columns",
+               stat_label = "outside") %>% 
+    tab_cells("Column %" = unlab(a22)) %>% 
+    tab_stat_cpct(label = var_lab(a22)) %>% 
+    tab_cells("Column %" = unlab(b22)) %>% 
+    tab_stat_cpct(label = var_lab(b22)) %>% 
+    tab_hstack(stat_position = "outside_columns",
+               stat_label = "outside") %>%
+    tab_pivot() %>% 
+    make_subheadings()
+
+expect_equal_to_reference(
+    res,
+    "rds/ctable41.rds"
+)
