@@ -208,4 +208,14 @@ expect_identical(nest(b), b)
 expect_error(nest(b, 1:2))
 expect_error(nest(1:2, b))
 
+a = rep(NA, 5)
+val_lab(a) = c(a = 1, b = 2)
+b = rep(NA, 5)
+val_lab(b) = c(d = 1, e = 2)
+expect_identical(
+nest(a, b),
+structure(c(NA_real_, NA_real_, NA_real_, NA_real_, NA_real_), 
+labels = structure(1:4, .Names = c("a|d", 
+                                 "a|e", "b|d", "b|e")), class = c("labelled", "numeric"), label = "")
+)
 # m_choice = dtfrm(a1 = c(1, NA, 1), a2 = c(2,2,NA))

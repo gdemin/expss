@@ -3,7 +3,7 @@
 \name{nest}
 \alias{nest}
 \alias{\%nest\%}
-\title{Compute nested variable from several variables}
+\title{Compute nested variable(-s) from several variables}
 \usage{
 nest(...)
 
@@ -21,8 +21,9 @@ vector/data.frame/list
 }
 \description{
 \code{nest} mainly intended for usage with table functions such as 
-\link{cro}. See examples. \code{\%nest\%} is infix version of this function.
-Multiple-response variable are supported in this function..
+\link{cro}. See examples. \code{\%nest\%} is infix version of this function. 
+You can apply \code{nest} on multiple-response variables/list of variables
+and data.frames.
 }
 \examples{
 data(mtcars)
