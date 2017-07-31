@@ -585,6 +585,35 @@ tab_stat_fun_internal = function(data, ..., label_expr, unsafe, parent){
 
 #' @rdname tables
 #' @export
+tab_stat_mean_sd_n = function(data, weighted_valid_n = FALSE,
+                              labels = c("Mean", "Std. dev.", 
+                                         ifelse(weighted_valid_n, 
+                                                "Valid N", 
+                                                "Unw. valid N")
+                                         ),
+                              label = NULL){
+    check_class_for_stat(data)
+    label = substitute(label)
+    if(weighted_valid_n){
+        fun = function(x, weight = NULL) {
+            c(w_mean(x, weight), w_sd(x, weight), valid_n(x, weight))
+        }
+    } else {
+        fun = function(x, weight = NULL) {
+            c(w_mean(x, weight), w_sd(x, weight), unweighted_valid_n(x, weight))
+        }
+    }
+    tab_stat_fun_internal(data, 
+                          fun, 
+                          label_expr = label, 
+                          unsafe = labels, 
+                          parent = parent.frame()
+    ) 
+}
+
+
+#' @rdname tables
+#' @export
 tab_stat_mean = function(data, label = "Mean"){
     check_class_for_stat(data)
     label = substitute(label)
@@ -608,6 +637,8 @@ tab_stat_median = function(data, label = "Median"){
                           parent = parent.frame()
     )  
 }
+
+
 
 #' @rdname tables
 #' @export
