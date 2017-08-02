@@ -1221,21 +1221,8 @@ make_empty_intermediate_table = function(data){
     res[[MIS_VAL]] = NULL
     res[[RESULT]] = list()
     res[[STAT_LABELS]] = character(0)
-    res[[SIGNIFICANCE_OPTIONS]] = list(
-        sig_level = 0.05, 
-        min_base = 2,
-        compare_type ="subtable",
-        bonferroni = FALSE,
-        sig_labels = LETTERS,
-        sig_labels_previous_column = c("v", "^"),
-        sig_labels_first_column = c("-", "+"),
-        na_as_zero = FALSE,
-        total_marker = "#",
-        total_row = 1
-    )
     class(res) = union("intermediate_table", class(res))
-    res
-    
+    tab_significance_options(res)
 }
 
 ##############

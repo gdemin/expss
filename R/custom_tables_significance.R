@@ -68,8 +68,20 @@ tab_significance_options = function(data,
                                     na_as_zero = FALSE,
                                     var_equal = FALSE){
     data = check_class(data)
-    sig_options = as.list(match.call())[-1]
-    data[[SIGNIFICANCE_OPTIONS]] = sig_options
+    sig_options = match.call()[-2]
+    sig_options[[1]] = quote(list)
+    
+    if(length(sig_options)>1){
+        env = parent.frame()
+        sig_options = calculate_internal(data[[DATA]], sig_options, env)
+        data[[SIGNIFICANCE_OPTIONS]][names(sig_options)] = sig_options
+    } else {
+        ### TODO not working
+        env = environment()
+        sig_options =  formals(tab_significance_options)[-1]
+        sig_options = lapply(sig_options, eval, envir = env)
+        data[[SIGNIFICANCE_OPTIONS]] = sig_options
+    }
     data
 }
 
