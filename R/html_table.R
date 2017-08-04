@@ -57,12 +57,20 @@
 #'  
 #' }
 htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TRUE){
-    if(!row_groups){
-        return(html_table_no_row_groups(x = x, digits = digits, ...))
-    }
-    x = round_dataframe(x, digits = digits)
     if(NCOL(x) == 0){
         return(htmlTable(setNames(dtfrm("Table is empty"), " "), ...))
+    }
+    digits = if_null(digits, 1)
+    if(!is.na(digits)){
+        x = round_dataframe(x, digits = digits)
+        not_total = !get_total_rows_indicator(x, total_marker = "#")
+        for(i in seq_len(NCOL(x))){
+            curr_col = x[[i]][not_total]
+            if(is.numeric(curr_col) && any(grepl("\\.|,", curr_col, perl = TRUE))){
+                    x[[i]][not_total] = format(curr_col, nsmall = digits, justify =  "right") 
+                    x[[i]][not_total][is.na(curr_col)] = ""
+            }
+        }
     }
     # escape <NA>
     colnames(x) = gsub("<NA>", "&lt;NA&gt;", colnames(x), fixed = TRUE)
@@ -74,6 +82,9 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
         if(is.character(x[[i]]) || is.factor(x[[i]])){
             x[[i]] = gsub("\\s", "&nbsp;", x[[i]], perl = TRUE)
         }
+    }
+    if(!row_groups){
+        return(html_table_no_row_groups(x = x, ...))
     }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
@@ -252,7 +263,7 @@ knit_print.etable = function(x, digits = get_expss_digits(), ...){
 #' @export
 #' @rdname htmlTable.etable
 repr_html.etable = function(obj, digits = get_expss_digits(), ...){
-    html_table_no_row_groups(obj, digits = digits, ...)
+    htmlTable(obj, digits = digits, ..., row_groups = FALSE)
     
 }
 
@@ -281,22 +292,7 @@ repr_text.etable = function(obj, digits = get_expss_digits(), ...){
 }
 
 ## for Jupyter notebooks where row headings not rendered correctly
-html_table_no_row_groups = function(x, digits = get_expss_digits(), ...){
-    x = round_dataframe(x, digits = digits)
-    if(NCOL(x) == 0){
-        return(htmlTable(setNames(dtfrm("Table is empty"), " "), ...))
-    }
-    # escape <NA>
-    colnames(x) = gsub("<NA>", "&lt;NA&gt;", colnames(x), fixed = TRUE)
-    if(is.character(x[[1]]) || is.factor(x[[1]])){
-        x[[1]] = gsub("<NA>", "&lt;NA&gt;", x[[1]], fixed = TRUE)
-    }
-    ## for significance marks
-    for(i in seq_along(x)[-1]){
-        if(is.character(x[[i]]) || is.factor(x[[i]])){
-            x[[i]] = gsub("\\s", "&nbsp;", x[[i]], perl = TRUE)
-        }
-    }
+html_table_no_row_groups = function(x, ...){
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
     # first_lab = htmltools::htmlEscape(first_lab)
