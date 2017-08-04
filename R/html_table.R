@@ -145,12 +145,14 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
             x = dtfrm(row_labels[, -(1:2)], x)
             html_header = c(rep("", NCOL(row_labels) - 2), html_header)
             align = c(rep("l", NCOL(row_labels) - 2), align)
-            if(NCOL(header)>0){
-                cgroup = cbind("", cgroup)
-                n.cgroup = cbind(NCOL(row_labels) - 2, n.cgroup)
-            } else {
-                cgroup = matrix("", 1, 1) 
-                n.cgroup = matrix(NCOL(row_labels) - 2, 1, 1)
+            if(NROW(cgroup)>0){
+                if(NCOL(header)>0){
+                    cgroup = cbind("", cgroup)
+                    n.cgroup = cbind(NCOL(row_labels) - 2, n.cgroup)
+                } else {
+                    cgroup = matrix("", 1, 1) 
+                    n.cgroup = matrix(NCOL(row_labels) - 2, 1, 1)
+                }
             }
         }
         rnames = row_labels[,2]
@@ -350,12 +352,14 @@ html_table_no_row_groups = function(x, ...){
             x = dtfrm(row_labels[, -1], x)
             html_header = c(rep("", NCOL(row_labels) - 1), html_header)
             align = c(rep("l", NCOL(row_labels) - 1), align)
-            if(NCOL(header)>0){
-                cgroup = cbind("", cgroup)
-                n.cgroup = cbind(NCOL(row_labels) - 1, n.cgroup)
-            } else {
-                cgroup = matrix("", 1, 1) 
-                n.cgroup = matrix(NCOL(row_labels) - 1, 1, 1)
+            if(NROW(cgroup)>0){
+                if(NCOL(header)>0){
+                    cgroup = cbind("", cgroup)
+                    n.cgroup = cbind(NCOL(row_labels) - 1, n.cgroup)
+                } else {
+                    cgroup = matrix("", 1, 1) 
+                    n.cgroup = matrix(NCOL(row_labels) - 1, 1, 1)
+                }
             }
         }
         rnames = row_labels[,1]

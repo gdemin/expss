@@ -153,4 +153,9 @@ expect_equal_to_reference(htmlTable(res), "rds/htmlTable19.rds")
 
 
 
-# res = sig
+q1 = c(1:5)
+var_lab(q1) = "My label"
+
+expect_silent(
+    expss:::repr_html.etable(fre(list(q1)))
+)
