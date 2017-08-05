@@ -67,7 +67,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
         for(i in seq_len(NCOL(x))){
             curr_col = x[[i]][not_total]
             if(is.numeric(curr_col) && any(grepl("\\.|,", curr_col, perl = TRUE))){
-                    x[[i]][not_total] = format(curr_col, nsmall = digits, justify =  "right") 
+                    x[[i]][not_total] = trimws(format(curr_col, nsmall = digits, justify =  "right"))
                     x[[i]][not_total][is.na(curr_col)] = ""
             }
         }
