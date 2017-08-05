@@ -1,4 +1,4 @@
-context("custom tables significance tests")
+context("custom tables significance cpct")
 
 data(mtcars)
 mtcars = apply_labels(mtcars,
@@ -23,7 +23,7 @@ mtcars = apply_labels(mtcars,
 res = mtcars %>% tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>%
-    tab_last_cpct_significance(keep = "none") %>% 
+    tab_last_sig_cpct(keep = "none") %>% 
     tab_pivot()
 
 expect_equal_to_reference(
@@ -36,7 +36,7 @@ res = mtcars %>%
     tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>%
-    tab_last_cpct_significance() %>% 
+    tab_last_sig_cpct() %>% 
     tab_pivot()
 
 expect_equal_to_reference(
@@ -48,7 +48,7 @@ res = mtcars %>%
     tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>% 
-    tab_last_cpct_significance(inequality_sign = TRUE) %>%
+    tab_last_sig_cpct(inequality_sign = TRUE) %>%
     tab_pivot()
 
 
@@ -62,7 +62,7 @@ res = mtcars %>%
     tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>% 
-    tab_last_cpct_significance() %>%
+    tab_last_sig_cpct() %>%
     tab_pivot()
 
 expect_equal_to_reference(
@@ -74,7 +74,7 @@ res = mtcars %>%
     tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>% 
-    tab_last_cpct_significance(inequality_sign = FALSE) %>%
+    tab_last_sig_cpct(inequality_sign = FALSE) %>%
     tab_pivot()
 
 expect_equal_to_reference(
@@ -86,7 +86,7 @@ res = mtcars %>%
     tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>% 
-    tab_last_cpct_significance(subtable_marks = "both") %>%
+    tab_last_sig_cpct(subtable_marks = "both") %>%
     tab_pivot()
 
 expect_equal_to_reference(
@@ -98,10 +98,10 @@ res = mtcars %>%
     tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>% 
-    tab_last_cpct_significance() %>%
+    tab_last_sig_cpct() %>%
     tab_significance_options() %>% 
     tab_stat_cpct() %>% 
-    tab_last_cpct_significance() %>%
+    tab_last_sig_cpct() %>%
     tab_pivot()
 
 expect_equal_to_reference(
@@ -111,7 +111,7 @@ expect_equal_to_reference(
 res = mtcars %>% tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct(label = "%") %>% 
-    tab_last_cpct_significance() %>%
+    tab_last_sig_cpct() %>%
     tab_pivot(stat_position = "inside_columns")
 
 expect_equal_to_reference(
@@ -123,7 +123,7 @@ res = mtcars %>% tab_cells(cyl, gear) %>%
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>%
     tab_last_add_sig_labels() %>% 
-    tab_last_cpct_significance(keep = "none", sig_labels = NULL, mode = "append") %>%
+    tab_last_sig_cpct(keep = "none", sig_labels = NULL, mode = "append") %>%
     tab_pivot(stat_position = "inside_columns")
 
 
@@ -136,7 +136,7 @@ res = mtcars %>% tab_cells(cyl, gear) %>%
     tab_stat_cpct() %>%
     tab_last_add_sig_labels() %>% 
     tab_last_round() %>% 
-    tab_last_cpct_significance(keep = "none", sig_labels = NULL, mode = "append") %>%
+    tab_last_sig_cpct(keep = "none", sig_labels = NULL, mode = "append") %>%
     tab_pivot(stat_position = "inside_rows")
 
 
@@ -150,7 +150,7 @@ res = mtcars %>%
     tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>% 
-    tab_last_cpct_significance() %>%
+    tab_last_sig_cpct() %>%
     tab_pivot()
 
 expect_equal_to_reference(
@@ -161,9 +161,12 @@ res = mtcars %>%
     tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
     tab_stat_cpct() %>% 
-    tab_last_cpct_significance(keep = "percent") %>%
+    tab_last_sig_cpct(keep = "percent") %>%
     tab_pivot()
 
 expect_equal_to_reference(
     res,
     "rds/ct_signif_cpct10.rds")
+
+
+context("custom tables significance means")

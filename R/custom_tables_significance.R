@@ -88,7 +88,7 @@ tab_significance_options = function(data,
 
 #' @rdname tab_significance_options
 #' @export
-tab_last_cpct_significance = function(data, 
+tab_last_sig_cpct = function(data, 
                                       sig_level = 0.05, 
                                       delta_cpct = 0,
                                       min_base = 2,
@@ -107,37 +107,24 @@ tab_last_cpct_significance = function(data,
                                       mode = c("replace", "append"),
                                       label = NULL
                                       ){
-    check_class_for_stat(data)
-    last_table = get_last_result(data)
-    #################
-    sig_params = names(formals(tab_last_cpct_significance)) %d% 
-        c("data", "mode", "label")
-    sig_options = data[[SIGNIFICANCE_OPTIONS]] %n_i% sig_params
-    curr_sig_options = match.call()
-    curr_sig_options[[1]] = quote(list)
-    curr_sig_options[c("data", "mode", "label")] = NULL
-
-    if(length(curr_sig_options)>1){
+    matched_call = match.call()
+    env = parent.frame()
+    tab_last_internal_significance(
+        data = data,
+        matched_call = matched_call,
+        sig_params = names(formals(tab_last_sig_cpct)) %d% 
+            c("data", "mode", "label"),
+        sig_fun = significance_cpct,
+        label_expr = substitute(label),
+        mode = mode,
         env = parent.frame()
-        curr_sig_options = calculate_internal(data[[DATA]], curr_sig_options, env)
-        sig_options[names(curr_sig_options)] = curr_sig_options
-    } 
-    res = do.call(significance_cpct, c(list(x = last_table), sig_options))
-    #############
-    mode = match.arg(mode)
-    if(mode == "append"){
-        label = substitute(label)
-        label = calculate_internal(data[[DATA]], label, parent.frame())
-        add_result_to_intermediate_table(data, res, label)
-    } else {
-       replace_last_result(data, res) 
-    }
+    )
 }
 
 ######################
 #' @rdname tab_significance_options
 #' @export
-tab_stat_means_significance = function(data, 
+tab_last_sig_means = function(data, 
                                        sig_level = 0.05, 
                                        delta_means = 0,
                                        min_base = 2,
@@ -153,49 +140,78 @@ tab_stat_means_significance = function(data,
                                        digits = get_expss_digits(),
                                        mode = c("replace", "append"),
                                        label = NULL){
-    check_class_for_stat(data)
-    #################
-    sig_params = names(formals(tab_stat_means_significance)) %d% c("data", "label")
-    sig_options = data[[SIGNIFICANCE_OPTIONS]] %n_i% sig_params
-    curr_sig_options = match.call()[-2]
-    curr_sig_options[[1]] = quote(list)
-    if(!missing(label)){
-        curr_sig_options[["label"]] = NULL
-    }
-    if(length(curr_sig_options)>1){
+    matched_call = match.call()
+    env = parent.frame()
+    tab_last_internal_significance(
+        data = data,
+        matched_call = matched_call,
+        sig_params = names(formals(tab_last_sig_means)) %d% 
+            c("data", "mode", "label"),
+        sig_fun = significance_means,
+        label_expr = substitute(label),
+        mode = mode,
         env = parent.frame()
+    )
+}
+
+######################
+#' @rdname tab_significance_options
+#' @export
+tab_last_sig_cases = function(data, 
+                                 sig_level = 0.05, 
+                                 min_base = 2,
+                                 keep = c("cases", "bases"), 
+                                 total_marker = "#",
+                                 total_row = 1,
+                                 digits = get_expss_digits(),
+                                 mode = c("replace", "append"),
+                                 label = NULL){
+    matched_call = match.call()
+    env = parent.frame()
+    tab_last_internal_significance(
+        data = data,
+        matched_call = matched_call,
+        sig_params = names(formals(tab_last_sig_cases)) %d% 
+            c("data", "mode", "label"),
+        sig_fun = significance_cases,
+        label_expr = substitute(label),
+        mode = mode,
+        env = parent.frame()
+    )
+}
+
+############################
+
+tab_last_internal_significance = function(data,
+                                          matched_call,
+                                          sig_params,
+                                          sig_fun,
+                                          label_expr,
+                                          mode = c("replace", "append"),
+                                          env){
+    check_class_for_stat(data)
+    last_table = get_last_result(data)
+    #################
+    sig_options = data[[SIGNIFICANCE_OPTIONS]] %n_i% sig_params
+    curr_sig_options = matched_call
+    curr_sig_options[[1]] = quote(list)
+    curr_sig_options[c("data", "mode", "label")] = NULL
+    
+    if(length(curr_sig_options)>1){
         curr_sig_options = calculate_internal(data[[DATA]], curr_sig_options, env)
         sig_options[names(curr_sig_options)] = curr_sig_options
     } 
-    cpct_args = list()
-    cpct_args[["total_label"]] = data[[TOTAL_LABEL]]    
-    cpct_args[["total_statistic"]] = data[[TOTAL_STATISTIC]]  
-    ### rather ugly solution if user don't want bases
-    if(!identical(data[[TOTAL_ROW_POSITION]], "none")){
-        cpct_args[["total_row_position"]] = data[[TOTAL_ROW_POSITION]]    
-    } else {
-        if(!("keep" %in% names(sig_options))){
-            sig_options[["keep"]] = "percent"
-        }
-    }
-    cpct = do.call(cro_cpct, c(
-        list(
-            cell_vars = get_cells(data),
-            col_vars = data[[COL_VAR]],
-            row_vars = data[[ROW_VAR]],
-            weight = data[[WEIGHT]],
-            subgroup = data[[SUBGROUP]]
-        ),
-        cpct_args
-    )
-    )
-    res = do.call(significance_cpct, c(list(x = cpct), sig_options))
+    res = do.call(sig_fun, c(list(x = last_table), sig_options))
     #############
-    label = substitute(label)
-    label = calculate_internal(data[[DATA]], label, parent.frame())
-    add_result_to_intermediate_table(data, res, label)
+    mode = match.arg(mode)
+    if(mode == "append"){
+        label = calculate_internal(data[[DATA]], label_expr, env)
+        add_result_to_intermediate_table(data, res, label)
+    } else {
+        replace_last_result(data, res) 
+    }
+    
 }
-
 #################################
 
 #' @rdname tab_significance_options
