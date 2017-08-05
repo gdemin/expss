@@ -1080,19 +1080,19 @@ res = mtcars %>%
     tab_stat_cpct() %>%
     tab_pivot() 
 
-context("tab_vstack/tab_hstack")
+context("tab_last_vstack/tab_last_hstack")
 
 res = pr_t %>% tab_cols(total(), age_cat) %>% 
     tab_cells("Mean" = unlab(a22)) %>% 
     tab_stat_mean(label = var_lab(a22)) %>% 
     tab_cells("Mean" = unlab(b22)) %>% 
     tab_stat_mean(label = var_lab(b22)) %>% 
-    tab_hstack(stat_position = "inside_columns") %>% 
+    tab_last_hstack(stat_position = "inside_columns") %>% 
     tab_cells("Column %" = unlab(a22)) %>% 
     tab_stat_cpct(label = var_lab(a22)) %>% 
     tab_cells("Column %" = unlab(b22)) %>% 
     tab_stat_cpct(label = var_lab(b22)) %>% 
-    tab_hstack(stat_position = "inside_columns") %>%
+    tab_last_hstack(stat_position = "inside_columns") %>%
     tab_pivot() %>% 
     make_subheadings()
 
@@ -1106,13 +1106,13 @@ res = pr_t %>% tab_cols(total(), age_cat) %>%
     tab_stat_mean(label = var_lab(a22)) %>% 
     tab_cells("Mean" = unlab(b22)) %>% 
     tab_stat_mean(label = var_lab(b22)) %>% 
-    tab_hstack(stat_position = "outside_columns",
+    tab_last_hstack(stat_position = "outside_columns",
                stat_label = "outside") %>% 
     tab_cells("Column %" = unlab(a22)) %>% 
     tab_stat_cpct(label = var_lab(a22)) %>% 
     tab_cells("Column %" = unlab(b22)) %>% 
     tab_stat_cpct(label = var_lab(b22)) %>% 
-    tab_hstack(stat_position = "outside_columns",
+    tab_last_hstack(stat_position = "outside_columns",
                stat_label = "outside") %>%
     tab_pivot() %>% 
     make_subheadings()

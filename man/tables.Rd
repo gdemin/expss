@@ -29,8 +29,8 @@
 \alias{tab_stat_cpct_responses}
 \alias{tab_stat_tpct}
 \alias{tab_stat_rpct}
-\alias{tab_vstack}
-\alias{tab_hstack}
+\alias{tab_last_vstack}
+\alias{tab_last_hstack}
 \alias{tab_pivot}
 \alias{tab_transpose}
 \title{Functions for custom tables construction}
@@ -97,10 +97,10 @@ tab_stat_tpct(data, total_label = NULL, total_statistic = "u_cases",
 tab_stat_rpct(data, total_label = NULL, total_statistic = "u_cases",
   total_row_position = c("below", "above", "none"), label = NULL)
 
-tab_vstack(data, stat_position = c("outside_rows", "inside_rows"),
+tab_last_vstack(data, stat_position = c("outside_rows", "inside_rows"),
   stat_label = c("inside", "outside"), label = NULL)
 
-tab_hstack(data, stat_position = c("outside_columns", "inside_columns"),
+tab_last_hstack(data, stat_position = c("outside_columns", "inside_columns"),
   stat_label = c("inside", "outside"), label = NULL)
 
 tab_pivot(data, stat_position = c("outside_rows", "inside_rows",

@@ -957,15 +957,15 @@ check_class_for_stat = function(data){
 
 #' @rdname tables
 #' @export
-tab_vstack = function(data, stat_position = c("outside_rows",
+tab_last_vstack = function(data, stat_position = c("outside_rows",
                                               "inside_rows"), 
                       stat_label = c("inside", "outside"),
                       label = NULL){
     stopif(!inherits(data, "intermediate_table"), 
-           "'tab_vstack' - argument 'data' need to be result of 'tab_stats_*'.") 
+           "'tab_last_vstack' - argument 'data' need to be result of 'tab_stats_*'.") 
     result_length = length(data[[RESULT]])
     stopif(result_length < 2, 
-           "It is needed at least two 'tab_stat_*' in the intermeadiate tables for 'tab_vstack'.")
+           "It is needed at least two 'tab_stat_*' in the intermeadiate tables for 'tab_last_vstack'.")
     stat_position = match.arg(stat_position)
     label = substitute(label)
     label = calculate_internal(data[[DATA]], label, parent.frame())
@@ -989,15 +989,15 @@ tab_vstack = function(data, stat_position = c("outside_rows",
 
 #' @rdname tables
 #' @export
-tab_hstack = function(data, stat_position = c("outside_columns",
+tab_last_hstack = function(data, stat_position = c("outside_columns",
                                               "inside_columns"), 
                       stat_label = c("inside", "outside"),
                       label = NULL){
     stopif(!inherits(data, "intermediate_table"), 
-           "'tab_hstack' - argument 'data' need to be result of 'tab_stats_*'.")   
+           "'tab_last_hstack' - argument 'data' need to be result of 'tab_stats_*'.")   
     result_length = length(data[[RESULT]])
     stopif(result_length < 2, 
-           "It is needed at least two 'tab_stat_*' in the intermeadiate tables for 'tab_vstack'.")
+           "It is needed at least two 'tab_stat_*' in the intermeadiate tables for 'tab_last_hstack'.")
     stat_position = match.arg(stat_position)
     label = substitute(label)
     label = calculate_internal(data[[DATA]], label, parent.frame())
