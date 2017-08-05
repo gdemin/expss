@@ -64,8 +64,9 @@ drop_empty_rows.data.frame = function(x, excluded_rows = "#", excluded_columns =
     stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && 
                !is.logical(excluded_rows) && !is.character(excluded_rows) ,
            "`excluded_rows` should be character/numeric or logical.")
+    x_mat = mis_val(x, "")
     if(is.null(excluded_columns)) {
-        not_empty = rowSums(!is.na(x))>0    
+        not_empty = rowSums(!is.na(x_mat))>0    
     } else {
         
         if(is.character(excluded_columns)) {
@@ -80,7 +81,7 @@ drop_empty_rows.data.frame = function(x, excluded_rows = "#", excluded_columns =
             )
             excluded_columns = seq_along(x) %in%  excluded_columns
         }
-        not_empty = rowSums(!is.na(x[,!excluded_columns]))>0  
+        not_empty = rowSums(!is.na(x_mat[,!excluded_columns]))>0  
     }
     if(is.null(excluded_rows)){
         excluded_rows = FALSE
@@ -109,8 +110,10 @@ drop_empty_columns.data.frame = function(x, excluded_rows = "#", excluded_column
     stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && 
                !is.logical(excluded_rows) && !is.character(excluded_rows) ,
            "`excluded_rows` should be character/numeric or logical.")
+    # has_characters = any(vapply(x, FUN = is.character, FUN.VALUE = NA))
+    x_mat = mis_val(x, "")
     if(is.null(excluded_rows)) {
-        empty = colSums(!is.na(x))==0    
+        empty = colSums(!(is.na(x_mat)))==0    
     } else {
         if(is.numeric(excluded_rows)) {
             stopif(!all(excluded_rows %in% seq_len(nrow(x))) , "some of the 'excluded_rows' not found: ",
@@ -122,7 +125,8 @@ drop_empty_columns.data.frame = function(x, excluded_rows = "#", excluded_column
             excluded_rows = lapply(excluded_rows, grepl, x[[1]], perl = TRUE)
             excluded_rows = Reduce("|", excluded_rows)
         }
-        empty = colSums(!is.na(x[!excluded_rows,]))==0 
+        
+        empty = colSums(!is.na(x_mat[!excluded_rows,]))==0 
     }
     if(is.null(excluded_columns)){
         excluded_columns = FALSE
