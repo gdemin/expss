@@ -170,3 +170,142 @@ expect_equal_to_reference(
 
 
 context("custom tables significance means")
+
+mtcars_table = cro_mean_sd_n(list(mtcars$mpg, mtcars$hp),
+                             list(total(), mtcars$vs, mtcars$am))
+
+
+res = mtcars %>% 
+    tab_cells(mpg, hp) %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_stat_mean_sd_n() %>% 
+    tab_last_sig_means(compare_type = c("first_column", 
+                                        "previous_column",
+                                        "subtable"),
+                       bonferroni = TRUE,
+                       sig_level = 0.05) %>% 
+    tab_pivot()
+
+expect_equal_to_reference(res, 
+                          "rds/signif_means20bonferroni.rds"
+)
+
+res = mtcars %>% 
+    tab_significance_options(compare_type = c("first_column", 
+                                              "previous_column",
+                                              "subtable"),
+                             bonferroni = TRUE,
+                             sig_level = 0.05) %>% 
+    tab_cells(mpg, hp) %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_stat_mean_sd_n() %>% 
+    tab_last_sig_means() %>% 
+    tab_pivot()
+
+expect_equal_to_reference(res, 
+                          "rds/signif_means20bonferroni.rds"
+)
+
+res = mtcars %>% 
+    compute({
+        weight = 2
+        }) %>% 
+    tab_significance_options(compare_type = c("first_column", 
+                                              "previous_column",
+                                              "subtable")
+                             ) %>% 
+    tab_cells(mpg, hp) %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_weight(weight) %>% 
+    tab_stat_mean_sd_n(weighted_valid_n = TRUE) %>% 
+    tab_last_sig_means(subtable_marks = "both") %>% 
+    tab_pivot()
+
+expect_equal_to_reference(res, 
+                          "rds/ct_signif_means1.rds"
+)
+
+res = mtcars %>% 
+    tab_significance_options(compare_type = c("first_column", 
+                                              "previous_column",
+                                              "subtable"),
+                             bonferroni = TRUE,
+                             sig_level = 0.05) %>% 
+    tab_cells(mpg, hp) %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_stat_mean_sd_n(labels = c("mean", "std", "N=")) %>% 
+    tab_last_sig_means() %>% 
+    tab_cells(cyl) %>% 
+    tab_stat_cpct() %>%
+    tab_last_sig_cpct() %>% 
+    tab_stat_cases() %>% 
+    tab_last_add_sig_labels() %>% 
+    tab_last_sig_cases(keep = "none") %>% 
+    tab_cells(gear) %>% 
+    tab_stat_cpct() %>%
+    tab_last_sig_cpct() %>% 
+    tab_stat_cases() %>% 
+    tab_last_add_sig_labels() %>% 
+    tab_last_sig_cases(keep = "none") %>% 
+    tab_pivot(stat_position = "inside_rows")
+
+expect_equal_to_reference(res, 
+                          "rds/ct_signif_many1.rds"
+)
+
+tab_many_sig = . %>% tab_stat_cpct() %>%
+    tab_last_sig_cpct() %>% 
+    tab_stat_cases() %>% 
+    tab_last_add_sig_labels() %>% 
+    tab_last_sig_cases(keep = "none") %>% 
+    tab_last_vstack()
+
+res = mtcars %>% 
+    tab_significance_options(compare_type = c("first_column", 
+                                              "previous_column",
+                                              "subtable"),
+                             bonferroni = TRUE,
+                             sig_level = 0.05) %>% 
+    tab_cells(mpg, hp) %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_stat_mean_sd_n(labels = c("mean", "std", "N=")) %>% 
+    tab_last_sig_means() %>% 
+    tab_cells(cyl) %>% 
+    tab_many_sig() %>% 
+    tab_cells(gear) %>% 
+    tab_many_sig() %>%
+    tab_pivot(stat_position = "inside_rows")
+
+expect_equal_to_reference(res, 
+                          "rds/ct_signif_many1.rds"
+)
+
+tab_sig_means_left = . %>% 
+    tab_stat_mean_sd_n() %>% 
+    tab_last_add_sig_labels() %>% 
+    tab_last_sig_means(keep = "none", sig_labels = NULL, mode = "append") %>% 
+    tab_last_hstack("inside_columns")
+
+tab_sig_cpct_left = . %>% 
+    tab_stat_cpct() %>% 
+    tab_last_add_sig_labels() %>% 
+    tab_last_sig_cpct(keep = "none", sig_labels = NULL, mode = "append") %>% 
+    tab_last_hstack("inside_columns")
+
+res = mtcars %>% 
+    tab_significance_options(compare_type = c("first_column", 
+                                              "previous_column",
+                                              "subtable"),
+                             subtable_marks = "both",
+                             sig_level = 0.05) %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(mpg, hp) %>% 
+    tab_sig_means_left() %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_sig_cpct_left() %>% 
+    tab_pivot(stat_position = "inside_rows") %>% 
+    drop_empty_columns()
+
+expect_equal_to_reference(res, 
+                          "rds/ct_signif_many2.rds"
+)
