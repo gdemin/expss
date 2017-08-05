@@ -1083,30 +1083,34 @@ pivot_rows = function(data, stat_position = c("inside", "outside"),
     labels = data[[STAT_LABELS]]
     labels_index = seq_along(labels)
     
-    results = lapply(labels_index, function(item_num){
-        curr = results[[item_num]]
-        curr[["..label_index__"]] = item_num
-        curr[["..label__"]] = labels[item_num]
-        curr
+    labels_and_index = lapply(labels_index, function(item_num){
+        dtfrm(label_index = rep(item_num, NROW(results[[item_num]])),
+             label = rep(labels[item_num], NROW(results[[item_num]]))
+        )
     })
     results = Reduce(add_rows, results)
+    old_colnames = colnames(results)
+    labels_and_index = do.call(rbind, labels_and_index)
 
     if(stat_position == "inside"){
-        results[["..row_labels__"]] = match(results[["row_labels"]], 
+        labels_and_index[["row_labels"]] = match(results[["row_labels"]], 
                                             unique(results[["row_labels"]])
         )
-        results = sort_asc(results, "..row_labels__", "..label_index__")
+        results = results[order(labels_and_index[["row_labels"]],
+                                labels_and_index[["label_index"]]),
+                          ]
+        labels_and_index = labels_and_index[order(labels_and_index[["row_labels"]],
+                                labels_and_index[["label_index"]]),
+                          ]
         
-        results[["..row_labels__"]] = NULL
     }
     if(stat_label == "inside"){
-        results[["row_labels"]] = paste0( results[["row_labels"]], "|", results[["..label__"]])     
+        results[[1]] = paste0( results[[1]], "|", labels_and_index[["label"]])     
     } else {
-        results[["row_labels"]] = paste0( results[["..label__"]], "|", results[["row_labels"]])
+        results[[1]] = paste0( labels_and_index[["label"]], "|", results[[1]])
     }
-    
-    results[["..label__"]] = NULL
-    results[["..label_index__"]] = NULL
+    colnames(results) = old_colnames
+
     results
     
 }
