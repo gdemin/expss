@@ -1064,50 +1064,15 @@ tab_transpose.default = function(data){
 
 #' @export
 tab_transpose.intermediate_table = function(data){
-    result_num = length(data[[RESULT]])
-    stopif(result_num==0,
-           "No results for transposition. Use 'tab_transpose' after 'tab_stat_*' or after 'tab_pivot'.")
-    data[[RESULT]][[result_num]] = t(data[[RESULT]][[result_num]])
-    data
+    replace_last_result(
+        data, 
+        t(
+            get_last_result(data)
+        )
+    )
 }
-# ########
-# #' @rdname tables
-# #' @export
-# tab_intermediate_pivot = function(data, stat_position = c("outside_rows",
-#                                                           "inside_rows",
-#                                                           "outside_columns",
-#                                                           "inside_columns"), 
-#                                   stat_label = c("inside", "outside")
-# ){
-#     UseMethod("tab_intermediate_pivot")
-#     
-# }
-# 
-# #' @export
-# tab_intermediate_pivot.intermediate_table = function(data, stat_position = c("outside_rows",
-#                                                                              "inside_rows",
-#                                                                              "outside_columns",
-#                                                                              "inside_columns"), 
-#                                                      stat_label = c("inside", "outside"),
-#                                                      label = NULL
-# ){
-#     stopif(length(data[[RESULT]])==0, 
-#            "No statistics in the table. Use at least one of 'tab_stat' before the 'pivot'.")
-#     res = tab_pivot(data, stat_position = stat_position, stat_label = stat_label)
-#     data[[RESULT]] = list(res)
-#     data[[STAT_LABELS]] = if_null(label, "")
-#     data
-# }
-# 
-# #' @export
-# tab_intermediate_pivot.default = function(data, stat_label_position = c("outside_rows",
-#                                                            "inside_rows", 
-#                                                            "outside_columns", 
-#                                                            "inside_columns")
-# ){
-#     stop("No data for 'tab_pivot'. 
-#          Use at least one of 'tab_cells'/'tab_rows'/'tab_cols' and at least one of 'tab_stat' before the 'tab_pivot'.")
-# }
+
+
 ################
 
 pivot_rows = function(data, stat_position = c("inside", "outside"), 
@@ -1222,7 +1187,8 @@ make_empty_intermediate_table = function(data){
     res[[RESULT]] = list()
     res[[STAT_LABELS]] = character(0)
     class(res) = union("intermediate_table", class(res))
-    tab_significance_options(res)
+    res[[SIGNIFICANCE_OPTIONS]] = list()
+    res
 }
 
 ##############

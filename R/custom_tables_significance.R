@@ -1,3 +1,5 @@
+
+
 #' Significance testing for custom tables
 #'
 #' @param data data.frame/intermediate_table 
@@ -56,7 +58,7 @@ tab_significance_options = function(data,
                                     delta_means = 0,
                                     compare_type ="subtable",
                                     bonferroni = FALSE,
-                                    subtable_marks = c("greater", "both", "less"),
+                                    subtable_marks = "greater",
                                     inequality_sign = "both" %in% subtable_marks,
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
@@ -76,11 +78,7 @@ tab_significance_options = function(data,
         sig_options = calculate_internal(data[[DATA]], sig_options, env)
         data[[SIGNIFICANCE_OPTIONS]][names(sig_options)] = sig_options
     } else {
-        ### TODO not working
-        env = environment()
-        sig_options =  formals(tab_significance_options)[-1]
-        sig_options = lapply(sig_options, eval, envir = env)
-        data[[SIGNIFICANCE_OPTIONS]] = sig_options
+        data[[SIGNIFICANCE_OPTIONS]] = list()
     }
     data
 }
@@ -108,15 +106,29 @@ tab_stat_cpct_significance = function(data,
                                       digits = get_expss_digits(),
                                       label = NULL){
     check_class_for_stat(data)
-    label = substitute(label)
-    label = calculate_internal(data[[DATA]], label, parent.frame())
+    #################
+    cpct_sig_params = names(formals(tab_stat_cpct_significance)) %d% c("data", "label")
+    sig_options = data[[SIGNIFICANCE_OPTIONS]] %n_i% cpct_sig_params
+    curr_sig_options = match.call()[-2]
+    curr_sig_options[[1]] = quote(list)
+    if(!missing(label)){
+        curr_sig_options[["label"]] = NULL
+    }
+    if(length(curr_sig_options)>1){
+        env = parent.frame()
+        curr_sig_options = calculate_internal(data[[DATA]], curr_sig_options, env)
+        sig_options[names(curr_sig_options)] = curr_sig_options
+    } 
     cpct_args = list()
     cpct_args[["total_label"]] = data[[TOTAL_LABEL]]    
-    cpct_args[["total_statistic"]] = data[[TOTAL_STATISTIC]]    
+    cpct_args[["total_statistic"]] = data[[TOTAL_STATISTIC]]  
+    ### rather ugly solution if user don't want bases
     if(!identical(data[[TOTAL_ROW_POSITION]], "none")){
         cpct_args[["total_row_position"]] = data[[TOTAL_ROW_POSITION]]    
     } else {
-        
+        if(!("keep" %in% names(sig_options))){
+            sig_options[["keep"]] = "percent"
+        }
     }
     cpct = do.call(cro_cpct, c(
         list(
@@ -127,9 +139,106 @@ tab_stat_cpct_significance = function(data,
             subgroup = data[[SUBGROUP]]
         ),
         cpct_args
-    ))
-    sig_options = data[[SIGNIFICANCE_OPTIONS]]
+        )
+    )
     res = do.call(significance_cpct, c(list(x = cpct), sig_options))
+    #############
+    label = substitute(label)
+    label = calculate_internal(data[[DATA]], label, parent.frame())
     add_result_to_intermediate_table(data, res, label)
 }
 
+######################
+#' @rdname tab_significance_options
+#' @export
+tab_stat_means_significance = function(data, 
+                                       weighted_valid_n = FALSE,
+                                       labels = c("Mean", "Std. dev.", 
+                                                  ifelse(weighted_valid_n, 
+                                                         "Valid N", 
+                                                         "Unw. valid N")
+                                       ),
+                                       sig_level = 0.05, 
+                                       delta_means = 0,
+                                       min_base = 2,
+                                       compare_type ="subtable",
+                                       bonferroni = FALSE,
+                                       subtable_marks = c("greater", "both", "less"),
+                                       inequality_sign = "both" %in% subtable_marks,
+                                       sig_labels = LETTERS,
+                                       sig_labels_previous_column = c("v", "^"),
+                                       sig_labels_first_column = c("-", "+"),
+                                       keep = c("means", "sd", "bases"), 
+                                       var_equal = FALSE,
+                                       digits = get_expss_digits(),
+                                       label = NULL){
+    check_class_for_stat(data)
+    #################
+    sig_params = names(formals(tab_stat_means_significance)) %d% c("data", "label")
+    sig_options = data[[SIGNIFICANCE_OPTIONS]] %n_i% sig_params
+    curr_sig_options = match.call()[-2]
+    curr_sig_options[[1]] = quote(list)
+    if(!missing(label)){
+        curr_sig_options[["label"]] = NULL
+    }
+    if(length(curr_sig_options)>1){
+        env = parent.frame()
+        curr_sig_options = calculate_internal(data[[DATA]], curr_sig_options, env)
+        sig_options[names(curr_sig_options)] = curr_sig_options
+    } 
+    cpct_args = list()
+    cpct_args[["total_label"]] = data[[TOTAL_LABEL]]    
+    cpct_args[["total_statistic"]] = data[[TOTAL_STATISTIC]]  
+    ### rather ugly solution if user don't want bases
+    if(!identical(data[[TOTAL_ROW_POSITION]], "none")){
+        cpct_args[["total_row_position"]] = data[[TOTAL_ROW_POSITION]]    
+    } else {
+        if(!("keep" %in% names(sig_options))){
+            sig_options[["keep"]] = "percent"
+        }
+    }
+    cpct = do.call(cro_cpct, c(
+        list(
+            cell_vars = get_cells(data),
+            col_vars = data[[COL_VAR]],
+            row_vars = data[[ROW_VAR]],
+            weight = data[[WEIGHT]],
+            subgroup = data[[SUBGROUP]]
+        ),
+        cpct_args
+    )
+    )
+    res = do.call(significance_cpct, c(list(x = cpct), sig_options))
+    #############
+    label = substitute(label)
+    label = calculate_internal(data[[DATA]], label, parent.frame())
+    add_result_to_intermediate_table(data, res, label)
+}
+
+#################################
+
+#' @rdname tab_significance_options
+#' @export
+tab_last_round = function(data, digits = get_expss_digits()){
+    check_class_for_stat(data)
+    replace_last_result(
+        data, 
+        round_dataframe(
+            get_last_result(data), 
+            digits = digits
+        )
+    )
+}
+
+#' @rdname tab_significance_options
+#' @export
+tab_last_add_sig_labels = function(data, sig_labels = LETTERS){
+    check_class_for_stat(data)
+    replace_last_result(
+        data, 
+        add_sig_labels(
+            get_last_result(data), 
+            sig_labels = sig_labels
+        )
+    )
+}

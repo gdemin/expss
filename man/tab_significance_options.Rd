@@ -3,12 +3,14 @@
 \name{tab_significance_options}
 \alias{tab_significance_options}
 \alias{tab_stat_cpct_significance}
+\alias{tab_last_round}
+\alias{tab_last_add_sig_labels}
 \title{Significance testing for custom tables}
 \usage{
 tab_significance_options(data, sig_level = 0.05, min_base = 2,
   delta_cpct = 0, delta_means = 0, compare_type = "subtable",
-  bonferroni = FALSE, subtable_marks = c("greater", "both", "less"),
-  inequality_sign = "both" \%in\% subtable_marks, sig_labels = LETTERS,
+  bonferroni = FALSE, subtable_marks = "greater", inequality_sign = "both"
+  \%in\% subtable_marks, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
   "+"), keep = c("percent", "cases", "means", "sd", "bases"),
   total_marker = "#", total_row = 1, digits = get_expss_digits(),
@@ -22,6 +24,10 @@ tab_stat_cpct_significance(data, sig_level = 0.05, delta_cpct = 0,
   "+"), keep = c("percent", "bases"), na_as_zero = FALSE,
   total_marker = "#", total_row = 1, digits = get_expss_digits(),
   label = NULL)
+
+tab_last_round(data, digits = get_expss_digits())
+
+tab_last_add_sig_labels(data, sig_labels = LETTERS)
 }
 \arguments{
 \item{data}{data.frame/intermediate_table}
