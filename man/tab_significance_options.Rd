@@ -2,7 +2,8 @@
 % Please edit documentation in R/custom_tables_significance.R
 \name{tab_significance_options}
 \alias{tab_significance_options}
-\alias{tab_stat_cpct_significance}
+\alias{tab_last_cpct_significance}
+\alias{tab_stat_means_significance}
 \alias{tab_last_round}
 \alias{tab_last_add_sig_labels}
 \title{Significance testing for custom tables}
@@ -16,13 +17,22 @@ tab_significance_options(data, sig_level = 0.05, min_base = 2,
   total_marker = "#", total_row = 1, digits = get_expss_digits(),
   na_as_zero = FALSE, var_equal = FALSE)
 
-tab_stat_cpct_significance(data, sig_level = 0.05, delta_cpct = 0,
+tab_last_cpct_significance(data, sig_level = 0.05, delta_cpct = 0,
   min_base = 2, compare_type = "subtable", bonferroni = FALSE,
   subtable_marks = c("greater", "both", "less"), inequality_sign = "both"
   \%in\% subtable_marks, sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
   "+"), keep = c("percent", "bases"), na_as_zero = FALSE,
   total_marker = "#", total_row = 1, digits = get_expss_digits(),
+  mode = c("replace", "append"), label = NULL)
+
+tab_stat_means_significance(data, sig_level = 0.05, delta_means = 0,
+  min_base = 2, compare_type = "subtable", bonferroni = FALSE,
+  subtable_marks = c("greater", "both", "less"), inequality_sign = "both"
+  \%in\% subtable_marks, sig_labels = LETTERS,
+  sig_labels_previous_column = c("v", "^"), sig_labels_first_column = c("-",
+  "+"), keep = c("means", "sd", "bases"), var_equal = FALSE,
+  digits = get_expss_digits(), mode = c("replace", "append"),
   label = NULL)
 
 tab_last_round(data, digits = get_expss_digits())
