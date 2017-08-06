@@ -562,26 +562,26 @@ expect_identical(z, 1:3)
 
 remove_if_exists("x", "y", "z")
 
-x %set% 1
+..[x] = 1
 expect_identical(x, 1)
 
 remove_if_exists("y")
 x = "y"
 
-((x)) %set% 1 
+..[(x)] = 1 
 expect_identical(x, "y")
 expect_identical(y, 1)
 
 
 remove_if_exists("x", "y", "z")
 many_vars = function() c("x", "y", "z")
-many_vars() %set% list(1,2,3) 
+..[many_vars()] = list(1,2,3) 
 expect_identical(x, 1)
 expect_identical(y, 2)
 expect_identical(z, 3)
 
 remove_if_exists("x", "y", "z")
-many_vars() %set% 1:3 
+..[many_vars()] = 1:3 
 expect_identical(x, 1:3)
 expect_identical(y, 1:3)
 expect_identical(z, 1:3)
@@ -589,7 +589,7 @@ expect_identical(z, 1:3)
 remove_if_exists("x", "y", "z")
 remove_if_exists("x1", "x2", "x3")
 
-(x1 %to% x3) %set% list(1:2, letters, TRUE)
+..[x1 %to% x3] = list(1:2, letters, TRUE)
 expect_identical(x1, 1:2)
 expect_identical(x2, letters)
 expect_identical(x3, TRUE)
@@ -750,13 +750,13 @@ res_iris[, 1:4] =
 expect_identical(new_iris, res_iris)
 
 
-context("recode factor")
-
-df = data.frame(id = c(1,2,3,4,5),
-                Did_you_use_tv=factor(c("tv","","","tv","tv")),
-                Did_you_use_internet=factor(c("","","","int","int")))
-
-new_df = df
-
-recode(df[,-1], "" ~ 0, other ~ 1)
-recode(new_df[,-1]) = c("" ~ 0, other ~ 1)
+# context("recode factor")
+# 
+# df = data.frame(id = c(1,2,3,4,5),
+#                 Did_you_use_tv=factor(c("tv","","","tv","tv")),
+#                 Did_you_use_internet=factor(c("","","","int","int")))
+# 
+# new_df = df
+# 
+# recode(df[,-1], "" ~ 0, other ~ 1)
+# recode(new_df[,-1]) = c("" ~ 0, other ~ 1)

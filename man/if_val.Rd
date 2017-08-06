@@ -11,7 +11,6 @@
 \alias{hi}
 \alias{copy}
 \alias{\%into\%}
-\alias{\%set\%}
 \title{Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
 \usage{
@@ -32,8 +31,6 @@ hi
 copy(x)
 
 values \%into\% names
-
-names \%set\% values
 }
 \arguments{
 \item{x}{vector/matrix/data.frame/list}
@@ -50,13 +47,12 @@ format as RHS of formulas).}
 \item{value}{list with formulas which describe recodings in assignment form
 of function/\code{to} list if \code{from}/\code{to} notation is used.}
 
-\item{values}{object(-s) which will be assigned to \code{names}. For 
-\code{\%set\%} and \code{\%into\%}. \code{\%set\%} assigns values from 
-right to left - as usual assignment. \code{\%into\%} works in opposite 
-direction - from left to right.}
+\item{values}{object(-s) which will be assigned to \code{names} for 
+\code{\%into\%} operation. \code{\%into\%} supports multivalue assignments.
+See examples.}
 
-\item{names}{name(-s) which will be given to \code{values} expression. For
-\code{\%set\%} and \code{\%into\%}.}
+\item{names}{name(-s) which will be given to \code{values} expression. For 
+\code{\%into\%}.}
 }
 \value{
 object of same form as \code{x} with recoded values

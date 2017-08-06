@@ -70,12 +70,11 @@
 #'   same format as LHS of formulas).
 #' @param to list of values into which old values should be recoded (in the same
 #'   format as RHS of formulas).
-#' @param values object(-s) which will be assigned to \code{names}. For 
-#'   \code{\%set\%} and \code{\%into\%}. \code{\%set\%} assigns values from 
-#'   right to left - as usual assignment. \code{\%into\%} works in opposite 
-#'   direction - from left to right.
-#' @param names name(-s) which will be given to \code{values} expression. For
-#'   \code{\%set\%} and \code{\%into\%}. 
+#' @param values object(-s) which will be assigned to \code{names} for 
+#'   \code{\%into\%} operation. \code{\%into\%} supports multivalue assignments.
+#'   See examples.
+#' @param names name(-s) which will be given to \code{values} expression. For 
+#'   \code{\%into\%}.
 #'
 #' @return object of same form as \code{x} with recoded values
 #' @examples
@@ -416,15 +415,7 @@ copy = function(x) {
     into_internal(values, variables_names, parent.frame())
 }
 
-#' @export
-#' @rdname if_val
-'%set%' = function(names, values){
-    variables_names = substitute(names)
-    if(length(variables_names)==1){
-        variables_names = substitute(list(names))
-    }
-    into_internal(values, variables_names, parent.frame())
-}
+
 
 
 
