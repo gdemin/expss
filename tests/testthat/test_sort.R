@@ -26,7 +26,7 @@ expect_identical(sort_asc(iris, Sepal.Length, Sepal.Width, 3:4),
 
 var_name = "Sepal.Length"
 expect_identical(sort_asc(iris, ..$var_name), iris[order(iris$Sepal.Length, decreasing = FALSE), ])
-expect_identical(sort_asc(iris, ..[var_name]), iris[order(iris$Sepal.Length, decreasing = FALSE), ])
+expect_identical(sort_asc(iris, ..[(var_name)]), iris[order(iris$Sepal.Length, decreasing = FALSE), ])
 
 
 param = qc(Sepal.Length, Sepal.Width)

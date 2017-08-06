@@ -93,10 +93,10 @@ test_iris$exp = exp(iris$Sepal.Length)
 res_iris = iris
 
 i = qc(log, exp)
-fun = qc(log, exp)
+fun = c(log, exp)
 res_iris = compute(res_iris, {
 
-    for(j in 1:2) ..[i[j]] = ..[fun[j]](Sepal.Length)
+    for(j in 1:2) ..[i[j]] = fun[[j]](Sepal.Length)
     rm(j)
 })
 
@@ -156,13 +156,13 @@ expect_identical(
     keep(test_iris, ..$name1 %to% ..$name3),
     res_iris)
 expect_identical(
-    keep(test_iris, ..[name1] %to% ..[name3]),
+    keep(test_iris, ..[(name1)] %to% ..[(name3)]),
     res_iris)
 expect_identical(
     keep(test_iris, ..$name1, ..$name2, ..$name3),
     res_iris)
 expect_identical(
-    keep(test_iris, ..[name1], ..[name2], ..[name3]),
+    keep(test_iris, ..[(name1)], ..[(name2)], ..[(name3)]),
     res_iris)
 
 expect_identical(
@@ -174,7 +174,7 @@ expect_identical(
     res_iris)
 
 expect_identical(
-    calc(test_iris, ..[name1] %to% ..[name3]),
+    calc(test_iris, ..[(name1)] %to% ..[(name3)]),
     res_iris)
 
 expect_identical(
@@ -182,7 +182,7 @@ expect_identical(
     res_iris)
 
 expect_identical(
-    calc(test_iris, vars(..[name1] %to% ..[name3])),
+    calc(test_iris, vars(..[(name1)] %to% ..[(name3)])),
     res_iris)
 
 expect_identical(
@@ -190,7 +190,7 @@ expect_identical(
     res_iris)
 
 expect_identical(
-    calc(test_iris, vars(..[name1], ..[name2], ..[name3])),
+    calc(test_iris, vars(..[(name1)], ..[(name2)], ..[(name3)])),
     res_iris)
 
 ################
@@ -203,13 +203,13 @@ expect_identical(
 
 expect_identical(
     compute(test_iris, {
-        new = sum_row(..[name1], ..[name2], ..[name3])
+        new = sum_row(..[(name1), (name2), (name3)])
     }),
     res_iris2)
 
 expect_identical(
     compute(test_iris, {
-        new = sum_row(..[name1] %to% ..[name3])
+        new = sum_row(..[(name1)] %to% ..[(name3)])
     }),
     res_iris2)
 
@@ -221,7 +221,7 @@ expect_identical(
 
 expect_identical(
     compute(test_iris, {
-        new = sum_row(vars(..[name1] %to% ..[name3]))
+        new = sum_row(vars(..[(name1)] %to% ..[(name3)]))
     }),
     res_iris2)
 
@@ -233,7 +233,7 @@ expect_identical(
 
 expect_identical(
     compute(test_iris, {
-        new = sum_row(vars(..[name1], ..[name2], ..[name3]))
+        new = sum_row(vars(..[(name1)], ..[(name2)], ..[(name3)]))
     }),
     res_iris2)
 

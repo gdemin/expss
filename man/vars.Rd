@@ -38,12 +38,22 @@ data.frame/list with variables
 }
 \description{
 \itemize{
-\item{\code{vars}}{ returns all variables by their names or by criteria (see 
-\link{criteria}). There is no non-standard evaluation in this function by 
-design so use quotes for names of your variables. This function is intended
-to get variables by parameter/criteria. The only exception with non-standard
-evaluation is \code{\%to\%}. You can use \code{\%to\%} inside \code{vars} or
-independently.}
+\item{\code{vars}}{ returns data.frame with all variables by their names or
+by criteria (see \link{criteria}). There is no non-standard evaluation in
+this function by design so use quotes for names of your variables. This
+function is intended to get variables by parameter/criteria. The only
+exception with non-standard evaluation is \code{\%to\%}. You can use
+\code{\%to\%} inside \code{vars} or independently.}
+\item{\code{..[]}}{ returns data.frame with all variables by their names or
+by criteria (see \link{criteria}).  Names at the top-level can be unquoted
+(non-standard evaluation). For standard evaluation of parameters you can
+surround them by round brackets. You can assign to this expression. If there
+are several names inside square brackets then each element of list/data.frame
+from right side will be assigned to appropriate name from left side. You can
+use \code{item1 \%to\% item2} notation to get/create sequence of variables.}
+\item{\code{..$name}}{ sets/returns object which name is stored in the
+variable \code{name}. It is convenient wrapper around 
+\link[base]{get}/\link[base]{assign} functions.}
 \item{\code{\%to\%}}{ returns range of variables between \code{e1} and 
 \code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if}, 
 \link{calculate}, \link{keep}, \link{except} and \link{where} support 
@@ -59,7 +69,7 @@ dataframes.
 \examples{
 # In data.frame
 dfs = data.frame(
-    a = rep(10, 5),
+    a = rep(1, 5),
     b_1 = rep(11, 5),
     b_2 = rep(12, 5),
     b_3 = rep(13, 5),
@@ -83,6 +93,7 @@ a5 = rep(5, 5)
 # identical results
 a1 \%to\% a5
 vars(perl("^a[0-9]$"))
+..[perl("^a[0-9]$")]
 
 # sum each row
 sum_row(a1 \%to\% a5)
@@ -97,7 +108,7 @@ name2 = "new_var"
 ..$name2 = ..$name1 * 2 # create variable 'new_var' which is equal to 'a' times 2
 new_var
 
-# example with short notation but it can be applied only for simple cases
+# inside data.frame
 compute(dfs, {
      ..$name2 = ..$name1*2    
 })
@@ -110,30 +121,27 @@ compute(dfs, {
      rm(name1, name2) # we don't need this variables as columns in 'dfs'
 })
 
-# square brackets notation
-compute(dfs, {
-     ..[name2] = ..[name1]*2  
-})
-
-compute(dfs, {
-     for(name1 in paste0("b_", 1:5)){
-         ..[paste0("new_", name1)] = ..$name1*2 
-     }
-     rm(name1) # we don't need this variable as column in 'dfs'
-})
-
-# '..$' doesn't work for case below so we need to use square brackets form
+# square brackets notation - multi-assignment
 name1 = paste0("b_", 1:5)
-name2 = paste0("new_", name1)
 compute(dfs, {
-     for(i in 1:5){
-         ..[name2[i]] = ..[name1[i]]*3
-     }
-     rm(i) # we don't need this variable as column in 'dfs'
+          # round brackets about 'name1' is needed to avoid using it 'as is'
+         ..[paste0("new_", name1)] = ..[(name1)]*2  
+})
+
+# the same result
+# note the automatic creation of sequence of variables
+compute(dfs, {
+         ..[new_b_1 \%to\% new_b_5] = ..[b_1 \%to\% b_5]*2  
+})
+
+# assignment form of 'recode' on multiple variables
+compute(dfs, {
+         recode(..[b_1 \%to\% b_5]) = 13 \%thru\% hi ~ 20   
 })
 
 }
 \seealso{
-\link{keep}, \link{except}, \link{do_repeat}, \link{compute}
+\link{keep}, \link{except}, \link{do_repeat}, \link{compute},
+  \link{calculate}, \link{where}
 }
 \keyword{datasets}

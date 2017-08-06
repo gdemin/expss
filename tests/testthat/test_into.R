@@ -62,7 +62,7 @@ ir_res = modify(ir, {
 expect_identical(ir_res, ir_test)
 
 ir_res = modify(ir, {
-    v1 %to% v4 %into% (..[name1] %to% ..[name2])
+    v1 %to% v4 %into% (..[(name1)] %to% ..[(name2)])
     
 }
 )

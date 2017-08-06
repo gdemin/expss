@@ -20,7 +20,7 @@ expect_identical(by_groups(iris, ..$var_name, mean),
                  aggregate( . ~ Species , data = iris, FUN = mean))
 
 
-expect_identical(by_groups(iris, ..[var_name], mean), 
+expect_identical(by_groups(iris, ..[(var_name)], mean), 
                  aggregate( . ~ Species , data = iris, FUN = mean))
 
 expect_identical(by_groups(iris[,-5], mean), as.data.frame(t(colMeans(iris[,-5]))))
