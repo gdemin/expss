@@ -29,9 +29,27 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' algorithm in IBM SPSS Statistics Algorithms v20, p. 263. Note that with these
 #' adjustments t-tests between means are made with equal variance assumed (as
 #' with \code{var_equal = TRUE}).
-#' By now there is no adjustments for multiple-response variables (results of 
+#' By now there are no adjustments for multiple-response variables (results of 
 #' \link{mrset}) in the table columns so significance tests are rather 
 #' approximate for such cases.
+#' Also there are functions for significance testing in the sequence of custom
+#' tables calculations (see \link{tables}).
+#' \itemize{
+#' \item{\code{tab_last_sig_cpct}, \code{tab_last_sig_means} and 
+#' \code{tab_last_sig_cpct}}{ make the same tests as there analogs mentioned 
+#' above. It is recommended to use them after appropriate statistic function: 
+#' \link{tab_stat_cpct}, \link{tab_stat_mean_sd_n} and \link{tab_stat_cases}.
+#' }
+#' \item{\code{tab_significance_options}}{ With this function we can set
+#' significance options for entire custom table creation sequence.}
+#' \item{\code{tab_last_add_sig_labels}}{ This function applies 
+#' \code{add_sig_labels} to last calculated table - it add labels (letters by
+#' default) for significance to columns header. It may be useful if you want to
+#' combine table with significance with table without it.}
+#' \item{\code{tab_last_round}}{ This function rounds numeric columns in the
+#' last calculated table to specified number of digits. It is sometimes
+#' needed if you want to combine table with significance with table without it.}
+#' }
 #' @param x table (class \code{etable}): result of \link{cro_cpct} with 
 #'   proportions and bases for \code{significance_cpct}, result of 
 #'   \link{cro_mean_sd_n} with means, standard deviations and valid N for 
@@ -65,27 +83,39 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' @param sig_labels_previous_column a character vector with two elements. Labels
 #'   for marking difference with previous column. First mark means 'lower' (by
 #'   default it is \code{v}) and the second means greater (\code{^}).
-#' @param sig_labels_first_column a character vector with two elements. Labels
-#'   for marking difference with first column of the table. First mark means 'lower' (by
-#'   default it is \code{-}) and the second means 'greater' (\code{+}).
+#' @param sig_labels_first_column a character vector with two elements. Labels 
+#'   for marking difference with first column of the table. First mark means
+#'   'lower' (by default it is \code{-}) and the second means 'greater'
+#'   (\code{+}).
 #' @param keep character. One or more from "percent", "cases", "means", "bases", 
 #'   "sd" or "none". This argument determines which statistics will remain in
 #'   the table after significance marking.
 #' @param na_as_zero logical. \code{FALSE} by default. Should we treat
 #'   \code{NA}'s as zero cases?
 #' @param total_marker character. Mark of total rows in table.
-#' @param total_row integer/character. In case of several totals per subtable it is
-#'   number or name of total row for significance calculation.
+#' @param total_row integer/character. In case of several totals per subtable it
+#'   is number or name of total row for significance calculation.
 #' @param var_equal a logical variable indicating whether to treat the two
 #'   variances as being equal. For details see \link[stats]{t.test}.
-#' @param digits an integer indicating how much digits after decimal separator
+#' @param digits an integer indicating how much digits after decimal separator 
 #'   will be shown in the final table.
-#' @return Object of class \code{etable} with marks of significant differences
-#'   between columns.
+#' @param data data.frame/intermediate_table for \code{tab_*} functions.
+#' @param mode character. One of \code{replace}(default) or \code{append}. In
+#'   the first case the previous result in the sequence of table calculation
+#'   will be replaced with result of significance testing. In the second case
+#'   result of the significance testing will be appended to sequence of table
+#'   calculation.
+#' @param label character. Label for the statistic in the \code{tab_*}. Ignored
+#'   if the \code{mode} is equals to \code{replace}.
+#' @return \code{tab_last_*} functions return objects of class 
+#'   \code{intermediate_table}. Use \link{tab_pivot} to get final result - 
+#'   object of class \code{etable}. Other functions return object of class
+#'   \code{etable} with marks of significant differences between columns.
 #'   
-#' @seealso \link{cro_cpct}, \link{cro_cases}, \link{cro_mean_sd_n}, 
+#' @seealso \link{cro_cpct}, \link{cro_cases}, \link{cro_mean_sd_n}, \link{tables},
 #'   \link{compare_proportions}, \link{compare_means}, \link[stats]{prop.test},
 #'   \link[stats]{t.test}, \link[stats]{chisq.test}
+#' @name significance
 #' @export
 #'
 #' @examples
@@ -142,7 +172,36 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'                             list(total(), vs, am))
 #'                          )
 #'                          
-#' significance_cases(mtcars_cases)                         
+#' significance_cases(mtcars_cases)    
+#' 
+#' # custom tables with significance
+#' mtcars %>% 
+#'     tab_significance_options(subtable_marks = "both") %>% 
+#'     tab_cells(mpg, hp) %>% 
+#'     tab_cols(total(), vs, am) %>% 
+#'     tab_stat_mean_sd_n() %>% 
+#'     tab_last_sig_means(keep = "means") %>% 
+#'     tab_cells(cyl, gear) %>% 
+#'     tab_stat_cpct() %>% 
+#'     tab_last_sig_cpct() %>% 
+#'     tab_pivot()   
+#'      
+#' # overcomplicated examples - we move significance marks to separate columns
+#' # columns with statistics remain numeric    
+#' mtcars %>% 
+#'     tab_significance_options(keep = "none", sig_labels = NULL, 
+#'                          subtable_marks = "both",  mode = "append") %>% 
+#'     tab_cols(total(), vs, am) %>% 
+#'     tab_cells(mpg, hp) %>% 
+#'     tab_stat_mean_sd_n() %>% 
+#'     tab_last_sig_means() %>% 
+#'     tab_last_hstack("inside_columns") %>% 
+#'     tab_cells(cyl, gear) %>% 
+#'     tab_stat_cpct() %>% 
+#'     tab_last_sig_cpct() %>% 
+#'     tab_last_hstack("inside_columns") %>% 
+#'     tab_pivot(stat_position = "inside_rows") %>% 
+#'     drop_empty_columns()                                                                                
 significance_cpct = function(x, 
                              sig_level = 0.05, 
                              delta_cpct = 0,
@@ -315,7 +374,7 @@ significance_cpct.etable = function(x,
 
 ########################
 
-#' @rdname significance_cpct
+#' @rdname significance
 #' @export
 add_sig_labels = function(x, sig_labels = LETTERS){
     header = colnames(x)

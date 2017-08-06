@@ -2,7 +2,7 @@ MEANS_IND = c(TRUE, FALSE, FALSE)
 SD_IND =    c(FALSE, TRUE, FALSE)
 N_IND =     c(FALSE, FALSE, TRUE)
 
-#' @rdname significance_cpct
+#' @rdname significance
 #' @export
 significance_means = function(x, 
                              sig_level = 0.05, 

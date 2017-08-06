@@ -1,5 +1,5 @@
 #' @export
-#' @rdname significance_cpct
+#' @rdname significance
 significance_cases = function(x, 
                               sig_level = 0.05, 
                               min_base = 2,

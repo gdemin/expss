@@ -168,9 +168,10 @@ with \link{tab_sort_asc}, drop empty rows/columns with \link{drop_rc} and
 transpose with \code{tab_transpose}. Generally, table is just a data.frame so
 we can use arbitrary operations on it. Statistic is always calculated with 
 the last cell, column/row variables, weight, missing values and subgroup. To 
-define new variables we can call appropriate function one more time. 
+define new cell/column/row variables we can call appropriate function one more time. 
 \code{tab_pivot} defines how we combine different statistics and where 
 statistic labels will appear - inside/outside rows/columns. See examples.
+For significance testing see \link{significance}.
 }
 \details{
 \itemize{
@@ -457,5 +458,5 @@ tables \%>\% tab_pivot()
 }
 \seealso{
 \link{fre}, \link{cro}, \link{cro_fun}, \link{tab_sort_asc},
-  \link{drop_empty_rows}.
+  \link{drop_empty_rows}, \link{significance}.
 }

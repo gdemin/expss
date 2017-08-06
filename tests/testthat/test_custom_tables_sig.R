@@ -309,3 +309,23 @@ res = mtcars %>%
 expect_equal_to_reference(res, 
                           "rds/ct_signif_many2.rds"
 )
+
+res = mtcars %>% 
+    tab_significance_options(keep = "none", sig_labels = NULL, 
+                             subtable_marks = "both",  mode = "append") %>% 
+    tab_cols(total(), vs, am) %>% 
+    tab_cells(mpg, hp) %>% 
+    tab_stat_mean_sd_n() %>% 
+    tab_last_sig_means() %>% 
+    tab_last_hstack("inside_columns") %>% 
+    tab_cells(cyl, gear) %>% 
+    tab_stat_cpct() %>% 
+    tab_last_sig_cpct() %>% 
+    tab_last_hstack("inside_columns") %>% 
+    tab_pivot(stat_position = "inside_rows") %>% 
+    drop_empty_columns()
+
+
+expect_equal_to_reference(res, 
+                          "rds/ct_signif_many3.rds"
+)
