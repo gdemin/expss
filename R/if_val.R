@@ -438,7 +438,7 @@ into_internal = function(values, variables_names, envir){
             existing_vars = v_diff(existing_vars, each_name)
         } 
     }
-    variables_names = unlist(variables_names)
+    variables_names = unlist(variables_names, use.names = FALSE)
     if(length(variables_names)==1){
         assign(variables_names[[1]], values, envir = envir)
     } else {

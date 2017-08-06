@@ -1,9 +1,11 @@
 0.7.5 (17.05.2017)
 ================
+* add significance testing (see ?significance)
+* add support for table output for Jupyter notebooks
+* add 'use_labels' function for experimental support variable labels in base R functions and third party packages (see ?use_labels)
 * increase table functions performance
 * increase 'as.dichotomy'/'dummy' performance
 * increase 'vlookup'/'vlookup_df' performance
-* add 'use_labels' function for experimental support variable labels in base R functions and third party packages
 * numerous bugfixes
 * now 'keep'/'except'/'by_groups' operate with NSE. For standard evaluation just surround you variable with round brackets
 * add print options 'commented' for printing tables to console with '#'
