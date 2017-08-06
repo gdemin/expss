@@ -94,7 +94,7 @@ as_is = function(...){
     I(list(...))
 }
 
-looping_values = function(variables_names, envir){
+old_looping_values = function(variables_names, envir){
     variables_names = substitute_symbols(variables_names,
                                          list("%to%" = expr_into_helper,
                                               ".." = expr_internal_parameter)
@@ -108,7 +108,30 @@ looping_values = function(variables_names, envir){
     variables_names
 }    
 
-
+looping_values = function(variables_names, envir){
+    if(length(variables_names)==1){
+        variables_names = c(quote(list), variables_names)
+    }
+    variables_names = substitute_symbols(variables_names,
+                                         list("%to%" = expr_into_helper,
+                                              ".." = expr_internal_parameter)
+    )
+    existing_vars = get_current_variables(envir)
+    # variables_names = as.list(variables_names)
+    variables_names[-1] = convert_top_level_symbols_to_characters(variables_names[-1])
+    variables_names = as.call(variables_names)
+    variables_names = eval(variables_names, envir = envir,
+                           enclos = baseenv())
+    variables_names = flat_list(variables_names)
+    for(i in seq_along(variables_names)){
+        each_name = variables_names[[i]]
+        if(is.function(each_name)){
+            variables_names[[i]] = v_intersect(existing_vars, each_name)
+            existing_vars = v_diff(existing_vars, each_name)
+        } 
+    }
+    unlist(variables_names)
+}
 
 do_repeat_internal = function(data, args, parent){
     UseMethod("do_repeat_internal")    
@@ -119,10 +142,10 @@ do_repeat_internal = function(data, args, parent){
 do_repeat_internal.data.frame = function(data, args, parent){    
     expr = args[[length(args)]]
     args[length(args)] = NULL
-    
+    stopif(length(args)<2, "'do_repeat' - no looping values.")
     e = evalq(environment(), envir = data, enclos = parent)
     prepare_env(e, n = nrow(data), column_names = colnames(data))
-    items = looping_values(args, envir = e)
+    items = lapply(as.list(args[-1]), looping_values, envir = e)
 
     items_names = names(items)
     stopif(is.null(items_names) || any(is.na(items_names) | items_names==""), 
@@ -130,19 +153,7 @@ do_repeat_internal.data.frame = function(data, args, parent){
     
     for(i in items_names){
         curr_item = items[[i]]
-        if(inherits(curr_item, "AsIs")){
-            curr_item = eval(args[[i]], envir = e, enclos = baseenv())
-        } else {
-            curr_item = unlist(curr_item, recursive = TRUE, use.names = FALSE)
-            if(is.function(curr_item)) curr_item = list(curr_item)
-            existing_vars = colnames(data)
-            for(each_element in seq_along(curr_item)){
-                each_name = curr_item[[each_element]]
-                if(is.function(each_name)){
-                    curr_item[[each_element]] = v_intersect(existing_vars, each_name)
-                    existing_vars = v_diff(existing_vars, each_name)
-                } 
-            }
+        if(!inherits(curr_item, "AsIs") && is.character(curr_item)){
             curr_item = convert_characters_to_names(curr_item)
         }
         items[[i]] = unlist(curr_item, recursive = TRUE, use.names = FALSE)

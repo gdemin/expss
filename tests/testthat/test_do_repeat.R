@@ -105,6 +105,13 @@ res_iris = do_repeat(iris, i = c(1, 2, 3),
 
 expect_identical(res_iris, test_iris)
 
+res_iris = do_repeat(iris, i = c(1, 2, 3),
+                     {
+                         ..[paste0(letters[i], seq_len(i))] = i  
+                     })
+
+
+expect_identical(res_iris, test_iris)
 
 data(iris)
 
@@ -144,7 +151,7 @@ data(iris)
 test_iris = iris
 
 test_iris$a = 16
-res_iris = do_repeat(iris, i= 4, {
+res_iris = do_repeat(iris, i = 4, {
     a = sum(c(i, i, i, i))
     
     
@@ -229,7 +236,7 @@ test_iris[, new_names[2]] = scale(iris[, old_names[2]])
 test_iris[, new_names[3]] = scale(iris[, old_names[3]])
 test_iris[, new_names[4]] = scale(iris[, old_names[4]])
 
-scaled_iris = do_repeat(iris, orig = old_names, scaled = new_names,  {
+scaled_iris = do_repeat(iris, orig = (old_names), scaled = (new_names),  {
     scaled = scale(orig)
     
 })
