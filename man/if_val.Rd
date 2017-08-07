@@ -61,13 +61,13 @@ object of same form as \code{x} with recoded values
 \code{recode} change, rearrange or consolidate the values of an existing 
 variable based on conditions. Design of this function inspired by RECODE from
 SPSS. Sequence of recodings provided in the form of formulas. For example, 
-1:2 ~ 1 means that all 1's and 2's will be replaced with 1. Each value will
-recoded only once. In the assignment form \code{recode(...) = ...} of this
+1:2 ~ 1 means that all 1's and 2's will be replaced with 1. Each value will 
+recoded only once. In the assignment form \code{recode(...) = ...} of this 
 function values which doesn't meet any condition remain unchanged. In case of
-the usual form \code{... = recode(...)} values which doesn't meet any
-condition will be replaced with NA. As a condition one can use values or
-more sophisticated logical conditions and functions. There are several special
-functions for usage as criteria - for details see \link{criteria}. Simple
+the usual form \code{... = recode(...)} values which doesn't meet any 
+condition will be replaced with NA. One can use values or more sophisticated
+logical conditions and functions as a condition. There are several special 
+functions for usage as criteria - for details see \link{criteria}. Simple 
 common usage looks like: \code{recode(x, 1:2 ~ -1, 3 ~ 0, 1:2 ~ 1, 99 ~ NA)}.
 For more information, see details and examples.
 The \code{ifs} function checks whether one or more conditions are met and
@@ -113,11 +113,10 @@ assignment form \code{recode() = ...} because this form don't modify values
 which are not satisfying any of the conditions.}}
 \code{\%into\%} tries to mimic SPSS 'INTO'. Values from left-hand side will 
 be assigned to right-hand side. You can use \code{\%to\%} expression in the 
-RHS of \code{\%into\%}. See examples. \code{\%set\%} works in opposite
-direction and assign values from right to left - as usual assignment.
+RHS of \code{\%into\%}. See examples. 
 \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
-can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\% hi}.
-\code{if_val} is an alias for \code{recode}.
+can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\%
+hi}. \code{if_val} is an alias for \code{recode}.
 }
 \examples{
 # `ifs` examples

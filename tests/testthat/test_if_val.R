@@ -603,7 +603,7 @@ expect_identical(b_recoded, c(-1, 2, 3, 4, 5))
 recode(b, 1~-1, other ~ copy) %into%  "b_recoded_chr"
 expect_identical(b_recoded_chr, c(-1, 2, 3, 4, 5))
 
-recode(dtfrm(b, b2), 1~-1, other ~ copy) %into%  qc(b_recoded)
+recode(list(dtfrm(b, b2)), 1~-1, other ~ copy) %into%  qc(b_recoded)
 rownames(b_recoded) = NULL
 expect_identical(b_recoded, dtfrm(b = c(-1, 2, 3, 4, 5), b2 = rev( c(-1, 2, 3, 4, 5))))
 
