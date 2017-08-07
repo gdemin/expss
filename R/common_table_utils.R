@@ -84,7 +84,7 @@ set_negative_and_na_to_zero = function(x){
 
 test_for_null_and_make_list = function(curr_vars, str_curr_vars){
     stopif(is.null(curr_vars), 
-           paste0("'", str_curr_vars,"' is NULL. Possibly variable doesn't exist."))
+           paste0("'", str_curr_vars,"' is NULL. Perhaps a variable does not exist."))
     if(!is_list(curr_vars)){
         if(!is.matrix(curr_vars) && !is.data.frame(curr_vars)){
             if(is.null(var_lab(curr_vars))){
@@ -99,7 +99,7 @@ test_for_null_and_make_list = function(curr_vars, str_curr_vars){
 ################
 test_for_null_and_make_dataframe = function(curr_vars, str_curr_vars){
     stopif(is.null(curr_vars), 
-           paste0("'", str_curr_vars,"' is NULL. Possibly variable doesn't exist."))
+           paste0("'", str_curr_vars,"' is NULL. Perhaps a variable does not exist."))
     if(!is_list(curr_vars)){
         if(!is.matrix(curr_vars) && !is.data.frame(curr_vars)){
             if(is.null(var_lab(curr_vars))){

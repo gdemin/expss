@@ -205,7 +205,7 @@ is.dichotomy = function(x){
 get_values_for_dichotomizing = function(x, keep_unused = FALSE, keep_values = NULL,
                             keep_labels = NULL, drop_values = NULL, drop_labels = NULL){
     
-    stopif(is.null(x), "'as.dichotomy' - 'x' is NULL. Possibly variable doesn't exist.")
+    stopif(is.null(x), "'as.dichotomy' - 'x' is NULL. Perhaps a variable does not exist.")
     vallab = val_lab(x)
     varlab = var_lab(x)
     x = unlab(x)
