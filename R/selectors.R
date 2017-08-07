@@ -131,7 +131,7 @@ internal_vars_list = function(variables_names, envir, symbols_to_characters = FA
                                           variables_names, 
                                           envir = envir, 
                                           symbols_to_characters = symbols_to_characters)
-    mget(curr_names[new_vars], envir = envir, inherits = FALSE)
+    mget(curr_names[new_vars], envir = envir, inherits = TRUE)
 }
 
 #' @export
