@@ -63,7 +63,7 @@ has_rownames = function(x){
 }
 
 #' @export
-as.etable.table = function(x){
+as.etable.table = function(x, rownames_as_row_labels = NULL){
     res = do.call(expand.grid, c(dimnames(provideDimnames(x, unique = FALSE)), 
                                  KEEP.OUT.ATTRS = FALSE))
     res = prepend_names(res)

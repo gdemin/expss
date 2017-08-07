@@ -186,11 +186,13 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'     tab_last_sig_cpct() %>% 
 #'     tab_pivot()   
 #'      
-#' # overcomplicated examples - we move significance marks to separate columns
-#' # columns with statistics remain numeric    
+#' # Overcomplicated examples - we move significance marks to
+#' # separate columns. Columns with statistics remain numeric    
 #' mtcars %>% 
-#'     tab_significance_options(keep = "none", sig_labels = NULL, 
-#'                          subtable_marks = "both",  mode = "append") %>% 
+#'     tab_significance_options(keep = "none", 
+#'                          sig_labels = NULL, 
+#'                          subtable_marks = "both",  
+#'                          mode = "append") %>% 
 #'     tab_cols(total(), vs, am) %>% 
 #'     tab_cells(mpg, hp) %>% 
 #'     tab_stat_mean_sd_n() %>% 

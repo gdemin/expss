@@ -102,7 +102,7 @@
 #' 
 #' # square brackets notation
 #' compute(dfs, {
-#'      ..[name2] = ..[name1]*2  
+#'      ..[(name2)] = ..[(name1)]*2  
 #' })
 #' 
 #' compute(dfs, {

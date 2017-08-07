@@ -100,6 +100,10 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #'   and zero weights are removed before calculations.
 #' @param subgroup logical vector in \code{tab_subgroup}. You can specify
 #'   subgroup on which table will be computed.
+#' @param weighted_valid_n logical. Sould we show weighted valid N in
+#'   \code{tab_stat_mean_sd_n}? By default it is FALSE.
+#' @param labels character vector of length 3. Labels for mean, standard
+#'   deviation and valid N in \code{tab_stat_mean_sd_n}.
 #' @param total_label By default "#Total". You can provide several names - each
 #'   name for each total statistics.
 #' @param total_statistic  By default it is "u_cases" (unweighted cases). 

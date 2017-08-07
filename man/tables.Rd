@@ -134,6 +134,12 @@ vector of length one or list/data.frame (optionally with 'row_labels'
 element - statistic labels). If \code{unsafe} is TRUE then further
 arguments (\code{...}) for \code{fun} will be ignored.}
 
+\item{weighted_valid_n}{logical. Sould we show weighted valid N in
+\code{tab_stat_mean_sd_n}? By default it is FALSE.}
+
+\item{labels}{character vector of length 3. Labels for mean, standard
+deviation and valid N in \code{tab_stat_mean_sd_n}.}
+
 \item{total_label}{By default "#Total". You can provide several names - each
 name for each total statistics.}
 
