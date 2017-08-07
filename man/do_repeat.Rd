@@ -17,11 +17,15 @@ as_is(...)
 \item{data}{data.frame/list. If \code{data} is list then \code{do_repeat}
 will be applied to each element of the list.}
 
-\item{...}{stand-in name(s) followed by equals sign and a vector of 
-replacement variables or values. Characters considered as variables names, 
-all other types considered as is. Last argument should be expression in 
-curly brackets which will be evaluated in the scope of data.frame 
-\code{data}. See examples.}
+\item{...}{stand-in name(s) followed by equals sign and a vector/list of 
+replacement variables or values. They can be numeric/characters or 
+variables names. Names at the top-level can be unquoted (non-standard 
+evaluation). Quoted characters also considered as variables names. To avoid
+this behavior use \code{as_is} function. For standard evaluation of 
+parameters you can surround them by round brackets. Also you can use 
+\link{\%to\%} operator and other \link{criteria} functions. Last argument
+should be expression in curly brackets which will be evaluated in the scope
+of data.frame \code{data}. See examples.}
 }
 \value{
 transformed data.frame \code{data}
@@ -32,24 +36,25 @@ Repeats the same transformations on a specified set of variables/values
 \details{
 There is a special constant \code{.N} which equals to number of 
   cases in \code{data} for usage in expression inside \code{do_repeat}. Also 
-  there is a variable \code{.item_num} which is equal to the current
-  iteration number.
+  there are a variables \code{.item_num} which is equal to the current 
+  iteration number and \code{.item_value} which is named list with current
+  stand-in variables values.
 }
 \examples{
 data(iris)
 scaled_iris = do_repeat(iris, 
-                        i = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width), 
+                        i = Sepal.Length \%to\% Petal.Width, 
                         {
                             i = scale(i)
                         })
 head(scaled_iris)
 
-# several stand-in names
+# several stand-in names and standard evaluattion
 old_names = qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 new_names = paste0("scaled_", old_names)
 scaled_iris = do_repeat(iris, 
-                        orig = old_names, 
-                        scaled = new_names, 
+                        orig = ((old_names)), 
+                        scaled = ((new_names)), 
                         {
                             scaled = scale(orig)
                         })
@@ -57,8 +62,9 @@ head(scaled_iris)
 
 # numerics
 new_df = data.frame(id = 1:20)
+# note the automatic creation of the sequence of variables
 new_df = do_repeat(new_df, 
-                   item = qc(i1, i2, i3), 
+                   item = i1 \%to\% i3, 
                    value = c(1, 2, 3), 
                    {
                        item = value
@@ -68,7 +74,7 @@ head(new_df)
 # the same result with internal variable '.item_num'
 new_df = data.frame(id = 1:20)
 new_df = do_repeat(new_df, 
-                   item = qc(i1, i2, i3),
+                   item = i1 \%to\% i3,
                    {
                        item = .item_num
                    })
@@ -78,7 +84,7 @@ head(new_df)
 set.seed(123)
 new_df = data.frame(id = 1:20)
 new_df = do_repeat(new_df, 
-                   item = qc(i1, i2, i3), 
+                   item = c(i1, i2, i3), 
                    fun = c("rnorm", "runif", "rexp"), 
                    {
                        item = fun(.N)

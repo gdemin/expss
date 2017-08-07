@@ -23,6 +23,20 @@ res_iris = do_repeat(iris, i = i1 %to% i3, value = c(10, 20, 30),
 
 expect_identical(res_iris, test_iris)
 
+res_iris = do_repeat(iris, i = i1 %to% i3, value = c(10, 20, 30), 
+                     {
+                         i = .item_value[["value"]]
+                     })
+
+expect_identical(res_iris, test_iris)
+
+res_iris = do_repeat(iris, i = i1 %to% i3, value = c(10, 20, 30), 
+                     {
+                         i = .item_value[[2]]
+                     })
+
+expect_identical(res_iris, test_iris)
+
 res_iris = do_repeat(iris, i = i1 %to% i3, value = as_is(10, 20, 30), 
                      {
                          i = value
@@ -57,6 +71,19 @@ test_iris$i3 = 3L
 res_iris = do_repeat(iris, i = qc(i1, i2, i3), 
                      {
                          i = .item_num
+                     })
+
+
+expect_identical(res_iris, test_iris)
+
+test_iris$i1 = "i1"
+test_iris$i2 = "i2"
+test_iris$i3 = "i3"
+
+
+res_iris = do_repeat(iris, i = qc(i1, i2, i3), 
+                     {
+                         i = .item_value[["i"]]
                      })
 
 
@@ -236,11 +263,12 @@ test_iris[, new_names[2]] = scale(iris[, old_names[2]])
 test_iris[, new_names[3]] = scale(iris[, old_names[3]])
 test_iris[, new_names[4]] = scale(iris[, old_names[4]])
 
-scaled_iris = do_repeat(iris, orig = (old_names), scaled = (new_names),  {
+scaled_iris = do_repeat(iris, orig = ((old_names)), scaled = ((new_names)),  {
     scaled = scale(orig)
     
 })
 expect_identical(scaled_iris, test_iris)
+
 
 context("do_repeat.list")
 
@@ -274,9 +302,31 @@ for(i in seq_along(res_iris)){
 }
 
 
-expect_identical(do_repeat(list_iris, orig = old_names, scaled = new_names,  {
+expect_identical(do_repeat(list_iris, orig = ..[(old_names)], scaled = ..[(new_names)],  {
     scaled = scale(orig)
     
 }), res_iris)
 
 
+data(iris)
+
+test_iris = iris
+test_iris$i1 = "a"
+test_iris$i2 = "b"
+test_iris$i3 = "c"
+
+
+
+res_iris = do_repeat(iris, i = qc(i1, i2, i3), value = as_is(c("a", "b", "c")), 
+                     {
+                         i = value
+                     })
+
+expect_identical(res_iris, test_iris)
+
+res_iris = do_repeat(iris, i = qc(i1, i2, i3), value = as_is("a", "b", "c"), 
+                     {
+                         i = value
+                     })
+
+expect_identical(res_iris, test_iris)
