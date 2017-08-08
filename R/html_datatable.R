@@ -74,13 +74,11 @@ datatable.etable = function(data,
                             digits = get_expss_digits(),
                             ...){
     data = round_dataframe(data, digits = digits)
-    # first_lab = htmltools::htmlEscape(colnames(data)[1])
     if(NCOL(data)>0){
         first_lab = colnames(data)[1]
         row_labels = data[[1]]
         data[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
         header = t(split_labels(colnames(data), split = "|", fixed = TRUE, remove_repeated = FALSE))
-        # header[] = htmltools::htmlEscape(header)
         row_labels = split_labels(row_labels, split = "|", fixed = TRUE, remove_repeated = !repeat_row_labels)
         if(length(row_labels)){
             row_labels = dtfrm(row_labels)    

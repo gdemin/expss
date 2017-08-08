@@ -88,16 +88,14 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
     }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
-    # first_lab = htmltools::htmlEscape(first_lab)
-    row_labels = x[[1]]  # htmltools::htmlEscape(x[[1]])
+    row_labels = x[[1]] 
     x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
     header = t(split_labels(colnames(x), split = "|", fixed = TRUE, remove_repeated = FALSE))
     header_last_row = t(split_labels(colnames(x),
                                      split = "|", 
                                      fixed = TRUE,
                                      remove_repeated = TRUE))[NROW(header), , drop = FALSE]
-    # header[] = htmltools::htmlEscape(header)
-    # header_last_row[] = htmltools::htmlEscape(header_last_row)
+   
     for(each in seq_len(NCOL(header))){
         curr_col = header[, each]
         ok = !is.na(curr_col) & curr_col!=""
@@ -297,16 +295,13 @@ repr_text.etable = function(obj, digits = get_expss_digits(), ...){
 html_table_no_row_groups = function(x, ...){
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
-    # first_lab = htmltools::htmlEscape(first_lab)
-    row_labels = x[[1]]  # htmltools::htmlEscape(x[[1]])
+    row_labels = x[[1]]  
     x[[1]] = NULL # remove first column. This method is needed to prevent column names damaging
     header = t(split_labels(colnames(x), split = "|", fixed = TRUE, remove_repeated = FALSE))
     header_last_row = t(split_labels(colnames(x),
                                      split = "|", 
                                      fixed = TRUE,
                                      remove_repeated = TRUE))[NROW(header), , drop = FALSE]
-    # header[] = htmltools::htmlEscape(header)
-    # header_last_row[] = htmltools::htmlEscape(header_last_row)
     for(each in seq_len(NCOL(header))){
         curr_col = header[, each]
         ok = !is.na(curr_col) & curr_col!=""
