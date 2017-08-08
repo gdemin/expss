@@ -1,7 +1,7 @@
 Package: expss
 Type: Package
 Title: Tables with Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
-Version: 0.7.5
+Version: 0.8.1
 Date: 2017-08-10
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
@@ -17,18 +17,22 @@ Imports:
     stats,
     matrixStats (>= 0.51.0),
     data.table (>= 1.10),
+    htmltools,
     DT (>= 0.2)
 Suggests:
     knitr,
-    testthat,
     repr
-Description: Package provides tabulation functions with support of 'SPSS'-style labels, 
-    multiple / nested banners, weights and multiple-response variables. 
-    Additionally it offers useful functions for data processing in the social / 
-    marketing research surveys - popular data transformation functions from 'SPSS' Statistics
-    ('RECODE', 'COUNT', 'COMPUTE', 'DO IF', etc.) and 'Excel' ('COUNTIF', 'VLOOKUP', etc.).
-    Proper methods for labelled variables add value labels support to base R and other packages.
-    Package aimed to help people to move data processing from 'Excel'/'SPSS' to R.
+Description: Package provides tabulation functions with support for 'SPSS'-style 
+         labels, multiple / nested banners, weights and multiple-response 
+         variables. There are facilities for nice output of tables in 'knitr', R 
+         notebooks, 'shiny' and 'Jupyter' notebooks. Proper methods for labelled 
+         variables add value labels support to base R functions and to some 
+         functions from other packages. In addition, the package offers useful 
+         functions for data processing in marketing research / social surveys - 
+         popular data transformation functions from 'SPSS' Statistics ('RECODE', 
+         'COUNT', 'COMPUTE', 'DO IF', etc.) and 'Excel' ('COUNTIF', 'VLOOKUP', 
+         etc.). Package is intended to help people to move data processing from 
+         'Excel'/'SPSS' to R.
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)

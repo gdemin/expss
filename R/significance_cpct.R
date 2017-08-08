@@ -185,7 +185,7 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'     tab_stat_cpct() %>% 
 #'     tab_last_sig_cpct() %>% 
 #'     tab_pivot()   
-#'      
+#'     
 #' # Overcomplicated examples - we move significance marks to
 #' # separate columns. Columns with statistics remain numeric    
 #' mtcars %>% 
@@ -203,7 +203,7 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'     tab_last_sig_cpct() %>% 
 #'     tab_last_hstack("inside_columns") %>% 
 #'     tab_pivot(stat_position = "inside_rows") %>% 
-#'     drop_empty_columns()                                                                                
+#'     drop_empty_columns()       
 significance_cpct = function(x, 
                              sig_level = 0.05, 
                              delta_cpct = 0,

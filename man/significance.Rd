@@ -271,7 +271,7 @@ mtcars \%>\%
     tab_stat_cpct() \%>\% 
     tab_last_sig_cpct() \%>\% 
     tab_pivot()   
-     
+    
 # Overcomplicated examples - we move significance marks to
 # separate columns. Columns with statistics remain numeric    
 mtcars \%>\% 
@@ -289,7 +289,7 @@ mtcars \%>\%
     tab_last_sig_cpct() \%>\% 
     tab_last_hstack("inside_columns") \%>\% 
     tab_pivot(stat_position = "inside_rows") \%>\% 
-    drop_empty_columns()                                                                                
+    drop_empty_columns()       
 }
 \seealso{
 \link{cro_cpct}, \link{cro_cases}, \link{cro_mean_sd_n}, \link{tables},

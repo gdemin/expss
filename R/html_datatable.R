@@ -204,7 +204,7 @@ matrix_header_to_html = function(corner, m_cols){
                             rowspan = nrow(corner)
         )
     }
-    withTags(table(
+    htmltools::withTags(table(
         class = 'display',
         thead(
             lapply(row_rle, function(row){
