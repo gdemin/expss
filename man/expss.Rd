@@ -37,9 +37,10 @@ in the vignette and in the help.
 
 \itemize{
 \item{COMPUTE }{\link{compute}}
-\item{DO IF }{\link{do_if}}
 \item{RECODE }{\link{recode}}
 \item{COUNT }{\link{count_row_if}}
+\item{DO IF }{\link{do_if}}
+\item{DO REPEAT }{\link{do_repeat}}
 \item{VARIABLE LABELS }{\link{var_lab}}
 \item{VALUE LABELS }{\link{val_lab}}
 \item{ANY }{\link{any_in_row}}
