@@ -1,5 +1,5 @@
 ---
-title: "Tables with labels in R"
+title: "Tables with Labels in R"
 date: "`r Sys.Date()`"
 output: 
     rmarkdown::html_vignette:
@@ -12,14 +12,7 @@ vignette: >
 
 ## Introduction
 
-`expss` package provides tabulation functions with support of SPSS-style labels,
-multiple / nested banners, weights and multiple-response variables. Additionally
-it offers useful functions for data processing workflow in the social / 
-marketing research surveys - popular data transformation functions from SPSS 
-Statistics (`RECODE`, `COUNT`, `COMPUTE`, `DO IF`, etc.) and Excel (`COUNTIF`, 
-`VLOOKUP`, etc.). Proper methods for labelled variables add value labels support
-to base R and other packages. Package aimed to help people to move data 
-processing from 'Excel'/'SPSS' to R. See examples below. You can get help about
+`expss` package provides tabulation functions with support for 'SPSS'-style labels, multiple / nested banners, weights, multiple-response variables and significance testing. There are facilities for nice output of tables in 'knitr', R notebooks, 'shiny' and 'Jupyter' notebooks. Proper methods for labelled variables add value labels support to base R functions and to some functions from other packages. Additionally, the package offers useful functions for data processing in marketing research / social surveys - popular data transformation functions from 'SPSS' Statistics ('RECODE', 'COUNT', 'COMPUTE', 'DO IF', etc.) and 'Excel' ('COUNTIF', 'VLOOKUP', etc.). Package is intended to help people to move data processing from 'Excel'/'SPSS' to R. See examples below. You can get help about
 any function by typing `?function_name` in the R console.
 
 ### Links
@@ -76,15 +69,16 @@ mtcars %>%
     htmlTable(caption = "Table with nested banners (column %).")         
 
 ```
-We have more sophisticated interface for table construction with `magrittr` piping. Documentation for this interface can be seen via `?tables`.
+We have more sophisticated interface for table construction with `magrittr` piping. Table construction consists of at least of three functions chained with pipe operator: `%>%`. At first we need to specify variables for which statistics will be computed with `tab_cells`. Secondary, we calculate statistics with one of the `tab_stat_*` functions. And last, we finalize table creation with `tab_pivot`, e. g.: `dataset %>% tab_cells(variable) %>% tab_stat_cases() %>% tab_pivot()`. After that we can optionally sort table with `tab_sort_asc`, drop empty rows/columns with `drop_rc` and transpose with `tab_transpose`. Resulting table is just a `data.frame` so we can use usual R operations on it. Detailed documentation for table creation can be seen via `?tables`. For significance testing see `?significance`.
 
 ```{r}
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
     tab_cols(total(), am) %>% 
-    tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n) %>%
+    tab_stat_mean_sd_n() %>%
+    tab_last_sig_means(subtable_marks = "both") %>% 
     tab_pivot() %>% 
-    htmlTable(caption = "Table with summary statistics. Statistics labels in rows.")
+    htmlTable(caption = "Table with summary statistics and significance marks.")
 
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
@@ -103,7 +97,7 @@ mtcars %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
     tab_pivot(stat_position = "inside_rows") %>% 
-    htmlTable(caption = "Different statistics for differen variables.")
+    htmlTable(caption = "Different statistics for different variables.")
 
 mtcars %>% 
     tab_cells(cyl) %>% 
@@ -242,41 +236,47 @@ cro(w$c1r) %>% htmlTable(caption = "Distribution of preferences." )
 Are there any significant differences between preferences? Yes, difference is significant.
 ```{r}
 # 'na_if(c1r, 3)' remove 'hard to say' from vector 
-w %>% calculate(c1r %>% na_if(3) %>% table %>% chisq.test) 
+w %>% calculate(c1r %>% na_if(3) %>% cro_cases(list(total(), age_cat)) %>% significance_cases()) 
 ```
-Further we calculate answers distribution of survey questions.
+Further we calculate distribution of answers in the survey questions. Note marks about significance differences. 
 ```{r}
-w %>% 
-    tab_cols(total(), age_cat) %>% 
+# lets specify repeated parts of table creation chains
+banner = w %>% tab_cols(total(), age_cat, c1r) 
+# column percent with significance
+tab_cpct_sig = . %>% tab_stat_cpct() %>% tab_last_sig_cpct(sig_labels = paste0("<b>",LETTERS, "</b>"))
+# means with siginifcance
+tab_means_sig = . %>% tab_stat_mean_sd_n(labels = c("<b><u>Mean</u></b>", "sd", "N")) %>% 
+                      tab_last_sig_means(sig_labels = paste0("<b>",LETTERS, "</b>"),   keep = "means")
+
+banner %>% 
     tab_cells(c1r) %>% 
-    tab_stat_cpct() %>% 
+    tab_cpct_sig() %>% 
     tab_pivot() %>% 
     htmlTable(caption = "Preferences")
 
-w %>% 
-    tab_cols(total(), age_cat, c1r) %>% 
+banner %>%  
     tab_cells(h22) %>% 
-    tab_stat_mean(label = "<b><u>Mean</u></b>") %>% 
-    tab_stat_cpct() %>% 
+    tab_means_sig() %>% 
+    tab_cpct_sig() %>%  
     tab_cells(p22) %>% 
-    tab_stat_mean(label = "<b><u>Mean</u></b>") %>% 
-    tab_stat_cpct() %>% 
+    tab_means_sig() %>% 
+    tab_cpct_sig() %>%
     tab_pivot() %>% 
     htmlTable(caption = "Overall liking")
 
-w %>% 
-    tab_cols(total(), age_cat, c1r) %>% 
+banner %>% 
     tab_cells(h_likes) %>% 
-    tab_stat_mean() %>% 
+    tab_means_sig() %>% 
     tab_cells(mrset(h1_1 %to% h1_6)) %>% 
-    tab_stat_cpct() %>% 
+    tab_cpct_sig() %>% 
     tab_cells(p_likes) %>% 
-    tab_stat_mean() %>% 
+    tab_means_sig() %>% 
     tab_cells(mrset(p1_1 %to% p1_6)) %>% 
-    tab_stat_cpct() %>% 
+    tab_cpct_sig() %>%
     tab_pivot() %>% 
     htmlTable(caption = "Likes") 
 
+# below more complciated table were we compare likes side by side
 w %>% 
     tab_cols(total(label = "#Total| |"), c1r) %>% 
     tab_cells(list(unvr(mrset(h1_1 %to% h1_6)))) %>% 

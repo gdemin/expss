@@ -37,9 +37,10 @@ mtcars %>%
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
     tab_cols(total(), am) %>% 
-    tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n) %>%
+    tab_stat_mean_sd_n() %>%
+    tab_last_sig_means(subtable_marks = "both") %>% 
     tab_pivot() %>% 
-    htmlTable(caption = "Table with summary statistics. Statistics labels in rows.")
+    htmlTable(caption = "Table with summary statistics and significance marks.")
 
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
@@ -58,7 +59,7 @@ mtcars %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
     tab_pivot(stat_position = "inside_rows") %>% 
-    htmlTable(caption = "Different statistics for differen variables.")
+    htmlTable(caption = "Different statistics for different variables.")
 
 mtcars %>% 
     tab_cells(cyl) %>% 
@@ -173,40 +174,46 @@ cro(w$c1r) %>% htmlTable(caption = "Distribution of preferences." )
 
 ## ------------------------------------------------------------------------
 # 'na_if(c1r, 3)' remove 'hard to say' from vector 
-w %>% calculate(c1r %>% na_if(3) %>% table %>% chisq.test) 
+w %>% calculate(c1r %>% na_if(3) %>% cro_cases(list(total(), age_cat)) %>% significance_cases()) 
 
 ## ------------------------------------------------------------------------
-w %>% 
-    tab_cols(total(), age_cat) %>% 
+# lets specify repeated parts of table creation chains
+banner = w %>% tab_cols(total(), age_cat, c1r) 
+# column percent with significance
+tab_cpct_sig = . %>% tab_stat_cpct() %>% tab_last_sig_cpct(sig_labels = paste0("<b>",LETTERS, "</b>"))
+# means with siginifcance
+tab_means_sig = . %>% tab_stat_mean_sd_n(labels = c("<b><u>Mean</u></b>", "sd", "N")) %>% 
+                      tab_last_sig_means(sig_labels = paste0("<b>",LETTERS, "</b>"),   keep = "means")
+
+banner %>% 
     tab_cells(c1r) %>% 
-    tab_stat_cpct() %>% 
+    tab_cpct_sig() %>% 
     tab_pivot() %>% 
     htmlTable(caption = "Preferences")
 
-w %>% 
-    tab_cols(total(), age_cat, c1r) %>% 
+banner %>%  
     tab_cells(h22) %>% 
-    tab_stat_mean(label = "<b><u>Mean</u></b>") %>% 
-    tab_stat_cpct() %>% 
+    tab_means_sig() %>% 
+    tab_cpct_sig() %>%  
     tab_cells(p22) %>% 
-    tab_stat_mean(label = "<b><u>Mean</u></b>") %>% 
-    tab_stat_cpct() %>% 
+    tab_means_sig() %>% 
+    tab_cpct_sig() %>%
     tab_pivot() %>% 
     htmlTable(caption = "Overall liking")
 
-w %>% 
-    tab_cols(total(), age_cat, c1r) %>% 
+banner %>% 
     tab_cells(h_likes) %>% 
-    tab_stat_mean() %>% 
+    tab_means_sig() %>% 
     tab_cells(mrset(h1_1 %to% h1_6)) %>% 
-    tab_stat_cpct() %>% 
+    tab_cpct_sig() %>% 
     tab_cells(p_likes) %>% 
-    tab_stat_mean() %>% 
+    tab_means_sig() %>% 
     tab_cells(mrset(p1_1 %to% p1_6)) %>% 
-    tab_stat_cpct() %>% 
+    tab_cpct_sig() %>%
     tab_pivot() %>% 
     htmlTable(caption = "Likes") 
 
+# below more complciated table were we compare likes side by side
 w %>% 
     tab_cols(total(label = "#Total| |"), c1r) %>% 
     tab_cells(list(unvr(mrset(h1_1 %to% h1_6)))) %>% 
