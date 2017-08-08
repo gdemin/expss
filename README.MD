@@ -223,10 +223,17 @@ cro(w$c1r) %>% htmlTable(caption = "Distribution of preferences." )
 ```
 Are there any significant differences between preferences? Yes, difference is significant.
 ```{r}
-# 'na_if(c1r, 3)' remove 'hard to say' from vector 
-w %>% calculate(c1r %>% na_if(3) %>% cro_cases(list(total(), age_cat)) %>% significance_cases()) 
+# 'tab_mis_val(3)' remove 'hard to say' from vector 
+w %>% tab_cols(total(), age_cat) %>% 
+      tab_cells(c1r) %>% 
+      tab_mis_val(3) %>% 
+      tab_stat_cases() %>% 
+      tab_last_sig_cases() %>% 
+      tab_pivot() %>% 
+      htmlTable()
+    
 ```
-Further we calculate distribution of answers in the survey questions. Note marks about significance differences. 
+Further we calculate distribution of answers in the survey questions. 
 ```{r}
 # lets specify repeated parts of table creation chains
 banner = w %>% tab_cols(total(), age_cat, c1r) 
@@ -292,12 +299,35 @@ write_labelled_spss(w, file  filename = "product_test.csv")
 
 ## Labels support for base R
 
-Here we demonstrate limited labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. Note that variables labels are not supported in such conversions. 
-```{r}
-with(mtcars, table(am, vs)) %>% knitr::kable()
+Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. 
+```{r, fig.height=6, fig.width=7}
+library(knitr)
+with(mtcars, table(am, vs))
 
 boxplot(mpg ~ am, data = mtcars)
 ```
+
+There is a special function for variables labels support - `use_labels`. By now variables labels support available only for expression which will be evaluated inside data.frame.
+
+```{r}
+# table with dimension names
+use_labels(mtcars, table(am, vs)) 
+
+# linear regression
+use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %>% summary
+```
+
+And, finally, `ggplot2` graphics with variables and value labels:
+```{r, fig.height=6, fig.width=7}
+library(ggplot2)
+use_labels(mtcars, {
+    # 'vars(other)' is needed to get all 'mtcars' data.frame inside expression 
+    ggplot(vars(other)) +
+        geom_point(aes(y = mpg, x = wt, color = qsec)) +
+        facet_grid(am ~ vs)
+}) 
+```
+
 
 ## Excel functions translation guide
 
@@ -337,7 +367,7 @@ Here we create new column with name `d` with results. `ifelse` function is from 
 ```{r, eval=FALSE}
 w$d = ifelse(w$b>60, 1, 0)
 ```
-If we need to use multiple transformations it is often convenient to use `compute` function. Inside `compute` we can put arbitrary number of statements:
+If we need to use multiple transformations it is often convenient to use `compute` function. Inside `compute` we can put arbitrary number of the statements:
 
 ```{r, eval=FALSE}
 w = compute(w, {
@@ -350,7 +380,7 @@ w = compute(w, {
 
 ##### COUNTIF
 
-Count 1's in entire dataset.
+Count 1's in the entire dataset.
 
 **Excel: `COUNTIF(A1:C4, 1)`**
 
@@ -362,7 +392,7 @@ or
 ```{r, eval=FALSE}
 calculate(w, count_if(1, a, b, c))
 ```    
-Count values greater than 1 in each row of dataset.
+Count values greater than 1 in each row of the dataset.
 
 **Excel: `COUNTIF(A1:C1, ">1")`**
 
@@ -379,7 +409,7 @@ w = compute(w, {
 
 ```
 
-Count values less than or equal to 1 in column A of dataset.
+Count values less than or equal to 1 in column A of the dataset.
 
 **Excel: `COUNTIF(A1:A4, "<=1")`**
 
@@ -402,7 +432,7 @@ count_col_if(le(1), w$a)
 
 
 ##### SUM/AVERAGE
-Sum all values in dataset.
+Sum all values in the dataset.
 
 **Excel: `SUM(A1:C4)`**
 
@@ -411,7 +441,7 @@ Sum all values in dataset.
 sum(w, na.rm = TRUE)
 ```
 
-Calculate average of each row of dataset.
+Calculate average of each row of the dataset.
 
 **Excel: `AVERAGE(A1:C1)`**
 
@@ -428,7 +458,7 @@ w = compute(w, {
 
 ```
 
-Sum values of column `A` of dataset.
+Sum values of column `A` of the dataset.
 
 **Excel: `SUM(A1:A4)`**
 
@@ -438,7 +468,7 @@ sum_col(w$a)
 ```
 
 ##### SUMIF/AVERAGEIF
-Sum values greater than 40 in entire dataset.
+Sum values greater than 40 in the entire dataset.
 
 **Excel: `SUMIF(A1:C4, ">40")`**
 
@@ -450,7 +480,7 @@ or
 ```{r, eval=FALSE}
 calculate(w, sum_if(gt(40), a, b, c))
 ```    
-Sum values less than 40 in each row of dataset.
+Sum values less than 40 in the each row of the dataset.
 
 **Excel: `SUMIF(A1:C1, "<40")`**
 
@@ -527,7 +557,7 @@ COMPUTE d = 1.
 ```{r, eval=FALSE}
 w$d = 1
 ```
-or, in specific data.frame
+or, in the specific data.frame
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 w = compute(w, {
@@ -545,7 +575,6 @@ IF(a = 3) d = 2.
 
 **R**:
 
-Default dataset should be already predefined as in previous example.
 ```{r, eval=FALSE}
 w = compute(w, {
     d = ifelse(a == 3, 2, NA)
@@ -651,7 +680,7 @@ COUNT cnt = a1 TO a5(1,2,3,4,5, SYSMIS).
 cnt = count_row_if(c(1:5, NA), a1 %to% a5)
 ```
 
-`count_row_if` can be used with default dataset inside the `compute`.
+`count_row_if` can be used inside `compute`.
 
 ##### RECODE
 
@@ -690,7 +719,7 @@ voter = recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0) %into% voter
 ```
 
-`recode` can be used inside the `compute`.
+`recode` can be used inside `compute`.
 
 ##### VARIABLE LABELS
 **SPSS**:
