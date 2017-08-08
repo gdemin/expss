@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2017-05-03" />
+<meta name="date" content="2017-08-09" />
 
 <title>expss: Tables with Labels in R</title>
 
@@ -215,14 +215,14 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">expss: Tables with Labels in R</h1>
-<h4 class="date"><em>2017-05-03</em></h4>
+<h4 class="date"><em>2017-08-09</em></h4>
 
 </div>
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p><code>expss</code> package provides tabulation functions with support of SPSS-style labels, multiple / nested banners, weights and multiple-response variables. Additionally it offers useful functions for data processing workflow in the social / marketing research surveys - popular data transformation functions from SPSS Statistics (<code>RECODE</code>, <code>COUNT</code>, <code>COMPUTE</code>, <code>DO IF</code>, etc.) and Excel (<code>COUNTIF</code>, <code>VLOOKUP</code>, etc.). Proper methods for labelled variables add value labels support to base R and other packages. Package aimed to help people to move data processing from ‘Excel’/‘SPSS’ to R. See examples below. You can get help about any function by typing <code>?function_name</code> in the R console.</p>
+<p><code>expss</code> package provides tabulation functions with support for ‘SPSS’-style labels, multiple / nested banners, weights, multiple-response variables and significance testing. There are facilities for nice output of tables in ‘knitr’, R notebooks, ‘shiny’ and ‘Jupyter’ notebooks. Proper methods for labelled variables add value labels support to base R functions and to some functions from other packages. Additionally, the package offers useful functions for data processing in marketing research / social surveys - popular data transformation functions from ‘SPSS’ Statistics (‘RECODE’, ‘COUNT’, ‘COMPUTE’, ‘DO IF’, etc.) and ‘Excel’ (‘COUNTIF’, ‘VLOOKUP’, etc.). Package is intended to help people to move data processing from ‘Excel’/‘SPSS’ to R. See examples below. You can get help about any function by typing <code>?function_name</code> in the R console.</p>
 <div id="links" class="section level3">
 <h3>Links</h3>
 <ul>
@@ -385,7 +385,7 @@ Table with nested banners (column %).</td></tr>
 <td style='text-align: right;'></td>
 <td style='text-align: right;'>57.1</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50.0</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
@@ -409,140 +409,163 @@ Table with nested banners (column %).</td></tr>
 <td style='border-bottom: 2px solid grey; text-align: right;'>7</td>
 </tr>
 </tbody>
-</table> We have more sophisticated interface for table construction with <code>magrittr</code> piping. Documentation for this interface can be seen via <code>?tables</code>.</p>
+</table> We have more sophisticated interface for table construction with <code>magrittr</code> piping. Table construction consists of at least of three functions chained with pipe operator: <code>%&gt;%</code>. At first we need to specify variables for which statistics will be computed with <code>tab_cells</code>. Secondary, we calculate statistics with one of the <code>tab_stat_*</code> functions. And last, we finalize table creation with <code>tab_pivot</code>, e. g.: <code>dataset %&gt;% tab_cells(variable) %&gt;% tab_stat_cases() %&gt;% tab_pivot()</code>. After that we can optionally sort table with <code>tab_sort_asc</code>, drop empty rows/columns with <code>drop_rc</code> and transpose with <code>tab_transpose</code>. Resulting table is just a <code>data.frame</code> so we can use usual R operations on it. Detailed documentation for table creation can be seen via <code>?tables</code>. For significance testing see <code>?significance</code>.</p>
 <pre class="r"><code>mtcars %&gt;% 
     tab_cells(mpg, disp, hp, wt, qsec) %&gt;%
     tab_cols(total(), am) %&gt;% 
-    tab_stat_fun(Mean = w_mean, &quot;Std. dev.&quot; = w_sd, &quot;Valid N&quot; = w_n) %&gt;%
+    tab_stat_mean_sd_n() %&gt;%
+    tab_last_sig_means(subtable_marks = &quot;both&quot;) %&gt;% 
     tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Table with summary statistics. Statistics labels in rows.&quot;)</code></pre>
+    htmlTable(caption = &quot;Table with summary statistics and significance marks.&quot;)</code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='5' style='text-align: left;'>
-Table with summary statistics. Statistics labels in rows.</td></tr>
+<tr><td colspan='6' style='text-align: left;'>
+Table with summary statistics and significance marks.</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
-<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='1' style='font-weight: 900; text-align: center;'></th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
 </tr>
 <tr>
 <th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
 <th style='border-bottom: 1px solid grey; text-align: center;'></th>
 <th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;A&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;B&nbsp;</th>
 </tr>
 </thead>
 <tbody> 
-<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Miles/(US) gallon&nbsp;</td></tr>
+<tr><td colspan='6' style='font-weight: 900;'>&nbsp;Miles/(US) gallon&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
-<td style='text-align: right;'>20.1</td>
+<td style='text-align: right;'> 20.1</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>17.1</td>
-<td style='text-align: right;'>24.4</td>
+<td style='text-align: right;'> 17.1 < B</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 24.4 > A</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
-<td style='text-align: right;'>6</td>
+<td style='text-align: right;'>  6.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>3.8</td>
-<td style='text-align: right;'>6.2</td>
+<td style='text-align: right;'>  3.8   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>  6.2   &nbsp;</td>
 </tr>
 <tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Unw. valid N&nbsp;</td>
+<td style='text-align: right;'> 32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>19</td>
-<td style='text-align: right;'>13</td>
+<td style='text-align: right;'> 19.0   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 13.0   &nbsp;</td>
 </tr> 
-<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Displacement (cu.in.)&nbsp;</td></tr>
+<tr><td colspan='6' style='font-weight: 900;'>&nbsp;Displacement (cu.in.)&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
 <td style='text-align: right;'>230.7</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>290.4</td>
-<td style='text-align: right;'>143.5</td>
+<td style='text-align: right;'>290.4 > B</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>143.5 < A</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
 <td style='text-align: right;'>123.9</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>110.2</td>
-<td style='text-align: right;'>87.2</td>
+<td style='text-align: right;'>110.2   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 87.2   &nbsp;</td>
 </tr>
 <tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Unw. valid N&nbsp;</td>
+<td style='text-align: right;'> 32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>19</td>
-<td style='text-align: right;'>13</td>
+<td style='text-align: right;'> 19.0   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 13.0   &nbsp;</td>
 </tr> 
-<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Gross horsepower&nbsp;</td></tr>
+<tr><td colspan='6' style='font-weight: 900;'>&nbsp;Gross horsepower&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
 <td style='text-align: right;'>146.7</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>160.3</td>
-<td style='text-align: right;'>126.8</td>
+<td style='text-align: right;'>160.3   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>126.8   &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
-<td style='text-align: right;'>68.6</td>
+<td style='text-align: right;'> 68.6</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>53.9</td>
-<td style='text-align: right;'>84.1</td>
+<td style='text-align: right;'> 53.9   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 84.1   &nbsp;</td>
 </tr>
 <tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Unw. valid N&nbsp;</td>
+<td style='text-align: right;'> 32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>19</td>
-<td style='text-align: right;'>13</td>
+<td style='text-align: right;'> 19.0   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 13.0   &nbsp;</td>
 </tr> 
-<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Weight (1000 lbs)&nbsp;</td></tr>
+<tr><td colspan='6' style='font-weight: 900;'>&nbsp;Weight (1000 lbs)&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
-<td style='text-align: right;'>3.2</td>
+<td style='text-align: right;'>  3.2</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>3.8</td>
-<td style='text-align: right;'>2.4</td>
+<td style='text-align: right;'>  3.8 > B</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>  2.4 < A</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
-<td style='text-align: right;'>1</td>
+<td style='text-align: right;'>  1.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>0.8</td>
-<td style='text-align: right;'>0.6</td>
+<td style='text-align: right;'>  0.8   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>  0.6   &nbsp;</td>
 </tr>
 <tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Unw. valid N&nbsp;</td>
+<td style='text-align: right;'> 32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>19</td>
-<td style='text-align: right;'>13</td>
+<td style='text-align: right;'> 19.0   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 13.0   &nbsp;</td>
 </tr> 
-<tr><td colspan='5' style='font-weight: 900;'>&nbsp;1/4 mile time&nbsp;</td></tr>
+<tr><td colspan='6' style='font-weight: 900;'>&nbsp;1/4 mile time&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
-<td style='text-align: right;'>17.8</td>
+<td style='text-align: right;'> 17.8</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>18.2</td>
-<td style='text-align: right;'>17.4</td>
+<td style='text-align: right;'> 18.2   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 17.4   &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Std. dev.&nbsp;</td>
-<td style='text-align: right;'>1.8</td>
+<td style='text-align: right;'>  1.8</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>1.8</td>
-<td style='text-align: right;'>1.8</td>
+<td style='text-align: right;'>  1.8   &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>  1.8   &nbsp;</td>
 </tr>
 <tr>
-<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
-<td style='border-bottom: 2px solid grey; text-align: right;'>32</td>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;Unw. valid N&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'> 32.0</td>
 <td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
-<td style='border-bottom: 2px solid grey; text-align: right;'>19</td>
-<td style='border-bottom: 2px solid grey; text-align: right;'>13</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'> 19.0   &nbsp;</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'> 13.0   &nbsp;</td>
 </tr>
 </tbody>
 </table>
@@ -586,7 +609,7 @@ Table with the same summary statistics. Statistics labels in columns.</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;Miles/(US) gallon&nbsp;</td>
 <td style='text-align: right;'>20.1</td>
-<td style='text-align: right;'>6</td>
+<td style='text-align: right;'>6.0</td>
 <td style='text-align: right;'>32</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>17.1</td>
@@ -628,7 +651,7 @@ Table with the same summary statistics. Statistics labels in columns.</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;Weight (1000 lbs)&nbsp;</td>
 <td style='text-align: right;'>3.2</td>
-<td style='text-align: right;'>1</td>
+<td style='text-align: right;'>1.0</td>
 <td style='text-align: right;'>32</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>3.8</td>
@@ -701,10 +724,10 @@ Different statistics for different variables.</td></tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Valid N&nbsp;</td>
 <td style='text-align: left;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>18</td>
-<td style='text-align: right;'>14</td>
+<td style='text-align: right;'>18.0</td>
+<td style='text-align: right;'>14.0</td>
 </tr> 
 <tr><td colspan='7' style='font-weight: 900;'>&nbsp;Transmission&nbsp;</td></tr>
 <tr>
@@ -714,13 +737,13 @@ Different statistics for different variables.</td></tr>
 <td style='text-align: right;'>59.4</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>66.7</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;</td>
 <td style='text-align: left;'>&nbsp;row %&nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>100</td>
+<td style='text-align: right;'>100.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>63.2</td>
 <td style='text-align: right;'>36.8</td>
@@ -741,13 +764,13 @@ Different statistics for different variables.</td></tr>
 <td style='text-align: right;'>40.6</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>33.3</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;</td>
 <td style='text-align: left;'>&nbsp;row %&nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>100</td>
+<td style='text-align: right;'>100.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>46.2</td>
 <td style='text-align: right;'>53.8</td>
@@ -842,7 +865,7 @@ Table with split by rows and with custom totals.</td></tr>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>63.2</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>100</td>
+<td style='text-align: right;'>100.0</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
@@ -873,7 +896,7 @@ Table with split by rows and with custom totals.</td></tr>
 <td style='text-align: right;'>61.5</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
-<td style='text-align: right;'>100</td>
+<td style='text-align: right;'>100.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;</td>
@@ -882,7 +905,7 @@ Table with split by rows and with custom totals.</td></tr>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>23.1</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50.0</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
@@ -958,40 +981,40 @@ Linear regression by groups.</td></tr>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;`Displacement (cu.in.)`&nbsp;</td>
-<td style='text-align: right;'>0</td>
-<td style='text-align: right;'>0</td>
-<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.0</td>
+<td style='text-align: right;'>0.0</td>
+<td style='text-align: right;'>0.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>0</td>
-<td style='text-align: right;'>0</td>
-<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.0</td>
+<td style='text-align: right;'>0.0</td>
+<td style='text-align: right;'>0.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.0</td>
 <td style='text-align: right;'>-0.1</td>
 <td style='text-align: right;'>0.1</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;`Gross horsepower`&nbsp;</td>
-<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.0</td>
 <td style='text-align: right;'>-0.1</td>
-<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.0</td>
 <td style='text-align: right;'>-0.1</td>
-<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>0</td>
-<td style='text-align: right;'>0</td>
+<td style='text-align: right;'>0.0</td>
+<td style='text-align: right;'>0.0</td>
 <td style='text-align: right;'>0.1</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;`Weight (1000 lbs)`&nbsp;</td>
 <td style='text-align: right;'>-4.6</td>
 <td style='text-align: right;'>-7.2</td>
-<td style='text-align: right;'>-2</td>
+<td style='text-align: right;'>-2.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>-2.3</td>
-<td style='text-align: right;'>-5</td>
+<td style='text-align: right;'>-5.0</td>
 <td style='text-align: right;'>0.4</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>-7.7</td>
@@ -1141,24 +1164,16 @@ Distribution of preferences.</td></tr>
 </tr>
 </tbody>
 </table> Are there any significant differences between preferences? Yes, difference is significant.</p>
-<pre class="r"><code># 'na_if(c1r, 3)' remove 'hard to say' from vector 
-w %&gt;% calculate(c1r %&gt;% na_if(3) %&gt;% table %&gt;% chisq.test) </code></pre>
-<pre><code>## 
-##  Chi-squared test for given probabilities
-## 
-## data:  .
-## X-squared = 13.444, df = 1, p-value = 0.0002457</code></pre>
-<p>Further we calculate answers distribution of survey questions.</p>
-<pre class="r"><code>w %&gt;% 
-    tab_cols(total(), age_cat) %&gt;% 
-    tab_cells(c1r) %&gt;% 
-    tab_stat_cpct() %&gt;% 
-    tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Preferences&quot;)</code></pre>
-<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<pre class="r"><code># 'tab_mis_val(3)' remove 'hard to say' from vector 
+w %&gt;% tab_cols(total(), age_cat) %&gt;% 
+      tab_cells(c1r) %&gt;% 
+      tab_mis_val(3) %&gt;% 
+      tab_stat_cases() %&gt;% 
+      tab_last_sig_cases() %&gt;% 
+      tab_pivot() %&gt;% 
+      htmlTable()</code></pre>
+<p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='5' style='text-align: left;'>
-Preferences</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -1176,77 +1191,205 @@ Preferences</td></tr>
 <tr><td colspan='5' style='font-weight: 900;'>&nbsp;Preferences&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;VSX123&nbsp;</td>
+<td style='text-align: right;'>94.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>46.0</td>
+<td style='text-align: right;'>48.0</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;SDF456&nbsp;</td>
+<td style='text-align: right;'>50.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>22.0</td>
+<td style='text-align: right;'>28.0</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to say&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;#Chi-squared p-value&nbsp;</td>
+<td style='text-align: right;'><0.05</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> (warn.)</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>144.0</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>68.0</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>76.0</td>
+</tr>
+</tbody>
+</table> Further we calculate distribution of answers in the survey questions.</p>
+<pre class="r"><code># lets specify repeated parts of table creation chains
+banner = w %&gt;% tab_cols(total(), age_cat, c1r) 
+# column percent with significance
+tab_cpct_sig = . %&gt;% tab_stat_cpct() %&gt;% tab_last_sig_cpct(sig_labels = paste0(&quot;&lt;b&gt;&quot;,LETTERS, &quot;&lt;/b&gt;&quot;))
+# means with siginifcance
+tab_means_sig = . %&gt;% tab_stat_mean_sd_n(labels = c(&quot;&lt;b&gt;&lt;u&gt;Mean&lt;/u&gt;&lt;/b&gt;&quot;, &quot;sd&quot;, &quot;N&quot;)) %&gt;% 
+                      tab_last_sig_means(sig_labels = paste0(&quot;&lt;b&gt;&quot;,LETTERS, &quot;&lt;/b&gt;&quot;),   keep = &quot;means&quot;)
+
+banner %&gt;% 
+    tab_cells(c1r) %&gt;% 
+    tab_cpct_sig() %&gt;% 
+    tab_pivot() %&gt;% 
+    htmlTable(caption = &quot;Preferences&quot;)</code></pre>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr><td colspan='12' style='text-align: left;'>
+Preferences</td></tr>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Age&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='5' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Preferences&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='1' style='font-weight: 900; text-align: center;'></th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;18 - 25&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;26 - 35&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;VSX123&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;SDF456&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Hard to say&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>A</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>B</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>A</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>B</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>C</b>&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='12' style='font-weight: 900;'>&nbsp;Preferences&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;VSX123&nbsp;</td>
 <td style='text-align: right;'>62.7</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>65.7</td>
-<td style='text-align: right;'>60</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>60.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;SDF456&nbsp;</td>
 <td style='text-align: right;'>33.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>31.4</td>
-<td style='text-align: right;'>35</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>35.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to say&nbsp;</td>
-<td style='text-align: right;'>4</td>
+<td style='text-align: right;'> 4.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>2.9</td>
-<td style='text-align: right;'>5</td>
+<td style='text-align: right;'> 2.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 5.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>100.0</td>
 </tr>
 <tr>
 <td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
 <td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>70</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>80</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>94</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>50</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>6</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>w %&gt;% 
-    tab_cols(total(), age_cat, c1r) %&gt;% 
+<pre class="r"><code>banner %&gt;%  
     tab_cells(h22) %&gt;% 
-    tab_stat_mean(label = &quot;&lt;b&gt;&lt;u&gt;Mean&lt;/u&gt;&lt;/b&gt;&quot;) %&gt;% 
-    tab_stat_cpct() %&gt;% 
+    tab_means_sig() %&gt;% 
+    tab_cpct_sig() %&gt;%  
     tab_cells(p22) %&gt;% 
-    tab_stat_mean(label = &quot;&lt;b&gt;&lt;u&gt;Mean&lt;/u&gt;&lt;/b&gt;&quot;) %&gt;% 
-    tab_stat_cpct() %&gt;% 
+    tab_means_sig() %&gt;% 
+    tab_cpct_sig() %&gt;%
     tab_pivot() %&gt;% 
     htmlTable(caption = &quot;Overall liking&quot;)</code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='9' style='text-align: left;'>
+<tr><td colspan='12' style='text-align: left;'>
 Overall liking</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
-<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Age&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
-<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Preferences&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Age&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='5' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Preferences&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='1' style='font-weight: 900; text-align: center;'></th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;18 - 25&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;26 - 35&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;VSX123&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;SDF456&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Hard to say&nbsp;</th>
 </tr>
 <tr>
 <th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
 <th style='border-bottom: 1px solid grey; text-align: center;'></th>
 <th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;18 - 25&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;26 - 35&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>A</b>&nbsp;</th>
 <th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;VSX123&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;SDF456&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Hard to say&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>B</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>A</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>B</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>C</b>&nbsp;</th>
 </tr>
 </thead>
 <tbody> 
-<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Overall quality. VSX123&nbsp;</td></tr>
+<tr><td colspan='12' style='font-weight: 900;'>&nbsp;Overall quality. VSX123&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;<b><u>Mean</u></b>&nbsp;</td>
-<td style='text-align: right;'>5.5</td>
+<td style='text-align: right;'>  5.5</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>5.4</td>
-<td style='text-align: right;'>5.6</td>
+<td style='text-align: right;'> 5.4</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>5.3</td>
-<td style='text-align: right;'>5.8</td>
+<td style='text-align: right;'> 5.6</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 5.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 5.8 <b>A</b></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>5.5</td>
 </tr>
 <tr>
@@ -1254,10 +1397,13 @@ Overall liking</td></tr>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
@@ -1265,21 +1411,27 @@ Overall liking</td></tr>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Quite poor&nbsp;</td>
-<td style='text-align: right;'>2</td>
+<td style='text-align: right;'> 2.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>2.9</td>
-<td style='text-align: right;'>1.2</td>
+<td style='text-align: right;'> 2.9</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>3.2</td>
+<td style='text-align: right;'> 1.2        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 3.2        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
@@ -1287,10 +1439,13 @@ Overall liking</td></tr>
 <td style='text-align: right;'>10.7</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>11.4</td>
-<td style='text-align: right;'>10</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>14.9</td>
-<td style='text-align: right;'>2</td>
+<td style='text-align: right;'>10.0        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>14.9 <b>B</b></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 2.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
@@ -1298,10 +1453,13 @@ Overall liking</td></tr>
 <td style='text-align: right;'>39.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>45.7</td>
-<td style='text-align: right;'>33.8</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>40.4</td>
-<td style='text-align: right;'>38</td>
+<td style='text-align: right;'>33.8        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>40.4        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>38.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>33.3</td>
 </tr>
 <tr>
@@ -1309,10 +1467,13 @@ Overall liking</td></tr>
 <td style='text-align: right;'>33.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>24.3</td>
-<td style='text-align: right;'>41.2</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>30.9</td>
-<td style='text-align: right;'>38</td>
+<td style='text-align: right;'>41.2 <b>A</b></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>30.9        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>38.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>33.3</td>
 </tr>
 <tr>
@@ -1320,10 +1481,13 @@ Overall liking</td></tr>
 <td style='text-align: right;'>14.7</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>15.7</td>
-<td style='text-align: right;'>13.8</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>10.6</td>
-<td style='text-align: right;'>22</td>
+<td style='text-align: right;'>13.8        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>10.6        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>22.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
@@ -1331,22 +1495,28 @@ Overall liking</td></tr>
 <td style='text-align: right;'>150</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>70</td>
-<td style='text-align: right;'>80</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>94</td>
+<td style='text-align: right;'>80        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>94        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>50</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>6</td>
 </tr> 
-<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Overall quality. SDF456&nbsp;</td></tr>
+<tr><td colspan='12' style='font-weight: 900;'>&nbsp;Overall quality. SDF456&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;<b><u>Mean</u></b>&nbsp;</td>
-<td style='text-align: right;'>5.4</td>
+<td style='text-align: right;'>  5.4</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>5.3</td>
-<td style='text-align: right;'>5.4</td>
+<td style='text-align: right;'> 5.3</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>5.4</td>
-<td style='text-align: right;'>5.3</td>
+<td style='text-align: right;'> 5.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 5.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 5.3</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>5.7</td>
 </tr>
 <tr>
@@ -1354,43 +1524,55 @@ Overall liking</td></tr>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Very poor&nbsp;</td>
-<td style='text-align: right;'>0.7</td>
+<td style='text-align: right;'> 0.7</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'>1.2</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>1.1</td>
+<td style='text-align: right;'> 1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 1.1</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Quite poor&nbsp;</td>
-<td style='text-align: right;'>2.7</td>
+<td style='text-align: right;'> 2.7</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>4.3</td>
-<td style='text-align: right;'>1.2</td>
+<td style='text-align: right;'> 4.3</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>2.1</td>
-<td style='text-align: right;'>4</td>
+<td style='text-align: right;'> 1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 2.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 4.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Neither good, nor poor&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>20</td>
+<td style='text-align: right;'>20.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>13.8</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>18.1</td>
-<td style='text-align: right;'>14</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>14.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
@@ -1398,10 +1580,13 @@ Overall liking</td></tr>
 <td style='text-align: right;'>31.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>27.1</td>
-<td style='text-align: right;'>35</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>35.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>28.7</td>
-<td style='text-align: right;'>38</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>38.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
@@ -1409,21 +1594,27 @@ Overall liking</td></tr>
 <td style='text-align: right;'>35.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>35.7</td>
-<td style='text-align: right;'>35</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>35.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>35.1</td>
-<td style='text-align: right;'>34</td>
-<td style='text-align: right;'>50</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>34.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Excellent&nbsp;</td>
 <td style='text-align: right;'>13.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>12.9</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>13.8</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>14.9</td>
-<td style='text-align: right;'>10</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>10.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
@@ -1431,238 +1622,303 @@ Overall liking</td></tr>
 <td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
 <td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>70</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>80</td>
 <td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>94</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>50</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>6</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>w %&gt;% 
-    tab_cols(total(), age_cat, c1r) %&gt;% 
+<pre class="r"><code>banner %&gt;% 
     tab_cells(h_likes) %&gt;% 
-    tab_stat_mean() %&gt;% 
+    tab_means_sig() %&gt;% 
     tab_cells(mrset(h1_1 %to% h1_6)) %&gt;% 
-    tab_stat_cpct() %&gt;% 
+    tab_cpct_sig() %&gt;% 
     tab_cells(p_likes) %&gt;% 
-    tab_stat_mean() %&gt;% 
+    tab_means_sig() %&gt;% 
     tab_cells(mrset(p1_1 %to% p1_6)) %&gt;% 
-    tab_stat_cpct() %&gt;% 
+    tab_cpct_sig() %&gt;%
     tab_pivot() %&gt;% 
     htmlTable(caption = &quot;Likes&quot;) </code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='9' style='text-align: left;'>
+<tr><td colspan='12' style='text-align: left;'>
 Likes</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
-<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Age&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
-<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Preferences&nbsp;</th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Age&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='5' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Preferences&nbsp;</th>
+</tr>
+<tr>
+<th style=''></th>
+<th colspan='1' style='font-weight: 900; text-align: center;'></th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;18 - 25&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;26 - 35&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;VSX123&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;SDF456&nbsp;</th><th style='; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'>&nbsp;Hard to say&nbsp;</th>
 </tr>
 <tr>
 <th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
 <th style='border-bottom: 1px solid grey; text-align: center;'></th>
 <th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;18 - 25&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;26 - 35&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>A</b>&nbsp;</th>
 <th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;VSX123&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;SDF456&nbsp;</th>
-<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Hard to say&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>B</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>A</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>B</b>&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;<b>C</b>&nbsp;</th>
 </tr>
 </thead>
 <tbody> 
-<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Number of likes. VSX123&nbsp;</td></tr>
+<tr><td colspan='12' style='font-weight: 900;'>&nbsp;Number of likes. VSX123&nbsp;</td></tr>
 <tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
-<td style='text-align: right;'>2</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;<b><u>Mean</u></b>&nbsp;</td>
+<td style='text-align: right;'>  2.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>2</td>
-<td style='text-align: right;'>2.1</td>
+<td style='text-align: right;'> 2.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>1.9</td>
-<td style='text-align: right;'>2.2</td>
+<td style='text-align: right;'> 2.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 1.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 2.2</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>2.3</td>
 </tr> 
-<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Likes. VSX123&nbsp;</td></tr>
+<tr><td colspan='12' style='font-weight: 900;'>&nbsp;Likes. VSX123&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Liked everything&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>                &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Disliked everything&nbsp;</td>
-<td style='text-align: right;'>3.3</td>
+<td style='text-align: right;'> 3.3</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>1.4</td>
-<td style='text-align: right;'>5</td>
+<td style='text-align: right;'> 1.4</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>4.3</td>
-<td style='text-align: right;'>2</td>
-<td style='text-align: right;'></td>
+<td style='text-align: right;'> 5.0        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 4.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 2.0        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>                &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Chocolate&nbsp;</td>
-<td style='text-align: right;'>34</td>
+<td style='text-align: right;'>34.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>38.6</td>
-<td style='text-align: right;'>30</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>30.0        &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>35.1</td>
-<td style='text-align: right;'>32</td>
-<td style='text-align: right;'>33.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>32.0        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>33.3                 &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Appearance&nbsp;</td>
 <td style='text-align: right;'>29.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>21.4</td>
-<td style='text-align: right;'>36.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>36.2 <b>A</b></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>25.5</td>
-<td style='text-align: right;'>38</td>
-<td style='text-align: right;'>16.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>38.0        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7                 &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Taste&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>38.6</td>
-<td style='text-align: right;'>26.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>26.2        &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>23.4</td>
-<td style='text-align: right;'>48</td>
-<td style='text-align: right;'>33.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>48.0 <b>A</b></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>33.3                 &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Stuffing&nbsp;</td>
 <td style='text-align: right;'>27.3</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>20</td>
-<td style='text-align: right;'>33.8</td>
+<td style='text-align: right;'>20.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>33.8        &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>28.7</td>
-<td style='text-align: right;'>26</td>
-<td style='text-align: right;'>16.7</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>26.0        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7                 &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Nuts&nbsp;</td>
 <td style='text-align: right;'>66.7</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>72.9</td>
-<td style='text-align: right;'>61.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>61.3        &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>69.1</td>
-<td style='text-align: right;'>60</td>
-<td style='text-align: right;'>83.3</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>60.0        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>83.3                 &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Consistency&nbsp;</td>
-<td style='text-align: right;'>12</td>
+<td style='text-align: right;'>12.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>4.3</td>
-<td style='text-align: right;'>18.8</td>
+<td style='text-align: right;'> 4.3</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>8.5</td>
-<td style='text-align: right;'>14</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>18.8 <b>A</b></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 8.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>14.0        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50.0 <b>A</b> <b>B</b></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Other&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>                &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to answer&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
-<td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>       &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>                &nbsp;</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
 <td style='text-align: right;'>150</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>70</td>
-<td style='text-align: right;'>80</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>80        &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>94</td>
-<td style='text-align: right;'>50</td>
-<td style='text-align: right;'>6</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50        &nbsp;</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>6                 &nbsp;</td>
 </tr> 
-<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Number of likes. SDF456&nbsp;</td></tr>
+<tr><td colspan='12' style='font-weight: 900;'>&nbsp;Number of likes. SDF456&nbsp;</td></tr>
 <tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Mean&nbsp;</td>
-<td style='text-align: right;'>2</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;<b><u>Mean</u></b>&nbsp;</td>
+<td style='text-align: right;'>  2.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>2</td>
-<td style='text-align: right;'>2.1</td>
+<td style='text-align: right;'> 2.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>2</td>
-<td style='text-align: right;'>2</td>
-<td style='text-align: right;'>2</td>
+<td style='text-align: right;'> 2.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 2.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 2.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>2.0</td>
 </tr> 
-<tr><td colspan='9' style='font-weight: 900;'>&nbsp;Likes. SDF456&nbsp;</td></tr>
+<tr><td colspan='12' style='font-weight: 900;'>&nbsp;Likes. SDF456&nbsp;</td></tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Liked everything&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Disliked everything&nbsp;</td>
-<td style='text-align: right;'>1.3</td>
+<td style='text-align: right;'> 1.3</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>1.4</td>
-<td style='text-align: right;'>1.2</td>
+<td style='text-align: right;'> 1.4</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>2.1</td>
+<td style='text-align: right;'> 1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 2.1</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Chocolate&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>27.1</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>36.2</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>29.8</td>
-<td style='text-align: right;'>34</td>
-<td style='text-align: right;'>50</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>34.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Appearance&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>35.7</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>28.7</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>34</td>
-<td style='text-align: right;'>30</td>
+<td style='text-align: right;'>34.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>30.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
@@ -1670,54 +1926,69 @@ Likes</td></tr>
 <td style='text-align: right;'>39.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>42.9</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>36.2</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>36.2</td>
-<td style='text-align: right;'>44</td>
-<td style='text-align: right;'>50</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>44.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Stuffing&nbsp;</td>
 <td style='text-align: right;'>27.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>24.3</td>
-<td style='text-align: right;'>30</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>30.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>31.9</td>
-<td style='text-align: right;'>20</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>20.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Nuts&nbsp;</td>
 <td style='text-align: right;'>61.3</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>60</td>
+<td style='text-align: right;'>60.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>62.5</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>58.5</td>
-<td style='text-align: right;'>68</td>
-<td style='text-align: right;'>50</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>68.0</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Consistency&nbsp;</td>
-<td style='text-align: right;'>10</td>
+<td style='text-align: right;'>10.0</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>5.7</td>
+<td style='text-align: right;'> 5.7</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>13.8</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>11.7</td>
-<td style='text-align: right;'>6</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 6.0</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Other&nbsp;</td>
-<td style='text-align: right;'>0.7</td>
+<td style='text-align: right;'> 0.7</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
-<td style='text-align: right;'>1.2</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>1.1</td>
+<td style='text-align: right;'> 1.2</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'> 1.1</td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
@@ -1725,10 +1996,13 @@ Likes</td></tr>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
+<td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 </tr>
 <tr>
@@ -1736,15 +2010,19 @@ Likes</td></tr>
 <td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
 <td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>70</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>80</td>
 <td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>94</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>50</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
 <td style='border-bottom: 2px solid grey; text-align: right;'>6</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>w %&gt;% 
+<pre class="r"><code># below more complciated table were we compare likes side by side
+w %&gt;% 
     tab_cols(total(label = &quot;#Total| |&quot;), c1r) %&gt;% 
     tab_cells(list(unvr(mrset(h1_1 %to% h1_6)))) %&gt;% 
     tab_stat_cpct(label = var_lab(h1_1)) %&gt;% 
@@ -1814,8 +2092,8 @@ Likes - side by side comparison</td></tr>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;Chocolate&nbsp;</td>
-<td style='text-align: right;'>34</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>34.0</td>
+<td style='text-align: right;'>32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>35.1</td>
 <td style='text-align: right;'>29.8</td>
@@ -1824,15 +2102,15 @@ Likes - side by side comparison</td></tr>
 <td style='text-align: right;'>34</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>33.3</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;Appearance&nbsp;</td>
 <td style='text-align: right;'>29.3</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>32.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>25.5</td>
-<td style='text-align: right;'>34</td>
+<td style='text-align: right;'>34.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>38</td>
 <td style='text-align: right;'>30</td>
@@ -1842,7 +2120,7 @@ Likes - side by side comparison</td></tr>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;Taste&nbsp;</td>
-<td style='text-align: right;'>32</td>
+<td style='text-align: right;'>32.0</td>
 <td style='text-align: right;'>39.3</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>23.4</td>
@@ -1852,7 +2130,7 @@ Likes - side by side comparison</td></tr>
 <td style='text-align: right;'>44</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>33.3</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;Stuffing&nbsp;</td>
@@ -1880,12 +2158,12 @@ Likes - side by side comparison</td></tr>
 <td style='text-align: right;'>68</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>83.3</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50.0</td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;Consistency&nbsp;</td>
-<td style='text-align: right;'>12</td>
-<td style='text-align: right;'>10</td>
+<td style='text-align: right;'>12.0</td>
+<td style='text-align: right;'>10.0</td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'>8.5</td>
 <td style='text-align: right;'>11.7</td>
@@ -1893,7 +2171,7 @@ Likes - side by side comparison</td></tr>
 <td style='text-align: right;'>14</td>
 <td style='text-align: right;'>6</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50.0</td>
 <td style='text-align: right;'>16.7</td>
 </tr>
 <tr>
@@ -1947,31 +2225,55 @@ Likes - side by side comparison</td></tr>
 </div>
 <div id="labels-support-for-base-r" class="section level2">
 <h2>Labels support for base R</h2>
-<p>Here we demonstrate limited labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. Note that variables labels are not supported in such conversions.</p>
-<pre class="r"><code>with(mtcars, table(am, vs)) %&gt;% knitr::kable()</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">V-engine</th>
-<th align="right">Straight engine</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Automatic</td>
-<td align="right">12</td>
-<td align="right">7</td>
-</tr>
-<tr class="even">
-<td>Manual</td>
-<td align="right">6</td>
-<td align="right">7</td>
-</tr>
-</tbody>
-</table>
+<p>Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels.</p>
+<pre class="r"><code>library(knitr)
+with(mtcars, table(am, vs))</code></pre>
+<pre><code>##            vs
+## am          V-engine Straight engine
+##   Automatic       12               7
+##   Manual           6               7</code></pre>
 <pre class="r"><code>boxplot(mpg ~ am, data = mtcars)</code></pre>
-<p><img src="data:image/png;base64,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" width="672" /></p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAASACAMAAAAJRxcJAAAAzFBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZrY6AAA6OgA6Ojo6OmY6OpA6ZmY6ZpA6ZrY6kNtmAABmOgBmOjpmZmZmZpBmkJBmkLZmtrZmtttmtv+QOgCQOjqQZgCQZjqQZmaQkGaQkLaQtraQttuQtv+Q29uQ2/+2ZgC2Zjq2kGa2kLa2tpC2tra2ttu225C227a229u22/+2///bkDrbkGbbtmbbtpDbtrbb27bb29vb2//b/7bb/9vb////tmb/25D/27b/29v//7b//9v////LWACtAAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO3da2NdxZWg4SNiEKSTYFBCA9OZ6dCD7cRMAwoXM4PsIP///zTnoqPL1rapWruKs0rneT50QEGVzqq13+jo5tVrAEJWh/5/AGBUAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEG5A7oCaKZ9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" width="672" /></p>
+<p>There is a special function for variables labels support - <code>use_labels</code>. By now variables labels support available only for expression which will be evaluated inside data.frame.</p>
+<pre class="r"><code># table with dimension names
+use_labels(mtcars, table(am, vs)) </code></pre>
+<pre><code>##             Engine
+## Transmission V-engine Straight engine
+##    Automatic       12               7
+##    Manual           6               7</code></pre>
+<pre class="r"><code># linear regression
+use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %&gt;% summary</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = `Miles/(US) gallon` ~ `Weight (1000 lbs)` + `Gross horsepower` + 
+##     `1/4 mile time`)
+## 
+## Residuals:
+## LABEL: Miles/(US) gallon 
+## VALUES:
+## -3.8591, -1.6418, -0.4636, 1.194, 5.6092
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         27.61053    8.41993   3.279  0.00278 ** 
+## `Weight (1000 lbs)` -4.35880    0.75270  -5.791 3.22e-06 ***
+## `Gross horsepower`  -0.01782    0.01498  -1.190  0.24418    
+## `1/4 mile time`      0.51083    0.43922   1.163  0.25463    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.578 on 28 degrees of freedom
+## Multiple R-squared:  0.8348, Adjusted R-squared:  0.8171 
+## F-statistic: 47.15 on 3 and 28 DF,  p-value: 4.506e-11</code></pre>
+<p>And, finally, <code>ggplot2</code> graphics with variables and value labels:</p>
+<pre class="r"><code>library(ggplot2)
+use_labels(mtcars, {
+    # 'vars(other)' is needed to get all 'mtcars' data.frame inside expression 
+    ggplot(vars(other)) +
+        geom_point(aes(y = mpg, x = wt, color = qsec)) +
+        facet_grid(am ~ vs)
+}) </code></pre>
+<p><img src="data:image/png;base64,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" width="672" /></p>
 </div>
 <div id="excel-functions-translation-guide" class="section level2">
 <h2>Excel functions translation guide</h2>
@@ -2026,7 +2328,7 @@ a,b,c
 <p><strong>Excel: <code>IF(B1&gt;60, 1, 0)</code></strong></p>
 <p><strong>R:</strong> Here we create new column with name <code>d</code> with results. <code>ifelse</code> function is from base R not from ‘expss’ package but included here for completeness.</p>
 <pre class="r"><code>w$d = ifelse(w$b&gt;60, 1, 0)</code></pre>
-<p>If we need to use multiple transformations it is often convenient to use <code>compute</code> function. Inside <code>compute</code> we can put arbitrary number of statements:</p>
+<p>If we need to use multiple transformations it is often convenient to use <code>compute</code> function. Inside <code>compute</code> we can put arbitrary number of the statements:</p>
 <pre class="r"><code>w = compute(w, {
     d = ifelse(b&gt;60, 1, 0)
     e = 42
@@ -2036,13 +2338,13 @@ a,b,c
 </div>
 <div id="countif" class="section level5">
 <h5>COUNTIF</h5>
-<p>Count 1’s in entire dataset.</p>
+<p>Count 1’s in the entire dataset.</p>
 <p><strong>Excel: <code>COUNTIF(A1:C4, 1)</code></strong></p>
 <p><strong>R:</strong></p>
 <pre class="r"><code>count_if(1, w)</code></pre>
 <p>or</p>
 <pre class="r"><code>calculate(w, count_if(1, a, b, c))</code></pre>
-<p>Count values greater than 1 in each row of dataset.</p>
+<p>Count values greater than 1 in each row of the dataset.</p>
 <p><strong>Excel: <code>COUNTIF(A1:C1, &quot;&gt;1&quot;)</code></strong></p>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>w$d = count_row_if(gt(1), w)  </code></pre>
@@ -2050,7 +2352,7 @@ a,b,c
 <pre class="r"><code>w = compute(w, {
     d = count_row_if(gt(1), a, b, c) 
 })</code></pre>
-<p>Count values less than or equal to 1 in column A of dataset.</p>
+<p>Count values less than or equal to 1 in column A of the dataset.</p>
 <p><strong>Excel: <code>COUNTIF(A1:A4, &quot;&lt;=1&quot;)</code></strong></p>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>count_col_if(le(1), w$a)</code></pre>
@@ -2092,11 +2394,11 @@ a,b,c
 </div>
 <div id="sumaverage" class="section level5">
 <h5>SUM/AVERAGE</h5>
-<p>Sum all values in dataset.</p>
+<p>Sum all values in the dataset.</p>
 <p><strong>Excel: <code>SUM(A1:C4)</code></strong></p>
 <p><strong>R:</strong></p>
 <pre class="r"><code>sum(w, na.rm = TRUE)</code></pre>
-<p>Calculate average of each row of dataset.</p>
+<p>Calculate average of each row of the dataset.</p>
 <p><strong>Excel: <code>AVERAGE(A1:C1)</code></strong></p>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>w$d = mean_row(w)  </code></pre>
@@ -2104,20 +2406,20 @@ a,b,c
 <pre class="r"><code>w = compute(w, {
     d = mean_row(a, b, c) 
 })</code></pre>
-<p>Sum values of column <code>A</code> of dataset.</p>
+<p>Sum values of column <code>A</code> of the dataset.</p>
 <p><strong>Excel: <code>SUM(A1:A4)</code></strong></p>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>sum_col(w$a)</code></pre>
 </div>
 <div id="sumifaverageif" class="section level5">
 <h5>SUMIF/AVERAGEIF</h5>
-<p>Sum values greater than 40 in entire dataset.</p>
+<p>Sum values greater than 40 in the entire dataset.</p>
 <p><strong>Excel: <code>SUMIF(A1:C4, &quot;&gt;40&quot;)</code></strong></p>
 <p><strong>R:</strong></p>
 <pre class="r"><code>sum_if(gt(40), w)</code></pre>
 <p>or</p>
 <pre class="r"><code>calculate(w, sum_if(gt(40), a, b, c))</code></pre>
-<p>Sum values less than 40 in each row of dataset.</p>
+<p>Sum values less than 40 in the each row of the dataset.</p>
 <p><strong>Excel: <code>SUMIF(A1:C1, &quot;&lt;40&quot;)</code></strong></p>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>w$d = sum_row_if(lt(40), w)  </code></pre>
@@ -2184,7 +2486,7 @@ stringsAsFactors = FALSE
 <pre><code>COMPUTE d = 1.</code></pre>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>w$d = 1</code></pre>
-<p>or, in specific data.frame</p>
+<p>or, in the specific data.frame</p>
 <pre class="r"><code>w = compute(w, {
     d = 1
 })</code></pre>
@@ -2195,7 +2497,6 @@ stringsAsFactors = FALSE
 <p><strong>SPSS</strong>:</p>
 <pre><code>IF(a = 3) d = 2.</code></pre>
 <p><strong>R</strong>:</p>
-<p>Default dataset should be already predefined as in previous example.</p>
 <pre class="r"><code>w = compute(w, {
     d = ifelse(a == 3, 2, NA)
 })</code></pre>
@@ -2250,7 +2551,7 @@ END IF.</code></pre>
 <pre><code>COUNT cnt = a1 TO a5(1,2,3,4,5, SYSMIS).</code></pre>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>cnt = count_row_if(c(1:5, NA), a1 %to% a5)</code></pre>
-<p><code>count_row_if</code> can be used with default dataset inside the <code>compute</code>.</p>
+<p><code>count_row_if</code> can be used inside <code>compute</code>.</p>
 </div>
 <div id="recode" class="section level5">
 <h5>RECODE</h5>
@@ -2272,7 +2573,7 @@ END IF.</code></pre>
 <pre class="r"><code>voter = recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 # or
 recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0) %into% voter</code></pre>
-<p><code>recode</code> can be used inside the <code>compute</code>.</p>
+<p><code>recode</code> can be used inside <code>compute</code>.</p>
 </div>
 <div id="variable-labels" class="section level5">
 <h5>VARIABLE LABELS</h5>
@@ -2418,7 +2719,7 @@ Fruits
 </tr>
 <tr>
 <td style="border-bottom: 2px solid grey; text-align: left;">
- <NA> 
+ &lt;NA&gt; 
 </td>
 <td style="border-bottom: 2px solid grey; text-align: right;">
 0
@@ -2565,7 +2866,7 @@ Fruits
 80
 </td>
 <td style="border-bottom: 2px solid grey; text-align: right;">
-45
+45.0
 </td>
 <td style="border-bottom: 2px solid grey; text-align: right;">
 40
