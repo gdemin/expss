@@ -80,7 +80,8 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
     ## for significance marks
     for(i in seq_along(x)[-1]){
         if(is.character(x[[i]]) || is.factor(x[[i]])){
-            x[[i]] = gsub("\\s", "&nbsp;", x[[i]], perl = TRUE)
+            x[[i]] = gsub("\\s$", "&nbsp;", x[[i]], perl = TRUE)
+            # x[[i]] = gsub("([\\d])$", "\\1&nbsp;", x[[i]], perl = TRUE)
         }
     }
     if(!row_groups){
