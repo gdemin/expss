@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2017-08-09" />
+<meta name="date" content="2017-08-10" />
 
 <title>expss: Tables with Labels in R</title>
 
@@ -215,14 +215,14 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">expss: Tables with Labels in R</h1>
-<h4 class="date"><em>2017-08-09</em></h4>
+<h4 class="date"><em>2017-08-10</em></h4>
 
 </div>
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p><code>expss</code> package provides tabulation functions with support for ‘SPSS’-style labels, multiple / nested banners, weights, multiple-response variables and significance testing. There are facilities for nice output of tables in ‘knitr’, R notebooks, ‘shiny’ and ‘Jupyter’ notebooks. Proper methods for labelled variables add value labels support to base R functions and to some functions from other packages. Additionally, the package offers useful functions for data processing in marketing research / social surveys - popular data transformation functions from ‘SPSS’ Statistics (‘RECODE’, ‘COUNT’, ‘COMPUTE’, ‘DO IF’, etc.) and ‘Excel’ (‘COUNTIF’, ‘VLOOKUP’, etc.). Package is intended to help people to move data processing from ‘Excel’/‘SPSS’ to R. See examples below. You can get help about any function by typing <code>?function_name</code> in the R console.</p>
+<p><code>expss</code> package provides tabulation functions with support for ‘SPSS’-style labels, multiple / nested banners, weights, multiple-response variables and significance testing. There are facilities for nice output of tables in ‘knitr’, R notebooks, ‘Shiny’ and ‘Jupyter’ notebooks. Proper methods for labelled variables add value labels support to base R functions and to some functions from other packages. Additionally, the package offers useful functions for data processing in marketing research / social surveys - popular data transformation functions from ‘SPSS’ Statistics (‘RECODE’, ‘COUNT’, ‘COMPUTE’, ‘DO IF’, etc.) and ‘Excel’ (‘COUNTIF’, ‘VLOOKUP’, etc.). Package is intended to help people to move data processing from ‘Excel’/‘SPSS’ to R. See examples below. You can get help about any function by typing <code>?function_name</code> in the R console.</p>
 <div id="links" class="section level3">
 <h3>Links</h3>
 <ul>
@@ -261,14 +261,11 @@ mtcars = apply_labels(mtcars,
 )</code></pre>
 <p>For quick cross-tabulation there are <code>fre</code> and <code>cro</code> family of function. For simplicity we demonstrate here only <code>cro_cpct</code> which caluclates column percent. Documentation for other functions, such as <code>cro_cases</code> for counts, <code>cro_rpct</code> for row percent, <code>cro_tpct</code> for table percent and <code>cro_fun</code> for custom summary functions can be seen by typing <code>?cro</code> and <code>?cro_fun</code> in the console.</p>
 <pre class="r"><code># 'cro' examples
-# multiple banners
+# Table with multiple banners (column %).
 mtcars %&gt;% 
-    calculate(cro_cpct(cyl, list(total(), am, vs))) %&gt;% 
-    htmlTable(caption = &quot;Table with multiple banners (column %).&quot;)</code></pre>
+    calculate(cro_cpct(cyl, list(total(), am, vs))) </code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='8' style='text-align: left;'>
-Table with multiple banners (column %).</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -330,14 +327,11 @@ Table with multiple banners (column %).</td></tr>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code># nested banners          
+<pre class="r"><code># Table with nested banners (column %).          
 mtcars %&gt;% 
-    calculate(cro_cpct(cyl, list(total(), am %nest% vs))) %&gt;% 
-    htmlTable(caption = &quot;Table with nested banners (column %).&quot;)         </code></pre>
+    calculate(cro_cpct(cyl, list(total(), am %nest% vs)))       </code></pre>
 <p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='8' style='text-align: left;'>
-Table with nested banners (column %).</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -409,8 +403,62 @@ Table with nested banners (column %).</td></tr>
 <td style='border-bottom: 2px solid grey; text-align: right;'>7</td>
 </tr>
 </tbody>
-</table> We have more sophisticated interface for table construction with <code>magrittr</code> piping. Table construction consists of at least of three functions chained with pipe operator: <code>%&gt;%</code>. At first we need to specify variables for which statistics will be computed with <code>tab_cells</code>. Secondary, we calculate statistics with one of the <code>tab_stat_*</code> functions. And last, we finalize table creation with <code>tab_pivot</code>, e. g.: <code>dataset %&gt;% tab_cells(variable) %&gt;% tab_stat_cases() %&gt;% tab_pivot()</code>. After that we can optionally sort table with <code>tab_sort_asc</code>, drop empty rows/columns with <code>drop_rc</code> and transpose with <code>tab_transpose</code>. Resulting table is just a <code>data.frame</code> so we can use usual R operations on it. Detailed documentation for table creation can be seen via <code>?tables</code>. For significance testing see <code>?significance</code>.</p>
-<pre class="r"><code>mtcars %&gt;% 
+</table> We have more sophisticated interface for table construction with <code>magrittr</code> piping. Table construction consists of at least of three functions chained with pipe operator: <code>%&gt;%</code>. At first we need to specify variables for which statistics will be computed with <code>tab_cells</code>. Secondary, we calculate statistics with one of the <code>tab_stat_*</code> functions. And last, we finalize table creation with <code>tab_pivot</code>, e. g.: <code>dataset %&gt;% tab_cells(variable) %&gt;% tab_stat_cases() %&gt;% tab_pivot()</code>. After that we can optionally sort table with <code>tab_sort_asc</code>, drop empty rows/columns with <code>drop_rc</code> and transpose with <code>tab_transpose</code>. Resulting table is just a <code>data.frame</code> so we can use usual R operations on it. Detailed documentation for table creation can be seen via <code>?tables</code>. For significance testing see <code>?significance</code>. Generally, tables automatically translated to HTML for output in knitr or Jupyter notebooks. However, if we want HTML output in the R notebooks or in the RStudio viewer we need to set options for that: <code>expss_output_rnotebook()</code> or <code>expss_output_viewer()</code>.</p>
+<pre class="r"><code># simple example
+mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(total(), am) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot()</code></pre>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='5' style='font-weight: 900;'>&nbsp;Number of cylinders&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;4&nbsp;</td>
+<td style='text-align: right;'>34.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>15.8</td>
+<td style='text-align: right;'>61.5</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;6&nbsp;</td>
+<td style='text-align: right;'>21.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>21.1</td>
+<td style='text-align: right;'>23.1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;8&nbsp;</td>
+<td style='text-align: right;'>43.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>63.2</td>
+<td style='text-align: right;'>15.4</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>32</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>19</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>13</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># if we need caption then we use 'htmlTable'
+mtcars %&gt;% 
     tab_cells(mpg, disp, hp, wt, qsec) %&gt;%
     tab_cols(total(), am) %&gt;% 
     tab_stat_mean_sd_n() %&gt;%
@@ -569,16 +617,14 @@ Table with summary statistics and significance marks.</td></tr>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>mtcars %&gt;% 
+<pre class="r"><code># Table with the same summary statistics. Statistics labels in columns.
+mtcars %&gt;% 
     tab_cells(mpg, disp, hp, wt, qsec) %&gt;%
     tab_cols(total(label = &quot;#Total| |&quot;), am) %&gt;% 
     tab_stat_fun(Mean = w_mean, &quot;Std. dev.&quot; = w_sd, &quot;Valid N&quot; = w_n, method = list) %&gt;%
-    tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Table with the same summary statistics. Statistics labels in columns.&quot;)</code></pre>
+    tab_pivot()</code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='12' style='text-align: left;'>
-Table with the same summary statistics. Statistics labels in columns.</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -678,7 +724,8 @@ Table with the same summary statistics. Statistics labels in columns.</td></tr>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>mtcars %&gt;%
+<pre class="r"><code># Different statistics for different variables.
+mtcars %&gt;%
     tab_cols(total(), vs) %&gt;%
     tab_cells(mpg) %&gt;% 
     tab_stat_mean() %&gt;% 
@@ -687,12 +734,9 @@ Table with the same summary statistics. Statistics labels in columns.</td></tr>
     tab_stat_cpct(total_row_position = &quot;none&quot;, label = &quot;col %&quot;) %&gt;%
     tab_stat_rpct(total_row_position = &quot;none&quot;, label = &quot;row %&quot;) %&gt;%
     tab_stat_tpct(total_row_position = &quot;none&quot;, label = &quot;table %&quot;) %&gt;%
-    tab_pivot(stat_position = &quot;inside_rows&quot;) %&gt;% 
-    htmlTable(caption = &quot;Different statistics for different variables.&quot;)</code></pre>
+    tab_pivot(stat_position = &quot;inside_rows&quot;) </code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='7' style='text-align: left;'>
-Different statistics for different variables.</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-top: 2px solid grey; text-align: center;'></th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -786,19 +830,17 @@ Different statistics for different variables.</td></tr>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>mtcars %&gt;% 
+<pre class="r"><code># Table with split by rows and with custom totals.
+mtcars %&gt;% 
     tab_cells(cyl) %&gt;% 
     tab_cols(total(), vs) %&gt;% 
     tab_rows(am) %&gt;% 
     tab_stat_cpct(total_row_position = &quot;above&quot;,
                   total_label = c(&quot;number of cases&quot;, &quot;row %&quot;),
                   total_statistic = c(&quot;u_cases&quot;, &quot;u_rpct&quot;)) %&gt;% 
-    tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Table with split by rows and with custom totals.&quot;)</code></pre>
+    tab_pivot()</code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='8' style='text-align: left;'>
-Table with split by rows and with custom totals.</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='2' style='font-weight: 900; border-top: 2px solid grey; text-align: center;'></th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -920,7 +962,8 @@ Table with split by rows and with custom totals.</td></tr>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>mtcars %&gt;% 
+<pre class="r"><code># Linear regression by groups.
+mtcars %&gt;% 
     tab_cells(dtfrm(mpg, disp, hp, wt, qsec)) %&gt;% 
     tab_cols(total(label = &quot;#Total| |&quot;), am) %&gt;% 
     tab_stat_fun_df(
@@ -932,12 +975,9 @@ Table with split by rows and with custom totals.</td></tr>
             )
         }    
     ) %&gt;% 
-    tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Linear regression by groups.&quot;)</code></pre>
+    tab_pivot() </code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='12' style='text-align: left;'>
-Linear regression by groups.</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -1131,47 +1171,15 @@ w = apply_labels(w,
     p22 = &quot;Overall quality. SDF456&quot;,
     h22 = overall_liking_scale,
     p22 = overall_liking_scale
-)
-
-
-cro(w$c1r) %&gt;% htmlTable(caption = &quot;Distribution of preferences.&quot; )</code></pre>
-<p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
-<thead>
-<tr><td colspan='2' style='text-align: left;'>
-Distribution of preferences.</td></tr>
-<tr>
-<th style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'></th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th>
-</tr>
-</thead>
-<tbody> 
-<tr><td colspan='2' style='font-weight: 900;'>&nbsp;Preferences&nbsp;</td></tr>
-<tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;VSX123&nbsp;</td>
-<td style='text-align: right;'>94</td>
-</tr>
-<tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;SDF456&nbsp;</td>
-<td style='text-align: right;'>50</td>
-</tr>
-<tr>
-<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to say&nbsp;</td>
-<td style='text-align: right;'>6</td>
-</tr>
-<tr>
-<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
-<td style='border-bottom: 2px solid grey; text-align: right;'>150</td>
-</tr>
-</tbody>
-</table> Are there any significant differences between preferences? Yes, difference is significant.</p>
+)</code></pre>
+<p>Are there any significant differences between preferences? Yes, difference is significant.</p>
 <pre class="r"><code># 'tab_mis_val(3)' remove 'hard to say' from vector 
 w %&gt;% tab_cols(total(), age_cat) %&gt;% 
       tab_cells(c1r) %&gt;% 
       tab_mis_val(3) %&gt;% 
       tab_stat_cases() %&gt;% 
       tab_last_sig_cases() %&gt;% 
-      tab_pivot() %&gt;% 
-      htmlTable()</code></pre>
+      tab_pivot()</code></pre>
 <p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
@@ -1229,20 +1237,22 @@ w %&gt;% tab_cols(total(), age_cat) %&gt;%
 <pre class="r"><code># lets specify repeated parts of table creation chains
 banner = w %&gt;% tab_cols(total(), age_cat, c1r) 
 # column percent with significance
-tab_cpct_sig = . %&gt;% tab_stat_cpct() %&gt;% tab_last_sig_cpct(sig_labels = paste0(&quot;&lt;b&gt;&quot;,LETTERS, &quot;&lt;/b&gt;&quot;))
+tab_cpct_sig = . %&gt;% tab_stat_cpct() %&gt;% 
+                    tab_last_sig_cpct(sig_labels = paste0(&quot;&lt;b&gt;&quot;,LETTERS, &quot;&lt;/b&gt;&quot;))
+
 # means with siginifcance
 tab_means_sig = . %&gt;% tab_stat_mean_sd_n(labels = c(&quot;&lt;b&gt;&lt;u&gt;Mean&lt;/u&gt;&lt;/b&gt;&quot;, &quot;sd&quot;, &quot;N&quot;)) %&gt;% 
-                      tab_last_sig_means(sig_labels = paste0(&quot;&lt;b&gt;&quot;,LETTERS, &quot;&lt;/b&gt;&quot;),   keep = &quot;means&quot;)
+                      tab_last_sig_means(
+                          sig_labels = paste0(&quot;&lt;b&gt;&quot;,LETTERS, &quot;&lt;/b&gt;&quot;),   
+                          keep = &quot;means&quot;)
 
+# Preferences
 banner %&gt;% 
     tab_cells(c1r) %&gt;% 
     tab_cpct_sig() %&gt;% 
-    tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Preferences&quot;)</code></pre>
+    tab_pivot() </code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='12' style='text-align: left;'>
-Preferences</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -1333,19 +1343,17 @@ Preferences</td></tr>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>banner %&gt;%  
+<pre class="r"><code># Overall liking
+banner %&gt;%  
     tab_cells(h22) %&gt;% 
     tab_means_sig() %&gt;% 
     tab_cpct_sig() %&gt;%  
     tab_cells(p22) %&gt;% 
     tab_means_sig() %&gt;% 
     tab_cpct_sig() %&gt;%
-    tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Overall liking&quot;)</code></pre>
+    tab_pivot() </code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='12' style='text-align: left;'>
-Overall liking</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -1398,9 +1406,9 @@ Overall liking</td></tr>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
@@ -1412,9 +1420,9 @@ Overall liking</td></tr>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
@@ -1633,7 +1641,8 @@ Overall liking</td></tr>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>banner %&gt;% 
+<pre class="r"><code># Likes
+banner %&gt;% 
     tab_cells(h_likes) %&gt;% 
     tab_means_sig() %&gt;% 
     tab_cells(mrset(h1_1 %to% h1_6)) %&gt;% 
@@ -1642,12 +1651,9 @@ Overall liking</td></tr>
     tab_means_sig() %&gt;% 
     tab_cells(mrset(p1_1 %to% p1_6)) %&gt;% 
     tab_cpct_sig() %&gt;%
-    tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Likes&quot;) </code></pre>
+    tab_pivot() </code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='12' style='text-align: left;'>
-Likes</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -1701,13 +1707,13 @@ Likes</td></tr>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>                &nbsp;</td>
+<td style='text-align: right;'>                 </td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Disliked everything&nbsp;</td>
@@ -1721,7 +1727,7 @@ Likes</td></tr>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'> 2.0        &nbsp;</td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>                &nbsp;</td>
+<td style='text-align: right;'>                 </td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Chocolate&nbsp;</td>
@@ -1813,13 +1819,13 @@ Likes</td></tr>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>                &nbsp;</td>
+<td style='text-align: right;'>                 </td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Hard to answer&nbsp;</td>
@@ -1827,13 +1833,13 @@ Likes</td></tr>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
 <td style='text-align: right;'></td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>       &nbsp;</td>
+<td style='text-align: right;'>        </td>
 <td style='' colspan='1'>&nbsp;</td>
-<td style='text-align: right;'>                &nbsp;</td>
+<td style='text-align: right;'>                 </td>
 </tr>
 <tr>
 <td style='text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
@@ -2022,18 +2028,16 @@ Likes</td></tr>
 </tbody>
 </table>
 <pre class="r"><code># below more complciated table were we compare likes side by side
+# Likes - side by side comparison
 w %&gt;% 
     tab_cols(total(label = &quot;#Total| |&quot;), c1r) %&gt;% 
     tab_cells(list(unvr(mrset(h1_1 %to% h1_6)))) %&gt;% 
     tab_stat_cpct(label = var_lab(h1_1)) %&gt;% 
     tab_cells(list(unvr(mrset(p1_1 %to% p1_6)))) %&gt;% 
     tab_stat_cpct(label = var_lab(p1_1)) %&gt;% 
-    tab_pivot(stat_position = &quot;inside_columns&quot;) %&gt;% 
-    htmlTable(caption = &quot;Likes - side by side comparison&quot;)  </code></pre>
+    tab_pivot(stat_position = &quot;inside_columns&quot;) </code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
-<tr><td colspan='12' style='text-align: left;'>
-Likes - side by side comparison</td></tr>
 <tr>
 <th style='border-top: 2px solid grey;'></th>
 <th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
@@ -2614,263 +2618,128 @@ recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0) %into% voter</code></pre>
 <h5>Tables</h5>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>fre(w$a) # Frequency of fruits</code></pre>
-<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
-<th style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
-Fruits
-</th>
-<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
- Count 
-</th>
-<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
- Valid percent 
-</th>
-<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
- Percent 
-</th>
-<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
- Responses, % 
-</th>
-<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
- Cumulative responses, % 
-</th>
+<th style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Fruits</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Count&nbsp;</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Valid percent&nbsp;</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Percent&nbsp;</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Responses, %&nbsp;</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Cumulative responses, %&nbsp;</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">
- apples 
-</td>
-<td style="text-align: right;">
-1
-</td>
-<td style="text-align: right;">
-25
-</td>
-<td style="text-align: right;">
-25
-</td>
-<td style="text-align: right;">
-25
-</td>
-<td style="text-align: right;">
-25
-</td>
+<td style='text-align: left;'>&nbsp;apples&nbsp;</td>
+<td style='text-align: right;'>1</td>
+<td style='text-align: right;'>25</td>
+<td style='text-align: right;'>25</td>
+<td style='text-align: right;'>25</td>
+<td style='text-align: right;'>25</td>
 </tr>
 <tr>
-<td style="text-align: left;">
- oranges 
-</td>
-<td style="text-align: right;">
-2
-</td>
-<td style="text-align: right;">
-50
-</td>
-<td style="text-align: right;">
-50
-</td>
-<td style="text-align: right;">
-50
-</td>
-<td style="text-align: right;">
-75
-</td>
+<td style='text-align: left;'>&nbsp;oranges&nbsp;</td>
+<td style='text-align: right;'>2</td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>75</td>
 </tr>
 <tr>
-<td style="text-align: left;">
- peaches 
-</td>
-<td style="text-align: right;">
-1
-</td>
-<td style="text-align: right;">
-25
-</td>
-<td style="text-align: right;">
-25
-</td>
-<td style="text-align: right;">
-25
-</td>
-<td style="text-align: right;">
-100
-</td>
+<td style='text-align: left;'>&nbsp;peaches&nbsp;</td>
+<td style='text-align: right;'>1</td>
+<td style='text-align: right;'>25</td>
+<td style='text-align: right;'>25</td>
+<td style='text-align: right;'>25</td>
+<td style='text-align: right;'>100</td>
 </tr>
 <tr>
-<td style="text-align: left;">
- #Total 
-</td>
-<td style="text-align: right;">
-4
-</td>
-<td style="text-align: right;">
-100
-</td>
-<td style="text-align: right;">
-100
-</td>
-<td style="text-align: right;">
-100
-</td>
-<td style="text-align: right;">
-</td>
+<td style='text-align: left;'>&nbsp;#Total&nbsp;</td>
+<td style='text-align: right;'>4</td>
+<td style='text-align: right;'>100</td>
+<td style='text-align: right;'>100</td>
+<td style='text-align: right;'>100</td>
+<td style='text-align: right;'></td>
 </tr>
 <tr>
-<td style="border-bottom: 2px solid grey; text-align: left;">
- &lt;NA&gt; 
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-0
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-0
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-</td>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&lt;NA&gt;&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>0</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'></td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>0</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'></td>
+<td style='border-bottom: 2px solid grey; text-align: right;'></td>
 </tr>
 </tbody>
 </table>
 <pre class="r"><code>cro_cpct(w$b, w$a) # Column percent of cost by fruits</code></pre>
-<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
-<th style="border-top: 2px solid grey;">
-</th>
-<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
- Fruits 
-</th>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Fruits&nbsp;</th>
 </tr>
 <tr>
-<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
-</th>
-<th style="border-bottom: 1px solid grey; text-align: center;">
- apples 
-</th>
-<th style="border-bottom: 1px solid grey; text-align: center;">
- oranges 
-</th>
-<th style="border-bottom: 1px solid grey; text-align: center;">
- peaches 
-</th>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;apples&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;oranges&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;peaches&nbsp;</th>
 </tr>
 </thead>
-<tbody>
+<tbody> 
+<tr><td colspan='4' style='font-weight: 900;'>&nbsp;Cost&nbsp;</td></tr>
 <tr>
-<td colspan="4" style="font-weight: 900;">
- Cost 
-</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;15&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'></td>
 </tr>
 <tr>
-<td style="text-align: left;">
-   15 
-</td>
-<td style="text-align: right;">
-</td>
-<td style="text-align: right;">
-50
-</td>
-<td style="text-align: right;">
-</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;30&nbsp;</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'>50</td>
+<td style='text-align: right;'>100</td>
 </tr>
 <tr>
-<td style="text-align: left;">
-   30 
-</td>
-<td style="text-align: right;">
-</td>
-<td style="text-align: right;">
-50
-</td>
-<td style="text-align: right;">
-100
-</td>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;70&nbsp;</td>
+<td style='text-align: right;'>100</td>
+<td style='text-align: right;'></td>
+<td style='text-align: right;'></td>
 </tr>
 <tr>
-<td style="text-align: left;">
-   70 
-</td>
-<td style="text-align: right;">
-100
-</td>
-<td style="text-align: right;">
-</td>
-<td style="text-align: right;">
-</td>
-</tr>
-<tr>
-<td style="border-bottom: 2px solid grey; text-align: left;">
-   #Total cases 
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-1
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-2
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-1
-</td>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>1</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>2</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>1</td>
 </tr>
 </tbody>
 </table>
 <pre class="r"><code>cro_mean(dtfrm(w$b, w$c), w$a) # Mean cost and price by fruits</code></pre>
-<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
-<th style="border-top: 2px solid grey;">
-</th>
-<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
- Fruits 
-</th>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Fruits&nbsp;</th>
 </tr>
 <tr>
-<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
-</th>
-<th style="border-bottom: 1px solid grey; text-align: center;">
- apples 
-</th>
-<th style="border-bottom: 1px solid grey; text-align: center;">
- oranges 
-</th>
-<th style="border-bottom: 1px solid grey; text-align: center;">
- peaches 
-</th>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;apples&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;oranges&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;peaches&nbsp;</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">
- Cost 
-</td>
-<td style="text-align: right;">
-70
-</td>
-<td style="text-align: right;">
-22.5
-</td>
-<td style="text-align: right;">
-30
-</td>
+<td style='text-align: left;'>&nbsp;Cost&nbsp;</td>
+<td style='text-align: right;'>70</td>
+<td style='text-align: right;'>22.5</td>
+<td style='text-align: right;'>30</td>
 </tr>
 <tr>
-<td style="border-bottom: 2px solid grey; text-align: left;">
- Price 
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-80
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-45.0
-</td>
-<td style="border-bottom: 2px solid grey; text-align: right;">
-40
-</td>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;Price&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>80</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>45.0</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>40</td>
 </tr>
 </tbody>
 </table>
