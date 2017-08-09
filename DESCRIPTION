@@ -26,7 +26,7 @@ Suggests:
 Description: Package provides tabulation functions with support for 'SPSS'-style 
         labels, multiple / nested banners, weights, multiple-response variables 
         and significance testing. There are facilities for nice output of tables 
-        in 'knitr', R notebooks, 'shiny' and 'Jupyter' notebooks. Proper methods 
+        in 'knitr', R notebooks, 'Shiny' and 'Jupyter' notebooks. Proper methods 
         for labelled variables add value labels support to base R functions and to 
         some functions from other packages. Additionally, the package offers 
         useful functions for data processing in marketing research / social 
