@@ -1,6 +1,6 @@
 ## Introduction
 
-`expss` package provides tabulation functions with support for 'SPSS'-style labels, multiple / nested banners, weights, multiple-response variables and significance testing. There are facilities for nice output of tables in 'knitr', R notebooks, 'shiny' and 'Jupyter' notebooks. Proper methods for labelled variables add value labels support to base R functions and to some functions from other packages. Additionally, the package offers useful functions for data processing in marketing research / social surveys - popular data transformation functions from 'SPSS' Statistics ('RECODE', 'COUNT', 'COMPUTE', 'DO IF', etc.) and 'Excel' ('COUNTIF', 'VLOOKUP', etc.). Package is intended to help people to move data processing from 'Excel'/'SPSS' to R. See examples below. You can get help about
+`expss` package provides tabulation functions with support for 'SPSS'-style labels, multiple / nested banners, weights, multiple-response variables and significance testing. There are facilities for nice output of tables in 'knitr', R notebooks, 'Shiny' and 'Jupyter' notebooks. Proper methods for labelled variables add value labels support to base R functions and to some functions from other packages. Additionally, the package offers useful functions for data processing in marketing research / social surveys - popular data transformation functions from 'SPSS' Statistics ('RECODE', 'COUNT', 'COMPUTE', 'DO IF', etc.) and 'Excel' ('COUNTIF', 'VLOOKUP', etc.). Package is intended to help people to move data processing from 'Excel'/'SPSS' to R. See examples below. You can get help about
 any function by typing `?function_name` in the R console.
 
 ### Links
@@ -42,24 +42,31 @@ mtcars = apply_labels(mtcars,
 
 ```
 
-For quick cross-tabulation there are `fre` and `cro` family of function. For simplicity we demonstrate here only `cro_cpct` which caluclates column percent. Documentation for other functions, such as `cro_cases` for counts, `cro_rpct` for row percent, `cro_tpct` for table percent and `cro_fun` for custom summary functions can be seen by typing `?cro` and `?cro_fun` in the console.
+For quick cross-tabulation there are `fre` and `cro` family of function. For simplicity we demonstrate here only `cro_cpct` which caluclates column percent. Documentation for other functions, such as `cro_cases` for counts, `cro_rpct` for row percent, `cro_tpct` for table percent and `cro_fun` for custom summary functions can be seen by typing `?cro` and `?cro_fun` in the console. 
 
 ```{r}
 # 'cro' examples
-# multiple banners
+# Table with multiple banners (column %).
 mtcars %>% 
-    calculate(cro_cpct(cyl, list(total(), am, vs))) %>% 
-    htmlTable(caption = "Table with multiple banners (column %).")
+    calculate(cro_cpct(cyl, list(total(), am, vs))) 
 
-# nested banners          
+# Table with nested banners (column %).          
 mtcars %>% 
-    calculate(cro_cpct(cyl, list(total(), am %nest% vs))) %>% 
-    htmlTable(caption = "Table with nested banners (column %).")         
+    calculate(cro_cpct(cyl, list(total(), am %nest% vs)))       
 
 ```
 We have more sophisticated interface for table construction with `magrittr` piping. Table construction consists of at least of three functions chained with pipe operator: `%>%`. At first we need to specify variables for which statistics will be computed with `tab_cells`. Secondary, we calculate statistics with one of the `tab_stat_*` functions. And last, we finalize table creation with `tab_pivot`, e. g.: `dataset %>% tab_cells(variable) %>% tab_stat_cases() %>% tab_pivot()`. After that we can optionally sort table with `tab_sort_asc`, drop empty rows/columns with `drop_rc` and transpose with `tab_transpose`. Resulting table is just a `data.frame` so we can use usual R operations on it. Detailed documentation for table creation can be seen via `?tables`. For significance testing see `?significance`.
+Generally, tables automatically translated to HTML for output in knitr or Jupyter notebooks. However, if we want HTML output in the R notebooks or in the RStudio viewer we need to set options for that: `expss_output_rnotebook()` or `expss_output_viewer()`. 
 
 ```{r}
+# simple example
+mtcars %>% 
+    tab_cells(cyl) %>% 
+    tab_cols(total(), am) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
+
+# if we need caption then we use 'htmlTable'
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
     tab_cols(total(), am) %>% 
@@ -68,13 +75,14 @@ mtcars %>%
     tab_pivot() %>% 
     htmlTable(caption = "Table with summary statistics and significance marks.")
 
+# Table with the same summary statistics. Statistics labels in columns.
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
     tab_cols(total(label = "#Total| |"), am) %>% 
     tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n, method = list) %>%
-    tab_pivot() %>% 
-    htmlTable(caption = "Table with the same summary statistics. Statistics labels in columns.")
+    tab_pivot()
 
+# Different statistics for different variables.
 mtcars %>%
     tab_cols(total(), vs) %>%
     tab_cells(mpg) %>% 
@@ -84,9 +92,9 @@ mtcars %>%
     tab_stat_cpct(total_row_position = "none", label = "col %") %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
-    tab_pivot(stat_position = "inside_rows") %>% 
-    htmlTable(caption = "Different statistics for different variables.")
+    tab_pivot(stat_position = "inside_rows") 
 
+# Table with split by rows and with custom totals.
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(total(), vs) %>% 
@@ -94,9 +102,9 @@ mtcars %>%
     tab_stat_cpct(total_row_position = "above",
                   total_label = c("number of cases", "row %"),
                   total_statistic = c("u_cases", "u_rpct")) %>% 
-    tab_pivot() %>% 
-    htmlTable(caption = "Table with split by rows and with custom totals.")
+    tab_pivot()
 
+# Linear regression by groups.
 mtcars %>% 
     tab_cells(dtfrm(mpg, disp, hp, wt, qsec)) %>% 
     tab_cols(total(label = "#Total| |"), am) %>% 
@@ -109,8 +117,7 @@ mtcars %>%
             )
         }    
     ) %>% 
-    tab_pivot() %>% 
-    htmlTable(caption = "Linear regression by groups.")
+    tab_pivot() 
 ```
 
 ## Example of data processing with multiple-response variables
@@ -218,8 +225,6 @@ w = apply_labels(w,
     p22 = overall_liking_scale
 )
 
-
-cro(w$c1r) %>% htmlTable(caption = "Distribution of preferences." )
 ```
 Are there any significant differences between preferences? Yes, difference is significant.
 ```{r}
@@ -229,8 +234,7 @@ w %>% tab_cols(total(), age_cat) %>%
       tab_mis_val(3) %>% 
       tab_stat_cases() %>% 
       tab_last_sig_cases() %>% 
-      tab_pivot() %>% 
-      htmlTable()
+      tab_pivot()
     
 ```
 Further we calculate distribution of answers in the survey questions. 
@@ -238,17 +242,22 @@ Further we calculate distribution of answers in the survey questions.
 # lets specify repeated parts of table creation chains
 banner = w %>% tab_cols(total(), age_cat, c1r) 
 # column percent with significance
-tab_cpct_sig = . %>% tab_stat_cpct() %>% tab_last_sig_cpct(sig_labels = paste0("<b>",LETTERS, "</b>"))
+tab_cpct_sig = . %>% tab_stat_cpct() %>% 
+                    tab_last_sig_cpct(sig_labels = paste0("<b>",LETTERS, "</b>"))
+
 # means with siginifcance
 tab_means_sig = . %>% tab_stat_mean_sd_n(labels = c("<b><u>Mean</u></b>", "sd", "N")) %>% 
-                      tab_last_sig_means(sig_labels = paste0("<b>",LETTERS, "</b>"),   keep = "means")
+                      tab_last_sig_means(
+                          sig_labels = paste0("<b>",LETTERS, "</b>"),   
+                          keep = "means")
 
+# Preferences
 banner %>% 
     tab_cells(c1r) %>% 
     tab_cpct_sig() %>% 
-    tab_pivot() %>% 
-    htmlTable(caption = "Preferences")
+    tab_pivot() 
 
+# Overall liking
 banner %>%  
     tab_cells(h22) %>% 
     tab_means_sig() %>% 
@@ -256,9 +265,9 @@ banner %>%
     tab_cells(p22) %>% 
     tab_means_sig() %>% 
     tab_cpct_sig() %>%
-    tab_pivot() %>% 
-    htmlTable(caption = "Overall liking")
+    tab_pivot() 
 
+# Likes
 banner %>% 
     tab_cells(h_likes) %>% 
     tab_means_sig() %>% 
@@ -268,20 +277,17 @@ banner %>%
     tab_means_sig() %>% 
     tab_cells(mrset(p1_1 %to% p1_6)) %>% 
     tab_cpct_sig() %>%
-    tab_pivot() %>% 
-    htmlTable(caption = "Likes") 
+    tab_pivot() 
 
 # below more complciated table were we compare likes side by side
+# Likes - side by side comparison
 w %>% 
     tab_cols(total(label = "#Total| |"), c1r) %>% 
     tab_cells(list(unvr(mrset(h1_1 %to% h1_6)))) %>% 
     tab_stat_cpct(label = var_lab(h1_1)) %>% 
     tab_cells(list(unvr(mrset(p1_1 %to% p1_6)))) %>% 
     tab_stat_cpct(label = var_lab(p1_1)) %>% 
-    tab_pivot(stat_position = "inside_columns") %>% 
-    htmlTable(caption = "Likes - side by side comparison")  
-
-
+    tab_pivot(stat_position = "inside_columns") 
 
 ```
 
@@ -308,7 +314,6 @@ boxplot(mpg ~ am, data = mtcars)
 ```
 
 There is a special function for variables labels support - `use_labels`. By now variables labels support available only for expression which will be evaluated inside data.frame.
-
 ```{r}
 # table with dimension names
 use_labels(mtcars, table(am, vs)) 
@@ -772,3 +777,5 @@ fre(w$a) # Frequency of fruits
 cro_cpct(w$b, w$a) # Column percent of cost by fruits
 cro_mean(dtfrm(w$b, w$c), w$a) # Mean cost and price by fruits
 ```
+
+
