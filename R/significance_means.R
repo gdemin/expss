@@ -49,18 +49,17 @@ significance_means.etable = function(x,
     subtable_marks = match.arg(subtable_marks)
     mark_greater = subtable_marks %in% c("greater", "both")
     mark_less = subtable_marks %in% c("both", "less")
+    keep = match.arg(keep, KEEP_STAT, several.ok = TRUE)
+    keep_means = "means" %in% keep
+    keep_sd = "sd" %in% keep
+    keep_bases = "bases" %in% keep
+    groups = header_groups(colnames(x))
     if("subtable" %in% compare_type){
         if(!is.null(sig_labels)){
             x = add_sig_labels(x, sig_labels = sig_labels)
         } 
         all_column_labels = get_category_labels(colnames(x))
     }
-    keep = match.arg(keep, KEEP_STAT, several.ok = TRUE)
-    keep_means = "means" %in% keep
-    keep_sd = "sd" %in% keep
-    keep_bases = "bases" %in% keep
-    groups = header_groups(colnames(x))
-    
     # some types (data.table) doesn't support recycling of logicals
     means_ind = rep_len(MEANS_IND, nrow(x))
     sd_ind = rep_len(SD_IND, nrow(x))

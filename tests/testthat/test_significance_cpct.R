@@ -468,3 +468,19 @@ expect_equal_to_reference(
     "rds/signif_cpct36.rds")
 
 
+mtcars_table4 = mtcars %calc% cro_cpct(list(cyl, gear),
+                        list(total(), vs, am, vs %nest% am))
+
+
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table4, compare_type = c("first_column", "subtable")),
+    "rds/signif_cpct37.rds")
+
+
+mtcars_table5 = cro_cpct(list(mtcars$cyl, mtcars$gear),
+                        unvr(list(total(), mtcars$vs, mtcars$am)))
+
+
+expect_equal_to_reference(
+    significance_cpct(mtcars_table5), "rds/signif_cpct38.rds")

@@ -239,14 +239,14 @@ res = mtcars %>%
     tab_stat_cpct() %>%
     tab_last_sig_cpct() %>% 
     tab_stat_cases() %>% 
-    tab_last_add_sig_labels() %>% 
     tab_last_sig_cases(keep = "none") %>% 
+    tab_last_add_sig_labels() %>% 
     tab_cells(gear) %>% 
     tab_stat_cpct() %>%
     tab_last_sig_cpct() %>% 
     tab_stat_cases() %>% 
-    tab_last_add_sig_labels() %>% 
     tab_last_sig_cases(keep = "none") %>% 
+    tab_last_add_sig_labels() %>% 
     tab_pivot(stat_position = "inside_rows")
 
 expect_equal_to_reference(res, 
@@ -256,8 +256,8 @@ expect_equal_to_reference(res,
 tab_many_sig = . %>% tab_stat_cpct() %>%
     tab_last_sig_cpct() %>% 
     tab_stat_cases() %>% 
-    tab_last_add_sig_labels() %>% 
     tab_last_sig_cases(keep = "none") %>% 
+    tab_last_add_sig_labels() %>% 
     tab_last_vstack()
 
 res = mtcars %>% 
@@ -282,13 +282,13 @@ expect_equal_to_reference(res,
 
 tab_sig_means_left = . %>% 
     tab_stat_mean_sd_n() %>% 
-    tab_last_add_sig_labels() %>% 
+    tab_last_add_sig_labels() %>%
     tab_last_sig_means(keep = "none", sig_labels = NULL, mode = "append") %>% 
     tab_last_hstack("inside_columns")
 
 tab_sig_cpct_left = . %>% 
     tab_stat_cpct() %>% 
-    tab_last_add_sig_labels() %>% 
+    tab_last_add_sig_labels() %>%
     tab_last_sig_cpct(keep = "none", sig_labels = NULL, mode = "append") %>% 
     tab_last_hstack("inside_columns")
 
@@ -306,7 +306,7 @@ res = mtcars %>%
     tab_pivot(stat_position = "inside_rows") %>% 
     drop_empty_columns()
 
-expect_equal_to_reference(res, 
+expect_equal_to_reference(res,
                           "rds/ct_signif_many2.rds"
 )
 

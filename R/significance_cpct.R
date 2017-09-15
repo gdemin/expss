@@ -252,17 +252,17 @@ significance_cpct.etable = function(x,
     mark_greater = subtable_marks %in% c("greater", "both")
     mark_less = subtable_marks %in% c("both", "less")
     delta_cpct = delta_cpct/100
-    if("subtable" %in% compare_type){
-        if(!is.null(sig_labels)){
-            x = add_sig_labels(x, sig_labels = sig_labels)
-        } 
-        all_column_labels = get_category_labels(colnames(x))
-    }
     keep = match.arg(keep, KEEP_STAT, several.ok = TRUE)
     keep_percent = "percent" %in% keep
     keep_bases = "bases" %in% keep
     if(NCOL(x)>1){
         groups = header_groups(colnames(x))
+        if("subtable" %in% compare_type){
+            if(!is.null(sig_labels)){
+                x = add_sig_labels(x, sig_labels = sig_labels)
+            } 
+            all_column_labels = get_category_labels(colnames(x))
+        }
         sections = split_table_by_row_sections(x, total_marker = total_marker, total_row = total_row)
         res = lapply(sections, function(each_section){
             curr_base = extract_total_from_section(each_section, total_marker = total_marker, total_row = total_row)
@@ -574,42 +574,32 @@ section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
 ########################
 
 get_category_labels = function(header){
-    header = t(split_labels(header, remove_repeated = FALSE)) 
-    if(NROW(header)<2){
-        return(c(header, recursive = TRUE, use.names = FALSE))
-    }
-    res = apply(header, 2, function(x){
-        x = x %d% c(NA, "", perl("^\\s+$"))
-        if(length(x)>0){
-            x[length(x)]
-        } else {
-            ""
-        }
-    })
-    c(res, recursive = TRUE, use.names = FALSE)
+    # "aaa|bbb|ddd" -> "ddd"
+    gsub("^.*?\\|([^\\|]*)$", "\\1", header, perl = TRUE) 
 }
+
 
 ########################
 
 header_groups = function(header){
     header = header[-1]
-    header = t(split_labels(header, remove_repeated = FALSE))   
-    # impossible situation because we doesn't test tables with num. of. cols.<=2  
-    # if(NCOL(header)<2){
-    #     return(list(numeric(0)))
-    # }
-    if(NROW(header)<2){
-        # '+ 1' because of first column with row_labels
-        return(list(seq_len(NCOL(header))+1))
+    potentially_subgroup = function(x){
+        has_levels = grepl("|", x, fixed = TRUE)
+        seq_dupl = x[-1L] == x[-length(x)]
+        seq_dupl =c(FALSE, seq_dupl) | c(seq_dupl, FALSE)
+        has_levels & !seq_dupl
     }
-    res = matrix_to_cgroup(header)$n.cgroup
-    is_section_header = res %row_in% gt(1)
-    if(!any(is_section_header)){
+    if(!any(grepl("|", header, fixed = TRUE))){
         # '+ 1' because of first column with row_labels
-        return(list(seq_len(NCOL(header))+1)) 
+        return(list(seq_along(header)+1))
     }
-    is_section_header = which(is_section_header)
-    res = res[is_section_header[length(is_section_header)], ] %d% NA
+    to_strip = potentially_subgroup(header) 
+    while(any(to_strip)){
+        # "aaa|bbb|ddd" -> "aaa|bbb"
+        header[to_strip] = gsub("\\|[^\\|]*$", "", header[to_strip], perl = TRUE) 
+        to_strip = potentially_subgroup(header) 
+    }
+    res = rle(header)[["lengths"]]
     res = lapply(res, seq_len)
     # '+ 1' because of first column with row_labels
     res[[1]] = res[[1]] + 1 
@@ -617,9 +607,26 @@ header_groups = function(header){
         res[[each]] = res[[each]] + res[[each-1]][length(res[[each-1]])] 
     }
     res
-    
 }
 
+old_header_groups = function(header){
+    header = header[-1]
+    if(!any(grepl("|", header, fixed = TRUE))){
+        # '+ 1' because of first column with row_labels
+        return(list(seq_along(header)+1))
+    }
+    # "aaa|bbb|ddd" -> "aaa|bbb"
+    header = gsub("\\|[^\\|]*$", "", header, perl = TRUE) 
+    
+    res = rle(header)[["lengths"]]
+    res = lapply(res, seq_len)
+    # '+ 1' because of first column with row_labels
+    res[[1]] = res[[1]] + 1 
+    for(each in seq_along(res)[-1]){
+        res[[each]] = res[[each]] + res[[each-1]][length(res[[each-1]])] 
+    }
+    res
+}
 
 ########################
 

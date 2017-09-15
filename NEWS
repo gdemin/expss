@@ -1,7 +1,7 @@
 0.8.2 (22.09.2017)
 ================
 * fix bug with single column "mrset"
-
+* fix bug with significance tests on tables with complex headers
 
 0.8.1 (10.08.2017)
 ================
