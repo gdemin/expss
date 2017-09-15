@@ -1,8 +1,8 @@
 Package: expss
 Type: Package
 Title: Tables with Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
-Version: 0.8.1
-Date: 2017-08-10
+Version: 0.8.2
+Date: 2017-09-25
 Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
 URL: https://gdemin.github.io/expss/

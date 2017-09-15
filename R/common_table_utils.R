@@ -16,12 +16,14 @@ universal_subset = function(data, index, drop = TRUE){
 # j numeric or logical
 # row.names are ignored
 subset_dataframe = function(x, j, drop = TRUE){
-    if(drop && NCOL(x)<2){
-        return(unlist(x, use.names = FALSE)[j])
+    if(NCOL(x)==1 && drop){
+        return(x[[1]][j])    
     }
     res = lapply(x, `[`, j)
     class(res) = class(x)
-    attr(res, "row.names") <- seq_len(NROW(res[[1]]))
+    if(NCOL(x)>0){
+        attr(res, "row.names") <- seq_len(NROW(res[[1]]))
+    }
     res
 }
 #########################################
