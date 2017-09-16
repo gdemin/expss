@@ -44,13 +44,16 @@ this function by design so use quotes for names of your variables. This
 function is intended to get variables by parameter/criteria. The only
 exception with non-standard evaluation is \code{\%to\%}. You can use
 \code{\%to\%} inside \code{vars} or independently.}
-\item{\code{..[]}}{ returns data.frame with all variables by their names or
-by criteria (see \link{criteria}).  Names at the top-level can be unquoted
-(non-standard evaluation). For standard evaluation of parameters you can
-surround them by round brackets. You can assign to this expression. If there
+\item{\code{..[]}}{ returns data.frame with all variables by their names or 
+by criteria (see \link{criteria}).  Names at the top-level can be unquoted 
+(non-standard evaluation). For standard evaluation of parameters you can 
+surround them by round brackets. You can assign to this expression. If there 
 are several names inside square brackets then each element of list/data.frame
-from right side will be assigned to appropriate name from left side. You can
-use \code{item1 \%to\% item2} notation to get/create sequence of variables.}
+from right side will be assigned to appropriate name from left side. You can 
+use \code{item1 \%to\% item2} notation to get/create sequence of variables. 
+If there are no arguments inside square brackets than from each item of RHS 
+will be created separate variable in the parent frame. In this case RHS
+should be named list or data.frame. }
 \item{\code{..$name}}{ sets/returns object which name is stored in the
 variable \code{name}. It is convenient wrapper around 
 \link[base]{get}/\link[base]{assign} functions.}
@@ -139,6 +142,10 @@ compute(dfs, {
          recode(..[b_1 \%to\% b_5]) = 13 \%thru\% hi ~ 20   
 })
 
+# empty brackets - unboxing of dichotomy.
+compute(dfs, {
+         ..[] =  as.dichotomy(b_1 \%to\% b_5, prefix = "v_")   
+})
 }
 \seealso{
 \link{keep}, \link{except}, \link{do_repeat}, \link{compute},

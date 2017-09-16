@@ -430,6 +430,13 @@ into_internal = function(values, variables_names, envir){
     variables_names = eval(variables_names, envir = envir,
                        enclos = baseenv())
     variables_names = flat_list(variables_names)
+    # strange condition because of missing(...) doesn't work
+    if(length(variables_names)==1 && is.character(variables_names[[1]]) && variables_names[[1]]==""){
+        stopif(!is.list(values), "Unboxing can be applied only to list/data.frame.")
+        variables_names = names(values)
+        stopif(is.null(variables_names), "There are no names in 'x'.")
+        stopif(any(c("", NA) %in% variables_names), "There are empty names in 'x'.")
+    }
     for(i in seq_along(variables_names)){
         each_name = variables_names[[i]]
         if(is.function(each_name)){
@@ -444,8 +451,8 @@ into_internal = function(values, variables_names, envir){
         n_elements = NCOL(values)
     }
     stopif(!((n_elements==length(variables_names)) || (n_elements==1)),
-           "'%into%' - you provide ", length(variables_names), " names and ", n_elements,
-           " items for them. Number of items should be equal to number of the names or equal to one."
+           "You provide ", length(variables_names), " names and ", n_elements,
+           " items for them in assignment. Number of items should be equal to number of the names or equal to one."
     )
     for(each in seq_along(variables_names)){
         assign(variables_names[[each]], column(values, each), envir = envir)
