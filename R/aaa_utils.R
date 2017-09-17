@@ -321,7 +321,6 @@ prepare_env = function(env, n, column_names){
     env$.n = n
     env$.N = n
     env$.. = expss::..
-    env$set = set_generator(env$.N)
     env$.new_var = new_var_generator(function(x) rep(NA, x), env$.N)
     env$.new_character = new_var_generator(character, env$.N)
     env$.new_numeric = new_var_generator(numeric, env$.N)
@@ -336,12 +335,11 @@ prepare_env = function(env, n, column_names){
     lockBinding(".new_character", env)
     lockBinding(".new_numeric", env)
     lockBinding(".new_logical", env)
-    lockBinding("set", env)    
-    
+
 }
 
 clear_env = function(env){
-    rm(".n", "set", ".N", "..", 
+    rm(".n", ".N", "..", 
        ".new_var", ".new_character", 
        ".new_numeric", ".new_logical",
        envir = env)  
@@ -354,7 +352,7 @@ get_current_variables = function(envir){
         if(exists(".internal_column_names0", envir =envir)){
             column_names = envir[[".internal_column_names0"]]
             curr = ls(envir = envir, all.names = TRUE, sorted = FALSE)
-            curr = curr %d% c(".n", "set", ".N", ".internal_column_names0", 
+            curr = curr %d% c(".n",  ".N", ".internal_column_names0", 
                               "..", ".new_var", ".new_character", ".new_numeric", ".new_logical")
             # removed = names(curr)[vapply(curr, is.null, NA, USE.NAMES = FALSE)]
             # curr = names(curr) %d% removed # remove deleted variables?

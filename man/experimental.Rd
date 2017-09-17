@@ -22,7 +22,6 @@
 \alias{.cro_median}
 \alias{.cro_fun}
 \alias{.cro_fun_df}
-\alias{.set}
 \title{Experimental functions for operations with default dataset}
 \usage{
 .modify(expr)
@@ -64,8 +63,6 @@
 .cro_fun(...)
 
 .cro_fun_df(...)
-
-.set(varnames, value = NA)
 }
 \arguments{
 \item{expr}{set of expressions  in curly brackets which will be evaluated in
@@ -74,17 +71,12 @@ the context of default dataset}
 \item{cond}{logical vector/expression}
 
 \item{use_labels}{logical. Experimental feature. If it equals to \code{TRUE} 
-then we will try to replace variable names with labels. So many base R
+then we will try to replace variable names with labels. Many base R
 functions which show variable names will show labels.}
 
 \item{...}{further arguments}
 
 \item{x}{vector/data.frame - variable names in the scope of default dataset}
-
-\item{varnames}{character vector. Deprecated.}
-
-\item{value}{value/vector/matrix/data.frame. Value for newly created/existing
-variables.}
 }
 \description{
 Workflow for these functions is rather simple. You should set up default 

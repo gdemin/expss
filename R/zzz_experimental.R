@@ -45,11 +45,8 @@
 #' @param expr set of expressions  in curly brackets which will be evaluated in
 #'   the context of default dataset
 #' @param cond logical vector/expression
-#' @param varnames character vector. Deprecated.
-#' @param value value/vector/matrix/data.frame. Value for newly created/existing
-#'   variables.
 #' @param use_labels logical. Experimental feature. If it equals to \code{TRUE} 
-#'   then we will try to replace variable names with labels. So many base R
+#'   then we will try to replace variable names with labels. Many base R
 #'   functions which show variable names will show labels.
 #' @param ... further arguments 
 #'
@@ -156,8 +153,6 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 
 
 
-
-
 #' @export
 #' @rdname experimental
 .do_if = .modify_if
@@ -167,9 +162,6 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 #' @rdname experimental
 .compute = .modify
 
-
-
- 
 
 #' @export
 #' @rdname experimental
@@ -266,60 +258,3 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 
 
 
-#' @export
-#' @rdname experimental
-.set = function(varnames, value = NA){
-    .Deprecated("", msg = "Use assignment inside `.compute`. For multiassignement use `%into%`.")
-    reference = suppressMessages(default_dataset() )
-    dd_name = all.vars(reference)
-    stopif(length(dd_name)!=1,"Reference should have only one variable name, e. g. ref_var = ~a")
-    envir = environment(reference)
-    value = eval(substitute(value), envir[[dd_name]], enclos = parent.frame())
-    varnames = subst(varnames)
-    num_of_vars = length(varnames)
-    d_nrows = NROW(envir[[dd_name]])
-    value_nrows = NROW(value)
-    value_ncols = NCOL(value)
-    stopif(value_nrows!=1 & value_nrows!= d_nrows, paste(varnames, collapse = ","), 
-           ": incorrect number of rows in 'value': ", value_nrows, 
-           " There are ", d_nrows, " rows in default dataset.")
-    stopif(value_ncols!=1 & value_ncols!= num_of_vars, paste(varnames, collapse = ","),
-           ": incorrect number of columns in 'value': ", value_ncols, 
-           " There are ", num_of_vars, " names in 'varnames'.")
-    for (each in seq_along(varnames)){
-        envir[[dd_name]][, varnames[[each]]] = column(value, each)
-    }
-    invisible(ref(reference))
-}
-
-set_generator = function(number_of_rows){
-    force(number_of_rows)
-    function(varnames, value = NA){
-        .Deprecated("'%into%'")
-        value = eval(substitute(value), envir = parent.frame(), enclos = baseenv())
-        varnames = subst(varnames)
-        num_of_vars = length(varnames)
-        value_nrows = NROW(value)
-        value_ncols = NCOL(value)
-        stopif(value_nrows!=1 & value_nrows!= number_of_rows, paste(varnames, collapse = ","), 
-               ": incorrect number of rows in 'value': ", value_nrows, 
-               " There are ", number_of_rows, " rows in dataset.")
-        stopif(value_ncols!=1 & value_ncols!= num_of_vars, paste(varnames, collapse = ","), 
-               ": incorrect number of columns in 'value': ", value_ncols, 
-               " There are ", num_of_vars, " names in 'varnames'.")
-        if(value_nrows==1){
-        for (each in seq_along(varnames)){
-            for (each in seq_along(varnames)){
-                assign(varnames[[each]], rep(column(value, each), number_of_rows) , pos = parent.frame())
-            } 
-        }
-        } else {
-            for (each in seq_along(varnames)){
-                assign(varnames[[each]], column(value, each), pos = parent.frame())
-            }   
-        }
-        invisible(NULL)
-    }
-}
-
- 

@@ -3,6 +3,7 @@
 * fix bug with single column "mrset"
 * fix bug with significance tests on tables with complex headers
 * add uboxing possibilities for ..[] (..[] = list/data.frame will create separate variables from that list/data.frame)
+* remove deprecated function ".set"
 
 0.8.1 (10.08.2017)
 ================
