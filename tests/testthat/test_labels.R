@@ -269,8 +269,8 @@ context("labels NULL")
 a = 1:3
 b = a
 val_lab(b) = c(a=1)
-expect_identical(set_val_lab(b, NULL), as.double(a))
-a = as.double(a)
+# expect_identical(set_val_lab(b, NULL), as.double(a))
+# a = as.double(a)
 var_lab(b) = "bbb"
 expect_identical(set_val_lab(b, NULL), set_var_lab(a, "bbb"))
 expect_identical(set_var_lab(b, NULL), set_val_lab(a, c(a=1)))
@@ -360,7 +360,7 @@ expect_identical(as.labelled(dat), res)
 
 a = 1:2
 val_lab(a) = c("a"=1, "b" = 2)
-expect_identical(as.labelled(a), as.double(a))
+expect_identical(as.labelled(a), a)
 var_lab(a) = "ssdds"
 expect_identical(as.labelled(a), a)
 expect_identical(as.labelled(a, "new"), set_var_lab(a, "new"))
@@ -370,7 +370,7 @@ expect_equal(as.labelled(a), set_val_lab(a, c("1" = 1L, "2" = 2L)))
 
 context("as.labelled labelled factor")
 a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c", "d", "e")))
-b = 5:3
+b = as.double(5:3)
 val_lab(b) = setNames(5:1, letters[1:5])
 expect_identical(as.labelled(a), b)
 

@@ -102,8 +102,6 @@ set_var_lab.default = function(x, value){
     if(is.list(x)){
         return(set_var_lab.list(x, value = value))
     }
-    # this conversion is needed to avoid strange bug (incorrect residuals)
-    # with 'lm' with labelled integers 
     if (length(value)==0){
         attr(x,"label")=NULL
         if(length(val_lab(x))==0){
@@ -111,7 +109,9 @@ set_var_lab.default = function(x, value){
         }
         return(x)
     }
-    if(is.integer(x)) x[] = as.double(x)
+    # this conversion is needed to avoid strange bug (incorrect residuals)
+    # with 'lm' with labelled integers
+    # if(is.integer(x)) x[] = as.double(x)
     value = as.character(value)
     stopif(length(value)>1, "Label should be vector of length 1.")
     attr(x, "label")=value
@@ -310,7 +310,7 @@ set_val_lab.default = function(x, value, add = FALSE){
     
     # this conversion is needed to avoid strange bug (incorrect residuals)
     # with 'lm' with labelled integers 
-    if(is.integer(x)) x[] = as.double(x)
+    # if(is.integer(x)) x[] = as.double(x)
     if (add) value = combine_labels(value,val_lab(x))
  
     # Warning about dupliction was removed because it was generated too often for third party *.sav files.

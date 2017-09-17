@@ -10,7 +10,8 @@ dichotomy_matrix[] = 0
 
 expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=TRUE),
                           "rds/category2df.rds")
-expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE),"rds/category3df.rds")
+expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE),
+                          "rds/category3df.rds")
 expect_true(is.category(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE)))
 
 
