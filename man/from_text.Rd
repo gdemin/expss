@@ -31,7 +31,7 @@ names of the variables as its first line.}
 
 \item{sep}{the field separator character. Values on each line of the file are
 separated by this character. If sep = "" (the default for read.table) the
-separator is ‘white space’, that is one or more spaces, tabs, newlines or
+separator is 'white space', that is one or more spaces, tabs, newlines or
 carriage returns.}
 
 \item{quote}{the set of quoting characters. To disable quoting altogether, use quote = "".}
@@ -48,15 +48,16 @@ data.frame
 }
 \description{
 Convert delimited text lines to data.frame. Blank lines are always skipped,
-trailing whitespaces are trimmed. You can use comment with '#' inside your text.
+trailing whitespaces are trimmed. You can use comments with '#' inside your text.
 For details see \link[utils]{read.table}.
 }
 \examples{
 from_text("
-     a b c
-     1 2 3
-     4 5 6
-     7 8 9
+# simple data.frame 
+     a b   c
+     1 2.5 a
+     4 5.5 b
+     7 8.5 c
 ")
 
 }
