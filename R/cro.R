@@ -314,16 +314,16 @@ elementary_cro = function(cell_var,
     
     valid = valid(cell_var) & valid(col_var) & valid(row_var) & (weight>0) & if_null(subgroup, TRUE)
     
-    weight = universal_subset(weight, valid)
-    
     col_var = recycle_if_single_row(col_var, max_nrow)
-    col_var = universal_subset(col_var, valid)
-    
     row_var = recycle_if_single_row(row_var, max_nrow)
-    row_var = universal_subset(row_var, valid)
-    
     cell_var = recycle_if_single_row(cell_var, max_nrow)
-    cell_var = universal_subset(cell_var, valid)
+    
+    if(!all(valid, na.rm = TRUE)){
+        weight = universal_subset(weight, valid)
+        col_var = universal_subset(col_var, valid)
+        row_var = universal_subset(row_var, valid)
+        cell_var = universal_subset(cell_var, valid) 
+    }
     
     cell_var_lab = var_lab(cell_var)
     cell_val_lab = val_lab(cell_var)
@@ -490,7 +490,10 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
     col_var = NULL
     cell_var = NULL
     row_var = NULL
-
+    columns = c("row_var", col_var_names, cell_var_names)
+    all_attr = lapply(columns, 
+                      function(curr) var_attr(raw_data[[curr]]))
+    for(each in columns)
     if(is.null(cell_var_names)){
         res = lapply(col_var_names, function(each_col){
             by_str = paste0("row_var,", each_col)
