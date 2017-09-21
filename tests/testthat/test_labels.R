@@ -444,3 +444,39 @@ model = use_labels(mtcars, lm(mpg ~ vs + am + hp + wt))
 expect_equal_to_reference(unlab(model), "rds/unlab_list.rds")
 expect_equal_to_reference(unvr(model), "rds/unvr_list.rds")
 expect_equal_to_reference(unvl(model), "rds/unvl_list.rds")
+
+
+context("value labels on factor")
+
+gender = c(1, 1, 1, 0, 0, 0, 1, 0, 0, 0,
+                     1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+                     0, 0, 1, 0, 1, 1, 1, 1, 1, 0)
+group = c(rep(1, 10), rep(2, 11), rep(3, 10))
+sample.df = data.frame(group = factor(group), gender = factor(gender))
+
+sample.df = apply_labels(sample.df,
+                         gender = "Gender",
+                         group = "Group")
+expect_warning({
+val_lab(sample.df$group) = num_lab("1 A
+                               2 B
+                               3 C")
+val_lab(sample.df$gender) = num_lab("0 Women
+                                1 Men")
+})
+
+res = cro_cases(sample.df$group, sample.df$gender)
+
+
+var_lab(gender) = "Gender"
+var_lab(group) = "Group"
+
+val_lab(group) = num_lab("1 A
+                                   2 B
+                                   3 C")
+val_lab(gender) = num_lab("0 Women
+                                    1 Men")
+
+test = cro_cases(group, gender)
+
+expect_identical(res, test)

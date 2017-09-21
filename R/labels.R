@@ -305,6 +305,12 @@ set_val_lab.default = function(x, value, add = FALSE){
         }
         return(x)
      }
+    if(is.factor(x)){
+        label = var_lab(x)
+        x = as.character(x)
+        if(!is.null(label)) var_lab(x) = label
+        warning("You are trying to put value labels on factor. It can lead to unexpected results. Factor will be converted to character.")
+    }
     stopif(is.null(names(value)), "Labels should be named vector.")
     stopif(anyDuplicated(value), "duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
     
