@@ -3,11 +3,16 @@ title: "expss: Tables with Labels in R"
 date: "`r Sys.Date()`"
 output: 
     html_document:
-        toc: true
-        toc_float: true
-        depth: 3
-        
+
+      depth: 3
+      self_contained: no
+      toc: yes
+      toc_float: yes
 ---
+
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/expss)](https://cran.r-project.org/package=expss)
+[![](http://cranlogs.r-pkg.org/badges/expss)](http://cran.rstudio.com/web/packages/expss/index.html)
+[![Coverage Status](https://img.shields.io/codecov/c/github/gdemin/expss/master.svg)](https://codecov.io/github/gdemin/expss?branch=master)
 
 ## Introduction
 

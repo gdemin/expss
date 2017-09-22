@@ -5,10 +5,12 @@
 \.git
 ^SupplementaryMaterials
 README.MD
-tests/
 tests/testthat/data
 tests/testthat/test_write_labels.R
-tests/testthat/test_methods.R
-tests/test_all.R
+tests/testthat/test_output.R
+tests/testthat/test_options.R
+tests/testthat/test_fre_cro_cyrillic.R
 docs
 
+^\.travis\.yml$
+^codecov\.yml$

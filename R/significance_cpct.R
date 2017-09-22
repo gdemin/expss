@@ -609,24 +609,6 @@ header_groups = function(header){
     res
 }
 
-old_header_groups = function(header){
-    header = header[-1]
-    if(!any(grepl("|", header, fixed = TRUE))){
-        # '+ 1' because of first column with row_labels
-        return(list(seq_along(header)+1))
-    }
-    # "aaa|bbb|ddd" -> "aaa|bbb"
-    header = gsub("\\|[^\\|]*$", "", header, perl = TRUE) 
-    
-    res = rle(header)[["lengths"]]
-    res = lapply(res, seq_len)
-    # '+ 1' because of first column with row_labels
-    res[[1]] = res[[1]] + 1 
-    for(each in seq_along(res)[-1]){
-        res[[each]] = res[[each]] + res[[each-1]][length(res[[each-1]])] 
-    }
-    res
-}
 
 ########################
 
