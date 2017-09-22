@@ -1,6 +1,6 @@
 context("write_labels")
 
-if(isTRUE(options("covr")[[1]])){
+if(isTRUE(options("covr")[[1]]) && dir.exists("data")){
 # if(TRUE){
     aaa = suppressWarnings(read_spss("data/7556w2_4Client_prelaunch.sav"))
     bbb = suppressWarnings(read_spss("data/2014-2016final.sav"))
@@ -170,6 +170,7 @@ if(isTRUE(options("covr")[[1]])){
     
     write_labelled_csv(w, "data/wrong_slash.csv")
     w2 = read_labelled_csv("data/wrong_slash.csv")
+    class(w2$q1) = c("labelled", "numeric")
     expect_true(all.equal(w, w2))
     
     unlink("data/wrong_slash.csv")
