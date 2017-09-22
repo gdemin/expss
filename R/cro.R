@@ -308,7 +308,21 @@ elementary_cro = function(cell_var,
     stat_type = match.arg(stat_type)
     max_nrow = max(NROW(cell_var), NROW(col_var))
     
-    weight = if_null(weight, 1)
+    cell_var_lab = var_lab(cell_var)
+    cell_val_lab = val_lab(cell_var)
+    
+    row_var_lab = var_lab(row_var)
+    row_val_lab = val_lab(row_var)
+    
+    col_var_lab = var_lab(col_var)
+    col_val_lab = val_lab(col_var)
+    
+    cell_var = unlab(cell_var)
+    row_var = unlab(row_var)
+    col_var = unlab(col_var)
+    
+    
+    weight = unlab(if_null(weight, 1))
     weight = set_negative_and_na_to_zero(weight)
     weight = recycle_if_single_row(weight, max_nrow)
     
@@ -325,20 +339,10 @@ elementary_cro = function(cell_var,
         cell_var = universal_subset(cell_var, valid) 
     }
     
-    cell_var_lab = var_lab(cell_var)
-    cell_val_lab = val_lab(cell_var)
-    
-    row_var_lab = var_lab(row_var)
-    row_val_lab = val_lab(row_var)
-    
-    col_var_lab = var_lab(col_var)
-    col_val_lab = val_lab(col_var)
-    
-    
-    raw_data = cbind(as.data.table(cell_var), 
-                     as.data.table(col_var), 
-                     data.table(weight),
-                     data.table(row_var))
+    raw_data = data.table(cell_var, 
+                     col_var, 
+                     weight,
+                     row_var)
     cell_var_names = paste0("cells", seq_len(NCOL(cell_var)))
     col_var_names = paste0("cols", seq_len(NCOL(col_var)))
     setnames(raw_data, c(cell_var_names, col_var_names, "weight", "row_var"))
@@ -402,6 +406,57 @@ elementary_cro = function(cell_var,
     setnames(res, remove_unnecessary_splitters(colnames(res)))
     res = as.dtfrm(res)
     class(res) = union("etable", class(res))
+    res
+}
+
+########################
+internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
+    # to pass CRAN check
+    weight = NULL
+    value = NULL
+    col_var = NULL
+    cell_var = NULL
+    row_var = NULL
+    # columns = c("row_var", col_var_names, cell_var_names)
+    # all_attr = lapply(columns, 
+    #                   function(curr) var_attr(raw_data[[curr]]))
+    # for(each in columns)
+    if(is.null(cell_var_names)){
+        res = lapply(col_var_names, function(each_col){
+            by_str = paste0("row_var,", each_col)
+            if(use_weight){
+                dres = raw_data[, list(value = sum(weight, na.rm = TRUE)), by = by_str] 
+            } else {
+                dres = raw_data[, list(value = .N), by = by_str]                 
+            }
+        })
+        res = rbindlist(res, use.names = FALSE, fill = FALSE)
+        setnames(res, c("row_var", "col_var", "value"))
+        res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
+        res = res[!is.na(col_var), ]
+    } else {
+        
+        res = lapply(cell_var_names, function(each_cell) { 
+            res = lapply(col_var_names, function(each_col){
+                by_str = paste0("row_var,",each_cell, ",", each_col)
+                if(use_weight){
+                    dres = raw_data[, list(value = sum(weight, na.rm = TRUE)), 
+                                    by = by_str] 
+                } else {
+                    dres = raw_data[, list(value = .N), 
+                                    by = by_str]                 
+                }
+            
+                
+            })
+            res = rbindlist(res, use.names = FALSE, fill = FALSE)
+        })
+        res = rbindlist(res, use.names = FALSE, fill = FALSE)
+        setnames(res, c("row_var", "cell_var", "col_var", "value"))
+        res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var,cell_var"]
+        res = res[!is.na(col_var) & !is.na(cell_var), ]
+    }
+    res[, value := as.double(value)]
     res
 }
 
@@ -482,57 +537,7 @@ internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, use_wei
     dtable[, value := value/total*100]  
 }
 
-########################
-internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
-    # to pass CRAN check
-    weight = NULL
-    value = NULL
-    col_var = NULL
-    cell_var = NULL
-    row_var = NULL
-    columns = c("row_var", col_var_names, cell_var_names)
-    all_attr = lapply(columns, 
-                      function(curr) var_attr(raw_data[[curr]]))
-    for(each in columns)
-    if(is.null(cell_var_names)){
-        res = lapply(col_var_names, function(each_col){
-            by_str = paste0("row_var,", each_col)
-            if(use_weight){
-                dres = raw_data[, list(value = sum(weight, na.rm = TRUE)), by = by_str] 
-            } else {
-                dres = raw_data[, list(value = .N), by = by_str]                 
-            }
-            setnames(dres, each_col, "col_var")
-            
-        })
-        res = rbindlist(res, use.names = TRUE, fill = TRUE)
-        res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
-        res = res[!is.na(col_var), ]
-    } else {
-        
-        res = lapply(cell_var_names, function(each_cell) { 
-            res = lapply(col_var_names, function(each_col){
-                by_str = paste0("row_var,",each_cell, ",", each_col)
-                if(use_weight){
-                    dres = raw_data[, list(value = sum(weight, na.rm = TRUE)), 
-                                    by = by_str] 
-                } else {
-                    dres = raw_data[, list(value = .N), 
-                                    by = by_str]                 
-                }
-                setnames(dres, each_col, "col_var")
-                setnames(dres, each_cell, "cell_var")
-                
-            })
-            res = rbindlist(res, use.names = TRUE, fill = TRUE)
-        })
-        res = rbindlist(res, use.names = TRUE, fill = TRUE)
-        res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var,cell_var"]
-        res = res[!is.na(col_var) & !is.na(cell_var), ]
-    }
-    res[, value := as.double(value)]
-    res
-}
+
 
 #################################
 ########################
