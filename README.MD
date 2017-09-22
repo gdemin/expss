@@ -2,6 +2,7 @@
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/expss)](https://cran.r-project.org/package=expss)
 [![](http://cranlogs.r-pkg.org/badges/expss)](http://cran.rstudio.com/web/packages/expss/index.html)
+[![Coverage Status](https://img.shields.io/codecov/c/github/gdemin/expss/master.svg)](https://codecov.io/github/gdemin/expss?branch=master)
 
 ## Introduction
 
