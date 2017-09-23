@@ -454,11 +454,13 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
         })
         if(length(col_var_names)>1) {
             res = rbindlist(res, use.names = FALSE, fill = FALSE)
+            setnames(res, c("row_var", "col_var", "value"))
+            res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
         } else {
             res = res[[1]]
+            setnames(res, c("row_var", "col_var", "value"))
         }
-        setnames(res, c("row_var", "col_var", "value"))
-        res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
+
         res = res[!is.na(col_var), ]
     } else {
         
@@ -479,11 +481,13 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
         if(length(cell_var_names)>1 || length(col_var_names)>1){
             res = rbindlist(unlist(res, recursive = FALSE, use.names = FALSE),
                             use.names = FALSE, fill = FALSE)
+            setnames(res, c("row_var", "cell_var", "col_var", "value"))
+            res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var,cell_var"]
         } else {
             res = res[[1]][[1]]
+            setnames(res, c("row_var", "cell_var", "col_var", "value"))
         }
-        setnames(res, c("row_var", "cell_var", "col_var", "value"))
-        res = res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var,cell_var"]
+       
         res = res[!is.na(col_var) & !is.na(cell_var), ]
     }
     res[, value := as.double(value)]
