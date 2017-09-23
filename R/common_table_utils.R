@@ -200,8 +200,11 @@ long_datatable_to_table = function(dtable, rows, columns, values){
         res = res[, new_order, with = FALSE]
     }
     for(each in rows){
-        res[[each]] = as.character(res[[each]])
-        res[[each]][is.na(res[[each]])] = ""
+        curr = as.character(res[[each]])
+        curr[is.na(curr)] = ""
+        set(res,, each, curr)
+        # res[[each]] = as.character(res[[each]])
+        # res[[each]][is.na(res[[each]])] = ""
     }
     res
 }

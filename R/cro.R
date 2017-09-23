@@ -306,7 +306,7 @@ elementary_cro = function(cell_var,
            paste(unknowns, collapse = ", "))
     total_statistic = match.arg(total_statistic, TOTAL_STATISTICS, several.ok = TRUE)
     stat_type = match.arg(stat_type)
-    max_nrow = max(NROW(cell_var), NROW(col_var))
+    max_nrow = max(NROW(cell_var), NROW(col_var), NROW(row_var))
     
     cell_var_lab = var_lab(cell_var)
     cell_val_lab = val_lab(cell_var)
@@ -332,7 +332,7 @@ elementary_cro = function(cell_var,
     row_var = recycle_if_single_row(row_var, max_nrow)
     cell_var = recycle_if_single_row(cell_var, max_nrow)
     
-    if(!all(valid, na.rm = TRUE)){
+    if(!all(valid, na.rm = TRUE) || length(valid)==0){
         weight = universal_subset(weight, valid)
         col_var = universal_subset(col_var, valid)
         row_var = universal_subset(row_var, valid)
@@ -340,7 +340,7 @@ elementary_cro = function(cell_var,
     }
     
     raw_data = data.table(cell_var, 
-                     col_var, 
+                     col_var,
                      weight,
                      row_var)
     cell_var_names = paste0("cells", seq_len(NCOL(cell_var)))
@@ -387,19 +387,28 @@ elementary_cro = function(cell_var,
     
     if(total_row_position!="none"){
         total_rows = make_total_rows(
-            res = res, 
             raw_data = raw_data,
             col_var_names = col_var_names,
             total_statistic = total_statistic,
             total_label = total_label
         )   
+        total_rows[, col_var := set_var_lab(col_var, col_var_lab)]
+        total_rows[, col_var := set_val_lab(col_var, col_val_lab)]
+        total_rows[, row_var := set_var_lab(row_var, row_var_lab)]
+        total_rows[, row_var := set_val_lab(row_var, row_val_lab)]
+        # total_rows[, row_labels := factor(row_labels, levels = unique(row_labels))]
+        total_rows = long_datatable_to_table(total_rows, 
+                                      rows = c("row_var", "row_labels"), 
+                                      columns = "col_var", 
+                                      values = "value")
+        # total_rows = total_rows[, -"item"]
         res = add_total_to_table(res, total_rows = total_rows, total_row_position = total_row_position)
     }    
     
     
     res[, row_labels := paste0(row_var_lab, "|", row_var, "|", cell_var_lab, "|", row_labels)]
-    res[["row_var"]] = NULL
-    colnames(res)[-1] = paste0(col_var_lab, "|", colnames(res)[-1]) 
+    res[, row_var:=NULL ]
+    setnames(res, c(colnames(res)[1] , paste0(col_var_lab, "|", colnames(res)[-1])))
     
     res[ , row_labels := remove_unnecessary_splitters(row_labels)] 
     res[ , row_labels := make_items_unique(row_labels)] 
@@ -557,7 +566,7 @@ internal_responses = function(raw_data, col_var_names, use_weight){
 
 ###########################
 
-make_total_rows = function(res, raw_data, col_var_names, 
+make_total_rows = function(raw_data, col_var_names, 
                            total_statistic, total_label){
     # to pass CRAN check
     row_labels = NULL
@@ -572,7 +581,9 @@ make_total_rows = function(res, raw_data, col_var_names,
         }    
     }
     total_label = make_items_unique(total_label)
-    
+    for(item in seq_along(total_label)){
+        total_label[item] = add_first_symbol_to_total_label(total_label[item])
+    }
     total_row = lapply(seq_along(total_statistic), function(item){
         curr_statistic = total_statistic[[item]]
         use_weight = substr(curr_statistic, 1,2) == "w_"
@@ -594,16 +605,18 @@ make_total_rows = function(res, raw_data, col_var_names,
                                              col_var_names = col_var_names, 
                                              use_weight = use_weight)
         )
-        dtotal[, row_labels := ""] 
-        row = long_datatable_to_table(dtotal, 
-                                      rows = c("row_var", "row_labels"), 
-                                      columns = "col_var", 
-                                      values = "value")
-        row[["row_labels"]] = add_first_symbol_to_total_label(total_label[item])
-        row
+        #dtotal[, item := item]
+        if("total" %in% colnames(dtotal)){
+            dtotal[ , total:=NULL]
+        }
+        curr_lab = total_label[item]
+        dtotal[, row_labels := curr_lab] 
+        dtotal
     })
-    rbindlist(total_row, fill = TRUE, use.names = TRUE)
-    
+    total_row = rbindlist(total_row, fill = FALSE, use.names = FALSE)
+    labs = setNames(seq_along(total_label), total_label)
+    total_row[ ,row_labels := factor(row_labels, levels = total_label)] 
+    total_row
 }
 
 add_total_to_table = function(res, total_rows, total_row_position){
@@ -618,7 +631,7 @@ add_total_to_table = function(res, total_rows, total_row_position){
     }
     res = rbind(res, total_rows, fill = TRUE, use.names = TRUE)
     setkeyv(res, c("row_var", "..index__"), verbose = FALSE)
-    res[["..index__"]] = NULL
+    res[, ..index__:=NULL]
     res
 }
 
