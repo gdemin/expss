@@ -249,7 +249,7 @@ elementary_cro_fun_df = function(cell_var,
 
     valid = valid(col_var) & valid(row_var) & if_null(subgroup, TRUE)
 
-    max_nrow = max(NROW(cell_var), NROW(col_var), NROW(row_var))
+    max_nrow = max(NROW(cell_var), NROW(col_var), NROW(row_var), NROW(weight))
     
     ## if any of vars is zero-length then we made all vars zero-length
     min_nrow = min(NROW(cell_var), NROW(col_var), NROW(row_var))
