@@ -271,23 +271,27 @@ elementary_cro_fun_df = function(cell_var,
     row_var = recycle_if_single_row(row_var, max_nrow)
     
     ### drop non-valid cases 
-    
-    cell_var = universal_subset(cell_var, valid, drop = FALSE)
-    col_var = universal_subset(col_var, valid)
-    row_var = universal_subset(row_var, valid, drop = FALSE)
-
+    if(!all(valid, na.rm = TRUE) || length(valid)==0){
+        cell_var = universal_subset(cell_var, valid, drop = FALSE)
+        col_var = universal_subset(col_var, valid)
+        row_var = universal_subset(row_var, valid, drop = FALSE)
+    } else {
+        col_var = drop(col_var)
+    }
     ###################
 
     ### pack data.table #####
-    if(is.data.frame(cell_var)){
-        colnames(cell_var) = make_items_unique(colnames(cell_var))
-    }
+    if(NCOL(cell_var)>1){
+        colnames(cell_var) =  make_items_unique(colnames(cell_var))
+    } 
+    
     if(is.null(weight)){
         raw_data = data.table(..row_var__ = row_var, ..col_var__ = col_var, cell_var)
     } else {
         raw_data = data.table(..row_var__ = row_var, ..col_var__ = col_var, ..weight__ = weight, cell_var)
     }
 
+    
     # statistics
     by_string = "..row_var__,..col_var__"
     if(is.logical(use_lapply) && !use_lapply){
