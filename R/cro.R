@@ -287,6 +287,10 @@ cro_cpct_responses = function(cell_vars,
 
 
 ### compute statistics for single cell_var and single col_var
+### by now it is absolutely awfull code which likes spaghetti
+### it is consequency of optimiztion which lead to foor time performance 
+### improvement in some frequent cases
+### need to rewrite
 elementary_cro = function(cell_var, 
                           col_var, 
                           row_var, 
@@ -381,29 +385,37 @@ elementary_cro = function(cell_var,
         }
     }
     # statistics
-    
-    dtable = switch(stat_type,
-                    cases = internal_cases(raw_data,
-                                           col_var_names = col_var_names,
-                                           cell_var_names = cell_var_names,
-                                           use_weight = use_weight),
-                    cpct = internal_cpct(raw_data,
-                                         col_var_names = col_var_names,
-                                         cell_var_names = cell_var_names,
-                                         use_weight = use_weight),
-                    cpct_responses = internal_cpct_responses(raw_data,
-                                                             col_var_names = col_var_names,
-                                                             cell_var_names = cell_var_names,
-                                                             use_weight = use_weight),
-                    rpct = internal_rpct(raw_data,
-                                         col_var_names = col_var_names,
-                                         cell_var_names = cell_var_names,
-                                         use_weight = use_weight),
-                    tpct = internal_tpct(raw_data,
-                                         col_var_names = col_var_names,
-                                         cell_var_names = cell_var_names,
-                                         use_weight = use_weight)
-    )
+    cases = internal_cases(raw_data,
+                           col_var_names = col_var_names,
+                           cell_var_names = cell_var_names,
+                           use_weight = use_weight)
+    stat_type = stat_type %d% "cases"
+    if(length(stat_type)>0){
+        dtable = switch(stat_type,
+                        cpct = internal_cpct(raw_data,
+                                             cases,
+                                             col_var_names = col_var_names,
+                                             cell_var_names = cell_var_names,
+                                             use_weight = use_weight),
+                        cpct_responses = internal_cpct_responses(raw_data,
+                                                                 cases,
+                                                                 col_var_names = col_var_names,
+                                                                 cell_var_names = cell_var_names,
+                                                                 use_weight = use_weight),
+                        rpct = internal_rpct(raw_data,
+                                             cases,
+                                             col_var_names = col_var_names,
+                                             cell_var_names = cell_var_names,
+                                             use_weight = use_weight),
+                        tpct = internal_tpct(raw_data,
+                                             cases,
+                                             col_var_names = col_var_names,
+                                             cell_var_names = cell_var_names,
+                                             use_weight = use_weight)
+        )
+    } else {
+        dtable = cases
+    }
     
     dtable[, cell_var := set_var_lab(cell_var, cell_var_lab)]
     dtable[, cell_var := set_val_lab(cell_var, cell_val_lab)]
@@ -537,36 +549,38 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
 }
 
 ######################
-internal_cpct = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
+internal_cpct = function(raw_data, cases, col_var_names, cell_var_names = NULL, use_weight){
     # to pass CRAN check
     value = NULL
-    dtable = internal_cases(raw_data, 
-                            col_var_names = col_var_names,
-                            cell_var_names = cell_var_names,
-                            use_weight = use_weight)
-    dtotal = internal_cases(raw_data, 
-                            col_var_names = col_var_names,
-                            use_weight = use_weight)
-    
-    setnames(dtotal, "value", "total")
-    if("row_var" %in% colnames(raw_data)){
-        dtable = dtotal[dtable, on = c("row_var","col_var"), nomatch = NA]
+    if(length(cell_var_names)>1){
+        dtotal = internal_cases(raw_data, 
+                                col_var_names = col_var_names,
+                                use_weight = use_weight)
+        setnames(dtotal, "value", "total")
     } else {
-        dtable = dtotal[dtable, on = "col_var", nomatch = NA]
+        if("row_var" %in% colnames(cases)){
+            by_str = "row_var,col_var"
+        } else {
+            by_str = "col_var"
+        }
+        dtotal = cases[, list(total=sum(value, na.rm = TRUE)), by = by_str]
+    }
+    
+    if("row_var" %in% colnames(raw_data)){
+        dtable = dtotal[cases, on = c("row_var","col_var"), nomatch = NA]
+    } else {
+        dtable = dtotal[cases, on = "col_var", nomatch = NA]
     }
     
     dtable[, value := value/total*100]    
 }
 
 ########################
-internal_cpct_responses = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
+internal_cpct_responses = function(raw_data, cases, col_var_names, cell_var_names = NULL, use_weight){
     # to pass CRAN check
     value = NULL
-    dtable = internal_cases(raw_data, 
-                            col_var_names = col_var_names,
-                            cell_var_names = cell_var_names,
-                            use_weight = use_weight)
-    if("row_var" %in% colnames(raw_data)){
+    dtable = data.table::copy(cases)
+    if("row_var" %in% colnames(dtable)){
         dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "row_var,col_var"]   
     } else {
         dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]   
@@ -575,15 +589,12 @@ internal_cpct_responses = function(raw_data, col_var_names, cell_var_names = NUL
 }
 
 #######################
-internal_rpct = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
+internal_rpct = function(raw_data, cases, col_var_names, cell_var_names = NULL, use_weight){
     # to pass CRAN check
     weight = NULL
     value = NULL
     has_row_var = "row_var" %in% colnames(raw_data)
-    dtable = internal_cases(raw_data, 
-                            col_var_names = col_var_names,
-                            cell_var_names = cell_var_names,
-                            use_weight = use_weight)
+    dtable = data.table::copy(cases)
     if(is.null(cell_var_names)){
         if(has_row_var){
             if(use_weight){
