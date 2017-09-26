@@ -558,6 +558,9 @@ margin_from_raw = function(raw_data, margin = c("columns", "rows", "total"), use
 }
 #########
 margin_from_cases = function(cases, margin = c("columns", "rows", "total")){
+    # to pass CRAN check
+    value = NULL
+    
     margin = match.arg(margin)
     if(has_row_var(cases)) {
         row_var_name = "row_var"
@@ -643,6 +646,8 @@ calculate_response_column_margin = function(raw_data,
                                             stat_type,
                                             total_statistic, 
                                             use_weight){
+    # to pass CRAN check
+    value = NULL
     if(stat_type=="cpct_responses" || any(total_statistic %in% c("u_responses", "w_responses"))){  
         if(has_row_var(raw_data)){
             by_str = "row_var,col_var"
@@ -783,6 +788,8 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
 
 
 calculate_percent = function(cases, margin, stat_type){
+    # to pass CRAN check
+    value = NULL
     res = data.table::copy(cases)
     if(stat_type == "tpct"){
         if(has_row_var(res)){
@@ -813,7 +820,7 @@ make_total_rows = function(need_row_var,
     
     # to pass CRAN check
     row_labels = NULL
-    
+    value = NULL
     ### labels
     
     total_statistic_label = gsub("^u_", " ", total_statistic, perl = TRUE)

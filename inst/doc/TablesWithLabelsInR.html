@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2017-08-10" />
+<meta name="date" content="2017-09-26" />
 
 <title>Tables with Labels in R</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Tables with Labels in R</h1>
-<h4 class="date"><em>2017-08-10</em></h4>
+<h4 class="date"><em>2017-09-26</em></h4>
 
 
 <div id="TOC">
@@ -829,13 +829,13 @@ mtcars %&gt;%<span class="st"> </span>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Linear regression by groups.</span>
 mtcars %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">dtfrm</span>(mpg, disp, hp, wt, qsec)) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">sheet</span>(mpg, disp, hp, wt, qsec)) %&gt;%<span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), am) %&gt;%<span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_stat_fun_df</span>(
         function(x){
             frm =<span class="st"> </span><span class="kw">reformulate</span>(<span class="st">&quot;.&quot;</span>, <span class="dt">response =</span> <span class="kw">names</span>(x)[<span class="dv">1</span>])
             model =<span class="st"> </span><span class="kw">lm</span>(frm, <span class="dt">data =</span> x)
-            <span class="kw">dtfrm</span>(<span class="st">'Coef.'</span> =<span class="st"> </span><span class="kw">coef</span>(model), 
+            <span class="kw">sheet</span>(<span class="st">'Coef.'</span> =<span class="st"> </span><span class="kw">coef</span>(model), 
                   <span class="kw">confint</span>(model)
             )
         }    
@@ -2184,13 +2184,13 @@ w %&gt;%<span class="st"> </span>
 </tbody>
 </table>
 <p>Code for creating the same table in R:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">text =</span> <span class="st">&quot;</span>
-<span class="st">a,b,c</span>
-<span class="st">2,15,50</span>
-<span class="st">1,70,80</span>
-<span class="st">3,30,40</span>
-<span class="st">2,30,40&quot;</span>
-)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">from_text</span>(<span class="st">&quot;</span>
+<span class="st">    a  b  c</span>
+<span class="st">    2 15 50</span>
+<span class="st">    1 70 80</span>
+<span class="st">    3 30 40</span>
+<span class="st">    2 30 40</span>
+<span class="st">&quot;</span>)</code></pre></div>
 <p><code>w</code> is the name of our table.</p>
 <div id="if" class="section level5">
 <h5>IF</h5>
@@ -2301,7 +2301,7 @@ w %&gt;%<span class="st"> </span>
 <p><strong>R</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_col_if</span>(<span class="kw">lt</span>(<span class="dv">3</span>), w$a, <span class="dt">data =</span> w$b)</code></pre></div>
 <p>or, if we want calculate means for both <code>b</code> and <code>c</code> columns:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calculate</span>(w, <span class="kw">mean_col_if</span>(<span class="kw">lt</span>(<span class="dv">3</span>), a, <span class="dt">data =</span> <span class="kw">dtfrm</span>(b, c)))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calculate</span>(w, <span class="kw">mean_col_if</span>(<span class="kw">lt</span>(<span class="dv">3</span>), a, <span class="dt">data =</span> <span class="kw">sheet</span>(b, c)))</code></pre></div>
 </div>
 <div id="vlookup" class="section level5">
 <h5>VLOOKUP</h5>
@@ -2333,13 +2333,12 @@ w %&gt;%<span class="st"> </span>
 </tbody>
 </table>
 <p>Code for creating the same dictionary in R:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dict =<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">text =</span> <span class="st">&quot;</span>
-<span class="st">x,y</span>
-<span class="st">1,apples</span>
-<span class="st">2,oranges</span>
-<span class="st">3,peaches&quot;</span>,
-<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>
-)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dict =<span class="st"> </span><span class="kw">from_text</span>(<span class="st">&quot;</span>
+<span class="st">    x  y</span>
+<span class="st">    1  apples</span>
+<span class="st">    2  oranges</span>
+<span class="st">    3  peaches</span>
+<span class="st">&quot;</span>)</code></pre></div>
 <p><strong>Excel: <code>VLOOKUP(A1, $X$1:$Y$3, 2, FALSE)</code></strong></p>
 <p><strong>R</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">vlookup</span>(w$a, dict, <span class="dv">2</span>)</code></pre></div>
@@ -2579,7 +2578,7 @@ END IF.</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_mean</span>(<span class="kw">dtfrm</span>(w$b, w$c), w$a) <span class="co"># Mean cost and price by fruits</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_mean</span>(<span class="kw">sheet</span>(w$b, w$c), w$a) <span class="co"># Mean cost and price by fruits</span></code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>

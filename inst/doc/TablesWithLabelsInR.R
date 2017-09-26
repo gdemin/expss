@@ -79,13 +79,13 @@ mtcars %>%
 
 # Linear regression by groups.
 mtcars %>% 
-    tab_cells(dtfrm(mpg, disp, hp, wt, qsec)) %>% 
+    tab_cells(sheet(mpg, disp, hp, wt, qsec)) %>% 
     tab_cols(total(label = "#Total| |"), am) %>% 
     tab_stat_fun_df(
         function(x){
             frm = reformulate(".", response = names(x)[1])
             model = lm(frm, data = x)
-            dtfrm('Coef.' = coef(model), 
+            sheet('Coef.' = coef(model), 
                   confint(model)
             )
         }    
@@ -270,13 +270,13 @@ use_labels(mtcars, {
 library(expss)
 
 ## ---- results='hide', message=FALSE, warning=FALSE-----------------------
-w = read.csv(text = "
-a,b,c
-2,15,50
-1,70,80
-3,30,40
-2,30,40"
-)
+w = from_text("
+    a  b  c
+    2 15 50
+    1 70 80
+    3 30 40
+    2 30 40
+")
 
 
 ## ---- eval=FALSE---------------------------------------------------------
@@ -342,16 +342,15 @@ a,b,c
 #  mean_col_if(lt(3), w$a, data = w$b)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  calculate(w, mean_col_if(lt(3), a, data = dtfrm(b, c)))
+#  calculate(w, mean_col_if(lt(3), a, data = sheet(b, c)))
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  dict = read.csv(text = "
-#  x,y
-#  1,apples
-#  2,oranges
-#  3,peaches",
-#  stringsAsFactors = FALSE
-#  )
+#  dict = from_text("
+#      x  y
+#      1  apples
+#      2  oranges
+#      3  peaches
+#  ")
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  w$d = vlookup(w$a, dict, 2)
@@ -450,5 +449,5 @@ w = apply_labels(w,
 ## ------------------------------------------------------------------------
 fre(w$a) # Frequency of fruits
 cro_cpct(w$b, w$a) # Column percent of cost by fruits
-cro_mean(dtfrm(w$b, w$c), w$a) # Mean cost and price by fruits
+cro_mean(sheet(w$b, w$c), w$a) # Mean cost and price by fruits
 

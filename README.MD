@@ -11,7 +11,7 @@ any function by typing `?function_name` in the R console.
 
 ### Links
 
-- [Online introduction - visit it to view code with results](http://gdemin.github.io/expss/)
+- [Online introduction - visit it to view code with its output](http://gdemin.github.io/expss/)
 - [expss on CRAN](https://cran.r-project.org/package=expss)
 - [expss on Github](https://github.com/gdemin/expss)
 - [Issues](https://github.com/gdemin/expss/issues)
@@ -112,13 +112,13 @@ mtcars %>%
 
 # Linear regression by groups.
 mtcars %>% 
-    tab_cells(dtfrm(mpg, disp, hp, wt, qsec)) %>% 
+    tab_cells(sheet(mpg, disp, hp, wt, qsec)) %>% 
     tab_cols(total(label = "#Total| |"), am) %>% 
     tab_stat_fun_df(
         function(x){
             frm = reformulate(".", response = names(x)[1])
             model = lm(frm, data = x)
-            dtfrm('Coef.' = coef(model), 
+            sheet('Coef.' = coef(model), 
                   confint(model)
             )
         }    
@@ -358,13 +358,13 @@ Excel toy table:
 Code for creating the same table in R:
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
-w = read.csv(text = "
-a,b,c
-2,15,50
-1,70,80
-3,30,40
-2,30,40"
-)
+w = from_text("
+    a  b  c
+    2 15 50
+    1 70 80
+    3 30 40
+    2 30 40
+")
 
 ```
 `w` is the name of our table.
@@ -518,7 +518,7 @@ mean_col_if(lt(3), w$a, data = w$b)
 ```
 or, if we want calculate means for both `b` and `c` columns:
 ```{r, eval=FALSE}
-calculate(w, mean_col_if(lt(3), a, data = dtfrm(b, c)))
+calculate(w, mean_col_if(lt(3), a, data = sheet(b, c)))
 ```
 
 ##### VLOOKUP
@@ -535,13 +535,12 @@ Our dictionary for lookup:
 Code for creating the same dictionary in R:
 
 ```{r, eval=FALSE}
-dict = read.csv(text = "
-x,y
-1,apples
-2,oranges
-3,peaches",
-stringsAsFactors = FALSE
-)
+dict = from_text("
+    x  y
+    1  apples
+    2  oranges
+    3  peaches
+")
 ```
 
 **Excel: `VLOOKUP(A1, $X$1:$Y$3, 2, FALSE)`**
@@ -781,7 +780,14 @@ val_lab(w$a) = num_lab("
 ```{r}
 fre(w$a) # Frequency of fruits
 cro_cpct(w$b, w$a) # Column percent of cost by fruits
-cro_mean(dtfrm(w$b, w$c), w$a) # Mean cost and price by fruits
+cro_mean(sheet(w$b, w$c), w$a) # Mean cost and price by fruits
 ```
+
+
+
+
+
+
+
 
 

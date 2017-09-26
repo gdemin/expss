@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2017-09-22" />
+<meta name="date" content="2017-09-26" />
 
 <title>expss: Tables with Labels in R</title>
 
@@ -215,7 +215,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">expss: Tables with Labels in R</h1>
-<h4 class="date"><em>2017-09-22</em></h4>
+<h4 class="date"><em>2017-09-26</em></h4>
 
 </div>
 
@@ -965,13 +965,13 @@ mtcars %&gt;%
 </table>
 <pre class="r"><code># Linear regression by groups.
 mtcars %&gt;% 
-    tab_cells(dtfrm(mpg, disp, hp, wt, qsec)) %&gt;% 
+    tab_cells(sheet(mpg, disp, hp, wt, qsec)) %&gt;% 
     tab_cols(total(label = &quot;#Total| |&quot;), am) %&gt;% 
     tab_stat_fun_df(
         function(x){
             frm = reformulate(&quot;.&quot;, response = names(x)[1])
             model = lm(frm, data = x)
-            dtfrm(&#39;Coef.&#39; = coef(model), 
+            sheet(&#39;Coef.&#39; = coef(model), 
                   confint(model)
             )
         }    
@@ -2320,13 +2320,13 @@ use_labels(mtcars, {
 </tbody>
 </table>
 <p>Code for creating the same table in R:</p>
-<pre class="r"><code>w = read.csv(text = &quot;
-a,b,c
-2,15,50
-1,70,80
-3,30,40
-2,30,40&quot;
-)</code></pre>
+<pre class="r"><code>w = from_text(&quot;
+    a  b  c
+    2 15 50
+    1 70 80
+    3 30 40
+    2 30 40
+&quot;)</code></pre>
 <p><code>w</code> is the name of our table.</p>
 <div id="if" class="section level5">
 <h5>IF</h5>
@@ -2437,7 +2437,7 @@ a,b,c
 <p><strong>R</strong>:</p>
 <pre class="r"><code>mean_col_if(lt(3), w$a, data = w$b)</code></pre>
 <p>or, if we want calculate means for both <code>b</code> and <code>c</code> columns:</p>
-<pre class="r"><code>calculate(w, mean_col_if(lt(3), a, data = dtfrm(b, c)))</code></pre>
+<pre class="r"><code>calculate(w, mean_col_if(lt(3), a, data = sheet(b, c)))</code></pre>
 </div>
 <div id="vlookup" class="section level5">
 <h5>VLOOKUP</h5>
@@ -2469,13 +2469,12 @@ a,b,c
 </tbody>
 </table>
 <p>Code for creating the same dictionary in R:</p>
-<pre class="r"><code>dict = read.csv(text = &quot;
-x,y
-1,apples
-2,oranges
-3,peaches&quot;,
-stringsAsFactors = FALSE
-)</code></pre>
+<pre class="r"><code>dict = from_text(&quot;
+    x  y
+    1  apples
+    2  oranges
+    3  peaches
+&quot;)</code></pre>
 <p><strong>Excel: <code>VLOOKUP(A1, $X$1:$Y$3, 2, FALSE)</code></strong></p>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>w$d = vlookup(w$a, dict, 2)</code></pre>
@@ -2715,7 +2714,7 @@ recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0) %into% voter</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>cro_mean(dtfrm(w$b, w$c), w$a) # Mean cost and price by fruits</code></pre>
+<pre class="r"><code>cro_mean(sheet(w$b, w$c), w$a) # Mean cost and price by fruits</code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
