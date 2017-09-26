@@ -285,7 +285,7 @@ cro_cpct_responses = function(cell_vars,
     )    
 }
 
-
+########################
 make_datatable_for_cro = function(cell_var, 
                                   col_var, 
                                   row_var, 
@@ -420,38 +420,87 @@ elementary_cro = function(cell_var,
     cell_var_names = extract_cell_names(raw_data)
     use_weight = has_weight(raw_data)
     use_row_var = has_row_var(raw_data)
-    # statistics
+    # cases
     cases = internal_cases(raw_data,
                            col_var_names = col_var_names,
                            cell_var_names = cell_var_names,
                            use_weight = use_weight)
-    stat_type = stat_type %d% "cases"
-    if(length(stat_type)>0){
-        dtable = switch(stat_type,
-                        cpct = internal_cpct(raw_data,
-                                             cases,
-                                             col_var_names = col_var_names,
-                                             cell_var_names = cell_var_names,
-                                             use_weight = use_weight),
-                        cpct_responses = internal_cpct_responses(raw_data,
-                                                                 cases,
-                                                                 col_var_names = col_var_names,
-                                                                 cell_var_names = cell_var_names,
-                                                                 use_weight = use_weight),
-                        rpct = internal_rpct(raw_data,
-                                             cases,
-                                             col_var_names = col_var_names,
-                                             cell_var_names = cell_var_names,
-                                             use_weight = use_weight),
-                        tpct = internal_tpct(raw_data,
-                                             cases,
-                                             col_var_names = col_var_names,
-                                             cell_var_names = cell_var_names,
-                                             use_weight = use_weight)
+    
+    ###### margins ########
+    w_margin = NULL
+    u_margin = NULL
+    if(!use_weight || 
+       (stat_type %in% c("cpct", "tpct")) ||
+       (use_weight && any(total_statistic %in% c("w_cases", "w_rpct", "w_tpct")))
+    ){
+        if(length(cell_var_names)>1){
+            margin = margin_from_raw(raw_data = raw_data, 
+                                     margin = "column",
+                                     use_weight = use_weight
+            )
+        } else {
+            margin = margin_from_cases(cases = cases, 
+                                       margin = "column"
+            )
+            
+        }
+        w_margin = margin
+    } else {
+        w_margin = NULL
+    }
+    if(use_weight && any(total_statistic %in% c("u_cases", "u_rpct", "u_tpct"))){
+        u_margin = margin_from_raw(raw_data = raw_data, 
+                                   margin = "column",
+                                   use_weight = FALSE
         )
     } else {
-        dtable = cases
+        u_margin = w_margin
     }
+    ### margin_responses ####
+    if(any(total_statistic %in% c("u_responses", "w_responses"))){
+        if(use_row_var){
+            by_str = "row_var,col_var"
+        } else {
+            by_str = "col_var"
+        }
+        if(!use_weight || any(total_statistic %in% c("w_responses"))){
+            w_margin_responses = cases[, list(total = sum(value, na.rm = TRUE)), by = by_str]
+        } else {
+            w_margin_responses = NULL
+        }
+        if(use_weight && any(total_statistic %in% c("u_responses"))){
+            u_cases = internal_cases(raw_data,
+                                     col_var_names = col_var_names,
+                                     cell_var_names = cell_var_names,
+                                     use_weight = FALSE)
+            u_margin_responses = u_cases[, list(total = sum(value, na.rm = TRUE)), by = by_str] 
+        } else {
+            u_margin_responses = w_margin_responses
+        }
+    } 
+    ##############
+    
+    if(stat_type %in% c("rpct")){ 
+        if(length(col_var_names)>1){
+            margin = margin_from_raw(raw_data = raw_data, 
+                                           margin = "row",
+                                           use_weight = use_weight
+            )       
+        } else {
+            margin = margin_from_cases(cases = cases, 
+                                             margin = "row"
+            )
+        }
+    } 
+    if(stat_type == "cases"){
+        dtable = cases
+    } else {
+        dtable = calculate_percent(cases, 
+                                   margin = margin,
+                                   stat_type = stat_type)
+    }    
+        
+    ################
     
     dtable[, cell_var := set_var_lab(cell_var, cell_var_lab)]
     dtable[, cell_var := set_val_lab(cell_var, cell_val_lab)]
@@ -475,11 +524,13 @@ elementary_cro = function(cell_var,
 
     if(total_row_position!="none"){
         total_rows = make_total_rows(
-            raw_data = raw_data,
-            col_var_names = col_var_names,
+            cases = cases,
+            w_margin = w_margin,
+            u_margin = u_margin,
+            w_margin_responses = w_margin_responses,
+            u_margin_responses = u_margin_responses,
             total_statistic = total_statistic,
-            total_label = total_label,
-            use_weight = use_weight
+            total_label = total_label
         )   
         total_rows[, col_var := set_var_lab(col_var, col_var_lab)]
         total_rows[, col_var := set_val_lab(col_var, col_val_lab)]
@@ -491,7 +542,7 @@ elementary_cro = function(cell_var,
         total_rows = long_datatable_to_table(total_rows, 
                                       rows = c(row_var_name, "row_labels"), 
                                       columns = "col_var", 
-                                      values = "value")
+                                      values = "total")
         # total_rows = total_rows[, -"item"]
         res = add_total_to_table(res, total_rows = total_rows, total_row_position = total_row_position)
     }    
@@ -512,6 +563,43 @@ elementary_cro = function(cell_var,
     res
 }
 
+#########
+margin_from_raw = function(raw_data, margin = c("columns", "rows"), use_weight){
+    margin = match.arg(margin)
+    if(margin=="columns"){
+        aggr_names = extract_col_names(raw_data)
+    } else {
+        aggr_names = extract_cell_names(raw_data)         
+    }
+    dtotal = internal_cases(raw_data,
+                            col_var_names = aggr_names,
+                            cell_var_names = NULL,
+                            use_weight = use_weight)
+    if(margin=="rows"){
+        setnames(dtotal, "col_var", "cell_var")
+    }
+    setnames(dtotal, "value", "total")
+    dtotal
+}
+#########
+margin_from_cases = function(cases, margin = c("columns", "rows")){
+    margin = match.arg(margin)
+    if(has_row_var(cases)) {
+        row_var_name = "row_var"
+    } else {
+        row_var_name = NULL 
+    }
+    if(margin=="columns"){
+        by_str = paste(c(row_var_name, "col_var"), collapse = ",")
+    } else {
+        by_str = paste(c(row_var_name, "cell_var"), collapse = ",")         
+    }
+    dtotal = cases[, list(total = sum(value, na.rm = TRUE)), by = by_str]
+    dtotal
+}
+
+
+
 ########################
 # argument - list of data.tables possibly nested (no more than 2 levels)
 # all data.tables will be combine in single data.table and then aggregated 
@@ -519,22 +607,21 @@ elementary_cro = function(cell_var,
 # names of columns may be different
 rbindlist_and_aggregate = function(list_of_datatables){
     value = NULL
-    if(!is.data.table(list_of_datatables[[1]]) && length(list_of_datatables[[1]])>1){
-        list_of_datatables = unlist(list_of_datatables, recursive = FALSE, use.names = FALSE)    
-    }
-    
-    if(length(list_of_datatables) == 1){
+    if(length(list_of_datatables)==1){
         if(is.data.table(list_of_datatables[[1]])){
-            res = list_of_datatables[[1]]
-        } else {
-            res = list_of_datatables[[1]][[1]]
+            return(list_of_datatables[[1]])
         }
-    } else {
-        res = rbindlist(list_of_datatables, use.names = FALSE, fill = FALSE)
-        by_str = paste(colnames(res)[!(colnames(res) %in% "value")], collapse = ",")
-        res = res[, list(value = sum(value, na.rm = TRUE)), by = by_str]
+        if(length(list_of_datatables[[1]])==1){
+            return(list_of_datatables[[1]][[1]])
+        }
+    }    
+    if(!is.data.table(list_of_datatables[[1]])){
+       list_of_datatables = unlist(list_of_datatables, recursive = FALSE, use.names = FALSE)    
     }
-    res 
+    res = rbindlist(list_of_datatables, use.names = FALSE, fill = FALSE)
+    by_str = paste(colnames(res)[!(colnames(res) %in% "value")], collapse = ",")
+    res[, list(value = sum(value, na.rm = TRUE)), by = by_str]
+     
 }
 
 
@@ -577,146 +664,51 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
     res
 }
 
-######################
-internal_cpct = function(raw_data, cases, col_var_names, cell_var_names = NULL, use_weight){
-    # to pass CRAN check
-    value = NULL
-    if(has_row_var(cases)){
-        row_var_name = "row_var"
-    } else {
-        row_var_name = NULL
+
+calculate_percent = function(cases, margin, stat_type){
+    res = data.table::copy(cases)
+    if(stat_type == "tpct"){
+        if(has_row_var(res)){
+            margin = margin[, list(total = sum(total, na.rm = TRUE)), by = "row_var"]
+            res = margin[res, on = "row_var", nomatch = NA]
+            res = res[, value := value/total*100][, -"total"]    
+        } else {
+            margin = sum(margin[["total"]], na.rm = TRUE)
+            res[, value:=value/margin*100]    
+        }
     }
+    if(stat_type == "cpct_responses"){
+        by_str = paste(colnames(res) %d% c("value", "cell_var"), collapse = ",")
+        res[, value:=value/sum(value, na.rm = TRUE)*100, by = by_str]
+    }
+    if(stat_type %in% c("cpct", "rpct")){
+        by_vec = intersect(colnames(res), colnames(margin))
+        res = margin[res, on = by_vec, nomatch = NA]
+        res = res[, value := value/total*100][, -"total"]   
         
-    if(length(cell_var_names)>1){
-        dtotal = internal_cases(raw_data, 
-                                col_var_names = col_var_names,
-                                use_weight = use_weight)
-        setnames(dtotal, "value", "total")
-    } else {
-        by_str = paste(c(row_var_name, "col_var"), collapse = ",")
-        dtotal = cases[, list(total=sum(value, na.rm = TRUE)), by = by_str]
     }
-    
-    dtable = dtotal[cases, on = c(row_var_name,"col_var"), nomatch = NA]
-    dtable[, value := value/total*100]    
-}
-
-########################
-internal_cpct_responses = function(raw_data, cases, col_var_names, cell_var_names = NULL, use_weight){
-    # to pass CRAN check
-    value = NULL
-    dtable = data.table::copy(cases)
-    if(has_row_var(dtable)){
-        dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "row_var,col_var"]   
-    } else {
-        dtable[, value := value/sum(value, na.rm = TRUE)*100, by = "col_var"]   
-    }
-     
-}
-
-#######################
-internal_rpct = function(raw_data, cases, col_var_names, cell_var_names = NULL, use_weight){
-    # to pass CRAN check
-    weight = NULL
-    value = NULL
-    use_row_var = "row_var" %in% colnames(raw_data)
-    dtable = data.table::copy(cases)
-    if(is.null(cell_var_names)){
-        if(use_row_var){
-            if(use_weight){
-                row_total = raw_data[, list(total = as.double(sum(weight, na.rm = TRUE))), by = "row_var" ]
-                
-            } else {
-                row_total = raw_data[, list(total = as.double(.N)), by = "row_var" ]
-            } 
-            dtable = row_total[dtable, on = "row_var", nomatch = NA]
-        } else {
-            if(use_weight){
-                row_total = as.double(sum(raw_data[["weight"]], na.rm = TRUE))
-                
-            } else {
-                row_total = as.double(NROW(raw_data))
-            } 
-            dtable[, total:=row_total]
-            
-        }
-    } else {
-        row_total = internal_cases(raw_data, col_var_names = cell_var_names,
-                                   use_weight = use_weight)
-        setnames(row_total, "col_var", "cell_var")
-        setnames(row_total, "value", "total")
-        if(use_row_var){
-            dtable = row_total[dtable, on = c("row_var","cell_var"), nomatch = NA]
-        } else {
-            dtable = row_total[dtable, on = "cell_var", nomatch = NA]
-        }
-    }
-    
-    
-    dtable[, value := value/total*100]    
-}
-
-#######################
-internal_tpct = function(raw_data, col_var_names, cell_var_names = NULL, use_weight){
-    # to pass CRAN check
-    weight = NULL
-    value = NULL
-
-    dtable = internal_cases(raw_data, 
-                            col_var_names = col_var_names,
-                            cell_var_names = cell_var_names,
-                            use_weight = use_weight)
-    if("row_var" %in% colnames(raw_data)){
-        if(use_weight){
-            dtotal = raw_data[, list(total = as.double(sum(weight, na.rm = TRUE))), by = "row_var" ]
-            
-        } else {
-            dtotal = raw_data[, list(total = as.double(.N)), by = "row_var" ]
-        }
-        dtable = dtotal[dtable, on = "row_var", nomatch = NA]
-    } else {
-        if(use_weight){
-            dtotal = as.double(sum(raw_data[["weight"]], na.rm = TRUE))
-            
-        } else {
-            dtotal = as.double(NROW(raw_data))
-        } 
-        dtable[, total:=dtotal]
-    }
-    dtable[, value := value/total*100]  
-}
-
-
-
-#################################
-########################
-
-# used only for total 
-internal_responses = function(raw_data, col_var_names, use_weight){
-    # to pass CRAN check
-    value = NULL
-    cell_var_names = setdiff(colnames(raw_data), c(col_var_names, "weight", "row_var"))
-    res = internal_cases(raw_data, 
-                         col_var_names = col_var_names,
-                         cell_var_names = cell_var_names,
-                         use_weight = use_weight
-    )
-    if("row_var" %in% colnames(res)){
-        res[, list(value = sum(value, na.rm = TRUE)), by = "row_var,col_var"]
-    } else {
-        res[, list(value = sum(value, na.rm = TRUE)), by = "col_var"]   
-    }
+    res
 }
 
 ###########################
 
-make_total_rows = function(raw_data, col_var_names, 
-                           total_statistic, total_label, use_weight){
+make_total_rows = function(cases = cases,
+                           w_margin = w_margin,
+                           u_margin = u_margin,
+                           w_margin_responses = w_margin_responses,
+                           u_margin_responses = u_margin_responses,
+                           total_statistic = total_statistic,
+                           total_label = total_label){
+    # "u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
+    #   "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct"
+    
     # to pass CRAN check
     row_labels = NULL
+    
+    ### labels
+    
     total_statistic_label = gsub("^u_", " ", total_statistic, perl = TRUE)
     total_statistic_label = gsub("^w_", " wtd. ", total_statistic_label, perl = TRUE)
-    # total_statistic_label = paste0(" ", total_statistic_label, ")")
     if(is.null(total_label)){
         total_label = paste0("#Total", total_statistic_label)    
     } else {
@@ -728,31 +720,52 @@ make_total_rows = function(raw_data, col_var_names,
     for(item in seq_along(total_label)){
         total_label[item] = add_first_symbol_to_total_label(total_label[item])
     }
+    need_row_var = has_row_var(cases)
+    ############
     total_row = lapply(seq_along(total_statistic), function(item){
         curr_statistic = total_statistic[[item]]
-        need_weight = (substr(curr_statistic, 1,2) == "w_") & use_weight
+        need_weight = (substr(curr_statistic, 1,2) == "w_") 
         curr_statistic = gsub("^(u|w)_", "", curr_statistic, perl = TRUE)
+        
         dtotal = switch(curr_statistic, 
-                        cases = internal_cases(raw_data = raw_data, 
-                                               col_var_names = col_var_names, 
-                                               use_weight = need_weight),
-                        responses = internal_responses(raw_data = raw_data, 
-                                                       col_var_names = col_var_names, 
-                                                       use_weight = need_weight),
-                        cpct = internal_cpct(raw_data = raw_data, 
-                                             col_var_names = col_var_names, 
-                                             use_weight = need_weight),
-                        rpct = internal_rpct(raw_data = raw_data, 
-                                             col_var_names = col_var_names, 
-                                             use_weight = need_weight),
-                        tpct = internal_tpct(raw_data = raw_data, 
-                                             col_var_names = col_var_names, 
-                                             use_weight = need_weight)
+                        cases = {if(need_weight) w_margin else u_margin},
+                        responses = {if(need_weight) w_margin_responses else u_margin_responses},
+                        cpct = {
+                            if(need_row_var){
+                                res = cases[, list(total = !all(is.na(value))), by = "row_var,col_var"]
+                            } else {
+                                res = cases[, list(total = !all(is.na(value))), by = "col_var"]
+                            }
+                            res[, total:=as.double(100*(total|NA))]
+                            res
+                        },
+                        rpct = {
+                            if(need_weight) {
+                                res = data.table::copy(w_margin)
+                            } else {
+                                res = data.table::copy(u_margin)
+                            }
+                            if(need_row_var){
+                                res[, total:= total/sum(total, na.rm = TRUE)*100, by = "row_var"]
+                            } else {
+                                res[, total:= total/sum(total, na.rm = TRUE)*100]                                
+                            }    
+                            res
+                        },
+                        tpct = {
+                            if(need_weight) {
+                                res = data.table::copy(w_margin)
+                            } else {
+                                res = data.table::copy(u_margin)
+                            }
+                            if(need_row_var){
+                                res[, total:= total/sum(total, na.rm = TRUE)*100, by = "row_var"]
+                            } else {
+                                res[, total:= total/sum(total, na.rm = TRUE)*100]                                
+                            } 
+                            res
+                        }
         )
-        #dtotal[, item := item]
-        if("total" %in% colnames(dtotal)){
-            dtotal[ , total:=NULL]
-        }
         curr_lab = total_label[item]
         dtotal[, row_labels := curr_lab] 
         dtotal
@@ -762,8 +775,7 @@ make_total_rows = function(raw_data, col_var_names,
     } else {
         total_row = total_row[[1]]
     }
-    labs = setNames(seq_along(total_label), total_label)
-    total_row[ ,row_labels := factor(row_labels, levels = total_label)] 
+    total_row[ , row_labels := factor(row_labels, levels = total_label)] 
     total_row
 }
 

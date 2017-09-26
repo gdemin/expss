@@ -183,6 +183,9 @@ long_datatable_to_table = function(dtable, rows, columns, values){
         {res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")},
         type = "message"
     )
+    # for debugging
+    # mess = numeric(0)
+    # res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")
     stopif(length(mess)>0,
            paste0("Something is going wrong - several elements in one cell in the table (",mess,").")
     )
