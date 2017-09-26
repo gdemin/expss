@@ -84,9 +84,12 @@ keep_internal.data.frame = function(data, variables_names, envir){
 #' @export
 keep_internal.matrix = function(data, variables_names, envir){
     curr_names = colnames(data)
+    if(is.null(curr_names)){
+        curr_names = rep("", NCOL(data))
+    }
     new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
     res = data[ , new_vars, drop = FALSE]
-    colnames(res) = curr_names[new_vars] # prevents names correction
+    if(!is.null(colnames(data))) colnames(res) = curr_names[new_vars] # prevents names correction
     res
 }
 

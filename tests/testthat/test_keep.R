@@ -35,6 +35,10 @@ expect_error(keep(iris, "Species", "not_exists"))
 expect_identical(keep(as.matrix(iris), Species, perl("^Sepal")), 
                  as.matrix(iris)[, c("Species", "Sepal.Length", "Sepal.Width")])
 
+matr = matrix(1:9, 3)
+
+expect_identical(keep(matr, 2), matr[,2,drop = FALSE])
+
 
 context("except")
 expect_identical(except(iris, "Species", (other)), iris[, FALSE, drop = FALSE])
