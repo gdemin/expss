@@ -860,11 +860,10 @@ make_total_rows = function(need_row_var,
                             if(need_row_var){
                                 res = total_margin[[weight]][res, on = c("row_var")]
                                 res[, total:= value/total*100, by = "row_var"]
-                                res = res[,-"value"]
                             } else {
                                 res[, total:= value/total_margin[[weight]][[1]]*100]                                
                             }    
-                            res
+                            res[,-"value"]
                         }
         )
         curr_lab = total_label[item]
