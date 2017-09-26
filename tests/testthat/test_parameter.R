@@ -248,3 +248,68 @@ class(a) = "internal_parameter"
 
 expect_error({a$a = 5})
 expect_error({a[a] = 5})
+
+
+#####################
+
+context(".. unboxing")
+
+data(iris)
+test_iris = iris
+test_iris$a = 1
+test_iris$b = 2
+test_iris$d = 3
+
+to_unbox = list(a = 1, b = 2, d = 3) 
+
+res_iris = compute(iris, {
+    ..[] = to_unbox
+})
+
+expect_identical(res_iris, test_iris)
+
+to_unbox = dtfrm(a = 1, b = 2, d = 3) 
+
+res_iris = compute(iris, {
+    ..[] = to_unbox
+})
+
+expect_identical(res_iris, test_iris)
+
+##########################
+
+res_iris = compute(iris, {
+    to_unbox %into% ..[]
+})
+
+expect_identical(res_iris, test_iris)
+
+to_unbox = dtfrm(a = 1, b = 2, d = 3)
+
+res_iris = compute(iris, {
+    to_unbox %into% ..[]
+})
+
+expect_identical(res_iris, test_iris)
+
+######################
+res_iris = compute(iris, {
+    to_unbox %into% ""
+})
+
+expect_identical(res_iris, test_iris)
+
+
+to_unbox = dtfrm(a = 1, b = 2, d = 3)
+
+res_iris = compute(iris, {
+    to_unbox %into% ""
+})
+
+expect_identical(res_iris, test_iris)
+
+#########
+
+expect_error({..[] = 1:3})
+expect_error({..[] = as.list(1:3)})
+expect_error({..[] = list(a = 1, 2)})
