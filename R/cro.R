@@ -420,83 +420,58 @@ elementary_cro = function(cell_var,
     cell_var_names = extract_cell_names(raw_data)
     use_weight = has_weight(raw_data)
     use_row_var = has_row_var(raw_data)
-    # cases
+    ##### cases
+    
     cases = internal_cases(raw_data,
                            col_var_names = col_var_names,
                            cell_var_names = cell_var_names,
                            use_weight = use_weight)
     
     ###### margins ########
-    w_margin = NULL
-    u_margin = NULL
-    if(!use_weight || 
-       (stat_type %in% c("cpct", "tpct")) ||
-       (use_weight && any(total_statistic %in% c("w_cases", "w_rpct", "w_tpct")))
-    ){
-        if(length(cell_var_names)>1){
-            margin = margin_from_raw(raw_data = raw_data, 
-                                     margin = "column",
-                                     use_weight = use_weight
-            )
-        } else {
-            margin = margin_from_cases(cases = cases, 
-                                       margin = "column"
-            )
-            
-        }
-        w_margin = margin
-    } else {
-        w_margin = NULL
-    }
-    if(use_weight && any(total_statistic %in% c("u_cases", "u_rpct", "u_tpct"))){
-        u_margin = margin_from_raw(raw_data = raw_data, 
-                                   margin = "column",
-                                   use_weight = FALSE
-        )
-    } else {
-        u_margin = w_margin
-    }
-    ### margin_responses ####
-    if(any(total_statistic %in% c("u_responses", "w_responses"))){
-        if(use_row_var){
-            by_str = "row_var,col_var"
-        } else {
-            by_str = "col_var"
-        }
-        if(!use_weight || any(total_statistic %in% c("w_responses"))){
-            w_margin_responses = cases[, list(total = sum(value, na.rm = TRUE)), by = by_str]
-        } else {
-            w_margin_responses = NULL
-        }
-        if(use_weight && any(total_statistic %in% c("u_responses"))){
-            u_cases = internal_cases(raw_data,
-                                     col_var_names = col_var_names,
-                                     cell_var_names = cell_var_names,
-                                     use_weight = FALSE)
-            u_margin_responses = u_cases[, list(total = sum(value, na.rm = TRUE)), by = by_str] 
-        } else {
-            u_margin_responses = w_margin_responses
-        }
-    } 
-    ##############
+    # stat_type == "cpct" || ("w_cases", "u_cases", "w_tpct", "u_tpct", "w_rpct", "u_rpct")
+    column_margin  = calculate_column_margin(raw_data, 
+                                             cases,
+                                             stat_type,
+                                             total_statistic, 
+                                             use_weight)
     
-    if(stat_type %in% c("rpct")){ 
-        if(length(col_var_names)>1){
-            margin = margin_from_raw(raw_data = raw_data, 
-                                           margin = "row",
-                                           use_weight = use_weight
-            )       
-        } else {
-            margin = margin_from_cases(cases = cases, 
-                                             margin = "row"
-            )
-        }
-    } 
+    ###########################
+    ## stat_type = "rpct"
+    row_margin  = calculate_row_margin(raw_data, 
+                                   cases,
+                                   stat_type,
+                                   total_statistic, 
+                                   use_weight)
+    
+    ### margin_responses ####
+    # w_responses | u_responses
+
+    response_column_margin = calculate_response_column_margin(raw_data, 
+                                                              cases,
+                                                              stat_type,
+                                                              total_statistic, 
+                                                              use_weight)
+    
+    ##############
+    ### stat_type == "tpct" ||  "w_tpct", "u_tpct", "w_rpct", "u_rpct"
+    total_margin = calculate_total_margin(raw_data, 
+                           cases,
+                           stat_type,
+                           total_statistic, 
+                           use_weight)
+
+    #######
+    
     if(stat_type == "cases"){
         dtable = cases
     } else {
         dtable = calculate_percent(cases, 
-                                   margin = margin,
+                                   margin = switch(stat_type,
+                                                   cpct = column_margin[["w"]],
+                                                   tpct = total_margin[["w"]],
+                                                   cpct_responses = response_column_margin[["w"]],
+                                                   rpct = row_margin[["w"]]
+                                                   ),
                                    stat_type = stat_type)
     }    
         
@@ -524,11 +499,11 @@ elementary_cro = function(cell_var,
 
     if(total_row_position!="none"){
         total_rows = make_total_rows(
-            cases = cases,
-            w_margin = w_margin,
-            u_margin = u_margin,
-            w_margin_responses = w_margin_responses,
-            u_margin_responses = u_margin_responses,
+            need_row_var = has_row_var(cases),
+            column_margin = column_margin,
+            total_margin = total_margin,
+            response_column_margin = response_column_margin,
+            row_margin = row_margin,
             total_statistic = total_statistic,
             total_label = total_label
         )   
@@ -564,13 +539,13 @@ elementary_cro = function(cell_var,
 }
 
 #########
-margin_from_raw = function(raw_data, margin = c("columns", "rows"), use_weight){
+margin_from_raw = function(raw_data, margin = c("columns", "rows", "total"), use_weight){
     margin = match.arg(margin)
-    if(margin=="columns"){
-        aggr_names = extract_col_names(raw_data)
-    } else {
-        aggr_names = extract_cell_names(raw_data)         
-    }
+    aggr_names = switch(margin,
+                        columns = extract_col_names(raw_data),
+                        rows =  extract_cell_names(raw_data),        
+                        total = NULL
+    )
     dtotal = internal_cases(raw_data,
                             col_var_names = aggr_names,
                             cell_var_names = NULL,
@@ -582,23 +557,157 @@ margin_from_raw = function(raw_data, margin = c("columns", "rows"), use_weight){
     dtotal
 }
 #########
-margin_from_cases = function(cases, margin = c("columns", "rows")){
+margin_from_cases = function(cases, margin = c("columns", "rows", "total")){
     margin = match.arg(margin)
     if(has_row_var(cases)) {
         row_var_name = "row_var"
     } else {
         row_var_name = NULL 
     }
-    if(margin=="columns"){
-        by_str = paste(c(row_var_name, "col_var"), collapse = ",")
-    } else {
-        by_str = paste(c(row_var_name, "cell_var"), collapse = ",")         
-    }
+    margin = switch(margin,
+                    columns =  "col_var",
+                    rows =  "cell_var",
+                    total =  NULL
+    )
+    by_str = paste(c(row_var_name, margin), collapse = ",")    
     dtotal = cases[, list(total = sum(value, na.rm = TRUE)), by = by_str]
     dtotal
 }
 
+# return list with weighted and unweighted column margin
+# if we don't need some margins there was NULL instead of this margin
+calculate_column_margin = function(raw_data, cases, stat_type, total_statistic, use_weight){
+    if((stat_type == "cpct") || 
+       any(total_statistic %in% c("w_cases", "u_cases", "w_tpct", "u_tpct", "w_rpct", "u_rpct"))
+    ) {
+        need_unweighted =  use_weight && any(total_statistic %in% c("u_cases", "u_tpct", "u_rpct"))
+        cell_var_names = extract_cell_names(raw_data)
+        if(!use_weight || (stat_type=="cpct") || any(total_statistic %in% c("w_cases", "w_tpct", "w_rpct"))){
+            if(length(cell_var_names)>1){
+                w_margin = margin_from_raw(raw_data = raw_data, 
+                                           margin = "column",
+                                           use_weight = use_weight
+                )
+            } else {
+                w_margin = margin_from_cases(cases = cases, 
+                                             margin = "column"
+                )
+            }
+        } else {
+            w_margin = NULL
+        }
+        if(need_unweighted){
+            u_margin = margin_from_raw(raw_data = raw_data, 
+                                       margin = "column",
+                                       use_weight = FALSE
+            )
+        } else {
+            u_margin = w_margin
+        }
+        list("w" = w_margin, "u" = u_margin)
+    }  else {
+        list("w" = NULL, "u" = NULL)
+    }
+    
+}
 
+# return list with weighted and unweighted column margin
+# if we don't need some margins there was NULL instead of this margin
+calculate_row_margin = function(raw_data, 
+                                cases,
+                                stat_type,
+                                total_statistic, 
+                                use_weight){
+    
+    margin = list(w = NULL, u = NULL)
+    if(stat_type %in% c("rpct")){
+        col_var_names = extract_col_names(raw_data)
+        if(length(col_var_names)>1){
+            margin$w = margin_from_raw(raw_data = raw_data, 
+                                       margin = "row",
+                                       use_weight = use_weight
+            )       
+        } else {
+            margin$w = margin_from_cases(cases = cases, 
+                                         margin = "row"
+            )
+        }
+    } 
+    margin
+}
+
+# return list with weighted and unweighted column margin
+# if we don't need some margins there was NULL instead of this margin
+calculate_response_column_margin = function(raw_data, 
+                                            cases,
+                                            stat_type,
+                                            total_statistic, 
+                                            use_weight){
+    if(stat_type=="cpct_responses" || any(total_statistic %in% c("u_responses", "w_responses"))){  
+        if(has_row_var(raw_data)){
+            by_str = "row_var,col_var"
+        } else {
+            by_str = "col_var"
+        }
+        if(!use_weight || any(total_statistic %in% c("w_responses")) || stat_type=="cpct_responses" ){
+            w_margin = cases[, list(total = sum(value, na.rm = TRUE)), by = by_str]
+        } else {
+            w_margin = NULL
+        }
+        if(use_weight && any(total_statistic %in% c("u_responses"))){
+            u_cases = internal_cases(raw_data,
+                                     col_var_names = extract_col_names(raw_data),
+                                     cell_var_names = extract_cell_names(raw_data),
+                                     use_weight = FALSE)
+            u_margin = u_cases[, list(total = sum(value, na.rm = TRUE)), by = by_str] 
+        } else {
+            u_margin = w_margin
+        }
+        list(w = w_margin, u = u_margin)
+    } else {
+        list(w = NULL, u = NULL)
+    }
+}
+
+calculate_total_margin = function(raw_data, 
+                                  cases,
+                                  stat_type,
+                                  total_statistic, 
+                                  use_weight){
+    
+    if((stat_type == "tpct") || 
+       any(total_statistic %in% c("w_tpct", "u_tpct", "w_rpct", "u_rpct"))
+    ) {
+        need_unweighted =  use_weight && any(total_statistic %in% c("u_tpct", "u_rpct"))
+        col_var_names = extract_col_names(raw_data)
+        cell_var_names = extract_cell_names(raw_data)
+        if(!use_weight || (stat_type=="tpct") || any(total_statistic %in% c("w_tpct", "w_rpct"))){
+            if(length(cell_var_names)>1 || length(col_var_names)>1){
+                w_margin = margin_from_raw(raw_data = raw_data, 
+                                           margin = "total",
+                                           use_weight = use_weight
+                )
+            } else {
+                w_margin = margin_from_cases(cases = cases, 
+                                             margin = "total"
+                )
+            }
+        } else {
+            w_margin = NULL
+        }
+        if(need_unweighted){
+            u_margin = margin_from_raw(raw_data = raw_data, 
+                                       margin = "total",
+                                       use_weight = FALSE
+            )
+        } else {
+            u_margin = w_margin
+        }
+        list("w" = w_margin, "u" = u_margin)
+    }  else {
+        list("w" = NULL, "u" = NULL)
+    }
+}
 
 ########################
 # argument - list of data.tables possibly nested (no more than 2 levels)
@@ -638,6 +747,7 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
         row_var_name = NULL
     }
     if(is.null(cell_var_names)) cell_var_names = list(NULL) 
+    if(is.null(col_var_names)) col_var_names = list(NULL) 
     res = lapply(cell_var_names, function(each_cell) { 
         res = lapply(col_var_names, function(each_col){
             by_str = paste(c(row_var_name, each_cell, each_col), collapse = ",")
@@ -651,11 +761,18 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
         })
     })
     res = rbindlist_and_aggregate(res) 
-    if(is.null(cell_var_names[[1]])){
-        setnames(res, c(row_var_name,  "col_var", "value"))
+    if(is.null(cell_var_names[[1]])) {
+        cell_var_names = NULL
     } else {
-        setnames(res, c(row_var_name, "cell_var", "col_var", "value"))    
+        cell_var_names = "cell_var"
     }
+    if(is.null(col_var_names[[1]])) {
+        col_var_names = NULL
+    } else {
+        col_var_names = "col_var"
+    }
+    setnames(res, c(row_var_name, cell_var_names, col_var_names, "value"))    
+
     complete = complete.cases(res[,-"value"])
     if(!all(complete)){
         res = res[complete, ]
@@ -669,34 +786,26 @@ calculate_percent = function(cases, margin, stat_type){
     res = data.table::copy(cases)
     if(stat_type == "tpct"){
         if(has_row_var(res)){
-            margin = margin[, list(total = sum(total, na.rm = TRUE)), by = "row_var"]
             res = margin[res, on = "row_var", nomatch = NA]
             res = res[, value := value/total*100][, -"total"]    
         } else {
-            margin = sum(margin[["total"]], na.rm = TRUE)
-            res[, value:=value/margin*100]    
+            res[, value:=value/margin[[1]]*100]    
         }
-    }
-    if(stat_type == "cpct_responses"){
-        by_str = paste(colnames(res) %d% c("value", "cell_var"), collapse = ",")
-        res[, value:=value/sum(value, na.rm = TRUE)*100, by = by_str]
-    }
-    if(stat_type %in% c("cpct", "rpct")){
+    } else {
         by_vec = intersect(colnames(res), colnames(margin))
         res = margin[res, on = by_vec, nomatch = NA]
         res = res[, value := value/total*100][, -"total"]   
-        
     }
     res
 }
 
 ###########################
 
-make_total_rows = function(cases = cases,
-                           w_margin = w_margin,
-                           u_margin = u_margin,
-                           w_margin_responses = w_margin_responses,
-                           u_margin_responses = u_margin_responses,
+make_total_rows = function(need_row_var,
+                           column_margin,
+                           total_margin,
+                           response_column_margin,
+                           row_margin,
                            total_statistic = total_statistic,
                            total_label = total_label){
     # "u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
@@ -720,49 +829,41 @@ make_total_rows = function(cases = cases,
     for(item in seq_along(total_label)){
         total_label[item] = add_first_symbol_to_total_label(total_label[item])
     }
-    need_row_var = has_row_var(cases)
-    ############
+     ############
     total_row = lapply(seq_along(total_statistic), function(item){
         curr_statistic = total_statistic[[item]]
-        need_weight = (substr(curr_statistic, 1,2) == "w_") 
+        weight = substr(curr_statistic, 1,1)  
         curr_statistic = gsub("^(u|w)_", "", curr_statistic, perl = TRUE)
         
         dtotal = switch(curr_statistic, 
-                        cases = {if(need_weight) w_margin else u_margin},
-                        responses = {if(need_weight) w_margin_responses else u_margin_responses},
+                        cases = data.table::copy(column_margin[[weight]]),
+                        responses = data.table::copy(response_column_margin[[weight]]),
                         cpct = {
-                            if(need_row_var){
-                                res = cases[, list(total = !all(is.na(value))), by = "row_var,col_var"]
-                            } else {
-                                res = cases[, list(total = !all(is.na(value))), by = "col_var"]
-                            }
-                            res[, total:=as.double(100*(total|NA))]
+                            res = data.table::copy(column_margin[[weight]])
+                            res = res[, total:= as.double(100*(!is.na(total) | NA))]
                             res
                         },
                         rpct = {
-                            if(need_weight) {
-                                res = data.table::copy(w_margin)
-                            } else {
-                                res = data.table::copy(u_margin)
-                            }
+                            res = data.table::copy(column_margin[[weight]])
+                            setnames(res, "total", "value")
                             if(need_row_var){
-                                res[, total:= total/sum(total, na.rm = TRUE)*100, by = "row_var"]
+                                res = total_margin[[weight]][res, on = c("row_var")]
+                                res[, total:= value/total*100, by = "row_var"]
                             } else {
-                                res[, total:= total/sum(total, na.rm = TRUE)*100]                                
+                                res[, total:= value/total_margin[[weight]][[1]]*100]                                
                             }    
-                            res
+                            res[,-"value"]
                         },
                         tpct = {
-                            if(need_weight) {
-                                res = data.table::copy(w_margin)
-                            } else {
-                                res = data.table::copy(u_margin)
-                            }
+                            res = data.table::copy(column_margin[[weight]])
+                            setnames(res, "total", "value")
                             if(need_row_var){
-                                res[, total:= total/sum(total, na.rm = TRUE)*100, by = "row_var"]
+                                res = total_margin[[weight]][res, on = c("row_var")]
+                                res[, total:= value/total*100, by = "row_var"]
+                                res = res[,-"value"]
                             } else {
-                                res[, total:= total/sum(total, na.rm = TRUE)*100]                                
-                            } 
+                                res[, total:= value/total_margin[[weight]][[1]]*100]                                
+                            }    
                             res
                         }
         )
@@ -771,7 +872,7 @@ make_total_rows = function(cases = cases,
         dtotal
     })
     if(length(total_statistic)>1){
-        total_row = rbindlist(total_row, fill = FALSE, use.names = FALSE)
+        total_row = rbindlist(total_row, fill = FALSE, use.names = TRUE)
     } else {
         total_row = total_row[[1]]
     }
