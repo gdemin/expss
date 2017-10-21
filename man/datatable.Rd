@@ -30,11 +30,13 @@ Object of class \link[DT]{datatable}
 }
 \description{
 This is method for rendering results of \link{tables}/\link{fre}/\link{cro}
-in Shiny. For detailed description of function and its arguments see
-\link[DT]{datatable}.
+in Shiny. \code{DT} package should be installed for this
+feature (\code{install.packages('DT')}). For detailed description of function
+and its arguments see \link[DT]{datatable}.
 }
 \examples{
 \dontrun{ 
+# !!! 'DT' package should be installed for this example - install.packages('DT')
 data(mtcars)
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",

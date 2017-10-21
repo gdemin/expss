@@ -17,11 +17,11 @@ Imports:
     htmlTable (>= 1.9),
     matrixStats (>= 0.51.0),
     data.table (>= 1.10),
-    htmltools,
-    DT (>= 0.2)
+    htmltools
 Suggests:
     knitr,
     repr,
+    DT (>= 0.2),
     ggplot2,
     testthat,
     covr

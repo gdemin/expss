@@ -1,8 +1,9 @@
 #' Create an HTML table widget for usage with Shiny
 #' 
 #' This is method for rendering results of \link{tables}/\link{fre}/\link{cro}
-#' in Shiny. For detailed description of function and its arguments see
-#' \link[DT]{datatable}.
+#' in Shiny. \code{DT} package should be installed for this
+#' feature (\code{install.packages('DT')}). For detailed description of function
+#' and its arguments see \link[DT]{datatable}.
 #'
 #' @param data a data object (result of \link{tables}/\link{fre}/\link{cro}).
 #' @param repeat_row_labels logical Should we repeat duplicated row labels in
@@ -20,6 +21,7 @@
 #'
 #' @examples
 #' \dontrun{ 
+#' # !!! 'DT' package should be installed for this example - install.packages('DT')
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
 #'                       mpg = "Miles/(US) gallon",
@@ -58,7 +60,10 @@
 #' )
 #' }
 datatable = function(data, ...){
+    stopif(!requireNamespace("DT", quietly = TRUE), "'datatable' requires 'DT' package.
+           Please, install it with 'install.packages('DT')'.")
     UseMethod("datatable")
+
 }  
 
 #' @export
