@@ -464,12 +464,7 @@ flat_list=function(x, flat_df = FALSE)
     needle_pos = which(x %in% needle)
     if(length(needle_pos)){
         needle_pos = needle_pos[1]
-        if(needle_pos==1){
-            c(value, x)
-        } else {
-            c(x[1:(needle_pos-1)], value, x[-(1:(needle_pos-1))])
-        }
-
+        append(x, value, after = needle_pos - 1)
     } else {
         x
     }
@@ -480,11 +475,7 @@ flat_list=function(x, flat_df = FALSE)
     needle_pos = which(x %in% needle)
     if(length(needle_pos)){
         needle_pos = needle_pos[1]
-        if(needle_pos==length(x)){
-            c(x, value)
-        } else {
-            c(x[1:(needle_pos)], value, x[-(1:needle_pos)])
-        }
+        append(x, value, after = needle_pos)
     } else {
         x
     }
