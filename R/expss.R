@@ -76,6 +76,9 @@ data.table::data.table
 data.table::as.data.table
 
 #' @export
+data.table::is.data.table
+
+#' @export
 data.table::setDF
 
 #' @export

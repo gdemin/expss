@@ -13,6 +13,8 @@
 \alias{reexports}
 \alias{as.data.table}
 \alias{reexports}
+\alias{is.data.table}
+\alias{reexports}
 \alias{setDF}
 \alias{reexports}
 \alias{setDT}
@@ -39,7 +41,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{data.table}{\code{\link[data.table]{data.table}}, \code{\link[data.table]{as.data.table}}, \code{\link[data.table]{setDF}}, \code{\link[data.table]{setDT}}, \code{\link[data.table]{setkey}}, \code{\link[data.table]{setkeyv}}, \code{\link[data.table]{fread}}, \code{\link[data.table]{fwrite}}}
+  \item{data.table}{\code{\link[data.table]{data.table}}, \code{\link[data.table]{as.data.table}}, \code{\link[data.table]{is.data.table}}, \code{\link[data.table]{setDF}}, \code{\link[data.table]{setDT}}, \code{\link[data.table]{setkey}}, \code{\link[data.table]{setkeyv}}, \code{\link[data.table]{fread}}, \code{\link[data.table]{fwrite}}}
 
   \item{htmlTable}{\code{\link[htmlTable]{htmlTable}}, \code{\link[htmlTable]{htmlTableWidget}}, \code{\link[htmlTable]{htmlTableWidgetOutput}}, \code{\link[htmlTable]{interactiveTable}}}
 

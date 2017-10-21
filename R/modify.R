@@ -175,7 +175,11 @@ modify_internal.data.frame = function (data, expr, parent) {
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
     del = setdiff(names(data), names(l))
     if(length(del)){
-        data[, del] = NULL
+        if(data.table::is.data.table(data)){
+            data.table::set(data, j = del, value = NULL)
+        } else {
+            data[, del] = NULL
+        }
     }
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
     wrong_rows = nrows!=1L & nrows!=nrow(data)
@@ -187,8 +191,13 @@ modify_internal.data.frame = function (data, expr, parent) {
     
     new_vars = rev(names(l)[!(names(l) %in% names(data))])
     nl = c(names(data), new_vars)
-    data[nl] = l[nl]
-    data
+    if(data.table::is.data.table(data)){
+        data.table::set(data, j = nl, value = l[nl])
+        invisible(data)
+    } else {
+        data[nl] = l[nl]
+        data
+    }
 }
 
 #' @export
