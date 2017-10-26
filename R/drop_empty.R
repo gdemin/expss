@@ -9,17 +9,17 @@
 #' functions with shorter names. \code{drop_rc} drops rows and columns
 #' simultaneously.
 #' 
-#' @param x data.frame
+#' @param x data.frame/etable(result of \link{cro} and etc.)
 #' @param excluded_rows character/logical/numeric rows which won't be dropped
 #'   and in which NAs won't be counted. If it is characters then they will be
 #'   considered as pattern/vector of patterns. Patterns will be matched with
-#'   Perl-style regular expression with values in the first column of \code{x} 
+#'   Perl-style regular expression with values in the first column of \code{x}
 #'   (see \link[base]{grep}, \code{perl = TRUE} argument). Rows which have such
-#'   patterns will be excluded. By default, pattern is "#" because "#" marks 
-#'   totals in the result of \link{cro}.
+#'   patterns will be excluded. By default for class 'etable' pattern is "#"
+#'   because "#" marks totals in the result of \link{cro}.
 #' @param excluded_columns logical/numeric/characters columns which won't be
-#'   dropped and in which NAs won't be counted. By default, it is first column -
-#'   column with labels in table.
+#'   dropped and in which NAs won't be counted. By default for class 'etable' it
+#'   is first column - column with labels in table.
 #'
 #' @return data.frame with removed rows/columns
 #' @export
@@ -46,18 +46,23 @@
 #' drop_empty_columns(with_empty)
 #' drop_rc(with_empty)
 #'                         
-drop_empty_rows = function(x, excluded_rows = "#", excluded_columns = 1){
+drop_empty_rows = function(x, excluded_rows = NULL, excluded_columns = NULL){
     UseMethod("drop_empty_rows")
 }
 
 #' @export
 #' @rdname drop_empty_rows
-drop_empty_columns = function(x, excluded_rows = "#", excluded_columns = 1){
+drop_empty_columns = function(x, excluded_rows = NULL, excluded_columns = NULL){
     UseMethod("drop_empty_columns")   
 }
 
 #' @export
-drop_empty_rows.data.frame = function(x, excluded_rows = "#", excluded_columns = 1){
+drop_empty_rows.etable = function(x, excluded_rows = "#", excluded_columns = 1){
+    drop_empty_rows.data.frame(x, excluded_rows = excluded_rows, excluded_columns = excluded_columns)    
+}
+
+#' @export
+drop_empty_rows.data.frame = function(x, excluded_rows = NULL, excluded_columns = NULL){
     stopif(!is.null(excluded_columns) && !is.numeric(excluded_columns) && !is.character(excluded_columns) &&
                !is.logical(excluded_columns),
            "`excluded_columns` should be character, numeric or logical.")
@@ -103,7 +108,12 @@ drop_empty_rows.data.frame = function(x, excluded_rows = "#", excluded_columns =
 }
 
 #' @export
-drop_empty_columns.data.frame = function(x, excluded_rows = "#", excluded_columns = 1){
+drop_empty_columns.etable = function(x, excluded_rows = "#", excluded_columns = 1){
+    drop_empty_columns.data.frame(x, excluded_rows = excluded_rows, excluded_columns = excluded_columns)    
+}
+
+#' @export
+drop_empty_columns.data.frame = function(x, excluded_rows = NULL, excluded_columns = NULL){
     stopif(!is.null(excluded_columns) && !is.numeric(excluded_columns) && !is.character(excluded_columns) &&
                !is.logical(excluded_columns),
            "`excluded_columns` should be character, numeric or logical.")

@@ -158,3 +158,14 @@ expect_error(
 expect_error(
     drop_c(with_empty, excluded_columns = c(6, 9:11, NA))
 )
+
+
+mtcars_1 = cbind(empty = NA, mtcars)
+mtcars_1 = drop_empty_columns(mtcars_1)
+expect_identical(mtcars, mtcars_1)
+
+mtcars_1 = cbind(empty = NA, mtcars)
+mtcars_1 = rbind(NA, mtcars_1)
+mtcars_1[1, 1] = "#"
+mtcars_1 = drop_empty_rows(mtcars_1, excluded_columns = 1)
+expect_identical(cbind(empty = as.character(NA), mtcars, stringsAsFactors = FALSE), mtcars_1)
