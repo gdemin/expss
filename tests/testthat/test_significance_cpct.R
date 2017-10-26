@@ -477,6 +477,11 @@ expect_equal_to_reference(
     significance_cpct(mtcars_table4, compare_type = c("first_column", "subtable")),
     "rds/signif_cpct37.rds")
 
+colnames(mtcars_table4) = gsub("ss", "s\ns", colnames(mtcars_table4), perl = TRUE)
+colnames(mtcars_table4) = gsub("aight", "ai\rght", colnames(mtcars_table4), perl = TRUE)
+expect_equal_to_reference(
+    significance_cpct(mtcars_table4, compare_type = c("first_column", "subtable")),
+    "rds/signif_cpct37b.rds")
 
 mtcars_table5 = cro_cpct(list(mtcars$cyl, mtcars$gear),
                         unvr(list(total(), mtcars$vs, mtcars$am)))

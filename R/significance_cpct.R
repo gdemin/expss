@@ -575,6 +575,7 @@ section_sig_first_column = function(sig_section, curr_props,  curr_base, groups,
 
 get_category_labels = function(header){
     # "aaa|bbb|ddd" -> "ddd"
+    header = gsub("\\n|\\r", " ", header, perl = TRUE)
     gsub("^.*?\\|([^\\|]*)$", "\\1", header, perl = TRUE) 
 }
 
@@ -593,6 +594,7 @@ header_groups = function(header){
         # '+ 1' because of first column with row_labels
         return(list(seq_along(header)+1))
     }
+    header = gsub("\\n|\\r", " ", header, perl = TRUE)
     to_strip = potentially_subgroup(header) 
     while(any(to_strip)){
         # "aaa|bbb|ddd" -> "aaa|bbb"
