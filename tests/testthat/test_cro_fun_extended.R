@@ -387,3 +387,12 @@ structure(list(row_labels = "c(1:3, NA, NA, NA)", `c(1, 1, 1, 2, 2, 2)|1` = 0.89
 "c(1, 1, 1, 2, 2, 2)|1", "c(1, 1, 1, 2, 2, 2)|2"), row.names = c(NA, 
 -1L), class = c("etable", "data.frame"))
 )
+
+
+# TODO 
+# a = 1:20
+# 
+# cro_mean_sd_n(list(a))
+# cro_fun(list(a), fun = sum)
+# cro_fun_df(a, fun = colSums)
+# cro(list(1:20))

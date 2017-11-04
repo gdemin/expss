@@ -112,7 +112,11 @@ v_diff.list = function(e1, e2){
     stopif(!is.function(e2), "For lists 'e2' should be function.")
     crit = vapply(e1, FUN = e2, FUN.VALUE = logical(1))
     crit = !(crit & !is.na(crit))
-    e1[crit]
+    if(is.data.table(e1)){
+        e1[,crit, with = FALSE]
+    } else {
+        e1[crit]
+    }
 }
 
 #' @export
@@ -145,7 +149,11 @@ v_intersect.list = function(e1, e2){
     stopif(!is.function(e2), "For lists 'e2' should be function.")
     crit = vapply(e1, FUN = e2, FUN.VALUE = logical(1))
     crit = crit & !is.na(crit)
-    e1[crit]
+    if(is.data.table(e1)){
+        e1[,crit, with = FALSE]
+    } else {
+        e1[crit]
+    }
 }
 
 
@@ -196,6 +204,11 @@ n_intersect.data.frame = function(e1, e2){
 }
 
 #' @export
+n_intersect.data.table = function(e1, e2){
+    e1[ , names(e1) %in% (names(e1) %i% e2), with = FALSE]    
+}
+
+#' @export
 n_intersect.matrix = function(e1, e2){
     e1[ , colnames(e1) %in% (colnames(e1) %i% e2), drop = FALSE]    
 }
@@ -220,6 +233,11 @@ n_diff.default = function(e1, e2){
 #' @export
 n_diff.data.frame = function(e1, e2){
     e1[ , names(e1) %in% (names(e1) %d% e2), drop = FALSE]    
+}
+
+#' @export
+n_diff.data.table = function(e1, e2){
+    e1[ , names(e1) %in% (names(e1) %d% e2), with = FALSE]    
 }
 
 #' @export
