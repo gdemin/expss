@@ -22,7 +22,7 @@ subset_dataframe = function(x, j, drop = TRUE){
     res = lapply(x, `[`, j)
     class(res) = class(x)
     if(NCOL(x)>0){
-        attr(res, "row.names") <- seq_len(NROW(res[[1]]))
+        attr(res, "row.names") = seq_len(NROW(res[[1]]))
     }
     res
 }
