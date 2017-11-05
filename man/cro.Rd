@@ -7,6 +7,12 @@
 \alias{cro_rpct}
 \alias{cro_tpct}
 \alias{cro_cpct_responses}
+\alias{calc_cro}
+\alias{calc_cro_cases}
+\alias{calc_cro_cpct}
+\alias{calc_cro_rpct}
+\alias{calc_cro_tpct}
+\alias{calc_cro_cpct_responses}
 \alias{total}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
@@ -32,6 +38,36 @@ cro_tpct(cell_vars, col_vars = total(), row_vars = NULL, weight = NULL,
 
 cro_cpct_responses(cell_vars, col_vars = total(), row_vars = NULL,
   weight = NULL, subgroup = NULL, total_label = NULL,
+  total_statistic = "u_responses", total_row_position = c("below", "above",
+  "none"))
+
+calc_cro(data, cell_vars, col_vars = total(), row_vars = NULL,
+  weight = NULL, subgroup = NULL, total_label = NULL,
+  total_statistic = "u_cases", total_row_position = c("below", "above",
+  "none"))
+
+calc_cro_cases(data, cell_vars, col_vars = total(), row_vars = NULL,
+  weight = NULL, subgroup = NULL, total_label = NULL,
+  total_statistic = "u_cases", total_row_position = c("below", "above",
+  "none"))
+
+calc_cro_cpct(data, cell_vars, col_vars = total(), row_vars = NULL,
+  weight = NULL, subgroup = NULL, total_label = NULL,
+  total_statistic = "u_cases", total_row_position = c("below", "above",
+  "none"))
+
+calc_cro_rpct(data, cell_vars, col_vars = total(), row_vars = NULL,
+  weight = NULL, subgroup = NULL, total_label = NULL,
+  total_statistic = "u_cases", total_row_position = c("below", "above",
+  "none"))
+
+calc_cro_tpct(data, cell_vars, col_vars = total(), row_vars = NULL,
+  weight = NULL, subgroup = NULL, total_label = NULL,
+  total_statistic = "u_cases", total_row_position = c("below", "above",
+  "none"))
+
+calc_cro_cpct_responses(data, cell_vars, col_vars = total(),
+  row_vars = NULL, weight = NULL, subgroup = NULL, total_label = NULL,
   total_statistic = "u_responses", total_row_position = c("below", "above",
   "none"))
 
@@ -64,6 +100,8 @@ unweighted statistics and "w_" means weighted statistics.}
 \item{total_row_position}{Position of total row in the resulting table. Can
 be one of "below", "above", "none".}
 
+\item{data}{data.frame in which context all other arguments will be evaluated.}
+
 \item{x}{vector/data.frame of class 'category'/'dichotomy'.}
 
 \item{label}{character. Label for total variable.}
@@ -87,6 +125,8 @@ case. Sum of percent of \code{cro_cpct_responses} always equals to 100\%.}
 for percent is number of valid cases.}
 \item{\code{cro_tpct}}{ build a contingency table of the table percent. Base
 for percent is number of valid cases.}
+\item{\code{calc_cro_*}}{ are the same as above but evaluate their arguments
+in the context of the first argument \code{data}.}
 \item{\code{total}}{ auxiliary function - creates variables with 1 for valid
 case of its argument \code{x} and NA in opposite case.}
 }
@@ -119,9 +159,11 @@ mtcars = apply_labels(mtcars,
 )
 
 calculate(mtcars, cro(am, vs))
+calc_cro(mtcars, am, vs) # the same result
 
 # column percent with multiple banners
 calculate(mtcars, cro_cpct(cyl, list(total(), vs, am)))
+calc_cro_cpct(mtcars, cyl, list(total(), vs, am)) # the same result
 
 # nested banner
 calculate(mtcars, cro_cpct(cyl, list(total(), vs \%nest\% am)))

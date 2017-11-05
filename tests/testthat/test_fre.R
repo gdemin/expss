@@ -86,6 +86,7 @@ context("fre and cro examples")
 a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c")))
 expect_equal_to_reference(fre(a), "rds/order_factor_fre20.rds")
 expect_equal_to_reference(cro(a, list(a, total())), "rds/order_factor_cro20a.rds")
+expect_equal_to_reference(calc_cro(sheet(a), a, list(a, total())), "rds/order_factor_cro20a.rds")
 expect_equal_to_reference(cro(list(a), list(a, total())), "rds/order_factor_cro20.rds")
 expect_equal_to_reference(cro(list(a), list(a, total()), total_label = "BASE"), "rds/order_factor_cro21.rds")
 expect_equal_to_reference(

@@ -11,6 +11,7 @@ mtcars = modify(mtcars,{
 })
 
 expect_equal_to_reference(cro(mtcars$am, mtcars$vs), "rds/table_cases1.rds")
+expect_equal_to_reference(calc_cro_cases(mtcars, am, vs), "rds/table_cases1.rds")
 expect_equal_to_reference(cro(mtcars$am, mtcars$vs, total_row_position = "none"), "rds/table_cases2.rds")
 expect_equal_to_reference(cro(mtcars$am, mtcars$vs, total_row_position = "above"), "rds/table_cases3.rds")
 expect_equal_to_reference(cro(mtcars$am, mtcars$vs, total_row_position = "below"), "rds/table_cases1.rds")
@@ -232,16 +233,34 @@ expect_equal_to_reference(
     "rds/cro_cpct_mult_by_mult.rds")
 
 expect_equal_to_reference(
+    calc_cro_cpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
+    "rds/cro_cpct_mult_by_mult.rds")
+
+expect_equal_to_reference(
     calc(product_test, cro_cpct_responses(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_cpct_responses_mult_by_mult.rds")
+
+
+expect_equal_to_reference(
+    calc_cro_cpct_responses(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
+    "rds/cro_cpct_responses_mult_by_mult.rds")
+
 
 expect_equal_to_reference(
     calc(product_test, cro_rpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_rpct_mult_by_mult.rds")
 
+expect_equal_to_reference(
+    calc_cro_rpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
+    "rds/cro_rpct_mult_by_mult.rds")
+
 
 expect_equal_to_reference(
     calc(product_test, cro_tpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    "rds/cro_tpct_mult_by_mult.rds")
+
+expect_equal_to_reference(
+    calc_cro_tpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
     "rds/cro_tpct_mult_by_mult.rds")
 
 set.seed(1)
@@ -255,6 +274,12 @@ expect_equal_to_reference(
     with(df, cro_cpct(mdset(var_orange, var_banana, var_melon, var_mango), list(area))),
     "rds/cro_mdset_names_of_result.rds"
 )
+
+expect_equal_to_reference(
+    calc_cro_cpct(df, mdset(var_orange, var_banana, var_melon, var_mango), list(area)),
+    "rds/cro_mdset_names_of_result.rds"
+)
+
 
 expect_equal_to_reference(
     cro_cpct(mtcars$am, total(label = "|")),
