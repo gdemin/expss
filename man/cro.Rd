@@ -100,7 +100,8 @@ unweighted statistics and "w_" means weighted statistics.}
 \item{total_row_position}{Position of total row in the resulting table. Can
 be one of "below", "above", "none".}
 
-\item{data}{data.frame in which context all other arguments will be evaluated.}
+\item{data}{data.frame in which context all other arguments will be evaluated
+(for \code{calc_cro_*}).}
 
 \item{x}{vector/data.frame of class 'category'/'dichotomy'.}
 

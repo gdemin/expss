@@ -9,6 +9,14 @@
 \alias{cro_median}
 \alias{cro_pearson}
 \alias{cro_spearman}
+\alias{calc_cro_fun}
+\alias{calc_cro_fun_df}
+\alias{calc_cro_mean}
+\alias{calc_cro_mean_sd_n}
+\alias{calc_cro_sum}
+\alias{calc_cro_median}
+\alias{calc_cro_pearson}
+\alias{calc_cro_spearman}
 \alias{combine_functions}
 \title{Cross-tabulation with custom summary function.}
 \usage{
@@ -37,6 +45,32 @@ cro_pearson(cell_vars, col_vars = total(), row_vars = total(label = ""),
 
 cro_spearman(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
+
+calc_cro_fun(data, cell_vars, col_vars = total(), row_vars = total(label =
+  ""), weight = NULL, subgroup = NULL, fun, ..., unsafe = FALSE)
+
+calc_cro_fun_df(data, cell_vars, col_vars = total(), row_vars = total(label
+  = ""), weight = NULL, subgroup = NULL, fun, ..., unsafe = FALSE)
+
+calc_cro_mean(data, cell_vars, col_vars = total(), row_vars = total(label =
+  ""), weight = NULL, subgroup = NULL)
+
+calc_cro_mean_sd_n(data, cell_vars, col_vars = total(),
+  row_vars = total(label = ""), weight = NULL, subgroup = NULL,
+  weighted_valid_n = FALSE, labels = c("Mean", "Std. dev.",
+  ifelse(weighted_valid_n, "Valid N", "Unw. valid N")))
+
+calc_cro_sum(data, cell_vars, col_vars = total(), row_vars = total(label =
+  ""), weight = NULL, subgroup = NULL)
+
+calc_cro_median(data, cell_vars, col_vars = total(), row_vars = total(label
+  = ""), weight = NULL, subgroup = NULL)
+
+calc_cro_pearson(data, cell_vars, col_vars = total(), row_vars = total(label
+  = ""), weight = NULL, subgroup = NULL)
+
+calc_cro_spearman(data, cell_vars, col_vars = total(),
+  row_vars = total(label = ""), weight = NULL, subgroup = NULL)
 
 combine_functions(..., method = c)
 }
@@ -87,6 +121,9 @@ will be ignored.}
 \item{labels}{character vector of length 3. Labels for mean, standard
 deviation and valid N in \code{cro_mean_sd_n}.}
 
+\item{data}{data.frame in which context all other arguments will be evaluated
+(for \code{calc_cro_*}).}
+
 \item{method}{function which will combine results of multiple functions in
 \code{combine_functions}. It will be applied as in the expression 
 \code{do.call(method, list_of_functions_results)}. By default it is
@@ -122,6 +159,8 @@ labels of the table and column names/names of list will appear in the column
 labels. If your \code{fun} returns data.frame/matrix/list with element named
 'row_labels' then this element will be used as row labels. And it will have
 precedence over rownames.}
+\item{\code{calc_cro_*}}{ are the same as above but evaluate their arguments
+in the context of the first argument \code{data}.}
 \item{\code{combine_functions}}{ is auxiliary function for combining several 
 functions into one function for usage with \code{cro_fun}/\code{cro_fun_df}.
 Names of arguments will be used as statistic labels. By default, results of
@@ -160,6 +199,13 @@ calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec),
                                fun = mean)
 )
 
+# the same result
+calc_cro_fun(mtcars, list(mpg, disp, hp, wt, qsec), 
+                     col_vars = list(total(), am), 
+                     row_vars = vs, 
+                     fun = mean
+) 
+
 # The same example with 'subgroup'
 calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec), 
                                col_vars = list(total(), am), 
@@ -195,26 +241,34 @@ calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec),
 ))  
                           
 # comparison 'cro_fun' and 'cro_fun_df'
-calculate(mtcars, cro_fun(dtfrm(mpg, disp, hp, wt, qsec), 
-                       col_vars = am, fun = mean)
+calculate(mtcars, cro_fun(
+                       sheet(mpg, disp, hp, wt, qsec), 
+                       col_vars = am,
+                       fun = mean
+                       )
 )
 
 # same result
-calculate(mtcars, cro_fun_df(dtfrm(mpg, disp, hp, wt, qsec), 
-                       col_vars = am, fun = colMeans)
+calculate(mtcars, cro_fun_df(
+                       sheet(mpg, disp, hp, wt, qsec), 
+                       col_vars = am, 
+                       fun = colMeans
+                       )
 ) 
 
 # usage for 'cro_fun_df' which is not possible for 'cro_fun'
 # linear regression by groups
-calculate(mtcars, cro_fun_df(dtfrm(mpg, disp, hp, wt, qsec), 
-                             col_vars = am,
-                             fun = function(x){
-                                 frm = reformulate(".", response = names(x)[1])
-                                 model = lm(frm, data = x)
-                                 dtfrm('Coef. estimate' = coef(model), 
-                                       confint(model)
+calculate(mtcars, cro_fun_df(
+                      sheet(mpg, disp, hp, wt, qsec), 
+                      col_vars = am,
+                      fun = function(x){
+                            frm = reformulate(".", response = names(x)[1])
+                            model = lm(frm, data = x)
+                            sheet(
+                                'Coef. estimate' = coef(model), 
+                                 confint(model)
                                  )
-                             }
+                      }
 ))
 }
 \seealso{

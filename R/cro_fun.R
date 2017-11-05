@@ -25,6 +25,8 @@
 #' labels. If your \code{fun} returns data.frame/matrix/list with element named
 #' 'row_labels' then this element will be used as row labels. And it will have
 #' precedence over rownames.}
+#' \item{\code{calc_cro_*}}{ are the same as above but evaluate their arguments
+#' in the context of the first argument \code{data}.}
 #' \item{\code{combine_functions}}{ is auxiliary function for combining several 
 #' functions into one function for usage with \code{cro_fun}/\code{cro_fun_df}.
 #' Names of arguments will be used as statistic labels. By default, results of
@@ -53,6 +55,8 @@
 #'   \link[data.table]{data.table} with all names converted to variable labels
 #'   (if labels exists). So it is not recommended to rely on original variables
 #'   names in your \code{fun}.
+#' @param data data.frame in which context all other arguments will be evaluated
+#'   (for \code{calc_cro_*}).
 #' @param ... further arguments for \code{fun}  in 
 #'   \code{cro_fun}/\code{cro_fun_df} or functions for \code{combine_functions}.
 #'   Ignored in \code{cro_fun}/\code{cro_fun_df} if \code{unsafe} is TRUE.
@@ -109,6 +113,13 @@
 #'                                fun = mean)
 #' )
 #' 
+#' # the same result
+#' calc_cro_fun(mtcars, list(mpg, disp, hp, wt, qsec), 
+#'                      col_vars = list(total(), am), 
+#'                      row_vars = vs, 
+#'                      fun = mean
+#' ) 
+#' 
 #' # The same example with 'subgroup'
 #' calculate(mtcars, cro_fun(list(mpg, disp, hp, wt, qsec), 
 #'                                col_vars = list(total(), am), 
@@ -144,26 +155,34 @@
 #' ))  
 #'                           
 #' # comparison 'cro_fun' and 'cro_fun_df'
-#' calculate(mtcars, cro_fun(dtfrm(mpg, disp, hp, wt, qsec), 
-#'                        col_vars = am, fun = mean)
+#' calculate(mtcars, cro_fun(
+#'                        sheet(mpg, disp, hp, wt, qsec), 
+#'                        col_vars = am,
+#'                        fun = mean
+#'                        )
 #' )
 #' 
 #' # same result
-#' calculate(mtcars, cro_fun_df(dtfrm(mpg, disp, hp, wt, qsec), 
-#'                        col_vars = am, fun = colMeans)
+#' calculate(mtcars, cro_fun_df(
+#'                        sheet(mpg, disp, hp, wt, qsec), 
+#'                        col_vars = am, 
+#'                        fun = colMeans
+#'                        )
 #' ) 
 #' 
 #' # usage for 'cro_fun_df' which is not possible for 'cro_fun'
 #' # linear regression by groups
-#' calculate(mtcars, cro_fun_df(dtfrm(mpg, disp, hp, wt, qsec), 
-#'                              col_vars = am,
-#'                              fun = function(x){
-#'                                  frm = reformulate(".", response = names(x)[1])
-#'                                  model = lm(frm, data = x)
-#'                                  dtfrm('Coef. estimate' = coef(model), 
-#'                                        confint(model)
+#' calculate(mtcars, cro_fun_df(
+#'                       sheet(mpg, disp, hp, wt, qsec), 
+#'                       col_vars = am,
+#'                       fun = function(x){
+#'                             frm = reformulate(".", response = names(x)[1])
+#'                             model = lm(frm, data = x)
+#'                             sheet(
+#'                                 'Coef. estimate' = coef(model), 
+#'                                  confint(model)
 #'                                  )
-#'                              }
+#'                       }
 #' ))
 #' @export
 cro_fun = function(cell_vars, 
@@ -756,9 +775,198 @@ cro_spearman = function(cell_vars,
                fun = fun
     )
 }
-    
 
+##########################
 
+#' @export
+#' @rdname cro_fun    
+calc_cro_fun = function(data,
+                        cell_vars, 
+                        col_vars = total(), 
+                        row_vars = total(label = ""),
+                        weight = NULL,
+                        subgroup = NULL,
+                        fun, 
+                        ...,
+                        unsafe = FALSE){
+    expr = substitute(cro_fun(
+        cell_vars = cell_vars, 
+        col_vars = col_vars, 
+        row_vars = row_vars,
+        weight = weight,
+        subgroup = subgroup,
+        fun = fun, 
+        ...,
+        unsafe = unsafe)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())
+}
+
+###########################
+
+#' @export
+#' @rdname cro_fun
+calc_cro_fun_df = function(data,
+                      cell_vars, 
+                      col_vars = total(), 
+                      row_vars = total(label = ""),
+                      weight = NULL,
+                      subgroup = NULL,
+                      fun, 
+                      ...,
+                      unsafe = FALSE){
+    expr = substitute(cro_fun_df(
+        cell_vars = cell_vars, 
+        col_vars = col_vars, 
+        row_vars = row_vars,
+        weight = weight,
+        subgroup = subgroup,
+        fun = fun, 
+        ...,
+        unsafe = unsafe)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())    
+}
+
+###########################
+
+#' @export
+#' @rdname cro_fun
+calc_cro_mean = function(data,
+                         cell_vars, 
+                         col_vars = total(), 
+                         row_vars = total(label = ""),
+                         weight = NULL,
+                         subgroup = NULL
+){
+    expr = substitute(
+        cro_mean(
+            cell_vars = cell_vars, 
+            col_vars = col_vars, 
+            row_vars = row_vars,
+            weight = weight,
+            subgroup = subgroup)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())      
+}
+
+#########################
+
+#' @export
+#' @rdname cro_fun
+calc_cro_mean_sd_n = function(data,
+                              cell_vars, 
+                              col_vars = total(), 
+                              row_vars = total(label = ""),
+                              weight = NULL,
+                              subgroup = NULL,
+                              weighted_valid_n = FALSE,
+                              labels = c("Mean", "Std. dev.", 
+                                         ifelse(weighted_valid_n, "Valid N", "Unw. valid N")) 
+                              
+){
+    expr = substitute(
+        cro_mean_sd_n(
+            cell_vars = cell_vars, 
+            col_vars = col_vars, 
+            row_vars = row_vars,
+            weight = weight,
+            subgroup = subgroup,
+            weighted_valid_n =  weighted_valid_n,
+            labels = labels)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame()) 
+}
+
+###########################
+
+#' @export
+#' @rdname cro_fun
+calc_cro_sum = function(data,
+                        cell_vars, 
+                        col_vars = total(), 
+                        row_vars = total(label = ""),
+                        weight = NULL,
+                        subgroup = NULL
+){
+    expr = substitute(
+        cro_sum(
+            cell_vars = cell_vars, 
+            col_vars = col_vars, 
+            row_vars = row_vars,
+            weight = weight,
+            subgroup = subgroup)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())      
+}    
+
+###########################
+
+#' @export
+#' @rdname cro_fun
+calc_cro_median = function(data,
+                           cell_vars, 
+                           col_vars = total(), 
+                           row_vars = total(label = ""),
+                           weight = NULL,
+                           subgroup = NULL
+){
+    expr = substitute(
+        cro_median(
+            cell_vars = cell_vars, 
+            col_vars = col_vars, 
+            row_vars = row_vars,
+            weight = weight,
+            subgroup = subgroup)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())      
+}
+
+############################
+
+#' @export
+#' @rdname cro_fun
+calc_cro_pearson = function(data,
+                            cell_vars, 
+                            col_vars = total(), 
+                            row_vars = total(label = ""),
+                            weight = NULL,
+                            subgroup = NULL
+){
+    expr = substitute(
+        cro_pearson(
+            cell_vars = cell_vars, 
+            col_vars = col_vars, 
+            row_vars = row_vars,
+            weight = weight,
+            subgroup = subgroup)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame()) 
+}
+
+############################
+
+#' @export
+#' @rdname cro_fun
+calc_cro_spearman = function(data,
+                             cell_vars, 
+                             col_vars = total(), 
+                             row_vars = total(label = ""),
+                             weight = NULL,
+                             subgroup = NULL
+){
+    expr = substitute(
+        cro_spearman(
+            cell_vars = cell_vars, 
+            col_vars = col_vars, 
+            row_vars = row_vars,
+            weight = weight,
+            subgroup = subgroup)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame()) 
+}
+
+############################
 
 #' @export
 #' @rdname cro_fun

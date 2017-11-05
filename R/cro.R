@@ -48,7 +48,8 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #'   unweighted statistics and "w_" means weighted statistics.
 #' @param total_row_position Position of total row in the resulting table. Can
 #'   be one of "below", "above", "none".
-#' @param data data.frame in which context all other arguments will be evaluated. 
+#' @param data data.frame in which context all other arguments will be evaluated
+#'   (for \code{calc_cro_*}).
 #' @param x vector/data.frame of class 'category'/'dichotomy'. 
 #' @param label character. Label for total variable. 
 #'   
