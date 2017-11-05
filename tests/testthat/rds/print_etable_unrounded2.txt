@@ -1,23 +1,46 @@
-                                                                                                
- |                     |              |           #Total |     Transmission |     Transmission |
- |                     |              |                  |        Automatic |        Automatic |
- |                     |              |                  |           Engine |           Engine |
- |                     |              |                  |         V-engine |  Straight engine |
- | ------------------- | ------------ | ---------------- | ---------------- | ---------------- |
- | Number of cylinders |         Mean |           6.1875 |                8 | 5.14285714285714 |
- | Number of cylinders |     Std. dev | 1.78592164694654 |                0 |  1.0690449676497 |
- | Number of cylinders |      Valid N |               32 |               12 |                7 |
- | Number of cylinders |            4 |           34.375 |                  | 42.8571428571429 |
- | Number of cylinders |            6 |           21.875 |                  | 57.1428571428571 |
- | Number of cylinders |            8 |            43.75 |              100 |                  |
- | Number of cylinders | #Total cases |               32 |               12 |                7 |
- |         Carbureuter |         Mean |           2.8125 | 3.08333333333333 | 2.14285714285714 |
- |         Carbureuter |     Std. dev | 1.61519997763185 | 0.90033663737852 |  1.3451854182691 |
- |         Carbureuter |      Valid N |               32 |               12 |                7 |
- |         Carbureuter |            1 |           21.875 |                  | 42.8571428571429 |
- |         Carbureuter |            2 |            31.25 | 33.3333333333333 | 28.5714285714286 |
- |         Carbureuter |            3 |            9.375 |               25 |                  |
- |         Carbureuter |            4 |            31.25 | 41.6666666666667 | 28.5714285714286 |
- |         Carbureuter |            6 |            3.125 |                  |                  |
- |         Carbureuter |            8 |            3.125 |                  |                  |
- |         Carbureuter | #Total cases |               32 |               12 |                7 |
+                                                                             
+ |                     |              |           #Total |     Transmission |
+ |                     |              |                  |        Automatic |
+ |                     |              |                  |           Engine |
+ |                     |              |                  |         V-engine |
+ | ------------------- | ------------ | ---------------- | ---------------- |
+ | Number of cylinders |         Mean |           6.1875 |                8 |
+ | Number of cylinders |     Std. dev | 1.78592164694654 |                0 |
+ | Number of cylinders |      Valid N |               32 |               12 |
+ | Number of cylinders |            4 |           34.375 |                  |
+ | Number of cylinders |            6 |           21.875 |                  |
+ | Number of cylinders |            8 |            43.75 |              100 |
+ | Number of cylinders | #Total cases |               32 |               12 |
+ |         Carbureuter |         Mean |           2.8125 | 3.08333333333333 |
+ |         Carbureuter |     Std. dev | 1.61519997763185 | 0.90033663737852 |
+ |         Carbureuter |      Valid N |               32 |               12 |
+ |         Carbureuter |            1 |           21.875 |                  |
+ |         Carbureuter |            2 |            31.25 | 33.3333333333333 |
+ |         Carbureuter |            3 |            9.375 |               25 |
+ |         Carbureuter |            4 |            31.25 | 41.6666666666667 |
+ |         Carbureuter |            6 |            3.125 |                  |
+ |         Carbureuter |            8 |            3.125 |                  |
+ |         Carbureuter | #Total cases |               32 |               12 |
+                   
+     Transmission |
+        Automatic |
+           Engine |
+  Straight engine |
+ ---------------- |
+ 5.14285714285714 |
+  1.0690449676497 |
+                7 |
+ 42.8571428571429 |
+ 57.1428571428571 |
+                  |
+                7 |
+ 2.14285714285714 |
+  1.3451854182691 |
+                7 |
+ 42.8571428571429 |
+ 28.5714285714286 |
+                  |
+ 28.5714285714286 |
+                  |
+                  |
+                7 |

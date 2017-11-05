@@ -713,10 +713,10 @@ expect_error(
 
 data(iris)
 expect_error(
-iris = modify(iris, {
-    recode (Sepal.Length %to% Petal.Width, gt(1) ~ 1, other ~ 0) %into% ( Petal.Width %to% Sepal.Length)
-    
-})
+    modify(iris, {
+        recode (Sepal.Length %to% Petal.Width, gt(1) ~ 1, other ~ 0) %into% ( Petal.Width %to% Sepal.Length)
+        
+    })
 )
 expect_error(recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (v0001 %to% v0002))
 

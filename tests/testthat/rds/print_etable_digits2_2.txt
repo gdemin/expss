@@ -1,23 +1,46 @@
-                                                                                 
- |                     |              | #Total | Transmission |    Transmission |
- |                     |              |        |    Automatic |       Automatic |
- |                     |              |        |       Engine |          Engine |
- |                     |              |        |     V-engine | Straight engine |
- | ------------------- | ------------ | ------ | ------------ | --------------- |
- | Number of cylinders |         Mean |   6.19 |         8.00 |            5.14 |
- | Number of cylinders |     Std. dev |   1.79 |         0.00 |            1.07 |
- | Number of cylinders |      Valid N |  32.00 |        12.00 |            7.00 |
- | Number of cylinders |            4 |  34.38 |              |           42.86 |
- | Number of cylinders |            6 |  21.88 |              |           57.14 |
- | Number of cylinders |            8 |  43.75 |       100.00 |                 |
- | Number of cylinders | #Total cases |  32.00 |        12.00 |            7.00 |
- |         Carbureuter |         Mean |   2.81 |         3.08 |            2.14 |
- |         Carbureuter |     Std. dev |   1.62 |         0.90 |            1.35 |
- |         Carbureuter |      Valid N |  32.00 |        12.00 |            7.00 |
- |         Carbureuter |            1 |  21.88 |              |           42.86 |
- |         Carbureuter |            2 |  31.25 |        33.33 |           28.57 |
- |         Carbureuter |            3 |   9.38 |        25.00 |                 |
- |         Carbureuter |            4 |  31.25 |        41.67 |           28.57 |
- |         Carbureuter |            6 |   3.12 |              |                 |
- |         Carbureuter |            8 |   3.12 |              |                 |
- |         Carbureuter | #Total cases |  32.00 |        12.00 |            7.00 |
+                                                               
+ |                     |              | #Total | Transmission |
+ |                     |              |        |    Automatic |
+ |                     |              |        |       Engine |
+ |                     |              |        |     V-engine |
+ | ------------------- | ------------ | ------ | ------------ |
+ | Number of cylinders |         Mean |   6.19 |         8.00 |
+ | Number of cylinders |     Std. dev |   1.79 |         0.00 |
+ | Number of cylinders |      Valid N |  32.00 |        12.00 |
+ | Number of cylinders |            4 |  34.38 |              |
+ | Number of cylinders |            6 |  21.88 |              |
+ | Number of cylinders |            8 |  43.75 |       100.00 |
+ | Number of cylinders | #Total cases |  32.00 |        12.00 |
+ |         Carbureuter |         Mean |   2.81 |         3.08 |
+ |         Carbureuter |     Std. dev |   1.62 |         0.90 |
+ |         Carbureuter |      Valid N |  32.00 |        12.00 |
+ |         Carbureuter |            1 |  21.88 |              |
+ |         Carbureuter |            2 |  31.25 |        33.33 |
+ |         Carbureuter |            3 |   9.38 |        25.00 |
+ |         Carbureuter |            4 |  31.25 |        41.67 |
+ |         Carbureuter |            6 |   3.12 |              |
+ |         Carbureuter |            8 |   3.12 |              |
+ |         Carbureuter | #Total cases |  32.00 |        12.00 |
+                  
+    Transmission |
+       Automatic |
+          Engine |
+ Straight engine |
+ --------------- |
+            5.14 |
+            1.07 |
+            7.00 |
+           42.86 |
+           57.14 |
+                 |
+            7.00 |
+            2.14 |
+            1.35 |
+            7.00 |
+           42.86 |
+           28.57 |
+                 |
+           28.57 |
+                 |
+                 |
+            7.00 |
