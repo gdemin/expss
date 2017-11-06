@@ -36,7 +36,7 @@ and its arguments see \link[DT]{datatable}.
 }
 \examples{
 \dontrun{ 
-# !!! 'DT' package should be installed for this example - install.packages('DT')
+
 data(mtcars)
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",
