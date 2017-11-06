@@ -5,6 +5,7 @@
 \alias{count_row_if}
 \alias{count_col_if}
 \alias{\%row_in\%}
+\alias{\%has\%}
 \alias{\%col_in\%}
 \alias{sum_if}
 \alias{sum_row_if}
@@ -35,6 +36,8 @@ count_row_if(criterion, ...)
 count_col_if(criterion, ...)
 
 x \%row_in\% criterion
+
+x \%has\% criterion
 
 x \%col_in\% criterion
 
@@ -99,7 +102,8 @@ the ... argument.}
 \code{*_row_if} returns vector for each row of supplied arguments.
 \code{*_col_if} returns vector for each column of supplied arguments.
 \code{\%row_in\%}/\code{\%col_in\%} return logical vector - indicator of
-presence of criterion in each row/column.
+presence of criterion in each row/column. \code{\%has\%} is an alias for
+\code{\%row_in\%}.
 }
 \description{
 These functions calculate count/sum/average/etc on values that meet a 

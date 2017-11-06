@@ -26,7 +26,8 @@
 #' \code{*_row_if} returns vector for each row of supplied arguments.
 #' \code{*_col_if} returns vector for each column of supplied arguments.
 #' \code{\%row_in\%}/\code{\%col_in\%} return logical vector - indicator of
-#' presence of criterion in each row/column.
+#' presence of criterion in each row/column. \code{\%has\%} is an alias for
+#' \code{\%row_in\%}.
 #' 
 #' @details
 #' Possible type for criterion argument:
@@ -270,6 +271,10 @@ count_col_if=function(criterion,...){
 '%row_in%'=function(x, criterion){
     count_row_if(criterion=criterion, x)>0
 }
+
+#' @export
+#' @rdname count_if
+'%has%' = `%row_in%`
 
 #' @export
 #' @rdname count_if
