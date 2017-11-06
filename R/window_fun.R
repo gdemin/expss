@@ -19,10 +19,15 @@
 #'
 #' detach(warpbreaks)
 window_fun = function(x, ...){
+    UseMethod("window_fun")
+}
+
+#' @export
+window_fun.default = function(x, ...){
     args = list(...)
     stopif(length(args)==0, "'window_fun' - insufficient number of arguments.")
     fun = match.fun(args[[length(args)]])
-    grouping_variables = args[-length(args)]
+    grouping_variables = flat_list(args[-length(args)], flat_df = TRUE)
     res = NULL # to bypass R CMD check note
     if(length(grouping_variables)){
         expr = parse(text = "fun(x)")
@@ -38,3 +43,4 @@ window_fun = function(x, ...){
         rep(fun(x), length(x))
     }
 }
+
