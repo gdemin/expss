@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2017-09-26" />
+<meta name="date" content="2017-11-06" />
 
 <title>Tables with Labels in R</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Tables with Labels in R</h1>
-<h4 class="date"><em>2017-09-26</em></h4>
+<h4 class="date"><em>2017-11-06</em></h4>
 
 
 <div id="TOC">
@@ -127,8 +127,72 @@ mtcars =<span class="st"> </span><span class="kw">apply_labels</span>(mtcars,
 <p>For quick cross-tabulation there are <code>fre</code> and <code>cro</code> family of function. For simplicity we demonstrate here only <code>cro_cpct</code> which caluclates column percent. Documentation for other functions, such as <code>cro_cases</code> for counts, <code>cro_rpct</code> for row percent, <code>cro_tpct</code> for table percent and <code>cro_fun</code> for custom summary functions can be seen by typing <code>?cro</code> and <code>?cro_fun</code> in the console.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 'cro' examples</span>
 <span class="co"># Table with multiple banners (column %).</span>
-mtcars %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">calculate</span>(<span class="kw">cro_cpct</span>(cyl, <span class="kw">list</span>(<span class="kw">total</span>(), am, vs))) </code></pre></div>
+<span class="kw">cro_cpct</span>(mtcars<span class="op">$</span>cyl, <span class="kw">list</span>(<span class="kw">total</span>(), mtcars<span class="op">$</span>am, mtcars<span class="op">$</span>vs))</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Engine&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;V-engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Straight engine&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='8' style='font-weight: 900;'>&nbsp;Number of cylinders&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;4&nbsp;</td>
+<td style='text-align: right;'>34.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>15.8</td>
+<td style='text-align: right;'>61.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>5.6</td>
+<td style='text-align: right;'>71.4</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;6&nbsp;</td>
+<td style='text-align: right;'>21.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>21.1</td>
+<td style='text-align: right;'>23.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7</td>
+<td style='text-align: right;'>28.6</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;8&nbsp;</td>
+<td style='text-align: right;'>43.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>63.2</td>
+<td style='text-align: right;'>15.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>77.8</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>32</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>19</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>13</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>18</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>14</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># or, the same result with another notation</span>
+mtcars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">calc_cro_cpct</span>(cyl, <span class="kw">list</span>(<span class="kw">total</span>(), am, vs))</code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
@@ -193,8 +257,7 @@ mtcars %&gt;%<span class="st"> </span>
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Table with nested banners (column %).          </span>
-mtcars %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">calculate</span>(<span class="kw">cro_cpct</span>(cyl, <span class="kw">list</span>(<span class="kw">total</span>(), am %nest%<span class="st"> </span>vs)))       </code></pre></div>
+mtcars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">calc_cro_cpct</span>(cyl, <span class="kw">list</span>(<span class="kw">total</span>(), am <span class="op">%nest%</span><span class="st"> </span>vs))       </code></pre></div>
 <p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
@@ -270,10 +333,10 @@ mtcars %&gt;%<span class="st"> </span>
 </tbody>
 </table> We have more sophisticated interface for table construction with <code>magrittr</code> piping. Table construction consists of at least of three functions chained with pipe operator: <code>%&gt;%</code>. At first we need to specify variables for which statistics will be computed with <code>tab_cells</code>. Secondary, we calculate statistics with one of the <code>tab_stat_*</code> functions. And last, we finalize table creation with <code>tab_pivot</code>, e. g.: <code>dataset %&gt;% tab_cells(variable) %&gt;% tab_stat_cases() %&gt;% tab_pivot()</code>. After that we can optionally sort table with <code>tab_sort_asc</code>, drop empty rows/columns with <code>drop_rc</code> and transpose with <code>tab_transpose</code>. Resulting table is just a <code>data.frame</code> so we can use usual R operations on it. Detailed documentation for table creation can be seen via <code>?tables</code>. For significance testing see <code>?significance</code>. Generally, tables automatically translated to HTML for output in knitr or Jupyter notebooks. However, if we want HTML output in the R notebooks or in the RStudio viewer we need to set options for that: <code>expss_output_rnotebook()</code> or <code>expss_output_viewer()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># simple example</span>
-mtcars %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(cyl) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), am) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_stat_cpct</span>() %&gt;%<span class="st"> </span>
+mtcars <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(cyl) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), am) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>() <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_pivot</span>()</code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -323,12 +386,12 @@ mtcars %&gt;%<span class="st"> </span>
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># if we need caption then we use 'htmlTable'</span>
-mtcars %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(mpg, disp, hp, wt, qsec) %&gt;%
-<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), am) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_stat_mean_sd_n</span>() %&gt;%
-<span class="st">    </span><span class="kw">tab_last_sig_means</span>(<span class="dt">subtable_marks =</span> <span class="st">&quot;both&quot;</span>) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_pivot</span>() %&gt;%<span class="st"> </span>
+mtcars <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(mpg, disp, hp, wt, qsec) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), am) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_mean_sd_n</span>() <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">tab_last_sig_means</span>(<span class="dt">subtable_marks =</span> <span class="st">&quot;both&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_pivot</span>() <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">htmlTable</span>(<span class="dt">caption =</span> <span class="st">&quot;Table with summary statistics and significance marks.&quot;</span>)</code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -483,10 +546,10 @@ Table with summary statistics and significance marks.</td></tr>
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Table with the same summary statistics. Statistics labels in columns.</span>
-mtcars %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(mpg, disp, hp, wt, qsec) %&gt;%
-<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), am) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_stat_fun</span>(<span class="dt">Mean =</span> w_mean, <span class="st">&quot;Std. dev.&quot;</span> =<span class="st"> </span>w_sd, <span class="st">&quot;Valid N&quot;</span> =<span class="st"> </span>w_n, <span class="dt">method =</span> list) %&gt;%
+mtcars <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(mpg, disp, hp, wt, qsec) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), am) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_fun</span>(<span class="dt">Mean =</span> w_mean, <span class="st">&quot;Std. dev.&quot;</span> =<span class="st"> </span>w_sd, <span class="st">&quot;Valid N&quot;</span> =<span class="st"> </span>w_n, <span class="dt">method =</span> list) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">tab_pivot</span>()</code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -590,15 +653,15 @@ mtcars %&gt;%<span class="st"> </span>
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Different statistics for different variables.</span>
-mtcars %&gt;%
-<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), vs) %&gt;%
-<span class="st">    </span><span class="kw">tab_cells</span>(mpg) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_stat_mean</span>() %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_stat_valid_n</span>() %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(am) %&gt;%
-<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;col %&quot;</span>) %&gt;%
-<span class="st">    </span><span class="kw">tab_stat_rpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;row %&quot;</span>) %&gt;%
-<span class="st">    </span><span class="kw">tab_stat_tpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;table %&quot;</span>) %&gt;%
+mtcars <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), vs) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">tab_cells</span>(mpg) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_mean</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_valid_n</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(am) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;col %&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">tab_stat_rpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;row %&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">tab_stat_tpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;none&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;table %&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">tab_pivot</span>(<span class="dt">stat_position =</span> <span class="st">&quot;inside_rows&quot;</span>) </code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -696,13 +759,13 @@ mtcars %&gt;%
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Table with split by rows and with custom totals.</span>
-mtcars %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(cyl) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), vs) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_rows</span>(am) %&gt;%<span class="st"> </span>
+mtcars <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(cyl) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), vs) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_rows</span>(am) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">total_row_position =</span> <span class="st">&quot;above&quot;</span>,
                   <span class="dt">total_label =</span> <span class="kw">c</span>(<span class="st">&quot;number of cases&quot;</span>, <span class="st">&quot;row %&quot;</span>),
-                  <span class="dt">total_statistic =</span> <span class="kw">c</span>(<span class="st">&quot;u_cases&quot;</span>, <span class="st">&quot;u_rpct&quot;</span>)) %&gt;%<span class="st"> </span>
+                  <span class="dt">total_statistic =</span> <span class="kw">c</span>(<span class="st">&quot;u_cases&quot;</span>, <span class="st">&quot;u_rpct&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_pivot</span>()</code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -828,18 +891,18 @@ mtcars %&gt;%<span class="st"> </span>
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Linear regression by groups.</span>
-mtcars %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">sheet</span>(mpg, disp, hp, wt, qsec)) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), am) %&gt;%<span class="st"> </span>
+mtcars <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">sheet</span>(mpg, disp, hp, wt, qsec)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), am) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_stat_fun_df</span>(
-        function(x){
+        <span class="cf">function</span>(x){
             frm =<span class="st"> </span><span class="kw">reformulate</span>(<span class="st">&quot;.&quot;</span>, <span class="dt">response =</span> <span class="kw">names</span>(x)[<span class="dv">1</span>])
             model =<span class="st"> </span><span class="kw">lm</span>(frm, <span class="dt">data =</span> x)
             <span class="kw">sheet</span>(<span class="st">'Coef.'</span> =<span class="st"> </span><span class="kw">coef</span>(model), 
                   <span class="kw">confint</span>(model)
             )
         }    
-    ) %&gt;%<span class="st"> </span>
+    ) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_pivot</span>() </code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -965,28 +1028,28 @@ w =<span class="st"> </span>product_test <span class="co"># shorter name to save
 <span class="co"># 'h' variables - VSX123 sample, 'p' variables - 'SDF456' sample</span>
 <span class="co"># also we recode preferences from first/second product to true names</span>
 <span class="co"># for first cell there are no changes, for second cell we should exchange 1 and 2.</span>
-w =<span class="st"> </span>w %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">do_if</span>(cell ==<span class="st"> </span><span class="dv">1</span>, {
-        <span class="kw">recode</span>(a1_1 %to%<span class="st"> </span>a1_6, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>(h1_1 %to%<span class="st"> </span>h1_6)
-        <span class="kw">recode</span>(b1_1 %to%<span class="st"> </span>b1_6, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>(p1_1 %to%<span class="st"> </span>p1_6)
-        <span class="kw">recode</span>(a22, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>h22
-        <span class="kw">recode</span>(b22, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>p22
+w =<span class="st"> </span>w <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">do_if</span>(cell <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, {
+        <span class="kw">recode</span>(a1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>a1_<span class="dv">6</span>, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>(h1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>h1_<span class="dv">6</span>)
+        <span class="kw">recode</span>(b1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>b1_<span class="dv">6</span>, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>(p1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>p1_<span class="dv">6</span>)
+        <span class="kw">recode</span>(a22, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>h22
+        <span class="kw">recode</span>(b22, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>p22
         c1r =<span class="st"> </span>c1
-    }) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">do_if</span>(cell ==<span class="st"> </span><span class="dv">2</span>, {
-        <span class="kw">recode</span>(a1_1 %to%<span class="st"> </span>a1_6, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>(p1_1 %to%<span class="st"> </span>p1_6)
-        <span class="kw">recode</span>(b1_1 %to%<span class="st"> </span>b1_6, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>(h1_1 %to%<span class="st"> </span>h1_6)
-        <span class="kw">recode</span>(a22, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>p22
-        <span class="kw">recode</span>(b22, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>h22
-        <span class="kw">recode</span>(c1, <span class="dv">1</span> ~<span class="st"> </span><span class="dv">2</span>, <span class="dv">2</span> ~<span class="st"> </span><span class="dv">1</span>, other ~<span class="st"> </span>copy) %into%<span class="st"> </span>c1r
-    }) %&gt;%<span class="st"> </span>
+    }) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">do_if</span>(cell <span class="op">==</span><span class="st"> </span><span class="dv">2</span>, {
+        <span class="kw">recode</span>(a1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>a1_<span class="dv">6</span>, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>(p1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>p1_<span class="dv">6</span>)
+        <span class="kw">recode</span>(b1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>b1_<span class="dv">6</span>, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>(h1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>h1_<span class="dv">6</span>)
+        <span class="kw">recode</span>(a22, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>p22
+        <span class="kw">recode</span>(b22, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>h22
+        <span class="kw">recode</span>(c1, <span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="dv">2</span>, <span class="dv">2</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, other <span class="op">~</span><span class="st"> </span>copy) <span class="op">%into%</span><span class="st"> </span>c1r
+    }) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">compute</span>({
         <span class="co"># recode age by groups</span>
-        age_cat =<span class="st"> </span><span class="kw">recode</span>(s2a, lo %thru%<span class="st"> </span><span class="dv">25</span> ~<span class="st"> </span><span class="dv">1</span>, lo %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">2</span>)
+        age_cat =<span class="st"> </span><span class="kw">recode</span>(s2a, lo <span class="op">%thru%</span><span class="st"> </span><span class="dv">25</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, lo <span class="op">%thru%</span><span class="st"> </span>hi <span class="op">~</span><span class="st"> </span><span class="dv">2</span>)
         <span class="co"># count number of likes</span>
         <span class="co"># codes 2 and 99 are ignored.</span>
-        h_likes =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> |<span class="st"> </span><span class="dv">3</span> %thru%<span class="st"> </span><span class="dv">98</span>, h1_1 %to%<span class="st"> </span>h1_6) 
-        p_likes =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> |<span class="st"> </span><span class="dv">3</span> %thru%<span class="st"> </span><span class="dv">98</span>, p1_1 %to%<span class="st"> </span>p1_6) 
+        h_likes =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span><span class="dv">3</span> <span class="op">%thru%</span><span class="st"> </span><span class="dv">98</span>, h1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>h1_<span class="dv">6</span>) 
+        p_likes =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span><span class="dv">3</span> <span class="op">%thru%</span><span class="st"> </span><span class="dv">98</span>, p1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>p1_<span class="dv">6</span>) 
     })
 
 <span class="co"># here we prepare labels for future usage</span>
@@ -1039,11 +1102,11 @@ w =<span class="st"> </span><span class="kw">apply_labels</span>(w,
 )</code></pre></div>
 <p>Are there any significant differences between preferences? Yes, difference is significant.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 'tab_mis_val(3)' remove 'hard to say' from vector </span>
-w %&gt;%<span class="st"> </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), age_cat) %&gt;%<span class="st"> </span>
-<span class="st">      </span><span class="kw">tab_cells</span>(c1r) %&gt;%<span class="st"> </span>
-<span class="st">      </span><span class="kw">tab_mis_val</span>(<span class="dv">3</span>) %&gt;%<span class="st"> </span>
-<span class="st">      </span><span class="kw">tab_stat_cases</span>() %&gt;%<span class="st"> </span>
-<span class="st">      </span><span class="kw">tab_last_sig_cases</span>() %&gt;%<span class="st"> </span>
+w <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), age_cat) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">      </span><span class="kw">tab_cells</span>(c1r) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">      </span><span class="kw">tab_mis_val</span>(<span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">      </span><span class="kw">tab_stat_cases</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">      </span><span class="kw">tab_last_sig_cases</span>() <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">      </span><span class="kw">tab_pivot</span>()</code></pre></div>
 <p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -1100,21 +1163,21 @@ w %&gt;%<span class="st"> </span><span class="kw">tab_cols</span>(<span class="k
 </tbody>
 </table> Further we calculate distribution of answers in the survey questions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lets specify repeated parts of table creation chains</span>
-banner =<span class="st"> </span>w %&gt;%<span class="st"> </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), age_cat, c1r) 
+banner =<span class="st"> </span>w <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(), age_cat, c1r) 
 <span class="co"># column percent with significance</span>
-tab_cpct_sig =<span class="st"> </span>. %&gt;%<span class="st"> </span><span class="kw">tab_stat_cpct</span>() %&gt;%<span class="st"> </span>
+tab_cpct_sig =<span class="st"> </span>. <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tab_stat_cpct</span>() <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">                    </span><span class="kw">tab_last_sig_cpct</span>(<span class="dt">sig_labels =</span> <span class="kw">paste0</span>(<span class="st">&quot;&lt;b&gt;&quot;</span>,LETTERS, <span class="st">&quot;&lt;/b&gt;&quot;</span>))
 
 <span class="co"># means with siginifcance</span>
-tab_means_sig =<span class="st"> </span>. %&gt;%<span class="st"> </span><span class="kw">tab_stat_mean_sd_n</span>(<span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;&lt;b&gt;&lt;u&gt;Mean&lt;/u&gt;&lt;/b&gt;&quot;</span>, <span class="st">&quot;sd&quot;</span>, <span class="st">&quot;N&quot;</span>)) %&gt;%<span class="st"> </span>
+tab_means_sig =<span class="st"> </span>. <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tab_stat_mean_sd_n</span>(<span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;&lt;b&gt;&lt;u&gt;Mean&lt;/u&gt;&lt;/b&gt;&quot;</span>, <span class="st">&quot;sd&quot;</span>, <span class="st">&quot;N&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">                      </span><span class="kw">tab_last_sig_means</span>(
                           <span class="dt">sig_labels =</span> <span class="kw">paste0</span>(<span class="st">&quot;&lt;b&gt;&quot;</span>,LETTERS, <span class="st">&quot;&lt;/b&gt;&quot;</span>),   
                           <span class="dt">keep =</span> <span class="st">&quot;means&quot;</span>)
 
 <span class="co"># Preferences</span>
-banner %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(c1r) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cpct_sig</span>() %&gt;%<span class="st"> </span>
+banner <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(c1r) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cpct_sig</span>() <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_pivot</span>() </code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -1209,13 +1272,13 @@ banner %&gt;%<span class="st"> </span>
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Overall liking</span>
-banner %&gt;%<span class="st">  </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(h22) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_means_sig</span>() %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cpct_sig</span>() %&gt;%<span class="st">  </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(p22) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_means_sig</span>() %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cpct_sig</span>() %&gt;%
+banner <span class="op">%&gt;%</span><span class="st">  </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(h22) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_means_sig</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cpct_sig</span>() <span class="op">%&gt;%</span><span class="st">  </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(p22) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_means_sig</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cpct_sig</span>() <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">tab_pivot</span>() </code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -1507,15 +1570,15 @@ banner %&gt;%<span class="st">  </span>
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Likes</span>
-banner %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(h_likes) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_means_sig</span>() %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">mrset</span>(h1_1 %to%<span class="st"> </span>h1_6)) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cpct_sig</span>() %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(p_likes) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_means_sig</span>() %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">mrset</span>(p1_1 %to%<span class="st"> </span>p1_6)) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cpct_sig</span>() %&gt;%
+banner <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(h_likes) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_means_sig</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">mrset</span>(h1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>h1_<span class="dv">6</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cpct_sig</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(p_likes) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_means_sig</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">mrset</span>(p1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>p1_<span class="dv">6</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cpct_sig</span>() <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">tab_pivot</span>() </code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -1894,12 +1957,12 @@ banner %&gt;%<span class="st"> </span>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># below more complciated table were we compare likes side by side</span>
 <span class="co"># Likes - side by side comparison</span>
-w %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), c1r) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">list</span>(<span class="kw">unvr</span>(<span class="kw">mrset</span>(h1_1 %to%<span class="st"> </span>h1_6)))) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">label =</span> <span class="kw">var_lab</span>(h1_1)) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">list</span>(<span class="kw">unvr</span>(<span class="kw">mrset</span>(p1_1 %to%<span class="st"> </span>p1_6)))) %&gt;%<span class="st"> </span>
-<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">label =</span> <span class="kw">var_lab</span>(p1_1)) %&gt;%<span class="st"> </span>
+w <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), c1r) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">list</span>(<span class="kw">unvr</span>(<span class="kw">mrset</span>(h1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>h1_<span class="dv">6</span>)))) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">label =</span> <span class="kw">var_lab</span>(h1_<span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_cells</span>(<span class="kw">list</span>(<span class="kw">unvr</span>(<span class="kw">mrset</span>(p1_<span class="dv">1</span> <span class="op">%to%</span><span class="st"> </span>p1_<span class="dv">6</span>)))) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">tab_stat_cpct</span>(<span class="dt">label =</span> <span class="kw">var_lab</span>(p1_<span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_pivot</span>(<span class="dt">stat_position =</span> <span class="st">&quot;inside_columns&quot;</span>) </code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -2095,13 +2158,14 @@ w %&gt;%<span class="st"> </span>
 <div id="labels-support-for-base-r" class="section level2">
 <h2>Labels support for base R</h2>
 <p>Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
-<span class="kw">with</span>(mtcars, <span class="kw">table</span>(am, vs))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)</code></pre></div>
+<pre><code>## Warning: package 'knitr' was built under R version 3.4.2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">with</span>(mtcars, <span class="kw">table</span>(am, vs))</code></pre></div>
 <pre><code>##            vs
 ## am          V-engine Straight engine
 ##   Automatic       12               7
 ##   Manual           6               7</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">boxplot</span>(mpg ~<span class="st"> </span>am, <span class="dt">data =</span> mtcars)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">boxplot</span>(mpg <span class="op">~</span><span class="st"> </span>am, <span class="dt">data =</span> mtcars)</code></pre></div>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAJACAMAAABlpiR1AAAAbFBMVEUAAAAAADoAAGYAOpAAZmYAZrY6AAA6ADo6AGY6OpA6kNtmAABmADpmAGZmZgBmZjpmkJBmtrZmtv+QOgCQOjqQZgCQ2/+2ZgC225C2/9u2///bkDrb2//b/7bb////tmb/25D//7b//9v///+9xMe4AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAQAUlEQVR4nO3dC1MbyRVA4bEJ3gTyRAlKrASB+P//MdMjMTSbiBXNdHPm9vmq1mYXSr5955Re64LhWQIbvnoA6T0GKjQDFZqBCs1AhWagQjNQoRmo0AxUaAYqNAMVmoEKzUCFZqBCM1ChGajQDFRoBio0AxWagQrNQIVmoEIzUKEZqNAMVGgGKjQDFZqBCs1AhWagQjNQoRmo0AxUaAYqNAMVmoEKzUCFZqBCM1ChGajQDFRoBio0AxWagQrNQIVmoEIzUKEZqNAMVGgGKjQDFZqBCs1AhWagQjNQoRmo0AxUaAYqNAMVmoEKzUCFZqBCM1ChGajQDFRoBio0AxWagQrNQIVmoEIzUKEZqNAMVGgGKjQDFZqBCs1AhbZwoIN0ka8KdNmbU1QGKjQDFZqBCs1AhWagQjNQoRmo0AxUaAYqNAMVmoEKzUCFZqBCM9CgaH8brvgci3/hl9yclkC8KAaqGfGiGKhmxItioJoRL4qBCs1AhWagQjNQzYgXxUA1I14UA9WMeFEMVDPiRTFQzYgXxUCFZqBCM1ChGahmxItioJoRL4qBaka8KAaqGfGiGKhmxItioEIzUKEZqNAMVDPiRTFQzYgXxUA1I14UA9WMeFEMVDPiRTFQoRmo0AxUaAaqGfGiGKhmxItioJoRL4qBaka8KAaqGfGiGKjQDFRoBio0A9WMeFEMVDPiRTFQzYgXxUA1I14UA9WMeFEMVGgGKjQDFZqBaka8KAaqGfGiGKhmxItioJoRL4qBaka8KJUCPWyGyfefi9yculUn0N1wc/xg//LBp25O/aoS6GEzZ7m7evj0zWkI5WNHX/wLR0+3dy8f7s88yBvoR4TaFiBQ70EXFmpbgEDH56Cnu1Cfgy4i1LYIgY4P8senG2fuP4OtvLpQ20IE2vrmggu1LXSghS/lehdqW5xA98Pw7X65m+tYqG0hAt0Ow83jHx7yN5w+c3O9C7UtQqDb8cXRdrr39G2mJYTaFiDQ6X7z8ZcUqG/ULyHUthCBpnc/D/9+9h50GaG2BQj0efdyv3lM9bM3171Q2yIE+rw7vnzfD2deI8VaeXWhtoUItPXNBRdqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obZloPGE2paBxhNqWwYaT6htGWg8obYFCPTp9mb8dT8Mw/efC9ycQm2LEuju6iF9dPf5m1OobUECPaU5ZfrJm1OobUECffwxBbo/8yAfauXVhdoWJFDvQRcUaluIQMfXR8P188vLpU/enEJtCxDo89Tot/vxhfyZPmOtvLpQ22IE2vjmggu1LXSgw2yRm+tFqG0hAt2NCR5fJPkqfgGhtkUIdDc+/3y6Ta+SDHQJobYFCPSwuZl+vXow0EWE2hYg0Jf/wbm9ejDQJYTaFiDQ4z3oaHttoEsItS1AoPMD+9Ptub/PFGrl1YXaFiHQ8VX88UH+sDHQBYTaFiLQ1jcXXKhtGejxD2ik9jmOh2nypzRioMWQQyXYwUoYaDHkUAl2sBIGWgw5VIIdrISBFkMOlWAHK2Gg8YTaloHGE2pbBhpPqG0ZaDHkUAl2sBIGWgw5VIIdrISBFkMOlWAHK2GgxZBDJdjBShhoMeRQCXawEgYaT6htGWg8obZloPGE2paBFkMOlWAHK2GgxZBDJdjBShhoMeRQCXawEgZaDDlUgh2shIEWQw6VYAcrYaDxhNqWgcYTalsGGk+obRloMeRQCXawEgZaDDlU0uq7ULTxsaMv/oVfcnPLQA6VfHVSy/rY0Rf/wi+5uWUgh0q+Oqllfezoi3/hl9zcMpBDJdjBShhoPKG2ZaDxhNqWgcYTalsGWgw5VIIdrISBFkMOlWAHK2GgxZBDJdjBShhoMeRQCXawEgZaDDlUgh2shIHGE2pbBhpPqG0ZaDyhtmWgxZBDJdjBShhoMeRQCXawEgZaDDlUgh2shIEWQw6VYAcrYaDFkEMl2MFKGGg8obZloPGE2paBxhNqWwZaDDlUgh2shIEWQw6VYAcrYaDFkEMl2MFKGGgx5FAJdrASBloMOVSCHayEgcYTalsGGs9Xf7OaZX3s6It/4ZfcnKIy0AxyqIaI5zfQDHKohojnN9AMcqiGiOc30AxyqIaI5zfQDHKohojnN1ChVQr0sDm+5fX95yI3p27VCXQ33Bw/2L988KmbU7+qBHrYzFnurh4+fXPNIIdqiHj+KoE+3d69fLg/8yBP3AVzqIaI5/ceNIMcqiHi+Ws9Bz3dha7rOShyqIaI56/0Kv7p9vgq/sz9J3MXzKEaIp7f90GF1jjQwr8UqG5VCnQ3Jjg9Dd2t6VW8eCq9SPp2Pz4NvX5eWaDIoRoinr/i20yHzfgSyUBXhHj+qm/Ub68eDHRFiOev+0b99tpAV4R4/krPQU9ZPt2e+/tMxF0wh2qIeP5qr+KPD/KHzZoCFY9v1AvNQIVmoBnkUA0Rz2+gGeRQDRHPv45Am3/7oKqW3eSCiJOtJNBl//CvxT0McTIDbY57GOJkBtpcqMNUZ6DNhTpMdQbaXKjDVGegzXEPQ5zMQJvjHoY4mYE2xz0McTIDbY57GOJkBtoc9zDEyQy0uVCHqc5Amwt1mOoMtLlQh6nOQJvjHoY4mYE2xz0McTIDbY57GOJkBtoc9zDEyQy0Oe5hiJMZaHOhDlOdgTYX6jDVGWhzoQ5TnYE2xz0McTIDbY57GOJkBtoc9zDEyQy0Oe5hiJMZaHPcwxAnM9DmQh2mOgNtLtRhqltJoKEsu8ngDLS9ZTe5IOJkBtresptcEHGylQS67B/+tbiHIU5moM1xD0OczECb4x6GOJmBNhfqMNUZaHOhDlOdgTYX6jDVGWhz3MMQJzPQ5riHIU5moM1xD0OczECb4x6GOJmBNsc9DHEyA20u1GGqM9DmQh2mOgNtLtRhqjPQ5riHIU5moM1xD0OczECb4x6GOJmBNsc9DHEyA22OexjiZAbaXKjDVGegzYU6THUG2lyow1RnoM1xD0OczECb4x6GOJmBNsc9DHEyA22OexjiZFUCfbq9GX/dD8Pw/ecCN8fcXDHuYYiT1Qt0d/WQPrr7/M0xN1cs1GGqqxboKc0p00/eXLBrGuow1VUL9PHHFOj+zIO8geoi3oM2xz0McbJKgaZvg3n9/PJy6ZM3x9xcMe5hiJPVeptpbPTb/fhC/kyfBkpEnMz3QZvjHoY4WeNAC78PNnFzxdocJsr3M1/JPWgoy24yuHUEqm5VfBV/tMj7oOpWnXvQw+bs/4QvuTn1q9JD/GFzveTNNYIcqnO1noPuhzN/S6Ts5tpADtU5XyRlkEN1zkAzyKE6Z6AZ5FCdM1ChGajQDFRoBppBDtU5A80gh+qcgWaQQ3XOQDPIoTpnoBnkUJ0zUKEZqNAMVGgGmkEO1TkDzSCH6pyBZpBDdc5AM8ihOmegGeRQnTNQoRmo0AxUaAaaQQ7VOQPNIIfqnIFmkEN1zkAzyKE6Z6AZ5FCdM1ChGajQDFRoBppBDtU5A80gh+qcgWaQQ3XOQDPIoTpnoBnkUJ0zUKEZqNAMVGgGmkEO1TkDzSCH6pyBZpBDdc5AM8ihOmegGeRQnTNQoRmo0AxUaAaaQQ7VOQPNIIfqnIFmkEN1zkAzyKE6Z6AZ5FCdM1ChGajQDFRoBppBDtU5A80gh+qcgWaQQ3XOQDPIoTpnoBnkUJ0zUKEZqNAMVGgGmkEO1TkDzSCH6lylQA+bYfL95yI31whyqM7VCXQ33Bw/2L988KmbawU5VOeqBHrYzFnurh4+fXNFhkZqn6N3VQJ9ur17+XB/5kHeC6uLhL0HVQy1noOe7kLX9RxUPJVexT/dHp+hnbn/NFBdyPdBhdY4UF/96mO8BxWagQqt0vugrw/lvg+qz6hzD3rYnP2f8CU3p35V+8si10venLpV6znofrh79/MGqov4IkloBiq0LwtUusgXBYrUwxnfs+rzr3r4C/Vwxves+vyrHv5CPZzxPas+/6qHv1APZ3zPqs+/6uEv1MMZ37Pq8696+Av1cMb3rPr8qx7+Qj2c8T2rPv+qh79QD2d8z6rPv+rhL9TDGd+z6vOvenjFZ6BCM1ChGajQDFRoBio0AxWagQrNQIVmoEIzUKEZqNAMVGghAt3+6juS79//9ienL8l+JkQIh81pDfvz3wE7s5LjRwj08Ze/vPmmZhesfiVX50PGQI9hbg2UZff9nz/yZXcb6O/+eD/+/vSnPxsoyWFzffyue9PKn27/+mP6KQ/7YUgPeY8//nY7fvA4/sd0QbZD+j3929V/piu0G//Db3zLvpUYl7BNj/H7q3+kQI8nHfeRzn/3spy77BMG2sb+2/3zbvxnvgbT7/vpolyPLaZPp2+4uxv/2Y4tpq9NXzJ92fFfzvxQnXUZA91PZd5sx99eT3pczxxovoIVCBBouhxTY3mgxx86Nrb7+GO6G51+uXtKj4Hj73OgQdqcjIE+/v7n83jGcSPZSU9Hf1lOvoIVWH+gU3zP2/HuMQ/0cXpWOv46ffD6S7prHV4Dffyxiqt0kempzt34CP+wPT4H3ecP7a8P8fkn+NYf6O707dLu/k+g40dvAx2/eHpFNQf6y/1Xz7+Y9ER8dz0+wk+PKflJ3wT65hN8qw/09F3J09PN374Hnf8l6D3o8+Pv//X3+xTom5Pmgb79BN/qA00vkZLpdcDr063sOWgW6PRDmvdD2Oeg4z9/HZ+GjoG+Oekx0Jv/XcEKrD7Q0/Ot9FT0sLl6OGyG47V4fRX/q3vQp9vhZgpzfhX/mz8aYh2mY2zTe2ane9DTSY+Bvizn7Sf41h7o62P0+DIp/SCnv6V3Ut68D/qr56Df7rdjlNuQ74OefsrF6TnodNL5uefLct58gm/tgSo4AxWagQrNQIVmoEIzUKEZqNAMVGgGKjQDFZqBCs1AhWagQjNQoRmo0AxUaAYqNAMVmoEKzUCFZqBCM1ChGajQDFRoBio0AxWagQrNQIVmoEIzUKEZqNAMVGgGKjQDFZqBCs1AhWagQjNQoRmo0AxUaAYqNAMVmoEKzUCFZqBCM1ChGajQDFRoBio0AxWagQrNQIVmoEIzUKEZqNAMVGgGKjQDFZqBCs1AhWagQjNQoRmo0P4LRtyyJwnCLrgAAAAASUVORK5CYII=" /><!-- --></p>
 <p>There is a special function for variables labels support - <code>use_labels</code>. By now variables labels support available only for expression which will be evaluated inside data.frame.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># table with dimension names</span>
@@ -2111,7 +2175,7 @@ w %&gt;%<span class="st"> </span>
 ##    Automatic       12               7
 ##    Manual           6               7</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># linear regression</span>
-<span class="kw">use_labels</span>(mtcars, <span class="kw">lm</span>(mpg ~<span class="st"> </span>wt +<span class="st"> </span>hp +<span class="st"> </span>qsec)) %&gt;%<span class="st"> </span>summary</code></pre></div>
+<span class="kw">use_labels</span>(mtcars, <span class="kw">lm</span>(mpg <span class="op">~</span><span class="st"> </span>wt <span class="op">+</span><span class="st"> </span>hp <span class="op">+</span><span class="st"> </span>qsec)) <span class="op">%&gt;%</span><span class="st"> </span>summary</code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = `Miles/(US) gallon` ~ `Weight (1000 lbs)` + `Gross horsepower` + 
@@ -2138,9 +2202,9 @@ w %&gt;%<span class="st"> </span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
 <span class="kw">use_labels</span>(mtcars, {
     <span class="co"># 'vars(other)' is needed to get all 'mtcars' data.frame inside expression </span>
-    <span class="kw">ggplot</span>(<span class="kw">vars</span>(other)) +
-<span class="st">        </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> mpg, <span class="dt">x =</span> wt, <span class="dt">color =</span> qsec)) +
-<span class="st">        </span><span class="kw">facet_grid</span>(am ~<span class="st"> </span>vs)
+    <span class="kw">ggplot</span>(<span class="kw">vars</span>(other)) <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> mpg, <span class="dt">x =</span> wt, <span class="dt">color =</span> qsec)) <span class="op">+</span>
+<span class="st">        </span><span class="kw">facet_grid</span>(am <span class="op">~</span><span class="st"> </span>vs)
 }) </code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 </div>
@@ -2196,10 +2260,10 @@ w %&gt;%<span class="st"> </span>
 <h5>IF</h5>
 <p><strong>Excel: <code>IF(B1&gt;60, 1, 0)</code></strong></p>
 <p><strong>R:</strong> Here we create new column with name <code>d</code> with results. <code>ifelse</code> function is from base R not from ‘expss’ package but included here for completeness.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">ifelse</span>(w$b&gt;<span class="dv">60</span>, <span class="dv">1</span>, <span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w<span class="op">$</span>d =<span class="st"> </span><span class="kw">ifelse</span>(w<span class="op">$</span>b<span class="op">&gt;</span><span class="dv">60</span>, <span class="dv">1</span>, <span class="dv">0</span>)</code></pre></div>
 <p>If we need to use multiple transformations it is often convenient to use <code>compute</code> function. Inside <code>compute</code> we can put arbitrary number of the statements:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
-    d =<span class="st"> </span><span class="kw">ifelse</span>(b&gt;<span class="dv">60</span>, <span class="dv">1</span>, <span class="dv">0</span>)
+    d =<span class="st"> </span><span class="kw">ifelse</span>(b<span class="op">&gt;</span><span class="dv">60</span>, <span class="dv">1</span>, <span class="dv">0</span>)
     e =<span class="st"> </span><span class="dv">42</span>
     abc_sum =<span class="st"> </span><span class="kw">sum_row</span>(a, b, c)
     abc_mean =<span class="st"> </span><span class="kw">mean_row</span>(a, b, c)
@@ -2216,7 +2280,7 @@ w %&gt;%<span class="st"> </span>
 <p>Count values greater than 1 in each row of the dataset.</p>
 <p><strong>Excel: <code>COUNTIF(A1:C1, &quot;&gt;1&quot;)</code></strong></p>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">gt</span>(<span class="dv">1</span>), w)  </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w<span class="op">$</span>d =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">gt</span>(<span class="dv">1</span>), w)  </code></pre></div>
 <p>or</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
     d =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">gt</span>(<span class="dv">1</span>), a, b, c) 
@@ -2224,7 +2288,7 @@ w %&gt;%<span class="st"> </span>
 <p>Count values less than or equal to 1 in column A of the dataset.</p>
 <p><strong>Excel: <code>COUNTIF(A1:A4, &quot;&lt;=1&quot;)</code></strong></p>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">count_col_if</span>(<span class="kw">le</span>(<span class="dv">1</span>), w$a)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">count_col_if</span>(<span class="kw">le</span>(<span class="dv">1</span>), w<span class="op">$</span>a)</code></pre></div>
 <p><strong>Table of criteria:</strong></p>
 <table>
 <thead>
@@ -2270,7 +2334,7 @@ w %&gt;%<span class="st"> </span>
 <p>Calculate average of each row of the dataset.</p>
 <p><strong>Excel: <code>AVERAGE(A1:C1)</code></strong></p>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">mean_row</span>(w)  </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w<span class="op">$</span>d =<span class="st"> </span><span class="kw">mean_row</span>(w)  </code></pre></div>
 <p>or</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
     d =<span class="st"> </span><span class="kw">mean_row</span>(a, b, c) 
@@ -2278,7 +2342,7 @@ w %&gt;%<span class="st"> </span>
 <p>Sum values of column <code>A</code> of the dataset.</p>
 <p><strong>Excel: <code>SUM(A1:A4)</code></strong></p>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_col</span>(w$a)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_col</span>(w<span class="op">$</span>a)</code></pre></div>
 </div>
 <div id="sumifaverageif" class="section level5">
 <h5>SUMIF/AVERAGEIF</h5>
@@ -2291,7 +2355,7 @@ w %&gt;%<span class="st"> </span>
 <p>Sum values less than 40 in the each row of the dataset.</p>
 <p><strong>Excel: <code>SUMIF(A1:C1, &quot;&lt;40&quot;)</code></strong></p>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">sum_row_if</span>(<span class="kw">lt</span>(<span class="dv">40</span>), w)  </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w<span class="op">$</span>d =<span class="st"> </span><span class="kw">sum_row_if</span>(<span class="kw">lt</span>(<span class="dv">40</span>), w)  </code></pre></div>
 <p>or</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
     d =<span class="st"> </span><span class="kw">sum_row_if</span>(<span class="kw">lt</span>(<span class="dv">40</span>), a, b, c) 
@@ -2299,7 +2363,7 @@ w %&gt;%<span class="st"> </span>
 <p>Calculate average of <code>B</code> column with column <code>A</code> values less than 3.</p>
 <p><strong>Excel: <code>AVERAGEIF(A1:A4, &quot;&lt;3&quot;, B1:B4)</code></strong></p>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_col_if</span>(<span class="kw">lt</span>(<span class="dv">3</span>), w$a, <span class="dt">data =</span> w$b)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_col_if</span>(<span class="kw">lt</span>(<span class="dv">3</span>), w<span class="op">$</span>a, <span class="dt">data =</span> w<span class="op">$</span>b)</code></pre></div>
 <p>or, if we want calculate means for both <code>b</code> and <code>c</code> columns:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calculate</span>(w, <span class="kw">mean_col_if</span>(<span class="kw">lt</span>(<span class="dv">3</span>), a, <span class="dt">data =</span> <span class="kw">sheet</span>(b, c)))</code></pre></div>
 </div>
@@ -2341,9 +2405,9 @@ w %&gt;%<span class="st"> </span>
 <span class="st">&quot;</span>)</code></pre></div>
 <p><strong>Excel: <code>VLOOKUP(A1, $X$1:$Y$3, 2, FALSE)</code></strong></p>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">vlookup</span>(w$a, dict, <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w<span class="op">$</span>d =<span class="st"> </span><span class="kw">vlookup</span>(w<span class="op">$</span>a, dict, <span class="dv">2</span>)</code></pre></div>
 <p>or, we can use column names:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="kw">vlookup</span>(w$a, dict, <span class="st">&quot;y&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w<span class="op">$</span>d =<span class="st"> </span><span class="kw">vlookup</span>(w<span class="op">$</span>a, dict, <span class="st">&quot;y&quot;</span>)</code></pre></div>
 </div>
 </div>
 <div id="spss-functions-translation-guide" class="section level2">
@@ -2353,7 +2417,7 @@ w %&gt;%<span class="st"> </span>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COMPUTE d = 1.</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w$d =<span class="st"> </span><span class="dv">1</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w<span class="op">$</span>d =<span class="st"> </span><span class="dv">1</span></code></pre></div>
 <p>or, in the specific data.frame</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
     d =<span class="st"> </span><span class="dv">1</span>
@@ -2366,11 +2430,11 @@ w %&gt;%<span class="st"> </span>
 <pre><code>IF(a = 3) d = 2.</code></pre>
 <p><strong>R</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
-    d =<span class="st"> </span><span class="kw">ifelse</span>(a ==<span class="st"> </span><span class="dv">3</span>, <span class="dv">2</span>, <span class="ot">NA</span>)
+    d =<span class="st"> </span><span class="kw">ifelse</span>(a <span class="op">==</span><span class="st"> </span><span class="dv">3</span>, <span class="dv">2</span>, <span class="ot">NA</span>)
 })</code></pre></div>
 <p>or,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">compute</span>(w, {
-    d =<span class="st"> </span><span class="kw">ifs</span>(a ==<span class="st"> </span><span class="dv">3</span> ~<span class="st"> </span><span class="dv">2</span>)
+    d =<span class="st"> </span><span class="kw">ifs</span>(a <span class="op">==</span><span class="st"> </span><span class="dv">3</span> <span class="op">~</span><span class="st"> </span><span class="dv">2</span>)
 })</code></pre></div>
 </div>
 <div id="do-if" class="section level5">
@@ -2380,7 +2444,7 @@ w %&gt;%<span class="st"> </span>
     COMPUTE d = 4.
 END IF.</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">do_if</span>(w, a&gt;<span class="dv">1</span>, {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w =<span class="st"> </span><span class="kw">do_if</span>(w, a<span class="op">&gt;</span><span class="dv">1</span>, {
     d =<span class="st"> </span><span class="dv">4</span>
 })</code></pre></div>
 <p>There can be arbitrary number of statements inside <code>do_if</code>.</p>
@@ -2390,35 +2454,35 @@ END IF.</code></pre>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5 (LO THRU HI).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(lo %thru%<span class="st"> </span>hi, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(lo <span class="op">%thru%</span><span class="st"> </span>hi, a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5 (SYSMIS).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="ot">NA</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="ot">NA</span>, a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5 (1 THRU 5).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> %thru%<span class="st"> </span><span class="dv">5</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> <span class="op">%thru%</span><span class="st"> </span><span class="dv">5</span>, a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5 (1 THRU HI).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> %thru%<span class="st"> </span>hi, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> <span class="op">%thru%</span><span class="st"> </span>hi, a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p>or,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">ge</span>(<span class="dv">1</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">ge</span>(<span class="dv">1</span>), a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5 (LO THRU 1).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(lo %thru%<span class="st"> </span><span class="dv">1</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(lo <span class="op">%thru%</span><span class="st"> </span><span class="dv">1</span>, a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p>or,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span> (<span class="kw">le</span>(<span class="dv">1</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span> (<span class="kw">le</span>(<span class="dv">1</span>), a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5 (1 THRU 5, 99).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> %thru%<span class="st"> </span><span class="dv">5</span> |<span class="st"> </span><span class="dv">99</span>, a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="dv">1</span> <span class="op">%thru%</span><span class="st"> </span><span class="dv">5</span> <span class="op">|</span><span class="st"> </span><span class="dv">99</span>, a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>COUNT cnt = a1 TO a5(1,2,3,4,5, SYSMIS).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">5</span>, <span class="ot">NA</span>), a1 %to%<span class="st"> </span>a5)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cnt =<span class="st"> </span><span class="kw">count_row_if</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="ot">NA</span>), a1 <span class="op">%to%</span><span class="st"> </span>a5)</code></pre></div>
 <p><code>count_row_if</code> can be used inside <code>compute</code>.</p>
 </div>
 <div id="recode" class="section level5">
@@ -2426,21 +2490,21 @@ END IF.</code></pre>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE V1 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(v1) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span> ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span> ~<span class="st"> </span><span class="dv">0</span>, <span class="dv">2</span>:<span class="dv">3</span> ~<span class="st"> </span>-<span class="dv">1</span>, <span class="dv">9</span> ~<span class="st"> </span><span class="dv">9</span>, other ~<span class="st"> </span><span class="ot">NA</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(v1) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>, <span class="dv">2</span><span class="op">:</span><span class="dv">3</span> <span class="op">~</span><span class="st"> </span><span class="op">-</span><span class="dv">1</span>, <span class="dv">9</span> <span class="op">~</span><span class="st"> </span><span class="dv">9</span>, other <span class="op">~</span><span class="st"> </span><span class="ot">NA</span>)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).</code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(qvar) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span> %thru%<span class="st"> </span><span class="dv">5</span> ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">6</span> %thru%<span class="st"> </span><span class="dv">10</span> ~<span class="st"> </span><span class="dv">2</span>, <span class="dv">11</span> %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">3</span>, other ~<span class="st"> </span><span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(qvar) =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span> <span class="op">%thru%</span><span class="st"> </span><span class="dv">5</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">6</span> <span class="op">%thru%</span><span class="st"> </span><span class="dv">10</span> <span class="op">~</span><span class="st"> </span><span class="dv">2</span>, <span class="dv">11</span> <span class="op">%thru%</span><span class="st"> </span>hi <span class="op">~</span><span class="st"> </span><span class="dv">3</span>, other <span class="op">~</span><span class="st"> </span><span class="dv">0</span>)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). </code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(strngvar) =<span class="st"> </span><span class="kw">c</span>(<span class="kw">c</span>(<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>) ~<span class="st"> 'A'</span>, <span class="kw">c</span>(<span class="st">'D'</span>, <span class="st">'E'</span>, <span class="st">'F'</span>) ~<span class="st"> 'B'</span>, other ~<span class="st"> ' '</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">recode</span>(strngvar) =<span class="st"> </span><span class="kw">c</span>(<span class="kw">c</span>(<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>) <span class="op">~</span><span class="st"> 'A'</span>, <span class="kw">c</span>(<span class="st">'D'</span>, <span class="st">'E'</span>, <span class="st">'F'</span>) <span class="op">~</span><span class="st"> 'B'</span>, other <span class="op">~</span><span class="st"> ' '</span>)</code></pre></div>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. </code></pre>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">voter =<span class="st"> </span><span class="kw">recode</span>(age, <span class="ot">NA</span> ~<span class="st"> </span><span class="dv">9</span>, <span class="dv">18</span> %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span> %thru%<span class="st"> </span><span class="dv">18</span> ~<span class="st"> </span><span class="dv">0</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">voter =<span class="st"> </span><span class="kw">recode</span>(age, <span class="ot">NA</span> <span class="op">~</span><span class="st"> </span><span class="dv">9</span>, <span class="dv">18</span> <span class="op">%thru%</span><span class="st"> </span>hi <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span> <span class="op">%thru%</span><span class="st"> </span><span class="dv">18</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>)
 <span class="co"># or</span>
-<span class="kw">recode</span>(age, <span class="ot">NA</span> ~<span class="st"> </span><span class="dv">9</span>, <span class="dv">18</span> %thru%<span class="st"> </span>hi ~<span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span> %thru%<span class="st"> </span><span class="dv">18</span> ~<span class="st"> </span><span class="dv">0</span>) %into%<span class="st"> </span>voter</code></pre></div>
+<span class="kw">recode</span>(age, <span class="ot">NA</span> <span class="op">~</span><span class="st"> </span><span class="dv">9</span>, <span class="dv">18</span> <span class="op">%thru%</span><span class="st"> </span>hi <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span> <span class="op">%thru%</span><span class="st"> </span><span class="dv">18</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%into%</span><span class="st"> </span>voter</code></pre></div>
 <p><code>recode</code> can be used inside <code>compute</code>.</p>
 </div>
 <div id="variable-labels" class="section level5">
@@ -2472,7 +2536,7 @@ END IF.</code></pre>
 <span class="st">                    &quot;</span>)
 )</code></pre></div>
 <p>or,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">val_lab</span>(w$a) =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">val_lab</span>(w<span class="op">$</span>a) =<span class="st"> </span><span class="kw">num_lab</span>(<span class="st">&quot;</span>
 <span class="st">    1 apples</span>
 <span class="st">    2 oranges</span>
 <span class="st">    3 peaches </span>
@@ -2481,7 +2545,7 @@ END IF.</code></pre>
 <div id="tables" class="section level5">
 <h5>Tables</h5>
 <p><strong>R</strong>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fre</span>(w$a) <span class="co"># Frequency of fruits</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fre</span>(w<span class="op">$</span>a) <span class="co"># Frequency of fruits</span></code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
@@ -2536,7 +2600,7 @@ END IF.</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_cpct</span>(w$b, w$a) <span class="co"># Column percent of cost by fruits</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_cpct</span>(w<span class="op">$</span>b, w<span class="op">$</span>a) <span class="co"># Column percent of cost by fruits</span></code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
@@ -2578,7 +2642,7 @@ END IF.</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_mean</span>(<span class="kw">sheet</span>(w$b, w$c), w$a) <span class="co"># Mean cost and price by fruits</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cro_mean</span>(<span class="kw">sheet</span>(w<span class="op">$</span>b, w<span class="op">$</span>c), w<span class="op">$</span>a) <span class="co"># Mean cost and price by fruits</span></code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>

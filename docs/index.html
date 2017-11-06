@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2017-11-04" />
+<meta name="date" content="2017-11-06" />
 
 <title>expss: Tables with Labels in R</title>
 
@@ -215,7 +215,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">expss: Tables with Labels in R</h1>
-<h4 class="date"><em>2017-11-04</em></h4>
+<h4 class="date"><em>2017-11-06</em></h4>
 
 </div>
 
@@ -263,8 +263,72 @@ mtcars = apply_labels(mtcars,
 <p>For quick cross-tabulation there are <code>fre</code> and <code>cro</code> family of function. For simplicity we demonstrate here only <code>cro_cpct</code> which caluclates column percent. Documentation for other functions, such as <code>cro_cases</code> for counts, <code>cro_rpct</code> for row percent, <code>cro_tpct</code> for table percent and <code>cro_fun</code> for custom summary functions can be seen by typing <code>?cro</code> and <code>?cro_fun</code> in the console.</p>
 <pre class="r"><code># &#39;cro&#39; examples
 # Table with multiple banners (column %).
-mtcars %&gt;% 
-    calculate(cro_cpct(cyl, list(total(), am, vs))) </code></pre>
+cro_cpct(mtcars$cyl, list(total(), mtcars$am, mtcars$vs))</code></pre>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;#Total&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Transmission&nbsp;</th><th style='border-top: 2px solid grey;; border-bottom: hidden;'>&nbsp;</th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Engine&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Automatic&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Manual&nbsp;</th>
+<th style='border-bottom: 1px solid grey;' colspan='1'>&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;V-engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Straight engine&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='8' style='font-weight: 900;'>&nbsp;Number of cylinders&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;4&nbsp;</td>
+<td style='text-align: right;'>34.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>15.8</td>
+<td style='text-align: right;'>61.5</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>5.6</td>
+<td style='text-align: right;'>71.4</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;6&nbsp;</td>
+<td style='text-align: right;'>21.9</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>21.1</td>
+<td style='text-align: right;'>23.1</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>16.7</td>
+<td style='text-align: right;'>28.6</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;8&nbsp;</td>
+<td style='text-align: right;'>43.8</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>63.2</td>
+<td style='text-align: right;'>15.4</td>
+<td style='' colspan='1'>&nbsp;</td>
+<td style='text-align: right;'>77.8</td>
+<td style='text-align: right;'></td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>32</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>19</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>13</td>
+<td style='border-bottom: 2px solid grey;' colspan='1'>&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>18</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>14</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># or, the same result with another notation
+mtcars %&gt;% calc_cro_cpct(cyl, list(total(), am, vs))</code></pre>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
@@ -329,8 +393,7 @@ mtcars %&gt;%
 </tbody>
 </table>
 <pre class="r"><code># Table with nested banners (column %).          
-mtcars %&gt;% 
-    calculate(cro_cpct(cyl, list(total(), am %nest% vs)))       </code></pre>
+mtcars %&gt;% calc_cro_cpct(cyl, list(total(), am %nest% vs))     </code></pre>
 <p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
@@ -2231,8 +2294,9 @@ w %&gt;%
 <div id="labels-support-for-base-r" class="section level2">
 <h2>Labels support for base R</h2>
 <p>Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels.</p>
-<pre class="r"><code>library(knitr)
-with(mtcars, table(am, vs))</code></pre>
+<pre class="r"><code>library(knitr)</code></pre>
+<pre><code>## Warning: package &#39;knitr&#39; was built under R version 3.4.2</code></pre>
+<pre class="r"><code>with(mtcars, table(am, vs))</code></pre>
 <pre><code>##            vs
 ## am          V-engine Straight engine
 ##   Automatic       12               7

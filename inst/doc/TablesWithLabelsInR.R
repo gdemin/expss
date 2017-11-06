@@ -23,12 +23,13 @@ mtcars = apply_labels(mtcars,
 ## ------------------------------------------------------------------------
 # 'cro' examples
 # Table with multiple banners (column %).
-mtcars %>% 
-    calculate(cro_cpct(cyl, list(total(), am, vs))) 
+cro_cpct(mtcars$cyl, list(total(), mtcars$am, mtcars$vs))
+
+# or, the same result with another notation
+mtcars %>% calc_cro_cpct(cyl, list(total(), am, vs))
 
 # Table with nested banners (column %).          
-mtcars %>% 
-    calculate(cro_cpct(cyl, list(total(), am %nest% vs)))       
+mtcars %>% calc_cro_cpct(cyl, list(total(), am %nest% vs))       
 
 
 ## ------------------------------------------------------------------------
