@@ -53,14 +53,17 @@ For quick cross-tabulation there are `fre` and `cro` family of function. For sim
 
 ```{r}
 # 'cro' examples
-# Table with multiple banners (column %).
+# just simple crosstabulation, similar to base R 'table' function
+cro(mtcars$am, mtcars$vs)
+
+# Table column % with multiple banners
 cro_cpct(mtcars$cyl, list(total(), mtcars$am, mtcars$vs))
 
 # or, the same result with another notation
 mtcars %>% calc_cro_cpct(cyl, list(total(), am, vs))
 
 # Table with nested banners (column %).          
-mtcars %>% calc_cro_cpct(cyl, list(total(), am %nest% vs))        
+mtcars %>% calc_cro_cpct(cyl, list(total(), am %nest% vs))       
 
 ```
 We have more sophisticated interface for table construction with `magrittr` piping. Table construction consists of at least of three functions chained with pipe operator: `%>%`. At first we need to specify variables for which statistics will be computed with `tab_cells`. Secondary, we calculate statistics with one of the `tab_stat_*` functions. And last, we finalize table creation with `tab_pivot`, e. g.: `dataset %>% tab_cells(variable) %>% tab_stat_cases() %>% tab_pivot()`. After that we can optionally sort table with `tab_sort_asc`, drop empty rows/columns with `drop_rc` and transpose with `tab_transpose`. Resulting table is just a `data.frame` so we can use usual R operations on it. Detailed documentation for table creation can be seen via `?tables`. For significance testing see `?significance`.
@@ -287,7 +290,7 @@ banner %>%
     tab_cpct_sig() %>%
     tab_pivot() 
 
-# below more complciated table were we compare likes side by side
+# below more complicated table where we compare likes side by side
 # Likes - side by side comparison
 w %>% 
     tab_cols(total(label = "#Total| |"), c1r) %>% 
