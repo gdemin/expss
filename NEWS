@@ -1,7 +1,8 @@
 0.8.3 (06.11.2017)
 ================
-* 
-* 
+* add 'calc_cro_*' functions family
+* minor fixes
+* compatibility with new version of 'testthat' package
 
 0.8.2 (26.09.2017)
 ================

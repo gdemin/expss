@@ -9,12 +9,14 @@ by_groups(data, ...)
 \arguments{
 \item{data}{data for aggregation}
 
-\item{...}{aggregation parameters. Character/numeric or criteria/logical functions (see
-\link{criteria}) for grouping variables and formulas with aggregation expressions, 
-such as \code{mean_x ~ mean(x)}. Names of variables at the top-level can be unquoted (non-standard
-evaluation). For standard evaluation of parameters you can surround them by
-round brackets. See examples. Instead of the formulas it can be single 
-function as last argument - it will be applied to all non-grouping columns.}
+\item{...}{aggregation parameters. Character/numeric or criteria/logical
+functions (see \link{criteria}) for grouping variables. Names of variables
+at the top-level can be unquoted (non-standard evaluation). For standard
+evaluation of parameters, you can surround them by round brackets. You need
+additionally specify formulas with aggregation expressions, such as
+\code{mean_x ~ mean(x)}. Instead of the formulas it can be single function
+as last argument - it will be applied to all non-grouping columns. See
+examples.}
 }
 \value{
 aggregated data.frame/data.table
@@ -50,6 +52,5 @@ statistic2 = as.formula("~ median(mpg)")
 by_groups(mtcars, (group2), (statistic2))
 
 by_groups(mtcars, (group1), (group2), (statistic1), (statistic2))
-
 
 }

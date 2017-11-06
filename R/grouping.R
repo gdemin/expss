@@ -1,15 +1,17 @@
 #' Aggregate dataset by grouping variable(s).
 #'
 #' Splits the data by groups, computes summary statistics for each, and returns
-#' \code{data.frame}/\code{data.table}. 
+#' \code{data.frame}/\code{data.table}.
 #'
 #' @param data data for aggregation
-#' @param ... aggregation parameters. Character/numeric or criteria/logical functions (see
-#'   \link{criteria}) for grouping variables and formulas with aggregation expressions, 
-#'   such as \code{mean_x ~ mean(x)}. Names of variables at the top-level can be unquoted (non-standard
-#'   evaluation). For standard evaluation of parameters you can surround them by
-#'   round brackets. See examples. Instead of the formulas it can be single 
-#'   function as last argument - it will be applied to all non-grouping columns.
+#' @param ... aggregation parameters. Character/numeric or criteria/logical
+#'   functions (see \link{criteria}) for grouping variables. Names of variables
+#'   at the top-level can be unquoted (non-standard evaluation). For standard
+#'   evaluation of parameters, you can surround them by round brackets. You need
+#'   additionally specify formulas with aggregation expressions, such as
+#'   \code{mean_x ~ mean(x)}. Instead of the formulas it can be single function
+#'   as last argument - it will be applied to all non-grouping columns. See
+#'   examples.
 #' @return aggregated data.frame/data.table
 #' @export
 #'
@@ -40,33 +42,33 @@
 #' by_groups(mtcars, (group2), (statistic2))
 #'
 #' by_groups(mtcars, (group1), (group2), (statistic1), (statistic2))
-#'
-#'
+#' 
 by_groups = function(data, ...){
-    UseMethod("by_groups")
+    args = substitute(list(...))
+    by_groups_internal(data, args, envir = parent.frame())
+}
+
+
+by_groups_internal = function(data, args, envir){
+   UseMethod("by_groups_internal") 
 }
 
 #' @export
-by_groups.data.table = function(data, ...){
-    by_groups_internal(data, ..., envir = parent.frame())
+by_groups_internal.data.frame = function(data, args, envir){
+    res = by_groups_internal.data.table(data.table(data), args, envir = envir)
+    as.sheet(res)
 }
 
 #' @export
-by_groups.data.frame = function(data, ...){
-    res = by_groups_internal(data.table(data), ..., envir = parent.frame())
-    as.dtfrm(res)
-}
-
-#' @export
-by_groups.default = function(data, ...){
-    res = by_groups_internal(as.data.table(data), ..., envir = parent.frame())
-    as.dtfrm(res)
-
+by_groups_internal.default = function(data, args, envir){
+    res = by_groups_internal.data.table(as.data.table(data), args, envir = envir)
+    as.sheet(res)
 }
 
 # data - data.table
-by_groups_internal = function(data, ..., envir){
-    args = substitute(list(...))
+#' @export
+by_groups_internal.data.table = function(data, args, envir){
+    
     evaluated_args = evaluate_variable_names(args, 
                                              envir = envir, 
                                              symbols_to_characters = TRUE)
@@ -117,3 +119,4 @@ by_groups_internal = function(data, ..., envir){
     }
     res
 }
+
