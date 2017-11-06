@@ -179,16 +179,22 @@ long_datatable_to_table = function(dtable, rows, columns, values){
     }
     setkeyv(dtable, cols = c(rows, columns), verbose = FALSE)
     frm = as.formula(paste(paste(rows, collapse = "+"), "~", paste(columns, collapse = "+")))
-    mess = utils::capture.output(
-        {res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")},
-        type = "message"
-    )
+    # mess = utils::capture.output(
+    #     {res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")},
+    #     type = "message"
+    # )
+    res = dcast(dtable, frm, value.var = values, 
+                drop = FALSE, 
+                fill = NA, 
+                sep = "|", 
+                fun.aggregate = identity
+                )
     # for debugging
     # mess = numeric(0)
     # res = dcast(dtable, frm, value.var = values, drop = FALSE, fill = NA, sep = "|")
-    stopif(length(mess)>0,
-           paste0("Something is going wrong - several elements in one cell in the table (",mess,").")
-    )
+    # stopif(length(mess)>0,
+    #        paste0("Something is going wrong - several elements in one cell in the table (",mess,").")
+    # )
     if(length(values)>1){
         # dcast place 'values' on top of all other grouping variable
         # we doesn't need it so we change it
