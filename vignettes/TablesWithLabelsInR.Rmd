@@ -323,7 +323,6 @@ write_labelled_spss(w, file  filename = "product_test.csv")
 
 Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. 
 ```{r, fig.height=6, fig.width=7}
-library(knitr)
 with(mtcars, table(am, vs))
 
 boxplot(mpg ~ am, data = mtcars)

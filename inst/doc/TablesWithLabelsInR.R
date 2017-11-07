@@ -22,14 +22,17 @@ mtcars = apply_labels(mtcars,
 
 ## ------------------------------------------------------------------------
 # 'cro' examples
-# Table with multiple banners (column %).
+# just simple crosstabulation, similar to base R 'table' function
+cro(mtcars$am, mtcars$vs)
+
+# Table column % with multiple banners
 cro_cpct(mtcars$cyl, list(total(), mtcars$am, mtcars$vs))
 
 # or, the same result with another notation
 mtcars %>% calc_cro_cpct(cyl, list(total(), am, vs))
 
 # Table with nested banners (column %).          
-mtcars %>% calc_cro_cpct(cyl, list(total(), am %nest% vs))       
+mtcars %>% calc_cro_cpct(cyl, list(total(), am %nest% vs))      
 
 
 ## ------------------------------------------------------------------------
@@ -228,7 +231,7 @@ banner %>%
     tab_cpct_sig() %>%
     tab_pivot() 
 
-# below more complciated table were we compare likes side by side
+# below more complicated table where we compare likes side by side
 # Likes - side by side comparison
 w %>% 
     tab_cols(total(label = "#Total| |"), c1r) %>% 
@@ -246,7 +249,6 @@ w %>%
 #  write_labelled_spss(w, file  filename = "product_test.csv")
 
 ## ---- fig.height=6, fig.width=7------------------------------------------
-library(knitr)
 with(mtcars, table(am, vs))
 
 boxplot(mpg ~ am, data = mtcars)

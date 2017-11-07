@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2017-11-06" />
+<meta name="date" content="2017-11-07" />
 
 <title>Tables with Labels in R</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Tables with Labels in R</h1>
-<h4 class="date"><em>2017-11-06</em></h4>
+<h4 class="date"><em>2017-11-07</em></h4>
 
 
 <div id="TOC">
@@ -126,7 +126,40 @@ mtcars =<span class="st"> </span><span class="kw">apply_labels</span>(mtcars,
 )</code></pre></div>
 <p>For quick cross-tabulation there are <code>fre</code> and <code>cro</code> family of function. For simplicity we demonstrate here only <code>cro_cpct</code> which caluclates column percent. Documentation for other functions, such as <code>cro_cases</code> for counts, <code>cro_rpct</code> for row percent, <code>cro_tpct</code> for table percent and <code>cro_fun</code> for custom summary functions can be seen by typing <code>?cro</code> and <code>?cro_fun</code> in the console.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 'cro' examples</span>
-<span class="co"># Table with multiple banners (column %).</span>
+<span class="co"># just simple crosstabulation, similar to base R 'table' function</span>
+<span class="kw">cro</span>(mtcars<span class="op">$</span>am, mtcars<span class="op">$</span>vs)</code></pre></div>
+<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<thead>
+<tr>
+<th style='border-top: 2px solid grey;'></th>
+<th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>&nbsp;Engine&nbsp;</th>
+</tr>
+<tr>
+<th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'></th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;V-engine&nbsp;</th>
+<th style='border-bottom: 1px solid grey; text-align: center;'>&nbsp;Straight engine&nbsp;</th>
+</tr>
+</thead>
+<tbody> 
+<tr><td colspan='3' style='font-weight: 900;'>&nbsp;Transmission&nbsp;</td></tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Automatic&nbsp;</td>
+<td style='text-align: right;'>12</td>
+<td style='text-align: right;'>7</td>
+</tr>
+<tr>
+<td style='text-align: left;'>&nbsp;&nbsp;&nbsp;Manual&nbsp;</td>
+<td style='text-align: right;'>6</td>
+<td style='text-align: right;'>7</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>&nbsp;&nbsp;&nbsp;#Total cases&nbsp;</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>18</td>
+<td style='border-bottom: 2px solid grey; text-align: right;'>14</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Table column % with multiple banners</span>
 <span class="kw">cro_cpct</span>(mtcars<span class="op">$</span>cyl, <span class="kw">list</span>(<span class="kw">total</span>(), mtcars<span class="op">$</span>am, mtcars<span class="op">$</span>vs))</code></pre></div>
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -257,7 +290,7 @@ mtcars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">c
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Table with nested banners (column %).          </span>
-mtcars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">calc_cro_cpct</span>(cyl, <span class="kw">list</span>(<span class="kw">total</span>(), am <span class="op">%nest%</span><span class="st"> </span>vs))       </code></pre></div>
+mtcars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">calc_cro_cpct</span>(cyl, <span class="kw">list</span>(<span class="kw">total</span>(), am <span class="op">%nest%</span><span class="st"> </span>vs))      </code></pre></div>
 <p><table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
 <tr>
@@ -1955,7 +1988,7 @@ banner <span class="op">%&gt;%</span><span class="st"> </span>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># below more complciated table were we compare likes side by side</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># below more complicated table where we compare likes side by side</span>
 <span class="co"># Likes - side by side comparison</span>
 w <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">tab_cols</span>(<span class="kw">total</span>(<span class="dt">label =</span> <span class="st">&quot;#Total| |&quot;</span>), c1r) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -2158,8 +2191,6 @@ w <span class="op">%&gt;%</span><span class="st"> </span>
 <div id="labels-support-for-base-r" class="section level2">
 <h2>Labels support for base R</h2>
 <p>Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)</code></pre></div>
-<pre><code>## Warning: package 'knitr' was built under R version 3.4.2</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">with</span>(mtcars, <span class="kw">table</span>(am, vs))</code></pre></div>
 <pre><code>##            vs
 ## am          V-engine Straight engine
