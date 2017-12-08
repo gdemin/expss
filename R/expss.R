@@ -98,6 +98,15 @@ data.table::fread
 data.table::fwrite
 
 #' @export
+data.table::shift
+
+#' @export
+data.table::first
+
+#' @export
+data.table::last
+
+#' @export
 htmlTable::htmlTable
 
 #' @export
