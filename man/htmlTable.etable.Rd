@@ -7,12 +7,12 @@
 \alias{repr_text.etable}
 \title{Outputting HTML tables in RStudio viewer/R Notebooks}
 \usage{
-\method{htmlTable}{etable}(x, digits = get_expss_digits(), ...,
-  row_groups = TRUE)
+\method{htmlTable}{etable}(x, digits = get_expss_digits(),
+  escape.html = FALSE, ..., row_groups = TRUE)
 
-knit_print.etable(x, digits = get_expss_digits(), ...)
+knit_print.etable(x, digits = get_expss_digits(), escape.html = FALSE, ...)
 
-repr_html.etable(obj, digits = get_expss_digits(), ...)
+repr_html.etable(obj, digits = get_expss_digits(), escape.html = FALSE, ...)
 
 repr_text.etable(obj, digits = get_expss_digits(), ...)
 }
@@ -23,6 +23,8 @@ repr_text.etable(obj, digits = get_expss_digits(), ...)
 decimal separator. Also you can set this argument by setting option 'expss.digits'
 - for example, \code{expss_digits(2)}. If it is NA than all
 numeric columns remain unrounded.}
+
+\item{escape.html}{logical: should HTML characters be escaped? Defaults to FALSE.}
 
 \item{...}{further parameters for \link[htmlTable]{htmlTable}.}
 

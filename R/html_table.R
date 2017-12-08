@@ -17,6 +17,7 @@
 #'   decimal separator. Also you can set this argument by setting option 'expss.digits'
 #'   - for example, \code{expss_digits(2)}. If it is NA than all
 #'   numeric columns remain unrounded.
+#' @param escape.html logical: should HTML characters be escaped? Defaults to FALSE. 
 #' @param ... further parameters for \link[htmlTable]{htmlTable}.
 #' @param row_groups logical Should we create row groups? TRUE by default.
 #'
@@ -56,9 +57,9 @@
 #' expss_output_default()   
 #'  
 #' }
-htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TRUE){
+htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE, ..., row_groups = TRUE){
     if(NCOL(x) == 0){
-        return(htmlTable(setNames(dtfrm("Table is empty"), " "), ...))
+        return(htmlTable(setNames(dtfrm("Table is empty"), " "), escape.html = escape.html, ...))
     }
     digits = if_null(digits, 1)
     if(!is.na(digits)){
@@ -87,7 +88,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
     
 
     if(!row_groups){
-        return(html_table_no_row_groups(x = x, ...))
+        return(html_table_no_row_groups(x = x, escape.html = escape.html, ...))
     }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
@@ -179,6 +180,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
                       n.cgroup = n.cgroup, 
                       rnames = rnames, 
                       rowlabel = first_lab,
+                      escape.html = escape.html, 
                       ...)   
         } else {
             htmlTable(as.dtfrm(x), 
@@ -190,6 +192,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
                       rgroup = rgroup,
                       n.rgroup = n.rgroup,
                       rowlabel = first_lab,
+                      escape.html = escape.html, 
                       ...)     
         }
     } else {
@@ -199,6 +202,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
                       align = align,
                       rnames = rnames, 
                       rowlabel = first_lab,
+                      escape.html = escape.html, 
                       ...)   
         } else {
             htmlTable(as.dtfrm(x), 
@@ -208,6 +212,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
                       rgroup = rgroup,
                       n.rgroup = n.rgroup,
                       rowlabel = first_lab,
+                      escape.html = escape.html, 
                       ...)     
         }
     }
@@ -219,6 +224,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), ..., row_groups = TR
                   rgroup = rgroup,
                   n.rgroup = n.rgroup,
                   rowlabel = first_lab,
+                  escape.html = escape.html, 
                   ...) 
         
     }
@@ -256,16 +262,18 @@ matrix_to_cgroup = function(header){
 
 #' @export
 #' @rdname htmlTable.etable
-knit_print.etable = function(x, digits = get_expss_digits(), ...){
-    knitr::knit_print(htmlTable.etable(x, digits = digits, ..., row_groups = TRUE))
+knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
+    knitr::knit_print(htmlTable.etable(x, digits = digits, 
+                                       escape.html = escape.html,
+                                       ..., row_groups = TRUE))
     # knitr::asis_output(res)
 }
 
 
 #' @export
 #' @rdname htmlTable.etable
-repr_html.etable = function(obj, digits = get_expss_digits(), ...){
-    htmlTable(obj, digits = digits, ..., row_groups = FALSE)
+repr_html.etable = function(obj, digits = get_expss_digits(), escape.html = FALSE, ...){
+    htmlTable(obj, digits = digits, escape.html = escape.html, ..., row_groups = FALSE)
     
 }
 
@@ -294,7 +302,7 @@ repr_text.etable = function(obj, digits = get_expss_digits(), ...){
 }
 
 ## for Jupyter notebooks where row headings not rendered correctly
-html_table_no_row_groups = function(x, ...){
+html_table_no_row_groups = function(x, escape.html = FALSE, ...){
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
     row_labels = x[[1]]  
@@ -374,6 +382,7 @@ html_table_no_row_groups = function(x, ...){
                           n.cgroup = n.cgroup, 
                           rnames = rnames, 
                           rowlabel = first_lab,
+                          escape.html = escape.html, 
                           ...)   
             
         } else {
@@ -383,6 +392,7 @@ html_table_no_row_groups = function(x, ...){
                           align = align,
                           rnames = rnames, 
                           rowlabel = first_lab,
+                          escape.html = escape.html, 
                           ...)   
             
         }
@@ -392,6 +402,7 @@ html_table_no_row_groups = function(x, ...){
                   header = "",
                   rnames = rnames, 
                   rowlabel = first_lab,
+                  escape.html = escape.html, 
                   ...) 
         
     }
