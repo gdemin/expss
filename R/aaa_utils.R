@@ -562,19 +562,8 @@ convert_characters_to_names = function(list_of_items){
 
 # expr - expression as after 'substitute'
 # symbols - named list  - names will be substituted with values 
-substitute_symbols = function (substitute_result, symbols) {
-    as.call(lapply(as.list(substitute_result), function(elem){
-        if(length(elem)<=1){
-            str_elem = as.character(elem)
-            if(is.symbol(elem) && (str_elem %in% names(symbols))){
-                symbols[[str_elem]] 
-            } else {
-                elem
-            }
-        } else {
-            substitute_symbols(elem, symbols) 
-        }
-    }))
+substitute_symbols = function(substitute_result, symbols) {
+    eval(bquote(substitute(.(substitute_result), symbols)))
 }
 
 convert_top_level_symbols_to_characters = function (as_list_substitute) {
