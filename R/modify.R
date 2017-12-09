@@ -175,11 +175,7 @@ modify_internal.data.frame = function (data, expr, parent) {
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
     del = setdiff(names(data), names(l))
     if(length(del)){
-        if(data.table::is.data.table(data)){
-            data.table::set(data, j = del, value = NULL)
-        } else {
-            data[, del] = NULL
-        }
+        data[, del] = NULL
     }
     nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
     wrong_rows = nrows!=1L & nrows!=nrow(data)
@@ -191,13 +187,61 @@ modify_internal.data.frame = function (data, expr, parent) {
     
     new_vars = rev(names(l)[!(names(l) %in% names(data))])
     nl = c(names(data), new_vars)
-    if(data.table::is.data.table(data)){
-        data.table::set(data, j = nl, value = l[nl])  
-        invisible(data)
-    } else {
-        data[nl] = l[nl]
-        data
+    data[nl] = l[nl]
+    data
+}
+
+
+#' @export
+modify_internal.data.table = function (data, expr, parent) {
+# modify_dt = function (data, expr, parent = .GlobalEnv) {
+    # based on 'within' from base R by R Core team
+    e = evalq(environment(), list(), parent)
+    orig_names = colnames(data)
+    prepare_env(e, n = nrow(data), column_names = orig_names)
+    binding = function(var_name){
+        var_name
+        function(v) {
+            if (missing(v)){
+                return(data[[var_name]])
+            } else {
+                data.table::set(data, j = var_name, value = v)
+            }
+            invisible(v)
+        }
     }
+    for(j in names(data)){
+        makeActiveBinding(j, binding(j), e)
+    }
+    eval(expr, envir = e, enclos = baseenv())
+    clear_env(e)
+    remove_active_bindings(e)
+    l = as.list(e, all.names = TRUE)
+    l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
+    if(length(l)>0){
+        nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
+        wrong_rows = nrows!=1L & nrows!=nrow(data)
+        if(any(wrong_rows)){
+            er_message = utils::head(paste0("'", names(l)[wrong_rows], "' has ", nrows[wrong_rows], " rows"), 5)
+            er_message = paste(er_message, collapse = ", ")
+            stop(paste0("Bad number of rows: ", er_message, " instead of ", nrow(data), " rows."))
+        }
+        
+        new_vars = rev(names(l)[!(names(l) %in% names(data))])
+        data[,(new_vars) := l[new_vars] ]
+        # data.table::set(data, j = new_vars, value = l[new_vars]) # doesn't work :(  
+    }
+    invisible(data)
+}
+
+remove_active_bindings = function(env){
+    binding_names = ls(envir = env, all.names = TRUE, sorted = FALSE)
+    for(i in binding_names){
+        if(bindingIsActive(i, env = env)){
+            rm(list = i, envir = env)
+        }
+    }
+    invisible(env)
 }
 
 #' @export
