@@ -1,6 +1,37 @@
 context("html datatable")
 
-data(mtcars)
+# 
+# library(testthat)
+# library(expss)
+# 
+# 
+library(shiny)
+# shinyApp(
+#     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
+#     server = function(input, output) {
+#         output$tbl = DT::renderDataTable(
+#             datatable(mtcars_table)
+#         )
+#     }
+# )
+# 
+# `%n_d%` = function(e1, e2){
+#     shinyApp(
+#         ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
+#         server = function(input, output) {
+#             output$tbl = DT::renderDataTable(
+#                 e1
+#             )
+#         }
+#     )
+# }
+# 
+# data(mtcars)
+# 
+# expss::datatable(cro(mtcars$am, mtcars$vs)[, 1:2])  %n_d% c("dependencies")
+# cro(mtcars$am, mtcars$vs)[, 1:2]  %n_d% c("dependencies")
+# DT::renderDataTable(cro(mtcars$am, mtcars$vs)[, 1:2])
+
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon|Mean",
                       cyl = "Number of cylinders",
@@ -147,28 +178,3 @@ expect_equal_to_reference(datatable(mtcars_table, escape = FALSE) %n_d% c("depen
                           "rds/html_datatable14_no_escape_html.rds")
 
 
-# 
-# library(testthat)
-# library(expss)
-# 
-# 
-# library(shiny)
-# shinyApp(
-#     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
-#     server = function(input, output) {
-#         output$tbl = DT::renderDataTable(
-#             datatable(mtcars_table)
-#         )
-#     }
-# )
-# 
-# `%n_d%` = function(e1, e2){
-#     shinyApp(
-#         ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
-#         server = function(input, output) {
-#             output$tbl = DT::renderDataTable(
-#                 e1
-#             )
-#         }
-#     )
-# }
