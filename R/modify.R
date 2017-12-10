@@ -194,7 +194,6 @@ modify_internal.data.frame = function (data, expr, parent) {
 
 #' @export
 modify_internal.data.table = function (data, expr, parent) {
-# modify_dt = function (data, expr, parent = .GlobalEnv) {
     # based on 'within' from base R by R Core team
     e = evalq(environment(), list(), parent)
     orig_names = colnames(data)
