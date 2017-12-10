@@ -50,6 +50,10 @@ a = data.frame(x = 1:5, y = 6:10)
 .add_rows(1:2)
 expect_equal_to_reference(a, "rds/add_rows6b.rds")
 
+a = NULL
+.add_rows(1)
+expect_identical(a, rbind(NULL, 1))
+
 expect_error(add_rows(a, b, nomatch_columns = "stop"))
 
 context("add_rows.etable")

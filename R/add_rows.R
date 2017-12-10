@@ -50,7 +50,7 @@
 #' 
 #' tbl_mean %add_rows% tbl_percent
 #'
-add_rows = function(...){
+add_rows = function(..., nomatch_columns = c("add", "drop", "stop")){
     UseMethod("add_rows")
 }
 
@@ -65,7 +65,7 @@ add_rows.data.frame = function(..., nomatch_columns = c("add", "drop", "stop")){
 }
 
 #' @export
-add_rows.default =  function(...){
+add_rows.default =  function(..., nomatch_columns = c("add", "drop", "stop")){
     rbind(...)
 }
 

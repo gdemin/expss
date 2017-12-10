@@ -7,7 +7,7 @@
 \alias{.add_rows}
 \title{Add rows to data.frame/matrix/table}
 \usage{
-add_rows(...)
+add_rows(..., nomatch_columns = c("add", "drop", "stop"))
 
 \method{add_rows}{data.frame}(..., nomatch_columns = c("add", "drop", "stop"))
 
