@@ -3,7 +3,6 @@ Type: Package
 Title: Tables with Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
 Version: 0.8.4
 Date: 2017-12-11
-Author: Gregory Demin
 Maintainer: Gregory Demin <gdemin@gmail.com>
 Authors@R: person("Gregory", "Demin", email = "gdemin@gmail.com",
          role = c("aut", "cre"))
