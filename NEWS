@@ -1,3 +1,8 @@
+0.8.4 (11.12.2017)
+================
+* compatibility with new version of htmlTable package
+* minor fixes
+
 0.8.3 (06.11.2017)
 ================
 * add 'calc_cro_*' functions family

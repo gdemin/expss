@@ -5,15 +5,8 @@ context("html datatable")
 # library(expss)
 # 
 # 
-library(shiny)
-# shinyApp(
-#     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
-#     server = function(input, output) {
-#         output$tbl = DT::renderDataTable(
-#             datatable(mtcars_table)
-#         )
-#     }
-# )
+# library(shiny)
+# 
 # 
 # `%n_d%` = function(e1, e2){
 #     shinyApp(
