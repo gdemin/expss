@@ -1,3 +1,8 @@
+0.8.5 (.01.2018)
+================
+* new arguments amd small improvements in 'write_labelled_csv'/'write_labelled_sps'
+* minor fixes
+
 0.8.4 (11.12.2017)
 ================
 * compatibility with new version of htmlTable package

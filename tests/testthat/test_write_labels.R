@@ -35,8 +35,8 @@ if(isTRUE(options("covr")[[1]]) && dir.exists("data")){
     sps = readLines("data/labelled_iris.csv.sps")
     etalon_dat = readLines("data/etalon_labelled_iris.csv")
     etalon_sps = readLines("data/etalon_labelled_iris.csv.sps")
-    # expect_identical(dat, etalon_dat)
-    # expect_identical(sps, etalon_sps)
+    expect_identical(dat, etalon_dat)
+    expect_identical(sps[-2], etalon_sps[-2])
     
     raw_data = readRDS("data/raw.RDS")
     data(iris)
@@ -173,6 +173,38 @@ if(isTRUE(options("covr")[[1]]) && dir.exists("data")){
     class(w2$q1) = c("labelled", "numeric")
     expect_true(all.equal(w, w2))
     
+    a = sheet(q = 'aaa"aaa"aaa')
+    write_labelled_csv(a, "data/qmethod.csv")
+    b = read_labelled_csv("data/qmethod.csv")
+    expect_identical(a, b)
+    
+    b = read_labelled_csv("data/qmethod.csv", undouble_quotes = FALSE)
+    a_res = fread("data/qmethod.csv", header = TRUE, data.table = FALSE)
+    expect_identical(a_res, b)
+    
+    a = sheet(q = 'aaa\naaa')
+    a_res = sheet(q = 'aaa aaa')
+    write_labelled_csv(a, "data/newline.csv")
+    b = read_labelled_csv("data/newline.csv")
+    expect_identical(a_res, b)
+    
+    write_labelled_csv(a, "data/newline.csv", remove_new_lines = FALSE)
+    b = read_labelled_csv("data/newline.csv")
+    expect_identical(a, b)
+    
+    a = sheet(.err = 1.5, err = "a")
+    a_res = sheet(err = 1.5, err_1 = "a")
+    write_labelled_spss(a, "data/var_with_dot.csv")
+    b = fread("data/var_with_dot.csv", data.table = FALSE)
+    expect_identical(a_res, b)
+    
+    unlink("data/var_with_dot.csv")
+    unlink("data/var_with_dot.csv.sps")
+    
+    unlink("data/newline.csv")
+    unlink("data/newline.csv.dic.R")
+    unlink("data/qmethod.csv")
+    unlink("data/qmethod.csv.dic.R")
     unlink("data/wrong_slash.csv")
     unlink("data/wrong_slash.csv.dic.R")
     unlink("data/prelaunch.csv")

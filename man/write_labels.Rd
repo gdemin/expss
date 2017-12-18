@@ -17,30 +17,32 @@
 write_labels(x, filename, fileEncoding = "")
 
 read_labelled_csv(filename, fileEncoding = "", encoding = "unknown",
-  sep = ",", dec = ".", ...)
+  sep = ",", dec = ".", undouble_quotes = TRUE, ...)
 
 read_labelled_csv2(filename, fileEncoding = "", encoding = "unknown",
-  sep = ";", dec = ",", ...)
+  sep = ";", dec = ",", undouble_quotes = TRUE, ...)
 
 read_labelled_tab(filename, fileEncoding = "", encoding = "unknown",
-  sep = "\\t", dec = ".", ...)
+  sep = "\\t", dec = ".", undouble_quotes = TRUE, ...)
 
 read_labelled_tab2(filename, fileEncoding = "", encoding = "unknown",
-  sep = "\\t", dec = ",", ...)
+  sep = "\\t", dec = ",", undouble_quotes = TRUE, ...)
 
 write_labelled_csv(x, filename, fileEncoding = "", sep = ",", dec = ".",
-  ...)
+  qmethod = c("double", "escape"), remove_new_lines = TRUE, ...)
 
 write_labelled_csv2(x, filename, fileEncoding = "", sep = ";", dec = ",",
-  ...)
+  qmethod = c("double", "escape"), remove_new_lines = TRUE, ...)
 
 write_labelled_tab(x, filename, fileEncoding = "", sep = "\\t", dec = ".",
-  ...)
+  qmethod = c("double", "escape"), remove_new_lines = TRUE, ...)
 
 write_labelled_tab2(x, filename, fileEncoding = "", sep = "\\t",
-  dec = ",", ...)
+  dec = ",", qmethod = c("double", "escape"), remove_new_lines = TRUE,
+  ...)
 
-write_labelled_spss(x, filename, fileEncoding = "", ...)
+write_labelled_spss(x, filename, fileEncoding = "", remove_new_lines = TRUE,
+  ...)
 
 write_labels_spss(x, filename)
 }
@@ -65,8 +67,21 @@ separated by this string.}
 \item{dec}{the string to use for decimal points in numeric or complex
 columns: must be a single character.}
 
+\item{undouble_quotes}{A logical indicating should we undouble quotes which
+were escaped by doubling (see \code{qmethod}). TRUE by default. Argument
+will be removed when data.table issue #1109 will be fixed.}
+
 \item{...}{additional arguments for
 \link[data.table]{fwrite}/\link[data.table]{fread}}
+
+\item{qmethod}{A character string specifying how to deal with embedded double
+quote characters when quoting strings. "escape" - the quote character (as
+well as the backslash character) is escaped in C style by a
+backslash, or "double" (default), in which case the double quote is doubled with
+another one.}
+
+\item{remove_new_lines}{A logical indicating should we replace new lines in
+the character variables with spaces. TRUE by default.}
 }
 \value{
 Functions for writing invisibly return NULL. Functions for reading

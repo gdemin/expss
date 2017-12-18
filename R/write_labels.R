@@ -25,6 +25,16 @@
 #'   separated by this string.
 #' @param dec the string to use for decimal points in numeric or complex
 #'   columns: must be a single character.
+#' @param qmethod A character string specifying how to deal with embedded double
+#'   quote characters when quoting strings. "escape" - the quote character (as
+#'   well as the backslash character) is escaped in C style by a
+#'   backslash, or "double" (default), in which case the double quote is doubled with
+#'   another one.
+#' @param remove_new_lines A logical indicating should we replace new lines in
+#'   the character variables with spaces. TRUE by default.
+#' @param undouble_quotes A logical indicating should we undouble quotes which
+#'   were escaped by doubling (see \code{qmethod}). TRUE by default. Argument
+#'   will be removed when data.table issue #1109 will be fixed.
 #' @param ... additional arguments for
 #'   \link[data.table]{fwrite}/\link[data.table]{fread}
 #'
@@ -122,7 +132,13 @@ read_dictionary_csv = function(filename, fileEncoding = ""){
 
 #' @export
 #' @rdname write_labels
-read_labelled_csv = function(filename, fileEncoding = "", encoding = "unknown", sep = ",", dec = ".", ...){
+read_labelled_csv = function(filename, 
+                             fileEncoding = "", 
+                             encoding = "unknown", 
+                             sep = ",", 
+                             dec = ".",
+                             undouble_quotes = TRUE,
+                             ...){
     # w = utils::read.table(file = filename,
     #                header = TRUE,
     #                sep = sep,
@@ -142,73 +158,110 @@ read_labelled_csv = function(filename, fileEncoding = "", encoding = "unknown", 
               dec = dec, 
               encoding = encoding, 
               data.table = FALSE)
+    if(undouble_quotes){
+        all_columns = seq_along(w)
+        for(i in all_columns){
+            if(is.character(w[[i]])){
+                w[[i]] = gsub('\"\"','\"',w[[i]], fixed = TRUE)    
+            }
+        }
+    }
     dic_file = paste0(filename,".dic.R")
     if (file.exists(dic_file)){
         source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
     } else {
         warning(".dic.R file doesn't exists. Labels will not be applied to data.")
     }
+
     w
   
 }
 
+# @export
+# @rdname write_labels
+# fread_df = data.table::fread
+# 
+# formals(fread_df)$data.table = FALSE
+# formals(fread_df)$integer64 = "character"
+
+
 #' @export
 #' @rdname write_labels
-read_labelled_csv2 = function(filename, fileEncoding = "", encoding = "unknown", sep = ";", dec = ",", ...){
+read_labelled_csv2 = function(filename, 
+                              fileEncoding = "", 
+                              encoding = "unknown", 
+                              sep = ";", 
+                              dec = ",",
+                              undouble_quotes = TRUE,
+                              ...){
     read_labelled_csv(filename = filename,
                       fileEncoding = fileEncoding,
                       encoding = encoding, 
                       sep = sep, 
                       dec = dec, 
+                      undouble_quotes = undouble_quotes,
                       ...)
 }
 
 #' @export
 #' @rdname write_labels
-read_labelled_tab = function(filename, fileEncoding = "", encoding = "unknown", sep = "\t", dec = ".", ...){
+read_labelled_tab = function(filename, 
+                             fileEncoding = "", 
+                             encoding = "unknown", 
+                             sep = "\t", 
+                             dec = ".", 
+                             undouble_quotes = TRUE,
+                             ...){
     read_labelled_csv(filename = filename,
                       fileEncoding = fileEncoding,
                       encoding = encoding, 
                       sep = sep, 
                       dec = dec, 
+                      undouble_quotes = undouble_quotes,
                       ...)
 }
 
 #' @export
 #' @rdname write_labels
-read_labelled_tab2 = function(filename, fileEncoding = "", encoding = "unknown", sep = "\t", dec = ",", ...){
+read_labelled_tab2 = function(filename, 
+                              fileEncoding = "", 
+                              encoding = "unknown", 
+                              sep = "\t", 
+                              dec = ",", 
+                              undouble_quotes = TRUE,
+                              ...){
     read_labelled_csv(filename = filename,
                       fileEncoding = fileEncoding,
                       encoding = encoding, 
                       sep = sep, 
                       dec = dec, 
+                      undouble_quotes = undouble_quotes,
                       ...)
 }
 
 #' @export
 #' @rdname write_labels
-write_labelled_csv = function(x, filename, fileEncoding = "", sep = ",", dec = ".", ...){
+write_labelled_csv = function(x, 
+                              filename, 
+                              fileEncoding = "", 
+                              sep = ",", 
+                              dec = ".", 
+                              qmethod = c("double", "escape"), 
+                              remove_new_lines = TRUE,
+                              ...){
     if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
-    for(each in seq_along(x)){
-        if (is.factor(x[[each]])){
-            x[[each]] = as.character(x[[each]])
-        }
-        if (is.character(x[[each]])){
-            x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
-            # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
+    if(remove_new_lines){
+        for(each in seq_along(x)){
+            if (is.factor(x[[each]])){
+                levels(x[[each]]) = gsub("[\\n\\r]+"," ", levels(x[[each]]), perl = TRUE)
+            }
+            if (is.character(x[[each]])){
+                x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
+                # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
+            }
         }
     }
-    # utils::write.table(x = x, file = file2,
-    #                       col.names = TRUE,
-    #                       row.names = FALSE,
-    #                       sep = sep,
-    #                       dec = dec,
-    #                       na = "",
-    #                       qmethod = "double",
-    #                       quote = TRUE,
-    #                       fileEncoding = fileEncoding,
-    #                       ...
-    # )
+    qmethod = match.arg(qmethod)
     data.table::fwrite(x = x, 
            file = filename,
            quote = TRUE,
@@ -217,7 +270,7 @@ write_labelled_csv = function(x, filename, fileEncoding = "", sep = ",", dec = "
            sep = sep,
            dec = dec,
            na = "",
-           qmethod = "double",
+           qmethod = qmethod,
            ...
     )
     dic_file = paste0(filename,".dic.R")
@@ -228,54 +281,74 @@ write_labelled_csv = function(x, filename, fileEncoding = "", sep = ",", dec = "
 
 #' @export
 #' @rdname write_labels
-write_labelled_csv2 = function(x, filename, fileEncoding = "", sep = ";", dec = ",", ...){
+write_labelled_csv2 = function(x, filename, fileEncoding = "", sep = ";", dec = ",", 
+                               qmethod = c("double", "escape"), 
+                               remove_new_lines = TRUE,
+                               ...){
     write_labelled_csv(x = x, 
                        filename = filename,
                        fileEncoding = fileEncoding,
                        sep = sep, 
                        dec = dec,
+                       qmethod = qmethod,
+                       remove_new_lines = remove_new_lines,
                        ...                       
     )
 }
 
 #' @export
 #' @rdname write_labels
-write_labelled_tab = function(x, filename, fileEncoding = "", sep = "\t", dec = ".", ...){
+write_labelled_tab = function(x, filename, fileEncoding = "", sep = "\t", dec = ".", 
+                              qmethod = c("double", "escape"), 
+                              remove_new_lines = TRUE,
+                              ...){
     write_labelled_csv(x = x, 
                        filename = filename,
                        fileEncoding = fileEncoding,
                        sep = sep, 
                        dec = dec,
+                       qmethod = qmethod,
+                       remove_new_lines = remove_new_lines,
                        ...                       
     )
 }
 
 #' @export
 #' @rdname write_labels
-write_labelled_tab2 = function(x, filename, fileEncoding = "", sep = "\t", dec = ",", ...){
+write_labelled_tab2 = function(x, filename, fileEncoding = "", sep = "\t", dec = ",", 
+                               qmethod = c("double", "escape"), 
+                               remove_new_lines = TRUE,
+                               ...){
     write_labelled_csv(x = x, 
                        filename = filename,
                        fileEncoding = fileEncoding,
                        sep = sep, 
                        dec = dec,
+                       qmethod = qmethod,
+                       remove_new_lines = remove_new_lines,
                        ...                       
     )
 }
 
 #' @export
 #' @rdname write_labels
-write_labelled_spss = function(x, filename, fileEncoding = "",  ...){
+write_labelled_spss = function(x, 
+                               filename, 
+                               fileEncoding = "",
+                               remove_new_lines = TRUE,
+                               ...){
     if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
     cln = colnames(x)
-    if(anyDuplicated(cln)){
-        dupl = duplicated(cln) | duplicated(cln, fromLast = TRUE)
-        colnames(x)[dupl] = make.names(cln[dupl], unique = TRUE)
-    }
-    for(each in seq_along(x)){
+    # replace starting point in variables names .name -> name
+    cln = gsub("^\\.", "", cln)
+    cln = make.unique(cln, sep = "_")
+    colnames(x) = cln
+    all_columns = seq_along(x)
+    for(each in all_columns){
         if (is.factor(x[[each]])){
             x[[each]] = as.character(x[[each]])
         }
-        if (is.character(x[[each]])){
+        if (remove_new_lines && is.character(x[[each]])){
             x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
             # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
         }
@@ -283,16 +356,6 @@ write_labelled_spss = function(x, filename, fileEncoding = "",  ...){
             x[[each]] = 1*x[[each]]
         }
     }
-    # utils::write.table(x = x, file = filename,
-    #                    col.names = TRUE,
-    #                    row.names = FALSE,
-    #                    sep = ",",
-    #                    na = "",
-    #                    qmethod = "double",
-    #                    quote = TRUE,
-    #                    fileEncoding = fileEncoding,
-    #                    ...
-    # )
     data.table::fwrite(x = x, 
            file = filename,
            col.names = TRUE,
