@@ -8,13 +8,13 @@ w2 = 2.5
 
 
 
-expect_identical(w_mean(x), mean(x, na.rm = TRUE))
-expect_identical(w_sum(x), sum(x, na.rm = TRUE))
-expect_identical(w_median(x), median(x, na.rm = TRUE))
-expect_identical(w_mad(x), matrixStats:::weightedMad(x, na.rm = TRUE))
-expect_identical(w_sd(x), sd(x, na.rm = TRUE))
+expect_equal(w_mean(x), mean(x, na.rm = TRUE))
+expect_equal(w_sum(x), sum(x, na.rm = TRUE))
+expect_equal(w_median(x), median(x, na.rm = TRUE))
+expect_equal(w_mad(x), matrixStats:::weightedMad(x, na.rm = TRUE))
+expect_equal(w_sd(x), sd(x, na.rm = TRUE))
 expect_equal(w_var(x), var(x, na.rm = TRUE))
-expect_identical(w_n(x), sum(!is.na(x)))
+expect_equal(w_n(x), sum(!is.na(x)))
 
 
 expect_equal(w_se(x), 0.1167701830205)
@@ -24,13 +24,13 @@ expect_equal(w_se(x), 0.1167701830205)
 
 x = x[-1]
 
-expect_identical(w_mean(x, na.rm = FALSE), as.numeric(NA))
-expect_identical(w_sum(x, na.rm = FALSE), as.numeric(NA))
-expect_identical(w_median(x, na.rm = FALSE), as.numeric(NA))
-expect_identical(w_mad(x, na.rm = FALSE), as.numeric(NA))
-expect_identical(w_sd(x, na.rm = FALSE), as.numeric(NA))
+expect_equal(w_mean(x, na.rm = FALSE), as.numeric(NA))
+expect_equal(w_sum(x, na.rm = FALSE), as.numeric(NA))
+expect_equal(w_median(x, na.rm = FALSE), as.numeric(NA))
+expect_equal(w_mad(x, na.rm = FALSE), as.numeric(NA))
+expect_equal(w_sd(x, na.rm = FALSE), as.numeric(NA))
 expect_equal(w_var(x, na.rm = FALSE), as.numeric(NA))
-expect_identical(w_n(x, na.rm = FALSE), length(x))
+expect_equal(w_n(x, na.rm = FALSE), length(x))
 expect_equal(w_se(x, na.rm = FALSE), NA*1)
 
 
@@ -39,9 +39,9 @@ expect_equal(w_se(x, na.rm = FALSE), NA*1)
 
 expect_equal(w_mean(numeric(0)), as.numeric(NA))
 expect_equal(w_sum(numeric(0)), 0)
-expect_identical(w_median(numeric(0)), as.numeric(NA))
-expect_identical(w_mad(numeric(0)), as.numeric(NA))
-expect_identical(w_sd(numeric(0)), as.numeric(NA))
+expect_equal(w_median(numeric(0)), as.numeric(NA))
+expect_equal(w_mad(numeric(0)), as.numeric(NA))
+expect_equal(w_sd(numeric(0)), as.numeric(NA))
 expect_equal(w_var(numeric(0)), as.numeric(NA))
 expect_equal(w_n(numeric(0)), 0)
 expect_equal(w_se(numeric(0)), NA*1)
@@ -50,13 +50,13 @@ expect_equal(w_se(numeric(0)), NA*1)
 
 x = na.omit(x)
 
-expect_identical(w_mean(x, na.rm = FALSE), mean(x, na.rm = TRUE))
-expect_identical(w_sum(x, na.rm = FALSE), sum(x, na.rm = TRUE))
-expect_identical(w_median(x, na.rm = FALSE), median(x, na.rm = TRUE))
-expect_identical(w_mad(x, na.rm = FALSE), matrixStats:::weightedMad(x, na.rm = TRUE))
-expect_identical(w_sd(x, na.rm = FALSE), sd(x, na.rm = TRUE))
+expect_equal(w_mean(x, na.rm = FALSE), mean(x, na.rm = TRUE))
+expect_equal(w_sum(x, na.rm = FALSE), sum(x, na.rm = TRUE))
+expect_equal(w_median(x, na.rm = FALSE), median(x, na.rm = TRUE))
+expect_equal(w_mad(x, na.rm = FALSE), matrixStats:::weightedMad(x, na.rm = TRUE))
+expect_equal(w_sd(x, na.rm = FALSE), sd(x, na.rm = TRUE))
 expect_equal(w_var(x, na.rm = FALSE), var(x, na.rm = TRUE))
-expect_identical(w_n(x, na.rm = FALSE), sum(!is.na(x)))
+expect_equal(w_n(x, na.rm = FALSE), sum(!is.na(x)))
 expect_equal(w_se(x, na.rm = FALSE), sd(x)/sqrt(length(x)))
 
 ##############################
@@ -70,14 +70,14 @@ w2 = 2.5
 w_prep = if_val(w, NA ~ 0, lt(0) ~ 0, other ~ copy)
 w_prep2 = rep(w2, length(x))
 expect_equal(w_mean(x, w), weighted.mean(x, w_prep, na.rm = TRUE))
-expect_identical(w_sum(x, w), sum(x*w_prep, na.rm = TRUE))
-expect_identical(w_median(x, w),
+expect_equal(w_sum(x, w), sum(x*w_prep, na.rm = TRUE))
+expect_equal(w_median(x, w),
                  matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
-expect_identical(w_mad(x, w),
+expect_equal(w_mad(x, w),
                  matrixStats:::weightedMad(x, w, na.rm = TRUE, center = w_median(x, w, na.rm = TRUE)))
-expect_identical(w_sd(x, w), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
+expect_equal(w_sd(x, w), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
 expect_equal(w_var(x, w), matrixStats:::weightedVar(x, w_prep, na.rm = TRUE))
-expect_identical(w_n(x, w), sum((!is.na(x))*w_prep))
+expect_equal(w_n(x, w), sum((!is.na(x))*w_prep))
 expect_equal(w_se(x, w), 0.09577068)
 
 ##### data.frame
@@ -85,14 +85,14 @@ x = as.matrix(x)
 w = as.matrix(w)
 
 expect_equal(w_mean(x, w), weighted.mean(x, w_prep, na.rm = TRUE))
-expect_identical(w_sum(x, w), sum(x*w_prep, na.rm = TRUE))
-expect_identical(w_median(x, w),
+expect_equal(w_sum(x, w), sum(x*w_prep, na.rm = TRUE))
+expect_equal(w_median(x, w),
                  matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
-expect_identical(w_mad(x, w),
+expect_equal(w_mad(x, w),
                  matrixStats:::weightedMad(x, w, na.rm = TRUE, center = w_median(x, w, na.rm = TRUE)))
-expect_identical(w_sd(x, w), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
+expect_equal(w_sd(x, w), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
 expect_equal(w_var(x, w), matrixStats:::weightedVar(x, w_prep, na.rm = TRUE))
-expect_identical(w_n(x, w), sum((!is.na(x))*w_prep))
+expect_equal(w_n(x, w), sum((!is.na(x))*w_prep))
 expect_equal(w_se(x, w), 0.09577068)
 
 #### errors
@@ -131,15 +131,15 @@ w_prep = if_val(w, NA ~ 0, lt(0) ~ 0, other ~ copy)
 w_prep2 = rep(w2, length(x))
 
 expect_equal(w_mean(x, w2), weighted.mean(x, w_prep2, na.rm = TRUE))
-expect_identical(w_sum(x, w2), sum(x*w_prep2, na.rm = TRUE))
-expect_identical(w_median(x, w2),
+expect_equal(w_sum(x, w2), sum(x*w_prep2, na.rm = TRUE))
+expect_equal(w_median(x, w2),
                  matrixStats:::weightedMedian(x, w_prep2, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
-expect_identical(w_mad(x, w2),
+expect_equal(w_mad(x, w2),
                  matrixStats:::weightedMad(x, w_prep2, na.rm = TRUE, center = w_median(x, w_prep2, na.rm = TRUE)))
-expect_identical(w_sd(x, w2), matrixStats:::weightedSd(x, w_prep2, na.rm = TRUE))
+expect_equal(w_sd(x, w2), matrixStats:::weightedSd(x, w_prep2, na.rm = TRUE))
 expect_equal(w_var(x, w2), matrixStats:::weightedVar(x, w_prep2, na.rm = TRUE))
-expect_identical(w_n(x, w2), sum((!is.na(x))*w_prep2))
-expect_identical(w_se(x, w2),
+expect_equal(w_n(x, w2), sum((!is.na(x))*w_prep2))
+expect_equal(w_se(x, w2),
                  weightedSd(x, rep(w2, length(x)), na.rm = TRUE)/sqrt(sum(w2*sum(!is.na(x)), na.rm = TRUE))
                  )
 
@@ -153,7 +153,7 @@ expect_equal(w_median(iris$Petal.Length, weight = rep(1, 150)), 4.35)
 # expect_equal(w_mad(x, w), ???))
 expect_equal(w_sd(x, w), 0.2728535109892)
 expect_equal(w_var(x, w), 0.07444903845913)
-expect_identical(w_n(x, w), 8.11697)
+expect_equal(w_n(x, w), 8.11697)
 
 ############################
 
@@ -162,14 +162,14 @@ w_prep = w_prep[-1]
 x = x[-1]
 w = w[-1]
 expect_equal(w_mean(x, w, na.rm = FALSE), weighted.mean(x, w_prep, na.rm = TRUE))
-expect_identical(w_sum(x, w, na.rm = FALSE), sum(x*w_prep, na.rm = TRUE))
-expect_identical(w_median(x, w, na.rm = FALSE),
+expect_equal(w_sum(x, w, na.rm = FALSE), sum(x*w_prep, na.rm = TRUE))
+expect_equal(w_median(x, w, na.rm = FALSE),
                  matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
-expect_identical(w_mad(x, w, na.rm = FALSE),
+expect_equal(w_mad(x, w, na.rm = FALSE),
                  matrixStats:::weightedMad(x, w, na.rm = TRUE, center = w_median(x, w, na.rm = FALSE)))
-expect_identical(w_sd(x, w, na.rm = FALSE), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
+expect_equal(w_sd(x, w, na.rm = FALSE), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
 expect_equal(w_var(x, w, na.rm = FALSE), matrixStats:::weightedVar(x, w_prep, na.rm = TRUE))
-expect_identical(w_n(x, w, na.rm = FALSE), sum((!is.na(x))*w_prep))
+expect_equal(w_n(x, w, na.rm = FALSE), sum((!is.na(x))*w_prep))
 
 ###################################################
 context("w_* unweighted corr")
@@ -183,13 +183,13 @@ z = round(c(runif(4, 1,2), NA, runif(5, 1,2)), 5)
 mat = cbind(x, y, z)
 
 
-expect_identical(w_cov(mat), cov(mat, use = "pairwise", method = "pearson"))
-expect_identical(w_cor(mat, use = "complete.obs"), cor(mat, use = "complete.obs", method = "pearson"))
-expect_identical(w_spearman(mat, use = "complete.obs"), cor(mat, use = "complete.obs", method = "spearman"))
+expect_equal(w_cov(mat), cov(mat, use = "pairwise", method = "pearson"))
+expect_equal(w_cor(mat, use = "complete.obs"), cor(mat, use = "complete.obs", method = "pearson"))
+expect_equal(w_spearman(mat, use = "complete.obs"), cor(mat, use = "complete.obs", method = "spearman"))
 
-expect_identical(w_cov(mat, use = "complete.obs"), cov(mat, use = "complete.obs", method = "pearson"))
-expect_identical(w_cor(mat, use = "pairwise"), cor(mat, use = "pairwise", method = "pearson"))
-expect_identical(w_spearman(mat, use = "pairwise"), cor(mat, use = "pairwise", method = "spearman"))
+expect_equal(w_cov(mat, use = "complete.obs"), cov(mat, use = "complete.obs", method = "pearson"))
+expect_equal(w_cor(mat, use = "pairwise"), cor(mat, use = "pairwise", method = "pearson"))
+expect_equal(w_spearman(mat, use = "pairwise"), cor(mat, use = "pairwise", method = "spearman"))
 
 no_na = complete.cases(mat)
 no_na_mat = mat[no_na,]
@@ -378,14 +378,14 @@ y = round(runif(10, 1,2), 5)
 z = round(c(runif(4, 1,2), NA, runif(5, 1,2)), 5)
 mat = cbind(x, y, z)
 
-expect_identical(w_mean(x, weight = 1), w_mean(x))
-expect_identical(w_sum(x, weight = 1), w_sum(x))
-expect_identical(w_median(x, weight = 1), w_median(x))
-expect_identical(w_mad(x, weight = 1), w_mad(x))
-expect_identical(w_sd(x, weight = 1), w_sd(x))
-expect_identical(w_var(x, weight = 1), w_var(x))
+expect_equal(w_mean(x, weight = 1), w_mean(x))
+expect_equal(w_sum(x, weight = 1), w_sum(x))
+expect_equal(w_median(x, weight = 1), w_median(x))
+expect_equal(w_mad(x, weight = 1), w_mad(x))
+expect_equal(w_sd(x, weight = 1), w_sd(x))
+expect_equal(w_var(x, weight = 1), w_var(x))
 expect_equal(w_n(x, weight = 1), w_n(x))
-expect_identical(w_se(x, weight = 1), w_se(x))
+expect_equal(w_se(x, weight = 1), w_se(x))
 
 
 expect_equal(w_cov(mat, weight = 1, use = "pairwise"), w_cov(mat, use = "pairwise"))
@@ -399,14 +399,14 @@ expect_equal(w_spearman(mat, weight = 1, use = "complete.obs"), w_spearman(mat, 
 
 ####################
 
-expect_identical(w_mean(x, weight = TRUE), w_mean(x))
-expect_identical(w_sum(x, weight = TRUE), w_sum(x))
-expect_identical(w_median(x, weight = TRUE), w_median(x))
-expect_identical(w_mad(x, weight = TRUE), w_mad(x))
-expect_identical(w_sd(x, weight = TRUE), w_sd(x))
-expect_identical(w_var(x, weight = TRUE), w_var(x))
+expect_equal(w_mean(x, weight = TRUE), w_mean(x))
+expect_equal(w_sum(x, weight = TRUE), w_sum(x))
+expect_equal(w_median(x, weight = TRUE), w_median(x))
+expect_equal(w_mad(x, weight = TRUE), w_mad(x))
+expect_equal(w_sd(x, weight = TRUE), w_sd(x))
+expect_equal(w_var(x, weight = TRUE), w_var(x))
 expect_equal(w_n(x, weight = TRUE), w_n(x))
-expect_identical(w_se(x, weight = TRUE), w_se(x))
+expect_equal(w_se(x, weight = TRUE), w_se(x))
 
 
 expect_equal(w_cov(mat, weight = TRUE, use = "pairwise"), w_cov(mat, use = "pairwise"))
@@ -460,34 +460,34 @@ labs =    c("Miles/(US) gallon"
 # weighted correlations with labels
 res = w_cor(dfs)
 
-expect_identical(
+expect_equal(
     colnames(res),
     labs
 )
 
-expect_identical(
+expect_equal(
     rownames(res),
     labs
 )
 
 res = w_cov(dfs)
 
-expect_identical(
+expect_equal(
     colnames(res),
     labs
 )
-expect_identical(
+expect_equal(
     rownames(res),
     labs
 )
 
 res = w_spearman(dfs)
 
-expect_identical(
+expect_equal(
     colnames(res),
     labs
 )
-expect_identical(
+expect_equal(
     rownames(res),
     labs
 )
@@ -498,14 +498,14 @@ empty = matrix(NA*1, ncol = ncol(dfs), nrow = ncol(dfs))
 colnames(empty) = colnames(names2labels(dfs))
 rownames(empty) = colnames(names2labels(dfs))
 
-expect_identical(w_cor(dfs[FALSE, ]), empty)
-expect_identical(w_cov(dfs[FALSE, ]), empty)
-expect_identical(w_spearman(dfs[FALSE, ]), empty)
+expect_equal(w_cor(dfs[FALSE, ]), empty)
+expect_equal(w_cov(dfs[FALSE, ]), empty)
+expect_equal(w_spearman(dfs[FALSE, ]), empty)
 
 
-expect_identical(w_cor(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
-expect_identical(w_cov(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
-expect_identical(w_spearman(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
+expect_equal(w_cor(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
+expect_equal(w_cov(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
+expect_equal(w_spearman(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
 
 #####
 context("weighted stats logical args")
@@ -527,14 +527,14 @@ expect_equal(w_n(a), w_n(a_num))
 
 
 
-expect_identical(w_mean(a, w), w_mean(a_num, w_num))
-expect_identical(w_median(a, w), w_median(a_num, w_num))
-expect_identical(w_sum(a, w), w_sum(a_num, w_num))
-expect_identical(w_sd(a, w), w_sd(a_num, w_num))
-expect_identical(w_mad(a, w), w_mad(a_num, w_num))
-expect_identical(w_var(a, w), w_var(a_num, w_num))
-expect_identical(w_se(a, w), w_se(a_num, w_num))
-expect_identical(w_n(a, w), w_n(a_num, w_num))
+expect_equal(w_mean(a, w), w_mean(a_num, w_num))
+expect_equal(w_median(a, w), w_median(a_num, w_num))
+expect_equal(w_sum(a, w), w_sum(a_num, w_num))
+expect_equal(w_sd(a, w), w_sd(a_num, w_num))
+expect_equal(w_mad(a, w), w_mad(a_num, w_num))
+expect_equal(w_var(a, w), w_var(a_num, w_num))
+expect_equal(w_se(a, w), w_se(a_num, w_num))
+expect_equal(w_n(a, w), w_n(a_num, w_num))
 
 
 expect_equal(w_cor(cbind(a, b), weight = w), w_cor(cbind(a = a_num, b = b_num), weight = w_num))
