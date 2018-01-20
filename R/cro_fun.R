@@ -60,7 +60,7 @@
 #' @param ... further arguments for \code{fun}  in 
 #'   \code{cro_fun}/\code{cro_fun_df} or functions for \code{combine_functions}.
 #'   Ignored in \code{cro_fun}/\code{cro_fun_df} if \code{unsafe} is TRUE.
-#' @param weighted_valid_n logical. Sould we show weighted valid N in
+#' @param weighted_valid_n logical. Should we show weighted valid N in
 #'   \code{cro_mean_sd_n}? By default it is FALSE.
 #' @param labels character vector of length 3. Labels for mean, standard
 #'   deviation and valid N in \code{cro_mean_sd_n}.
@@ -626,8 +626,7 @@ cro_mean_sd_n = function(cell_vars,
                     weight = NULL,
                     subgroup = NULL,
                     weighted_valid_n = FALSE,
-                    labels = c("Mean", "Std. dev.", 
-                               ifelse(weighted_valid_n, "Valid N", "Unw. valid N")) 
+                    labels = NULL
                     
 ){
     
@@ -638,6 +637,13 @@ cro_mean_sd_n = function(cell_vars,
     cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
     row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+    if(is.null(labels)) {
+        labels = c("Mean", "Std. dev.", 
+                   ifelse(weighted_valid_n, "Valid N", "Unw. valid N"))    
+    } else {
+        stopif(anyDuplicated(labels), "'cro_mean_sd_n' - all 'labels' should be unduplicated.")
+        stopif(length(labels)!=3, "'cro_mean_sd_n' - 'labels' should be vector of three elements.")
+    }
     if(weighted_valid_n){
         fun = function(x, weight = NULL) {
             c(w_mean(x, weight), w_sd(x, weight), valid_n(x, weight))
@@ -861,8 +867,7 @@ calc_cro_mean_sd_n = function(data,
                               weight = NULL,
                               subgroup = NULL,
                               weighted_valid_n = FALSE,
-                              labels = c("Mean", "Std. dev.", 
-                                         ifelse(weighted_valid_n, "Valid N", "Unw. valid N")) 
+                              labels = NULL
                               
 ){
     expr = substitute(

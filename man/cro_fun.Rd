@@ -31,8 +31,7 @@ cro_mean(cell_vars, col_vars = total(), row_vars = total(label = ""),
 
 cro_mean_sd_n(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL, weighted_valid_n = FALSE,
-  labels = c("Mean", "Std. dev.", ifelse(weighted_valid_n, "Valid N",
-  "Unw. valid N")))
+  labels = NULL)
 
 cro_sum(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
@@ -57,8 +56,7 @@ calc_cro_mean(data, cell_vars, col_vars = total(), row_vars = total(label =
 
 calc_cro_mean_sd_n(data, cell_vars, col_vars = total(),
   row_vars = total(label = ""), weight = NULL, subgroup = NULL,
-  weighted_valid_n = FALSE, labels = c("Mean", "Std. dev.",
-  ifelse(weighted_valid_n, "Valid N", "Unw. valid N")))
+  weighted_valid_n = FALSE, labels = NULL)
 
 calc_cro_sum(data, cell_vars, col_vars = total(), row_vars = total(label =
   ""), weight = NULL, subgroup = NULL)

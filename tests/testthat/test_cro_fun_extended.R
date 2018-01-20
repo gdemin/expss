@@ -346,6 +346,17 @@ expect_equal_to_reference(
     mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs)),
     "rds/cro_mean_sd_n1.rds"
 )
+
+
+expect_equal_to_reference(
+    calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs)),
+    "rds/cro_mean_sd_n1.rds"
+)
+
+expect_error(calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs), labels = 1))
+expect_error(calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs), 
+                                labels = c("", "", "")))
+
 expect_equal_to_reference(
     mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs), weight = 0.1,
                                 weighted_valid_n = TRUE),
@@ -369,6 +380,8 @@ expect_equal_to_reference(
                                 weighted_valid_n = TRUE),
     "rds/cro_mean_sd_n3.rds"
 )
+
+
 
 context("cro_fun unsafe labels")
 

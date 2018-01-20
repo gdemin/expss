@@ -2,14 +2,14 @@ Package: expss
 Type: Package
 Title: Tables with Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
 Version: 0.8.5
-Date: 2018-01-29
+Date: 2018-01-24
 Maintainer: Gregory Demin <gdemin@gmail.com>
 Authors@R: person("Gregory", "Demin", email = "gdemin@gmail.com",
          role = c("aut", "cre"))
 URL: https://gdemin.github.io/expss/
 BugReports: https://github.com/gdemin/expss/issues
 Depends:
-    R (>= 3.3),
+    R (>= 3.3.0),
 Imports:
     foreign,
     utils,

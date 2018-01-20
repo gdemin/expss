@@ -1,6 +1,7 @@
-0.8.5 (.01.2018)
+0.8.5 (24.01.2018)
 ================
-* new arguments amd small improvements in 'write_labelled_csv'/'write_labelled_sps'
+* fix tests for systems with no long doubles support
+* new arguments and small improvements in 'write_labelled_csv'/'write_labelled_sps'
 * minor fixes
 
 0.8.4 (11.12.2017)
