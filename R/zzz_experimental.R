@@ -123,7 +123,8 @@
     data = ref(reference)
     parent = parent.frame()
     expr = substitute(expr)
-    ref(reference) = modify_internal(data, expr, parent)
+    data = modify_internal(data, expr, parent)
+    ref(reference) = data
     invisible(data)
 }
 
@@ -138,7 +139,8 @@
     cond = substitute(cond)
     expr = substitute(expr)
     parent = parent.frame()
-    ref(reference) = modify_if_internal(data, cond, expr, parent)
+    data = modify_if_internal(data, cond, expr, parent)
+    ref(reference) = data
     invisible(data)
 }
 

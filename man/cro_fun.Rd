@@ -113,7 +113,7 @@ to automatically make labels for the results of \code{fun}. For
 is TRUE or not logical then further arguments (\code{...}) for \code{fun}
 will be ignored.}
 
-\item{weighted_valid_n}{logical. Sould we show weighted valid N in
+\item{weighted_valid_n}{logical. Should we show weighted valid N in
 \code{cro_mean_sd_n}? By default it is FALSE.}
 
 \item{labels}{character vector of length 3. Labels for mean, standard
