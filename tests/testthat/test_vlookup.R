@@ -84,6 +84,12 @@ expect_identical(vlookup_df(c(6, 4, 2), dict, result_column='row.names'),dtfrm(r
 expect_identical(vlookup_df(c(6, 4, 2), dict, result_column='rownames'),dtfrm(row_names = c("f","d","b")))
 expect_identical(vlookup_df(c(6, 4, 2), dict, result_column='names'),dtfrm(row_names = c("f","d","b")))
 
+expect_identical(vlookup(c(1, NA, 2), 
+                         dict = sheet(a = c(2, NA), b= c(3, 2))
+                         ),
+                 c(NA, 2, 3)
+                 )
+
 context("vlookup excel examples ex2")
 
 # Just for fun. Examples borrowed from Microsoft Excel.
@@ -152,4 +158,5 @@ expect_identical(paste0(vlookup(4,ex3,"First_name"), " ",
        vlookup(4,ex3,"Last_name"), " is a ", 
        vlookup(4,ex3,"Title")), 'Michael Patten is a Sales Rep.')
 
+context("add_columns")
  

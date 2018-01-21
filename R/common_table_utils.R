@@ -42,6 +42,22 @@ recycle_if_single_row = function(data, nrows){
     data
 }
 
+####### 
+
+stop_if_columns_not_exist = function(df_colnames, columns){
+    stopif(!is.numeric(columns) && !is.character(columns), 
+           paste0("columns should be numeric or character but: ", paste(columns, collapse = ", "))
+    )
+    if(is.numeric(columns)){
+        absent = columns %d% seq_along(df_colnames)
+    } else {
+        absent = columns %d% df_colnames 
+    }
+    stopif(length(absent)>0, 
+           paste0("some columns doesn't exists in the dataset: ", paste(absent, collapse = ", "))
+    )
+}
+
 #############################################################
 ### check that all arguments ... have equal length or length 1 (NULLs are also allowed)
 check_sizes = function(caller_name, ...){

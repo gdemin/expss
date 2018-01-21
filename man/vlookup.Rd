@@ -3,11 +3,17 @@
 \name{vlookup}
 \alias{vlookup}
 \alias{vlookup_df}
+\alias{add_columns}
+\alias{.add_columns}
 \title{Look up values in dictionary.}
 \usage{
 vlookup(lookup_value, dict, result_column = 2, lookup_column = 1)
 
 vlookup_df(lookup_value, dict, result_column = NULL, lookup_column = 1)
+
+add_columns(data, dict, by = NULL, ignore_duplicates = FALSE)
+
+.add_columns(dict, by = NULL, ignore_duplicates = FALSE)
 }
 \arguments{
 \item{lookup_value}{Vector of looked up values}

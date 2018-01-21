@@ -132,7 +132,11 @@ vlookup_df = function(lookup_value, dict, result_column = NULL, lookup_column = 
 
 
 
-vlookup_internal = function(lookup_value, dict, result_column = NULL, lookup_column = 1, df = TRUE) {
+vlookup_internal = function(lookup_value, 
+                            dict, 
+                            result_column = NULL, 
+                            lookup_column = 1, 
+                            df = TRUE) {
     stopif(is.list(lookup_value) || NCOL(lookup_value)!=1,
            "'vlookup' - incorrect 'lookup_value'. 'lookup_value' should be vector but its class is ", 
            paste(class(lookup_value), collapse = ", "))
@@ -179,7 +183,7 @@ vlookup_internal = function(lookup_value, dict, result_column = NULL, lookup_col
         if(any(SPECIALS %in% lookup_column)) lookup_column[lookup_column %in% SPECIALS] = "...RRRLLL..."
     }
     # calculate index
-    ind = fast_match(lookup_value, dict[[lookup_column]], NA_incomparable = TRUE)
+    ind = fast_match(lookup_value, dict[[lookup_column]], NA_incomparable = FALSE)
     ### calculate result
     if(df){
         if (is.null(result_column)){
@@ -204,3 +208,79 @@ vlookup_internal = function(lookup_value, dict, result_column = NULL, lookup_col
 
 
 
+#' @export
+#' @rdname vlookup
+add_columns = function(data, dict, 
+                       by = NULL, 
+                       ignore_duplicates = FALSE
+){
+    UseMethod("add_columns")
+    
+}
+
+#' @export
+add_columns.data.frame = function(data, dict, 
+                       by = NULL, 
+                       ignore_duplicates = FALSE
+){
+    if(!is.data.frame(data)) data = as.sheet(data)
+    if(!is.data.frame(dict)) dict = as.sheet(dict)
+    colnames_data = colnames(data)
+    colnames_dict = colnames(dict)
+    if(is.null(by)){
+        by = intersect(colnames_data, colnames_dict)
+        stopif(length(by)==0, "'add_columns' - no common column names between 'data' and 'dict'.")
+    }
+    stopif(!is.character(by), "'add_columns' - 'by' should be character or NULL.")
+    stop_if_columns_not_exist(colnames_data, by)
+    stop_if_columns_not_exist(colnames_dict, by)
+    if(length(by)>1){
+        lookup_value = data[ , by]    
+        lookup_column = dict[ , by] 
+        lookup_value = do.call("paste", c(lookup_value, sep = "\r"))
+        lookup_column = do.call("paste", c(lookup_column, sep = "\r"))
+    } else {
+        lookup_value = data[[by]]    
+        lookup_column = dict[[by]]  
+    }
+    if(!ignore_duplicates){
+        stopif(anyDuplicated(lookup_column), 
+               "'add_columns' - duplicated values in 'by' columns in 'dict'")
+    }
+    col_nums_dict = match(by, colnames_dict)
+
+    # calculate index
+    ind = fast_match(lookup_value, lookup_column, NA_incomparable = FALSE)
+    res = subset_dataframe(dict[,-col_nums_dict, drop = FALSE], ind, drop = FALSE)
+    # make unique names in res
+    colnames_res = colnames(res)
+    dupl = intersect(colnames_res, colnames_data)
+    if(length(dupl)>0){
+        warning(
+            paste0("'add_columns' - some names in 'dict' duplicate names in 'data': ",
+                   paste(dupl, collapse = ", ")
+                   )
+            )
+        all_names = make.unique(c(colnames_data, colnames_res), sep = "_")
+        # we change only dictionary names 
+        colnames(res) = all_names[-seq_along(colnames_data)]
+    }
+    data[, colnames(res)] = res
+    data
+
+}
+
+#' @export
+#' @rdname vlookup
+.add_columns = function (dict, 
+                         by = NULL, 
+                         ignore_duplicates = FALSE) {
+    reference = suppressMessages(default_dataset())
+    data = ref(reference)
+    data = add_columns(data, 
+                       dict = dict, 
+                       by = by, 
+                       ignore_duplicates = ignore_duplicates)
+    ref(reference) = data
+    invisible(data)
+}
