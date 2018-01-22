@@ -54,23 +54,33 @@
 #'     ui = fluidPage(fluidRow(column(12, DT::dataTableOutput('tbl')))),
 #'     server = function(input, output) {
 #'         output$tbl = DT::renderDataTable(
-#'             datatable(mtcars_table)
+#'             as.datatable_widget(mtcars_table)
 #'         )
 #'     }
 #' )
 #' }
-datatable = function(data, ...){
-    UseMethod("datatable")
+as.datatable_widget = function(data, ...){
+    stopif(!requireNamespace("DT", quietly = TRUE) || !requireNamespace("htmltools", quietly = TRUE), 
+           "DT and htmltools packages are required for 'as.datatable_widget' function. Please, install it with 'install.packages(\"DT\")'"
+           )
+    UseMethod("as.datatable_widget")
 }  
 
 #' @export
-datatable.default = function(data, ...){
+#' @rdname as.datatable_widget
+datatable = function(data, ...){
+    .Deprecated("as.datatable_widget")
+    as.datatable_widget(data, ...)
+}  
+
+#' @export
+as.datatable_widget.default = function(data, ...){
     DT::datatable(data, ...)
 }
 
 #' @export
-#' @rdname datatable
-datatable.etable = function(data, 
+#' @rdname as.datatable_widget
+as.datatable_widget.etable = function(data, 
                             repeat_row_labels = FALSE, 
                             show_row_numbers = FALSE,
                             digits = get_expss_digits(),
@@ -159,6 +169,8 @@ matrix_header_to_html = function(corner, m_cols){
     thead = NULL
     tr = NULL
     th = NULL
+    # tags = NULL
+    # HTML = NULL
     row_rle = list()
     if(NCOL(m_cols)>0){
         m_cols[is.na(m_cols)] = ""
@@ -211,13 +223,17 @@ matrix_header_to_html = function(corner, m_cols){
         thead(
             lapply(row_rle, function(row){
                 tr(lapply(seq_along(row$values),function(item){
-                    th(tags$style(type = "text/css",
-                                  HTML("th { text-align: center; } ")
-                    ),
-                    tags$style(type = "text/css",
-                               HTML("th {border: 1px solid #DDD}")
-                    ),
-                    rowspan = row$rowspan[item], colspan = row$colspan[item], row$values[item])      
+                    th(
+                        htmltools::tags$style(type = "text/css",
+                                              htmltools::HTML("th { text-align: center; } ")
+                        ),
+                        htmltools::tags$style(type = "text/css",
+                                              htmltools::HTML("th {border: 1px solid #DDD}")
+                        ),
+                        rowspan = row$rowspan[item], 
+                        colspan = row$colspan[item], 
+                        row$values[item]
+                    )      
                 }))
             })
         )

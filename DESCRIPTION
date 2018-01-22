@@ -18,9 +18,9 @@ Imports:
     htmlTable (>= 1.11.0),
     matrixStats (>= 0.51.0),
     data.table (>= 1.10),
-    DT (>= 0.2),
-    htmltools
 Suggests:
+    DT,
+    htmltools,
     knitr,
     repr,
     ggplot2,

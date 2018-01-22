@@ -47,9 +47,7 @@ NULL
 
 #' @import data.table
 #' @import htmlTable 
-#' @import htmltools 
 #' @import magrittr
-#' @import DT
 #' @import foreign stats utils matrixStats
 
 
@@ -118,14 +116,6 @@ htmlTable::htmlTableWidgetOutput
 #' @export
 htmlTable::interactiveTable
 
-#' @export
-DT::dataTableAjax
-
-#' @export
-DT::dataTableOutput
-
-#' @export
-DT::renderDataTable
 
 
 .onAttach = function(...) {

@@ -3,8 +3,9 @@
 * fix tests for systems with no long doubles support
 * new arguments and small improvements in 'write_labelled_csv'/'write_labelled_sps'
 * minor fixes
-* change behavior of 'vlookup'/'vlookup_df' - now it also matches on NA
-
+* change 'vlookup'/'vlookup_df' behavior - now it also matches on NA
+* 'datatable' is deprecated. Use as.datatable_widget instead.
+* move DT and htmltools dependencies from Imports to Suggests
 
 0.8.4 (11.12.2017)
 ================
