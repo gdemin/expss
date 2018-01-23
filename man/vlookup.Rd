@@ -18,7 +18,8 @@ add_columns(data, dict, by = NULL, ignore_duplicates = FALSE)
 \arguments{
 \item{lookup_value}{Vector of looked up values}
 
-\item{dict}{Dictionary. Should be vector/matrix or data.frame}
+\item{dict}{data.frame/matrix. Dictionary. Can be vector for
+\code{vlookup}/\code{vlookup_df}.}
 
 \item{result_column}{numeric or character. Resulting columns of \code{dict}.
 There are special values: 'row.names', 'rownames', 'names'. If
@@ -36,6 +37,19 @@ special values: 'row.names', 'rownames', 'names'. If lookup_column equals
 to one of these special values and \code{dict} is matrix/data.frame then
 values will be searched in the row names of \code{dict}. If \code{dict} is
 vector then values will be searched in names of the \code{dict}.}
+
+\item{data}{data.frame to be joined with \code{dict}.}
+
+\item{by}{character vector or NULL(default) or 1. Names of common variables
+in the \code{data} and \code{dict} by which we will attach \code{dict} to
+\code{data}. If it is NULL then common names will be used. If it is equals
+to 1 then we will use the first column from both dataframes. To add columns
+by different variables on \code{data} and \code{dict} use a named vector.
+For example, \code{by = c("a" = "b")} will match data.a to dict.b.}
+
+\item{ignore_duplicates}{logical Should we ignore duplicates in the \code{by}
+variables in the \code{dict}? If it is TRUE than first occurence of duplicated
+key will be used.}
 }
 \value{
 \code{vlookup} always return vector, \code{vlookup_df} always returns
@@ -43,9 +57,14 @@ vector then values will be searched in names of the \code{dict}.}
   preserved.
 }
 \description{
-This function is inspired by VLOOKUP spreadsheet function. It looks for a 
-\code{lookup_value} in the \code{lookup_column} of the \code{dict}, and then
-returns values in the same rows from \code{result_column}.
+\code{vlookup}/\code{vlookup_df} function is inspired by VLOOKUP spreadsheet
+function. It looks for a \code{lookup_value} in the \code{lookup_column} of
+the \code{dict}, and then returns values in the same rows from
+\code{result_column}. \code{add_columns} inspired by MATCH FILES (Add
+variables...) from SPSS Statistics. It works similar to SQL left join but
+number of cases in the left part always remain the same. If there are
+duplicated keys in the \code{dict} then error will be raised by default.
+\code{.add_columns} is the same function for default dataset.
 }
 \examples{
 # with data.frame
@@ -65,6 +84,26 @@ vlookup(c(2,4,6), dict, result_column='row.names')
 # The same results
 vlookup(c(2,4,6), dict, result_column='rownames')
 vlookup(c(2,4,6), dict, result_column='names')
+
+# example for 'add_columns' from base 'merge'
+authors = sheet(
+    surname = c("Tukey", "Venables", "Tierney", "Ripley", "McNeil"),
+    nationality = c("US", "Australia", "US", "UK", "Australia"),
+    deceased = c("yes", rep("no", 4))
+)
+
+books = sheet(
+    surname = c("Tukey", "Venables", "Tierney",
+                "Ripley", "Ripley", "McNeil", "R Core"),
+    title = c("Exploratory Data Analysis",
+              "Modern Applied Statistics ...",
+              "LISP-STAT",
+              "Spatial Statistics", "Stochastic Simulation",
+              "Interactive Data Analysis",
+              "An Introduction to R")
+)
+
+add_columns(books, authors)
 
 # Just for fun. Examples borrowed from Microsoft Excel.
 # It is not the R way of doing things.

@@ -52,9 +52,11 @@ stop_if_columns_not_exist = function(df_colnames, columns){
         absent = columns %d% seq_along(df_colnames)
     } else {
         absent = columns %d% df_colnames 
+        absent = dQuote(absent)
     }
     stopif(length(absent)>0, 
-           paste0("some columns doesn't exists in the dataset: ", paste(absent, collapse = ", "))
+           paste0("some columns don't exist in the dataset: ", 
+                  paste(absent, collapse = ", "))
     )
 }
 

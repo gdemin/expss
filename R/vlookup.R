@@ -2,12 +2,18 @@ SPECIALS = c('row.names', 'rownames', 'names')
 
 #' Look up values in dictionary.
 #' 
-#' This function is inspired by VLOOKUP spreadsheet function. It looks for a 
-#' \code{lookup_value} in the \code{lookup_column} of the \code{dict}, and then
-#' returns values in the same rows from \code{result_column}.
+#' \code{vlookup}/\code{vlookup_df} function is inspired by VLOOKUP spreadsheet
+#' function. It looks for a \code{lookup_value} in the \code{lookup_column} of
+#' the \code{dict}, and then returns values in the same rows from
+#' \code{result_column}. \code{add_columns} inspired by MATCH FILES (Add
+#' variables...) from SPSS Statistics. It works similar to SQL left join but
+#' number of cases in the left part always remain the same. If there are
+#' duplicated keys in the \code{dict} then error will be raised by default.
+#' \code{.add_columns} is the same function for default dataset.
 #' 
 #' @param lookup_value Vector of looked up values
-#' @param dict Dictionary. Should be vector/matrix or data.frame
+#' @param dict data.frame/matrix. Dictionary. Can be vector for
+#'   \code{vlookup}/\code{vlookup_df}.
 #' @param result_column numeric or character. Resulting columns of \code{dict}.
 #'   There are special values: 'row.names', 'rownames', 'names'. If
 #'   \code{result_column} equals to one of these special values and \code{dict}
@@ -23,7 +29,16 @@ SPECIALS = c('row.names', 'rownames', 'names')
 #'   to one of these special values and \code{dict} is matrix/data.frame then
 #'   values will be searched in the row names of \code{dict}. If \code{dict} is
 #'   vector then values will be searched in names of the \code{dict}.
-#'   
+#' @param data data.frame to be joined with \code{dict}.
+#' @param by character vector or NULL(default) or 1. Names of common variables
+#'   in the \code{data} and \code{dict} by which we will attach \code{dict} to
+#'   \code{data}. If it is NULL then common names will be used. If it is equals
+#'   to 1 then we will use the first column from both dataframes. To add columns
+#'   by different variables on \code{data} and \code{dict} use a named vector.
+#'   For example, \code{by = c("a" = "b")} will match data.a to dict.b.
+#' @param ignore_duplicates logical Should we ignore duplicates in the \code{by}
+#'   variables in the \code{dict}? If it is TRUE than first occurence of duplicated
+#'   key will be used.
 #' @return \code{vlookup} always return vector, \code{vlookup_df} always returns
 #'   data.frame. \code{row.names} in result of \code{vlookup_df} are not
 #'   preserved.
@@ -48,6 +63,26 @@ SPECIALS = c('row.names', 'rownames', 'names')
 #' # The same results
 #' vlookup(c(2,4,6), dict, result_column='rownames')
 #' vlookup(c(2,4,6), dict, result_column='names')
+#' 
+#' # example for 'add_columns' from base 'merge'
+#' authors = sheet(
+#'     surname = c("Tukey", "Venables", "Tierney", "Ripley", "McNeil"),
+#'     nationality = c("US", "Australia", "US", "UK", "Australia"),
+#'     deceased = c("yes", rep("no", 4))
+#' )
+#' 
+#' books = sheet(
+#'     surname = c("Tukey", "Venables", "Tierney",
+#'                 "Ripley", "Ripley", "McNeil", "R Core"),
+#'     title = c("Exploratory Data Analysis",
+#'               "Modern Applied Statistics ...",
+#'               "LISP-STAT",
+#'               "Spatial Statistics", "Stochastic Simulation",
+#'               "Interactive Data Analysis",
+#'               "An Introduction to R")
+#' )
+#' 
+#' add_columns(books, authors)
 #' 
 #' # Just for fun. Examples borrowed from Microsoft Excel.
 #' # It is not the R way of doing things.
@@ -230,25 +265,41 @@ add_columns.data.frame = function(data, dict,
     if(is.null(by)){
         by = intersect(colnames_data, colnames_dict)
         stopif(length(by)==0, "'add_columns' - no common column names between 'data' and 'dict'.")
+        message(paste0("Adding columns by ", paste(dQuote(by), collapse = ", ")))
     }
-    stopif(!is.character(by), "'add_columns' - 'by' should be character or NULL.")
-    stop_if_columns_not_exist(colnames_data, by)
-    stop_if_columns_not_exist(colnames_dict, by)
-    if(length(by)>1){
-        lookup_value = data[ , by]    
-        lookup_column = dict[ , by] 
-        lookup_value = do.call("paste", c(lookup_value, sep = "\r"))
-        lookup_column = do.call("paste", c(lookup_column, sep = "\r"))
+    if(identical(by, 1) || identical(by, 1L)){
+        lookup_value = data[[1]]    
+        lookup_column = dict[[1]]   
+        col_nums_dict = 1
     } else {
-        lookup_value = data[[by]]    
-        lookup_column = dict[[by]]  
+        stopif(!is.character(by), "'add_columns' - 'by' should be character, NULL or 1.")
+        if(!is.null(names(by))){
+            by_data = names(by)
+            by_data[by_data==""] = by[by_data==""]
+        } else {
+            by_data = by
+        }
+        stop_if_columns_not_exist(colnames_data, by_data)
+        stop_if_columns_not_exist(colnames_dict, by)
+        if(length(by)>1){
+            stopif(anyDuplicated(by), "'add_columns'- duplicated variable names in 'by': ", 
+                   paste(dQuote(by[duplicated(by)]), collapse = ", "))
+            stopif(anyDuplicated(by_data), "'add_columns'- duplicated variable names in 'by': ", 
+                   paste(dQuote(by_data[duplicated(by_data)]), collapse = ", "))
+            lookup_value = data[ , by_data]    
+            lookup_column = dict[ , by] 
+            lookup_value = do.call("paste", c(unlab(lookup_value), sep = "\r"))
+            lookup_column = do.call("paste", c(unlab(lookup_column), sep = "\r"))
+        } else {
+            lookup_value = data[[by_data]]    
+            lookup_column = dict[[by]]  
+        }
+        col_nums_dict = match(by, colnames_dict)
     }
     if(!ignore_duplicates){
         stopif(anyDuplicated(lookup_column), 
                "'add_columns' - duplicated values in 'by' columns in 'dict'")
     }
-    col_nums_dict = match(by, colnames_dict)
-
     # calculate index
     ind = fast_match(lookup_value, lookup_column, NA_incomparable = FALSE)
     res = subset_dataframe(dict[,-col_nums_dict, drop = FALSE], ind, drop = FALSE)

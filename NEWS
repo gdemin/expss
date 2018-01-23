@@ -6,6 +6,7 @@
 * change 'vlookup'/'vlookup_df' behavior - now it also matches on NA
 * 'datatable' is deprecated. Use as.datatable_widget instead.
 * move DT and htmltools dependencies from Imports to Suggests
+* new function 'add_columns' which is inspired by MATCH FILES (Add variables...) from SPSS Statistics
 
 0.8.4 (11.12.2017)
 ================
