@@ -80,8 +80,8 @@ well as the backslash character) is escaped in C style by a
 backslash, or "double" (default), in which case the double quote is doubled with
 another one.}
 
-\item{remove_new_lines}{A logical indicating should we replace new lines in
-the character variables with spaces. TRUE by default.}
+\item{remove_new_lines}{A logical indicating should we replace new lines with spaces in
+the character variables. TRUE by default.}
 }
 \value{
 Functions for writing invisibly return NULL. Functions for reading
