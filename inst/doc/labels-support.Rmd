@@ -1,0 +1,65 @@
+---
+title: "Variable and value labels support in base R and other packages"
+date: "`r Sys.Date()`"
+output: 
+    rmarkdown::html_vignette:
+vignette: >
+    %\VignetteIndexEntry{Variable and value labels support in base R and other packages}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{utf8}
+---
+
+## Variable and value labels support in base R and other packages
+
+'expss' package provides methods for labelled variables which add value labels support to base R functions and to some functions from other packages. Here we demonstrate labels support in base R - value labels automatically used as factors levels. Every function which internally converts variable to factor will utilize labels. 
+
+First, apply value and variables labels to dataset:
+```{r, message=FALSE, warning=FALSE}
+library(expss)
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (1000 lbs)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+```
+
+Base `table` and `boxplot` with value labels:
+```{r, fig.height=6, fig.width=7}
+with(mtcars, table(am, vs))
+
+boxplot(mpg ~ am, data = mtcars)
+```
+
+There is a special function for variables labels support - `use_labels`. By now variables labels support available only for expression which will be evaluated inside data.frame.
+```{r}
+# table with dimension names
+use_labels(mtcars, table(am, vs)) 
+
+# linear regression
+use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %>% summary
+```
+
+And, finally, `ggplot2` graphics with variables and value labels:
+```{r, fig.height=6, fig.width=7}
+library(ggplot2)
+use_labels(mtcars, {
+    # 'vars(other)' is needed to get all 'mtcars' data.frame inside expression 
+    ggplot(vars(other)) +
+        geom_point(aes(y = mpg, x = wt, color = qsec)) +
+        facet_grid(am ~ vs)
+}) 
+```

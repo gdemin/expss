@@ -1,5 +1,5 @@
 ---
-title: "Tables with Labels in R"
+title: "Tables with labels in R"
 date: "`r Sys.Date()`"
 output: 
     rmarkdown::html_vignette:
@@ -318,36 +318,6 @@ Or, we can save dataset as *.csv file with SPSS syntax to read data and apply la
 ```{r, eval=FALSE}
 write_labelled_spss(w, file  filename = "product_test.csv")
 ```
-
-## Labels support for base R
-
-Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. 
-```{r, fig.height=6, fig.width=7}
-with(mtcars, table(am, vs))
-
-boxplot(mpg ~ am, data = mtcars)
-```
-
-There is a special function for variables labels support - `use_labels`. By now variables labels support available only for expression which will be evaluated inside data.frame.
-```{r}
-# table with dimension names
-use_labels(mtcars, table(am, vs)) 
-
-# linear regression
-use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %>% summary
-```
-
-And, finally, `ggplot2` graphics with variables and value labels:
-```{r, fig.height=6, fig.width=7}
-library(ggplot2)
-use_labels(mtcars, {
-    # 'vars(other)' is needed to get all 'mtcars' data.frame inside expression 
-    ggplot(vars(other)) +
-        geom_point(aes(y = mpg, x = wt, color = qsec)) +
-        facet_grid(am ~ vs)
-}) 
-```
-
 
 ## Excel functions translation guide
 

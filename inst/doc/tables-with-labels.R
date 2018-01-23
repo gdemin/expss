@@ -248,27 +248,6 @@ w %>%
 ## ---- eval=FALSE---------------------------------------------------------
 #  write_labelled_spss(w, file  filename = "product_test.csv")
 
-## ---- fig.height=6, fig.width=7------------------------------------------
-with(mtcars, table(am, vs))
-
-boxplot(mpg ~ am, data = mtcars)
-
-## ------------------------------------------------------------------------
-# table with dimension names
-use_labels(mtcars, table(am, vs)) 
-
-# linear regression
-use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %>% summary
-
-## ---- fig.height=6, fig.width=7------------------------------------------
-library(ggplot2)
-use_labels(mtcars, {
-    # 'vars(other)' is needed to get all 'mtcars' data.frame inside expression 
-    ggplot(vars(other)) +
-        geom_point(aes(y = mpg, x = wt, color = qsec)) +
-        facet_grid(am ~ vs)
-}) 
-
 ## ---- message=FALSE, warning=FALSE, include=FALSE------------------------
 library(expss)
 
