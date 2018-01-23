@@ -30,8 +30,8 @@
 #'   well as the backslash character) is escaped in C style by a
 #'   backslash, or "double" (default), in which case the double quote is doubled with
 #'   another one.
-#' @param remove_new_lines A logical indicating should we replace new lines in
-#'   the character variables with spaces. TRUE by default.
+#' @param remove_new_lines A logical indicating should we replace new lines with spaces in
+#'   the character variables. TRUE by default.
 #' @param undouble_quotes A logical indicating should we undouble quotes which
 #'   were escaped by doubling (see \code{qmethod}). TRUE by default. Argument
 #'   will be removed when data.table issue #1109 will be fixed.
