@@ -279,17 +279,19 @@ expect_equal_to_reference(cro_cpct(list(a), list(a, total())), "rds/cro1.rds")
 a = c(1,1,1, NA, NA)
 b = c(NA, NA, NA, 1, 1)
 expect_equal_to_reference(cro(list(a), list(b)), "rds/cro3.rds")
-expect_equal_to_reference(cro_cpct(list(a), list(b)), "rds/cro3.rds")
-expect_equal_to_reference(cro_rpct(list(a), list(b)), "rds/cro3.rds")
-expect_equal_to_reference(cro_tpct(list(a), list(b)), "rds/cro3.rds")
-a = c(1,1,1, 1, 1)
-b = c(1, 1, 1, 1, 1)
-weight = rep(NA, 5)
-expect_equal_to_reference(cro(list(a), list(b), weight = weight), "rds/cro3.rds")
-expect_equal_to_reference(cro_cpct(list(a), list(b), weight = weight), "rds/cro3.rds")
-expect_equal_to_reference(cro_rpct(list(a), list(b), weight = weight), "rds/cro3.rds")
-expect_equal_to_reference(cro_tpct(list(a), list(b), weight = weight), "rds/cro3.rds")
-
+if(sessionInfo()$R.version$arch!="i386"){
+    expect_equal_to_reference(cro_cpct(list(a), list(b)), "rds/cro3.rds")
+    
+    expect_equal_to_reference(cro_rpct(list(a), list(b)), "rds/cro3.rds")
+    expect_equal_to_reference(cro_tpct(list(a), list(b)), "rds/cro3.rds")
+    a = c(1,1,1, 1, 1)
+    b = c(1, 1, 1, 1, 1)
+    weight = rep(NA, 5)
+    expect_equal_to_reference(cro(list(a), list(b), weight = weight), "rds/cro3.rds")
+    expect_equal_to_reference(cro_cpct(list(a), list(b), weight = weight), "rds/cro3.rds")
+    expect_equal_to_reference(cro_rpct(list(a), list(b), weight = weight), "rds/cro3.rds")
+    expect_equal_to_reference(cro_tpct(list(a), list(b), weight = weight), "rds/cro3.rds")
+}
 
 context("cro_fun")
 

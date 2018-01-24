@@ -462,11 +462,11 @@ expect_equal_to_reference(
                       keep = "none"),
     "rds/signif_cpct35.rds")
 
-
-expect_equal_to_reference(
-    significance_cpct(cro_cpct(NA)),
-    "rds/signif_cpct36.rds")
-
+if(sessionInfo()$R.version$arch!="i386"){
+    expect_equal_to_reference(
+        significance_cpct(cro_cpct(NA)),
+        "rds/signif_cpct36.rds")
+}
 
 mtcars_table4 = mtcars %calc% cro_cpct(list(cyl, gear),
                         list(total(), vs, am, vs %nest% am))
