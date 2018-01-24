@@ -11,6 +11,6 @@ tests/testthat/test_output.R
 tests/testthat/test_options.R
 tests/testthat/test_fre_cro_cyrillic.R
 docs
-
+tests
 ^\.travis\.yml$
 ^codecov\.yml$
