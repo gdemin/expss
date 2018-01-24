@@ -2,8 +2,9 @@
 title: "Tables with labels in R"
 date: "`r Sys.Date()`"
 output: 
-    rmarkdown::html_vignette:
-        toc: true
+    html_document:
+      theme: flatly
+      toc: true
 vignette: >
   %\VignetteIndexEntry{Tables with labels in R}
   %\VignetteEngine{knitr::rmarkdown}
@@ -321,28 +322,30 @@ write_labelled_spss(w, file  filename = "product_test.csv")
 
 ## Excel functions translation guide
 
-```{r, message=FALSE, warning=FALSE, include=FALSE}
+Let us consider Excel toy table:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(expss)
-```
-
-Excel toy table:
-
-|       | A   | B   | C    |
-|:------|----:|----:|-----:|
-| **1** |  2  | 15  |  50  |
-| **2** |  1  | 70  |  80  |
-| **3** |  3  | 30  |  40  |
-| **4** |  2  | 30  |  40  |
-
-Code for creating the same table in R:
-
-```{r, results='hide', message=FALSE, warning=FALSE}
 w = from_text("
-    a  b  c
-    2 15 50
-    1 70 80
-    3 30 40
-    2 30 40
+      A  B  C
+      2 15 50
+      1 70 80
+      3 30 40
+      2 30 40
+")
+
+knitr::kable(w, row.names = TRUE, format = "html", table.attr = "style='width:30%;'") 
+knitr::asis_output("<br>")
+```
+Code for creating the same table in R:
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(expss)
+w = from_text("
+        a  b  c
+        2 15 50
+        1 70 80
+        3 30 40
+        2 30 40
 ")
 
 ```
@@ -408,18 +411,25 @@ Count values less than or equal to 1 in column A of the dataset.
 count_col_if(le(1), w$a)
 ```
 
-**Table of criteria:**
+Table of criteria:
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(expss)
+tbl_crit = from_text("
+ Excel R
+  <1 lt(1)
+ <=1 le(1)
+ <>1 ne(1)
+  =1 eq(1)
+ >=1 ge(1)
+  >1 gt(1)
+")
 
-| Excel   |   R      |
-|---------|----------|
-| "<1"    |   lt(1)  |
-| "<=1"   |   le(1)  |
-| "<>1"	  |   ne(1)  |
-| "=1"    |   eq(1)  |
-| ">=1"   |   ge(1)  |
-| ">1"    |   gt(1)  |
-
-
+knitr::kable(tbl_crit, row.names = FALSE, 
+             format = "html", 
+             table.attr = "style='width:30%;'", 
+             align = "r") 
+knitr::asis_output("<br>")
+```
 
 ##### SUM/AVERAGE
 Sum all values in the dataset.
@@ -503,19 +513,24 @@ calculate(w, mean_col_if(lt(3), a, data = sheet(b, c)))
 ##### VLOOKUP
 
 Our dictionary for lookup:
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+dict = from_text("
+    x  y
+    1  apples
+    2  oranges
+    3  peaches
+")
 
-|       | X   | Y        |
-|:------|----:|:---------|
-| **1** |  1  | apples   |
-| **2** |  2  | oranges  |
-| **3** |  3  | peaches  |
+knitr::kable(dict, align = "l", row.names = TRUE, format = "html", table.attr = "style='width:30%;'") 
+knitr::asis_output("<br>")
+```
 
 
 Code for creating the same dictionary in R:
 
 ```{r, eval=FALSE}
 dict = from_text("
-    x  y
+    X  Y
     1  apples
     2  oranges
     3  peaches

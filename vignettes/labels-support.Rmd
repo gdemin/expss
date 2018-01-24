@@ -2,14 +2,13 @@
 title: "Variable and value labels support in base R and other packages"
 date: "`r Sys.Date()`"
 output: 
-    rmarkdown::html_vignette:
+    html_document:
+      theme: flatly
 vignette: >
     %\VignetteIndexEntry{Variable and value labels support in base R and other packages}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{utf8}
 ---
-
-## Variable and value labels support in base R and other packages
 
 'expss' package provides methods for labelled variables which add value labels support to base R functions and to some functions from other packages. Here we demonstrate labels support in base R - value labels automatically used as factors levels. Every function which internally converts variable to factor will utilize labels. 
 
