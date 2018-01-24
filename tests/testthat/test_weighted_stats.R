@@ -1,4 +1,3 @@
-library(matrixStats)
 context("w_* unweighted")
 
 set.seed(123)

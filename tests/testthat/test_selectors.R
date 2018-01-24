@@ -107,89 +107,67 @@ expect_error(a_1a %to% a_5)
 expect_error(rep("a_1",2) %to% rep("a_5",2))
 expect_error(d_1 %to% d_5)
 
-# context("dplyr")
-# if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    # expect_identical(
-    #     dfs %>% mutate(
-    #               b_total = sum_row(vars_range("b_1", "b_5")),
-    #               a_total = sum_row(vars_range("a_1", "a_5"))
-    #               
-    #     ), 
-    #     result_dfs
-    # )
-    # 
-    # mutate(dfs, 
-    #     b_total = sum_row(vars_range("b_1", "b_5")),
-    #     a_total = sum_row(vars_range("a_1", "a_5"))
-    #     
-    # )
-    
-# } else {
-    # cat("dplyr not found\n")
-# }
+
 
 context("magrittr")
-if(suppressWarnings(require(magrittr, quietly = TRUE))){
-    expect_identical(
-        dfs %>% calc(vars(b_1 %to% b_5)), 
-        with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
-    )
 
-    expect_identical(
-        dfs %>% compute( {
-            b_total = sum_row(vars(b_1 %to% b_5))
-        }), 
-        result_dfs
-    )
-    
-    expect_identical(
-        dfs %>% transform(
-            b_total = sum_row(vars(b_1 %to% b_5))
+expect_identical(
+    dfs %>% calc(vars(b_1 %to% b_5)), 
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+)
 
-            
-        ), 
-        result_dfs_b_3
-    )
+expect_identical(
+    dfs %>% compute( {
+        b_total = sum_row(vars(b_1 %to% b_5))
+    }), 
+    result_dfs
+)
 
-    expect_identical(
-        dfs %$% {
-            sum_row(vars(b_1 %to% b_5))
-        }, 
-        result_dfs_b_3$b_total
-    )
-    
-    context("magrittr %to% ")
-    
-    expect_identical(
-        dfs %>% calc(b_1 %to% b_5), 
-        calc(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
-    )
+expect_identical(
+    dfs %>% transform(
+        b_total = sum_row(vars(b_1 %to% b_5))
+        
+        
+    ), 
+    result_dfs_b_3
+)
 
-    expect_identical(
-        dfs %>% within( {
-            b_total = sum_row(b_1 %to% b_5)
-        }), 
-        result_dfs_b_3
-    )
-    
-    expect_identical(
-        dfs %>% transform(
-            b_total = sum_row(b_1 %to% b_5)
-            
-        ), 
-        result_dfs_b_3
-    )
-    expect_identical(
-        dfs %$% {
-            sum_row(b_1 %to% b_5)
-        }, 
-        result_dfs_b_3$b_total
-    )
-   
-    
-} else {
-    cat("magrittr not found\n")
-}
+expect_identical(
+    dfs %$% {
+        sum_row(vars(b_1 %to% b_5))
+    }, 
+    result_dfs_b_3$b_total
+)
+
+context("magrittr %to% ")
+
+expect_identical(
+    dfs %>% calc(b_1 %to% b_5), 
+    calc(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_4 = b_4, b_5 = b_5))
+)
+
+expect_identical(
+    dfs %>% within( {
+        b_total = sum_row(b_1 %to% b_5)
+    }), 
+    result_dfs_b_3
+)
+
+expect_identical(
+    dfs %>% transform(
+        b_total = sum_row(b_1 %to% b_5)
+        
+    ), 
+    result_dfs_b_3
+)
+expect_identical(
+    dfs %$% {
+        sum_row(b_1 %to% b_5)
+    }, 
+    result_dfs_b_3$b_total
+)
+
+
 
 # 
 # library(data.table)

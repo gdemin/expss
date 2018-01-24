@@ -56,35 +56,7 @@ expect_equal(na_if(a, t(c(TRUE, FALSE))),b)
 # expect_equal(na_if(a, list(TRUE, FALSE)),b)
 expect_equal(na_if(a, as.data.frame(t(c(TRUE, FALSE)))),b)
 
-context("na_if tbl_df")
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
 
-    
-    a = as.tbl(data.frame(a=1:5,b=5:1))
-    
-    b = a
-    b[a$a>3,"a"] = NA
-    b[a$b>3,"b"] = NA
-    expect_equal(na_if(a, gt(3)),b)
-    expect_equal(na_if(a, 4:5),b)
-    
-    cond = cbind(a$a>3, a$b>3)
-    expect_equal(na_if(a, cond),b)
-    
-    b = a
-    b[1:2,] = NA
-    
-    expect_equal(na_if(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
-    
-    
-    b = a
-    b[,1] = NA
-    b$a = as.integer(b$a)
-    
-    expect_equal(na_if(a, t(c(TRUE, FALSE))),b)
-} else {
-	cat("dplyr not found\n")
-}
 context("na_if matrix")
 
 a = cbind(a=1:5,b=5:1)

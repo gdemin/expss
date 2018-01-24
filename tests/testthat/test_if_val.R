@@ -104,43 +104,7 @@ expect_identical(recode(x, (z>4)~y), c(NA, NA, NA, 9, 9))
 recode(x) = (z>4)~y
 expect_identical(x, c(1, 3, 1, 9, 9))
 
-context("recode dplyr")
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    
-    
-    
-    x = c(1,3,1,3,NA)
-    y = c(8,8,8,9,9)
-    z = c(4,4,4,5,5)
-    # 
-    dfs = data.frame(
-        x = c(2,4,2,4,NA),
-        y = c(18,18,18,19,19),
-        z = c(14,14,14,15,15)
-        
-    )  %>% tbl_df()
-    
-    dfs  = dfs %>% mutate(
-        w = recode(x, from = c(gt(2), other), to = list(y, copy))
-        # zzz = predict(lm(x ~ y))
-        # w = ifelse(x>2, y , x)
-    )
-    
-    expect_identical(dfs$w, c(2, 18, 2, 19, NA))
-    
-    dfs$x = NULL
-    dfs$w = NULL
-    dfs  = dfs %>% mutate(
-        w = recode(x, from = c(gt(2), other), to = list(y, copy))
-    )
-    expect_identical(dfs$w, c(1, 18, 1, 19, NA))
-    dfs  = dfs %>% mutate(
-        w = recode(y, 18 ~ 1, 19 ~ 2)
-    )
-    expect_identical(dfs$w, c(1, 1, 1, 2, 2))
-} else {
-    cat("dplyr not found\n")
-}
+
 
 context("modify")
 x = c(1,3,1,3,NA)
@@ -231,36 +195,7 @@ expect_identical(recode(x, from = list(z>4, other), to = list(y, copy)), c(1, 3,
 
 expect_identical(recode(x, from = list(z>4), to = list(y)), c(NA, NA, NA, 9, 9))
 
-context("recode 'from, to' notation dplyr")
 
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    
-    x = c(1,3,1,3,NA)
-    y = c(8,8,8,9,9)
-    z = c(4,4,4,5,5)
-    
-    dfs = data.frame(
-        x = c(2,4,2,4,NA),
-        y = c(18,18,18,19,19),
-        z = c(14,14,14,15,15)
-        
-    )
-    
-    dfs  = dfs %>% mutate(
-        w = recode(x, from = list(gt(2), other), to = list(y, copy))
-    )
-    
-    expect_identical(dfs$w, c(2, 18, 2, 19, NA))
-    
-    dfs$x = NULL
-    dfs$w = NULL
-    dfs  = dfs %>% mutate(
-        w = recode(x, from = list(gt(2), other), to = list(y, copy))
-    )
-    expect_identical(dfs$w, c(1, 18, 1, 19, NA))
-} else {
-    cat("dplyr not found\n")
-}
 
 context("recode examples")
 set.seed(123)

@@ -1,5 +1,5 @@
 context("by_groups")
-# library(data.table)
+
 data(iris)
 expect_error(by_groups(iris, "Species"))
 expect_error(by_groups(iris, "Species", mean, b ~ sum(Sepal.Width)))

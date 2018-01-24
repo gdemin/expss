@@ -88,14 +88,6 @@ expect_identical(as.matrix(iris) %n_i% perl("^Sepal"), as.matrix(iris)[, 1:2])
 # leave column "Species" and columns which start with "Sepal" 
 expect_identical(as.matrix(iris) %n_i% (perl("^Sepal")|"Species"), as.matrix(iris)[, c(1:2,5)]) 
 
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    expect_identical(as.tbl(iris) %n_d% "Species", as.tbl(iris)[, -5]) # remove column Species
-    expect_identical(as.tbl(iris) %n_i% perl("^Sepal"), as.tbl(iris)[, 1:2])
-    # leave column "Species" and columns which start with "Sepal" 
-    expect_identical(as.tbl(iris) %n_i% (perl("^Sepal")|"Species"), as.tbl(iris)[, c(1:2,5)]) 
-} else {
-    cat("dplyr not found\n")
-}
 
 expect_error(5 %r% 1:2)
 

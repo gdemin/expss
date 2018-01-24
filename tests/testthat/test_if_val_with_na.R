@@ -102,54 +102,7 @@ expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4)), other ~ copy), b)
 expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), other ~ copy), b)
 
 
-context("if_val with NA tbl_df")
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
 
-    
-    a = tbl_df(data.frame(a = 1:4, b = 5:8, d = 10:13))
-    
-    b = as.data.frame(a)
-    rownames(b) = rownames(data.frame(a = 1:4, b = 5:8, d = 10:13))
-    expect_identical(if_val(a, NA ~ 2, other ~ copy), b)
-    
-    a[1,1] = NA
-    b[1,1] = 2
-    
-    expect_identical(if_val(a, NA ~ 2, other ~ copy), b)
-    
-    a[4,1] = NA 
-    b[4,1] = 2
-    expect_identical(if_val(a, NA ~ 2, other ~ copy), b)
-    
-    b[1,1] = 4L
-    b[4,1] = 1L
-    b$a = as.integer(b$a)
-    expect_equal(if_val(a, NA ~ 4:1, other ~ copy), b)
-    
-    a[1,3] = NA
-    b[1,3] = 4L
-    b$d = as.integer(b$d)
-    expect_equal(if_val(a, NA ~ 4:1, other ~ copy), b)
-    
-    b[1,1] = 3
-    b[4,1] = 3
-    b[1,3] = 1
-    b$a = as.integer(b$a)
-    b$d = as.integer(b$d)
-    expect_equal(if_val(a, NA ~ t(3:1), other ~ copy), b)
-    expect_error(if_val(a, NA ~ t(3:2), other ~ copy))
-    expect_error(if_val(a, NA ~ 3:2, other ~ copy))
-    
-    
-    b[1,1] = 4
-    b[4,1] = 1
-    b[1,3] = -1
-    
-    expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4)), other ~ copy), b)
-    expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), other ~ copy), b)
-} else {
-	cat("dplyr not found\n")
-}
 context("if_val with NA list")
 
 a = 1:4
@@ -197,24 +150,6 @@ group = sample(1:3, 30, replace = TRUE)
 param = runif(30)
 param[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(group, param)
-
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    # replace NA's with group means
-    df_clean = df %>% group_by(group) %>% 
-        mutate(
-            param = if_val(param, from = list(NA, other), to = list(mean_col(param), copy))
-        )
-    
-    df = within(df, {
-        param[group==1 & is.na(param)] = mean(param[group==1], na.rm = TRUE)
-        param[group==2 & is.na(param)] = mean(param[group==2], na.rm = TRUE)
-        param[group==3 & is.na(param)] = mean(param[group==3], na.rm = TRUE)
-    })
-    
-    expect_identical(as.data.frame(df_clean), df)
-} else {
-	cat("dplyr not found\n")
-}
 
 df_clean =  modify(df, {
         param = if_val(param, NA ~ ave(param, group, FUN = mean_col), other ~ copy)

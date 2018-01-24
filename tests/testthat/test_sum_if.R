@@ -43,28 +43,7 @@ context("sum_row_if")
 
 expect_equal(sum_row_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,0,0,86))
 
-# example with dplyr
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    set.seed(123)
-    df2 = as.data.frame(
-        matrix(sample(c(1:10,NA),30,replace = TRUE),10)
-    )
-    result = data.frame(df2,
-                        exact=c(0,8,16,0,8,8,0,0,0,0),
-                        greater=c(10,9,0,10,0,10,0,10,0,0),
-                        range=c(0,13,21,7,8,8,12,7,7,6),
-                        na=c(0,0,0,0,0,0,0,0,0,0),
-                        not_na=c(14,22,21,17,10,19,15,18,15,8)
-                        )
-    expect_equal(df2  %>% mutate(exact = sum_row_if(8,V1,V2,V3),
-                    greater = sum_row_if(gt(8),V1,V2,V3),
-                    range = sum_row_if(5:8,V1,V2,V3),
-                    na = sum_row_if(is.na,V1,V2,V3),
-                    not_na = sum_row_if(not_na,V1,V2,V3)),
-                     result)
-} else {
-	cat("dplyr not found\n")
-}
+
 
 
 context("sum_col_if")

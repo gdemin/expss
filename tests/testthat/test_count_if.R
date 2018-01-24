@@ -84,36 +84,6 @@ expect_equal(df1 %row_in% 'apples', c(TRUE,FALSE,FALSE,TRUE))
 expect_equal(df1 %has% 'apples', c(TRUE,FALSE,FALSE,TRUE))
 expect_equal(df1 %col_in% 'apples', c(a = TRUE, b = FALSE))
 
-# example with dplyr
-context("dplyr count_if")
-if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    set.seed(123)
-    df2 = as.data.frame(
-        matrix(sample(c(1:10,NA),30,replace = TRUE),10)
-    )
-    result = data.frame(df2,
-                        exact=c(0,1,2,0,1,1,0,0,0,0),
-                        greater=c(1,1,0,1,0,1,0,1,0,0),
-                        range=c(0,2,3,1,1,1,2,1,1,1),
-                        na=c(1,0,0,1,1,0,0,0,0,1),
-                        not_na=c(2,3,3,2,2,3,3,3,3,2)
-                        )
-    expect_equal(df2  %>% mutate(exact = count_row_if(8,V1,V2,V3),
-                    greater = count_row_if(gt(8),V1,V2,V3),
-                    range = count_row_if(5:8,V1,V2,V3),
-                    na = count_row_if(is.na,V1,V2,V3),
-                    not_na = count_row_if(not_na,V1,V2,V3)),
-                     result)
-
-    expect_equal(df2  %>% mutate(exact = count_row_if(8,V1,V2,V3),
-                                 greater = count_row_if(gt(8),V1,V2,V3),
-                                 range = count_row_if(5:8,V1,V2,V3),
-                                 na = count_row_if(is.na,V1,V2,V3),
-                                 not_na = count_row_if(not_na,V1,V2,V3)),
-                 result)
-} else {
-	cat("dplyr not found\n")
-}
 
 
 context("count_col_if")
