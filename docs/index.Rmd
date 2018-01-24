@@ -445,18 +445,25 @@ Count values less than or equal to 1 in column A of the dataset.
 count_col_if(le(1), w$a)
 ```
 
-**Table of criteria:**
+Table of criteria:
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(expss)
+tbl_crit = from_text("
+ Excel R
+  <1 lt(1)
+ <=1 le(1)
+ <>1 ne(1)
+  =1 eq(1)
+ >=1 ge(1)
+  >1 gt(1)
+")
 
-| Excel   |   R      |
-|---------|----------|
-| "<1"    |   lt(1)  |
-| "<=1"   |   le(1)  |
-| "<>1"	  |   ne(1)  |
-| "=1"    |   eq(1)  |
-| ">=1"   |   ge(1)  |
-| ">1"    |   gt(1)  |
-
-
+knitr::kable(tbl_crit, row.names = FALSE, 
+             format = "html", 
+             table.attr = "style='width:30%;'", 
+             align = "r") 
+knitr::asis_output("<br>")
+```
 
 ##### SUM/AVERAGE
 Sum all values in the dataset.

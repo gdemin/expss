@@ -515,7 +515,7 @@ calculate(w, mean_col_if(lt(3), a, data = sheet(b, c)))
 Our dictionary for lookup:
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 dict = from_text("
-    x  y
+    X  Y
     1  apples
     2  oranges
     3  peaches
@@ -530,7 +530,7 @@ Code for creating the same dictionary in R:
 
 ```{r, eval=FALSE}
 dict = from_text("
-    X  Y
+    x  y
     1  apples
     2  oranges
     3  peaches

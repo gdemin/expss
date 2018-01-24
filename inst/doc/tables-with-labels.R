@@ -357,7 +357,7 @@ knitr::asis_output("<br>")
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 dict = from_text("
-    x  y
+    X  Y
     1  apples
     2  oranges
     3  peaches
@@ -368,7 +368,7 @@ knitr::asis_output("<br>")
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  dict = from_text("
-#      X  Y
+#      x  y
 #      1  apples
 #      2  oranges
 #      3  peaches
