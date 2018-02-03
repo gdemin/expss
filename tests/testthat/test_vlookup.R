@@ -232,3 +232,66 @@ expect_identical(add_columns(sh1, sh2, by = c("b" = "a", "a" = "b")), res)
 default_dataset(sh1)
 .add_columns(sh2, by = c("b" = "a", "a" = "b"))
 expect_identical(sh1, res)
+
+
+############################
+context("add_columns data.table")
+# data.table is modified by reference
+sh1 = data.table(a = 1:5, b = 5:1)
+sh2 = data.table(a = 4:2, d = 4:2)
+res = data.table(from_text_csv("
+                a,b,d
+                1,5,NA
+                2,4,2
+                3,3,3
+                4,2,4
+                5,1,NA
+                "))
+
+# sh1 and sh2 both are data.tables
+expect_identical(add_columns(sh1, sh2), res)
+sh1 = data.table(a = 1:5, b = 5:1)
+expect_identical(add_columns(sh1, sh2, by = "a"), res)
+sh1 = data.table(a = 1:5, b = 5:1)
+expect_identical(add_columns(sh1, sh2, by = 1), res)
+
+sh1 = data.table(a = 1:5, b = 5:1)
+sh2 = data.table(e = 4:2, d = 4:2)
+expect_identical(add_columns(sh1, sh2, by = 1), res)
+sh1 = data.table(a = 1:5, b = 5:1)
+expect_identical(add_columns(sh1, sh2, by = c(a = "e")), res)
+
+# only data is data.table
+sh2 = sheet(a = 4:2, d = 4:2)
+sh1 = data.table(a = 1:5, b = 5:1)
+expect_identical(add_columns(sh1, sh2), res)
+sh1 = data.table(a = 1:5, b = 5:1)
+expect_identical(add_columns(sh1, sh2, by = "a"), res)
+sh1 = data.table(a = 1:5, b = 5:1)
+expect_identical(add_columns(sh1, sh2, by = 1), res)
+
+sh1 = data.table(a = 1:5, b = 5:1)
+sh2 = sheet(e = 4:2, d = 4:2)
+expect_identical(add_columns(sh1, sh2, by = 1), res)
+sh1 = data.table(a = 1:5, b = 5:1)
+expect_identical(add_columns(sh1, sh2, by = c(a = "e")), res)
+
+
+# only dict is data.table
+sh1 = sheet(a = 1:5, b = 5:1)
+sh2 = data.table(a = 4:2, d = 4:2)
+res = from_text_csv("
+                a,b,d
+               1,5,NA
+               2,4,2
+               3,3,3
+               4,2,4
+               5,1,NA
+               ")
+expect_identical(add_columns(sh1, sh2), res)
+expect_identical(add_columns(sh1, sh2, by = "a"), res)
+expect_identical(add_columns(sh1, sh2, by = 1), res)
+
+sh2 =  data.table(e = 4:2, d = 4:2)
+expect_identical(add_columns(sh1, sh2, by = 1), res)
+expect_identical(add_columns(sh1, sh2, by = c(a = "e")), res)

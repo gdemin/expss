@@ -302,7 +302,12 @@ add_columns.data.frame = function(data, dict,
     }
     # calculate index
     ind = fast_match(lookup_value, lookup_column, NA_incomparable = FALSE)
-    res = subset_dataframe(dict[,-col_nums_dict, drop = FALSE], ind, drop = FALSE)
+    if(is.data.table(dict)){
+        res = subset_dataframe(dict[,-col_nums_dict, with = FALSE], ind, drop = FALSE)    
+    } else {
+        res = subset_dataframe(dict[,-col_nums_dict, drop = FALSE], ind, drop = FALSE)    
+    }
+    
     # make unique names in res
     colnames_res = colnames(res)
     dupl = intersect(colnames_res, colnames_data)
@@ -316,7 +321,12 @@ add_columns.data.frame = function(data, dict,
         # we change only dictionary names 
         colnames(res) = all_names[-seq_along(colnames_data)]
     }
-    data[, colnames(res)] = res
+    if(is.data.table(data)){
+        data[, colnames(res):=res]    
+    } else {
+        data[, colnames(res)] = res    
+    }
+    
     data
 
 }
