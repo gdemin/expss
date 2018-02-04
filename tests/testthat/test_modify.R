@@ -197,10 +197,10 @@ result_dfs2$random_numer = NULL
 
 
 result_dfs2$b_total = NULL
+dfs2$b_total = NULL
 expect_identical(
     modify_if(dfs2, test %in% 2:4,
               {
-                  b_total = NULL
                   aa = aa + 1
               }), 
     result_dfs2
@@ -210,7 +210,6 @@ expect_identical(
 expect_identical(
     modify_if(dfs2, 2:4,
               {
-                  b_total = NULL
                   aa = aa + 1
               }), 
     result_dfs2
@@ -272,9 +271,10 @@ expect_identical(iris2, iris[,-5])
 
 iris2 = iris
 
-iris2 = modify_if(iris2, Sepal.Length<5, {Species = NULL})
+expect_error(modify_if(iris2, Sepal.Length<5, {Species = NULL}))
+expect_error(modify_if(iris2, Sepal.Length<5, {Sepal.Width = 1:3}))
 
-expect_identical(iris2, iris[,-5])
+
 
 
 #### 
@@ -387,3 +387,16 @@ expect_identical(
     use_labels(mtcars, table(am, vs)), 
     res
 )
+
+
+context("do_if new")
+
+data(iris)
+
+iris2 = iris
+
+iris2$nest = iris[,-5]
+
+# wah = do_if(iris2, Species=="setosa", {
+#     nest2 = nest*3 
+# })

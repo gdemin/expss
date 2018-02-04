@@ -129,14 +129,13 @@ expect_error({.modify_if("a", {
     
 })})
 
-.modify_if(vs == 0, {
-    vs_0 = NULL
+expect_error(
+    .modify_if(vs == 0, {
+        vs_0 = NULL
+        
+    })
+)
 
-})
-
-mtcars$vs_0 = NULL
-
-expect_identical(mtcars, default_mtcars)
 
 .modify({
     sxsxs = NULL
