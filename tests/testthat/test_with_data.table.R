@@ -29,6 +29,17 @@ expect_identical(
     result_dt
 )
 
+expect_error(
+    modify(dt, {
+        new_v = 1:2
+    })
+)
+
+expect_error(
+    modify_if(dt, (1:.N)<3,{
+        new_v = 1:4
+    })
+)
 
 result_dt$random_numer = NULL
 result_dt$b_total = NULL
