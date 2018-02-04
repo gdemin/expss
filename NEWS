@@ -1,3 +1,8 @@
+0.8.7 (.2018)
+================
+* fix 'add_columns' for data.table
+
+
 0.8.6 (24.01.2018)
 ================
 * fix tests for systems with no long doubles support

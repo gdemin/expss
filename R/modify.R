@@ -295,25 +295,54 @@ modify_if_internal.data.frame = function (data, cond, expr, parent) {
     data
 }
 
-# if(length(del)){
-#     if(data.table::is.data.table(data)){
-#         data.table::set(data, j = del, value = NULL)
-#     } else {
-#         data[, del] = NULL
-#     }
-# }
-# if(data.table::is.data.table(data)){
-#     if(is.logical(cond)) cond = which(cond)
-#     data.table::set(data, i = cond, j = names(new_data), new_data)
-#     invisible(data)
-#     
-# } else {
-#     new_vars = names(new_data)[!(names(new_data) %in% names(data))]
-#     data[cond, names(data)] = new_data[names(data)]
-#     data[, new_vars] = NA
-#     data[cond, new_vars] = new_data[new_vars]
-#     data
-# }
+#' @export
+modify_if_internal.data.table = function (data, cond, expr, parent) {
+    # based on 'within' from base R by R Core team
+    e = evalq(environment(), data, parent)
+    prepare_env(e, n = NROW(data), column_names = colnames(data))
+    cond_logical = calc_cond(cond, envir = e)
+    cond_integer = which(cond_logical)
+    if(length(cond_integer)>0){
+        e = evalq(environment(), list(), parent)
+        orig_names = colnames(data)
+        prepare_env(e, n = length(cond_integer), column_names = orig_names)
+        binding = function(var_name){
+            var_name
+            function(v) {
+                if (missing(v)){
+                    return(universal_subset(data[[var_name]], cond_integer, drop = FALSE))
+                } else {
+                    data.table::set(data, i = cond_integer, j = var_name, value = v)
+                }
+                invisible(v)
+            }
+        }
+        for(j in names(data)){
+            makeActiveBinding(j, binding(j), e)
+        }
+        eval(expr, envir = e, enclos = baseenv())
+        clear_env(e)
+        remove_active_bindings(e)
+        l = as.list(e, all.names = TRUE)
+        l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
+        if(length(l)>0){
+            nrows = vapply(l, NROW, 1, USE.NAMES = FALSE)
+            wrong_rows = nrows!=1L & nrows!=length(cond_integer)
+            if(any(wrong_rows)){
+                er_message = utils::head(paste0("'", names(l)[wrong_rows], 
+                                                "' has ", nrows[wrong_rows], " rows"), 5)
+                er_message = paste(er_message, collapse = ", ")
+                stop(paste0("Bad number of rows: ", er_message, " instead of ",
+                            length(cond_integer), " rows."))
+            }
+            
+            new_vars = rev(names(l)[!(names(l) %in% names(data))])
+            data[cond_integer, (new_vars) := l[new_vars] ]
+            # data.table::set(data, j = new_vars, value = l[new_vars]) # doesn't work :(  
+        }
+    }
+    invisible(data)
+}
 
 #' @export
 modify_if_internal.list = function (data, cond, expr, parent) {

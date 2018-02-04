@@ -19,7 +19,7 @@ subset_dataframe = function(x, j, drop = TRUE){
     if(NCOL(x)==1 && drop){
         return(x[[1]][j])    
     }
-    res = lapply(x, `[`, j)
+    res = lapply(x, universal_subset, j, drop = drop)
     class(res) = class(x)
     if(NCOL(x)>0){
         attr(res, "row.names") = seq_len(NROW(res[[1]]))
