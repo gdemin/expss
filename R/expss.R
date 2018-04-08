@@ -104,6 +104,164 @@ data.table::first
 #' @export
 data.table::last
 
+
+#' @export
+data.table::setorder
+
+#' @export
+data.table::setcolorder
+
+#' @export
+data.table::between
+
+#' @export
+data.table::chgroup
+
+#' @export
+data.table::chmatch
+
+#' @export
+data.table::chorder
+
+#' @export
+data.table::CJ
+
+#' @export
+data.table::dcast
+
+#' @export
+data.table::fintersect
+
+#' @export
+data.table::foverlaps
+
+#' @export
+data.table::frank
+
+#' @export
+data.table::frankv
+
+#' @export
+data.table::fsetdiff
+
+#' @export
+data.table::fsetequal
+
+#' @export
+data.table::fsort
+
+#' @export
+data.table::funion
+
+#' @export
+data.table::getDTthreads
+
+#' @export
+data.table::getNumericRounding
+
+#' @export
+data.table::haskey
+
+#' @export
+data.table::indices
+
+#' @export
+data.table::inrange
+
+#' @export
+data.table::key
+
+#' @export
+data.table::like
+
+#' @export
+data.table::melt
+
+#' @export
+data.table::rbindlist
+
+#' @export
+data.table::rleid
+
+#' @export
+data.table::rleidv
+
+#' @export
+data.table::rowid
+
+#' @export
+data.table::rowidv
+
+#' @export
+data.table::set
+
+#' @export
+data.table::set2key
+
+#' @export
+data.table::set2keyv
+
+#' @export
+data.table::setattr
+
+#' @export
+data.table::setcolorder
+
+#' @export
+data.table::setDTthreads
+
+#' @export
+data.table::setindex
+
+#' @export
+data.table::setindexv
+
+#' @export
+data.table::setkey
+
+#' @export
+data.table::setkeyv
+
+#' @export
+data.table::setnames
+
+#' @export
+data.table::setNumericRounding
+
+#' @export
+data.table::setorder
+
+#' @export
+data.table::setorderv
+
+#' @export
+data.table::SJ
+
+#' @export
+data.table::tables
+
+#' @export
+data.table::transpose
+
+#' @export
+data.table::tstrsplit
+
+#' @export
+data.table::uniqueN
+
+#' @export
+data.table::`%between%`
+
+#' @export
+data.table::`%chin%`
+
+#' @export
+data.table::`%inrange%`
+
+#' @export
+data.table::`%like%`
+
+
 #' @export
 htmlTable::htmlTable
 
