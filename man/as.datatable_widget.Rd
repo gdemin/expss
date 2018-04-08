@@ -2,13 +2,10 @@
 % Please edit documentation in R/html_datatable.R
 \name{as.datatable_widget}
 \alias{as.datatable_widget}
-\alias{datatable}
 \alias{as.datatable_widget.etable}
 \title{Create an HTML table widget for usage with Shiny}
 \usage{
 as.datatable_widget(data, ...)
-
-datatable(data, ...)
 
 \method{as.datatable_widget}{etable}(data, repeat_row_labels = FALSE,
   show_row_numbers = FALSE, digits = get_expss_digits(), ...)

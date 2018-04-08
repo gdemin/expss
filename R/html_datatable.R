@@ -66,12 +66,6 @@ as.datatable_widget = function(data, ...){
     UseMethod("as.datatable_widget")
 }  
 
-#' @export
-#' @rdname as.datatable_widget
-datatable = function(data, ...){
-    .Deprecated("as.datatable_widget")
-    as.datatable_widget(data, ...)
-}  
 
 #' @export
 as.datatable_widget.default = function(data, ...){
