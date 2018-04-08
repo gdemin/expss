@@ -42,9 +42,9 @@ with special functions (see below). You can get value of option with
 \itemize{
 \item{\code{expss.digits} }{ Number of digits after decimal separator which
 will be shown for tables. This parameter is supported in the
-\link[expss]{datatable}, \link[expss]{htmlTable.etable} and \code{print}
+\link[expss]{as.datatable_widget}, \link[expss]{htmlTable.etable} and \code{print}
 methods. \code{NULL} is default and means one digit. \code{NA} means no
-rounding. There is convenience function for this option:
+rounding. There is a convenience function for this option:
 \code{expss_digits}.}
 \item{\code{expss.enable_value_labels_support} }{By default, all labelled 
 variables will use labels as labels for factor levels when \link{factor} is 

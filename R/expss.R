@@ -238,9 +238,6 @@ data.table::setorderv
 data.table::SJ
 
 #' @export
-data.table::tables
-
-#' @export
 data.table::transpose
 
 #' @export
