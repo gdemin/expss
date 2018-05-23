@@ -313,7 +313,7 @@ print.etable = function(x, digits = get_expss_digits(), remove_repeated = TRUE, 
 }
 
 fix_cyrillic_for_rstudio = function(x){
-    need_fix = is.null(getOption("expss.fix_encoding"))
+    need_fix = isTRUE(getOption("expss.fix_encoding"))
     if(need_fix){
         curr_enc = Encoding(x)
         if(toupper(curr_enc) %in% c("UTF-8", "UTF8")){

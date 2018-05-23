@@ -301,7 +301,7 @@ repr_text.etable = function(obj, digits = get_expss_digits(), ...){
     
 }
 
-## for Jupyter notebooks where row headings not rendered correctly
+## for Jupyter notebooks where row headings are not rendered correctly
 html_table_no_row_groups = function(x, escape.html = FALSE, ...){
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""

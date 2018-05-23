@@ -11,6 +11,8 @@
 \alias{expss_output_raw}
 \alias{expss_output_viewer}
 \alias{expss_output_rnotebook}
+\alias{expss_fix_encoding_on}
+\alias{expss_fix_encoding_off}
 \title{Options for contolling behaviour of the package}
 \usage{
 expss_digits(digits = NULL)
@@ -30,6 +32,10 @@ expss_output_raw()
 expss_output_viewer()
 
 expss_output_rnotebook()
+
+expss_fix_encoding_on()
+
+expss_fix_encoding_off()
 }
 \arguments{
 \item{digits}{integer. Number of digits after decimal point. \code{NULL} is
@@ -67,5 +73,9 @@ With comment symbol you can easily copy and paste your output into the
 script. Option \code{raw} disables any formatting and all tables are printed
 as data.frames. Shortcuts for options: \code{expss_output_default()}, 
 \code{expss_output_raw()}, \code{expss_output_viewer()},
-\code{expss_output_commented()} and \code{expss_output_rnotebook()}.}}
+\code{expss_output_commented()} and \code{expss_output_rnotebook()}.}
+\item{\code{expss_fix_encoding_on}/\code{expss_fix_encoding_off} }{ If you
+expreience problems with character experience in RStudio Viewer/RNotebooks under Windows
+try \code{expss_fix_encoding_on()}. In some cases it can help.}
+}
 }

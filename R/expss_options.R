@@ -31,7 +31,11 @@
 #' script. Option \code{raw} disables any formatting and all tables are printed
 #' as data.frames. Shortcuts for options: \code{expss_output_default()}, 
 #' \code{expss_output_raw()}, \code{expss_output_viewer()},
-#' \code{expss_output_commented()} and \code{expss_output_rnotebook()}.}}
+#' \code{expss_output_commented()} and \code{expss_output_rnotebook()}.}
+#' \item{\code{expss_fix_encoding_on}/\code{expss_fix_encoding_off} }{ If you
+#' expreience problems with character experience in RStudio Viewer/RNotebooks under Windows
+#' try \code{expss_fix_encoding_on()}. In some cases it can help.}
+#' }
 #' 
 #' @param digits integer. Number of digits after decimal point. \code{NULL} is
 #'   default and means 1 digit. \code{NA} means no rounding.
@@ -95,4 +99,16 @@ expss_output_viewer = function(){
 #' @export
 expss_output_rnotebook = function(){
     options(expss.output = "rnotebook")
+}
+
+#' @rdname expss.options
+#' @export
+expss_fix_encoding_on = function(){
+    options(expss.fix_encoding = TRUE)
+}
+
+#' @rdname expss.options
+#' @export
+expss_fix_encoding_off = function(){
+    options(expss.fix_encoding = NULL)
 }
