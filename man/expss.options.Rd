@@ -13,7 +13,7 @@
 \alias{expss_output_rnotebook}
 \alias{expss_fix_encoding_on}
 \alias{expss_fix_encoding_off}
-\title{Options for contolling behaviour of the package}
+\title{Options for controlling behavior of the package}
 \usage{
 expss_digits(digits = NULL)
 

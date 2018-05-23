@@ -1,4 +1,4 @@
-#' Options for contolling behaviour of the package
+#' Options for controlling behavior of the package
 #' 
 #' All options can be set with \code{options(option.name = option.value)} or
 #' with special functions (see below). You can get value of option with
