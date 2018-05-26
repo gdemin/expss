@@ -66,9 +66,11 @@ read_spss_to_list=function(file, reencode = TRUE){
             attr(spss[[var_name]],"value.labels") = NULL
             if (is.character(val_labs)){
                 temp = utils::type.convert(val_labs, numerals = "no.loss")
-                if(is.numeric(temp)) val_labs = temp
+                if(is.numeric(temp)) {
+                    val_labs = setNames(temp, names(val_labs))
+                }
             }
-            val_lab(spss[[var_name]]) = sort(val_labs)
+            val_lab(spss[[var_name]]) = val_labs
             
         }	
     }

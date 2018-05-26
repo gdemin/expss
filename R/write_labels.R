@@ -375,7 +375,6 @@ write_labelled_spss = function(x,
          /QUALIFIER = '\"'
          /ARRANGEMENT = DELIMITED
          /FIRSTCASE = 2
-         /IMPORTCASE = ALL
          /VARIABLES ="
     syntax = sprintf(syntax, normalizePath(filename, mustWork = FALSE))
     vars = lapply(colnames(x), function(col){
