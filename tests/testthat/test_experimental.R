@@ -79,7 +79,9 @@ expect_identical(mtcars[, c(1:(nn-2), nn, nn-1)], default_mtcars)
 expect_identical(.fre(vs),fre(mtcars$vs))
 expect_identical(.calc(fre(vs)),fre(mtcars$vs))
 expect_identical(.cro(am, vs), cro(mtcars$am, mtcars$vs))
+expect_identical(.cro_cases(am, vs), cro_cases(mtcars$am, mtcars$vs))
 expect_identical(.cro_cpct(am, vs), cro_cpct(mtcars$am, mtcars$vs))
+expect_identical(.cro_mean_sd_n(mpg, vs), .cro_mean_sd_n(list(mpg = mtcars$mpg), mtcars$vs))
 var_lab(mtcars$mpg_by_am) = "mpg_by_am"
 expect_identical(.cro_cpct(list(unvr(mpg_by_am)), list(unvr(hi_low_mpg))), 
                  cro_cpct(list(unvr(mtcars$mpg_by_am)), list(unvr(mtcars$hi_low_mpg))))

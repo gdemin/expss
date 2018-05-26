@@ -228,6 +228,10 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 
 #' @export
 #' @rdname experimental
+.cro_cases = eval_in_default_dataset
+
+#' @export
+#' @rdname experimental
 .cro_cpct = eval_in_default_dataset
 
 #' @export
@@ -249,6 +253,10 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 #' @export
 #' @rdname experimental
 .cro_median = eval_in_default_dataset
+
+#' @export
+#' @rdname experimental
+.cro_mean_sd_n = eval_in_default_dataset
 
 #' @export
 #' @rdname experimental

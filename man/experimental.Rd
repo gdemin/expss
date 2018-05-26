@@ -14,12 +14,14 @@
 \alias{.recode}
 \alias{.fre}
 \alias{.cro}
+\alias{.cro_cases}
 \alias{.cro_cpct}
 \alias{.cro_rpct}
 \alias{.cro_tpct}
 \alias{.cro_mean}
 \alias{.cro_sum}
 \alias{.cro_median}
+\alias{.cro_mean_sd_n}
 \alias{.cro_fun}
 \alias{.cro_fun_df}
 \title{Experimental functions for operations with default dataset}
@@ -48,6 +50,8 @@
 
 .cro(...)
 
+.cro_cases(...)
+
 .cro_cpct(...)
 
 .cro_rpct(...)
@@ -59,6 +63,8 @@
 .cro_sum(...)
 
 .cro_median(...)
+
+.cro_mean_sd_n(...)
 
 .cro_fun(...)
 
