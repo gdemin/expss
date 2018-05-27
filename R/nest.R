@@ -147,10 +147,13 @@ nest_xy = function(x, y){
     
     x = (encoded_x - 1)*max_y
     y = encoded_y
-    values_with_labs = c(outer((encoded_labs_x-1)*max_x, encoded_labs_x, "+"))
-    res = matrix(NA, nrow(x), ncol = ncol(x)*ncol(y))
-    for (i in seq_len(ncol(x))) for (j in seq_len(ncol(y))){
-        res[, j*i] = x[, i]+y[, j]
+    ncol_x = ncol(x)
+    ncol_y = ncol(y)
+    res = matrix(NA, nrow(x), ncol = ncol_x*ncol_y)
+    seq_x = seq_len(ncol_x)
+    seq_y = seq_len(ncol_y)
+    for (i in seq_x) for (j in seq_y){
+        res[, (i - 1)*ncol_y + j] = x[, i]+y[, j]
     }
     empty_columns = matrixStats::colAlls(res, value = NA, na.rm = FALSE)
     if(all(empty_columns)) {
