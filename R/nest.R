@@ -30,29 +30,39 @@
 #'                       carb = "Number of carburetors"
 #' )
 #' 
-#' with(mtcars, cro(cyl, am %nest% vs))
+#' calc(mtcars, cro(cyl, am %nest% vs))
+#' 
+#' # list of variables
+#' calc(mtcars, cro(cyl, am %nest% list(vs, cyl)))
+#' 
+#' # list of variables - multiple banners/multiple nesting
+#' calc(mtcars, cro(cyl, list(total(), list(am, vs) %nest% cyl)))
 #' 
 #' # three variables 
-#' with(mtcars, cro(am %nest% vs %nest% carb, cyl))
+#' calc(mtcars, cro(am %nest% vs %nest% carb, cyl))
 #' 
 #' # the same with usual version
-#' with(mtcars, cro(cyl, nest(am, vs)))
+#' calc(mtcars, cro(cyl, nest(am, vs)))
 #' 
 #' # three variables 
-#' with(mtcars, cro(nest(am, vs, carb), cyl))
+#' calc(mtcars, cro(nest(am, vs, carb), cyl))
 nest = function(...){
     arg = list(...)
     if (length(arg)<2) return(arg[[1]])
-    x = to_labelled(arg[[1]])
-    y = to_labelled(arg[[2]])
-    if (!is_list(x)) x = list(x) else x = flat_list(x)
-    if (!is_list(y)) {
+    x = arg[[1]]
+    y = arg[[2]]
+    if (!is_list(x)) x = list(x)  
+    x = flat_list(dichotomy_to_category_encoding(x), flat_df = FALSE)
+    if (!is_list(y)) y = list(y)
+    y = flat_list(dichotomy_to_category_encoding(y), flat_df = FALSE)
+    x = to_labelled(x)
+    y = to_labelled(y)
+    if (length(y)<2) {
         res = lapply(x, function(first) {
-            nest_xy(first, y)
+            nest_xy(first, y[[1]])
         })
-    } else {
-        y = flat_list(y)
         
+    } else {
         res = lapply(x, function(first) {
             nest_xlist(first, y)
         })
@@ -85,43 +95,21 @@ to_labelled.list = function(x){
 
 
 nest_xlist = function(x, y)
-    # x - vector or data.frame, y - list
+    # x -  vector or data.frame. data.frame is considered as multiple-response
+    # y - list
 {
-    labs = val_lab(x)
-    vlab = var_lab(x)
-    uniqs = sort(unique(c(uniq_elements(x), labs)))
-    xlist = lapply(uniqs, function(item){
-        res = (x == item) | NA
-        res[res] = item
-        res
-    })
-    if(!is.null(labs)){
-        names(labs) = remove_unnecessary_splitters(names(labs))
-    }
-    res = lapply(seq_along(uniqs), function(i){
-        item = uniqs[i]
-        # browser()
-        newlab = labs[labs == item]
-        if (length(newlab)>0) val_lab(xlist[[i]]) = newlab else val_lab(xlist[[i]]) = NULL
-        var_lab(xlist[[i]]) = vlab
-        # nest(xlist[[i]], y)
-        lapply(y, function(item2){
-             nest_xy(xlist[[i]], item2)
+    res = lapply(y, function(y_elem){
+             nest_xy(x, y_elem)
         })
-
-    })
-    unlist(res, recursive = FALSE, use.names = FALSE)
+    flat_list(res, flat_df = FALSE)
 }
 
 
 
 nest_xy = function(x, y){
-    res_mrset = FALSE
-    if(is.dichotomy(x)) x = as.category(x, compress = FALSE)
-    if(is.dichotomy(y)) y = as.category(y, compress = FALSE)
-    if(is.category(x) || is.category(y)){
-        res_mrset = TRUE
-    }
+    # x -  vector or data.frame. data.frame is considered as multiple-response 
+    # y - vector or data.frame. data.frame is considered as multiple-response 
+
     vlabs_x = var_lab(x)
     vlabs_y = var_lab(y)
     labs_x = val_lab(x)
@@ -169,12 +157,12 @@ nest_xy = function(x, y){
     res_lab = seq_len(max_y*max_x)
     names(res_lab) = outer(new_lab_y, new_lab_x, function(x, y) paste(y, x, sep = "|"))
     # res_lab = res_lab[res_lab %in% new_uniq]
-    if(is.matrix(res)) res = as.dtfrm(res)
+    if(is.matrix(res)) res = as.sheet(res)
     if(!is.null(res_lab)) {
         names(res_lab) = remove_unnecessary_splitters(names(res_lab))
     }    
     val_lab(res) = res_lab
-    if(res_mrset){
+    if(NCOL(res)>1){
         mrset(res)
     } else {
         res    

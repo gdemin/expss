@@ -43,16 +43,22 @@ mtcars = apply_labels(mtcars,
                       carb = "Number of carburetors"
 )
 
-with(mtcars, cro(cyl, am \%nest\% vs))
+calc(mtcars, cro(cyl, am \%nest\% vs))
+
+# list of variables
+calc(mtcars, cro(cyl, am \%nest\% list(vs, cyl)))
+
+# list of variables - multiple banners/multiple nesting
+calc(mtcars, cro(cyl, list(total(), list(am, vs) \%nest\% cyl)))
 
 # three variables 
-with(mtcars, cro(am \%nest\% vs \%nest\% carb, cyl))
+calc(mtcars, cro(am \%nest\% vs \%nest\% carb, cyl))
 
 # the same with usual version
-with(mtcars, cro(cyl, nest(am, vs)))
+calc(mtcars, cro(cyl, nest(am, vs)))
 
 # three variables 
-with(mtcars, cro(nest(am, vs, carb), cyl))
+calc(mtcars, cro(nest(am, vs, carb), cyl))
 }
 \seealso{
 See also \link[base]{interaction}
