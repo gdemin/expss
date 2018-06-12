@@ -5,7 +5,7 @@
 * more exports from data.table
 * fix 'add_columns' for data.table
 * fix 'do_if' for data.table
-
+* add 'split_by' - alias for 'split_separate'
 
 0.8.6 (24.01.2018)
 ================

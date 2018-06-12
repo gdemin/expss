@@ -1,14 +1,14 @@
 #' Splits data.frame into list of data.frames that can be analyzed separately
 #' 
-#' Splits data.frame into list of data.frames that can be analyzed separately. 
-#' These data.frames are sets of cases that have the same values for the 
-#' specified split variables. Any missing values in split variables are dropped 
+#' Splits data.frame into list of data.frames that can be analyzed separately.
+#' These data.frames are sets of cases that have the same values for the
+#' specified split variables. Any missing values in split variables are dropped
 #' together with the corresponding values of \code{data}. \code{split_off} works
-#' with lists of data.frames or objects that can be coerced to
-#' data.frame and assumed to have compatible structure.
-#' Resulting rows will be sorted in order of the split variables.
+#' with lists of data.frames or objects that can be coerced to data.frame and
+#' assumed to have compatible structure. Resulting rows will be sorted in order
+#' of the split variables. \code{split_separate} is an alias to \code{split_by}.
 #' 
-#' @param data data.frame for \code{split_separate}/list for \code{split_off}
+#' @param data data.frame for \code{split_by}/list for \code{split_off}
 #' @param ... unquoted variables names (see \link{keep}) by which \code{data}
 #'   will be split into list.
 #' @param drop should we drop combination of levels with zero observation? TRUE
@@ -20,7 +20,7 @@
 #'   rownames as variable to result of \code{split_off} with the name specified
 #'   by \code{rownames}. If it is \code{TRUE} then name will be 
 #'   \code{.rownames}.
-#' @return \code{split_separate} returns list of data.frames/\code{split_off}
+#' @return \code{split_by} returns list of data.frames/\code{split_off}
 #'   returns data.frame
 #' @export
 #' @seealso \link[base]{split}, \link{compute}, \link{calculate},
@@ -30,7 +30,7 @@
 #' # example from base R 'split'
 #' data(airquality)
 #' airquality2 = airquality %>% 
-#'     split_separate(Month) %>% 
+#'     split_by(Month) %>% 
 #'     compute({
 #'         Ozone_zscore = scale(Ozone)
 #'     }) %>% 
@@ -58,20 +58,20 @@
 #'                                    1 Manual
 #'                                    ")
 #'     ) %>% 
-#'     split_separate(am, vs) %>% 
+#'     split_by(am, vs) %>% 
 #'     use_labels({
 #'         res = lm(mpg ~ hp + disp + wt)
 #'         cbind(Coef. = coef(res), confint(res))
 #'     }) %>% 
 #'     split_off(groups = TRUE, rownames = "variable")
-split_separate = function(data, ..., drop = TRUE){
-    UseMethod("split_separate")    
+split_by = function(data, ..., drop = TRUE){
+    UseMethod("split_by")    
 }
 
 #' @export
-split_separate.data.frame = function(data, ..., drop = TRUE){
+split_by.data.frame = function(data, ..., drop = TRUE){
     variables_names = substitute(list(...))
-    stopif(length(variables_names)==0, "'split_separate' - no grouping variables.")
+    stopif(length(variables_names)==0, "'split_by' - no grouping variables.")
     splitter = keep_internal(data, variables_names, envir = parent.frame())
     splitter = do.call(nest, splitter)
     if(drop && is.labelled(splitter)){
@@ -83,10 +83,10 @@ split_separate.data.frame = function(data, ..., drop = TRUE){
 }
 
 #' @export
-split_separate.matrix = split_separate.data.frame
+split_by.matrix = split_by.data.frame
 
 #' @export
-#' @rdname split_separate
+#' @rdname split_by
 split_off = function(data, groups = NULL, rownames = NULL){
     UseMethod("split_off")
 }
@@ -141,4 +141,6 @@ split_off.list = function(data, groups = NULL, rownames = NULL){
     res
 }
 
-
+#' @export
+#' @rdname split_by
+split_separate = split_by
