@@ -11,7 +11,8 @@
 #' similar to \code{\link[base]{with}} in base R but make available 
 #' full-featured \code{\%to\%} and \code{.N} in the expressions. See 
 #' \link{vars}. Function \code{use_labels} is shortcut for \code{calculate} with
-#' argument \code{use_labels} set to \code{TRUE}.}}
+#' argument \code{use_labels} set to \code{TRUE}. When \code{use_labels} is TRUE
+#' there is a special shortcut for entire data.frame - \code{..data}.}}
 #' \item{{\code{do_if}}{ modifies only rows for which \code{cond} equals to
 #' TRUE. Other rows remain unchanged. Newly created variables also will have
 #' values only in rows for which \code{cond} have TRUE. There will be NA's in
@@ -406,7 +407,7 @@ calculate_internal.data.frame = function (data, expr, parent, use_labels = FALSE
                 }
             }
             substitution_list = extract_var_labs_as_list_with_symbols(data)
-            expr = substitute_symbols(expr, substitution_list)
+            expr = substitute_symbols(expr, c(substitution_list, list(..data = quote(expss::vars(other)))))
             data = names2labels(data) 
         }
     }

@@ -1,5 +1,7 @@
 0.8.7 (.2018)
 ================
+* add ..data shortcut for entire data.frame in 'use_labels'
+* fix awful bug with incorrect nesting multiple response on multiple response ('nest' function)
 * more exports from data.table
 * fix 'add_columns' for data.table
 * fix 'do_if' for data.table
