@@ -9,6 +9,8 @@
 \alias{\%to\%}
 \alias{\%to_list\%}
 \alias{..}
+\alias{..f}
+\alias{..p}
 \title{Get variables/range of variables by name/by pattern.}
 \format{An object of class \code{parameter} of length 1.}
 \usage{
@@ -25,6 +27,10 @@ e1 \%to\% e2
 e1 \%to_list\% e2
 
 ..
+
+..f(...)
+
+..p(...)
 }
 \arguments{
 \item{...}{characters names of variables or criteria/logical functions}
@@ -44,6 +50,12 @@ this function by design so use quotes for names of your variables. This
 function is intended to get variables by parameter/criteria. The only
 exception with non-standard evaluation is \code{\%to\%}. You can use
 \code{\%to\%} inside \code{vars} or independently.}
+\item{\code{..p}}{ returns data.frame with all variables which names satisfy
+supplied perl-style regular expression. Arguments for this function is quoted
+characters. It is a shortcut for \code{vars(perl(pattern))}.}
+\item{\code{..f}}{ returns data.frame with all variables which names contain
+supplied pattern. Arguments for this function can be unquoted. It is a
+shortcut for \code{vars(fixed(pattern))}.}
 \item{\code{..[]}}{ returns data.frame with all variables by their names or 
 by criteria (see \link{criteria}).  Names at the top-level can be unquoted 
 (non-standard evaluation). For standard evaluation of parameters you can 
@@ -85,6 +97,11 @@ compute(dfs, {
     b_total = sum_row(b_1 \%to\% b_5)
 })
 
+# identical result
+compute(dfs, {
+    b_total = sum_row(..f(b_))
+})
+
 # In global environement
 a = rep(10, 5)
 a1 = rep(1, 5)
@@ -97,6 +114,7 @@ a5 = rep(5, 5)
 a1 \%to\% a5
 vars(perl("^a[0-9]$"))
 ..[perl("^a[0-9]$")]
+..p("^a[0-9]$")
 
 # sum each row
 sum_row(a1 \%to\% a5)

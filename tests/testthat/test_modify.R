@@ -370,8 +370,14 @@ mtcars = apply_labels(mtcars,
                    carb = "Number of carburetors"
 )
 
-res = with(mtcars, table(am, vs))
 
+
+expect_identical(
+    use_labels(mtcars, summary(..data)), 
+    summary(names2labels(mtcars))
+)
+
+res = with(mtcars, table(am, vs))
 expect_identical(use_labels(unvr(mtcars), table(am, vs)), res)
 
 names(dimnames(res)) = c(var_lab(mtcars$am), var_lab(mtcars$vs))
@@ -399,6 +405,7 @@ expect_identical(
     use_labels(mtcars, table(am, vs)), 
     res
 )
+
 
 
 context("do_if new")

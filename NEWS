@@ -1,5 +1,6 @@
 0.8.7 (.2018)
 ================
+* add '..p' and '..f' - perl regular expression/fixed pattern selectors. Also 'mrset_p', 'mrset_f', 'mdset_p', 'mdset_f' are provided.
 * add ..data shortcut for entire data.frame in 'use_labels'
 * fix awful bug with incorrect nesting multiple response on multiple response ('nest' function)
 * more exports from data.table

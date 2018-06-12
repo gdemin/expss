@@ -3,11 +3,23 @@
 \name{mrset}
 \alias{mrset}
 \alias{mdset}
+\alias{mrset_f}
+\alias{mdset_f}
+\alias{mrset_p}
+\alias{mdset_p}
 \title{Create multiple response set/multiple dichotomy set from variables}
 \usage{
 mrset(..., label = NULL)
 
 mdset(..., label = NULL)
+
+mrset_f(..., label = NULL)
+
+mdset_f(..., label = NULL)
+
+mrset_p(..., label = NULL)
+
+mdset_p(..., label = NULL)
 }
 \arguments{
 \item{...}{variables}
@@ -26,13 +38,21 @@ with 0 or 1 in the each column. Each column in the \code{dichotomy} is
 indicator of absense or presense of particular feature. Both functions don't 
 convert its arguments to anything - it is supposed that arguments already 
 have appropriate encoding. For conversation see \link{as.dichotomy} or 
-\link{as.category}.
+\link{as.category}. \code{mrset_p} and \code{mdset_p} select variables for
+multiple-responses by perl-style regular expresssion.
+\code{mrset_f} and \code{mdset_f} select variables by fixed pattern. Fixed
+pattern can be unquoted. For details see \link{..p}.
 }
 \examples{
-
 data(product_test)
-a1 = calculate(product_test, mrset(a1_1 \%to\% a1_6))
 
+calc_cro_cpct(product_test, mrset(a1_1 \%to\% a1_6))
+
+# same result
+calc_cro_cpct(product_test, mrset_f(a1_))
+
+# same result
+calc_cro_cpct(product_test, mrset_p("a1_"))
 }
 \seealso{
 \link{as.dichotomy}, \link{as.category}

@@ -183,6 +183,7 @@ context("vars with perl")
 
 
 expect_identical(vars(perl("a_[0-9]")), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+expect_identical(..p("a_[0-9]"), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(indirect(perl("a_[0-9]")), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(vars_list(perl("a_[0-9]")), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(indirect_list(perl("a_[0-9]")), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
@@ -192,6 +193,39 @@ expect_identical(
     with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_3 = b_3, b_4 = b_4, b_5 = b_5))
 )
 
+expect_identical(
+    with(dfs, ..p("b_[0-9]")), 
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_3 = b_3, b_4 = b_4, b_5 = b_5))
+)
+
+expect_identical(
+    with(dfs, ..f(a)), 
+    with(dfs, data.frame(aa = aa))
+)
+
+expect_identical(
+    suppressWarnings(with(dfs, ..f(a, a))), 
+    with(dfs, sheet(aa = aa, aa = aa))
+)
+
+expect_warning(with(dfs, ..f(a, a)))
+
+expect_identical(
+    with(dfs, ..f(a, z)), 
+    with(dfs, data.frame(aa = aa, zz = zz))
+)
+
+expect_identical(
+    with(dfs, ..p("a", "z")), 
+    with(dfs, data.frame(aa = aa, zz = zz))
+)
+
+expect_identical(
+    suppressWarnings(with(dfs, ..p("a", "a"))), 
+    with(dfs, sheet(aa = aa, aa = aa))
+)
+
+expect_warning(with(dfs, ..p("a", "a")))
 
 expect_identical(
     within(dfs, {

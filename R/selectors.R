@@ -7,6 +7,12 @@
 #' function is intended to get variables by parameter/criteria. The only
 #' exception with non-standard evaluation is \code{\%to\%}. You can use
 #' \code{\%to\%} inside \code{vars} or independently.}
+#' \item{\code{..p}}{ returns data.frame with all variables which names satisfy
+#' supplied perl-style regular expression. Arguments for this function is quoted
+#' characters. It is a shortcut for \code{vars(perl(pattern))}.}
+#' \item{\code{..f}}{ returns data.frame with all variables which names contain
+#' supplied pattern. Arguments for this function can be unquoted. It is a
+#' shortcut for \code{vars(fixed(pattern))}.}
 #' \item{\code{..[]}}{ returns data.frame with all variables by their names or 
 #' by criteria (see \link{criteria}).  Names at the top-level can be unquoted 
 #' (non-standard evaluation). For standard evaluation of parameters you can 
@@ -53,6 +59,11 @@
 #'     b_total = sum_row(b_1 %to% b_5)
 #' })
 #' 
+#' # identical result
+#' compute(dfs, {
+#'     b_total = sum_row(..f(b_))
+#' })
+#' 
 #' # In global environement
 #' a = rep(10, 5)
 #' a1 = rep(1, 5)
@@ -65,6 +76,7 @@
 #' a1 %to% a5
 #' vars(perl("^a[0-9]$"))
 #' ..[perl("^a[0-9]$")]
+#' ..p("^a[0-9]$")
 #' 
 #' # sum each row
 #' sum_row(a1 %to% a5)
@@ -302,4 +314,39 @@ expr_internal_parameter = as.call(list(as.name(":::"), as.name("expss"), as.name
 #' @export
 '[<-.internal_parameter' = function(x, ..., value){
     .NotYetImplemented()
+}
+
+#' @export
+#' @rdname vars
+..f = function(...){
+    patterns = as.list(substitute(list(...)))[-1]
+    patterns = lapply(patterns, deparse)
+    res = vector(length(patterns), mode = "list")
+    for(i in seq_along(patterns)){
+        patt  = patterns[[i]]
+        res[[i]] = eval(substitute(vars_list(fixed(patt))), envir = parent.frame())    
+    }
+    
+    res = do.call(sheet, flat_list(res))
+    if(anyDuplicated(names(res))) {
+        warning(paste(c("..f - duplicated names:", names(res)), collapse = " "))
+    }
+    res    
+}
+
+#' @export
+#' @rdname vars
+..p = function(...){
+    patterns = list(...)
+    res = vector(length(patterns), mode = "list")
+    for(i in seq_along(patterns)){
+        patt  = patterns[[i]]
+        res[[i]] = eval(substitute(vars_list(perl(patt))), envir = parent.frame())    
+    }
+    
+    res = do.call(sheet, flat_list(res))
+    if(anyDuplicated(names(res))) {
+        warning(paste(c("..f - duplicated names:", names(res)), collapse = " "))
+    }
+    res   
 }

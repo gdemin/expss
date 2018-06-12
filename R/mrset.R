@@ -8,7 +8,10 @@
 #' indicator of absense or presense of particular feature. Both functions don't 
 #' convert its arguments to anything - it is supposed that arguments already 
 #' have appropriate encoding. For conversation see \link{as.dichotomy} or 
-#' \link{as.category}.
+#' \link{as.category}. \code{mrset_p} and \code{mdset_p} select variables for
+#' multiple-responses by perl-style regular expresssion.
+#' \code{mrset_f} and \code{mdset_f} select variables by fixed pattern. Fixed
+#' pattern can be unquoted. For details see \link{..p}.
 #'
 #' @param ... variables
 #' @param label character optional label for multiple response set
@@ -18,10 +21,15 @@
 #' @export
 #'
 #' @examples
-#' 
 #' data(product_test)
-#' a1 = calculate(product_test, mrset(a1_1 %to% a1_6))
 #' 
+#' calc_cro_cpct(product_test, mrset(a1_1 %to% a1_6))
+#' 
+#' # same result
+#' calc_cro_cpct(product_test, mrset_f(a1_))
+#' 
+#' # same result
+#' calc_cro_cpct(product_test, mrset_p("a1_"))
 mrset = function(..., label = NULL){
     args = list(...)
     stopif(!length(args), "`mrset` - you should provide at least one argument.")
@@ -59,4 +67,32 @@ mdset = function(..., label = NULL){
     }
     class(res) = union("dichotomy", class(res) %d% "category")
     res
+}
+
+#' @export
+#' @rdname mrset
+mrset_f = function(..., label = NULL){
+    res = eval.parent(substitute(..f(...)))
+    do.call(mrset, c(list(res), list(label = label)))
+}
+
+#' @export
+#' @rdname mrset
+mdset_f = function(..., label = NULL){
+    res = eval.parent(substitute(..f(...)))
+    do.call(mdset, c(list(res), list(label = label)))
+}
+
+#' @export
+#' @rdname mrset
+mrset_p = function(..., label = NULL){
+    res = eval.parent(substitute(..p(...)))
+    do.call(mrset, c(list(res), list(label = label)))    
+}
+
+#' @export
+#' @rdname mrset
+mdset_p = function(..., label = NULL){
+    res = eval.parent(substitute(..p(...)))
+    do.call(mdset, c(list(res), list(label = label)))    
 }
