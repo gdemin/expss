@@ -234,38 +234,38 @@ expect_identical(print(x), x)
 # use_result_row_order = FALSE
 # )
 # 
-# expect_equal_to_reference(cbind(tbl_df, tbl_df), "rds/cbind1.rds")
-# expect_equal_to_reference(cbind(tbl_df, new_col = 42), "rds/cbind2.rds")
-# expect_equal_to_reference(cbind(tbl_df, new_col = "new_col"), "rds/cbind3.rds")
-# # expect_equal_to_reference(cbind(tbl_df, data.frame(new_col = "new_col")), "rds/cbind4.rds")
+# expect_equal_to_reference(cbind(tbl_df, tbl_df), "rds/cbind1.rds",  update = FALSE)
+# expect_equal_to_reference(cbind(tbl_df, new_col = 42), "rds/cbind2.rds",  update = FALSE)
+# expect_equal_to_reference(cbind(tbl_df, new_col = "new_col"), "rds/cbind3.rds",  update = FALSE)
+# # expect_equal_to_reference(cbind(tbl_df, data.frame(new_col = "new_col")), "rds/cbind4.rds",  update = FALSE)
 # 
-# expect_equal_to_reference(rbind(tbl_df, tbl_df), "rds/cbind5.rds")
-# expect_equal_to_reference(rbind(tbl_df, 42), "rds/cbind6.rds")
-# expect_equal_to_reference(rbind(42, tbl_df), "rds/cbind7.rds")
+# expect_equal_to_reference(rbind(tbl_df, tbl_df), "rds/cbind5.rds",  update = FALSE)
+# expect_equal_to_reference(rbind(tbl_df, 42), "rds/cbind6.rds",  update = FALSE)
+# expect_equal_to_reference(rbind(42, tbl_df), "rds/cbind7.rds",  update = FALSE)
 # df = tbl_df
 # class(df) = class(df) %d% c("etable",  "table_summary_df") 
-# # expect_equal_to_reference(rbind(tbl_df, df), "rds/cbind8.rds")
+# # expect_equal_to_reference(rbind(tbl_df, df), "rds/cbind8.rds",  update = FALSE)
 # 
 # simple_df = cro_mean(mtcars %>% except(vs, am), mtcars$am)
 # 
-# expect_equal_to_reference(cbind(simple_df, simple_df), "rds/cbind9.rds")
-# expect_equal_to_reference(cbind(simple_df, new_col = 42), "rds/cbind10.rds")
-# expect_equal_to_reference(cbind(simple_df, new_col = "new_col"), "rds/cbind11.rds")
-# expect_equal_to_reference(cbind(tbl_df, data.frame(new_col = "new_col")), "rds/cbind12.rds")
+# expect_equal_to_reference(cbind(simple_df, simple_df), "rds/cbind9.rds",  update = FALSE)
+# expect_equal_to_reference(cbind(simple_df, new_col = 42), "rds/cbind10.rds",  update = FALSE)
+# expect_equal_to_reference(cbind(simple_df, new_col = "new_col"), "rds/cbind11.rds",  update = FALSE)
+# expect_equal_to_reference(cbind(tbl_df, data.frame(new_col = "new_col")), "rds/cbind12.rds",  update = FALSE)
 
-# expect_equal_to_reference(rbind(simple_df, simple_df), "rds/cbind13.rds")
-# expect_equal_to_reference(rbind(simple_df, 42), "rds/cbind14.rds")
-# expect_equal_to_reference(rbind(42, simple_df), "rds/cbind15.rds")
+# expect_equal_to_reference(rbind(simple_df, simple_df), "rds/cbind13.rds",  update = FALSE)
+# expect_equal_to_reference(rbind(simple_df, 42), "rds/cbind14.rds",  update = FALSE)
+# expect_equal_to_reference(rbind(42, simple_df), "rds/cbind15.rds",  update = FALSE)
 # df = simple_df
 # class(df) = class(df) %d% c("etable",  "table_summary_df") 
-# expect_equal_to_reference(rbind(simple_df, df), "rds/cbind16.rds")
+# expect_equal_to_reference(rbind(simple_df, df), "rds/cbind16.rds",  update = FALSE)
 
 
-# expect_equal_to_reference(cbind(tbl_df, simple_df), "rds/cbind17.rds")
-# expect_equal_to_reference(cbind(simple_df, tbl_df), "rds/cbind18.rds")
+# expect_equal_to_reference(cbind(tbl_df, simple_df), "rds/cbind17.rds",  update = FALSE)
+# expect_equal_to_reference(cbind(simple_df, tbl_df), "rds/cbind18.rds",  update = FALSE)
 
-# expect_equal_to_reference(rbind(tbl_df, simple_df), "rds/cbind17.rds")
-# expect_equal_to_reference(rbind(simple_df, tbl_df), "rds/cbind18.rds")
+# expect_equal_to_reference(rbind(tbl_df, simple_df), "rds/cbind17.rds",  update = FALSE)
+# expect_equal_to_reference(rbind(simple_df, tbl_df), "rds/cbind18.rds",  update = FALSE)
 
 
 context("as.etable")
@@ -294,16 +294,16 @@ mtcars = unlab(mtcars)
 
 expect_equal_to_reference(
     calc(mtcars, as.etable(table(am))),
-    "rds/as.etable1.rds")
+    "rds/as.etable1.rds",  update = FALSE)
 expect_equal_to_reference(
     calc(mtcars, as.etable(table(am, vs))),
-    "rds/as.etable2.rds")
+    "rds/as.etable2.rds",  update = FALSE)
 expect_equal_to_reference(
     calc(mtcars, as.etable(table(am, vs, cyl))),
-    "rds/as.etable3.rds")
+    "rds/as.etable3.rds",  update = FALSE)
 expect_equal_to_reference(
     calc(mtcars, as.etable(table(am, vs, cyl, gear))),
-    "rds/as.etable4.rds")
+    "rds/as.etable4.rds",  update = FALSE)
 
 mtcars = apply_labels(mtcars, 
                       mpg = "Miles/(US) gallon",
@@ -329,16 +329,16 @@ expect_identical(as.etable(cro(mtcars$am, mtcars$vs)), cro(mtcars$am, mtcars$vs)
 
 expect_equal_to_reference(
     use_labels(mtcars, as.etable(table(am))),
-    "rds/as.etable5.rds")
+    "rds/as.etable5.rds",  update = FALSE)
 expect_equal_to_reference(
     use_labels(mtcars, as.etable(table(am, vs))),
-    "rds/as.etable6.rds")
+    "rds/as.etable6.rds",  update = FALSE)
 expect_equal_to_reference(
     use_labels(mtcars, as.etable(table(am, vs, cyl))),
-    "rds/as.etable7.rds")
+    "rds/as.etable7.rds",  update = FALSE)
 expect_equal_to_reference(
     use_labels(mtcars, as.etable(table(am, vs, cyl, gear))),
-    "rds/as.etable8.rds")
+    "rds/as.etable8.rds",  update = FALSE)
 
 context("method as.character.labelled and others")
 

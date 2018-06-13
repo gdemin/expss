@@ -29,7 +29,7 @@ res = mtcars %>%
     tab_stat_fun(w_mean) %>% 
     tab_pivot
 
-expect_equal_to_reference(res, "rds/ctable0.rds")
+expect_equal_to_reference(res, "rds/ctable0.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cols(vs) %>% 
@@ -38,7 +38,7 @@ res = mtcars %>%
     tab_stat_fun(w_mean) %>% 
     tab_pivot
 
-expect_equal_to_reference(res, "rds/ctable0.rds")
+expect_equal_to_reference(res, "rds/ctable0.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_rows(am) %>% 
@@ -47,7 +47,7 @@ res = mtcars %>%
     tab_stat_fun(w_mean) %>% 
     tab_pivot
 
-expect_equal_to_reference(res, "rds/ctable0.rds")
+expect_equal_to_reference(res, "rds/ctable0.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -56,7 +56,7 @@ res = mtcars %>%
     tab_stat_fun(w_mean = w_mean) %>% 
     tab_pivot
 
-expect_equal_to_reference(res, "rds/ctable1.rds")
+expect_equal_to_reference(res, "rds/ctable1.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -64,7 +64,7 @@ res = mtcars %>%
     tab_rows(am) %>% 
     tab_stat_fun("|" = w_mean) %>% 
     tab_pivot
-expect_equal_to_reference(res, "rds/ctable2.rds")
+expect_equal_to_reference(res, "rds/ctable2.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -73,7 +73,7 @@ res = mtcars %>%
     tab_stat_fun("|" = w_mean, label = "Mean value") %>% 
     tab_pivot
 
-expect_equal_to_reference(res, "rds/ctable3.rds")
+expect_equal_to_reference(res, "rds/ctable3.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -82,7 +82,7 @@ res = mtcars %>%
     tab_stat_fun("|" = w_mean, label = "Mean value") %>% 
     tab_pivot(stat_position = "inside_rows")
 
-expect_equal_to_reference(res, "rds/ctable3.rds")
+expect_equal_to_reference(res, "rds/ctable3.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -91,7 +91,7 @@ res = mtcars %>%
     tab_stat_fun("|" = w_mean, label = "Mean value") %>% 
     tab_pivot(stat_position = "inside_columns")
 
-expect_equal_to_reference(res, "rds/ctable4.rds")
+expect_equal_to_reference(res, "rds/ctable4.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -99,7 +99,7 @@ res = mtcars %>%
     tab_rows(am) %>% 
     tab_stat_mean(label = "Mean value") %>% 
     tab_pivot()
-expect_equal_to_reference(res, "rds/ctable3.rds")
+expect_equal_to_reference(res, "rds/ctable3.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -108,7 +108,7 @@ res = mtcars %>%
     tab_stat_mean(label = "Mean value") %>% 
     tab_pivot(stat_position = "inside_columns")
 
-expect_equal_to_reference(res, "rds/ctable4.rds")
+expect_equal_to_reference(res, "rds/ctable4.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -119,7 +119,7 @@ res = mtcars %>%
     tab_stat_valid_n() %>% 
     tab_pivot(stat_position = "inside_rows")
 
-expect_equal_to_reference(res, "rds/ctable5.rds")
+expect_equal_to_reference(res, "rds/ctable5.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -130,7 +130,7 @@ res = mtcars %>%
     tab_stat_valid_n() %>% 
     tab_pivot(stat_position = "inside_columns")
 
-expect_equal_to_reference(res, "rds/ctable6.rds")
+expect_equal_to_reference(res, "rds/ctable6.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp) %>% 
@@ -140,9 +140,9 @@ res = mtcars %>%
     tab_pivot()
 
 if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
-    expect_equal_to_reference(res, "rds/ctable7.rds")
+    expect_equal_to_reference(res, "rds/ctable7.rds",  update = FALSE)
 } else {
-    expect_equal_to_reference(res, "rds/ctable7_R3.4.rds")
+    expect_equal_to_reference(res, "rds/ctable7_R3.4.rds",  update = FALSE)
 }
 
 res = mtcars %>% 
@@ -155,7 +155,7 @@ res = mtcars %>%
     tab_stat_cases(total_row_position = "none") %>% 
     tab_pivot(stat_position = "inside_rows") 
 
-expect_equal_to_reference(res, "rds/ctable8.rds")
+expect_equal_to_reference(res, "rds/ctable8.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_total_row_position("none") %>% 
@@ -168,7 +168,7 @@ res = mtcars %>%
     tab_stat_cases() %>% 
     tab_pivot(stat_position = "inside_rows") 
 
-expect_equal_to_reference(res, "rds/ctable8.rds")
+expect_equal_to_reference(res, "rds/ctable8.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_subgroup(vs == 0) %>% 
@@ -182,7 +182,7 @@ res = mtcars %>%
     tab_stat_cases(total_row_position = "none") %>% 
     tab_pivot(stat_position = "inside_rows") 
 
-expect_equal_to_reference(res, "rds/ctable8.rds")
+expect_equal_to_reference(res, "rds/ctable8.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_subgroup(vs == 0) %>% 
@@ -195,7 +195,7 @@ res = mtcars %>%
     tab_stat_cases(total_row_position = "none") %>% 
     tab_pivot(stat_position = "inside_rows") 
 
-expect_equal_to_reference(res, "rds/ctable9.rds")
+expect_equal_to_reference(res, "rds/ctable9.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(cyl) %>% 
@@ -205,7 +205,7 @@ res = mtcars %>%
     tab_transpose() %>% 
     tab_sort_desc()
 
-expect_equal_to_reference(res, "rds/ctable10.rds")
+expect_equal_to_reference(res, "rds/ctable10.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, disp, hp) %>% 
@@ -216,7 +216,7 @@ res = mtcars %>%
     tab_pivot() %>% 
     split_columns()
 
-expect_equal_to_reference(res, "rds/ctable11.rds")
+expect_equal_to_reference(res, "rds/ctable11.rds",  update = FALSE)
 
 set.seed(1)
 df = data.frame(area=rep(c('Area 1','Area 2'), each=6),
@@ -232,7 +232,7 @@ res = df %>%
     tab_stat_cpct_responses(total_row_position = "below", total_statistic = "u_responses") %>% 
     tab_pivot()
 
-expect_equal_to_reference(res, "rds/ctable12.rds")
+expect_equal_to_reference(res, "rds/ctable12.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(cyl, carb) %>% 
@@ -241,7 +241,7 @@ res = mtcars %>%
     tab_stat_cpct() %>% 
     tab_pivot() 
 
-expect_equal_to_reference(res, "rds/ctable13.rds")
+expect_equal_to_reference(res, "rds/ctable13.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cols(total(), am %nest% vs) %>%
@@ -253,7 +253,7 @@ res = mtcars %>%
     tab_stat_cpct() %>% 
     tab_pivot() 
 
-expect_equal_to_reference(res, "rds/ctable14.rds")
+expect_equal_to_reference(res, "rds/ctable14.rds",  update = FALSE)
 
 
 
@@ -267,7 +267,7 @@ for(each in qc(cyl, carb, hp)){
 }
 res = res %>% tab_pivot()
 
-expect_equal_to_reference(res, "rds/ctable15.rds")
+expect_equal_to_reference(res, "rds/ctable15.rds",  update = FALSE)
 
 
 res = mtcars %>% 
@@ -275,7 +275,7 @@ res = mtcars %>%
     tab_cols(total(), am %nest% vs) %>%
     tab_stat_fun(w_mean, w_sd, w_n, method = list) %>% 
     tab_pivot()
-expect_equal_to_reference(res, "rds/ctable16.rds")
+expect_equal_to_reference(res, "rds/ctable16.rds",  update = FALSE)
 
 res = mtcars %>%
     tab_cells(cyl) %>%
@@ -284,7 +284,7 @@ res = mtcars %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
     tab_pivot(stat_position = "inside_columns")
-expect_equal_to_reference(res, "rds/ctable17.rds")
+expect_equal_to_reference(res, "rds/ctable17.rds",  update = FALSE)
 
 res = mtcars %>%
     tab_cells(cyl) %>%
@@ -294,7 +294,7 @@ res = mtcars %>%
     tab_stat_rpct(label = "row %") %>%
     tab_stat_tpct(label = "table %") %>%
     tab_pivot(stat_position = "inside_columns")
-expect_equal_to_reference(res, "rds/ctable17.rds")
+expect_equal_to_reference(res, "rds/ctable17.rds",  update = FALSE)
  
 res = mtcars %>%
     tab_cells(cyl) %>%
@@ -304,7 +304,7 @@ res = mtcars %>%
     tab_stat_rpct(total_row_position = "none", label = "row %") %>%
     tab_stat_tpct(total_row_position = "none", label = "table %") %>%
     tab_pivot(stat_position = "inside_rows")
-expect_equal_to_reference(res, "rds/ctable18.rds")
+expect_equal_to_reference(res, "rds/ctable18.rds",  update = FALSE)
 
 context("custom tables summary stats")
 
@@ -331,7 +331,7 @@ res = mtcars %>% tab_cells(mpg, qsec, hp, disp) %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
     
-expect_equal_to_reference(res, "rds/ctable19.rds")
+expect_equal_to_reference(res, "rds/ctable19.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_weight(wt) %>% 
@@ -348,7 +348,7 @@ res = mtcars %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
 
-expect_equal_to_reference(res, "rds/ctable19.rds")
+expect_equal_to_reference(res, "rds/ctable19.rds",  update = FALSE)
 
 
 
@@ -366,7 +366,7 @@ res = mtcars %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
 
-expect_equal_to_reference(res, "rds/ctable20.rds")
+expect_equal_to_reference(res, "rds/ctable20.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, qsec, hp, disp) %>% 
@@ -383,7 +383,7 @@ res = mtcars %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
     
-expect_equal_to_reference(res, "rds/ctable20.rds")
+expect_equal_to_reference(res, "rds/ctable20.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_subgroup(!is.na(wt) & wt>0) %>% 
@@ -400,7 +400,7 @@ res = mtcars %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
 
-expect_equal_to_reference(res, "rds/ctable20.rds")
+expect_equal_to_reference(res, "rds/ctable20.rds",  update = FALSE)
 
 res1 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
     tab_cells(a, b) %>% 
@@ -538,7 +538,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable20_1.rds"
+    "rds/ctable20_1.rds",  update = FALSE
 )
 
 # for code coverage
@@ -550,7 +550,7 @@ res = pr_t %calc% cro_cases(list(mrset(a1_1 %to% a1_6), a22),
 
 expect_equal_to_reference(
     res,
-    "rds/ctable20_1.rds"
+    "rds/ctable20_1.rds",  update = FALSE
 )
 
 res = pr_t %calc% cro_cases(list(mrset(a1_1 %to% a1_6), a22),
@@ -562,7 +562,7 @@ res = pr_t %calc% cro_cases(list(mrset(a1_1 %to% a1_6), a22),
 
 expect_equal_to_reference(
     res,
-    "rds/ctable20_1a.rds"
+    "rds/ctable20_1a.rds",  update = FALSE
 )
 
 #####
@@ -577,7 +577,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable20_1.rds"
+    "rds/ctable20_1.rds",  update = FALSE
 )
 
 
@@ -593,7 +593,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable21.rds"
+    "rds/ctable21.rds",  update = FALSE
 )
 
 
@@ -609,7 +609,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable22.rds"
+    "rds/ctable22.rds",  update = FALSE
 )
 
 res = pr_t %>% 
@@ -624,7 +624,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable23.rds"
+    "rds/ctable23.rds",  update = FALSE
 )
 
 
@@ -640,7 +640,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable24.rds"
+    "rds/ctable24.rds",  update = FALSE
 )
 
 res = pr_t %>% 
@@ -655,7 +655,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable25.rds"
+    "rds/ctable25.rds",  update = FALSE
 )
 
 res = pr_t %>% 
@@ -677,7 +677,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable25_sorting.rds"
+    "rds/ctable25_sorting.rds",  update = FALSE
 )
 
 res = pr_t %>% 
@@ -695,7 +695,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable25_sorting.rds"
+    "rds/ctable25_sorting.rds",  update = FALSE
 )
 
 res = pr_t %>% 
@@ -714,7 +714,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable25_different_total.rds"
+    "rds/ctable25_different_total.rds",  update = FALSE
 )
 
 res = pr_t %>% 
@@ -733,7 +733,7 @@ res = pr_t %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable25_different_total2.rds"
+    "rds/ctable25_different_total2.rds",  update = FALSE
 )
 
 
@@ -755,7 +755,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable26.rds"
+    "rds/ctable26.rds",  update = FALSE
 )
 
 res = mtcars %>% 
@@ -767,7 +767,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable27.rds"
+    "rds/ctable27.rds",  update = FALSE
 )
 
 res = mtcars %>% 
@@ -778,7 +778,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable28.rds"
+    "rds/ctable28.rds",  update = FALSE
 )
 
 res = mtcars %>% tab_cells() %>% 
@@ -789,7 +789,7 @@ res = mtcars %>% tab_cells() %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable29.rds"
+    "rds/ctable29.rds",  update = FALSE
 )
     
     
@@ -801,7 +801,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable30.rds"
+    "rds/ctable30.rds",  update = FALSE
 )
 
 res = mtcars %>% 
@@ -818,7 +818,7 @@ res = mtcars %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns", stat_label = "outside")
 
-expect_equal_to_reference(res, "rds/ctable31.rds")
+expect_equal_to_reference(res, "rds/ctable31.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, qsec, hp, disp) %>% 
@@ -834,7 +834,7 @@ res = mtcars %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_rows", stat_label = "outside")
 
-expect_equal_to_reference(res, "rds/ctable32.rds")
+expect_equal_to_reference(res, "rds/ctable32.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, qsec, hp, disp) %>% 
@@ -850,7 +850,7 @@ res = mtcars %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "outside_rows", stat_label = "outside")
 
-expect_equal_to_reference(res, "rds/ctable33.rds")
+expect_equal_to_reference(res, "rds/ctable33.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, qsec, hp, disp) %>% 
@@ -867,7 +867,7 @@ res = mtcars %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "outside_columns", stat_label = "outside")
 
-expect_equal_to_reference(res, "rds/ctable34.rds")
+expect_equal_to_reference(res, "rds/ctable34.rds",  update = FALSE)
 
 mtcars2 = mtcars
 mtcars2$am = unvr(mtcars2$am)
@@ -886,7 +886,7 @@ res = mtcars2 %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "outside_columns", stat_label = "outside")
 
-expect_equal_to_reference(res, "rds/ctable35.rds")
+expect_equal_to_reference(res, "rds/ctable35.rds",  update = FALSE)
 
 mtcars2$vs = unvr(mtcars2$vs)
 res = mtcars2 %>% 
@@ -895,7 +895,7 @@ res = mtcars2 %>%
     tab_stat_cpct() %>% 
     tab_pivot()
 
-expect_equal_to_reference(res, "rds/ctable36.rds")
+expect_equal_to_reference(res, "rds/ctable36.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(mpg, qsec, hp, disp) %>% 
@@ -962,7 +962,7 @@ res = mtcars %>%
     tab_stat_mean() %>% 
     tab_pivot()
 
-expect_equal_to_reference(res, "rds/ctable37.rds")
+expect_equal_to_reference(res, "rds/ctable37.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_total_row_position("above") %>% 
@@ -1094,7 +1094,7 @@ res = mtcars %>%
     tab_row_label("### the end ###") %>% 
     tab_pivot() 
 
-expect_equal_to_reference(res, "rds/ctable38.rds")
+expect_equal_to_reference(res, "rds/ctable38.rds",  update = FALSE)
 
 
 
@@ -1124,7 +1124,7 @@ res = pr_t %>% tab_cols(total(), age_cat) %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable40.rds"
+    "rds/ctable40.rds",  update = FALSE
 )
 
 res = pr_t %>% tab_cols(total(), age_cat) %>% 
@@ -1145,5 +1145,5 @@ res = pr_t %>% tab_cols(total(), age_cat) %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ctable41.rds"
+    "rds/ctable41.rds",  update = FALSE
 )

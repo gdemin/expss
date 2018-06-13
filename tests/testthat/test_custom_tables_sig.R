@@ -28,7 +28,7 @@ res = mtcars %>% tab_cells(cyl, gear) %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct1.rds")
+    "rds/ct_signif_cpct1.rds",  update = FALSE)
 
 
 res = mtcars %>% 
@@ -41,7 +41,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct1.rds")
+    "rds/ct_signif_cpct1.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_significance_options(keep = "none") %>% 
@@ -54,7 +54,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct1_greater_sign.rds")
+    "rds/ct_signif_cpct1_greater_sign.rds",  update = FALSE)
 
 
 res = mtcars %>% 
@@ -67,7 +67,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct2.rds")
+    "rds/ct_signif_cpct2.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_significance_options(subtable_marks = "both") %>% 
@@ -79,7 +79,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct3.rds")
+    "rds/ct_signif_cpct3.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_significance_options(subtable_marks = "greater") %>% 
@@ -91,7 +91,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct4.rds")
+    "rds/ct_signif_cpct4.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_significance_options(subtable_marks = "both") %>% 
@@ -106,7 +106,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct5.rds")
+    "rds/ct_signif_cpct5.rds",  update = FALSE)
 
 res = mtcars %>% tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
@@ -116,7 +116,7 @@ res = mtcars %>% tab_cells(cyl, gear) %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct6.rds")
+    "rds/ct_signif_cpct6.rds",  update = FALSE)
 
 
 res = mtcars %>% tab_cells(cyl, gear) %>% 
@@ -129,7 +129,7 @@ res = mtcars %>% tab_cells(cyl, gear) %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct7.rds")
+    "rds/ct_signif_cpct7.rds",  update = FALSE)
 
 res = mtcars %>% tab_cells(cyl, gear) %>% 
     tab_cols(total(), vs, am) %>% 
@@ -142,7 +142,7 @@ res = mtcars %>% tab_cells(cyl, gear) %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct8.rds")
+    "rds/ct_signif_cpct8.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_total_row_position("above") %>% 
@@ -155,7 +155,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct9.rds")
+    "rds/ct_signif_cpct9.rds",  update = FALSE)
 
 res = mtcars %>% 
     tab_cells(cyl, gear) %>% 
@@ -166,7 +166,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(
     res,
-    "rds/ct_signif_cpct10.rds")
+    "rds/ct_signif_cpct10.rds",  update = FALSE)
 
 
 context("custom tables significance means")
@@ -187,7 +187,7 @@ res = mtcars %>%
     tab_pivot()
 
 expect_equal_to_reference(res, 
-                          "rds/signif_means20bonferroni.rds"
+                          "rds/signif_means20bonferroni.rds",  update = FALSE
 )
 
 res = mtcars %>% 
@@ -203,7 +203,7 @@ res = mtcars %>%
     tab_pivot()
 
 expect_equal_to_reference(res, 
-                          "rds/signif_means20bonferroni.rds"
+                          "rds/signif_means20bonferroni.rds",  update = FALSE
 )
 
 res = mtcars %>% 
@@ -222,7 +222,7 @@ res = mtcars %>%
     tab_pivot()
 
 expect_equal_to_reference(res, 
-                          "rds/ct_signif_means1.rds"
+                          "rds/ct_signif_means1.rds",  update = FALSE
 )
 
 res = mtcars %>% 
@@ -250,7 +250,7 @@ res = mtcars %>%
     tab_pivot(stat_position = "inside_rows")
 
 expect_equal_to_reference(res, 
-                          "rds/ct_signif_many1.rds"
+                          "rds/ct_signif_many1.rds",  update = FALSE
 )
 
 tab_many_sig = . %>% tab_stat_cpct() %>%
@@ -277,7 +277,7 @@ res = mtcars %>%
     tab_pivot(stat_position = "inside_rows")
 
 expect_equal_to_reference(res, 
-                          "rds/ct_signif_many1.rds"
+                          "rds/ct_signif_many1.rds",  update = FALSE
 )
 
 tab_sig_means_left = . %>% 
@@ -307,7 +307,7 @@ res = mtcars %>%
     drop_empty_columns()
 
 expect_equal_to_reference(res,
-                          "rds/ct_signif_many2.rds"
+                          "rds/ct_signif_many2.rds",  update = FALSE
 )
 
 res = mtcars %>% 
@@ -327,5 +327,5 @@ res = mtcars %>%
 
 
 expect_equal_to_reference(res, 
-                          "rds/ct_signif_many3.rds"
+                          "rds/ct_signif_many3.rds",  update = FALSE
 )

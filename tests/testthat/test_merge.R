@@ -12,40 +12,40 @@ expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am, gear, carb), list("Count"), total_row_position = "none")
      percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
      merge(counts, percents)
-     }), "rds/merge1.rds")
+     }), "rds/merge1.rds",  update = FALSE)
 
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am, gear, carb), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
     merge(counts, percents, suffixes = NULL)
-}), "rds/merge1.rds")
+}), "rds/merge1.rds",  update = FALSE)
 
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am, gear, carb), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
     merge(counts, percents, suffixes = c("_first_table", "_second_table"))
-}), "rds/merge1a.rds")
+}), "rds/merge1a.rds",  update = FALSE)
 
 ### weird
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am, gear, am), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, vs, carb), list("Column N %"), total_row_position = "none")
     merge(counts, percents)
-}), "rds/merge2.rds")
+}), "rds/merge2.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(gear, carb), list("Column N %"), total_row_position = "none")
     merge(counts, percents)
-}), "rds/merge3.rds")
+}), "rds/merge3.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(am, gear, carb), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
     merge(counts, percents)
-}), "rds/merge4.rds")
+}), "rds/merge4.rds",  update = FALSE)
 
 ####
 expect_equal_to_reference(
@@ -54,18 +54,18 @@ with(mtcars, {
     percents = cro_cpct(list(vs, gear, carb), list("Column N %"), total_row_position = "above")
     merge(counts, percents)
 
-}), "rds/merge4a.rds")
+}), "rds/merge4a.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, gear, carb), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
     merge(counts, percents)
-}), "rds/merge5.rds")
+}), "rds/merge5.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, gear, carb), list("Count"))
     merge(counts, counts)
-}), "rds/merge6.rds")
+}), "rds/merge6.rds",  update = FALSE)
 
 context("%merge%")
 
@@ -73,26 +73,26 @@ expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am, gear, carb), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
     counts %merge% percents
-}), "rds/merge1.rds")
+}), "rds/merge1.rds",  update = FALSE)
 
 ### weird
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am, gear, am), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, vs, carb), list("Column N %"), total_row_position = "none")
     counts %merge% percents
-}), "rds/merge2.rds")
+}), "rds/merge2.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(gear, carb), list("Column N %"), total_row_position = "none")
     counts %merge% percents
-}), "rds/merge3.rds")
+}), "rds/merge3.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(am, gear, carb), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
     counts %merge% percents
-}), "rds/merge4.rds")
+}), "rds/merge4.rds",  update = FALSE)
 
 ####
 expect_equal_to_reference(
@@ -101,18 +101,18 @@ expect_equal_to_reference(
         percents = cro_cpct(list(vs, gear, carb), list("Column N %"), total_row_position = "above")
         counts %merge% percents
 
-    }), "rds/merge4a.rds")
+    }), "rds/merge4a.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, gear, carb), list("Count"), total_row_position = "none")
     percents = cro_cpct(list(vs, am, gear, carb), list("Column N %"), total_row_position = "none")
     counts %merge% percents
-}), "rds/merge5.rds")
+}), "rds/merge5.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, gear, carb), list("Count"))
     counts %merge% counts
-}), "rds/merge6.rds")
+}), "rds/merge6.rds",  update = FALSE)
 
 
 context("merge etable")
@@ -134,7 +134,7 @@ expect_equal_to_reference(with(mtcars,{
     freq %merge% cross
 
 
-}), "rds/merge7.rds")
+}), "rds/merge7.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars,{
     freq = fre(carb)
@@ -142,7 +142,7 @@ expect_equal_to_reference(with(mtcars,{
     cross %merge% freq
 
 
-}), "rds/merge8.rds")
+}), "rds/merge8.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars,{
     freq = fre(carb[carb!=2])
@@ -150,7 +150,7 @@ expect_equal_to_reference(with(mtcars,{
     freq %merge% cross
 
 
-}), "rds/merge9.rds")
+}), "rds/merge9.rds",  update = FALSE)
 
 # weird
 expect_equal_to_reference(with(mtcars,{
@@ -159,13 +159,13 @@ expect_equal_to_reference(with(mtcars,{
     cross %merge% freq
 
 
-}), "rds/merge10.rds")
+}), "rds/merge10.rds",  update = FALSE)
 
 expect_equal_to_reference(with(mtcars,{
     freq1 = fre(gear)
     freq2 = fre(carb)
     merge(freq1, freq2, suffixes = c(" gear", " carb"))
-}), "rds/merge11.rds")
+}), "rds/merge11.rds",  update = FALSE)
 
 
 context("merge simple_summary")
@@ -184,7 +184,7 @@ expect_equal_to_reference(
                cro_mean(list(gear, carb), list(unvr(am), total()))
          )
     ), 
-    "rds/merge_simple_summary1.rds")
+    "rds/merge_simple_summary1.rds",  update = FALSE)
 
 
 expect_equal_to_reference(
@@ -193,7 +193,7 @@ expect_equal_to_reference(
                cro_mean(list(gear, carb), list(unvr(vs), total()))
          )
     ), 
-    "rds/merge_simple_summary2.rds")
+    "rds/merge_simple_summary2.rds",  update = FALSE)
 
 
 expect_equal_to_reference(
@@ -202,7 +202,7 @@ expect_equal_to_reference(
              cro_mean(list(gear, carb), list(unvr(am), total()))
          
     ), 
-    "rds/merge_simple_summary1.rds")
+    "rds/merge_simple_summary1.rds",  update = FALSE)
 
 
 expect_equal_to_reference(
@@ -211,7 +211,7 @@ expect_equal_to_reference(
                cro_mean(list(gear, carb), list(unvr(vs), total()))
          
     ), 
-    "rds/merge_simple_summary2.rds")
+    "rds/merge_simple_summary2.rds",  update = FALSE)
 
 
 context("left join")
@@ -227,7 +227,7 @@ context("merge duplicated columns")
 
 data(mtcars)
 expect_equal_to_reference(fre(mtcars$cyl[mtcars$mpg<20]) %merge% fre(mtcars$cyl) ,
-                           "rds/merge12.rds")
+                           "rds/merge12.rds",  update = FALSE)
 
 context("merge duplicated rows")
 
@@ -246,21 +246,21 @@ tabl2 = mtcars %>%
 
 expect_equal_to_reference(
     tabl1 %merge% tabl2,
-    "rds/merge13.rds")
+    "rds/merge13.rds",  update = FALSE)
 expect_equal_to_reference(
     tabl2 %merge% tabl1,
-    "rds/merge14.rds")
+    "rds/merge14.rds",  update = FALSE)
 expect_equal_to_reference(
     tabl1 %merge% tabl1,
-    "rds/merge15.rds")
+    "rds/merge15.rds",  update = FALSE)
 
 
 expect_equal_to_reference(
     merge(tabl1, tabl1, by = "row_labels"),
-    "rds/merge15.rds")
+    "rds/merge15.rds",  update = FALSE)
 
 expect_equal_to_reference(
     merge(tabl1, tabl1, by = 1),
-    "rds/merge15.rds")
+    "rds/merge15.rds",  update = FALSE)
 
 expect_error(merge(tabl1, tabl1, by = 1:2))

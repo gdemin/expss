@@ -441,9 +441,9 @@ mtcars = apply_labels(mtcars,
 
 model = use_labels(mtcars, lm(mpg ~ vs + am + hp + wt))
 
-expect_equal_to_reference(unlab(model), "rds/unlab_list.rds")
-expect_equal_to_reference(unvr(model), "rds/unvr_list.rds")
-expect_equal_to_reference(unvl(model), "rds/unvl_list.rds")
+expect_equal_to_reference(unlab(model), "rds/unlab_list.rds",  update = FALSE)
+expect_equal_to_reference(unvr(model), "rds/unvr_list.rds",  update = FALSE)
+expect_equal_to_reference(unvl(model), "rds/unvl_list.rds",  update = FALSE)
 
 
 context("value labels on factor")

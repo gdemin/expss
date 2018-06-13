@@ -9,26 +9,26 @@ colnames(dichotomy_matrix) = c("Milk","Sugar","Tea","Coffee")
 dichotomy_matrix[] = 0
 
 expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=TRUE),
-                          "rds/category2df.rds")
+                          "rds/category2df.rds",  update = FALSE)
 expect_equal_to_reference(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE),
-                          "rds/category3df.rds")
+                          "rds/category3df.rds",  update = FALSE)
 expect_true(is.category(as.category(dichotomy_matrix, prefix = "zero", compress=FALSE)))
 
 
 
 expect_equal_to_reference(as.category(dichotomy_matrix[,FALSE, drop = FALSE], compress = FALSE),
-                 "rds/category4df.rds")
+                 "rds/category4df.rds",  update = FALSE)
 
 expect_identical(as.category(numeric(0),compress=TRUE),
 structure(list(V1 = integer(0)), .Names = "V1", row.names = integer(0), class = c("category", 
 "data.frame")))
 
 expect_equal_to_reference(as.category(t(t(c(0,1,0,1,0,1))),compress=TRUE),
-                 "rds/category5df.rds")
+                 "rds/category5df.rds",  update = FALSE)
 expect_equal_to_reference(as.category(t(c(0,1,0,1,0,1)),compress=TRUE), 
-                 "rds/category6df.rds")
+                 "rds/category6df.rds",  update = FALSE)
 expect_equal_to_reference(as.category(c(0,1,0,1,0,1),compress=TRUE),
-                 "rds/category5df.rds")
+                 "rds/category5df.rds",  update = FALSE)
 
 
 set.seed(123)
@@ -45,7 +45,7 @@ var_lab(dichotomy_dataframe[[3]]) = "Tea"
 var_lab(dichotomy_dataframe[[4]]) = "Coffee"
 
 expect_equal_to_reference(as.category(dichotomy_dataframe, prefix = "products_",compress=TRUE), 
-                          "rds/category5.rds")
+                          "rds/category5.rds",  update = FALSE)
 
 
 dichotomy_dataframe2 = dichotomy_dataframe
@@ -87,11 +87,11 @@ colnames(dichotomy_matrix) = c("Used product|Milk","Used product|Sugar",
 
 expect_equal_to_reference(
 as.category(dichotomy_matrix),
-"rds/category7.rds"
+"rds/category7.rds",  update = FALSE
 )
 
 
 expect_equal_to_reference(
     as.category(dichotomy_matrix, compress = TRUE),
-    "rds/category8.rds"
+    "rds/category8.rds",  update = FALSE
 )

@@ -189,8 +189,8 @@ indep = c(1,1,3,2,2,3)
 var_lab(indep) = "Label"
 val_lab(indep) = c(a=1,b=2,c=3)
 if(as.numeric(version$major) ==3 && as.numeric(version$minor)<5){
-    expect_equal_to_reference(lm(dep ~ dummy(indep)),"rds/lm_dichotomy_default.rds")
-    expect_equal_to_reference(lm(dep ~ dummy1(indep)),"rds/lm_dichotomy_default2.rds")
+    expect_equal_to_reference(lm(dep ~ dummy(indep)),"rds/lm_dichotomy_default.rds",  update = FALSE)
+    expect_equal_to_reference(lm(dep ~ dummy1(indep)),"rds/lm_dichotomy_default2.rds",  update = FALSE)
 }
 
 expect_identical(dummy(indep,keep_values=1),structure(c(1, 1, 0, 0, 0, 0), .Dim = c(6L, 1L), .Dimnames = list(
@@ -467,7 +467,7 @@ expect_error(dummy(vec, keep_unused = TRUE,keep_labels="unknown label"))
 
 set.seed(123)
 brands = as.data.frame(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
-expect_equal_to_reference(dummy(brands[,1]),"rds/brands.rds")
+expect_equal_to_reference(dummy(brands[,1]),"rds/brands.rds",  update = FALSE)
 var_lab(brands) = "Used brands"
 val_lab(brands) = make_labels("
                               1 Brand A
@@ -476,7 +476,7 @@ val_lab(brands) = make_labels("
                               4 Brand D
                               5 Brand E
                               ")
-expect_equal_to_reference(as.dichotomy(brands, prefix = "brand_"),"rds/brands_df.rds")
+expect_equal_to_reference(as.dichotomy(brands, prefix = "brand_"),"rds/brands_df.rds",  update = FALSE)
 
 brands2 = as.dichotomy(brands)
 brands2[5, ] = NA 
@@ -503,7 +503,7 @@ expect_identical(total(set_var_lab(brands2, "")),
                            labels = structure(1, .Names = "#Total")))
 
 expect_equal_to_reference(as.category(as.dichotomy(brands, prefix = "brand_"),compress=TRUE),
-                          "rds/brands_df_cat.rds")
+                          "rds/brands_df_cat.rds",  update = FALSE)
 
 
 ###########

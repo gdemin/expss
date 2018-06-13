@@ -143,7 +143,7 @@ expect_output_file(print(tbl[, 1:2]),
 options(expss.output = NULL)
 
 res = expss:::knit_print.etable(tbl)
-expect_equal_to_reference(res, "rds/knit_print.rds")
+expect_equal_to_reference(res, "rds/knit_print.rds",  update = FALSE)
 
 options(expss.output = "rnotebook")
 colnames(tbl) = enc2utf8(colnames(tbl))

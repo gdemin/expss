@@ -25,58 +25,58 @@ mtcars_table = cro_cases(list(mtcars$cyl, mtcars$gear),
 # table(mtcars$cyl, mtcars$vs) %>% chisq.test()
 expect_equal_to_reference(
     significance_cases(mtcars_table),
-    "rds/significance_cases1.rds"
+    "rds/significance_cases1.rds",  update = FALSE
 )
 
 # table(mtcars$gear) %>% chisq.test()
 expect_equal_to_reference(
     significance_cases(mtcars_table, sig_level = 0.1),
-    "rds/significance_cases2.rds"
+    "rds/significance_cases2.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, sig_level = 0.1, min_base = 20),
-    "rds/significance_cases3.rds"
+    "rds/significance_cases3.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, sig_level = 0.1, keep = "none"),
-    "rds/significance_cases4.rds"
+    "rds/significance_cases4.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, sig_level = 0.1, 
                        keep = "cases"),
-    "rds/significance_cases5.rds"
+    "rds/significance_cases5.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, sig_level = 0.1, 
                        keep = "bases"),
-    "rds/significance_cases6.rds"
+    "rds/significance_cases6.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, sig_level = 0.1, digits = 3),
-    "rds/significance_cases7.rds"
+    "rds/significance_cases7.rds",  update = FALSE
 )
 
 
 expect_equal_to_reference(
     significance_cases(mtcars_table[,1], sig_level = 0.1, keep = "none"),
-    "rds/significance_cases8.rds"
+    "rds/significance_cases8.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table[,1], sig_level = 0.1, 
                        keep = "cases"),
-    "rds/significance_cases9.rds"
+    "rds/significance_cases9.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table[,1], sig_level = 0.1, 
                        keep = "bases"),
-    "rds/significance_cases10.rds"
+    "rds/significance_cases10.rds",  update = FALSE
 )
 
 mtcars_table = cro_cases(list(mtcars$cyl, mtcars$gear),
@@ -92,7 +92,7 @@ mtcars_table = cro_cases(list(mtcars$cyl, mtcars$gear),
 
 expect_equal_to_reference(
     significance_cases(mtcars_table),
-    "rds/significance_cases11.rds"
+    "rds/significance_cases11.rds",  update = FALSE
 )
 
 mtcars_table = cro_cases(list(mtcars$cyl, mtcars$gear),
@@ -101,29 +101,29 @@ mtcars_table = cro_cases(list(mtcars$cyl, mtcars$gear),
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, total_row = 2),
-    "rds/significance_cases12.rds"
+    "rds/significance_cases12.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, total_row = 2, keep = "none", sig_level = 0.1),
-    "rds/significance_cases4.rds"
+    "rds/significance_cases4.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, total_row = 2, keep = "bases"),
-    "rds/significance_cases13.rds"
+    "rds/significance_cases13.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, total_row = 2, keep = "cases", sig_level = 0.1),
-    "rds/significance_cases14.rds"
+    "rds/significance_cases14.rds",  update = FALSE
 )
 
 
 expect_equal_to_reference(
     significance_cases(mtcars_table, min_base = 20, total_row = 2, keep = "cases", 
                        sig_level = 0.1),
-    "rds/significance_cases15.rds"
+    "rds/significance_cases15.rds",  update = FALSE
 )
 
 data(mtcars)
@@ -153,11 +153,11 @@ mtcars_table = cro_cases(list(mtcars$cyl, mtcars$gear),
 
 expect_equal_to_reference(
     significance_cases(mtcars_table),
-    "rds/significance_cases16.rds"
+    "rds/significance_cases16.rds",  update = FALSE
 )
 
 
 expect_equal_to_reference(
     significance_cases(cro_cases(NA)),
-    "rds/significance_cases17.rds"
+    "rds/significance_cases17.rds",  update = FALSE
 )

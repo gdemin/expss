@@ -49,21 +49,21 @@ expect_error(
 expect_equal_to_reference(
     cro_fun(mtcars %>% except("cyl", "am"),
             col_vars = mtcars$am, fun = combine_functions(w_mean), weight = 2),
-                          "rds/table_summary0.rds")
+                          "rds/table_summary0.rds",  update = FALSE)
 
 expect_equal_to_reference(
     calc_cro_fun(mtcars, ..[!perl("cyl|am")], col_vars = am, 
                  fun = combine_functions(w_mean), 
                  weight = 2
                  ),
-    "rds/table_summary0.rds")
+    "rds/table_summary0.rds",  update = FALSE)
 
 
 
 expect_equal_to_reference(
     cro_fun(mtcars %>% except("cyl", "am"), col_vars = list("Total", mtcars$am), 
             fun = combine_functions(mean)),
-    "rds/table_summary1.rds"
+    "rds/table_summary1.rds",  update = FALSE
     )
 
 
@@ -71,7 +71,7 @@ add_val_lab(mtcars$am) = c(HardToSay = 3)
 expect_equal_to_reference(
     cro_fun(mtcars %>% except("cyl", "am"), col_vars = list("Total", mtcars$am), 
             fun = combine_functions(mean))
-    ,"rds/table_summary2.rds"
+    ,"rds/table_summary2.rds",  update = FALSE
 )
 
 data(mtcars)
@@ -95,13 +95,13 @@ add_val_lab(mtcars$am) = c(HardToSay = 3)
 expect_equal_to_reference(
 cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
               fun = combine_functions(mean))
-,"rds/table_summary3.rds"
+,"rds/table_summary3.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
 cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
         fun = mean)
-,"rds/table_summary4.rds"
+,"rds/table_summary4.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
@@ -111,7 +111,7 @@ cro_fun_df(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
                    rownames(res) = "mean"
                    res
                        })
-,"rds/table_summary5.rds"
+,"rds/table_summary5.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
@@ -122,14 +122,14 @@ expect_equal_to_reference(
                    rownames(res) = "mean"
                    res
                })
-    ,"rds/table_summary5.rds"
+    ,"rds/table_summary5.rds",  update = FALSE
 )
 
 # expect_equal_to_reference(
 # cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_labels = c("row_vars", "row_vars_values", "stat_names"),
 #               col_labels = c("col_vars", "summary_vars", "col_vars_values"), fun = mean)
-# ,"rds/table_summary6.rds"
+# ,"rds/table_summary6.rds",  update = FALSE
 # )
 
 
@@ -139,7 +139,7 @@ expect_equal_to_reference(
 # cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs,
 #              fun = combine_functions(mean))
-# ,"rds/table_summary7.rds"
+# ,"rds/table_summary7.rds",  update = FALSE
 # )
 
 
@@ -148,7 +148,7 @@ expect_equal_to_reference(
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values", "summary_vars"),
 #               col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
-# ,"rds/table_summary8.rds"
+# ,"rds/table_summary8.rds",  update = FALSE
 # )
 
 # expect_equal_to_reference(
@@ -156,7 +156,7 @@ expect_equal_to_reference(
 #               col_vars = mtcars$vs,
 #         row_vars = list("Total", mtcars$am), 
 #         fun = mean)
-# ,"rds/table_summary9.rds"
+# ,"rds/table_summary9.rds",  update = FALSE
 # )
 
 # expect_equal_to_reference(
@@ -164,7 +164,7 @@ expect_equal_to_reference(
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values",  "col_vars_values", "summary_vars", "stat_names"),
 #               col_labels = c("col_vars"), fun = mean)
-# ,"rds/table_summary10.rds"
+# ,"rds/table_summary10.rds",  update = FALSE
 # )
 ##############################
 add_val_lab(mtcars$vs) = c("Don't know" = 88)
@@ -172,7 +172,7 @@ add_val_lab(mtcars$vs) = c("Don't know" = 88)
 # expect_equal_to_reference(
 # cro_fun(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs, fun = combine_functions(mean))
-# ,"rds/table_summary11.rds"
+# ,"rds/table_summary11.rds",  update = FALSE
 # )
 
 # expect_equal_to_reference(
@@ -180,7 +180,7 @@ add_val_lab(mtcars$vs) = c("Don't know" = 88)
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values", "summary_vars"),
 #               col_labels = c("col_vars", "col_vars_values", "stat_names"), fun = mean)
-# ,"rds/table_summary12.rds"
+# ,"rds/table_summary12.rds",  update = FALSE
 # )
 
 
@@ -189,7 +189,7 @@ add_val_lab(mtcars$vs) = c("Don't know" = 88)
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values", "summary_vars", "stat_names"),
 #               col_labels = c("col_vars", "col_vars_values", "summary_vars"), fun = mean)
-# ,"rds/table_summary13.rds"
+# ,"rds/table_summary13.rds",  update = FALSE
 # )
 
 
@@ -201,7 +201,7 @@ cro_fun_df(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
             rownames(res) = "mean"
             res
         })
-,"rds/table_summary14.rds"
+,"rds/table_summary14.rds",  update = FALSE
 )
 
 
@@ -210,7 +210,7 @@ cro_fun_df(mtcars %>% except("vs", "am"), col_vars = list("Total", mtcars$am),
 #               row_vars = mtcars$vs,
 #               row_labels = c("row_vars", "row_vars_values",  "col_vars_values", "summary_vars", "stat_names"),
 #               col_labels = c("col_vars"), fun = mean)
-# ,"rds/table_summary15.rds"
+# ,"rds/table_summary15.rds",  update = FALSE
 # )
 
 #########
@@ -266,25 +266,25 @@ w = compute(w, {
 
 expect_equal_to_reference(
 calc(w, cro_fun(list(a22, b22), col_vars = mrset(a1_1 %to% a1_6), fun = combine_functions(w_mean)))
-, "rds/table_summary16.rds"
+, "rds/table_summary16.rds",  update = FALSE
 )
 expect_equal_to_reference(
 calc(w, cro_fun(list(a22, b22), col_vars = list(list(mrset(a1_1 %to% a1_6))), 
                 fun = combine_functions(w_mean)))
-, "rds/table_summary16.rds"
+, "rds/table_summary16.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     calc(w, cro_fun(list(a22, b22), col_vars = mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)),
                     fun = combine_functions(w_mean)))
-    , "rds/table_summary16.rds"
+    , "rds/table_summary16.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
     calc(w, cro_fun(list(a22, b22), 
                           col_vars = list(list(mdset(as.dichotomy(a1_1 %to% a1_6, keep_unused = TRUE)))),
                     fun = combine_functions(w_mean)))
-    , "rds/table_summary16.rds"
+    , "rds/table_summary16.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
@@ -292,7 +292,7 @@ calc(w, cro_fun(list(a22, b22),
                       col_vars = list(total(label = "Total")),
                       row_vars = list(mrset(a1_1 %to% a1_6)),
                       fun = combine_functions(w_mean)))
-, "rds/table_summary17.rds"
+, "rds/table_summary17.rds",  update = FALSE
 )
 expect_identical(
     calc(w, cro_fun(list(a22, b22), col_vars = list("Total"),
@@ -344,13 +344,13 @@ mtcars = modify(mtcars,{
 
 expect_equal_to_reference(
     mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs)),
-    "rds/cro_mean_sd_n1.rds"
+    "rds/cro_mean_sd_n1.rds",  update = FALSE
 )
 
 
 expect_equal_to_reference(
     calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs)),
-    "rds/cro_mean_sd_n1.rds"
+    "rds/cro_mean_sd_n1.rds",  update = FALSE
 )
 
 expect_error(calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs), labels = 1))
@@ -360,7 +360,7 @@ expect_error(calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, v
 expect_equal_to_reference(
     mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs), weight = 0.1,
                                 weighted_valid_n = TRUE),
-    "rds/cro_mean_sd_n2.rds"
+    "rds/cro_mean_sd_n2.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
@@ -368,7 +368,7 @@ expect_equal_to_reference(
                                 labels = c("m", "s", "n"),
                                 weight = 0.1,
                                 weighted_valid_n = TRUE),
-    "rds/cro_mean_sd_n3.rds"
+    "rds/cro_mean_sd_n3.rds",  update = FALSE
 )
 
 expect_equal_to_reference(
@@ -378,7 +378,7 @@ expect_equal_to_reference(
                                 labels = c("m", "s", "n"),
                                 weight = 0.1,
                                 weighted_valid_n = TRUE),
-    "rds/cro_mean_sd_n3.rds"
+    "rds/cro_mean_sd_n3.rds",  update = FALSE
 )
 
 
