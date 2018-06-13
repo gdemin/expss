@@ -132,14 +132,14 @@ w_prep2 = rep(w2, length(x))
 expect_equal(w_mean(x, w2), weighted.mean(x, w_prep2, na.rm = TRUE))
 expect_equal(w_sum(x, w2), sum(x*w_prep2, na.rm = TRUE))
 expect_equal(w_median(x, w2),
-                 matrixStats:::weightedMedian(x, w_prep2, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
+                 matrixStats::weightedMedian(x, w_prep2, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
 expect_equal(w_mad(x, w2),
-                 matrixStats:::weightedMad(x, w_prep2, na.rm = TRUE, center = w_median(x, w_prep2, na.rm = TRUE)))
-expect_equal(w_sd(x, w2), matrixStats:::weightedSd(x, w_prep2, na.rm = TRUE))
-expect_equal(w_var(x, w2), matrixStats:::weightedVar(x, w_prep2, na.rm = TRUE))
+                 matrixStats::weightedMad(x, w_prep2, na.rm = TRUE, center = w_median(x, w_prep2, na.rm = TRUE)))
+expect_equal(w_sd(x, w2), matrixStats::weightedSd(x, w_prep2, na.rm = TRUE))
+expect_equal(w_var(x, w2), matrixStats::weightedVar(x, w_prep2, na.rm = TRUE))
 expect_equal(w_n(x, w2), sum((!is.na(x))*w_prep2))
 expect_equal(w_se(x, w2),
-                 weightedSd(x, rep(w2, length(x)), na.rm = TRUE)/sqrt(sum(w2*sum(!is.na(x)), na.rm = TRUE))
+             matrixStats::weightedSd(x, rep(w2, length(x)), na.rm = TRUE)/sqrt(sum(w2*sum(!is.na(x)), na.rm = TRUE))
                  )
 
 ### SPSS compatibility
@@ -163,11 +163,11 @@ w = w[-1]
 expect_equal(w_mean(x, w, na.rm = FALSE), weighted.mean(x, w_prep, na.rm = TRUE))
 expect_equal(w_sum(x, w, na.rm = FALSE), sum(x*w_prep, na.rm = TRUE))
 expect_equal(w_median(x, w, na.rm = FALSE),
-                 matrixStats:::weightedMedian(x, w, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
+                 matrixStats::weightedMedian(x, w, na.rm = TRUE, interpolate = TRUE, ties = "weighted"))
 expect_equal(w_mad(x, w, na.rm = FALSE),
-                 matrixStats:::weightedMad(x, w, na.rm = TRUE, center = w_median(x, w, na.rm = FALSE)))
-expect_equal(w_sd(x, w, na.rm = FALSE), matrixStats:::weightedSd(x, w_prep, na.rm = TRUE))
-expect_equal(w_var(x, w, na.rm = FALSE), matrixStats:::weightedVar(x, w_prep, na.rm = TRUE))
+                 matrixStats::weightedMad(x, w, na.rm = TRUE, center = w_median(x, w, na.rm = FALSE)))
+expect_equal(w_sd(x, w, na.rm = FALSE), matrixStats::weightedSd(x, w_prep, na.rm = TRUE))
+expect_equal(w_var(x, w, na.rm = FALSE), matrixStats::weightedVar(x, w_prep, na.rm = TRUE))
 expect_equal(w_n(x, w, na.rm = FALSE), sum((!is.na(x))*w_prep))
 
 ###################################################
@@ -425,15 +425,18 @@ expect_equal(w_var(x, weight = w/100), NA_real_)
 expect_equal(w_se(x, weight = w/100), NA_real_)
 
 na_mat = matrix(NA_real_, 3, 3)*1.2
+
 colnames(na_mat) = c("x", "y", "z")
 rownames(na_mat) = c("x", "y", "z")
+diag_one = na_mat
+diag(diag_one) = 1
 expect_equal(w_cov(mat, weight = w/100, use = "pairwise"), na_mat)
-expect_equal(w_cor(mat, weight = w/100, use = "pairwise"), na_mat)
-expect_equal(w_spearman(mat, weight = w/100, use = "pairwise"), na_mat)
+expect_equal(w_cor(mat, weight = w/100, use = "pairwise"), diag_one)
+expect_equal(w_spearman(mat, weight = w/100, use = "pairwise"), diag_one)
 
 expect_equal(w_cov(mat, weight = w/100, use = "complete.obs"), na_mat)
-expect_equal(w_cor(mat, weight = w/100, use = "complete.obs"), na_mat)
-expect_equal(w_spearman(mat, weight = w/100, use = "complete.obs"), na_mat)
+expect_equal(w_cor(mat, weight = w/100, use = "complete.obs"), diag_one)
+expect_equal(w_spearman(mat, weight = w/100, use = "complete.obs"), diag_one)
 
 
 #########

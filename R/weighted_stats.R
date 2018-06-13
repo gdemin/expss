@@ -263,9 +263,9 @@ w_cor = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.ob
         cov_mat = w_cov(x = x, weight = weight, use = use)
         if((use == "complete.obs") || !anyNA(x)){
             if(!all(is.na(cov_mat))) {
-                suppressWarnings(stats::cov2cor(cov_mat))
+                res = suppressWarnings(stats::cov2cor(cov_mat))
             } else {
-                cov_mat
+                res = cov_mat
             }
         } else {
             seq_ncol_x = seq_len(ncol(x))
@@ -275,11 +275,13 @@ w_cor = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.ob
                     cov_mat[i,j] = cov_mat[i,j]/sds[i,j]/sds[j,i]
                 }
             }
-            cov_mat
+            res = cov_mat
         }
     } else {
-        suppressWarnings(stats::cor(x = x, use = use, method = "pearson"))
+        res = suppressWarnings(stats::cor(x = x, use = use, method = "pearson"))
     }
+    diag(res) = 1
+    res
 }
 
 
@@ -309,14 +311,16 @@ w_spearman = function(x, weight = NULL, use = c("pairwise.complete.obs", "comple
         weight = trunc(weight[posititive_weight]+0.5)
         if(sum(weight)<1){
             # warning("Sum of weights is less than one. NA will be returned.")
-            return(matrix_of_na(x))
+            res = matrix_of_na(x)
+        } else {
+            x = x[rep(seq_len(nrow(x)), times = weight), ]
+            res = suppressWarnings(stats::cor(x = x, use = use, method = "spearman"))
         }
-        x = x[rep(seq_len(nrow(x)), times = weight), ]
-        suppressWarnings(stats::cor(x = x, use = use, method = "spearman"))
     } else {
-        suppressWarnings(stats::cor(x = x, use = use, method = "spearman"))
+        res = suppressWarnings(stats::cor(x = x, use = use, method = "spearman"))
     }
-
+    diag(res) = 1
+    res
 }
 
 internal_pairwise_sd = function(x, weight){
@@ -326,7 +330,8 @@ internal_pairwise_sd = function(x, weight){
     seq_ncol_x = seq_len(ncol(x))
     res = matrix(NA, ncol = ncol(x), nrow = ncol(x))
     for(i in seq_ncol_x){
-        for(j in seq_ncol_x){
+        seq_ncol_j = seq_ncol_x[seq_ncol_x>=i]
+        for(j in seq_ncol_j){
             complete_pair = which(stats::complete.cases(x[, c(i, j)]))
             sds = suppressWarnings(
                 matrixStats::colWeightedSds(x, w = weight, rows = complete_pair, cols = c(i,j)))
