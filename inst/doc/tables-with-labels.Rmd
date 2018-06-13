@@ -3,7 +3,6 @@ title: "Tables with labels in R"
 date: "`r Sys.Date()`"
 output: 
     html_document:
-      theme: flatly
       toc: true
 vignette: >
   %\VignetteIndexEntry{Tables with labels in R}

@@ -3,7 +3,6 @@ title: "expss: Tables with Labels in R"
 date: "`r Sys.Date()`"
 output: 
     html_document:
-      theme: flatly
       depth: 3
       self_contained: no
       toc: yes
@@ -344,10 +343,11 @@ use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %>% summary
 
 And, finally, `ggplot2` graphics with variables and value labels:
 ```{r, fig.height=6, fig.width=7}
-library(ggplot2)
+library(ggplot2, warn.conflicts = FALSE)
+
 use_labels(mtcars, {
-    # 'vars(other)' is needed to get all 'mtcars' data.frame inside expression 
-    ggplot(vars(other)) +
+    # '..data' is shortcut for all 'mtcars' data.frame inside expression 
+    ggplot(..data) +
         geom_point(aes(y = mpg, x = wt, color = qsec)) +
         facet_grid(am ~ vs)
 }) 

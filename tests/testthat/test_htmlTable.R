@@ -24,60 +24,60 @@ mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am),
                         list(mtcars$vs %nest% mtcars$am, "#Total")) 
 
 expect_equal_to_reference(htmlTable(mtcars_table),
-                          "rds/htmlTable1.rds")
+                          "rds/htmlTable1.rds",  update = FALSE)
 expect_equal_to_reference(suppressWarnings(htmlTable(mtcars_table[FALSE, ])) , 
-                          "rds/htmlTable2.rds")
+                          "rds/htmlTable2.rds",  update = FALSE)
 expect_equal_to_reference(htmlTable(mtcars_table[, 1])  ,  
-                          "rds/htmlTable2single1.rds")
+                          "rds/htmlTable2single1.rds",  update = FALSE)
 
 
 expect_equal_to_reference(htmlTable(mtcars_table[, FALSE, drop = FALSE])  , 
-                          "rds/htmlTable2empty1.rds")
+                          "rds/htmlTable2empty1.rds",  update = FALSE)
 
 
 expect_equal_to_reference(htmlTable(mtcars_table, digits = 0) ,
-                          "rds/htmlTable3.rds")
+                          "rds/htmlTable3.rds",  update = FALSE)
 
 expect_equal_to_reference(htmlTable(mtcars_table, digits = 1, row_groups = FALSE) ,
-                          "rds/htmlTable3_no_rowgroups.rds")
+                          "rds/htmlTable3_no_rowgroups.rds",  update = FALSE)
 
 expect_equal_to_reference(expss:::repr_html.etable(mtcars_table, digits = 1),
-                          "rds/htmlTable3_no_rowgroups.rds")
+                          "rds/htmlTable3_no_rowgroups.rds",  update = FALSE)
 
 mtcars_table = calculate(mtcars,
                          cro_mean(list(mpg, hp), list(am %nest% vs)) )
 expect_equal_to_reference(htmlTable(mtcars_table) ,
-                          "rds/htmlTable10.rds")
+                          "rds/htmlTable10.rds",  update = FALSE)
 
 mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs, "#Total"))
 expect_equal_to_reference(htmlTable(mtcars_table) ,
-                          "rds/htmlTable11.rds")
+                          "rds/htmlTable11.rds",  update = FALSE)
 
 mtcars_table = cro_cpct(list(unvr(mtcars$vs)), list(mtcars$vs %nest% mtcars$am, "#Total"))
 expect_equal_to_reference(htmlTable(mtcars_table) ,
-                          "rds/htmlTable12.rds")
+                          "rds/htmlTable12.rds",  update = FALSE)
 
 expect_equal_to_reference(htmlTable(mtcars_table, digits = 1, row_groups = FALSE) ,
-                          "rds/htmlTable12_no_rowgroups.rds")
+                          "rds/htmlTable12_no_rowgroups.rds",  update = FALSE)
 
 
 expect_equal_to_reference(htmlTable(mtcars_table[,1]) ,    #####
-                          "rds/htmlTable12single.rds")
+                          "rds/htmlTable12single.rds",  update = FALSE)
 
 colnames(mtcars_table)[1] = "My table"
 
 expect_equal_to_reference(htmlTable(mtcars_table[,1]) ,    #####
-                          "rds/htmlTable12single2.rds")
+                          "rds/htmlTable12single2.rds",  update = FALSE)
 
 new_am = mtcars$am
 mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total")) %merge%
     cro_cpct(list(mtcars$vs %nest% mtcars$am), list(new_am, "#Total"))
 
 expect_equal_to_reference(htmlTable(mtcars_table) ,
-                          "rds/htmlTable13.rds")
+                          "rds/htmlTable13.rds",  update = FALSE)
 
 expect_equal_to_reference(htmlTable(mtcars_table, digits = 1) ,
-                          "rds/htmlTable13_1.rds")
+                          "rds/htmlTable13_1.rds",  update = FALSE)
 
 var_lab(new_am) = "|"
 val_lab(new_am) = setNames(0:1, c("", " "))
@@ -86,10 +86,10 @@ mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% 
 colnames(mtcars_table)[7] = ""
 
 expect_equal_to_reference(htmlTable(mtcars_table) ,
-                          "rds/htmlTable14.rds")
+                          "rds/htmlTable14.rds",  update = FALSE)
 
 expect_equal_to_reference(htmlTable(mtcars_table, digits = 1) ,
-                          "rds/htmlTable14_1.rds")
+                          "rds/htmlTable14_1.rds",  update = FALSE)
 
 options(expss.digits = 0)
 expect_equal(htmlTable(mtcars_table),
@@ -122,7 +122,7 @@ res = product_test %>%
     tab_pivot(stat_position = "inside_columns")
 
 ## first row of header with duplicates
-expect_equal_to_reference(htmlTable(res), "rds/htmlTable15.rds")
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable15.rds",  update = FALSE)
 
 res = product_test %>%
     compute({
@@ -136,20 +136,20 @@ res = product_test %>%
     tab_pivot()
 
 # single column header
-expect_equal_to_reference(htmlTable(res), "rds/htmlTable16.rds")
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable16.rds",  update = FALSE)
 
 # single row header
 res = mtcars %>% calc(cro(am, list(unvr(vs))))
-expect_equal_to_reference(htmlTable(res), "rds/htmlTable17.rds")
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable17.rds",  update = FALSE)
 
 # single row header
 res = mtcars %>% calc(cro(list(unvr(am)), list(unvr(vs))))
-expect_equal_to_reference(htmlTable(res), "rds/htmlTable18.rds")
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable18.rds",  update = FALSE)
 
 # temp = function(x) htmlTable:::print.htmlTable(x, useViewer = TRUE)
 
 res = fre(mtcars$cyl)
-expect_equal_to_reference(htmlTable(res), "rds/htmlTable19.rds")
+expect_equal_to_reference(htmlTable(res), "rds/htmlTable19.rds",  update = FALSE)
 
 
 
@@ -159,3 +159,22 @@ var_lab(q1) = "My label"
 expect_silent(
     expss:::repr_html.etable(fre(list(q1)))
 )
+
+
+my_df = as.etable(data.frame(
+    row_labels = c("!", "!=", "$", "$<-", "%in%", "$", "(", "<NA>"),
+    # row_labels = c("!", "!=",  "%in%",  "(", "*"), 
+    a1 = c(1:7, "<NA>"),
+    "price, $" = paste0(11:18, "$"),
+    stringsAsFactors = FALSE,
+    check.names = FALSE))
+
+expect_equal_to_reference(
+    htmlTable(my_df, escape.html = TRUE), 
+    "rds/htmlTable20.rds",  update = FALSE)
+expect_equal_to_reference(
+    htmlTable(my_df, escape.html = FALSE), 
+    "rds/htmlTable21.rds",  update = FALSE)
+expect_equal_to_reference(
+    htmlTable(my_df), 
+    "rds/htmlTable21.rds",  update = FALSE)

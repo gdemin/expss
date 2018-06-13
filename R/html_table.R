@@ -61,10 +61,29 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
     if(NCOL(x) == 0){
         return(htmlTable(setNames(dtfrm("Table is empty"), " "), escape.html = escape.html, ...))
     }
+    # because rowlabels and column names never escaped
+    dollar = "&#36;"
+    na_str = "&lt;NA&gt;"
+    nb_space = "&nbsp;"
+    # escape <NA>
+    colnames(x) = gsub("<NA>", na_str, colnames(x), fixed = TRUE)
+    colnames(x) = gsub("$", dollar, colnames(x), fixed = TRUE)
+    if(is.character(x[[1]]) || is.factor(x[[1]])){
+        x[[1]] = gsub("<NA>", na_str, x[[1]], fixed = TRUE)
+        x[[1]] = gsub("$", dollar, x[[1]], fixed = TRUE)
+    }
+    if(escape.html){
+        na_str = "<NA>"
+        dollar = "$"
+        nb_space =  ""     
+    }
+    
     digits = if_null(digits, 1)
     if(!is.na(digits)){
         x = round_dataframe(x, digits = digits)
         not_total = !get_total_rows_indicator(x, total_marker = "#")
+        
+        # no first column
         for(i in seq_len(NCOL(x))[-1]){
             curr_col = x[[i]][not_total]
             if(is.numeric(curr_col) && any(grepl("\\.|,", curr_col, perl = TRUE))){
@@ -73,19 +92,17 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
             }
             ## for significance marks
             if(is.character(curr_col) || is.factor(curr_col)){
+                x[[i]] = gsub("^[\\s\\t]+$", " ", x[[i]], perl = TRUE )
+                x[[i]] = gsub("$", dollar, x[[i]], fixed = TRUE )
+                x[[i]] = gsub("<NA>", na_str, x[[i]], fixed = TRUE)
                 has_symbols = grepl("[^\\s^\\t]", x[[i]], perl = TRUE)
-                x[[i]][has_symbols] = gsub("\\s$", "&nbsp;",
+                x[[i]][has_symbols] = gsub("\\s$", nb_space,
                                            x[[i]][has_symbols], perl = TRUE)
-                # x[[i]] = gsub("([\\d])$", "\\1&nbsp;", x[[i]], perl = TRUE)
+                x[[i]] = gsub("([\\d])$", paste0("\\1",nb_space), x[[i]], perl = TRUE)
             }
         }
     }
-    # escape <NA>
-    colnames(x) = gsub("<NA>", "&lt;NA&gt;", colnames(x), fixed = TRUE)
-    if(is.character(x[[1]]) || is.factor(x[[1]])){
-        x[[1]] = gsub("<NA>", "&lt;NA&gt;", x[[1]], fixed = TRUE)
-    }
-    
+   
 
     if(!row_groups){
         return(html_table_no_row_groups(x = x, escape.html = escape.html, ...))
@@ -103,14 +120,14 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
     for(each in seq_len(NCOL(header))){
         curr_col = header[, each]
         ok = !is.na(curr_col) & curr_col!=""
-        header[ok, each] = 
-            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+        header[ok, each] =
+            paste0(nb_space, curr_col[ok], nb_space)
     }
     for(each in seq_len(NCOL(header_last_row))){
         curr_col = header_last_row[, each]
         ok = !is.na(curr_col) & curr_col!=""
-        header_last_row[ok, each] = 
-            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+        header_last_row[ok, each] =
+            paste0(nb_space, curr_col[ok], nb_space)
     }
     if(NCOL(header)>0){
        
@@ -134,8 +151,8 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
     for(each in seq_len(NCOL(row_labels))){
         curr_col = row_labels[, each]
         ok = !is.na(curr_col) & curr_col!=""
-        row_labels[ok, each] = 
-            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+        row_labels[ok, each] =
+            paste0(nb_space, curr_col[ok], nb_space)
     }
     if(NCOL(row_labels)==0) row_labels = matrix("", 1, 1)
     if(NCOL(row_labels) == 1){
@@ -303,6 +320,11 @@ repr_text.etable = function(obj, digits = get_expss_digits(), ...){
 
 ## for Jupyter notebooks where row headings are not rendered correctly
 html_table_no_row_groups = function(x, escape.html = FALSE, ...){
+    if(!escape.html){
+        nb_space = "&nbsp;"
+    } else {
+        nb_space =  ""     
+    }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
     row_labels = x[[1]]  
@@ -316,13 +338,13 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
         curr_col = header[, each]
         ok = !is.na(curr_col) & curr_col!=""
         header[ok, each] = 
-            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+            paste0(nb_space, curr_col[ok], nb_space)
     }
     for(each in seq_len(NCOL(header_last_row))){
         curr_col = header_last_row[, each]
         ok = !is.na(curr_col) & curr_col!=""
         header_last_row[ok, each] = 
-            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+            paste0(nb_space, curr_col[ok], nb_space)
     }
     if(NCOL(header)>0){
         
@@ -347,7 +369,7 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
         curr_col = row_labels[, each]
         ok = !is.na(curr_col) & curr_col!=""
         row_labels[ok, each] = 
-            paste0("&nbsp;", curr_col[ok], "&nbsp;")
+            paste0(nb_space, curr_col[ok], nb_space)
     }
     if(NCOL(row_labels)==0) row_labels = matrix("", 1, 1)
     if(NCOL(row_labels) == 1){
