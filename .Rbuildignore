@@ -5,7 +5,7 @@
 \.git
 ^SupplementaryMaterials
 README.MD
-tests/testthat/data
+tests/testthat/data_files
 tests/testthat/test_write_labels.R
 tests/testthat/test_with_dplyr.R
 tests/testthat/test_output.R
