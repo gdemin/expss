@@ -26,7 +26,7 @@ any function by typing `?function_name` in the R console.
 
 We will use for demonstartion well-known `mtcars` dataset. Let's start with adding labels to the dataset. Then we can continue with tables creation.
 
-```{r, message=FALSE, warning=FALSE}
+```R
 library(expss)
 data(mtcars)
 mtcars = apply_labels(mtcars,
@@ -51,7 +51,7 @@ mtcars = apply_labels(mtcars,
 
 For quick cross-tabulation there are `fre` and `cro` family of function. For simplicity we demonstrate here only `cro_cpct` which caluclates column percent. Documentation for other functions, such as `cro_cases` for counts, `cro_rpct` for row percent, `cro_tpct` for table percent and `cro_fun` for custom summary functions can be seen by typing `?cro` and `?cro_fun` in the console. 
 
-```{r}
+```R
 # 'cro' examples
 # just simple crosstabulation, similar to base R 'table' function
 cro(mtcars$am, mtcars$vs)
@@ -69,7 +69,7 @@ mtcars %>% calc_cro_cpct(cyl, list(total(), am %nest% vs))
 We have more sophisticated interface for table construction with `magrittr` piping. Table construction consists of at least of three functions chained with pipe operator: `%>%`. At first we need to specify variables for which statistics will be computed with `tab_cells`. Secondary, we calculate statistics with one of the `tab_stat_*` functions. And last, we finalize table creation with `tab_pivot`, e. g.: `dataset %>% tab_cells(variable) %>% tab_stat_cases() %>% tab_pivot()`. After that we can optionally sort table with `tab_sort_asc`, drop empty rows/columns with `drop_rc` and transpose with `tab_transpose`. Resulting table is just a `data.frame` so we can use usual R operations on it. Detailed documentation for table creation can be seen via `?tables`. For significance testing see `?significance`.
 Generally, tables automatically translated to HTML for output in knitr or Jupyter notebooks. However, if we want HTML output in the R notebooks or in the RStudio viewer we need to set options for that: `expss_output_rnotebook()` or `expss_output_viewer()`. 
 
-```{r}
+```R
 # simple example
 mtcars %>% 
     tab_cells(cyl) %>% 
@@ -153,7 +153,7 @@ List of variables:
 - `b22` Overall quality. Second tested product
 - `c1` Preferences
 
-```{r}
+```R
 
 data(product_test)
 
@@ -238,7 +238,7 @@ w = apply_labels(w,
 
 ```
 Are there any significant differences between preferences? Yes, difference is significant.
-```{r}
+```R
 # 'tab_mis_val(3)' remove 'hard to say' from vector 
 w %>% tab_cols(total(), age_cat) %>% 
       tab_cells(c1r) %>% 
@@ -249,7 +249,7 @@ w %>% tab_cols(total(), age_cat) %>%
     
 ```
 Further we calculate distribution of answers in the survey questions. 
-```{r}
+```R
 # lets specify repeated parts of table creation chains
 banner = w %>% tab_cols(total(), age_cat, c1r) 
 # column percent with significance
@@ -304,27 +304,27 @@ w %>%
 
 We can save labelled dataset as *.csv file with accompanying R code for labelling.
 
-```{r, eval=FALSE}
+```R
 write_labelled_csv(w, file  filename = "product_test.csv")
 ```
 
 Or, we can save dataset as *.csv file with SPSS syntax to read data and apply labels.
 
-```{r, eval=FALSE}
+```R
 write_labelled_spss(w, file  filename = "product_test.csv")
 ```
 
 ## Labels support for base R
 
 Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. 
-```{r, fig.height=6, fig.width=7}
+```R
 with(mtcars, table(am, vs))
 
 boxplot(mpg ~ am, data = mtcars)
 ```
 
 There is a special function for variables labels support - `use_labels`. By now variables labels support available only for expression which will be evaluated inside data.frame.
-```{r}
+```R
 # table with dimension names
 use_labels(mtcars, table(am, vs)) 
 
@@ -333,7 +333,7 @@ use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %>% summary
 ```
 
 And, finally, `ggplot2` graphics with variables and value labels:
-```{r, fig.height=6, fig.width=7}
+```R
 library(ggplot2, warn.conflicts = FALSE)
 
 use_labels(mtcars, {
@@ -347,7 +347,7 @@ use_labels(mtcars, {
 
 ## Excel functions translation guide
 
-```{r, message=FALSE, warning=FALSE, include=FALSE}
+```R
 library(expss)
 ```
 
@@ -362,7 +362,7 @@ Excel toy table:
 
 Code for creating the same table in R:
 
-```{r, results='hide', message=FALSE, warning=FALSE}
+```R
 w = from_text("
     a  b  c
     2 15 50
@@ -380,12 +380,12 @@ w = from_text("
 
 **R:**
 Here we create new column with name `d` with results. `ifelse` function is from base R not from 'expss' package but included here for completeness.
-```{r, eval=FALSE}
+```R
 w$d = ifelse(w$b>60, 1, 0)
 ```
 If we need to use multiple transformations it is often convenient to use `compute` function. Inside `compute` we can put arbitrary number of the statements:
 
-```{r, eval=FALSE}
+```R
 w = compute(w, {
     d = ifelse(b>60, 1, 0)
     e = 42
@@ -401,11 +401,11 @@ Count 1's in the entire dataset.
 **Excel: `COUNTIF(A1:C4, 1)`**
 
 **R:**
-```{r, eval=FALSE}
+```R
 count_if(1, w)
 ```
 or
-```{r, eval=FALSE}
+```R
 calculate(w, count_if(1, a, b, c))
 ```    
 Count values greater than 1 in each row of the dataset.
@@ -413,12 +413,12 @@ Count values greater than 1 in each row of the dataset.
 **Excel: `COUNTIF(A1:C1, ">1")`**
 
 **R**: 
-```{r, eval=FALSE}
+```R
 w$d = count_row_if(gt(1), w)  
 ```
 or
 
-```{r, eval=FALSE}
+```R
 w = compute(w, {
     d = count_row_if(gt(1), a, b, c) 
 })
@@ -430,7 +430,7 @@ Count values less than or equal to 1 in column A of the dataset.
 **Excel: `COUNTIF(A1:A4, "<=1")`**
 
 **R**: 
-```{r, eval=FALSE}
+```R
 count_col_if(le(1), w$a)
 ```
 
@@ -453,7 +453,7 @@ Sum all values in the dataset.
 **Excel: `SUM(A1:C4)`**
 
 **R:**
-```{r, eval=FALSE}
+```R
 sum(w, na.rm = TRUE)
 ```
 
@@ -462,12 +462,12 @@ Calculate average of each row of the dataset.
 **Excel: `AVERAGE(A1:C1)`**
 
 **R**: 
-```{r, eval=FALSE}
+```R
 w$d = mean_row(w)  
 ```
 or
 
-```{r, eval=FALSE}
+```R
 w = compute(w, {
     d = mean_row(a, b, c) 
 })
@@ -479,7 +479,7 @@ Sum values of column `A` of the dataset.
 **Excel: `SUM(A1:A4)`**
 
 **R**: 
-```{r, eval=FALSE}
+```R
 sum_col(w$a)
 ```
 
@@ -489,11 +489,11 @@ Sum values greater than 40 in the entire dataset.
 **Excel: `SUMIF(A1:C4, ">40")`**
 
 **R:**
-```{r, eval=FALSE}
+```R
 sum_if(gt(40), w)
 ```
 or
-```{r, eval=FALSE}
+```R
 calculate(w, sum_if(gt(40), a, b, c))
 ```    
 Sum values less than 40 in the each row of the dataset.
@@ -501,12 +501,12 @@ Sum values less than 40 in the each row of the dataset.
 **Excel: `SUMIF(A1:C1, "<40")`**
 
 **R**: 
-```{r, eval=FALSE}
+```R
 w$d = sum_row_if(lt(40), w)  
 ```
 or
 
-```{r, eval=FALSE}
+```R
 w = compute(w, {
     d = sum_row_if(lt(40), a, b, c) 
 })
@@ -518,11 +518,11 @@ Calculate average of `B` column with column `A` values less than 3.
 **Excel: `AVERAGEIF(A1:A4, "<3", B1:B4)`**
 
 **R**: 
-```{r, eval=FALSE}
+```R
 mean_col_if(lt(3), w$a, data = w$b)
 ```
 or, if we want calculate means for both `b` and `c` columns:
-```{r, eval=FALSE}
+```R
 calculate(w, mean_col_if(lt(3), a, data = sheet(b, c)))
 ```
 
@@ -539,7 +539,7 @@ Our dictionary for lookup:
 
 Code for creating the same dictionary in R:
 
-```{r, eval=FALSE}
+```R
 dict = from_text("
     x  y
     1  apples
@@ -551,11 +551,11 @@ dict = from_text("
 **Excel: `VLOOKUP(A1, $X$1:$Y$3, 2, FALSE)`**
 
 **R**: 
-```{r, eval=FALSE}
+```R
 w$d = vlookup(w$a, dict, 2)
 ```
 or, we can use column names:
-```{r, eval=FALSE}
+```R
 w$d = vlookup(w$a, dict, "y")
 ```
 
@@ -569,12 +569,12 @@ COMPUTE d = 1.
 ```
 
 **R**:
-```{r, eval=FALSE}
+```R
 w$d = 1
 ```
 or, in the specific data.frame
 
-```{r, results='hide', message=FALSE, warning=FALSE}
+```R
 w = compute(w, {
     d = 1
 })
@@ -590,14 +590,14 @@ IF(a = 3) d = 2.
 
 **R**:
 
-```{r, eval=FALSE}
+```R
 w = compute(w, {
     d = ifelse(a == 3, 2, NA)
 })
 ```
 or,
 
-```{r, eval=FALSE}
+```R
 w = compute(w, {
     d = ifs(a == 3 ~ 2)
 })
@@ -613,7 +613,7 @@ END IF.
 ```
 
 **R**:
-```{r, eval=FALSE}
+```R
 w = do_if(w, a>1, {
     d = 4
 })
@@ -628,7 +628,7 @@ There can be arbitrary number of statements inside `do_if`.
 COUNT cnt = a1 TO a5 (LO THRU HI).
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 cnt = count_row_if(lo %thru% hi, a1 %to% a5)
 ```
 
@@ -637,7 +637,7 @@ cnt = count_row_if(lo %thru% hi, a1 %to% a5)
 COUNT cnt = a1 TO a5 (SYSMIS).
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 cnt = count_row_if(NA, a1 %to% a5)
 ```
 
@@ -646,7 +646,7 @@ cnt = count_row_if(NA, a1 %to% a5)
 COUNT cnt = a1 TO a5 (1 THRU 5).
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 cnt = count_row_if(1 %thru% 5, a1 %to% a5)
 ```
 
@@ -655,11 +655,11 @@ cnt = count_row_if(1 %thru% 5, a1 %to% a5)
 COUNT cnt = a1 TO a5 (1 THRU HI).
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 cnt = count_row_if(1 %thru% hi, a1 %to% a5)
 ```
 or,
-```{r, eval=FALSE}
+```R
 cnt = count_row_if(ge(1), a1 %to% a5)
 ```
 
@@ -668,11 +668,11 @@ cnt = count_row_if(ge(1), a1 %to% a5)
 COUNT cnt = a1 TO a5 (LO THRU 1).
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 cnt = count_row_if(lo %thru% 1, a1 %to% a5)
 ```
 or,
-```{r, eval=FALSE}
+```R
 cnt = count_row_if (le(1), a1 %to% a5)
 ```
 
@@ -681,7 +681,7 @@ cnt = count_row_if (le(1), a1 %to% a5)
 COUNT cnt = a1 TO a5 (1 THRU 5, 99).
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 cnt = count_row_if(1 %thru% 5 | 99, a1 %to% a5)
 ```
 
@@ -691,7 +691,7 @@ COUNT cnt = a1 TO a5(1,2,3,4,5, SYSMIS).
 ```
 
 **R**:
-```{r, eval=FALSE}
+```R
 cnt = count_row_if(c(1:5, NA), a1 %to% a5)
 ```
 
@@ -704,7 +704,7 @@ cnt = count_row_if(c(1:5, NA), a1 %to% a5)
 RECODE V1 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 recode(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, other ~ NA)
 ```
 **SPSS**:
@@ -712,7 +712,7 @@ recode(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, other ~ NA)
 RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 recode(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)
 ```
 **SPSS**:
@@ -720,7 +720,7 @@ recode(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)
 RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). 
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 recode(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', other ~ ' ')
 ```
 **SPSS**:
@@ -728,7 +728,7 @@ recode(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', other ~ ' '
 RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
 ```
 **R**:
-```{r, eval=FALSE}
+```R
 voter = recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0)
 # or
 recode(age, NA ~ 9, 18 %thru% hi ~ 1, 0 %thru% 18 ~ 0) %into% voter
@@ -744,7 +744,7 @@ VARIABLE LABELS a "Fruits"
                 c "Price".
 ```
 **R**:
-```{r, results='hide'}
+```R
 w = apply_labels(w,
                  a = "Fruits",
                  b = "Cost",
@@ -762,7 +762,7 @@ VALUE LABELS a
 ```
 
 **R**:
-```{r, results='hide'}
+```R
 w = apply_labels(w, 
                  a = num_lab("
                         1 apples
@@ -772,7 +772,7 @@ w = apply_labels(w,
 )
 ```
 or, 
-```{r, eval=FALSE}
+```R
 val_lab(w$a) = num_lab("
     1 apples
     2 oranges
@@ -782,7 +782,7 @@ val_lab(w$a) = num_lab("
 ```
 ##### Tables
 **R**:
-```{r}
+```R
 fre(w$a) # Frequency of fruits
 cro_cpct(w$b, w$a) # Column percent of cost by fruits
 cro_mean(sheet(w$b, w$c), w$a) # Mean cost and price by fruits
