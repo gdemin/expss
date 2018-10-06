@@ -127,9 +127,6 @@ data.table::chorder
 data.table::CJ
 
 #' @export
-data.table::dcast
-
-#' @export
 data.table::fintersect
 
 #' @export
@@ -173,9 +170,6 @@ data.table::key
 
 #' @export
 data.table::like
-
-#' @export
-data.table::melt
 
 #' @export
 data.table::rbindlist
