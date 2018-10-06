@@ -32,14 +32,19 @@ as.etable.etable = function(x, rownames_as_row_labels = NULL){
 
 #' @export
 as.etable.default = function(x, rownames_as_row_labels = NULL){
-    as.etable(as.dtfrm(x), rownames_as_row_labels = rownames_as_row_labels)
+    as.etable(as.sheet(x), rownames_as_row_labels = rownames_as_row_labels)
+}
+
+#' @export
+as.etable.data.table = function(x, rownames_as_row_labels = NULL){
+    as.etable(as.sheet(x), rownames_as_row_labels = rownames_as_row_labels)
 }
 
 #' @export
 as.etable.data.frame = function(x, rownames_as_row_labels = NULL){
     rownames_as_row_labels = if_null(rownames_as_row_labels, has_rownames(x))
     if(rownames_as_row_labels){
-        x = dtfrm(row_labels = rownames(x), x)
+        x = sheet(row_labels = rownames(x), x)
     }
     class(x) = union("etable", class(x))
     x
@@ -47,7 +52,7 @@ as.etable.data.frame = function(x, rownames_as_row_labels = NULL){
 
 #' @export
 as.etable.matrix = function(x, rownames_as_row_labels = NULL){
-    res = as.dtfrm(x)
+    res = as.sheet(x)
     if(is.null(colnames(x))){
         colnames(res) = rep("", NCOL(res))
     }
