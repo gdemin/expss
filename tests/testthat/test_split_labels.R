@@ -344,5 +344,16 @@ expect_equal_to_reference(
     make_subheadings(tabl, 1),
     "rds/split_subheadings22.rds",  update = FALSE)
 
+tabl = mtcars %>% 
+    tab_cols(total(), cyl) %>% 
+    tab_cells(vs) %>% 
+    tab_stat_cpct() %>% 
+    tab_pivot()
 
+# we shouldn't modify column names
+tabl_duplicated_names = tabl
+colnames(tabl_duplicated_names)[-(1:2)] = rep("dupl", 3) 
+expect_equal_to_reference(
+    make_subheadings(tabl_duplicated_names, 1),
+    "rds/split_subheadings23.rds", update = FALSE)
 

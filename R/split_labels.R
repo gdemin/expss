@@ -356,10 +356,10 @@ make_subheadings.etable = function(data, number_of_columns = 1){
                 }
             }    
         }
-        res = res[, -seq_len(row_labels_width - number_of_columns), drop = FALSE] # columns with row labels
+        res[, seq_len(row_labels_width - number_of_columns)] = NULL # columns with row labels
         row_labels = do.call(paste, c(as.list(row_labels), list(sep = "|")))
         row_labels = remove_unnecessary_splitters(row_labels)
-        res = dtfrm(row_labels = row_labels, res)
+        res = sheet(row_labels = row_labels, res)
     } 
     class(res) = class(data)
     res
