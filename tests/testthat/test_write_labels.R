@@ -39,7 +39,7 @@ if(dir.exists("data_files")){
     expect_identical(dat, etalon_dat)
     expect_identical(sps[-2], etalon_sps[-2])
     
-    raw_data = readRDS("data_files/raw.RDS")
+    raw_data = readRDS("data_files/raw.rds")
     data(iris)
     write_labelled_csv(iris, "data_files/iris.csv")
     iris2 = iris

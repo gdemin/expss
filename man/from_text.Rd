@@ -11,17 +11,17 @@
 from_text(text, header = TRUE, sep = "", quote = "", dec = ".",
   encoding = "unknown", ...)
 
-from_text_csv(text, header = TRUE, sep = ",", quote = "", dec = ".",
-  encoding = "unknown", ...)
+from_text_csv(text, header = TRUE, sep = ",", quote = "",
+  dec = ".", encoding = "unknown", ...)
 
-from_text_csv2(text, header = TRUE, sep = ";", quote = "", dec = ",",
-  encoding = "unknown", ...)
+from_text_csv2(text, header = TRUE, sep = ";", quote = "",
+  dec = ",", encoding = "unknown", ...)
 
-from_text_tab(text, header = TRUE, sep = "\\t", quote = "", dec = ".",
-  encoding = "unknown", ...)
+from_text_tab(text, header = TRUE, sep = "\\t", quote = "",
+  dec = ".", encoding = "unknown", ...)
 
-from_text_tab2(text, header = TRUE, sep = "\\t", quote = "", dec = ",",
-  encoding = "unknown", ...)
+from_text_tab2(text, header = TRUE, sep = "\\t", quote = "",
+  dec = ",", encoding = "unknown", ...)
 }
 \arguments{
 \item{text}{character/vector of characters}

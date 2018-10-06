@@ -28,21 +28,24 @@ read_labelled_tab(filename, fileEncoding = "", encoding = "unknown",
 read_labelled_tab2(filename, fileEncoding = "", encoding = "unknown",
   sep = "\\t", dec = ",", undouble_quotes = TRUE, ...)
 
-write_labelled_csv(x, filename, fileEncoding = "", sep = ",", dec = ".",
-  qmethod = c("double", "escape"), remove_new_lines = TRUE, ...)
+write_labelled_csv(x, filename, fileEncoding = "", sep = ",",
+  dec = ".", qmethod = c("double", "escape"),
+  remove_new_lines = TRUE, ...)
 
-write_labelled_csv2(x, filename, fileEncoding = "", sep = ";", dec = ",",
-  qmethod = c("double", "escape"), remove_new_lines = TRUE, ...)
+write_labelled_csv2(x, filename, fileEncoding = "", sep = ";",
+  dec = ",", qmethod = c("double", "escape"),
+  remove_new_lines = TRUE, ...)
 
-write_labelled_tab(x, filename, fileEncoding = "", sep = "\\t", dec = ".",
-  qmethod = c("double", "escape"), remove_new_lines = TRUE, ...)
+write_labelled_tab(x, filename, fileEncoding = "", sep = "\\t",
+  dec = ".", qmethod = c("double", "escape"),
+  remove_new_lines = TRUE, ...)
 
 write_labelled_tab2(x, filename, fileEncoding = "", sep = "\\t",
-  dec = ",", qmethod = c("double", "escape"), remove_new_lines = TRUE,
-  ...)
+  dec = ",", qmethod = c("double", "escape"),
+  remove_new_lines = TRUE, ...)
 
-write_labelled_spss(x, filename, fileEncoding = "", remove_new_lines = TRUE,
-  ...)
+write_labelled_spss(x, filename, fileEncoding = "",
+  remove_new_lines = TRUE, ...)
 
 write_labels_spss(x, filename)
 }

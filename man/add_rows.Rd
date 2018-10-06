@@ -9,7 +9,8 @@
 \usage{
 add_rows(..., nomatch_columns = c("add", "drop", "stop"))
 
-\method{add_rows}{data.frame}(..., nomatch_columns = c("add", "drop", "stop"))
+\method{add_rows}{data.frame}(..., nomatch_columns = c("add", "drop",
+  "stop"))
 
 x \%add_rows\% y
 

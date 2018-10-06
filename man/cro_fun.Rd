@@ -29,8 +29,8 @@ cro_fun_df(cell_vars, col_vars = total(), row_vars = total(label = ""),
 cro_mean(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
 
-cro_mean_sd_n(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL, weighted_valid_n = FALSE,
+cro_mean_sd_n(cell_vars, col_vars = total(), row_vars = total(label =
+  ""), weight = NULL, subgroup = NULL, weighted_valid_n = FALSE,
   labels = NULL)
 
 cro_sum(cell_vars, col_vars = total(), row_vars = total(label = ""),
@@ -39,33 +39,35 @@ cro_sum(cell_vars, col_vars = total(), row_vars = total(label = ""),
 cro_median(cell_vars, col_vars = total(), row_vars = total(label = ""),
   weight = NULL, subgroup = NULL)
 
-cro_pearson(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL)
-
-cro_spearman(cell_vars, col_vars = total(), row_vars = total(label = ""),
-  weight = NULL, subgroup = NULL)
-
-calc_cro_fun(data, cell_vars, col_vars = total(), row_vars = total(label =
-  ""), weight = NULL, subgroup = NULL, fun, ..., unsafe = FALSE)
-
-calc_cro_fun_df(data, cell_vars, col_vars = total(), row_vars = total(label
-  = ""), weight = NULL, subgroup = NULL, fun, ..., unsafe = FALSE)
-
-calc_cro_mean(data, cell_vars, col_vars = total(), row_vars = total(label =
+cro_pearson(cell_vars, col_vars = total(), row_vars = total(label =
   ""), weight = NULL, subgroup = NULL)
+
+cro_spearman(cell_vars, col_vars = total(), row_vars = total(label =
+  ""), weight = NULL, subgroup = NULL)
+
+calc_cro_fun(data, cell_vars, col_vars = total(),
+  row_vars = total(label = ""), weight = NULL, subgroup = NULL, fun,
+  ..., unsafe = FALSE)
+
+calc_cro_fun_df(data, cell_vars, col_vars = total(),
+  row_vars = total(label = ""), weight = NULL, subgroup = NULL, fun,
+  ..., unsafe = FALSE)
+
+calc_cro_mean(data, cell_vars, col_vars = total(),
+  row_vars = total(label = ""), weight = NULL, subgroup = NULL)
 
 calc_cro_mean_sd_n(data, cell_vars, col_vars = total(),
   row_vars = total(label = ""), weight = NULL, subgroup = NULL,
   weighted_valid_n = FALSE, labels = NULL)
 
-calc_cro_sum(data, cell_vars, col_vars = total(), row_vars = total(label =
-  ""), weight = NULL, subgroup = NULL)
+calc_cro_sum(data, cell_vars, col_vars = total(),
+  row_vars = total(label = ""), weight = NULL, subgroup = NULL)
 
-calc_cro_median(data, cell_vars, col_vars = total(), row_vars = total(label
-  = ""), weight = NULL, subgroup = NULL)
+calc_cro_median(data, cell_vars, col_vars = total(),
+  row_vars = total(label = ""), weight = NULL, subgroup = NULL)
 
-calc_cro_pearson(data, cell_vars, col_vars = total(), row_vars = total(label
-  = ""), weight = NULL, subgroup = NULL)
+calc_cro_pearson(data, cell_vars, col_vars = total(),
+  row_vars = total(label = ""), weight = NULL, subgroup = NULL)
 
 calc_cro_spearman(data, cell_vars, col_vars = total(),
   row_vars = total(label = ""), weight = NULL, subgroup = NULL)

@@ -10,9 +10,11 @@
 \method{htmlTable}{etable}(x, digits = get_expss_digits(),
   escape.html = FALSE, ..., row_groups = TRUE)
 
-knit_print.etable(x, digits = get_expss_digits(), escape.html = FALSE, ...)
+knit_print.etable(x, digits = get_expss_digits(), escape.html = FALSE,
+  ...)
 
-repr_html.etable(obj, digits = get_expss_digits(), escape.html = FALSE, ...)
+repr_html.etable(obj, digits = get_expss_digits(), escape.html = FALSE,
+  ...)
 
 repr_text.etable(obj, digits = get_expss_digits(), ...)
 }
