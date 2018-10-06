@@ -69,7 +69,7 @@ drop_empty_rows.data.frame = function(x, excluded_rows = NULL, excluded_columns 
     stopif(!is.null(excluded_rows) && !is.numeric(excluded_rows) && 
                !is.logical(excluded_rows) && !is.character(excluded_rows) ,
            "`excluded_rows` should be character/numeric or logical.")
-    x_mat = mis_val(x, "")
+    x_mat = mis_val(x, perl("^[\\s\\t]*$"))
     if(is.null(excluded_columns)) {
         not_empty = rowSums(!is.na(x_mat))>0    
     } else {
@@ -121,7 +121,7 @@ drop_empty_columns.data.frame = function(x, excluded_rows = NULL, excluded_colum
                !is.logical(excluded_rows) && !is.character(excluded_rows) ,
            "`excluded_rows` should be character/numeric or logical.")
     # has_characters = any(vapply(x, FUN = is.character, FUN.VALUE = NA))
-    x_mat = mis_val(x, "")
+    x_mat = mis_val(x, perl("^[\\s\\t]*$"))
     if(is.null(excluded_rows)) {
         empty = colSums(!(is.na(x_mat)))==0    
     } else {

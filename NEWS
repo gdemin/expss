@@ -1,3 +1,9 @@
+0.8.8 (12.10.2018)
+================
+* numerous small bugfixes
+* 'by_groups' is deprecated now. Use 'take' from 'maditr' instead.
+
+
 0.8.7 (12.06.2018)
 ================
 * fix long-standing bug with broken html rendering in knitr (issue #6)

@@ -169,3 +169,29 @@ mtcars_1 = rbind(NA, mtcars_1)
 mtcars_1[1, 1] = "#"
 mtcars_1 = drop_empty_rows(mtcars_1, excluded_columns = 1)
 expect_identical(cbind(empty = as.character(NA), mtcars, stringsAsFactors = FALSE), mtcars_1)
+
+
+# issue #8
+data(mtcars)
+
+mtcars = apply_labels(mtcars,
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1,
+                             "Test Row (blank)" = 2), # additional row without data
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1)
+)
+
+tbl = mtcars %>%
+    tab_cells(vs) %>%
+    tab_cols(total(), am) %>%
+    tab_stat_cpct(label = "%", total_statistic = c("u_cases")) %>%
+    tab_pivot()
+
+tbl[4, -1] = tbl[4, -1]*100
+
+res = tbl %>% significance_cpct() %>% drop_r()
+
+expect_identical(res, significance_cpct(tbl[-3, ]))
