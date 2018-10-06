@@ -44,6 +44,7 @@
 #' by_groups(mtcars, (group1), (group2), (statistic1), (statistic2))
 #' 
 by_groups = function(data, ...){
+    .Deprecated("take", "maditr", "'by_groups' is deprecated and will be removed in the future version.\nUse 'take' from 'maditr' package instead. See '?maditr::take'.")
     args = substitute(list(...))
     by_groups_internal(data, args, envir = parent.frame())
 }
