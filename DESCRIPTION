@@ -24,7 +24,8 @@ Suggests:
     knitr,
     repr,
     ggplot2,
-    testthat
+    testthat,
+    openxlsx
 Description: Package provides tabulation functions with support for 'SPSS'-style 
         labels, multiple / nested banners, weights, multiple-response variables 
         and significance testing. There are facilities for nice output of tables 
