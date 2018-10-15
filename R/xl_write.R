@@ -8,7 +8,7 @@ xl_write = function(obj, wb, sheet, row = 1, col = 1, ...){
 }
 
 #' @export
-xl_write.default = function(obj, wb, sheet, row = 1, col = 1, ...){
+xl_write.default = function(obj, wb, sheet, row = 1, col = 1, rownames = FALSE, colnames = TRUE, ...){
     if(!is.data.frame(obj)) {
         obj = as.sheet(obj)
     }
@@ -17,12 +17,30 @@ xl_write.default = function(obj, wb, sheet, row = 1, col = 1, ...){
                         x = obj,
                         startCol = col,
                         startRow = row,
-                        ...
+                        colNames = colnames,
+                        rowNames = rownames
                         )
-    args = list(..)
-    colnames = is.null(args[["colNames"]]) || args[["colNames"]]
-    rownames = !is.null(args[["rowNames"]]) && args[["rowNames"]]
     c(NROW(obj) + colnames, NCOL(obj) + rownames)
+}
+
+
+
+#' @export
+xl_write.list = function(obj, wb, sheet, row = 1, col = 1, gap = 1, ...){
+    col_shift = 0
+    row_shift = 0
+    for(each in obj){
+        res = xl_write(each, wb = wb,
+                       sheet = sheet,
+                       row = row,
+                       col = col,
+                       ...)
+        col_shift = max(col_shift, res[2])
+        row_shift = row_shift + res[1] + gap
+        row = row + res[1] + gap
+    }
+
+    c(row_shift - gap, col_shift)
 }
 
 #' @export
@@ -176,7 +194,7 @@ xl_write.etable = function(obj,
         
     }
     invisible(c(NROW(obj) + NROW(top_left_corner), 
-                NCOL(obj) + NCOL(top_left_corner)))
+                NCOL(obj) + NCOL(top_left_corner) - 1)) # -1 because we don't need to count row_labels column 
 }
 
 #' @export
@@ -315,7 +333,7 @@ xl_format_header = function(wb, sheet, row, col, table_structure, format){
         each = trimws(each)
         # each!="" - if we have empty element then we don't draw line but move down
         res = seq_along(each)[c(each[-1]!="", FALSE)] 
-        if(each[1]==""){
+        if(is.na(each[1]) || each[1]==""){
             # if first element is empty then we don't draw line after it
             res = res[-1]
         }

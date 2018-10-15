@@ -134,7 +134,70 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
                    row_symbols_to_remove = "#")
     # wb$core = ""
     # expect_known_hash(wb, "6cfcca3057")
-   
+    context("xl_write.list")
+    
+    res_list = list()
+    mtcars_table = cro_cpct(list(unvr(mtcars$vs)), 
+                            list(unvr(mtcars$am))) 
+    
+    res_list = c(res_list, list(mtcars_table))
+    
+    mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), 
+                            list(mtcars$vs %nest% mtcars$am, "#Total")) 
+    res_list = c(res_list, list(mtcars_table))
+    mtcars_table = calculate(mtcars,
+                             cro_mean(list(mpg, hp), list(am %nest% vs)) )
+    res_list = c(res_list, list(mtcars_table))
+    mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs, "#Total"))
+    res_list = c(res_list, list(mtcars_table))
+    mtcars_table = cro_cpct(list(unvr(mtcars$vs)), list(mtcars$vs %nest% mtcars$am, "#Total"))
+    res_list = c(res_list, list(mtcars_table))
+    colnames(mtcars_table)[1] = "My table"
+    new_am = mtcars$am
+    mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total")) %merge%
+        cro_cpct(list(mtcars$vs %nest% mtcars$am), list(new_am, "#Total"))
+    res_list = c(res_list, list(mtcars_table))
+    var_lab(new_am) = "|"
+    val_lab(new_am) = setNames(0:1, c("", " "))
+    mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total")) %merge%
+        cro_cpct(list(mtcars$vs %nest% mtcars$am), list(new_am, "#Total"))
+    colnames(mtcars_table)[7] = ""
+    res_list = c(res_list, list(mtcars_table))
+    data("product_test")
+    mtcars_table = product_test %>%
+        tab_cols(c1) %>%
+        tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
+        tab_stat_cpct(label = var_lab(a1_1)) %>%
+        tab_cells(unvr(mrset(b1_1 %to% b1_6))) %>%
+        tab_stat_cpct(label = var_lab(b1_1)) %>%
+        tab_pivot(stat_position = "inside_columns")
+    res_list = c(res_list, list(mtcars_table))
+    mtcars_table = product_test %>%
+        compute({
+            total = 1
+            var_lab(total) = "Total"
+            val_lab(total) = setNames(1, " ")
+        }) %>% 
+        tab_cols(total) %>%
+        tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
+        tab_stat_cpct() %>%
+        tab_pivot()
+    res_list = c(res_list, list(mtcars_table))
+    mtcars_table = fre(mtcars$cyl)
+    res_list = c(res_list, list(mtcars_table))
+    res_list = c(res_list, list(mtcars))
+    res_list = c(res_list, list(as.etable(mtcars)), list(1:3))
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(res_list, wb, sh, row = 3, col = 5, remove_repeated = "columns")
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(res_list, wb, sh, row = 1, col = 1, gap = 2, rownames = TRUE)
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
     
 }
 
