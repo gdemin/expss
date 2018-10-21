@@ -672,3 +672,17 @@ fast_match = function(x, table, nomatch = NA_integer_, NA_incomparable = FALSE){
     }
     ind
 }
+
+#################
+
+add_class = function(x, ...){
+    new_class = unlist(list(...))
+    class(x) = union(new_class, class(x))
+    x
+}
+
+remove_class = function(x, ...){
+    new_class = unlist(list(...))
+    class(x) = setdiff(class(x), new_class)
+    x
+}
