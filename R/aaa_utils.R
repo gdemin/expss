@@ -688,7 +688,8 @@ remove_class = function(x, ...){
 }
 
 ############
-## added exclusively to workaround strange bug with data.table
+## copied from https://github.com/Rdatatable/data.table/blob/master/R/utils.R
+## added exclusively to workaround strange bug with data.table (issue #10)
 name_dots <- function(...) {
     dot_sub <- as.list(substitute(list(...)))[-1L]
     vnames = names(dot_sub)

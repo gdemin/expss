@@ -365,6 +365,14 @@ t.etable = function(x){
     res
 }
 
+#' @export
+print.with_caption = function(x, ...){
+  caption = get_caption(x)
+  cat(" ", caption,  sep = "")
+  print(set_caption(x, NULL), ...)
+  invisible(x)
+}
+
 # #' @export
 # cbind.etable = function(..., deparse.level = 1){
 #     args = list(...)
