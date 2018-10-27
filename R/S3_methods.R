@@ -366,10 +366,34 @@ t.etable = function(x){
 }
 
 #' @export
-print.with_caption = function(x, ...){
+print.with_caption = function(x, digits = get_expss_digits(), remove_repeated = TRUE, ...,  right = TRUE){
+  curr_output = getOption("expss.output")
+  if(!is.null(curr_output)){
+    if("rnotebook" %in% curr_output){
+      res = htmlTable(x, digits = digits)
+      res = fix_cyrillic_for_rstudio(res)
+      print(res)
+      return(invisible(NULL))
+    }
+    if("viewer" %in% curr_output){
+      res = htmlTable(x, digits = digits)
+      res = fix_cyrillic_for_rstudio(res)
+      attr(res, "html") = NULL
+      class(res) = class(res) %d% "html"
+      print(res)
+      return(invisible(NULL))
+    }
+    
+  }
   caption = get_caption(x)
-  cat(" ", caption,  sep = "")
-  print(set_caption(x, NULL), ...)
+  if("commented" %in% curr_output){
+    cat(" # ", caption,  sep = "")  
+  } else if("raw" %in% curr_output){
+    cat(caption,  "\n", sep = "") 
+  } else {
+    cat(" ", caption,  sep = "")  
+  }
+  print(set_caption(x, NULL), digits = digits, remove_repeated = remove_repeated, ...,  right = right)
   invisible(x)
 }
 

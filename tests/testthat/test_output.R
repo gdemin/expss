@@ -79,8 +79,16 @@ options(expss.digits = NULL)
 
 expect_output_file(print(tbl[, 1:3]), 
                    "rds/print_etable.txt")
+
+expect_output_file(print(set_caption(tbl[, 1:3], "Caption")), 
+                   "rds/print_etable_caption.txt")
+
 expect_output_file(print(tbl[, 1:4], remove_repeated = FALSE),
                    "rds/print_etable_2.txt")
+
+expect_output_file(print(set_caption(tbl[, 1:3], "Caption"), remove_repeated = FALSE), 
+                   "rds/print_etable_2_caption.txt")
+
 expect_output_file(print(tbl[, FALSE]), 
                    "rds/print_etable_zero_columns.txt")
 
@@ -100,6 +108,9 @@ expss_output_commented()
 
 expect_output_file(print(tbl),
                    "rds/print_etable_commented_1.txt")
+
+expect_output_file(print(set_caption(tbl, "Caption")),
+                   "rds/print_etable_commented_caption_1.txt")
 
 expect_output_file(print(tbl[, 1:3]), 
                    "rds/print_etable_commented_2.txt")
@@ -131,14 +142,29 @@ options(expss.output = "rnotebook")
 expect_output_file(print(tbl), 
                    "rds/print_etable_rnotebook.txt")
 
+expect_output_file(print(set_caption(tbl, "Caption")), 
+                   "rds/print_etable_rnotebook_caption.txt")
+
 options(expss.output = "viewer")
 aa = capture_output(
     expect_identical(print(tbl), NULL)
 )
 
+
+aa = capture_output(
+    expect_identical(print(set_caption(tbl, "Caption")), NULL)
+)
+
 options(expss.output = "raw")
 expect_output_file(print(tbl[, 1:2]), 
                    "rds/print_etable_raw.txt")
+
+
+expect_false(is.with_caption(tbl))
+expect_false(is.with_caption(set_caption(tbl[, 1:2], NULL)))
+expect_true(is.with_caption(set_caption(tbl[, 1:2], "Caption")))
+expect_output_file(print(set_caption(tbl[, 1:2], "Caption")), 
+                   "rds/print_etable_caption_raw.txt")
 
 options(expss.output = NULL)
 

@@ -1,0 +1,19 @@
+Caption
+                  my custom label    #Total
+         Number of cylinders|Mean  6.187500
+     Number of cylinders|Std. dev  1.785922
+      Number of cylinders|Valid N 32.000000
+            Number of cylinders|4 34.375000
+            Number of cylinders|6 21.875000
+            Number of cylinders|8 43.750000
+ Number of cylinders|#Total cases 32.000000
+                 Carbureuter|Mean  2.812500
+             Carbureuter|Std. dev  1.615200
+              Carbureuter|Valid N 32.000000
+                    Carbureuter|1 21.875000
+                    Carbureuter|2 31.250000
+                    Carbureuter|3  9.375000
+                    Carbureuter|4 31.250000
+                    Carbureuter|6  3.125000
+                    Carbureuter|8  3.125000
+         Carbureuter|#Total cases 32.000000
