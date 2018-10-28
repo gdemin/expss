@@ -47,7 +47,8 @@
 #'                  tab_stat_mean() %>% 
 #'                  tab_cells(cyl) %>% 
 #'                  tab_stat_cpct() %>% 
-#'                  tab_pivot()
+#'                  tab_pivot() %>% 
+#'                  set_caption("Table 1. Some variables from mtcars dataset.")
 #'
 #' library(shiny)
 #' shinyApp(
@@ -71,6 +72,7 @@ as.datatable_widget = function(data, ...){
 as.datatable_widget.default = function(data, ...){
     DT::datatable(data, ...)
 }
+
 
 #' @export
 #' @rdname as.datatable_widget
@@ -235,7 +237,25 @@ matrix_header_to_html = function(corner, m_cols){
 }
 
 
-
+#' @export
+#' @rdname as.datatable_widget
+as.datatable_widget.with_caption = function(data, 
+                                      repeat_row_labels = FALSE, 
+                                      show_row_numbers = FALSE,
+                                      digits = get_expss_digits(),
+                                      ...){
+    caption = get_caption(data)
+    data = set_caption(data, NULL)
+    as.datatable_widget(
+        data,
+        repeat_row_labels = repeat_row_labels, 
+        show_row_numbers = show_row_numbers,
+        digits = digits,
+        ...,
+        caption = caption
+        
+    )
+}
 
 
 
