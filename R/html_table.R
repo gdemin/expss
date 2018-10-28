@@ -1,15 +1,17 @@
 #' Outputting HTML tables in RStudio viewer/R Notebooks
 #' 
-#' This is method for rendering results of \link{fre}/\link{cro}/\link{tables} 
-#' in Shiny/RMarkdown/Jupyter notebooks and etc. For detailed description of 
-#' function and its arguments see \link[htmlTable]{htmlTable}. You may be 
-#' interested in \code{expss_output_viewer()} for automatical rendering tables 
-#' in the RStudio viewer or  \code{expss_output_rnotebook()} for rendering in 
-#' the R notebooks. See \link{expss.options}. \code{repr_html} is method for 
-#' rendering table in the Jupyter notebooks and \code{knit_print} is method for 
-#' rendering table in the \code{knitr} HTML-documents. Jupyter notebooks and 
-#' \code{knitr} documents are supported automatically but in the R notebooks it 
-#' is needed to set output to notebook via \code{expss_output_rnotebook()}.
+#' This is method for rendering results of \link{fre}/\link{cro}/\link{tables}
+#' in Shiny/RMarkdown/Jupyter notebooks and etc. For detailed description of
+#' function and its arguments see \link[htmlTable]{htmlTable}. You can pack your
+#' tables in the list and render them all simultaneously. See examples. You may
+#' be interested in \code{expss_output_viewer()} for automatical rendering
+#' tables in the RStudio viewer or  \code{expss_output_rnotebook()} for
+#' rendering in the R notebooks. See \link{expss.options}. \code{repr_html} is
+#' method for rendering table in the Jupyter notebooks and \code{knit_print} is
+#' method for rendering table in the \code{knitr} HTML-documents. Jupyter
+#' notebooks and \code{knitr} documents are supported automatically but in the R
+#' notebooks it is needed to set output to notebook via
+#' \code{expss_output_rnotebook()}.
 #'
 #' @param x a data object of class 'etable' - result of \link{fre}/\link{cro} and etc.
 #' @param obj a data object of class 'etable' - result of \link{fre}/\link{cro} and etc.
@@ -20,6 +22,8 @@
 #' @param escape.html logical: should HTML characters be escaped? Defaults to FALSE. 
 #' @param ... further parameters for \link[htmlTable]{htmlTable}.
 #' @param row_groups logical Should we create row groups? TRUE by default.
+#' @param gap character Separator between tables if we output list of
+#'   tables. By default it is line break '<br>'.
 #'
 #' @return Returns a string of class htmlTable
 #' @export
@@ -52,7 +56,16 @@
 #'      tab_stat_mean() %>% 
 #'      tab_cells(cyl) %>% 
 #'      tab_stat_cpct() %>% 
-#'      tab_pivot()
+#'      tab_pivot() %>% 
+#'      set_caption("Table 1. Some variables from mtcars dataset.")
+#'      
+#' # several tables in a list
+#' mtcars %>% 
+#'     calc(list(
+#'         cro_cpct(list(am, vs, cyl), list(total(), am)) %>% set_caption("Table 1. Percent."),   
+#'         cro_mean_sd_n(list(mpg, hp, qsec), list(total(), am)) %>% set_caption("Table 2. Means.")
+#'     )) %>% 
+#'     htmlTable()
 #'      
 #' expss_output_default()   
 #'  
@@ -248,6 +261,25 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
  
 }
 
+#' @export
+#' @rdname htmlTable.etable
+htmlTable.with_caption = function(x, digits = get_expss_digits(), escape.html = FALSE, ..., row_groups = TRUE){
+    caption = get_caption(x)
+    x = set_caption(x, NULL)
+    htmlTable(x, caption = caption, digits = digits, escape.html = escape.html, ..., row_groups = row_groups)
+}
+
+
+#' @export
+#' @rdname htmlTable.etable
+htmlTable.list = function(x, gap = "<br>", ...){
+    res = lapply(x, htmlTable, ...)
+    res = do.call(paste, c(res, list(sep = gap)))
+    class(res) = c("htmlTable", "character")
+    res
+}
+
+
 matrix_to_cgroup = function(header){
     
     rle_list = list()
@@ -283,7 +315,15 @@ knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE
     knitr::knit_print(htmlTable.etable(x, digits = digits, 
                                        escape.html = escape.html,
                                        ..., row_groups = TRUE))
-    # knitr::asis_output(res)
+}
+
+#' @export
+#' @rdname htmlTable.etable
+knit_print.with_caption = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
+    knitr::knit_print(htmlTable.with_caption(x, digits = digits, 
+                                             escape.html = escape.html,
+                                             ..., row_groups = TRUE)
+    )
 }
 
 
@@ -292,6 +332,12 @@ knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE
 repr_html.etable = function(obj, digits = get_expss_digits(), escape.html = FALSE, ...){
     htmlTable(obj, digits = digits, escape.html = escape.html, ..., row_groups = FALSE)
     
+}
+
+#' @export
+#' @rdname htmlTable.etable
+repr_html.with_caption = function(obj, digits = get_expss_digits(), escape.html = FALSE, ...){
+    htmlTable(obj, digits = digits, escape.html = escape.html, ..., row_groups = FALSE)
 }
 
 #' @export
@@ -314,6 +360,15 @@ repr_text.etable = function(obj, digits = get_expss_digits(), ...){
     on.exit(options(width = width))
     options(width = 1000)
     paste(capture.output(print.data.frame(obj, ...,  right = TRUE, row.names = FALSE)),
+          collapse = "\n")
+    
+}
+
+repr_text.with_caption = function(obj, digits = get_expss_digits(), ...){
+    width = getOption("width")
+    on.exit(options(width = width))
+    options(width = 1000)
+    paste(capture.output(print(obj, digits = digits, ...)),
           collapse = "\n")
     
 }
@@ -430,3 +485,4 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
     }
     
 }
+

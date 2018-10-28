@@ -25,6 +25,19 @@ mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am),
 
 expect_equal_to_reference(htmlTable(mtcars_table),
                           "rds/htmlTable1.rds",  update = FALSE)
+
+expect_equal_to_reference(htmlTable(set_caption(mtcars_table, "mtcars_table")),
+                          "rds/htmlTable1_caption.rds",  update = FALSE)
+
+
+expect_equal_to_reference(htmlTable(
+    list(
+    set_caption(mtcars_table, "mtcars_table"),
+    mtcars_table,
+    set_caption(mtcars_table, "mtcars_table2")
+    )
+      ),                    "rds/htmlTable1_list.rds",  update = FALSE)
+
 expect_equal_to_reference(suppressWarnings(htmlTable(mtcars_table[FALSE, ])) , 
                           "rds/htmlTable2.rds",  update = FALSE)
 expect_equal_to_reference(htmlTable(mtcars_table[, 1])  ,  
@@ -40,6 +53,21 @@ expect_equal_to_reference(htmlTable(mtcars_table, digits = 0) ,
 
 expect_equal_to_reference(htmlTable(mtcars_table, digits = 1, row_groups = FALSE) ,
                           "rds/htmlTable3_no_rowgroups.rds",  update = FALSE)
+
+expect_equal_to_reference(htmlTable(set_caption(mtcars_table, "My caption"), digits = 1, row_groups = FALSE) ,
+                          "rds/htmlTable3_no_rowgroups_caption.rds",  update = FALSE)
+
+expect_equal_to_reference(expss:::repr_html.with_caption(set_caption(mtcars_table, "My caption"), digits = 1) ,
+                          "rds/htmlTable3_no_rowgroups_caption.rds",  update = FALSE)
+
+expect_equal_to_reference(htmlTable(
+    list(
+        set_caption(mtcars_table, "mtcars_table"),
+        mtcars_table,
+        set_caption(mtcars_table, "mtcars_table2")
+    ),
+    digits = 0, row_groups = FALSE),                    
+    "rds/htmlTable1_list_norogroups.rds",  update = FALSE)
 
 expect_equal_to_reference(expss:::repr_html.etable(mtcars_table, digits = 1),
                           "rds/htmlTable3_no_rowgroups.rds",  update = FALSE)

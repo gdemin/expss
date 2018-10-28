@@ -2,19 +2,34 @@
 % Please edit documentation in R/html_table.R
 \name{htmlTable.etable}
 \alias{htmlTable.etable}
+\alias{htmlTable.with_caption}
+\alias{htmlTable.list}
 \alias{knit_print.etable}
+\alias{knit_print.with_caption}
 \alias{repr_html.etable}
+\alias{repr_html.with_caption}
 \alias{repr_text.etable}
 \title{Outputting HTML tables in RStudio viewer/R Notebooks}
 \usage{
 \method{htmlTable}{etable}(x, digits = get_expss_digits(),
   escape.html = FALSE, ..., row_groups = TRUE)
 
+\method{htmlTable}{with_caption}(x, digits = get_expss_digits(),
+  escape.html = FALSE, ..., row_groups = TRUE)
+
+\method{htmlTable}{list}(x, gap = "<br>", ...)
+
 knit_print.etable(x, digits = get_expss_digits(), escape.html = FALSE,
   ...)
 
+knit_print.with_caption(x, digits = get_expss_digits(),
+  escape.html = FALSE, ...)
+
 repr_html.etable(obj, digits = get_expss_digits(), escape.html = FALSE,
   ...)
+
+repr_html.with_caption(obj, digits = get_expss_digits(),
+  escape.html = FALSE, ...)
 
 repr_text.etable(obj, digits = get_expss_digits(), ...)
 }
@@ -32,22 +47,27 @@ numeric columns remain unrounded.}
 
 \item{row_groups}{logical Should we create row groups? TRUE by default.}
 
+\item{gap}{character Separator between tables if we output list of
+tables. By default it is line break '<br>'.}
+
 \item{obj}{a data object of class 'etable' - result of \link{fre}/\link{cro} and etc.}
 }
 \value{
 Returns a string of class htmlTable
 }
 \description{
-This is method for rendering results of \link{fre}/\link{cro}/\link{tables} 
-in Shiny/RMarkdown/Jupyter notebooks and etc. For detailed description of 
-function and its arguments see \link[htmlTable]{htmlTable}. You may be 
-interested in \code{expss_output_viewer()} for automatical rendering tables 
-in the RStudio viewer or  \code{expss_output_rnotebook()} for rendering in 
-the R notebooks. See \link{expss.options}. \code{repr_html} is method for 
-rendering table in the Jupyter notebooks and \code{knit_print} is method for 
-rendering table in the \code{knitr} HTML-documents. Jupyter notebooks and 
-\code{knitr} documents are supported automatically but in the R notebooks it 
-is needed to set output to notebook via \code{expss_output_rnotebook()}.
+This is method for rendering results of \link{fre}/\link{cro}/\link{tables}
+in Shiny/RMarkdown/Jupyter notebooks and etc. For detailed description of
+function and its arguments see \link[htmlTable]{htmlTable}. You can pack your
+tables in the list and render them all simultaneously. See examples. You may
+be interested in \code{expss_output_viewer()} for automatical rendering
+tables in the RStudio viewer or  \code{expss_output_rnotebook()} for
+rendering in the R notebooks. See \link{expss.options}. \code{repr_html} is
+method for rendering table in the Jupyter notebooks and \code{knit_print} is
+method for rendering table in the \code{knitr} HTML-documents. Jupyter
+notebooks and \code{knitr} documents are supported automatically but in the R
+notebooks it is needed to set output to notebook via
+\code{expss_output_rnotebook()}.
 }
 \examples{
 \dontrun{ 
@@ -77,7 +97,16 @@ mtcars \%>\%
      tab_stat_mean() \%>\% 
      tab_cells(cyl) \%>\% 
      tab_stat_cpct() \%>\% 
-     tab_pivot()
+     tab_pivot() \%>\% 
+     set_caption("Table 1. Some variables from mtcars dataset.")
+     
+# several tables in a list
+mtcars \%>\% 
+    calc(list(
+        cro_cpct(list(am, vs, cyl), list(total(), am)) \%>\% set_caption("Table 1. Percent."),   
+        cro_mean_sd_n(list(mpg, hp, qsec), list(total(), am)) \%>\% set_caption("Table 2. Means.")
+    )) \%>\% 
+    htmlTable()
      
 expss_output_default()   
  
