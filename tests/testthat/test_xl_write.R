@@ -25,6 +25,7 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
     wb = createWorkbook()
     sh = addWorksheet(wb, "Tables")
     res = xl_write(mtcars_table, wb, sh, row = 1, col = 1)
+    # saveRDS(wb, "rds/xl_write1.rds")
     # wb$core = ""
     # expect_known_hash(wb, "d16a04e59b")
     # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
@@ -74,6 +75,26 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
     # expect_known_hash(wb, "dd6cf865c7")
     # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
     
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 5, col = 2, borders = NULL)
+    # wb$core = ""
+    # expect_known_hash(wb, "dd6cf865c7")
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 5, col = 2, borders = list(borderStyle = "none", borderColour = "blue"))
+    # wb$core = ""
+    # expect_known_hash(wb, "dd6cf865c7")
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 5, col = 2, borders = list(borderStyle = "thick", borderColour = "blue"))
+    # wb$core = ""
+    # expect_known_hash(wb, "dd6cf865c7")
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
     
     wb = createWorkbook()
     sh = addWorksheet(wb, "Tables")
@@ -100,6 +121,26 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
     # wb$core = ""
     # expect_known_hash(wb, "5874817cef")
     # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(set_caption(mtcars_table, "My table"), wb, sh, row = 3, col = 5, 
+                   header_format = createStyle(fg = "#00ff00"),
+                   borders = list(borderStyle = "thick", borderColour = "yellow"),
+                   top_left_corner_format = createStyle(fg = "#0000ff"),
+                   main_format = createStyle(
+                       halign = "right",
+                       fgFill = "#FF0000",
+                       numFmt = format(0, nsmall = get_expss_digits())
+                   ),
+                   total_format = createStyle(fontColour = "#00ffff"),
+                   row_labels_format = createStyle(fg = "#00ffff"),
+                   total_row_labels_format = createStyle(fg = "#ffff00"),
+                   caption_format = createStyle(fontColour = "blue", textDecoration = "bold")
+    )
+    # wb$core = ""
+    # expect_known_hash(wb, "5874817cef")
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
     
     wb = createWorkbook()
     sh = addWorksheet(wb, "Tables")
@@ -134,6 +175,7 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
                    row_symbols_to_remove = "#")
     # wb$core = ""
     # expect_known_hash(wb, "6cfcca3057")
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
     context("xl_write.list")
     
     res_list = list()
@@ -145,6 +187,10 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
     mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), 
                             list(mtcars$vs %nest% mtcars$am, "#Total")) 
     res_list = c(res_list, list(mtcars_table))
+    mtcars_table = cro_cpct(list(mtcars$cyl, mtcars$gear),
+                            list(total(), mtcars$vs, mtcars$am))
+    
+    res_list = c(res_list, list(significance_cpct(mtcars_table, compare_type = c("subtable", "first_column"))))
     mtcars_table = calculate(mtcars,
                              cro_mean(list(mpg, hp), list(am %nest% vs)) )
     res_list = c(res_list, list(mtcars_table))
@@ -186,7 +232,7 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
     mtcars_table = fre(mtcars$cyl)
     res_list = c(res_list, list(mtcars_table))
     res_list = c(res_list, list(mtcars))
-    res_list = c(res_list, list(as.etable(mtcars)), list(1:3))
+    res_list = c(list(1:3), res_list, list(as.etable(mtcars)))
     
     wb = createWorkbook()
     sh = addWorksheet(wb, "Tables")
@@ -198,6 +244,150 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
     res = xl_write(res_list, wb, sh, row = 1, col = 1, gap = 2, rownames = TRUE)
     # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
     
+    context("custom format")
+    mtcars = apply_labels(mtcars,
+                          mpg = "Miles/(US) gallon",
+                          hp = "Gross horsepower"
+    )
+    mtcars_table = calculate(mtcars,
+                             cro_mean_sd_n(list(mpg, hp), list(total(), am %nest% vs)) )
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 2, col = 2, 
+                   other_rows_formats = list("Mean" = createStyle(fgFill = "red"),
+                                             "Std" = createStyle(fgFill = "blue"),
+                                             "valid" = createStyle(fgFill = "yellow")
+                                             
+                                             )
+                   )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
     
+
+    
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 2, col = 2, 
+                   other_row_labels_formats = list("Mean" = createStyle(textDecoration = "bold", fgFill = "red"),
+                                                   "Std" = createStyle(halign = "left", textDecoration = "italic", fgFill = "blue"),
+                                                   "valid" = createStyle(halign = "right", fgFill = "yellow")
+                                                   
+                   )
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 2, col = 2, 
+                   other_cols_formats = list("#" = createStyle(textDecoration = "bold", fgFill = "red"),
+                                                   "Straight" = createStyle(halign = "right", textDecoration = "italic", fgFill = "blue"),
+                                                   "valid" = createStyle(halign = "right", fgFill = "yellow")
+                                                   
+                   )
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 2, col = 2, 
+                   other_col_labels_formats = list("#" = createStyle(textDecoration = "bold", fgFill = "red"),
+                                                   "Straight" = createStyle(halign = "right", textDecoration = "italic", fgFill = "blue"),
+                                                   "valid" = createStyle(halign = "right", fgFill = "yellow")
+                                                   
+                   )
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(set_caption(mtcars_table, "Wow!"), wb, sh, row = 2, col = 2, 
+                   borders = list(borderStyle = "thick", borderColour = "orange"),
+                   other_rows_formats = list("Mean" = createStyle(fgFill = "red"),
+                                             "Std" = createStyle(fgFill = "blue"),
+                                             "valid" = createStyle(fgFill = "yellow")
+                                             
+                   ),
+                   other_row_labels_formats = list("Mean" = createStyle(textDecoration = "bold", fgFill = "red"),
+                                                   "Std" = createStyle(halign = "left", textDecoration = "italic", fgFill = "blue"),
+                                                   "valid" = createStyle(halign = "right", fgFill = "yellow")
+                                                   
+                   )
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(set_caption(mtcars_table, "Wow!"), wb, sh, row = 2, col = 2, 
+                   borders = list(borderStyle = "thick", borderColour = "orange"),
+                   other_cols_formats = list("#" = createStyle(textDecoration = "bold", fgFill = "red"),
+                                             "Straight" = createStyle(halign = "right", textDecoration = "italic", fgFill = "blue"),
+                                             "valid" = createStyle(halign = "right", fgFill = "yellow")
+                                             
+                   ),
+                   other_col_labels_formats = list("#" = createStyle(textDecoration = "bold", fgFill = "red"),
+                                                   "Straight" = createStyle(halign = "right", textDecoration = "italic", fgFill = "blue"),
+                                                   "valid" = createStyle(halign = "right", fgFill = "yellow")
+                                                   
+                   )
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    mtcars_table = cro_cpct(list(mtcars$cyl, mtcars$gear),
+                            list(total(), mtcars$vs, mtcars$am))
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 2, col = 2, 
+                   additional_cells_formats = list(
+                       list(1:5, 1:5, createStyle(fgFill = "red")),
+                       list(1:5, 5:1, createStyle(fgFill = "blue"))
+                       
+                   )
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(
+        set_caption(mtcars_table, "My table"),
+        wb,
+        sh
+        
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(
+        set_caption(mtcars_table, "My table"),
+        wb,
+        sh,
+        caption_format = createStyle(fontColour = "red", halign = "right")
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(
+        set_caption(mtcars_table, "My table"),
+        wb,
+        sh,
+        caption_format = NULL
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(
+        list(
+            set_caption(mtcars_table, "My table"),
+            set_caption(mtcars_table, c("My table", "Second line")),
+            mtcars_table,
+            set_caption(mtcars_table, "My table")
+        ),
+        wb,
+        sh
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
 }
 
