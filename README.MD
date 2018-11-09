@@ -15,6 +15,7 @@ any function by typing `?function_name` in the R console.
 - [Online introduction - visit it to view code with its output](http://gdemin.github.io/expss/)
 - [expss on CRAN](https://cran.r-project.org/package=expss)
 - [expss on Github](https://github.com/gdemin/expss)
+- [expss on Stackoverflow](https://stackoverflow.com/questions/tagged/expss)
 - [Issues](https://github.com/gdemin/expss/issues)
 
 ## Installation
