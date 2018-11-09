@@ -82,11 +82,11 @@ significance_means(x, sig_level = 0.05, delta_means = 0,
 \item{sig_level}{numeric. Significance level - by default it equals to \code{0.05}.}
 
 \item{min_base}{numeric. Significance test will be conducted if both
-columns have bases greater than \code{min_base}. By default it equals to \code{2}.}
+columns have bases greater or equal to \code{min_base}. By default it equals to \code{2}.}
 
 \item{delta_cpct}{numeric. Minimal delta between percent for which we mark 
 significant differences (in percent points) - by default it equals to zero.
-Note that, for example, for minimal 5 percent difference
+Note that, for example, for minimal 5 percent point difference
 \code{delta_cpct} should be equals 5, not 0.05.}
 
 \item{delta_means}{numeric. Minimal delta between means for which we mark 
@@ -173,7 +173,7 @@ as in \link[stats]{t.test}.}
 table with counts in the result of \link{cro_cases}. Results are calculated
 with the same formula as in \link[stats]{chisq.test} without continuity
 correction.}} 
-There are four type of comparisons which can be conducted simultaneously 
+There are three type of comparisons which can be conducted simultaneously 
 (argument \code{compare_type}). \code{subtable} provide comparison between
 all columns inside each subtable. \code{previous_column} is comparison of
 each column in the subtable with previous column. It is useful if columns are

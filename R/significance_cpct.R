@@ -17,7 +17,7 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' table with counts in the result of \link{cro_cases}. Results are calculated
 #' with the same formula as in \link[stats]{chisq.test} without continuity
 #' correction.}} 
-#' There are four type of comparisons which can be conducted simultaneously 
+#' There are three type of comparisons which can be conducted simultaneously 
 #' (argument \code{compare_type}). \code{subtable} provide comparison between
 #' all columns inside each subtable. \code{previous_column} is comparison of
 #' each column in the subtable with previous column. It is useful if columns are
@@ -58,12 +58,12 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' @param sig_level numeric. Significance level - by default it equals to \code{0.05}.
 #' @param delta_cpct numeric. Minimal delta between percent for which we mark 
 #'   significant differences (in percent points) - by default it equals to zero.
-#'   Note that, for example, for minimal 5 percent difference
+#'   Note that, for example, for minimal 5 percent point difference
 #'   \code{delta_cpct} should be equals 5, not 0.05.
 #' @param delta_means numeric. Minimal delta between means for which we mark 
 #'   significant differences  - by default it equals to zero.
 #' @param min_base numeric. Significance test will be conducted if both
-#'   columns have bases greater than \code{min_base}. By default it equals to \code{2}.
+#'   columns have bases greater or equal to \code{min_base}. By default it equals to \code{2}.
 #' @param compare_type Type of compare between columns. By default it is 
 #'   \code{subtable} - comparisons will be conducted between columns of each 
 #'   subtable. Other possible values are: \code{first_column}, 
