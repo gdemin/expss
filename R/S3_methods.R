@@ -34,24 +34,28 @@ c.labelled = function(..., recursive = FALSE)
 #' @export
 rep.labelled = function (x, ...){
     y= NextMethod()
-    y = set_var_attr(y, var_attr(x))
-    class(y) = class(x)
+    y = restore_attributes(y, x)
     y	
 }
 
 #' @export
 '[.labelled' = function (x, ...){
     y = NextMethod()
-    y = set_var_attr(y, var_attr(x))
+    y = restore_attributes(y, x)
     y
 }
 
 #' @export
 '[[.labelled' = function (x, ...){
     y = NextMethod()
-    y = set_var_attr(y, var_attr(x))
+    y = restore_attributes(y, x)
     y
 }
+
+#' @export
+'[.labelled_spss' = `[.labelled`
+#' @export
+'[[.labelled_spss' = `[[.labelled`
 
 # two assignment methods are needed to prevent state with inconsistent class and mode
 # (such as 'numeric' in class but mode is character)
@@ -71,23 +75,40 @@ rep.labelled = function (x, ...){
     y
 }
 
-var_attr = function(x){
-    list(label = var_lab(x), labels = val_lab(x))
-}
+# var_attr = function(x){
+#     list(label = var_lab(x), labels = val_lab(x))
+# }
+# 
+# set_var_attr = function(x, value){
+#     #####
+#     # we bypass interfaces set_val_lab, set_var_lab to 
+#     # skip perfomance unfriendly sorting of labels
+#     attr(x, "label") = value[["label"]]
+#     attr(x, "labels") = value[["labels"]]
+#     if(length(value[["label"]])==0 && length(value[["labels"]])==0){
+#         class(x) = setdiff(class(x), "labelled")
+#     } else {
+#         class(x) = union("labelled", class(x))
+#     }
+#     x
+# }
 
-set_var_attr = function(x, value){
-    #####
+restore_attributes = function(new_var, old_var){
+    # "measurement", "spss_measure", "spss.measure", "measure",
+    preserved_attributes = c("label",  "format.spss",   
+                             "display_width", "labels", "na_values", "na_range")
     # we bypass interfaces set_val_lab, set_var_lab to 
     # skip perfomance unfriendly sorting of labels
-    attr(x, "label") = value[["label"]]
-    attr(x, "labels") = value[["labels"]]
-    if(length(value[["label"]])==0 && length(value[["labels"]])==0){
-        class(x) = setdiff(class(x), "labelled")
-    } else {
-        class(x) = union("labelled", class(x))
+    for(each_attr in preserved_attributes){
+        attr_value = attr(old_var, each_attr, exact = TRUE)
+        if(!is.null(attr_value)){
+            attr(new_var, each_attr) = attr_value
+        }
     }
-    x
-}
+    # we use new_var class for such functions as `as.integer.labelled`
+    class(new_var) = unique(c("labelled", class(new_var), use.names = FALSE))
+    new_var
+} 
 
 ### All subsetting methods are so strange because
 ### NextMethod doesn't work and I don't know why 
@@ -131,14 +152,14 @@ subset_helper = function(x, i, j, drop, class_name){
 #' @export
 as.double.labelled = function (x, ...){
     y = NextMethod()
-    y = set_var_attr(y, var_attr(x))
+    y = restore_attributes(y, x)
     y	
 }
 
 #' @export
 as.integer.labelled = function (x, ...){
     y = NextMethod()
-    y = set_var_attr(y, var_attr(x))
+    y = restore_attributes(y, x)
     y	
 }
 
@@ -176,7 +197,7 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
 unique.labelled = function(x, ...){
     y = NextMethod()
     if(!identical(getOption("expss.enable_value_labels_support"), 0)){
-        y = set_var_attr(y, var_attr(x))
+        y = restore_attributes(y, x)
     }
     y
 }
