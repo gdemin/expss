@@ -608,26 +608,28 @@ cro_mean = function(cell_vars,
     col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
     
     cro_fun(cell_vars = cell_vars, 
-               col_vars = col_vars, 
-               row_vars = row_vars, 
-               weight = weight,
-               subgroup = subgroup,
-               fun = w_mean,
-               unsafe = TRUE
+            col_vars = col_vars, 
+            row_vars = row_vars, 
+            weight = weight,
+            subgroup = subgroup,
+            # here we heavy rely on the fact that weight already checked on NA and negative values
+            fun = function(x, weight = NULL) matrixStats::weightedMean(x, w = weight, na.rm = TRUE),
+            unsafe = TRUE
     )
 }
+
 
 
 #' @export
 #' @rdname cro_fun
 cro_mean_sd_n = function(cell_vars, 
-                    col_vars = total(), 
-                    row_vars = total(label = ""),
-                    weight = NULL,
-                    subgroup = NULL,
-                    weighted_valid_n = FALSE,
-                    labels = NULL
-                    
+                         col_vars = total(), 
+                         row_vars = total(label = ""),
+                         weight = NULL,
+                         subgroup = NULL,
+                         weighted_valid_n = FALSE,
+                         labels = NULL
+                         
 ){
     
     str_cell_vars = expr_to_character(substitute(cell_vars))
@@ -645,12 +647,21 @@ cro_mean_sd_n = function(cell_vars,
         stopif(length(labels)!=3, "'cro_mean_sd_n' - 'labels' should be vector of three elements.")
     }
     if(weighted_valid_n){
+        # here we heavy rely on the fact that weight already checked on NA and negative values
         fun = function(x, weight = NULL) {
-            c(w_mean(x, weight), w_sd(x, weight), valid_n(x, weight))
+            c(
+                matrixStats::weightedMean(x, w = weight, na.rm = TRUE),
+                weight_helper(matrixStats::weightedSd)(x, weight, na.rm = TRUE), 
+                if(is.null(weight)) sum(!is.na(x)) else sum(weight, na.rm = TRUE)
+            )
         }
     } else {
         fun = function(x, weight = NULL) {
-            c(w_mean(x, weight), w_sd(x, weight), unweighted_valid_n(x, weight))
+            c(
+                matrixStats::weightedMean(x, w = weight, na.rm = TRUE),
+                weight_helper(matrixStats::weightedSd)(x, weight, na.rm = TRUE),
+                sum(!is.na(x))
+            )
         }
     }
     cro_fun(cell_vars = cell_vars, 
@@ -686,7 +697,11 @@ cro_sum = function(cell_vars,
                          row_vars = row_vars, 
                          weight = weight,
                          subgroup = subgroup,
-                         fun = w_sum,
+                         fun = if(is.null(weight)){
+                             function(x) sum(x, na.rm = TRUE)
+                         } else {
+                             function(x, weight = NULL) sum(x*weight, na.rm = TRUE)
+                         },
                          unsafe = TRUE
     )
 }
@@ -713,7 +728,13 @@ cro_median = function(cell_vars,
                          row_vars = row_vars, 
                          weight = weight,
                          subgroup = subgroup,
-                         fun = w_median,
+                         fun = function(x, weight = NULL){
+                             matrixStats::weightedMedian(x = x, 
+                                                         w = weight, 
+                                                         na.rm = TRUE, 
+                                                         interpolate = TRUE, 
+                                                         ties = "weighted")
+                         },
                          unsafe = TRUE
     )
 }

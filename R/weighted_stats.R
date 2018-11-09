@@ -392,4 +392,17 @@ internal_w_stat = function(x, weight, na.rm, check_weight_sum = FALSE, fun){
 }
 
 
-
+## fun is one of the functions from matrixStats with fun(x, w, na.rm)
+weight_helper = function(fun){
+    return(
+        function(x, weight = NULL, na.rm = TRUE){
+            res = suppressWarnings(fun(x, w = weight, na.rm = na.rm))
+            if(is.nan(res)){
+                # for data.table - it cannot combine logical and numeric in single column
+                NA_real_
+            } else {
+                res
+            }
+        }
+    )
+}
