@@ -217,7 +217,7 @@ expect_identical(print(x), x)
 # 
 # tbl_df = table_summary_df(mtcars %>% except(vs, am), col_vars = mtcars$am, fun = function(x){
 #     
-#     dtfrm(res_num = seq_along(x), parameter = names(x), mean = colMeans(x))
+#     sheet(res_num = seq_along(x), parameter = names(x), mean = colMeans(x))
 # },  row_labels = c("row_vars", "row_vars_values", "res_num", "parameter"),
 # hide = "res_num",
 # use_result_row_order = FALSE
@@ -268,13 +268,13 @@ expect_true(is.etable(res))
 expect_identical(as.etable(mtcars, rownames_as_row_labels = FALSE), res)
 
 
-res = dtfrm(row_labels = rownames(mtcars), mtcars)
+res = sheet(row_labels = rownames(mtcars), mtcars)
 class(res) = union("etable", class(res))
 expect_identical(as.etable(mtcars, rownames_as_row_labels = TRUE), res)
 expect_identical(as.etable(mtcars), res)
-expect_identical(as.etable(1:3), as.etable(as.dtfrm(x = 1:3)))
+expect_identical(as.etable(1:3), as.etable(as.sheet(x = 1:3)))
 
-res = as.dtfrm(matrix(1:9, 3))
+res = as.sheet(matrix(1:9, 3))
 colnames(res) = rep("", 3)
 class(res) = union("etable", class(res))
 expect_identical(as.etable(matrix(1:9, 3)), res)

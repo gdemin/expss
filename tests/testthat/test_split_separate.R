@@ -53,7 +53,7 @@ expect_equal_to_reference(mtcars_list, "rds/split_separate3.rds",  update = FALS
 regr = mtcars_list %>% 
     use_labels({
         res = lm(mpg ~ hp + disp + wt)
-        dtfrm(Estimate = coef(res), confint(res))
+        sheet(Estimate = coef(res), confint(res))
     }) %>% 
     split_off(groups = TRUE, rownames = TRUE)
 expect_equal_to_reference(regr, "rds/split_separate5.rds",  update = FALSE)
@@ -61,7 +61,7 @@ expect_equal_to_reference(regr, "rds/split_separate5.rds",  update = FALSE)
 regr = mtcars_list %>% 
     use_labels({
         res = lm(mpg ~ hp + disp + wt)
-        dtfrm(Estimate = coef(res), confint(res))
+        sheet(Estimate = coef(res), confint(res))
     }) %>% 
     split_off(groups = "transmission-engine", rownames = "variables")
 expect_equal_to_reference(mtcars_list, "rds/split_separate6.rds",  update = FALSE)
@@ -72,7 +72,7 @@ regr = mtcars_list %>%
     unname() %>% 
     use_labels({
         res = lm(mpg ~ hp + disp + wt)
-        dtfrm(Estimate = coef(res), confint(res))
+        sheet(Estimate = coef(res), confint(res))
     }) %>% 
     split_off(groups = "transmission-engine", rownames = "variables")
 expect_equal_to_reference(mtcars_list, "rds/split_separate7.rds",  update = FALSE)

@@ -75,7 +75,7 @@ expect_error(split_columns(tabl, c(TRUE, rep(FALSE, ncol(tabl)))))
 add_1  = paste0(tabl[[1]], "|2")
 add_2  = paste0(tabl[[1]], "|3")
 
-tabl2 = dtfrm(tabl, add_1, tabl[,-1], add_2)
+tabl2 = sheet(tabl, add_1, tabl[,-1], add_2)
 
 expect_equal_to_reference(
     split_columns(tabl2, c(1, 7, 13)),

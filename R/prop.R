@@ -18,7 +18,7 @@
 #' fac = factor(c("a", "b", "c"))
 #' char = c("a", "b", "c")
 #' dat = as.POSIXct("2016-09-27") 
-#' a = dtfrm(fac, a = c(25, 25, NA), b = c(100, NA, 50), char, dat)
+#' a = sheet(fac, a = c(25, 25, NA), b = c(100, NA, 50), char, dat)
 #' 
 #' prop(a)
 #' prop_row(a)

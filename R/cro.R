@@ -668,7 +668,7 @@ elementary_cro = function(cell_var,
     res[ , row_labels := remove_unnecessary_splitters(row_labels)] 
     res[ , row_labels := make_items_unique(row_labels)] 
     setnames(res, remove_unnecessary_splitters(colnames(res)))
-    res = as.dtfrm(res)
+    res = as.sheet(res)
     class(res) = union("etable", class(res))
     res
 }

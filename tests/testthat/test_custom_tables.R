@@ -402,7 +402,7 @@ res = mtcars %>%
 
 expect_equal_to_reference(res, "rds/ctable20.rds",  update = FALSE)
 
-res1 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
+res1 = sheet(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
     tab_cells(a, b) %>% 
     tab_mis_val(3:5) %>% 
     tab_stat_mean() %>% 
@@ -416,7 +416,7 @@ res1 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
 
-res2 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
+res2 = sheet(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
     tab_cells(a, b) %>% 
     tab_mis_val(gt(2)) %>% 
     tab_stat_mean() %>% 
@@ -430,7 +430,7 @@ res2 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
 
-res4 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
+res4 = sheet(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
     tab_cells(a, b) %>% 
     tab_mis_val(3 | gt(3)) %>% 
     tab_stat_mean() %>% 
@@ -444,7 +444,7 @@ res4 = dtfrm(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>%
     tab_stat_max() %>% 
     tab_pivot(stat_position = "inside_columns")
 
-res3 = dtfrm(a = c(1, 2, NA, NA, NA), b = c(NA, NA, 1, 2, NA)) %>% 
+res3 = sheet(a = c(1, 2, NA, NA, NA), b = c(NA, NA, 1, 2, NA)) %>% 
     tab_mis_val(1:2) %>% 
     tab_cells(a, b) %>% 
     tab_mis_val() %>% 

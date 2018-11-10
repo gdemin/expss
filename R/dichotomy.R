@@ -44,7 +44,7 @@
 #' # brands - multiple response question
 #' # Which brands do you use during last three months? 
 #' set.seed(123)
-#' brands = as.dtfrm(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
+#' brands = as.sheet(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
 #' # score - evaluation of tested product
 #' score = sample(-1:1,20,replace = TRUE)
 #' var_lab(brands) = "Used brands"
@@ -106,7 +106,7 @@ as.dichotomy.default = function(x, prefix = "v", keep_unused = FALSE, use_na = T
         res[!valid(x), ] = NA
     }
     
-    res = as.dtfrm(res)
+    res = as.sheet(res)
     if(NCOL(res)>0){
         colnames(res) = paste0(prefix, vallab)
     }

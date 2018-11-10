@@ -127,7 +127,7 @@ test_for_null_and_make_dataframe = function(curr_vars, str_curr_vars){
             }            
         }
     }
-    if(!is.data.frame(curr_vars)) curr_vars = as.dtfrm(curr_vars)
+    if(!is.data.frame(curr_vars)) curr_vars = as.sheet(curr_vars)
     curr_vars
 }
 

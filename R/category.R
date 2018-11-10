@@ -59,7 +59,7 @@ as.category.matrix = function(x, prefix = NULL, counted_value = 1, compress = FA
     }
     res = col(x)
     res[!(x %in% counted_value)] = NA
-    res = compress_and_finish(res = as.dtfrm(res), vallab = vallab, prefix = prefix, compress = compress)
+    res = compress_and_finish(res = as.sheet(res), vallab = vallab, prefix = prefix, compress = compress)
     if(varlab_nchars>0) {
         set_var_lab(res, varlab)
     } else {

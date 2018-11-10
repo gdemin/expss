@@ -197,7 +197,7 @@ expect_identical(ir, ir_test)
 
 # }
 
-tbl1 = dtfrm(
+tbl1 = sheet(
     id = c(1, 2, 3),
     num_a = c(1, NA, 4),
     num_b = c(NA, 99, 100),

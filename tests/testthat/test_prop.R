@@ -31,21 +31,21 @@ expect_identical(prop_row(a), cbind(c(25/125, 1, NA), c(100/125, NA, 1)))
 
 context("prop data.frame")
 
-a = dtfrm(a = c(25, 25, NA), b = c(100, NA, 50))
+a = sheet(a = c(25, 25, NA), b = c(100, NA, 50))
 
-expect_identical(prop(a), dtfrm(a = c(.125, .125, NA), b = c(.5, NA, .25)))
-expect_identical(prop_col(a), dtfrm(a = c(.5, .5, NA), b = c(2/3, NA, 1/3)))
-expect_identical(prop_row(a), dtfrm(a = c(25/125, 1, NA), b = c(100/125, NA, 1)))
+expect_identical(prop(a), sheet(a = c(.125, .125, NA), b = c(.5, NA, .25)))
+expect_identical(prop_col(a), sheet(a = c(.5, .5, NA), b = c(2/3, NA, 1/3)))
+expect_identical(prop_row(a), sheet(a = c(25/125, 1, NA), b = c(100/125, NA, 1)))
 
 fac = factor(c("a", "b", "c"))
 char = c("a", "b", "c")
 dat = as.POSIXct("2016-09-27") 
 
-a = dtfrm(fac, a = c(25, 25, NA), b = c(100, NA, 50), char, dat)
+a = sheet(fac, a = c(25, 25, NA), b = c(100, NA, 50), char, dat)
 
-expect_identical(prop(a), dtfrm(fac, a = c(.125, .125, NA), b = c(.5, NA, .25), char, dat))
-expect_identical(prop_col(a), dtfrm(fac, a = c(.5, .5, NA), b = c(2/3, NA, 1/3), char, dat))
-expect_identical(prop_row(a), dtfrm(fac, a = c(25/125, 1, NA), b = c(100/125, NA, 1), char, dat))
+expect_identical(prop(a), sheet(fac, a = c(.125, .125, NA), b = c(.5, NA, .25), char, dat))
+expect_identical(prop_col(a), sheet(fac, a = c(.5, .5, NA), b = c(2/3, NA, 1/3), char, dat))
+expect_identical(prop_row(a), sheet(fac, a = c(25/125, 1, NA), b = c(100/125, NA, 1), char, dat))
 
 data("warpbreaks")
 tbl = with(warpbreaks, table(wool, tension))

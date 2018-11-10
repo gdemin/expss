@@ -211,7 +211,7 @@ vlookup_internal = function(lookup_value,
             
         }
     }
-    if(!is.data.frame(dict)) dict = as.dtfrm(dict)
+    if(!is.data.frame(dict)) dict = as.sheet(dict)
     if(any(SPECIALS %in% result_column) || any(SPECIALS %in% lookup_column)){
         dict[["...RRRLLL..."]] = curr_rowlabs
         if(any(SPECIALS %in% result_column)) result_column[result_column %in% SPECIALS] = "...RRRLLL..."

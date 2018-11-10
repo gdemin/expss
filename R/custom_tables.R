@@ -280,13 +280,13 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #'     
 #' # example from 'cro_fun_df' - linear regression by groups with sorting 
 #' mtcars %>% 
-#'     tab_cells(dtfrm(mpg, disp, hp, wt, qsec)) %>% 
+#'     tab_cells(sheet(mpg, disp, hp, wt, qsec)) %>% 
 #'     tab_cols(total(), am) %>% 
 #'     tab_stat_fun_df(
 #'         function(x){
 #'             frm = reformulate(".", response = names(x)[1])
 #'             model = lm(frm, data = x)
-#'             dtfrm('Coef. estimate' = coef(model), 
+#'             sheet('Coef. estimate' = coef(model), 
 #'                   confint(model)
 #'             )
 #'         }    
@@ -543,7 +543,7 @@ tab_row_label_internal = function(data, ..., label_expr, parent){
     args = substitute(paste(..., sep = "|"))
     row_labels = calculate_internal(data[[DATA]], args, parent)
     label = calculate_internal(data[[DATA]], label_expr, parent)
-    result = dtfrm(row_labels = row_labels)
+    result = sheet(row_labels = row_labels)
     class(result) = union("etable", class(result))
     add_result_to_intermediate_table(data, result, label)
 }
@@ -1089,7 +1089,7 @@ pivot_rows = function(data, stat_position = c("inside", "outside"),
     labels_index = seq_along(labels)
     
     labels_and_index = lapply(labels_index, function(item_num){
-        dtfrm(label_index = rep(item_num, NROW(results[[item_num]])),
+        sheet(label_index = rep(item_num, NROW(results[[item_num]])),
              label = rep(labels[item_num], NROW(results[[item_num]]))
         )
     })

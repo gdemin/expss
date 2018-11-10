@@ -97,9 +97,9 @@ split_off.list = function(data, groups = NULL, rownames = NULL){
     for(each in seq_along(data)){
         if(!is.data.frame(data[[each]])){
             if(is.vector(data[[each]]) && !is.list(data[[each]])){
-                data[[each]] = dtfrm(value = data[[each]])    
+                data[[each]] = sheet(value = data[[each]])    
             } else {
-                data[[each]] = as.dtfrm(data[[each]])
+                data[[each]] = as.sheet(data[[each]])
             }
         }
     }

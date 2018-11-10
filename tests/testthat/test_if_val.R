@@ -538,17 +538,17 @@ expect_identical(b_recoded, c(-1, 2, 3, 4, 5))
 recode(b, 1~-1, other ~ copy) %into%  "b_recoded_chr"
 expect_identical(b_recoded_chr, c(-1, 2, 3, 4, 5))
 
-recode(list(dtfrm(b, b2)), 1~-1, other ~ copy) %into%  qc(b_recoded)
+recode(list(sheet(b, b2)), 1~-1, other ~ copy) %into%  qc(b_recoded)
 rownames(b_recoded) = NULL
-expect_identical(b_recoded, dtfrm(b = c(-1, 2, 3, 4, 5), b2 = rev( c(-1, 2, 3, 4, 5))))
+expect_identical(b_recoded, sheet(b = c(-1, 2, 3, 4, 5), b2 = rev( c(-1, 2, 3, 4, 5))))
 
 
-recode(dtfrm(b, b2), 1~10, other ~ copy) %into%  qc(b1_recoded, b2_recoded)
+recode(sheet(b, b2), 1~10, other ~ copy) %into%  qc(b1_recoded, b2_recoded)
 expect_identical(b1_recoded, c(10, 2, 3, 4, 5))
 expect_identical(b2_recoded, rev( c(10, 2, 3, 4, 5)))
 
 rm(b1_recoded, b2_recoded)
-recode(dtfrm(b, b2), 1~10, other ~ copy) %into%  c(b1_recoded, b2_recoded)
+recode(sheet(b, b2), 1~10, other ~ copy) %into%  c(b1_recoded, b2_recoded)
 expect_identical(b1_recoded, c(10, 2, 3, 4, 5))
 expect_identical(b2_recoded, rev( c(10, 2, 3, 4, 5)))
 
@@ -558,7 +558,7 @@ recode(as.matrix(cbind(b, b2)), 1~11, other ~ copy) %into%  qc(b1_recoded_mat, b
 expect_identical(b1_recoded_mat, c(11, 2, 3, 4, 5))
 expect_identical(b2_recoded_mat, rev( c(11, 2, 3, 4, 5)))
 
-recode(dtfrm(b, b2), 1~10, other ~ copy) %into%  c(b1_recoded, b2_recoded)
+recode(sheet(b, b2), 1~10, other ~ copy) %into%  c(b1_recoded, b2_recoded)
 expect_identical(b1_recoded, c(10, 2, 3, 4, 5))
 expect_identical(b2_recoded, rev( c(10, 2, 3, 4, 5)))
 
@@ -567,83 +567,83 @@ expect_identical(b3_recoded, c(10, 2, 3, 4, 5))
 expect_identical(b4_recoded, rev( c(10, 2, 3, 4, 5)))
 
 
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  subst('v`1:3`')
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  subst('v`1:3`')
 expect_identical(v1, c(10, 2, 3, 4, 5))
 expect_identical(v2, c(10, 2, 3, 4, 5))
 expect_identical(v3, rev( c(10, 2, 3, 4, 5)))
 i = 1:3
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  subst('ww`i`')
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  subst('ww`i`')
 expect_identical(ww1, c(10, 2, 3, 4, 5))
 expect_identical(ww2, c(10, 2, 3, 4, 5))
 expect_identical(ww3, rev( c(10, 2, 3, 4, 5)))
 
 i = 1:2
 j = 3
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  subst(c('xx`i`', 'y`j`'))
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  subst(c('xx`i`', 'y`j`'))
 expect_identical(xx1, c(10, 2, 3, 4, 5))
 expect_identical(xx2, c(10, 2, 3, 4, 5))
 expect_identical(y3, rev( c(10, 2, 3, 4, 5)))
 
 
 i = 1:3
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  subst('wah`i`')
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  subst('wah`i`')
 expect_identical(wah1, c(10, 2, 3, 4, 5))
 expect_identical(wah2, c(10, 2, 3, 4, 5))
 expect_identical(wah3, rev( c(10, 2, 3, 4, 5)))
 
 i = 1:2
 j = 3
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  c(subst('xax`i`'), subst('xy`j`'))
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  c(subst('xax`i`'), subst('xy`j`'))
 expect_identical(xax1, c(10, 2, 3, 4, 5))
 expect_identical(xax2, c(10, 2, 3, 4, 5))
 expect_identical(xy3, rev( c(10, 2, 3, 4, 5)))
 
 my_fun = function() c("x", "y", "z") 
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  my_fun()
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  my_fun()
 expect_identical(x, c(10, 2, 3, 4, 5))
 expect_identical(y, c(10, 2, 3, 4, 5))
 expect_identical(z, rev( c(10, 2, 3, 4, 5)))
 
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (va1 %to% va3)
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (va1 %to% va3)
 expect_identical(va1, c(10, 2, 3, 4, 5))
 expect_identical(va2, c(10, 2, 3, 4, 5))
 expect_identical(va3, rev( c(10, 2, 3, 4, 5)))
 
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (vb0 %to% vb2)
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (vb0 %to% vb2)
 expect_identical(vb0, c(10, 2, 3, 4, 5))
 expect_identical(vb1, c(10, 2, 3, 4, 5))
 expect_identical(vb2, rev( c(10, 2, 3, 4, 5)))
 
-expect_error(recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (vb2 %to% vb4))
+expect_error(recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (vb2 %to% vb4))
 
-expect_error(recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (v0 %to% v2))
-expect_error(recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (v01 %to% v002))
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (v01 %to% v03)
+expect_error(recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (v0 %to% v2))
+expect_error(recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (v01 %to% v002))
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (v01 %to% v03)
 expect_identical(v01, c(10, 2, 3, 4, 5))
 expect_identical(v02, c(10, 2, 3, 4, 5))
 expect_identical(v03, rev( c(10, 2, 3, 4, 5)))
 
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (v001 %to% v003)
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (v001 %to% v003)
 expect_identical(v001, c(10, 2, 3, 4, 5))
 expect_identical(v002, c(10, 2, 3, 4, 5))
 expect_identical(v003, rev( c(10, 2, 3, 4, 5)))
 
-recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  c(vax, f002 %to% f003)
+recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  c(vax, f002 %to% f003)
 expect_identical(vax, c(10, 2, 3, 4, 5))
 expect_identical(f002, c(10, 2, 3, 4, 5))
 expect_identical(f003, rev( c(10, 2, 3, 4, 5)))
 
-recode(dtfrm(b, b1=b, b2), 1~42, other ~ copy) %into%  c(vax, f002 %to% f003)
+recode(sheet(b, b1=b, b2), 1~42, other ~ copy) %into%  c(vax, f002 %to% f003)
 expect_identical(vax, c(42, 2, 3, 4, 5))
 expect_identical(f002, c(42, 2, 3, 4, 5))
 expect_identical(f003, rev( c(42, 2, 3, 4, 5)))
 
 expect_error(
-    recode(dtfrm(b, b1=b, b2), 1~42, other ~ copy) %into%  c(g001 %to% gg003)
+    recode(sheet(b, b1=b, b2), 1~42, other ~ copy) %into%  c(g001 %to% gg003)
 )
 
 expect_error(
-    recode(dtfrm(b, b1=b, b2), 1~42, other ~ copy) %into%  c(g003 %to% g001)
+    recode(sheet(b, b1=b, b2), 1~42, other ~ copy) %into%  c(g003 %to% g001)
 )
 
 data(iris)
@@ -653,7 +653,7 @@ expect_error(
         
     })
 )
-expect_error(recode(dtfrm(b, b1=b, b2), 1~10, other ~ copy) %into%  (v0001 %to% v0002))
+expect_error(recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (v0001 %to% v0002))
 
 recode(b, 1~10, other ~ copy) %into%  (v0001 %to% v0003)
 expect_identical(v0001, c(10, 2, 3, 4, 5))

@@ -325,7 +325,7 @@ Let us consider Excel toy table:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(expss)
-w = from_text("
+w = text_to_columns("
       A  B  C
       2 15 50
       1 70 80
@@ -339,7 +339,7 @@ knitr::asis_output("<br>")
 Code for creating the same table in R:
 ```{r, results='hide', message=FALSE, warning=FALSE}
 library(expss)
-w = from_text("
+w = text_to_columns("
         a  b  c
         2 15 50
         1 70 80
@@ -413,7 +413,7 @@ count_col_if(le(1), w$a)
 Table of criteria:
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(expss)
-tbl_crit = from_text("
+tbl_crit = text_to_columns("
  Excel R
   <1 lt(1)
  <=1 le(1)
@@ -513,7 +513,7 @@ calculate(w, mean_col_if(lt(3), a, data = sheet(b, c)))
 
 Our dictionary for lookup:
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-dict = from_text("
+dict = text_to_columns("
     X  Y
     1  apples
     2  oranges
@@ -528,7 +528,7 @@ knitr::asis_output("<br>")
 Code for creating the same dictionary in R:
 
 ```{r, eval=FALSE}
-dict = from_text("
+dict = text_to_columns("
     x  y
     1  apples
     2  oranges

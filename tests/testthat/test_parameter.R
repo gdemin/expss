@@ -167,7 +167,7 @@ expect_identical(
 
 expect_identical(
     keep(test_iris, ..$name1 %to% ..$name3, i3),
-    dtfrm(res_iris, i3 = test_iris$i3))
+    sheet(res_iris, i3 = test_iris$i3))
 
 expect_identical(
     calc(test_iris, ..$name1 %to% ..$name3),
@@ -268,7 +268,7 @@ res_iris = compute(iris, {
 
 expect_identical(res_iris, test_iris)
 
-to_unbox = dtfrm(a = 1, b = 2, d = 3) 
+to_unbox = sheet(a = 1, b = 2, d = 3) 
 
 res_iris = compute(iris, {
     ..[] = to_unbox
@@ -284,7 +284,7 @@ res_iris = compute(iris, {
 
 expect_identical(res_iris, test_iris)
 
-to_unbox = dtfrm(a = 1, b = 2, d = 3)
+to_unbox = sheet(a = 1, b = 2, d = 3)
 
 res_iris = compute(iris, {
     to_unbox %into% ..[]
@@ -300,7 +300,7 @@ res_iris = compute(iris, {
 expect_identical(res_iris, test_iris)
 
 
-to_unbox = dtfrm(a = 1, b = 2, d = 3)
+to_unbox = sheet(a = 1, b = 2, d = 3)
 
 res_iris = compute(iris, {
     to_unbox %into% ""

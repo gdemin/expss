@@ -110,7 +110,7 @@ structure(list(v1 = structure(c(1, 0, 0), label = "1", class = c("labelled",
 vec = c(1:2,NA)
 val_lab(vec) = c(a=1,b=2,d=45)
 
-vec_mat = as.dtfrm(c(1:2,NA))
+vec_mat = as.sheet(c(1:2,NA))
 val_lab(vec_mat) = c(a=1,b=2,d=45)
 
 expect_identical(dummy(vec),

@@ -42,7 +42,7 @@ val_lab(b) = autonum(
     "
 )
 
-expect_identical(drop_unused_labels(dtfrm(a, d)), dtfrm(a = b, d))
+expect_identical(drop_unused_labels(sheet(a, d)), sheet(a = b, d))
 expect_identical(drop_unused_labels(list(a, d)), list(b, d))
 
 expect_identical(drop_unused_labels(mrset(a, d)), mrset(a, d))

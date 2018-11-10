@@ -36,7 +36,7 @@ mrset = function(..., label = NULL){
     if(length(args)==1 && is.data.frame(args[[1]])){
         res = args[[1]]
     } else {
-        res = dtfrm(...)
+        res = sheet(...)
     }
     if(!is.null(label)){
         var_lab(res[[1]]) = label
@@ -54,7 +54,7 @@ mdset = function(..., label = NULL){
     if(length(args)==1 && is.data.frame(args[[1]])){
         res = args[[1]]
     } else {
-        res = dtfrm(...)
+        res = sheet(...)
     }
     if_val(res) = c(c(NA, 0) ~ 0, other ~ 1)
     res = make_labels_from_names(res)

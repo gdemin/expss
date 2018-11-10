@@ -118,7 +118,7 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
 
     ### 'dcast' just for generating absent labels    
     res = long_datatable_to_table(dtable, rows = "x", columns = "count", values = "weight")
-    res = as.dtfrm(res)
+    res = as.sheet(res)
     colnames(res) = c("labels", "res")
     rownames(res) = NULL
     res = res[!is.na(res$res) | !drop_unused_labels, ]
@@ -144,7 +144,7 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
         res$rpercent =  rep(0, nrow(res))
     }  
     total = sum(res[[2]], na.rm = TRUE)
-    dfs_total = dtfrm(
+    dfs_total = sheet(
         labels = "#Total",
         res = not_nas,
         valid_percent = ifelse(total>0, 100,0), 
@@ -153,7 +153,7 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
         cum = NA
     )
     res$cum = cumsum(if_na(res$rpercent, 0))
-    dfs_na = dtfrm(labels = "<NA>", 
+    dfs_na = sheet(labels = "<NA>", 
                         res = nas, 
                         valid_percent = NA, 
                         percent = ifelse(base>0, nas/base*100, 0),

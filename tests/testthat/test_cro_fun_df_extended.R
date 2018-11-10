@@ -36,7 +36,7 @@ expect_equal_to_reference(
 # test for empty rowlabels
 
 expect_equal_to_reference(
-    mtcars %$% cro_fun_df(dtfrm(mpg, disp, hp, qsec), 
+    mtcars %$% cro_fun_df(sheet(mpg, disp, hp, qsec), 
                              col_vars = vs, 
                              fun = function(x) {res = colMeans(x, na.rm = TRUE); unname(res)}, 
                              row_vars = am
@@ -115,7 +115,7 @@ expect_equal_to_reference(
 expect_equal_to_reference(
     cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = mtcars$am, fun = function(x){
 
-        dtfrm(parameter = names(x), mean = colMeans(x))
+        sheet(parameter = names(x), mean = colMeans(x))
     })
     ,"rds/table_summary_df2.rds",  update = FALSE
 )
@@ -140,8 +140,8 @@ expect_equal_to_reference(
 
 
 expect_equal_to_reference(
-    cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = dtfrm("Total", mtcars$am), 
-                     row_vars = dtfrm("Total",mtcars$vs),
+    cro_fun_df(mtcars %n_d% qc(vs, am), col_vars = sheet("Total", mtcars$am), 
+                     row_vars = sheet("Total",mtcars$vs),
                      fun = colMeans
     )
     ,"rds/table_summary_df5c.rds",  update = FALSE
@@ -231,7 +231,7 @@ expect_equal_to_reference(
                      fun = function(x, weight = NULL){
                          res = w_cor(x, weight = weight)
                          means = unlist(lapply(x, w_mean, weight = weight))
-                         dtfrm(cor = res[,1], mean = means)
+                         sheet(cor = res[,1], mean = means)
                      }
                      )
     ,"rds/table_summary_df7.rds",  update = FALSE

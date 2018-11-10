@@ -160,7 +160,7 @@ split_columns.data.frame  = function(data,
     for(each_column in rev(columns)){
         curr_col = data[[each_column]]
         if(is.factor(curr_col)) curr_col = as.character(curr_col)
-        new_columns = as.dtfrm(
+        new_columns = as.sheet(
             split_labels(curr_col, 
                          remove_repeated = remove_repeated, 
                          split = split, 
@@ -172,7 +172,7 @@ split_columns.data.frame  = function(data,
         # to prevent name changes
         part1_names = colnames(data)[seq_len(each_column)[-each_column]]
         part2_names = colnames(data)[-seq_len(each_column)]
-        data = dtfrm(
+        data = sheet(
             setNames(data[, seq_len(each_column)[-each_column], drop = FALSE], part1_names), 
             new_columns, 
             setNames(data[, -seq_len(each_column), drop = FALSE], part2_names)
@@ -195,7 +195,7 @@ split_columns.matrix  = function(data,
                                  perl = FALSE){
     
     matr_colnames = colnames(data)
-    data = as.dtfrm(data)
+    data = as.sheet(data)
     if(is.null(matr_colnames)){
         colnames(data) = rep("", NCOL(data))
     }
@@ -269,7 +269,7 @@ split_table_to_df.etable = function(data,
                              perl = perl
         )
     } else {
-        data = as.dtfrm(header)
+        data = as.sheet(header)
     }
     rownames(data) = NULL
     data = setNames(data, rep("", NCOL(data)))
@@ -435,11 +435,11 @@ split_all_in_etable_for_print = function(data,
         # 
         # }
     } else {
-        data = as.dtfrm(header)
+        data = as.sheet(header)
     }
     data[[1]] = paste0(" ", data[[1]], " ") # some extra space
     data[,-1] = lapply(data[,-1, drop = FALSE], function(x) paste0("", x, " ")) # some extra space
-    width = sapply(as.dtfrm(lapply(data, nchar)), max, na.rm = TRUE) 
+    width = sapply(as.sheet(lapply(data, nchar)), max, na.rm = TRUE) 
     width[!is.finite(width) | width<3 ] = 3
     delimiter = unlist(lapply(width[-1], function(x) {
         res = paste(rep("-", x  - 1), collapse = "")

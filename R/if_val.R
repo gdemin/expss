@@ -513,7 +513,7 @@ make_empty_object = function(x){
 
 #' @export
 make_empty_object.data.frame = function(x){
-    res = as.dtfrm(lapply(x, make_empty_object))
+    res = as.sheet(lapply(x, make_empty_object))
     row.names(res) = row.names(x)
     colnames(res) = colnames(x)
     res

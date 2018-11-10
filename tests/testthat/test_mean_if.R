@@ -146,8 +146,8 @@ df2_res[df2_res[[3]] %in% 1:5,3] = NA
 expect_identical(max_row_if(gt(5), df2), do.call(pmax, c(df2_res, list(na.rm = TRUE))))
 expect_identical(min_row_if(gt(5), df2), do.call(pmin, c(df2_res, list(na.rm = TRUE))))
 
-expect_identical(unname(max_col_if(gt(5), df2)), do.call(pmax, c(as.dtfrm(t(df2_res)), list(na.rm = TRUE))))
-expect_identical(unname(min_col_if(gt(5), df2)), do.call(pmin, c(as.dtfrm(t(df2_res)), list(na.rm = TRUE))))
+expect_identical(unname(max_col_if(gt(5), df2)), do.call(pmax, c(as.sheet(t(df2_res)), list(na.rm = TRUE))))
+expect_identical(unname(min_col_if(gt(5), df2)), do.call(pmin, c(as.sheet(t(df2_res)), list(na.rm = TRUE))))
 
 
 #######

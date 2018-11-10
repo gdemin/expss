@@ -104,7 +104,7 @@ add_rows.etable = function(..., nomatch_columns = c("add", "drop", "stop")){
 
 add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
     nomatch_columns = match.arg(nomatch_columns)
-    if(is.matrix(y)) y = as.dtfrm(y)
+    if(is.matrix(y)) y = as.sheet(y)
     if(is.data.frame(y)){
         true_names_x = colnames(x)
         true_names_y = colnames(y)

@@ -250,7 +250,7 @@ w %>%
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 library(expss)
-w = from_text("
+w = text_to_columns("
       A  B  C
       2 15 50
       1 70 80
@@ -263,7 +263,7 @@ knitr::asis_output("<br>")
 
 ## ---- results='hide', message=FALSE, warning=FALSE-----------------------
 library(expss)
-w = from_text("
+w = text_to_columns("
         a  b  c
         2 15 50
         1 70 80
@@ -303,7 +303,7 @@ w = from_text("
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 library(expss)
-tbl_crit = from_text("
+tbl_crit = text_to_columns("
  Excel R
   <1 lt(1)
  <=1 le(1)
@@ -356,7 +356,7 @@ knitr::asis_output("<br>")
 #  calculate(w, mean_col_if(lt(3), a, data = sheet(b, c)))
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-dict = from_text("
+dict = text_to_columns("
     X  Y
     1  apples
     2  oranges
@@ -367,7 +367,7 @@ knitr::kable(dict, align = "l", row.names = TRUE, format = "html", table.attr = 
 knitr::asis_output("<br>")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  dict = from_text("
+#  dict = text_to_columns("
 #      x  y
 #      1  apples
 #      2  oranges

@@ -5333,7 +5333,7 @@ C
 </table>
 <p><br> Code for creating the same table in R:</p>
 <pre class="r"><code>library(expss)
-w = from_text(&quot;
+w = text_to_columns(&quot;
         a  b  c
         2 15 50
         1 70 80
@@ -5535,7 +5535,7 @@ peaches
 </table>
 <p><br></p>
 <p>Code for creating the same dictionary in R:</p>
-<pre class="r"><code>dict = from_text(&quot;
+<pre class="r"><code>dict = text_to_columns(&quot;
     x  y
     1  apples
     2  oranges

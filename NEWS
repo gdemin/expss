@@ -1,8 +1,11 @@
 0.8.8 (12.10.2018)
 ================
-* numerous small bugfixes
-* 'by_groups' is deprecated now. Use 'take' from 'maditr' instead.
+* small bugfixes and performance improvement
 * 'from_text' renamed to 'text_to_columns'
+* 'by_groups' is deprecated now. Use 'take' from 'maditr' instead.
+* 'dtfrm'/'as.dtfrm' are finally removed. Use 'sheet'/'as.sheet' instead
+* It seems nobody uses 'lst'/'.lst' functions so they are removed.    
+
 
 
 0.8.7 (12.06.2018)
@@ -43,7 +46,7 @@
 * fix bug with single column "mrset"
 * fix bug with significance tests on tables with complex headers
 * add uboxing possibilities for ..[] (..[] = list/data.frame will create separate variables from that list/data.frame)
-* add 'from_text' for creation data.frame from text lines
+* add 'text_to_columns' for creation data.frame from text lines
 * improve performance of 'cro_*'
 * remove deprecated function ".set"
 

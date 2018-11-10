@@ -130,7 +130,7 @@
 vars = function(...){
     variables_names = substitute(list(...))
     res = internal_vars_list(variables_names, parent.frame())
-    as.dtfrm(res)
+    as.sheet(res)
 }
 
 
@@ -266,7 +266,7 @@ print.parameter = function(x, ...){
     envir = parent.frame()
     variables_names = substitute(list(...))
     res = internal_vars_list(variables_names, envir, symbols_to_characters = TRUE)
-    as.dtfrm(res)
+    as.sheet(res)
 }
 
 #' @export

@@ -444,7 +444,7 @@ expect_equal_to_reference(
     "rds/cro_fun9.rds",  update = FALSE)
 
 expect_equal_to_reference(
-    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), list(as.dtfrm(am), total()), fun = colMeans)), 
+    with(mtcars, cro_fun_df(data.frame(hp, mpg, disp), list(as.sheet(am), total()), fun = colMeans)), 
     "rds/cro_fun9.rds",  update = FALSE)
 
 if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
@@ -527,7 +527,7 @@ expect_equal_to_reference(
 
 expect_error(
 with(mtcars, cro_fun(data.frame(hp, mpg, disp), 
-                     list(am, total()), fun = function(x) dtfrm(t(x)))
+                     list(am, total()), fun = function(x) sheet(t(x)))
      )
 )
 

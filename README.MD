@@ -364,7 +364,7 @@ Excel toy table:
 Code for creating the same table in R:
 
 ```R
-w = from_text("
+w = text_to_columns("
     a  b  c
     2 15 50
     1 70 80
@@ -541,7 +541,7 @@ Our dictionary for lookup:
 Code for creating the same dictionary in R:
 
 ```R
-dict = from_text("
+dict = text_to_columns("
     x  y
     1  apples
     2  oranges

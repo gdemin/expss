@@ -387,13 +387,13 @@ mtcars \%>\%
     
 # example from 'cro_fun_df' - linear regression by groups with sorting 
 mtcars \%>\% 
-    tab_cells(dtfrm(mpg, disp, hp, wt, qsec)) \%>\% 
+    tab_cells(sheet(mpg, disp, hp, wt, qsec)) \%>\% 
     tab_cols(total(), am) \%>\% 
     tab_stat_fun_df(
         function(x){
             frm = reformulate(".", response = names(x)[1])
             model = lm(frm, data = x)
-            dtfrm('Coef. estimate' = coef(model), 
+            sheet('Coef. estimate' = coef(model), 
                   confint(model)
             )
         }    

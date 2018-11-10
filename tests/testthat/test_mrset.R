@@ -82,7 +82,7 @@ expect_identical(mdset(as.dichotomy(a_res), as.dichotomy(b_res)), big)
 
 a = as.double(1:0)
 var_lab(a) = "My a"
-res = dtfrm(a = a)
+res = sheet(a = a)
 class(res) = c("dichotomy", class(res))
 expect_identical(mdset(a), res)
 

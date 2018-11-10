@@ -241,7 +241,7 @@ add_labelled_class.data.frame = add_labelled_class.list
 #' # brands - multiple response question
 #' # Which brands do you use during last three months? 
 #' 
-#' brands = as.dtfrm(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
+#' brands = as.sheet(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
 #'
 #' var_lab(brands) = "Used brands"
 #' val_lab(brands) = make_labels("

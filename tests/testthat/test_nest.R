@@ -20,7 +20,7 @@ structure(1, labels = structure(1L, .Names = "b|a"), class = c("labelled",
 )
 
 
-m_choice = dtfrm(a1 = c(1, NA, 1), a2 = c(2,2,NA))
+m_choice = sheet(a1 = c(1, NA, 1), a2 = c(2,2,NA))
 
 df_res = list(a1 = structure(c(1, NA, 3), labels = structure(1:3, .Names = c("1|5", 
 "1|6", "1|7")), class = c("labelled", "numeric"), label = ""), 
@@ -205,7 +205,7 @@ structure(c(NA_real_, NA_real_, NA_real_, NA_real_, NA_real_),
 labels = structure(1:4, .Names = c("a|d", 
                                  "a|e", "b|d", "b|e")), class = c("labelled", "numeric"), label = "")
 )
-# m_choice = dtfrm(a1 = c(1, NA, 1), a2 = c(2,2,NA))
+# m_choice = sheet(a1 = c(1, NA, 1), a2 = c(2,2,NA))
 
 single = 5:7
 var_lab(single) = "Top level"

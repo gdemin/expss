@@ -273,7 +273,7 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
         cat("\n")
     }
     if(!is.null(vallab)){
-        vallab = sort_asc(dtfrm(Value = vallab, Label = names(vallab)),"Value") 
+        vallab = sort_asc(sheet(Value = vallab, Label = names(vallab)),"Value") 
         vallab = setNames(vallab, NULL)
         # colnames(vallab) = gsub(".", " ", colnames(vallab), perl = TRUE)
         cat("VALUE LABELS:")
@@ -380,7 +380,7 @@ t.etable = function(x){
     col_names = colnames(x)[-1]
     data = x[,-1]
     class(data) = class(data) %d% "etable"
-    res = dtfrm(col_names, t(data))
+    res = sheet(col_names, t(data))
     res =setNames(res, c("row_labels", row_labels))
     class(res) = union("etable", class(res))
     res
@@ -426,7 +426,7 @@ print.with_caption = function(x, digits = get_expss_digits(), remove_repeated = 
 #     if (!("data.frame" %in% new_class)) new_class = union("data.frame", new_class)
 #     if (!("etable" %in% new_class)) new_class = union("etable", new_class)
 #     
-#     res = dtfrm(...)
+#     res = sheet(...)
 #     class(res) = new_class
 #     res    
 #     

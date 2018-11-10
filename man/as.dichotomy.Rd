@@ -78,7 +78,7 @@ because any column of such matrix usually is linear combinations of other column
 # brands - multiple response question
 # Which brands do you use during last three months? 
 set.seed(123)
-brands = as.dtfrm(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
+brands = as.sheet(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
 # score - evaluation of tested product
 score = sample(-1:1,20,replace = TRUE)
 var_lab(brands) = "Used brands"

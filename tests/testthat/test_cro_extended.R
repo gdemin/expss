@@ -17,8 +17,8 @@ expect_equal_to_reference(cro(mtcars$am, mtcars$vs, total_row_position = "above"
 expect_equal_to_reference(cro(mtcars$am, mtcars$vs, total_row_position = "below"), "rds/table_cases1.rds",  update = FALSE)
 
 
-mult1 = dtfrm(v1 = c(1,1,NA), v2 = c(NA, 2, 2))
-mult2 = dtfrm(b1 = c(1, 1, 2), b2 = c(3, NA, 1))
+mult1 = sheet(v1 = c(1,1,NA), v2 = c(NA, 2, 2))
+mult2 = sheet(b1 = c(1, 1, 2), b2 = c(3, NA, 1))
 weight = c(1, 2, 3)
 empty1 = as.numeric(NA)
 empty2 = as.numeric(NA)
@@ -108,7 +108,7 @@ expect_equal_to_reference(
     "rds/table_cases23.rds",  update = FALSE)
 
 expect_equal_to_reference(
-    cro(dtfrm(mtcars$am, mtcars$cyl), dtfrm(mtcars$vs, mtcars$gear)),
+    cro(sheet(mtcars$am, mtcars$cyl), sheet(mtcars$vs, mtcars$gear)),
     "rds/table_cases23.rds",  update = FALSE)
 
 # expect_equal_to_reference(
@@ -137,8 +137,8 @@ expect_equal_to_reference(
 
 context("cro extended some exotics")
 
-mult1 = dtfrm(v1 = c(1,1,NA), v2 = c(NA, 2, 2))
-mult2 = dtfrm(b1 = c(1, 1, 2), b2 = c(3, NA, 1))
+mult1 = sheet(v1 = c(1,1,NA), v2 = c(NA, 2, 2))
+mult2 = sheet(b1 = c(1, 1, 2), b2 = c(3, NA, 1))
 var_lab(mult1) = "mult1"
 var_lab(mult2) = "mult2"
 weight = c(1, 2, 3)

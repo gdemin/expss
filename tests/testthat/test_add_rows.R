@@ -80,8 +80,8 @@ expect_equal_to_reference(add_rows(a, 1:2), "rds/add_rows11e.rds",  update = FAL
 
 context("labels preserving")
 
-a = dtfrm(x = 1:5, y = 11:15)
-b = dtfrm(x = 6:10, z = 16:20)
+a = sheet(x = 1:5, y = 11:15)
+b = sheet(x = 6:10, z = 16:20)
 
 var_lab(b$z) = "my z"
 val_lab(b$z) = c("zzz" = 1)
@@ -90,8 +90,8 @@ var_lab(a$y) = "my y"
 val_lab(a$y) = c("yyy" = 1)
 
 res = rbind(
-    dtfrm(x = a$x, y = a$y, z = NA),
-    dtfrm(x = b$x, y = NA, z = b$z)
+    sheet(x = a$x, y = a$y, z = NA),
+    sheet(x = b$x, y = NA, z = b$z)
 )
 
 var_lab(res$z) = "my z"

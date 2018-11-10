@@ -72,7 +72,7 @@
 #' }
 htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE, ..., row_groups = TRUE){
     if(NCOL(x) == 0){
-        return(htmlTable(setNames(dtfrm("Table is empty"), " "), escape.html = escape.html, ...))
+        return(htmlTable(setNames(sheet("Table is empty"), " "), escape.html = escape.html, ...))
     }
     # because rowlabels and column names never escaped
     dollar = "&#36;"
@@ -174,7 +174,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
         n.rgroup = NULL
     } else {
         if(NCOL(row_labels) > 2){
-            x = dtfrm(row_labels[, -(1:2)], x)
+            x = sheet(row_labels[, -(1:2)], x)
             html_header = c(rep("", NCOL(row_labels) - 2), html_header)
             align = c(rep("l", NCOL(row_labels) - 2), align)
             if(NROW(cgroup)>0){
@@ -203,7 +203,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
         cgroup = cgroup[,colSums(!is.na(cgroup))>0, drop = FALSE]
         n.cgroup = n.cgroup[,colSums(!is.na(n.cgroup))>0, drop = FALSE]
         if(is.null(rgroup)){
-            htmlTable(as.dtfrm(x), 
+            htmlTable(as.sheet(x), 
                       header = html_header,
                       cgroup = cgroup, 
                       align = align,
@@ -213,7 +213,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
                       escape.html = escape.html, 
                       ...)   
         } else {
-            htmlTable(as.dtfrm(x), 
+            htmlTable(as.sheet(x), 
                       header = html_header,
                       cgroup = cgroup, 
                       align = align,
@@ -227,7 +227,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
         }
     } else {
         if(is.null(rgroup)){
-            htmlTable(as.dtfrm(x), 
+            htmlTable(as.sheet(x), 
                       header = html_header,
                       align = align,
                       rnames = rnames, 
@@ -235,7 +235,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
                       escape.html = escape.html, 
                       ...)   
         } else {
-            htmlTable(as.dtfrm(x), 
+            htmlTable(as.sheet(x), 
                       header = html_header,
                       align = align,
                       rnames = rnames, 
@@ -248,7 +248,7 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
     }
     } else {
         x = rep("", NROW(x))
-        htmlTable(dtfrm(x), 
+        htmlTable(sheet(x), 
                   header = "",
                   rnames = rnames, 
                   rgroup = rgroup,
@@ -431,7 +431,7 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
         rnames = row_labels[,1] 
     } else {
         if(NCOL(row_labels) > 1){
-            x = dtfrm(row_labels[, -1], x)
+            x = sheet(row_labels[, -1], x)
             html_header = c(rep("", NCOL(row_labels) - 1), html_header)
             align = c(rep("l", NCOL(row_labels) - 1), align)
             if(NROW(cgroup)>0){
@@ -452,7 +452,7 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
         if(NROW(cgroup)>0){
             cgroup = cgroup[,colSums(!is.na(cgroup))>0, drop = FALSE]
             n.cgroup = n.cgroup[,colSums(!is.na(n.cgroup))>0, drop = FALSE]
-                htmlTable(as.dtfrm(x), 
+                htmlTable(as.sheet(x), 
                           header = html_header,
                           cgroup = cgroup, 
                           align = align,
@@ -464,7 +464,7 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
             
         } else {
 
-                htmlTable(as.dtfrm(x), 
+                htmlTable(as.sheet(x), 
                           header = html_header,
                           align = align,
                           rnames = rnames, 
@@ -475,7 +475,7 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
         }
     } else {
         x = rep("", NROW(x))
-        htmlTable(dtfrm(x), 
+        htmlTable(sheet(x), 
                   header = "",
                   rnames = rnames, 
                   rowlabel = first_lab,
