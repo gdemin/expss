@@ -61,7 +61,7 @@ rep.labelled = function (x, ...){
 # (such as 'numeric' in class but mode is character)
 #' @export
 '[<-.labelled' = function (x, ..., value){
-    class(x) = setdiff(class(x), "labelled")
+    class(x) = setdiff(class(x), c("labelled", "labelled_spss"))
     y = NextMethod()
     class(y) = c("labelled", class(y))
     y
@@ -69,7 +69,7 @@ rep.labelled = function (x, ...){
 
 #' @export
 '[[<-.labelled' = function (x, ..., value){
-    class(x) = setdiff(class(x), "labelled")
+    class(x) = setdiff(class(x), c("labelled", "labelled_spss"))
     y = NextMethod()
     class(y) = c("labelled", class(y))
     y
@@ -86,7 +86,7 @@ rep.labelled = function (x, ...){
 #     attr(x, "label") = value[["label"]]
 #     attr(x, "labels") = value[["labels"]]
 #     if(length(value[["label"]])==0 && length(value[["labels"]])==0){
-#         class(x) = setdiff(class(x), "labelled")
+#         class(x) = setdiff(class(x), c("labelled", "labelled_spss"))
 #     } else {
 #         class(x) = union("labelled", class(x))
 #     }
