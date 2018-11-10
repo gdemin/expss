@@ -1,4 +1,4 @@
-context("from_text")
+context("text_to_columns")
 
 result = sheet(
     a = 1:3,
@@ -7,7 +7,7 @@ result = sheet(
 )
 
 
-test = from_text("
+test = text_to_columns("
                   a b   c
           \t      1 1.5 a
 # commented line
@@ -20,7 +20,7 @@ test = from_text("
 expect_identical(test, result)
 
 
-test = from_text_csv("
+test = text_to_columns_csv("
                  a,b,c
                  \t      1,1.5,a
                  # commented line
@@ -33,7 +33,7 @@ test = from_text_csv("
 
 expect_identical(test, result)
 
-test = from_text_csv2("
+test = text_to_columns_csv2("
                  a;b;c
                      \t      1;1,5;a
                      # commented line
@@ -45,7 +45,7 @@ test = from_text_csv2("
 
 expect_identical(test, result)
 
-test = from_text_tab("
+test = text_to_columns_tab("
                  a\tb\tc
                      \t      1\t1.5\ta
                      # commented line
@@ -58,7 +58,7 @@ test = from_text_tab("
 
 expect_identical(test, result)
 
-test = from_text_tab2("
+test = text_to_columns_tab2("
                       a\tb\tc
                       \t      1\t1,5\ta
                       # commented line
@@ -70,7 +70,7 @@ test = from_text_tab2("
 
 expect_identical(test, result)
 
-test = from_text_tab("
+test = text_to_columns_tab("
         a	b	c
                      1	1.5	a
                      2	2.5	b
@@ -78,7 +78,7 @@ test = from_text_tab("
                      ")
 expect_identical(test, result)
 
-test = from_text("
+test = text_to_columns("
         a	b	c
                      1	1.5	a
                      2	2.5	b
@@ -93,7 +93,7 @@ result = sheet(
 )
 
 
-test = from_text("
+test = text_to_columns("
                  
                  \t      1 1.5 a
                  # commented line

@@ -2,6 +2,7 @@
 ================
 * numerous small bugfixes
 * 'by_groups' is deprecated now. Use 'take' from 'maditr' instead.
+* 'from_text' renamed to 'text_to_columns'
 
 
 0.8.7 (12.06.2018)

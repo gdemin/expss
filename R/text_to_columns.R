@@ -8,7 +8,7 @@
 #' @param header a logical value indicating whether the \code{text} contains the
 #'   names of the variables as its first line.
 #' @param sep the field separator character. Values on each line of the file are
-#'   separated by this character. If sep = "" (the default for read.table) the
+#'   separated by this character. If sep = "" (the default for \code{text_to_columns}) the
 #'   separator is 'white space', that is one or more spaces, tabs, newlines or
 #'   carriage returns.
 #' @param quote the set of quoting characters. To disable quoting altogether, use quote = "".
@@ -21,7 +21,7 @@
 #' @export
 #'
 #' @examples
-#' from_text("
+#' text_to_columns("
 #' # simple data.frame 
 #'      a b   c
 #'      1 2.5 a
@@ -29,7 +29,7 @@
 #'      7 8.5 c
 #' ")
 #' 
-from_text = function(text, 
+text_to_columns = function(text, 
                      header = TRUE, 
                      sep = "", 
                      quote = "",
@@ -59,8 +59,8 @@ from_text = function(text,
 }
 
 #' @export
-#' @rdname from_text 
-from_text_csv = function(text, 
+#' @rdname text_to_columns 
+text_to_columns_csv = function(text, 
                          header = TRUE, 
                          sep = ",", 
                          quote = "",
@@ -68,7 +68,7 @@ from_text_csv = function(text,
                          encoding = "unknown", 
                          ...
 ){
-    from_text(
+    text_to_columns(
         text = text,
         header = header,
         sep = sep,
@@ -80,8 +80,8 @@ from_text_csv = function(text,
 }
 
 #' @export
-#' @rdname from_text 
-from_text_csv2 = function(text, 
+#' @rdname text_to_columns 
+text_to_columns_csv2 = function(text, 
                          header = TRUE, 
                          sep = ";", 
                          quote = "",
@@ -89,7 +89,7 @@ from_text_csv2 = function(text,
                          encoding = "unknown", 
                          ...
 ){
-    from_text(
+    text_to_columns(
         text = text,
         header = header,
         sep = sep,
@@ -101,8 +101,8 @@ from_text_csv2 = function(text,
 }
 
 #' @export
-#' @rdname from_text 
-from_text_tab = function(text, 
+#' @rdname text_to_columns 
+text_to_columns_tab = function(text, 
                          header = TRUE, 
                          sep = "\t", 
                          quote = "",
@@ -110,7 +110,7 @@ from_text_tab = function(text,
                          encoding = "unknown", 
                          ...
 ){
-    from_text(
+    text_to_columns(
         text = text,
         header = header,
         sep = sep,
@@ -122,8 +122,8 @@ from_text_tab = function(text,
 }
 
 #' @export
-#' @rdname from_text 
-from_text_tab2 = function(text, 
+#' @rdname text_to_columns 
+text_to_columns_tab2 = function(text, 
                           header = TRUE, 
                           sep = "\t", 
                           quote = "",
@@ -131,7 +131,7 @@ from_text_tab2 = function(text,
                           encoding = "unknown", 
                           ...
 ){
-    from_text(
+    text_to_columns(
         text = text,
         header = header,
         sep = sep,

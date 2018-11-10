@@ -148,7 +148,7 @@ context("add_columns")
 sh1 = sheet(a = 1:5, b = 5:1)
 sh2 = sheet(a = 4:2, d = 4:2)
 
-res = from_text_csv("
+res = text_to_columns_csv("
                 a,b,d
                 1,5,NA
                 2,4,2
@@ -175,7 +175,7 @@ expect_identical(add_columns(sh1, sh2, by = "a", ignore_duplicates = TRUE), res)
 
 sh2 = sheet(a = 4:2, d = 4:2)
 
-res = from_text_csv("
+res = text_to_columns_csv("
                     a,b,d
                     1,5,NA
                     2,4,4
@@ -186,7 +186,7 @@ res = from_text_csv("
 
 expect_identical(add_columns(sh1, sh2, by = c("b" = "a")), res)
 
-res = from_text_csv("
+res = text_to_columns_csv("
                 a,b,b_1
                     1,5,NA
                     2,4,2
@@ -202,7 +202,7 @@ expect_identical(suppressWarnings(add_columns(sh1, sh2, by = "a")), res)
 
 sh2 = sheet(a = 4:2, b = 2:4, d = c(NA, NA, 42L))
 
-res = from_text_csv("
+res = text_to_columns_csv("
                 a,b,d
                     1,5,NA
                     2,4,42
@@ -218,7 +218,7 @@ sh2 = sheet(a = 4:2, ee = 2:4, d = c(NA, NA, 42L))
 expect_identical(add_columns(sh1, sh2, by = c("b" = "ee", "a")), res)
 
 sh2 = sheet(a = 4:2, b = 2:4, d = c(NA, NA, 42L))
-res = from_text_csv("
+res = text_to_columns_csv("
                 a,b,d
                     1,5,NA
                     2,4,NA
@@ -239,7 +239,7 @@ context("add_columns data.table")
 # data.table is modified by reference
 sh1 = data.table(a = 1:5, b = 5:1)
 sh2 = data.table(a = 4:2, d = 4:2)
-res = data.table(from_text_csv("
+res = data.table(text_to_columns_csv("
                 a,b,d
                 1,5,NA
                 2,4,2
@@ -280,7 +280,7 @@ expect_identical(add_columns(sh1, sh2, by = c(a = "e")), res)
 # only dict is data.table
 sh1 = sheet(a = 1:5, b = 5:1)
 sh2 = data.table(a = 4:2, d = 4:2)
-res = from_text_csv("
+res = text_to_columns_csv("
                 a,b,d
                1,5,NA
                2,4,2
