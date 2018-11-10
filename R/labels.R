@@ -9,7 +9,12 @@
 #' \item{\code{var_lab<-}}{ set variable label.} 
 #' \item{\code{set_var_lab}}{ returns variable with label.}
 #' \item{\code{unvr}}{ drops variable label.} 
-#' }
+#' \item{\code{add_labelled_class}}{ Add missing 'labelled' class. This function
+#' is needed when you load SPSS data with packages which in some cases don't set
+#' 'labelled' class for variables with labels. For example, \code{haven} package
+#' doesn't set 'labelled' class for variables which have variable label but
+#' don't have value labels. Note that to use 'expss' with 'haven' you need to
+#' load 'expss' strictly after 'haven' to avoid conflicts.} }
 #' @param x Variable. In the most cases it is numeric vector.
 #' @param value A character scalar - label for the variable x.
 #' @return \code{var_lab} return variable label. If label doesn't exist it return
@@ -44,7 +49,18 @@
 #'      cro_mean(list(mpg, disp, hp, qsec), list(total(), am))
 #'      ) 
 #' 
-#' 
+#'  
+#' \dontrun{
+#' # 'add_labelled_class' example doesn't work intentionally
+#' if(FALSE){ # to prevent execution
+#' # you need to load packages strictly in this order to avoid conflicts
+#' library(haven)
+#' library(expss)
+#' spss_data = haven::read_spss("spss_file.sav")
+#' # add missing 'labelled' class
+#' spss_data = add_labelled_class(spss_data) 
+#' }
+#' }
 var_lab=function(x){
     UseMethod("var_lab")
 }
@@ -90,11 +106,6 @@ set_var_lab.data.frame = function(x, value){
     x
 }
 
-#' @export
-set_var_lab.matrix = function(x, value){
-    if(is.null(value)) return(x)
-    stop("Labels on 'matrix' is not implemented.")
-}
 
 
 #' @export
@@ -105,7 +116,7 @@ set_var_lab.default = function(x, value){
     if (length(value)==0){
         attr(x,"label")=NULL
         if(length(val_lab(x))==0){
-            class(x)=setdiff(class(x), "labelled")
+            class(x)=setdiff(class(x), c("labelled", "labelled_spss"))
         }
         return(x)
     }
@@ -148,6 +159,31 @@ unvr.list=function(x){
 #' @export
 drop_var_labs = unvr
 
+#### add_labelled_class
+#' @rdname var_lab
+#' @export
+add_labelled_class = function(x){
+    UseMethod("add_labelled_class")
+}
+
+#' @export
+add_labelled_class.default = function(x){
+    if((!is.null(var_lab(x)) || !is.null(val_lab(x))) && !inherits(x, "labelled")){
+        x = add_class(x, "labelled")
+    }
+    x
+}
+
+#' @export
+add_labelled_class.list = function(x){
+    for(i in seq_along(x)){
+        x[[i]] =  add_labelled_class(x[[i]])
+    }
+    x
+}
+
+#' @export
+add_labelled_class.data.frame = add_labelled_class.list 
 ############# value labels #######################
 
 #' Set or get value labels
@@ -301,7 +337,7 @@ set_val_lab.default = function(x, value, add = FALSE){
             attr(x, "labels") = NULL
         }
         if(length(val_lab(x)) == 0 && is.null(var_lab(x))){
-            class(x)=setdiff(class(x), "labelled")
+            class(x)=setdiff(class(x), c("labelled", "labelled_spss"))
         }
         return(x)
      }
@@ -334,11 +370,6 @@ set_val_lab.data.frame = function(x, value, add = FALSE){
     x
 }
 
-#' @export
-set_val_lab.matrix = function(x, value, add = FALSE){
-    if(is.null(value)) return(x)
-    stop("Labels on 'matrix' is not implemented.")
-}
 
 #' @export
 set_val_lab.list = function(x,value, add = FALSE){
@@ -479,7 +510,7 @@ unlab.default=function(x){
     }
     attr(x, "label") = NULL
     attr(x, "labels") = NULL
-    class(x) = setdiff(class(x), "labelled")
+    class(x) = setdiff(class(x), c("labelled", "labelled_spss"))
     x
 }
 
@@ -534,10 +565,6 @@ as.labelled.default = function(x, label = NULL){
     res
 }
 
-#' @export
-as.labelled.matrix = function(x, label = NULL){
-    stop("Labelled 'matrix' is not implemented.")
-}
 
 #' @export
 as.labelled.data.frame = function(x, label = NULL){

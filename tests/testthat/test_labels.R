@@ -405,15 +405,10 @@ expect_identical(is.labelled(a), TRUE)
 class(a) = union("new_class", class(a))
 expect_identical(is.labelled(a), TRUE)
 
-context("labelled matrix")
+
 
 aaa = matrix(1:9, 3)
 
-expect_identical(set_val_lab(aaa, NULL), aaa)
-expect_error(set_val_lab(aaa, c(a = 1)))
-expect_error(set_var_lab(aaa, "matrix"))
-expect_identical(set_var_lab(aaa, NULL), aaa)
-expect_error(as.labelled(aaa, NULL))
 expect_error(as.labelled(as.list(aaa), NULL))
 expect_error(as.labelled(as.data.frame(aaa), NULL))
 
@@ -480,3 +475,22 @@ val_lab(gender) = num_lab("0 Women
 test = cro_cases(group, gender)
 
 expect_identical(res, test)
+
+
+context("add_labelled_class")
+
+a = 1:3
+attr(a, "label") = "My label"
+
+aa = 1:3
+var_lab(aa) = "My label"
+expect_identical(add_labelled_class(a), aa)
+
+df = sheet(a, b = 5:7, d = set_val_lab(5:7, c("hs" = 99)))
+fixed_df = sheet(a = aa, b = 5:7, d = set_val_lab(5:7, c("hs" = 99)))
+expect_identical(add_labelled_class(df), fixed_df)
+
+
+df = as.list(df)
+fixed_df = as.list(fixed_df)
+expect_identical(add_labelled_class(df), fixed_df)

@@ -6,6 +6,7 @@
 \alias{set_var_lab}
 \alias{unvr}
 \alias{drop_var_labs}
+\alias{add_labelled_class}
 \title{Set or get variable label}
 \usage{
 var_lab(x)
@@ -17,6 +18,8 @@ set_var_lab(x, value)
 unvr(x)
 
 drop_var_labs(x)
+
+add_labelled_class(x)
 }
 \arguments{
 \item{x}{Variable. In the most cases it is numeric vector.}
@@ -38,7 +41,12 @@ exist.}
 \item{\code{var_lab<-}}{ set variable label.} 
 \item{\code{set_var_lab}}{ returns variable with label.}
 \item{\code{unvr}}{ drops variable label.} 
-}
+\item{\code{add_labelled_class}}{ Add missing 'labelled' class. This function
+is needed when you load SPSS data with packages which in some cases don't set
+'labelled' class for variables with labels. For example, \code{haven} package
+doesn't set 'labelled' class for variables which have variable label but
+don't have value labels. Note that to use 'expss' with 'haven' you need to
+load 'expss' strictly after 'haven' to avoid conflicts.} }
 }
 \details{
 Variable label is stored in attribute "label" (\code{attr(x,"label")}). For
@@ -70,5 +78,16 @@ calculate(mtcars,
      cro_mean(list(mpg, disp, hp, qsec), list(total(), am))
      ) 
 
-
+ 
+\dontrun{
+# 'add_labelled_class' example doesn't work intentionally
+if(FALSE){ # to prevent execution
+# you need to load packages strictly in this order to avoid conflicts
+library(haven)
+library(expss)
+spss_data = haven::read_spss("spss_file.sav")
+# add missing 'labelled' class
+spss_data = add_labelled_class(spss_data) 
+}
+}
 }
