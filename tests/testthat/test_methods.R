@@ -152,7 +152,7 @@ expect_identical(factor(aa), factor(1:3, levels = 1:3, labels = c("c", "b", "a")
 context("unique.labelled")
 a = c(1, 1, 0, NA)
 var_lab(a) = "This is a"
-val_lab(a) = c("a" = 1, b = 0)
+val_lab(a) = c("a" = 1, b = 0, d = 2)
 
 expect_identical(unique(a), a[-1])
 
@@ -161,6 +161,11 @@ expect_identical(unique(a), c(1, 0, NA))
 
 options(expss.enable_value_labels_support = 1)
 expect_identical(unique(a), a[-1])
+expss_enable_value_labels_support_extreme()
+expect_identical(unique(a), c(a[-1], 2))
+expss_enable_value_labels_support()
+expect_identical(unique(a), a[-1])
+
 
 context("print.labelled/str.labelled")
 

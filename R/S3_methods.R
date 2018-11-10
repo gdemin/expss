@@ -95,7 +95,7 @@ rep.labelled = function (x, ...){
 
 restore_attributes = function(new_var, old_var){
     # "measurement", "spss_measure", "spss.measure", "measure",
-    preserved_attributes = c("label",  "format.spss",   
+    preserved_attributes = c("label",  "format.spss", "measure",  
                              "display_width", "labels", "na_values", "na_range")
     # we bypass interfaces set_val_lab, set_var_lab to 
     # skip perfomance unfriendly sorting of labels
@@ -196,7 +196,11 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
 #' @export
 unique.labelled = function(x, ...){
     y = NextMethod()
-    if(!identical(getOption("expss.enable_value_labels_support"), 0)){
+    labels_support = getOption("expss.enable_value_labels_support", 1) 
+    if(!identical(labels_support, 0)){
+        if(identical(labels_support, 2)){
+            y = unique(c(y, val_lab(x), use.names = FALSE))
+        }
         y = restore_attributes(y, x)
     }
     y

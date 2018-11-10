@@ -10,15 +10,22 @@
 #' methods. \code{NULL} is default and means one digit. \code{NA} means no
 #' rounding. There is a convenience function for this option:
 #' \code{expss_digits}.}
-#' \item{\code{expss.enable_value_labels_support} }{By default, all labelled 
-#' variables will use labels as labels for factor levels when \link{factor} is 
-#' called. So any function which calls \link{factor}/\link{as.factor} will use 
+#' \item{\code{expss.enable_value_labels_support} }{By default, all labelled
+#' variables will use labels as labels for factor levels when \link{factor} is
+#' called. So, any function which calls \link{factor}/\link{as.factor} will use
 #' value labels. In details this option changes behavior of two methods for
-#' class \code{labelled} - \code{as.character} and \code{unique} - on which 
-#' \code{factor} depends entirely. If you have compatibility problems set this 
-#' option to zero: \code{options(expss.enable_value_labels_support = 0)}. There
-#' are shortcuts for these options: \code{expss_enable_value_labels_support()}
-#' and \code{expss_disable_value_labels_support()}.}
+#' class \code{labelled} - \code{as.character} and \code{unique} - on which
+#' \code{factor} depends entirely. If you have compatibility problems set this
+#' option to zero: \code{options(expss.enable_value_labels_support = 0)}.
+#' Additionally there is an option for extreme value labels support:
+#' \code{options(expss.enable_value_labels_support = 2)}. With this value
+#' \code{factor}/\code{as.factor} will take into account empty levels. See
+#' example. It is recommended to turn off this option immediately after usage
+#' because \code{unique.labelled} will give weird result. Labels without values
+#' will be added to unique values.  There are shortcuts for these options:
+#' \code{expss_enable_value_labels_support()},
+#' \code{expss_enable_value_labels_support_extreme()} and
+#' \code{expss_disable_value_labels_support()}.}
 #' \item{\code{expss.output} }{ By default tables are printed in the console. 
 #' You can change this behavior by setting this option. There are four possible
 #' values: \code{'rnotebook'}, \code{'viewer'}, \code{'commented'} or 
@@ -33,16 +40,41 @@
 #' \code{expss_output_raw()}, \code{expss_output_viewer()},
 #' \code{expss_output_commented()} and \code{expss_output_rnotebook()}.}
 #' \item{\code{expss_fix_encoding_on}/\code{expss_fix_encoding_off} }{ If you
-#' expreience problems with character experience in RStudio Viewer/RNotebooks under Windows
-#' try \code{expss_fix_encoding_on()}. In some cases it can help.}
+#' expreience problems with character encoding in RStudio Viewer/RNotebooks under Windows
+#' try \code{expss_fix_encoding_on()}. In some cases, it can help.}
 #' }
 #' 
 #' @param digits integer. Number of digits after decimal point. \code{NULL} is
 #'   default and means 1 digit. \code{NA} means no rounding.
 #' 
 #' @name expss.options
-
-
+#' @examples 
+#' 
+#' # example of different levels of value labels support
+#' my_scale = c(1, 2, 2, 2)
+#' # note that we have label 'Hard to say' for which there are no values in 'my_scale'
+#' val_lab(my_scale) = num_lab("
+#'                             1 Yes
+#'                             2 No
+#'                             3 Hard to say
+#'                             ")
+#' # disable labels support
+#' expss_disable_value_labels_support()
+#' table(my_scale) # there is no labels in the result
+#' unique(my_scale) 
+#' # default value labels support
+#' expss_enable_value_labels_support()
+#' # table with labels but there are no label "Hard to say"
+#' table(my_scale)
+#' unique(my_scale) 
+#' # extreme value labels support
+#' expss_enable_value_labels_support_extreme()
+#' # now we see "Hard to say" with zero counts
+#' table(my_scale) 
+#' # weird 'unique'! There is a value 3 which is absent in 'my_scale'
+#' unique(my_scale) 
+#' # return immediately to defaults to avoid issues
+#' expss_enable_value_labels_support()
 #' @rdname expss.options
 #' @export
 expss_digits = function(digits = NULL){
@@ -63,6 +95,12 @@ get_expss_digits = function(){
 #' @export
 expss_enable_value_labels_support = function(){
     options(expss.enable_value_labels_support = NULL)
+}
+
+#' @rdname expss.options
+#' @export
+expss_enable_value_labels_support_extreme = function(){
+    options(expss.enable_value_labels_support = 2)
 }
 
 #' @rdname expss.options

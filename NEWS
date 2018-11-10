@@ -1,5 +1,8 @@
 0.8.8 (12.10.2018)
 ================
+* add '*.xlsx' export for tables via 'openxlsx' package
+* add 'set_caption' function and support for it in 'htmlTable', 'as.datatable_widget' and *.xlsx export
+* add function 'expss_enable_value_labels_support_extreme'
 * small bugfixes and performance improvement
 * 'from_text' renamed to 'text_to_columns'
 * 'by_groups' is deprecated now. Use 'take' from 'maditr' instead.
