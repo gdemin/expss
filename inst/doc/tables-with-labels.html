@@ -1046,14 +1046,14 @@ mtcars %&gt;%
 </tr>
 </tbody>
 </table>
-<pre class="r"><code># if we need caption then we use 'htmlTable'
+<pre class="r"><code># table with caption
 mtcars %&gt;% 
     tab_cells(mpg, disp, hp, wt, qsec) %&gt;%
     tab_cols(total(), am) %&gt;% 
     tab_stat_mean_sd_n() %&gt;%
     tab_last_sig_means(subtable_marks = &quot;both&quot;) %&gt;% 
     tab_pivot() %&gt;% 
-    htmlTable(caption = &quot;Table with summary statistics and significance marks.&quot;)</code></pre>
+    set_caption(&quot;Table with summary statistics and significance marks.&quot;)</code></pre>
 <table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>

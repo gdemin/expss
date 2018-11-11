@@ -43,14 +43,14 @@ mtcars %>%
     tab_stat_cpct() %>% 
     tab_pivot()
 
-# if we need caption then we use 'htmlTable'
+# table with caption
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
     tab_cols(total(), am) %>% 
     tab_stat_mean_sd_n() %>%
     tab_last_sig_means(subtable_marks = "both") %>% 
     tab_pivot() %>% 
-    htmlTable(caption = "Table with summary statistics and significance marks.")
+    set_caption("Table with summary statistics and significance marks.")
 
 # Table with the same summary statistics. Statistics labels in columns.
 mtcars %>% 
