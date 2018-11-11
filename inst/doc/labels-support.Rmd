@@ -9,7 +9,18 @@ vignette: >
     %\VignetteEncoding{utf8}
 ---
 
-'expss' package provides methods for labelled variables which add value labels support to base R functions and to some functions from other packages. Here we demonstrate labels support in base R - value labels automatically used as factors levels. Every function which internally converts variable to factor will utilize labels. 
+## Introduction
+
+Variable label is human readable description of the variable. R supports rather long variable names and these names can contain even spaces and punctuation but short variables names make coding easier. Variable label can give a nice, long description of variable. With this description it is easier to remember what those variable names refer to.
+Value labels are similar to variable labels, but value labels are descriptions of the values a variable can take. Labeling values means we don’t have to remember if 1=Extremely poor and 7=Excellent or vice-versa. We can easily get dataset description and variables summary with `info` function.
+
+The usual way to connect numeric data to labels in R is in factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, we can’t calculate means or other numeric statistics on factors. 
+
+With labels we can manipulate short variable names and codes when we analyze our data but in the resulting tables and graphs we will see human-readable text. 
+
+It is easy to store labels as variable attributes in R but most R functions cannot use them or even drop them. `expss` package integrates value labels support into base R functions and into functions from other packages. Every function which internally converts variable to factor will utilize labels. Labels will be preserved during variables subsetting and concatenation. Additionally, there is a function (`use_labels`) which greatly simplify variable labels usage. See examples below.
+
+## Getting and setting variable and value labels
 
 First, apply value and variables labels to dataset:
 ```{r, message=FALSE, warning=FALSE}
@@ -34,11 +45,55 @@ mtcars = apply_labels(mtcars,
 )
 
 ```
+In addition to `apply_labels` we have SPSS-style `var_lab` and `val_lab` functions:
+```{r}
+nps = c(-1, 0, 1, 1, 0, 1, 1, -1)
+var_lab(nps) = "Net promoter score"
+val_lab(nps) = num_lab("
+            -1 Detractors
+             0 Neutralists    
+             1 Promoters    
+")
 
-Base `table` and `boxplot` with value labels:
+```
+We can read, add or remove existing labels:
+```{r}
+var_lab(nps) # get variable label
+val_lab(nps) # get value labels
+
+# add new labels
+add_val_lab(nps) = num_lab("
+                           98 Other    
+                           99 Hard to say
+                           ")
+
+# remove label by value
+# %d% - diff, %n_d% - names diff 
+val_lab(nps) = val_lab(nps) %d% 98
+# or, remove value by name
+val_lab(nps) = val_lab(nps) %n_d% "Other"
+```
+Additionaly, there are some utility functions. They can applied on one variable as well as on the entire dataset.
+```{r}
+drop_val_labs(nps)
+drop_var_labs(nps)
+unlab(nps)
+drop_unused_labels(nps)
+prepend_values(nps)
+```
+There is also `prepend_names` function but it can be applied only to data.frame.
+
+## Labels with base R and ggplot2 functions 
+
+Base `table` and plotting with value labels:
 ```{r, fig.height=6, fig.width=7}
 with(mtcars, table(am, vs))
-
+with(mtcars, 
+     barplot(
+         table(am, vs), 
+         beside = TRUE, 
+         legend = TRUE)
+     )
 boxplot(mpg ~ am, data = mtcars)
 ```
 
@@ -61,4 +116,77 @@ use_labels(mtcars, {
         geom_point(aes(y = mpg, x = wt, color = qsec)) +
         facet_grid(am ~ vs)
 }) 
+```
+
+## Extreme value labels support
+
+We have an option for extreme values lables support: `expss_enable_value_labels_support_extreme()`. With this option `factor`/`as.factor` will take into account empty levels. However, `unique` will give weird result for labelled variables: labels without values will be added to unique values. That's why it is recommended to turn off this option immediately after usage. See examples. 
+
+We have label 'Hard to say' for which there are no values in `nps`:
+```{r}
+nps = c(-1, 0, 1, 1, 0, 1, 1, -1)
+var_lab(nps) = "Net promoter score"
+val_lab(nps) = num_lab("
+            -1 Detractors
+             0 Neutralists    
+             1 Promoters
+             99 Hard to say
+")
+```
+Here we disable labels support and get results without labels:
+```{r}
+expss_disable_value_labels_support()
+table(nps) # there is no labels in the result
+unique(nps)
+```
+Results with default value labels support - three labels are here but "Hard to say" is absent.
+```{r}
+expss_enable_value_labels_support()
+# table with labels but there are no label "Hard to say"
+table(nps)
+unique(nps)
+```
+And now extreme value labels support - we see "Hard to say" with zero counts. Note the weird `unique` result.
+```{r}
+expss_enable_value_labels_support_extreme()
+# now we see "Hard to say" with zero counts
+table(nps) 
+# weird 'unique'! There is a value 99 which is absent in 'nps'
+unique(nps) 
+
+```
+Return immediately to defaults to avoid issues:
+```{r}
+expss_enable_value_labels_support()
+```
+
+## Labels are preserved during common operations on the data
+
+There are special methods for subsetting and concatenating labelled variables. These methods preserve labels during common operations. We don't need to restore labels on subsetted or sorted data.frame. 
+
+`mtcars` with labels:
+```{r}
+str(mtcars)
+```
+Make subset of the data.frame:
+```{r}
+mtcars_subset = mtcars[1:10, ]
+```
+Labels are here, nothing is lost:
+```{r}
+str(mtcars_subset)
+```
+
+## Interaction with 'haven'
+
+To use `expss` with `haven` you need to load `expss` strictly after `haven` (or other package with implemented 'labelled' class) to avoid conflicts. And it is better to use `read_spss` with explict package specification: `haven::read_spss`. See example below. 
+`haven` package doesn't set 'labelled' class for variables which have variable label but don't have value labels. It leads to labels losing during subsetting and other operations. We have a special function to fix this: `add_labelled_class`. Apply it to dataset loaded by `haven`.
+
+```{r, eval = FALSE}
+# we need to load packages strictly in this order to avoid conflicts
+library(haven)
+library(expss)
+spss_data = haven::read_spss("spss_file.sav")
+# add missing 'labelled' class
+spss_data = add_labelled_class(spss_data) 
 ```

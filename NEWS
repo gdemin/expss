@@ -1,6 +1,6 @@
-0.8.8 (12.10.2018)
+0.8.8 (11.11.2018)
 ================
-* add '*.xlsx' export for tables via 'openxlsx' package
+* add '*.xlsx' export for tables via 'openxlsx' package. See ?xl_write
 * add 'set_caption' function and support for it in 'htmlTable', 'as.datatable_widget' and *.xlsx export
 * add function 'expss_enable_value_labels_support_extreme'
 * small bugfixes and performance improvement
@@ -8,8 +8,6 @@
 * 'by_groups' is deprecated now. Use 'take' from 'maditr' instead.
 * 'dtfrm'/'as.dtfrm' are finally removed. Use 'sheet'/'as.sheet' instead
 * It seems nobody uses 'lst'/'.lst' functions so they are removed.    
-
-
 
 0.8.7 (12.06.2018)
 ================

@@ -12,11 +12,11 @@ vignette: >
 ## Introduction
 
 Variable label is human readable description of the variable. R supports rather long variable names and these names can contain even spaces and punctuation but short variables names make coding easier. Variable label can give a nice, long description of variable. With this description it is easier to remember what those variable names refer to.
-Value labels are similar to variable labels, but value labels are descriptions of the values a variable can take. Labeling values means you don’t have to remember if 1=Extremely poor and 7=Excellent or vice-versa. You can easily get dataset description and variables summary with `info` function.
+Value labels are similar to variable labels, but value labels are descriptions of the values a variable can take. Labeling values means we don’t have to remember if 1=Extremely poor and 7=Excellent or vice-versa. We can easily get dataset description and variables summary with `info` function.
 
-The usual way to connect numeric data to labels in R is in factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, you can’t calculate means or other numeric statistics on factors. 
+The usual way to connect numeric data to labels in R is in factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, we can’t calculate means or other numeric statistics on factors. 
 
-With labels you can manipulate short variable names and codes when you analyze your data but in the resulting tables and graphs you will see human-readable text. 
+With labels we can manipulate short variable names and codes when we analyze our data but in the resulting tables and graphs we will see human-readable text. 
 
 It is easy to store labels as variable attributes in R but most R functions cannot use them or even drop them. `expss` package integrates value labels support into base R functions and into functions from other packages. Every function which internally converts variable to factor will utilize labels. Labels will be preserved during variables subsetting and concatenation. Additionally, there is a function (`use_labels`) which greatly simplify variable labels usage. See examples below.
 
@@ -162,7 +162,7 @@ expss_enable_value_labels_support()
 
 ## Labels are preserved during common operations on the data
 
-There are special methods for subsetting and concatenating labelled variables. These methods preserve labels during common operations. You don't need to restore labels on subsetted or sorted data.frame. 
+There are special methods for subsetting and concatenating labelled variables. These methods preserve labels during common operations. We don't need to restore labels on subsetted or sorted data.frame. 
 
 `mtcars` with labels:
 ```{r}
@@ -183,7 +183,7 @@ To use `expss` with `haven` you need to load `expss` strictly after `haven` (or 
 `haven` package doesn't set 'labelled' class for variables which have variable label but don't have value labels. It leads to labels losing during subsetting and other operations. We have a special function to fix this: `add_labelled_class`. Apply it to dataset loaded by `haven`.
 
 ```{r, eval = FALSE}
-# you need to load packages strictly in this order to avoid conflicts
+# we need to load packages strictly in this order to avoid conflicts
 library(haven)
 library(expss)
 spss_data = haven::read_spss("spss_file.sav")

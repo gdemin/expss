@@ -2,7 +2,7 @@ Package: expss
 Type: Package
 Title: Tables with Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
 Version: 0.8.8
-Date: 2018-10-12
+Date: 2018-11-11
 Maintainer: Gregory Demin <gdemin@gmail.com>
 Authors@R: person("Gregory", "Demin", email = "gdemin@gmail.com",
          role = c("aut", "cre"))

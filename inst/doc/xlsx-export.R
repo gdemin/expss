@@ -1,22 +1,4 @@
----
-title: "Export tables to xlsx files"
-date: "`r Sys.Date()`"
-output: 
-    html_document
-vignette: >
-    %\VignetteIndexEntry{Export tables to xlsx files}
-    %\VignetteEngine{knitr::rmarkdown}
-    %\VignetteEncoding{utf8}
----
-
-## Introduction
-
-To export `expss` tables to *.xlsx you need to install excellent `openxlsx` package. To install it just type in the console `install.packages("openxlsx")`. On Windows system you may need also install RTools. It can be downloaded from CRAN: [RTools](https://cran.r-project.org/bin/windows/Rtools/).
-
-## Examples
-
-First we apply labels on the mtcars dataset and build simple table with caption.
-```{r}
+## ------------------------------------------------------------------------
 library(expss)
 library(openxlsx)
 data(mtcars)
@@ -46,32 +28,21 @@ mtcars_table = mtcars %>%
     set_caption("Table 1")
 
 mtcars_table
-```
 
-Then we create workbook and add worksheet to it.
-```{r}
+## ------------------------------------------------------------------------
 wb = createWorkbook()
 sh = addWorksheet(wb, "Tables")
-```
-Export - we should specify workbook and worksheet. 
-```{r}
+
+## ------------------------------------------------------------------------
 xl_write(mtcars_table, wb, sh)
-```
-And, finally, we save workbook with table to the xlsx file.
-```{r, eval=FALSE}
-saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
-```
-Screenshot of the exported table:
-![table1.xlsx](screen_xlsx1.png)
 
-## Automation of the report generation 
+## ---- eval=FALSE---------------------------------------------------------
+#  saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
 
-First of all, we create banner which we will use for all our tables. 
-```{r}
+## ------------------------------------------------------------------------
 banner = calc(mtcars, list(total(), am, vs))
-```
-Then we generate list with all tables. If variables have small number of discrete values we create column percent table. In other cases we calculate table with means. For both types of tables we mark significant differencies between groups.
-```{r}
+
+## ------------------------------------------------------------------------
 list_of_tables = lapply(mtcars, function(variable) {
     if(length(unique(variable))<7){
         cro_cpct(variable, banner) %>% significance_cpct()
@@ -82,14 +53,12 @@ list_of_tables = lapply(mtcars, function(variable) {
     }
     
 })
-```
-Create workbook:
-```{r}
+
+## ------------------------------------------------------------------------
 wb = createWorkbook()
 sh = addWorksheet(wb, "Tables")
-```
-Here we export our list with tables with additional formatting. We remove '#' sign from totals and mark total column with bold. You can read about formatting options in the manual fro `xl_write` (`?xl_write` in the console).
-```{r}
+
+## ------------------------------------------------------------------------
 xl_write(list_of_tables, wb, sh, 
          # remove '#' sign from totals 
          col_symbols_to_remove = "#",
@@ -98,10 +67,7 @@ xl_write(list_of_tables, wb, sh,
          other_col_labels_formats = list("#" = createStyle(textDecoration = "bold")),
          other_cols_formats = list("#" = createStyle(textDecoration = "bold")),
          )
-```
-Save workbook:
-```{r, eval = FALSE}
-saveWorkbook(wb, "report.xlsx", overwrite = TRUE)
-```
-Screenshot of the generated report:
-![report.xlsx](screen_xlsx2.png)
+
+## ---- eval = FALSE-------------------------------------------------------
+#  saveWorkbook(wb, "report.xlsx", overwrite = TRUE)
+
