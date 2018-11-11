@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2018-06-14" />
+<meta name="date" content="2018-11-12" />
 
 <title>expss: Tables with Labels in R</title>
 
@@ -220,7 +220,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">expss: Tables with Labels in R</h1>
-<h4 class="date"><em>2018-06-14</em></h4>
+<h4 class="date"><em>2018-11-12</em></h4>
 
 </div>
 
@@ -235,6 +235,7 @@ div.tocify {
 <li><a href="http://gdemin.github.io/expss/">Online introduction (current page)</a></li>
 <li><a href="https://cran.r-project.org/package=expss">expss on CRAN</a></li>
 <li><a href="https://github.com/gdemin/expss">expss on Github</a></li>
+<li><a href="https://stackoverflow.com/questions/tagged/expss">expss on Stackoverflow</a></li>
 <li><a href="https://github.com/gdemin/expss/issues">Issues</a></li>
 </ul>
 </div>
@@ -5203,14 +5204,108 @@ w %&gt;%
 </div>
 <div id="labels-support-for-base-r" class="section level2">
 <h2>Labels support for base R</h2>
-<p>Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels.</p>
+<p>Variable label is human readable description of the variable. R supports rather long variable names and these names can contain even spaces and punctuation but short variables names make coding easier. Variable label can give a nice, long description of variable. With this description it is easier to remember what those variable names refer to. Value labels are similar to variable labels, but value labels are descriptions of the values a variable can take. Labeling values means we don’t have to remember if 1=Extremely poor and 7=Excellent or vice-versa. We can easily get dataset description and variables summary with <code>info</code> function.</p>
+<p>The usual way to connect numeric data to labels in R is in factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, we can’t calculate means or other numeric statistics on factors.</p>
+<p>With labels we can manipulate short variable names and codes when we analyze our data but in the resulting tables and graphs we will see human-readable text.</p>
+<p>It is easy to store labels as variable attributes in R but most R functions cannot use them or even drop them. <code>expss</code> package integrates value labels support into base R functions and into functions from other packages. Every function which internally converts variable to factor will utilize labels. Labels will be preserved during variables subsetting and concatenation. Additionally, there is a function (<code>use_labels</code>) which greatly simplify variable labels usage. See examples below.</p>
+<div id="getting-and-setting-variable-and-value-labels" class="section level3">
+<h3>Getting and setting variable and value labels</h3>
+<p>First, apply value and variables labels to dataset:</p>
+<pre class="r"><code>library(expss)
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = &quot;Miles/(US) gallon&quot;,
+                      cyl = &quot;Number of cylinders&quot;,
+                      disp = &quot;Displacement (cu.in.)&quot;,
+                      hp = &quot;Gross horsepower&quot;,
+                      drat = &quot;Rear axle ratio&quot;,
+                      wt = &quot;Weight (1000 lbs)&quot;,
+                      qsec = &quot;1/4 mile time&quot;,
+                      vs = &quot;Engine&quot;,
+                      vs = c(&quot;V-engine&quot; = 0,
+                             &quot;Straight engine&quot; = 1),
+                      am = &quot;Transmission&quot;,
+                      am = c(&quot;Automatic&quot; = 0,
+                             &quot;Manual&quot;=1),
+                      gear = &quot;Number of forward gears&quot;,
+                      carb = &quot;Number of carburetors&quot;
+)</code></pre>
+<p>In addition to <code>apply_labels</code> we have SPSS-style <code>var_lab</code> and <code>val_lab</code> functions:</p>
+<pre class="r"><code>nps = c(-1, 0, 1, 1, 0, 1, 1, -1)
+var_lab(nps) = &quot;Net promoter score&quot;
+val_lab(nps) = num_lab(&quot;
+            -1 Detractors
+             0 Neutralists    
+             1 Promoters    
+&quot;)</code></pre>
+<p>We can read, add or remove existing labels:</p>
+<pre class="r"><code>var_lab(nps) # get variable label</code></pre>
+<pre><code>## [1] &quot;Net promoter score&quot;</code></pre>
+<pre class="r"><code>val_lab(nps) # get value labels</code></pre>
+<pre><code>##  Detractors Neutralists   Promoters 
+##          -1           0           1</code></pre>
+<pre class="r"><code># add new labels
+add_val_lab(nps) = num_lab(&quot;
+                           98 Other    
+                           99 Hard to say
+                           &quot;)
+
+# remove label by value
+# %d% - diff, %n_d% - names diff 
+val_lab(nps) = val_lab(nps) %d% 98
+# or, remove value by name
+val_lab(nps) = val_lab(nps) %n_d% &quot;Other&quot;</code></pre>
+<p>Additionaly, there are some utility functions. They can applied on one variable as well as on the entire dataset.</p>
+<pre class="r"><code>drop_val_labs(nps)</code></pre>
+<pre><code>## LABEL: Net promoter score 
+## VALUES:
+## -1, 0, 1, 1, 0, 1, 1, -1</code></pre>
+<pre class="r"><code>drop_var_labs(nps)</code></pre>
+<pre><code>## VALUES:
+## -1, 0, 1, 1, 0, 1, 1, -1
+## VALUE LABELS:               
+##  -1 Detractors 
+##   0 Neutralists
+##   1 Promoters  
+##  99 Hard to say</code></pre>
+<pre class="r"><code>unlab(nps)</code></pre>
+<pre><code>## [1] -1  0  1  1  0  1  1 -1</code></pre>
+<pre class="r"><code>drop_unused_labels(nps)</code></pre>
+<pre><code>## LABEL: Net promoter score 
+## VALUES:
+## -1, 0, 1, 1, 0, 1, 1, -1
+## VALUE LABELS:               
+##  -1 Detractors 
+##   0 Neutralists
+##   1 Promoters</code></pre>
+<pre class="r"><code>prepend_values(nps)</code></pre>
+<pre><code>## LABEL: Net promoter score 
+## VALUES:
+## -1, 0, 1, 1, 0, 1, 1, -1
+## VALUE LABELS:                  
+##  -1 -1 Detractors 
+##   0 0 Neutralists 
+##   1 1 Promoters   
+##  99 99 Hard to say</code></pre>
+<p>There is also <code>prepend_names</code> function but it can be applied only to data.frame.</p>
+</div>
+<div id="labels-with-base-r-and-ggplot2-functions" class="section level3">
+<h3>Labels with base R and ggplot2 functions</h3>
+<p>Base <code>table</code> and plotting with value labels:</p>
 <pre class="r"><code>with(mtcars, table(am, vs))</code></pre>
 <pre><code>##            vs
 ## am          V-engine Straight engine
 ##   Automatic       12               7
 ##   Manual           6               7</code></pre>
+<pre class="r"><code>with(mtcars, 
+     barplot(
+         table(am, vs), 
+         beside = TRUE, 
+         legend = TRUE)
+     )</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code>boxplot(mpg ~ am, data = mtcars)</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <p>There is a special function for variables labels support - <code>use_labels</code>. By now variables labels support available only for expression which will be evaluated inside data.frame.</p>
 <pre class="r"><code># table with dimension names
 use_labels(mtcars, table(am, vs)) </code></pre>
@@ -5251,12 +5346,481 @@ use_labels(mtcars, {
         geom_point(aes(y = mpg, x = wt, color = qsec)) +
         facet_grid(am ~ vs)
 }) </code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="extreme-value-labels-support" class="section level3">
+<h3>Extreme value labels support</h3>
+<p>We have an option for extreme values lables support: <code>expss_enable_value_labels_support_extreme()</code>. With this option <code>factor</code>/<code>as.factor</code> will take into account empty levels. However, <code>unique</code> will give weird result for labelled variables: labels without values will be added to unique values. That’s why it is recommended to turn off this option immediately after usage. See examples.</p>
+<p>We have label ‘Hard to say’ for which there are no values in <code>nps</code>:</p>
+<pre class="r"><code>nps = c(-1, 0, 1, 1, 0, 1, 1, -1)
+var_lab(nps) = &quot;Net promoter score&quot;
+val_lab(nps) = num_lab(&quot;
+            -1 Detractors
+             0 Neutralists    
+             1 Promoters
+             99 Hard to say
+&quot;)</code></pre>
+<p>Here we disable labels support and get results without labels:</p>
+<pre class="r"><code>expss_disable_value_labels_support()
+table(nps) # there is no labels in the result</code></pre>
+<pre><code>## nps
+## -1  0  1 
+##  2  2  4</code></pre>
+<pre class="r"><code>unique(nps)</code></pre>
+<pre><code>## [1] -1  0  1</code></pre>
+<p>Results with default value labels support - three labels are here but “Hard to say” is absent.</p>
+<pre class="r"><code>expss_enable_value_labels_support()
+# table with labels but there are no label &quot;Hard to say&quot;
+table(nps)</code></pre>
+<pre><code>## nps
+##  Detractors Neutralists   Promoters 
+##           2           2           4</code></pre>
+<pre class="r"><code>unique(nps)</code></pre>
+<pre><code>## LABEL: Net promoter score 
+## VALUES:
+## -1, 0, 1
+## VALUE LABELS:               
+##  -1 Detractors 
+##   0 Neutralists
+##   1 Promoters  
+##  99 Hard to say</code></pre>
+<p>And now extreme value labels support - we see “Hard to say” with zero counts. Note the weird <code>unique</code> result.</p>
+<pre class="r"><code>expss_enable_value_labels_support_extreme()
+# now we see &quot;Hard to say&quot; with zero counts
+table(nps) </code></pre>
+<pre><code>## nps
+##  Detractors Neutralists   Promoters Hard to say 
+##           2           2           4           0</code></pre>
+<pre class="r"><code># weird &#39;unique&#39;! There is a value 99 which is absent in &#39;nps&#39;
+unique(nps) </code></pre>
+<pre><code>## LABEL: Net promoter score 
+## VALUES:
+## -1, 0, 1, 99
+## VALUE LABELS:               
+##  -1 Detractors 
+##   0 Neutralists
+##   1 Promoters  
+##  99 Hard to say</code></pre>
+<p>Return immediately to defaults to avoid issues:</p>
+<pre class="r"><code>expss_enable_value_labels_support()</code></pre>
+</div>
+<div id="labels-are-preserved-during-common-operations-on-the-data" class="section level3">
+<h3>Labels are preserved during common operations on the data</h3>
+<p>There are special methods for subsetting and concatenating labelled variables. These methods preserve labels during common operations. We don’t need to restore labels on subsetted or sorted data.frame.</p>
+<p><code>mtcars</code> with labels:</p>
+<pre class="r"><code>str(mtcars)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    32 obs. of  11 variables:
+##  $ mpg :Class &#39;labelled&#39; num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##    .. .. LABEL: Miles/(US) gallon 
+##  $ cyl :Class &#39;labelled&#39; num  6 6 4 6 8 6 8 4 4 6 ...
+##    .. .. LABEL: Number of cylinders 
+##  $ disp:Class &#39;labelled&#39; num  160 160 108 258 360 ...
+##    .. .. LABEL: Displacement (cu.in.) 
+##  $ hp  :Class &#39;labelled&#39; num  110 110 93 110 175 105 245 62 95 123 ...
+##    .. .. LABEL: Gross horsepower 
+##  $ drat:Class &#39;labelled&#39; num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+##    .. .. LABEL: Rear axle ratio 
+##  $ wt  :Class &#39;labelled&#39; num  2.62 2.88 2.32 3.21 3.44 ...
+##    .. .. LABEL: Weight (1000 lbs) 
+##  $ qsec:Class &#39;labelled&#39; num  16.5 17 18.6 19.4 17 ...
+##    .. .. LABEL: 1/4 mile time 
+##  $ vs  :Class &#39;labelled&#39; num  0 0 1 1 0 1 0 1 1 1 ...
+##    .. .. LABEL: Engine 
+##    .. .. VALUE LABELS [1:2]: 0=V-engine, 1=Straight engine 
+##  $ am  :Class &#39;labelled&#39; num  1 1 1 0 0 0 0 0 0 0 ...
+##    .. .. LABEL: Transmission 
+##    .. .. VALUE LABELS [1:2]: 0=Automatic, 1=Manual 
+##  $ gear:Class &#39;labelled&#39; num  4 4 4 3 3 3 3 4 4 4 ...
+##    .. .. LABEL: Number of forward gears 
+##  $ carb:Class &#39;labelled&#39; num  4 4 1 1 2 1 4 2 2 4 ...
+##    .. .. LABEL: Number of carburetors</code></pre>
+<p>Make subset of the data.frame:</p>
+<pre class="r"><code>mtcars_subset = mtcars[1:10, ]</code></pre>
+<p>Labels are here, nothing is lost:</p>
+<pre class="r"><code>str(mtcars_subset)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    10 obs. of  11 variables:
+##  $ mpg :Class &#39;labelled&#39; num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2
+##    .. .. LABEL: Miles/(US) gallon 
+##  $ cyl :Class &#39;labelled&#39; num  6 6 4 6 8 6 8 4 4 6
+##    .. .. LABEL: Number of cylinders 
+##  $ disp:Class &#39;labelled&#39; num  160 160 108 258 360 ...
+##    .. .. LABEL: Displacement (cu.in.) 
+##  $ hp  :Class &#39;labelled&#39; num  110 110 93 110 175 105 245 62 95 123
+##    .. .. LABEL: Gross horsepower 
+##  $ drat:Class &#39;labelled&#39; num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92
+##    .. .. LABEL: Rear axle ratio 
+##  $ wt  :Class &#39;labelled&#39; num  2.62 2.88 2.32 3.21 3.44 ...
+##    .. .. LABEL: Weight (1000 lbs) 
+##  $ qsec:Class &#39;labelled&#39; num  16.5 17 18.6 19.4 17 ...
+##    .. .. LABEL: 1/4 mile time 
+##  $ vs  :Class &#39;labelled&#39; num  0 0 1 1 0 1 0 1 1 1
+##    .. .. LABEL: Engine 
+##    .. .. VALUE LABELS [1:2]: 0=V-engine, 1=Straight engine 
+##  $ am  :Class &#39;labelled&#39; num  1 1 1 0 0 0 0 0 0 0
+##    .. .. LABEL: Transmission 
+##    .. .. VALUE LABELS [1:2]: 0=Automatic, 1=Manual 
+##  $ gear:Class &#39;labelled&#39; num  4 4 4 3 3 3 3 4 4 4
+##    .. .. LABEL: Number of forward gears 
+##  $ carb:Class &#39;labelled&#39; num  4 4 1 1 2 1 4 2 2 4
+##    .. .. LABEL: Number of carburetors</code></pre>
+</div>
+<div id="interaction-with-haven" class="section level3">
+<h3>Interaction with ‘haven’</h3>
+<p>To use <code>expss</code> with <code>haven</code> you need to load <code>expss</code> strictly after <code>haven</code> (or other package with implemented ‘labelled’ class) to avoid conflicts. And it is better to use <code>read_spss</code> with explict package specification: <code>haven::read_spss</code>. See example below. <code>haven</code> package doesn’t set ‘labelled’ class for variables which have variable label but don’t have value labels. It leads to labels losing during subsetting and other operations. We have a special function to fix this: <code>add_labelled_class</code>. Apply it to dataset loaded by <code>haven</code>.</p>
+<pre class="r"><code># we need to load packages strictly in this order to avoid conflicts
+library(haven)
+library(expss)
+spss_data = haven::read_spss(&quot;spss_file.sav&quot;)
+# add missing &#39;labelled&#39; class
+spss_data = add_labelled_class(spss_data) </code></pre>
+</div>
+</div>
+<div id="export-to-microsoft-excel" class="section level2">
+<h2>Export to Microsoft Excel</h2>
+<p>To export <code>expss</code> tables to *.xlsx you need to install excellent <code>openxlsx</code> package. To install it just type in the console <code>install.packages(&quot;openxlsx&quot;)</code>. On Windows system you may need also install RTools. It can be downloaded from CRAN: <a href="https://cran.r-project.org/bin/windows/Rtools/">RTools</a>.</p>
+<p>First we apply labels on the mtcars dataset and build simple table with caption.</p>
+<pre class="r"><code>library(expss)
+library(openxlsx)
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = &quot;Miles/(US) gallon&quot;,
+                      cyl = &quot;Number of cylinders&quot;,
+                      disp = &quot;Displacement (cu.in.)&quot;,
+                      hp = &quot;Gross horsepower&quot;,
+                      drat = &quot;Rear axle ratio&quot;,
+                      wt = &quot;Weight (lb/1000)&quot;,
+                      qsec = &quot;1/4 mile time&quot;,
+                      vs = &quot;Engine&quot;,
+                      vs = c(&quot;V-engine&quot; = 0,
+                             &quot;Straight engine&quot; = 1),
+                      am = &quot;Transmission&quot;,
+                      am = c(&quot;Automatic&quot; = 0,
+                             &quot;Manual&quot;=1),
+                      gear = &quot;Number of forward gears&quot;,
+                      carb = &quot;Number of carburetors&quot;
+)
+
+mtcars_table = mtcars %&gt;% 
+    calc_cro_cpct(
+        cell_vars = list(cyl, gear),
+        col_vars = list(total(), am, vs)
+    ) %&gt;% 
+    set_caption(&quot;Table 1&quot;)
+
+mtcars_table</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="8" style="text-align: left;">
+Table 1
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+<th style="border-top: 2px solid grey;; border-bottom: hidden;">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+<th style="border-bottom: 1px solid grey;" colspan="1">
+ 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="8" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+34.4
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;">
+61.5
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+5.6
+</td>
+<td style="text-align: right;">
+71.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1
+</td>
+<td style="text-align: right;">
+23.1
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;">
+28.6
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+43.8
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;">
+15.4
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+77.8
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   #Total cases 
+</td>
+<td style="text-align: right;">
+32
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19
+</td>
+<td style="text-align: right;">
+13
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+18
+</td>
+<td style="text-align: right;">
+14
+</td>
+</tr>
+<tr>
+<td colspan="8" style="font-weight: 900;">
+ Number of forward gears 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   3 
+</td>
+<td style="text-align: right;">
+46.9
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+78.9
+</td>
+<td style="text-align: right;">
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+66.7
+</td>
+<td style="text-align: right;">
+21.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+37.5
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1
+</td>
+<td style="text-align: right;">
+61.5
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+11.1
+</td>
+<td style="text-align: right;">
+71.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   5 
+</td>
+<td style="text-align: right;">
+15.6
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+38.5
+</td>
+<td style colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+22.2
+</td>
+<td style="text-align: right;">
+7.1
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13
+</td>
+<td style="border-bottom: 2px solid grey;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+18
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+14
+</td>
+</tr>
+</tbody>
+</table>
+<p>Then we create workbook and add worksheet to it.</p>
+<pre class="r"><code>wb = createWorkbook()
+sh = addWorksheet(wb, &quot;Tables&quot;)</code></pre>
+<p>Export - we should specify workbook and worksheet.</p>
+<pre class="r"><code>xl_write(mtcars_table, wb, sh)</code></pre>
+<p>And, finally, we save workbook with table to the xlsx file.</p>
+<pre class="r"><code>saveWorkbook(wb, &quot;table1.xlsx&quot;, overwrite = TRUE)</code></pre>
+<p>Screenshot of the exported table: <img src="screen_xlsx1.png" alt="table1.xlsx" /></p>
+<div id="automation-of-the-report-generation" class="section level3">
+<h3>Automation of the report generation</h3>
+<p>First of all, we create banner which we will use for all our tables.</p>
+<pre class="r"><code>banner = calc(mtcars, list(total(), am, vs))</code></pre>
+<p>Then we generate list with all tables. If variables have small number of discrete values we create column percent table. In other cases we calculate table with means. For both types of tables we mark significant differencies between groups.</p>
+<pre class="r"><code>list_of_tables = lapply(mtcars, function(variable) {
+    if(length(unique(variable))&lt;7){
+        cro_cpct(variable, banner) %&gt;% significance_cpct()
+    } else {
+        # if number of unique values greater than seven we calculate mean
+        cro_mean_sd_n(variable, banner) %&gt;% significance_means()
+        
+    }
+    
+})</code></pre>
+<p>Create workbook:</p>
+<pre class="r"><code>wb = createWorkbook()
+sh = addWorksheet(wb, &quot;Tables&quot;)</code></pre>
+<p>Here we export our list with tables with additional formatting. We remove ‘#’ sign from totals and mark total column with bold. You can read about formatting options in the manual fro <code>xl_write</code> (<code>?xl_write</code> in the console).</p>
+<pre class="r"><code>xl_write(list_of_tables, wb, sh, 
+         # remove &#39;#&#39; sign from totals 
+         col_symbols_to_remove = &quot;#&quot;,
+         row_symbols_to_remove = &quot;#&quot;,
+         # format total column as bold
+         other_col_labels_formats = list(&quot;#&quot; = createStyle(textDecoration = &quot;bold&quot;)),
+         other_cols_formats = list(&quot;#&quot; = createStyle(textDecoration = &quot;bold&quot;)),
+         )</code></pre>
+<p>Save workbook:</p>
+<pre class="r"><code>saveWorkbook(wb, &quot;report.xlsx&quot;, overwrite = TRUE)</code></pre>
+<p>Screenshot of the generated report: <img src="screen_xlsx2.png" alt="report.xlsx" /></p>
+</div>
 </div>
 <div id="excel-functions-translation-guide" class="section level2">
 <h2>Excel functions translation guide</h2>
 <p>Let us consider Excel toy table:</p>
-<table style="width:30%;">
+<table style='width:30%;'>
 <thead>
 <tr>
 <th style="text-align:left;">
@@ -5375,7 +5939,7 @@ w = text_to_columns(&quot;
 <p><strong>R</strong>:</p>
 <pre class="r"><code>count_col_if(le(1), w$a)</code></pre>
 Table of criteria:
-<table style="width:30%;">
+<table style='width:30%;'>
 <thead>
 <tr>
 <th style="text-align:right;">
@@ -5484,7 +6048,7 @@ gt(1)
 <div id="vlookup" class="section level5">
 <h5>VLOOKUP</h5>
 Our dictionary for lookup:
-<table style="width:30%;">
+<table style='width:30%;'>
 <thead>
 <tr>
 <th style="text-align:left;">
