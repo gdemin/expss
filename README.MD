@@ -317,10 +317,88 @@ write_labelled_spss(w, file  filename = "product_test.csv")
 
 ## Labels support for base R
 
-Here we demonstrate labels support in base R - value labels automatically used as factors levels. So every function which converts labelled variable to factor will utilize labels. 
+Variable label is human readable description of the variable. R supports rather long variable names and these names can contain even spaces and punctuation but short variables names make coding easier. Variable label can give a nice, long description of variable. With this description it is easier to remember what those variable names refer to.
+Value labels are similar to variable labels, but value labels are descriptions of the values a variable can take. Labeling values means we don’t have to remember if 1=Extremely poor and 7=Excellent or vice-versa. We can easily get dataset description and variables summary with `info` function.
+
+The usual way to connect numeric data to labels in R is in factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, we can’t calculate means or other numeric statistics on factors. 
+
+With labels we can manipulate short variable names and codes when we analyze our data but in the resulting tables and graphs we will see human-readable text. 
+
+It is easy to store labels as variable attributes in R but most R functions cannot use them or even drop them. `expss` package integrates value labels support into base R functions and into functions from other packages. Every function which internally converts variable to factor will utilize labels. Labels will be preserved during variables subsetting and concatenation. Additionally, there is a function (`use_labels`) which greatly simplify variable labels usage. See examples below.
+
+### Getting and setting variable and value labels
+
+First, apply value and variables labels to dataset:
+```R
+library(expss)
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (1000 lbs)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+```
+In addition to `apply_labels` we have SPSS-style `var_lab` and `val_lab` functions:
+```R
+nps = c(-1, 0, 1, 1, 0, 1, 1, -1)
+var_lab(nps) = "Net promoter score"
+val_lab(nps) = num_lab("
+            -1 Detractors
+             0 Neutralists    
+             1 Promoters    To export `expss` tables to *.xlsx you need to install excellent `openxlsx` package. To install it just type in the console `install.packages("openxlsx")`. On Windows system you may need also install RTools. It can be downloaded from CRAN: [RTools](https://cran.r-project.org/bin/windows/Rtools/).
+
+
+We can read, add or remove existing labels:
+```R
+var_lab(nps) # get variable label
+val_lab(nps) # get value labels
+
+# add new labels
+add_val_lab(nps) = num_lab("
+                           98 Other    
+                           99 Hard to say
+                           ")
+
+# remove label by value
+# %d% - diff, %n_d% - names diff 
+val_lab(nps) = val_lab(nps) %d% 98
+# or, remove value by name
+val_lab(nps) = val_lab(nps) %n_d% "Other"
+```
+Additionaly, there are some utility functions. They can applied on one variable as well as on the entire dataset.
+```R
+drop_val_labs(nps)
+drop_var_labs(nps)
+unlab(nps)
+drop_unused_labels(nps)
+prepend_values(nps)
+```
+There is also `prepend_names` function but it can be applied only to data.frame.
+
+### Labels with base R and ggplot2 functions 
+
+Base `table` and plotting with value labels:
 ```R
 with(mtcars, table(am, vs))
-
+with(mtcars, 
+     barplot(
+         table(am, vs), 
+         beside = TRUE, 
+         legend = TRUE)
+     )
 boxplot(mpg ~ am, data = mtcars)
 ```
 
@@ -345,6 +423,173 @@ use_labels(mtcars, {
 }) 
 ```
 
+### Extreme value labels support
+
+We have an option for extreme values lables support: `expss_enable_value_labels_support_extreme()`. With this option `factor`/`as.factor` will take into account empty levels. However, `unique` will give weird result for labelled variables: labels without values will be added to unique values. That's why it is recommended to turn off this option immediately after usage. See examples. 
+
+We have label 'Hard to say' for which there are no values in `nps`:
+```R
+nps = c(-1, 0, 1, 1, 0, 1, 1, -1)
+var_lab(nps) = "Net promoter score"
+val_lab(nps) = num_lab("
+            -1 Detractors
+             0 Neutralists    
+             1 Promoters
+             99 Hard to say
+")
+```
+Here we disable labels support and get results without labels:
+```R
+expss_disable_value_labels_support()
+table(nps) # there is no labels in the result
+unique(nps)
+```
+Results with default value labels support - three labels are here but "Hard to say" is absent.
+```R
+expss_enable_value_labels_support()
+# table with labels but there are no label "Hard to say"
+table(nps)
+unique(nps)
+```
+And now extreme value labels support - we see "Hard to say" with zero counts. Note the weird `unique` result.
+```R
+expss_enable_value_labels_support_extreme()
+# now we see "Hard to say" with zero counts
+table(nps) 
+# weird 'unique'! There is a value 99 which is absent in 'nps'
+unique(nps) 
+
+```
+Return immediately to defaults to avoid issues:
+```R
+expss_enable_value_labels_support()
+```
+
+### Labels are preserved during common operations on the data
+
+There are special methods for subsetting and concatenating labelled variables. These methods preserve labels during common operations. We don't need to restore labels on subsetted or sorted data.frame. 
+
+`mtcars` with labels:
+```R
+str(mtcars)
+```
+Make subset of the data.frame:
+```R
+mtcars_subset = mtcars[1:10, ]
+```
+Labels are here, nothing is lost:
+```R
+str(mtcars_subset)
+```
+
+### Interaction with 'haven'
+
+To use `expss` with `haven` you need to load `expss` strictly after `haven` (or other package with implemented 'labelled' class) to avoid conflicts. And it is better to use `read_spss` with explict package specification: `haven::read_spss`. See example below. 
+`haven` package doesn't set 'labelled' class for variables which have variable label but don't have value labels. It leads to labels losing during subsetting and other operations. We have a special function to fix this: `add_labelled_class`. Apply it to dataset loaded by `haven`.
+
+```R
+# we need to load packages strictly in this order to avoid conflicts
+library(haven)
+library(expss)
+spss_data = haven::read_spss("spss_file.sav")
+# add missing 'labelled' class
+spss_data = add_labelled_class(spss_data) 
+```
+
+## Export to Microsoft Excel
+
+To export `expss` tables to *.xlsx you need to install excellent `openxlsx` package. To install it just type in the console `install.packages("openxlsx")`. On Windows system you may need also install RTools. It can be downloaded from CRAN: [RTools](https://cran.r-project.org/bin/windows/Rtools/).
+
+First we apply labels on the mtcars dataset and build simple table with caption.
+```R
+library(expss)
+library(openxlsx)
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (lb/1000)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+mtcars_table = mtcars %>% 
+    calc_cro_cpct(
+        cell_vars = list(cyl, gear),
+        col_vars = list(total(), am, vs)
+    ) %>% 
+    set_caption("Table 1")
+
+mtcars_table
+```
+
+Then we create workbook and add worksheet to it.
+```R
+wb = createWorkbook()
+sh = addWorksheet(wb, "Tables")
+```
+Export - we should specify workbook and worksheet. 
+```R
+xl_write(mtcars_table, wb, sh)
+```
+And, finally, we save workbook with table to the xlsx file.
+```R
+saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
+```
+Screenshot of the exported table:
+![table1.xlsx](vignettes/screen_xlsx1.png)
+
+### Automation of the report generation 
+
+First of all, we create banner which we will use for all our tables. 
+```R
+banner = calc(mtcars, list(total(), am, vs))
+```
+Then we generate list with all tables. If variables have small number of discrete values we create column percent table. In other cases we calculate table with means. For both types of tables we mark significant differencies between groups.
+```R
+list_of_tables = lapply(mtcars, function(variable) {
+    if(length(unique(variable))<7){
+        cro_cpct(variable, banner) %>% significance_cpct()
+    } else {
+        # if number of unique values greater than seven we calculate mean
+        cro_mean_sd_n(variable, banner) %>% significance_means()
+        
+    }
+    
+})
+```
+Create workbook:
+```R
+wb = createWorkbook()
+sh = addWorksheet(wb, "Tables")
+```
+Here we export our list with tables with additional formatting. We remove '#' sign from totals and mark total column with bold. You can read about formatting options in the manual fro `xl_write` (`?xl_write` in the console).
+```R
+xl_write(list_of_tables, wb, sh, 
+         # remove '#' sign from totals 
+         col_symbols_to_remove = "#",
+         row_symbols_to_remove = "#",
+         # format total column as bold
+         other_col_labels_formats = list("#" = createStyle(textDecoration = "bold")),
+         other_cols_formats = list("#" = createStyle(textDecoration = "bold")),
+         )
+```
+Save workbook:
+```R
+saveWorkbook(wb, "report.xlsx", overwrite = TRUE)
+```
+Screenshot of the generated report:
+![report.xlsx](vignettes/screen_xlsx2.png)
 
 ## Excel functions translation guide
 
