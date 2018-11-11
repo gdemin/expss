@@ -74,7 +74,7 @@ xl_write(obj, wb, sheet, row = 1, col = 1, ...)
 \item{gap}{integer. Number of rows between list elements.}
 
 \item{remove_repeated}{Should we remove duplicated row or column labels in
-the every row/column of the etable? Possible values: "all", "rows", "columns", "none".}
+the rows/columns of the etable? Possible values: "all", "rows", "columns", "none".}
 
 \item{format_table}{logical should we format table? If FALSE all format arguments will be ignored.}
 
@@ -112,28 +112,29 @@ for substrings  which will be removed from column names.}
 \item{other_rows_formats}{named list. Names of the list are perl-style
 regular expression patterns, items of the list are results of the
 \link[openxlsx]{createStyle} function. Rows in the main area which row
-labels contain pattern will be formated according to the appropriate style.}
+labels contain pattern will be formatted according to the appropriate style.}
 
 \item{other_row_labels_formats}{named list. Names of the list are perl-style
 regular expression patterns, items of the list are results of the
 \link[openxlsx]{createStyle} function. Rows in the row labels area which row
-labels contain pattern will be formated according to the appropriate style.}
+labels contain pattern will be formatted according to the appropriate style.}
 
 \item{other_cols_formats}{named list. Names of the list are perl-style
 regular expression patterns, items of the list are results of the
 \link[openxlsx]{createStyle} function. Columns in the main area which column
-labels contain pattern will be formated according to the appropriate style.}
+labels contain pattern will be formatted according to the appropriate style.}
 
 \item{other_col_labels_formats}{named list. Names of the list are perl-style
 regular expression patterns, items of the list are results of the
 \link[openxlsx]{createStyle} function. Columns in the header area which column
-labels contain pattern will be formated according to the appropriate style.}
+labels contain pattern will be formatted according to the appropriate style.}
 
 \item{additional_cells_formats}{list Each item of the list is list which
-consists of three elements: first element is row numbers in the main area
-of the table, second element is column numbers and the third element is
-result of the \link[openxlsx]{createStyle} function. Cells in the main area
-will be formatted according to this style.}
+consists of two elements. First element is two columns matrix or data.frame
+with row number and column numbers in the main area of the table. Such
+matrix can be produced with code \code{which(logical_condition, arr.ind =
+TRUE)}. Second element is result of the \link[openxlsx]{createStyle}
+function. Cells in the main area will be formatted according to this style.}
 
 \item{caption_format}{result of the \link[openxlsx]{createStyle} function.}
 }
@@ -144,11 +145,75 @@ invisibly return vector with rows and columns (\code{c(rows,
 \description{
 Note that \code{openxlsx} package is required for these functions. It can be
 install by printing \code{install.packages('openxlsx')} in the console. On
-Windows system you also may need to install
-'rtools':\link{https://cran.r-project.org/bin/windows/Rtools/}. You can
-export several tables at once by combining them in a list. See examples.
+Windows system you also may need to
+install \href{https://cran.r-project.org/bin/windows/Rtools/}{rtools}. You
+can export several tables at once by combining them in a list. See examples.
 }
 \examples{
-1
+\dontrun{
+library(openxlsx)
+data(mtcars)
+# add labels to dataset
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (lb/1000)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
 
+# create table with caption
+mtcars_table = calc_cro_cpct(mtcars,
+                             cell_vars = list(cyl, gear),
+                             col_vars = list(total(), am, vs)
+) \%>\% 
+    set_caption("Table 1")
+
+
+wb = createWorkbook()
+sh = addWorksheet(wb, "Tables")
+# export table
+xl_write(mtcars_table, wb, sh)
+saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
+
+## automated report generation on multiple variables with the same banner
+ 
+banner = calc(mtcars, list(total(), am, vs))
+
+# create list of tables
+list_of_tables = lapply(mtcars, function(variable) {
+    if(length(unique(variable))<7){
+        cro_cpct(variable, banner) \%>\% significance_cpct()
+    } else {
+        # if number of unique values greater than seven we calculate mean
+        cro_mean_sd_n(variable, banner) \%>\% significance_means()
+        
+    }
+    
+})
+
+
+wb = createWorkbook()
+sh = addWorksheet(wb, "Tables")
+# export list of tables with additional formatting
+xl_write(list_of_tables, wb, sh, 
+         # remove '#' sign from totals 
+         col_symbols_to_remove = "#",
+         row_symbols_to_remove = "#",
+         # format total column as bold
+         other_col_labels_formats = list("#" = createStyle(textDecoration = "bold")),
+         other_cols_formats = list("#" = createStyle(textDecoration = "bold")),
+)
+saveWorkbook(wb, "report.xlsx", overwrite = TRUE)
+}
 }

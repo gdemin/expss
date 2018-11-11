@@ -339,9 +339,29 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
     sh = addWorksheet(wb, "Tables")
     res = xl_write(mtcars_table, wb, sh, row = 2, col = 2, 
                    additional_cells_formats = list(
-                       list(1:5, 1:5, createStyle(fgFill = "red")),
-                       list(1:5, 5:1, createStyle(fgFill = "blue"))
+                       list(cbind(1:5, 1:5), createStyle(fgFill = "red")),
+                       list(cbind(1:5, 5:1), createStyle(fgFill = "blue"))
                        
+                   )
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 2, col = 2, 
+                   additional_cells_formats = list(
+                       list(sheet(1:5, 1:5), createStyle(fgFill = "red")),
+                       list(sheet(1:5, 5:1), createStyle(fgFill = "blue"))
+                       
+                   )
+    )
+    # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
+    
+    wb = createWorkbook()
+    sh = addWorksheet(wb, "Tables")
+    res = xl_write(mtcars_table, wb, sh, row = 2, col = 2, 
+                   additional_cells_formats = list(
+                       list(which(mtcars_table[,-1]>40, arr.ind = TRUE), createStyle(fgFill = "red"))
                    )
     )
     # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
