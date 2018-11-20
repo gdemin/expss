@@ -400,7 +400,11 @@ copy = function(x) {
     if(missing(x)){
         copy
     } else {
-        x
+        if(is.data.table(x)){
+            data.table::copy(x)
+        } else {
+            x    
+        }
     }
 }    
 
