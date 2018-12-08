@@ -4,7 +4,11 @@ universal_subset = function(data, index, drop = TRUE){
     if(is.matrix(data)){
         data =  data[index, , drop = drop]
     } else if(is.data.frame(data)){
-        data = subset_dataframe(data, index, drop = drop)
+        if(is.data.table(data)){
+            data = data[index, ]
+        } else {
+            data = subset_dataframe(data, index, drop = drop)
+        }
     } else {
         data =  data[index]
     }

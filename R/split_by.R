@@ -6,7 +6,7 @@
 #' together with the corresponding values of \code{data}. \code{split_off} works
 #' with lists of data.frames or objects that can be coerced to data.frame and
 #' assumed to have compatible structure. Resulting rows will be sorted in order
-#' of the split variables. \code{split_separate} is an alias to \code{split_by}.
+#' of the split variables. 
 #' 
 #' @param data data.frame for \code{split_by}/list for \code{split_off}
 #' @param ... unquoted variables names (see \link{keep}) by which \code{data}
@@ -69,6 +69,13 @@ split_by = function(data, ..., drop = TRUE){
 }
 
 #' @export
+#' @rdname split_by
+split_separate = function(data, ..., drop = TRUE){
+    .Deprecated("split_by")
+    eval.parent(substitute(split_by(data, ..., drop = drop)))
+}
+
+#' @export
 split_by.data.frame = function(data, ..., drop = TRUE){
     variables_names = substitute(list(...))
     stopif(length(variables_names)==0, "'split_by' - no grouping variables.")
@@ -94,6 +101,7 @@ split_off = function(data, groups = NULL, rownames = NULL){
 
 #' @export
 split_off.list = function(data, groups = NULL, rownames = NULL){
+    first_elem_class = class(data[[1]])
     for(each in seq_along(data)){
         if(!is.data.frame(data[[each]])){
             if(is.vector(data[[each]]) && !is.list(data[[each]])){
@@ -102,28 +110,45 @@ split_off.list = function(data, groups = NULL, rownames = NULL){
                 data[[each]] = as.sheet(data[[each]])
             }
         }
+        if(is.with_caption(data[[each]])){
+            data[[each]] = move_caption_to_first_row(data[[each]])
+        }
     }
     if(!is.null(groups)){
         group_names = if_null(names(data), NA)
-        if(isTRUE(groups)){
-            groups = ".groups"
+        stopif(length(groups)!=1, "'split_off' - 'groups' should be vector of length 1.")
+        if("etable" %in% first_elem_class){
+            if(isTRUE(groups)){
+                groups = NULL
+            } else {
+                
+                groups = paste0(as.character(groups), "|")
+                
+            }
+            for(each in seq_along(data)){
+                if(NROW(data[[each]])>0) {
+                    data[[each]][[1]] = paste0(groups, group_names[each], "|", data[[each]][[1]])
+                }
+            }
         } else {
-            groups = as.character(groups)
-            stopif(length(groups)!=1, "'split_off' - 'groups' should be vector of length 1.")
-        }
-        
-        for(each in seq_along(data)){
-            if(NROW(data[[each]])>0) {
-                data[[each]][[groups]] = group_names[each]
+            if(isTRUE(groups)){
+                groups = ".groups"
+            } else {
+                groups = as.character(groups)
+            }
+            for(each in seq_along(data)){
+                if(NROW(data[[each]])>0) {
+                    data[[each]][[groups]] = group_names[each]
+                }
             }
         }
     }
-    if(!is.null(rownames)){
+    if(!(is.null(rownames) || ("etable" %in% first_elem_class))){
+        stopif(length(rownames)!=1, "'split_off' - 'rownames' should be vector of length 1.")
         if(isTRUE(rownames)) {
             rownames = ".rownames"
         } else {
             rownames = as.character(rownames)
-            stopif(length(rownames)!=1, "'split_off' - 'rownames' should be vector of length 1.")
         }
         for(each in seq_along(data)){
             if(NROW(data[[each]])>0) {
@@ -133,14 +158,25 @@ split_off.list = function(data, groups = NULL, rownames = NULL){
         
     }
     res = data.table::rbindlist(data, use.names = TRUE, fill = TRUE)
-    if(!is.null(groups) || !is.null(rownames)){
+    if(!("etable" %in% first_elem_class) & (!is.null(groups) || !is.null(rownames))){
         columns = c(groups, rownames)
         data.table::setcolorder(res, c(columns, setdiff(names(res), columns)))
     }
-    data.table::setDF(res)
+    if(!data.table::is.data.table(data[[1]])){
+        data.table::setDF(res)
+        if("data.frame" %in% first_elem_class){
+            class(res) = first_elem_class
+        }
+    }
     res
 }
 
-#' @export
-#' @rdname split_by
-split_separate = split_by
+
+
+move_caption_to_first_row = function(etab){
+    caption = get_caption(etab)
+    etab = set_caption(etab, NULL)
+    caption = setNames(sheet(caption), colnames(etab)[1])
+    add_rows(caption, etab)
+    
+}
