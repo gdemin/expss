@@ -1,7 +1,8 @@
-0.8.8 (11.11.2018)
+0.8.9 (11.12.2018)
 ================
 * 'nest' - more consistent behaviour for 'a %nest% list(x, y, z)`
 * 'split_off' now respects data.table and etable classes
+* 'xl_write' supports functions in 'additional_cells_formats' argument
 
 0.8.8 (11.11.2018)
 ================

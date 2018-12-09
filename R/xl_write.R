@@ -58,8 +58,10 @@
 #'   consists of two elements. First element is two columns matrix or data.frame
 #'   with row number and column numbers in the main area of the table. Such
 #'   matrix can be produced with code \code{which(logical_condition, arr.ind =
-#'   TRUE)}. Second element is result of the \link[openxlsx]{createStyle}
-#'   function. Cells in the main area will be formatted according to this style.
+#'   TRUE)}. Instead of matrix one can use function which accepts original table
+#'   (\code{obj}) and return such matrix. Second element is result of the
+#'   \link[openxlsx]{createStyle} function. Cells in the main area will be
+#'   formatted according to this style.
 #' @param caption_format result of the \link[openxlsx]{createStyle} function.
 #' @param gap integer. Number of rows between list elements.
 #' @param ... not yet used
@@ -102,6 +104,23 @@
 #' # export table
 #' xl_write(mtcars_table, wb, sh)
 #' saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
+#' 
+#' ## custom cells formatting
+#' wb = createWorkbook()
+#' sh = addWorksheet(wb, "Tables")
+#' 
+#' # we want to mark cells which are greater than total column
+#' my_formatter = function(tbl){
+#'     greater_than_total = tbl[,-1]>tbl[[2]]
+#'     which(greater_than_total, arr.ind = TRUE)
+#' }
+#' # export table
+#' xl_write(mtcars_table, wb, sh, 
+#'     additional_cells_formats = list(
+#'         list(my_formatter, createStyle(textDecoration =  "bold", fontColour = "blue"))
+#'     )
+#' )
+#' saveWorkbook(wb, "table_with_additional_format.xlsx", overwrite = TRUE)
 #' 
 #' ## automated report generation on multiple variables with the same banner
 #'  
@@ -344,9 +363,13 @@ xl_write.etable = function(obj,
         ### cells
         for(each in additional_cells_formats){
             coord_matrix = each[[1]]
+            if(is.function(coord_matrix)){
+                coord_matrix = coord_matrix(obj)
+            }
             if(is.data.frame(coord_matrix)){
                 coord_matrix = as.matrix(coord_matrix)
             }
+            
             xl_format_cells(wb, sheet, row, col,
                             table_structure,
                             row_numbers = coord_matrix[,1],
