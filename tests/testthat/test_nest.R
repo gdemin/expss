@@ -53,9 +53,13 @@ df_res3 = structure(list(V1 = structure(c(1, NA, 5), labels = structure(1:6, .Na
 
 expect_identical(nest(5:7, mrset(m_choice)), df_res3)
 
-expect_identical(nest(5:7, m_choice), list(
-    a1 = nest(5:7, m_choice[[1]]),
-    a2 = nest(5:7, m_choice[[2]])
+expect_identical(unname(nest(5:7, m_choice)), list(
+    nest(c(5, NA, NA), m_choice[[1]]),
+    nest(c(5, NA, NA), m_choice[[2]]),
+    nest(c(NA, 6, NA), m_choice[[1]]),
+    nest(c(NA, 6, NA), m_choice[[2]]),
+    nest(c(NA, NA, 7), m_choice[[1]]),
+    nest(c(NA, NA, 7), m_choice[[2]])
 ))
 
 
@@ -63,55 +67,93 @@ expect_identical(nest(5:7, m_choice), list(
 expect_identical(nest(5:7, as.dichotomy(m_choice)), mrset(df_res3))
 
 
-expect_identical(nest(5:7, list(m_choice, 1:3)), 
+expect_identical(unname(nest(5:7, list(m_choice, 1:3))), 
                  list(
-                     a1 = nest(5:7, m_choice[[1]]),
-                     a2 = nest(5:7, m_choice[[2]]),
-                     nest(5:7, 1:3)
-                     )
-)
-
-expect_identical(nest(as.dichotomy(5:7), list(m_choice, 1:3)), 
-                 list(
-                     a1 = nest(as.dichotomy(5:7), m_choice[[1]]),
-                     a2 = nest(as.dichotomy(5:7), m_choice[[2]]),
-                     nest(as.dichotomy(5:7), 1:3)
+                   nest(c(5, NA, NA), m_choice[[1]]),
+                   nest(c(5, NA, NA), m_choice[[2]]),
+                   nest(c(5, NA, NA), 1:3),
+                   nest(c(NA, 6, NA), m_choice[[1]]),
+                   nest(c(NA, 6, NA), m_choice[[2]]),
+                   nest(c(NA, 6, NA), 1:3),
+                   nest(c(NA, NA, 7), m_choice[[1]]),
+                   nest(c(NA, NA, 7), m_choice[[2]]),
+                   nest(c(NA, NA, 7), 1:3)
                  )
 )
 
-expect_identical(nest(5:7, list(mrset(m_choice), 1:3)), 
+expect_identical(unname(nest(as.dichotomy(5:7), list(m_choice, 1:3))), 
                  list(
-                     nest(5:7, mrset(m_choice)),
-                     nest(5:7, 1:3)
+                   nest(c(5, NA, NA), m_choice[[1]]),
+                   nest(c(5, NA, NA), m_choice[[2]]),
+                   nest(c(5, NA, NA), 1:3),
+                   nest(c(NA, 6, NA), m_choice[[1]]),
+                   nest(c(NA, 6, NA), m_choice[[2]]),
+                   nest(c(NA, 6, NA), 1:3),
+                   nest(c(NA, NA, 7), m_choice[[1]]),
+                   nest(c(NA, NA, 7), m_choice[[2]]),
+                   nest(c(NA, NA, 7), 1:3)
                  )
 )
 
-expect_identical(nest(5:7, list(dummy(m_choice), 1:3)), 
+expect_identical(unname(nest(5:7, list(mrset(m_choice), 1:3))), 
                  list(
-                     nest(5:7, mrset(m_choice)),
-                     nest(5:7, 1:3)
+                     nest(c(5, NA, NA), mrset(m_choice)),
+                     nest(c(5, NA, NA), 1:3),
+                     nest(c(NA, 6, NA), mrset(m_choice)),
+                     nest(c(NA, 6, NA), 1:3),
+                     nest(c(NA, NA, 7), mrset(m_choice)),
+                     nest(c(NA, NA, 7), 1:3)
+
                  )
 )
 
-expect_identical(nest(factor(5:7), list(m_choice, 1:3)), 
+expect_identical(unname(nest(5:7, list(dummy(m_choice), 1:3))), 
                  list(
-                     a1 = nest(5:7, m_choice[[1]]),
-                     a2 = nest(5:7, m_choice[[2]]),
-                     nest(5:7, 1:3)
+                   nest(c(5, NA, NA), mrset(m_choice)),
+                   nest(c(5, NA, NA), 1:3),
+                   nest(c(NA, 6, NA), mrset(m_choice)),
+                   nest(c(NA, 6, NA), 1:3),
+                   nest(c(NA, NA, 7), mrset(m_choice)),
+                   nest(c(NA, NA, 7), 1:3)
+                   
                  )
 )
 
-expect_identical(nest(factor(5:7), list(mrset(m_choice), 1:3)), 
+expect_identical(unname(nest(factor(5:7), list(m_choice, 1:3))), 
                  list(
-                     nest(5:7, mrset(m_choice)),
-                     nest(5:7, 1:3)
+                   nest(c(5, NA, NA), m_choice[[1]]),
+                   nest(c(5, NA, NA), m_choice[[2]]),
+                   nest(c(5, NA, NA), 1:3),
+                   nest(c(NA, 6, NA), m_choice[[1]]),
+                   nest(c(NA, 6, NA), m_choice[[2]]),
+                   nest(c(NA, 6, NA), 1:3),
+                   nest(c(NA, NA, 7), m_choice[[1]]),
+                   nest(c(NA, NA, 7), m_choice[[2]]),
+                   nest(c(NA, NA, 7), 1:3)
                  )
 )
 
-expect_identical(nest(factor(5:7), list(as.dichotomy(m_choice), 1:3)), 
+expect_identical(unname(nest(factor(5:7), list(mrset(m_choice), 1:3))), 
                  list(
-                     nest(5:7, mrset(m_choice)),
-                     nest(5:7, 1:3)
+                   nest(c(5, NA, NA), mrset(m_choice)),
+                   nest(c(5, NA, NA), 1:3),
+                   nest(c(NA, 6, NA), mrset(m_choice)),
+                   nest(c(NA, 6, NA), 1:3),
+                   nest(c(NA, NA, 7), mrset(m_choice)),
+                   nest(c(NA, NA, 7), 1:3)
+                   
+                 )
+)
+
+expect_identical(unname(nest(factor(5:7), list(as.dichotomy(m_choice), 1:3))), 
+                 list(
+                   nest(c(5, NA, NA), mrset(m_choice)),
+                   nest(c(5, NA, NA), 1:3),
+                   nest(c(NA, 6, NA), mrset(m_choice)),
+                   nest(c(NA, 6, NA), 1:3),
+                   nest(c(NA, NA, 7), mrset(m_choice)),
+                   nest(c(NA, NA, 7), 1:3)
+                   
                  )
 )
 
@@ -126,34 +168,36 @@ structure(c(1, 5, 9), labels = structure(1:9, .Names = c("5|2017-01-01",
 )
 
 
-expect_identical(nest(factor(5:7), list(m_choice, posix_ct)), 
+expect_identical(unname(nest(factor(5:7), list(m_choice, posix_ct))), 
                  list(
-                     a1 = nest(5:7, m_choice[[1]]),
-                     a2 = nest(5:7, m_choice[[2]]),
-                     nest(5:7, posix_ct)
+                   nest(c(5, NA, NA), m_choice[[1]]),
+                   nest(c(5, NA, NA), m_choice[[2]]),
+                   nest(c(5, NA, NA), posix_ct),
+                   nest(c(NA, 6, NA), m_choice[[1]]),
+                   nest(c(NA, 6, NA), m_choice[[2]]),
+                   nest(c(NA, 6, NA), posix_ct),
+                   nest(c(NA, NA, 7), m_choice[[1]]),
+                   nest(c(NA, NA, 7), m_choice[[2]]),
+                   nest(c(NA, NA, 7), posix_ct)
                  )
 )
 
-expect_identical(nest(factor(5:7), list(mrset(m_choice), posix_ct)), 
+expect_identical(unname(nest(factor(5:7), list(mrset(m_choice), posix_ct))), 
                  list(
-                     nest(5:7, mrset(m_choice)),
-                     nest(5:7, posix_ct)
+                   nest(c(5, NA, NA), mrset(m_choice)),
+                   nest(c(5, NA, NA), posix_ct),
+                   nest(c(NA, 6, NA), mrset(m_choice)),
+                   nest(c(NA, 6, NA), posix_ct),
+                   nest(c(NA, NA, 7), mrset(m_choice)),
+                   nest(c(NA, NA, 7), posix_ct)
                  )
 )
 
-expect_identical(nest(posix_ct, list(m_choice, 1:3)), 
-                 list(
-                     a1 = nest(posix_ct, m_choice[[1]]),
-                     a2 = nest(posix_ct, m_choice[[2]]),
-                     nest(posix_ct, 1:3)
-                 )
-)
-
-expect_identical(nest(posix_ct, list(mrset(m_choice), 1:3)), 
-                 list(
-                     nest(posix_ct, mrset(m_choice)),
-                     nest(posix_ct, 1:3)
-                 )
+expect_identical(nest(posix_ct, 1:3), 
+structure(c(1, 5, 9), labels = structure(1:9, .Names = c("2017-01-01|1", 
+"2017-01-01|2", "2017-01-01|3", "2017-01-02|1", "2017-01-02|2", 
+"2017-01-02|3", "2017-01-03|1", "2017-01-03|2", "2017-01-03|3"
+)), class = c("labelled", "numeric"), label = "")
 )
 
 
@@ -237,18 +281,22 @@ val_lab(my_scales[[2]]) = num_lab("
                         4 Sc2 4
                                   ")
 
-res = list(a = structure(c(1, 6, 11), labels = structure(1:12, .Names = c("Top level|Five|Scale 1|Sc1 1", 
+res = list(v5.a = structure(c(1, NA, NA), labels = structure(1:4, .Names = c("Top level|Five|Scale 1|Sc1 1", 
 "Top level|Five|Scale 1|Sc1 2", "Top level|Five|Scale 1|Sc1 3", 
-"Top level|Five|Scale 1|Sc1 4", "Top level|Six|Scale 1|Sc1 1", 
+"Top level|Five|Scale 1|Sc1 4")), class = c("labelled", "numeric"
+), label = ""), v5.b = structure(c(2, NA, NA), labels = structure(1:4, .Names = c("Top level|Five|Scale 2|Sc2 1", 
+"Top level|Five|Scale 2|Sc2 2", "Top level|Five|Scale 2|Sc2 3", 
+"Top level|Five|Scale 2|Sc2 4")), class = c("labelled", "numeric"
+), label = ""), v6.a = structure(c(NA, 2, NA), labels = structure(1:4, .Names = c("Top level|Six|Scale 1|Sc1 1", 
 "Top level|Six|Scale 1|Sc1 2", "Top level|Six|Scale 1|Sc1 3", 
-"Top level|Six|Scale 1|Sc1 4", "Top level|Seven|Scale 1|Sc1 1", 
+"Top level|Six|Scale 1|Sc1 4")), class = c("labelled", "numeric"
+), label = ""), v6.b = structure(c(NA, 3, NA), labels = structure(1:4, .Names = c("Top level|Six|Scale 2|Sc2 1", 
+"Top level|Six|Scale 2|Sc2 2", "Top level|Six|Scale 2|Sc2 3", 
+"Top level|Six|Scale 2|Sc2 4")), class = c("labelled", "numeric"
+), label = ""), v7.a = structure(c(NA, NA, 3), labels = structure(1:4, .Names = c("Top level|Seven|Scale 1|Sc1 1", 
 "Top level|Seven|Scale 1|Sc1 2", "Top level|Seven|Scale 1|Sc1 3", 
 "Top level|Seven|Scale 1|Sc1 4")), class = c("labelled", "numeric"
-), label = ""), b = structure(c(2, 7, 12), labels = structure(1:12, .Names = c("Top level|Five|Scale 2|Sc2 1", 
-"Top level|Five|Scale 2|Sc2 2", "Top level|Five|Scale 2|Sc2 3", 
-"Top level|Five|Scale 2|Sc2 4", "Top level|Six|Scale 2|Sc2 1", 
-"Top level|Six|Scale 2|Sc2 2", "Top level|Six|Scale 2|Sc2 3", 
-"Top level|Six|Scale 2|Sc2 4", "Top level|Seven|Scale 2|Sc2 1", 
+), label = ""), v7.b = structure(c(NA, NA, 4), labels = structure(1:4, .Names = c("Top level|Seven|Scale 2|Sc2 1", 
 "Top level|Seven|Scale 2|Sc2 2", "Top level|Seven|Scale 2|Sc2 3", 
 "Top level|Seven|Scale 2|Sc2 4")), class = c("labelled", "numeric"
 ), label = ""))

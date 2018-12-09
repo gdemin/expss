@@ -50,9 +50,9 @@ nest = function(...){
     arg = list(...)
     if (length(arg)<2) return(arg[[1]])
     x = arg[[1]]
-    y = arg[[2]]
     if (!is_list(x)) x = list(x)  
     x = flat_list(dichotomy_to_category_encoding(x), flat_df = FALSE)
+    y = arg[[2]]
     if (!is_list(y)) y = list(y)
     y = flat_list(dichotomy_to_category_encoding(y), flat_df = FALSE)
     x = to_labelled(x)
@@ -98,8 +98,11 @@ nest_xlist = function(x, y)
     # x -  vector or data.frame. data.frame is considered as multiple-response
     # y - list
 {
-    res = lapply(y, function(y_elem){
-             nest_xy(x, y_elem)
+    
+    x = set_val_lab(as.list(as.dichotomy(x, keep_unused = TRUE, presence = 1, absence = NA)), c("|" = 1))
+    
+    res = lapply(x, function(x_elem){
+             lapply(y, function(y_elem) nest_xy(x_elem, y_elem))
         })
     flat_list(res, flat_df = FALSE)
 }

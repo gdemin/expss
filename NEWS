@@ -1,5 +1,6 @@
 0.8.8 (11.11.2018)
 ================
+* 'nest' - more consistent behaviour for 'a %nest% list(x, y, z)`
 * 'split_off' now respects data.table and etable classes
 
 0.8.8 (11.11.2018)
