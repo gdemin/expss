@@ -9,6 +9,7 @@
 \alias{repr_html.etable}
 \alias{repr_html.with_caption}
 \alias{repr_text.etable}
+\alias{repr_text.with_caption}
 \title{Outputting HTML tables in RStudio viewer/R Notebooks}
 \usage{
 \method{htmlTable}{etable}(x, digits = get_expss_digits(),
@@ -32,6 +33,8 @@ repr_html.with_caption(obj, digits = get_expss_digits(),
   escape.html = FALSE, ...)
 
 repr_text.etable(obj, digits = get_expss_digits(), ...)
+
+repr_text.with_caption(obj, digits = get_expss_digits(), ...)
 }
 \arguments{
 \item{x}{a data object of class 'etable' - result of \link{fre}/\link{cro} and etc.}

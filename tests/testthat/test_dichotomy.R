@@ -188,7 +188,7 @@ dep = c(1,1,1,2,2,2)
 indep = c(1,1,3,2,2,3)
 var_lab(indep) = "Label"
 val_lab(indep) = c(a=1,b=2,c=3)
-if(as.numeric(version$major) ==3 && as.numeric(version$minor)<5){
+if(FALSE){
     expect_equal_to_reference(lm(dep ~ dummy(indep)),"rds/lm_dichotomy_default.rds",  update = FALSE)
     expect_equal_to_reference(lm(dep ~ dummy1(indep)),"rds/lm_dichotomy_default2.rds",  update = FALSE)
 }

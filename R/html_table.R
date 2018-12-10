@@ -309,7 +309,21 @@ matrix_to_cgroup = function(header){
     list(cgroup = do.call(rbind, cgroup), n.cgroup = do.call(rbind, n.cgroup))
 }
 
-#' @export
+#' @rawNamespace if(getRversion() >= "3.6.0") {
+#' S3method(knitr::knit_print, "etable")
+#' S3method(knitr::knit_print, "with_caption")
+#' S3method(repr::repr_html, "etable")
+#' S3method(repr::repr_html, "with_caption")
+#' S3method(repr::repr_text, "etable")
+#' S3method(repr::repr_text, "with_caption")
+#' } else {
+#' export(knit_print.etable)
+#' export(knit_print.with_caption)
+#' export(repr_html.etable)
+#' export(repr_html.with_caption)
+#' export(repr_text.etable)
+#' export(repr_text.with_caption)
+#' }
 #' @rdname htmlTable.etable
 knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
     knitr::knit_print(htmlTable.etable(x, digits = digits, 
@@ -317,7 +331,7 @@ knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE
                                        ..., row_groups = TRUE))
 }
 
-#' @export
+
 #' @rdname htmlTable.etable
 knit_print.with_caption = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
     knitr::knit_print(htmlTable.with_caption(x, digits = digits, 
@@ -327,20 +341,20 @@ knit_print.with_caption = function(x, digits = get_expss_digits(), escape.html =
 }
 
 
-#' @export
+
 #' @rdname htmlTable.etable
 repr_html.etable = function(obj, digits = get_expss_digits(), escape.html = FALSE, ...){
     htmlTable(obj, digits = digits, escape.html = escape.html, ..., row_groups = FALSE)
     
 }
 
-#' @export
+
 #' @rdname htmlTable.etable
 repr_html.with_caption = function(obj, digits = get_expss_digits(), escape.html = FALSE, ...){
     htmlTable(obj, digits = digits, escape.html = escape.html, ..., row_groups = FALSE)
 }
 
-#' @export
+
 #' @rdname htmlTable.etable
 repr_text.etable = function(obj, digits = get_expss_digits(), ...){
     curr_output = getOption("expss.output")
@@ -364,6 +378,7 @@ repr_text.etable = function(obj, digits = get_expss_digits(), ...){
     
 }
 
+#' @rdname htmlTable.etable
 repr_text.with_caption = function(obj, digits = get_expss_digits(), ...){
     width = getOption("width")
     on.exit(options(width = width))
@@ -485,4 +500,8 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
     }
     
 }
+
+
+
+
 
