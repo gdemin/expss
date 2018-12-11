@@ -252,7 +252,13 @@ xl_write.etable = function(obj,
                            ...){
     if(NCOL(obj)==0) return(invisible(c(NROW(obj), 0)))
     recode(obj) = is.nan ~ NA
-    obj = type.convert(obj, as.is = TRUE)
+    if(getRversion()>="3.5.0"){
+        obj = type.convert(obj, as.is = TRUE)
+    } else {
+        for(i in seq_along(obj)){
+            if(is.character(obj[[i]])) obj[[i]] = type.convert(obj[[i]], as.is = TRUE)
+        }
+    }
     remove_repeated = match.arg(remove_repeated)
 
     header = t(split_labels(colnames(obj), remove_repeated = remove_repeated %in% c("all", "columns")))[,-1, drop = FALSE]
