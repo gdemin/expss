@@ -310,12 +310,12 @@ matrix_to_cgroup = function(header){
 }
 
 #' @rawNamespace if(getRversion() >= "3.6.0") {
-#' S3method(knitr::knit_print, "etable")
-#' S3method(knitr::knit_print, "with_caption")
-#' S3method(repr::repr_html, "etable")
-#' S3method(repr::repr_html, "with_caption")
-#' S3method(repr::repr_text, "etable")
-#' S3method(repr::repr_text, "with_caption")
+#' S3method(knitr::knit_print, etable)
+#' S3method(knitr::knit_print, with_caption)
+#' S3method(repr::repr_html, etable)
+#' S3method(repr::repr_html, with_caption)
+#' S3method(repr::repr_text, etable)
+#' S3method(repr::repr_text, with_caption)
 #' } else {
 #' export(knit_print.etable)
 #' export(knit_print.with_caption)

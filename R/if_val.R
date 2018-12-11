@@ -435,7 +435,7 @@ into_internal = function(values, variables_names, envir){
                        enclos = baseenv())
     variables_names = flat_list(variables_names)
     # strange condition because of missing(...) doesn't work
-    if(length(variables_names)==1 && is.character(variables_names[[1]]) && variables_names[[1]]==""){
+    if(length(variables_names)==1 && identical(variables_names[[1]], "")){
         stopif(!is.list(values), "Unboxing can be applied only to list/data.frame.")
         variables_names = names(values)
         stopif(is.null(variables_names), "There are no names in 'x'.")

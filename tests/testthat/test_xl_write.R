@@ -247,7 +247,7 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
         res = xl_write(res_list, wb, sh, row = 1, col = 1, gap = 2, rownames = TRUE)
         # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
         
-        context("custom format")
+        # context("custom format")
         mtcars = apply_labels(mtcars,
                               mpg = "Miles/(US) gallon",
                               hp = "Gross horsepower"

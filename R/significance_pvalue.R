@@ -76,7 +76,7 @@ compare_means = function(mean1, mean2, sd1, sd2, base1, base2, common_base = 0, 
     # ftp://public.dhe.ibm.com/software/analytics/spss/documentation/statistics/20.0/en/client/Manuals/IBM_SPSS_Statistics_Algorithms.pdf
     # IBM SPSS Statistics Algorithms v20, p. 267
     if_na(common_base) = 0
-    if(common_base>0 || var_equal){
+    if(any(common_base>0) || var_equal){
         pooled_sd = sqrt((sd1*sd1*(base1 - 1) + sd2*sd2*(base2 - 1))/(base1 + base2 - 2))
         t_statistic = (mean1 - mean2)/
             pooled_sd/sqrt(1/base1 + 1/base2 - 2*common_base/base1/base2)
