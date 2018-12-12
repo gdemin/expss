@@ -162,9 +162,7 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 .calculate = function (expr, use_labels = FALSE) {
     reference = suppressMessages(default_dataset() )
     data = ref(reference)
-    expr = substitute(expr)
-    parent = parent.frame()
-    calculate_internal(data, expr, parent, use_labels = use_labels)
+    eval.parent(substitute(calculate(ref(reference), expr, use_labels = use_labels)))
 } 
 
 #' @export

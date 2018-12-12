@@ -366,27 +366,21 @@ do_if.list = function (data, cond, expr) {
 #' @export
 #' @rdname compute
 calculate =  function (data, expr, use_labels = FALSE) {
-    expr = substitute(expr)
-    parent = parent.frame()
-    calculate_internal(data, expr, parent, use_labels = use_labels)
+    UseMethod("calculate")
 }
 
 #' @export
 #' @rdname compute
 use_labels =  function (data, expr) {
-    expr = substitute(expr)
-    parent = parent.frame()
-    calculate_internal(data, expr, parent, use_labels = TRUE)
+    eval.parent(substitute(calculate(data, expr, use_labels = TRUE)))
 }
 
 
-calculate_internal =  function (data, expr, parent, use_labels = FALSE) {
-    UseMethod("calculate_internal")
-}
 
 #' @export
-calculate_internal.data.frame = function (data, expr, parent, use_labels = FALSE) {
+calculate.data.frame = function (data, expr, use_labels = FALSE) {
     # based on 'within' from base R by R Core team
+    expr = substitute(expr)
     if(use_labels){
         all_labs = all_labels(data)
         if(length(all_labs)>0){
@@ -403,15 +397,15 @@ calculate_internal.data.frame = function (data, expr, parent, use_labels = FALSE
             data = names2labels(data) 
         }
     }
-    e = evalq(environment(), data, parent)
+    e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = nrow(data), column_names = colnames(data))
     eval(expr, envir = e, enclos = baseenv())
 }
 
 #' @export
-calculate_internal.list = function (data, expr, parent, use_labels = FALSE) {
+calculate.list = function (data, expr, use_labels = FALSE) {
     for(each in seq_along(data)){
-        data[[each]] = calculate_internal(data[[each]], expr, parent, use_labels)
+        data[[each]] = eval.parent(substitute(calculate(data[[each]], expr, use_labels = use_labels)))
     }
     data
 }
@@ -451,9 +445,7 @@ calc = calculate
 #' @export
 #' @rdname compute
 '%calc%' = function (data, expr) {
-    expr = substitute(expr)
-    parent = parent.frame()
-    calculate_internal(data, expr, parent, use_labels = FALSE)
+    eval.parent(substitute(calculate(data, expr, use_labels = FALSE)))
 }
 
 #' @export
@@ -463,11 +455,13 @@ calc = calculate
 #' @export
 #' @rdname compute
 '%calculate%' = function (data, expr) {
-    expr = substitute(expr)
-    parent = parent.frame()
-    calculate_internal(data, expr, parent, use_labels = FALSE)
+    eval.parent(substitute(calculate(data, expr, use_labels = FALSE)))
 }
 
 
-
+calculate_internal = function(data, expr, parent){
+    e = evalq(environment(), data, parent)
+    prepare_env(e, n = nrow(data), column_names = colnames(data))
+    eval(expr, envir = e, enclos = baseenv())
+}
 
