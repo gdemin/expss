@@ -154,19 +154,19 @@
 #'        summary()
 #' 
 #' @export
-modify =  function (data, expr) {
+compute =  function (data, expr) {
     parent = parent.frame()
     expr = substitute(expr)
-    modify_internal(data, expr, parent = parent)
+    compute_internal(data, expr, parent = parent)
 }
 
 
-modify_internal =  function (data, expr, parent) {
-    UseMethod("modify_internal")
+compute_internal =  function (data, expr, parent) {
+    UseMethod("compute_internal")
 }
 
 #' @export
-modify_internal.data.frame = function (data, expr, parent) {
+compute_internal.data.frame = function (data, expr, parent) {
     # based on 'within' from base R by R Core team
     e = evalq(environment(), data, parent)
     prepare_env(e, n = nrow(data), column_names = colnames(data))
@@ -194,7 +194,7 @@ modify_internal.data.frame = function (data, expr, parent) {
 
 
 #' @export
-modify_internal.data.table = function (data, expr, parent) {
+compute_internal.data.table = function (data, expr, parent) {
     # based on 'within' from base R by R Core team
     e = evalq(environment(), list(), parent)
     orig_names = colnames(data)
@@ -245,9 +245,9 @@ remove_active_bindings = function(env){
 }
 
 #' @export
-modify_internal.list = function (data, expr, parent) {
+compute_internal.list = function (data, expr, parent) {
     for(each in seq_along(data)){
-        data[[each]] = modify_internal(data[[each]], expr, parent = parent)
+        data[[each]] = compute_internal(data[[each]], expr, parent = parent)
     }
     data
 }
@@ -255,30 +255,30 @@ modify_internal.list = function (data, expr, parent) {
 
 
 #' @export
-#' @rdname modify
-compute = modify
+#' @rdname compute
+modify = compute 
 
 
 #' @export
-#' @rdname modify
-modify_if = function (data, cond, expr){
+#' @rdname compute
+do_if = function (data, cond, expr){
     cond = substitute(cond)
     expr = substitute(expr)
     parent = parent.frame()
-    modify_if_internal(data, cond, expr, parent = parent)
+    do_if_internal(data, cond, expr, parent = parent)
 }
 
 
 #' @export
-#' @rdname modify
-do_if = modify_if
+#' @rdname compute
+modify_if = do_if 
 
-modify_if_internal = function (data, cond, expr, parent){
-    UseMethod("modify_if_internal")
+do_if_internal = function (data, cond, expr, parent){
+    UseMethod("do_if_internal")
 } 
 
 #' @export
-modify_if_internal.data.frame = function (data, cond, expr, parent) {
+do_if_internal.data.frame = function (data, cond, expr, parent) {
     # based on 'within' from base R by R Core team
     e = evalq(environment(), data, parent)
     prepare_env(e, n = NROW(data), column_names = colnames(data))
@@ -362,9 +362,9 @@ modify_if_internal.data.frame = function (data, cond, expr, parent) {
 
 
 #' @export
-modify_if_internal.list = function (data, cond, expr, parent) {
+do_if_internal.list = function (data, cond, expr, parent) {
     for(each in seq_along(data)){
-        data[[each]] = modify_if_internal(data[[each]], cond, expr, parent = parent)
+        data[[each]] = do_if_internal(data[[each]], cond, expr, parent = parent)
     }
     data
 }
@@ -372,7 +372,7 @@ modify_if_internal.list = function (data, cond, expr, parent) {
 ########
 
 #' @export
-#' @rdname modify
+#' @rdname compute
 calculate =  function (data, expr, use_labels = FALSE) {
     expr = substitute(expr)
     parent = parent.frame()
@@ -380,7 +380,7 @@ calculate =  function (data, expr, use_labels = FALSE) {
 }
 
 #' @export
-#' @rdname modify
+#' @rdname compute
 use_labels =  function (data, expr) {
     expr = substitute(expr)
     parent = parent.frame()
@@ -453,11 +453,11 @@ extract_var_labs_as_list_with_symbols = function(data){
 }
 
 #' @export
-#' @rdname modify
+#' @rdname compute
 calc = calculate
 
 #' @export
-#' @rdname modify
+#' @rdname compute
 '%calc%' = function (data, expr) {
     expr = substitute(expr)
     parent = parent.frame()
@@ -465,11 +465,11 @@ calc = calculate
 }
 
 #' @export
-#' @rdname modify
+#' @rdname compute
 '%use_labels%' = use_labels
 
 #' @export
-#' @rdname modify
+#' @rdname compute
 '%calculate%' = function (data, expr) {
     expr = substitute(expr)
     parent = parent.frame()
