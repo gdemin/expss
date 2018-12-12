@@ -32,6 +32,9 @@
 #' @param data data.frame/list of data.frames. If \code{data} is list of
 #'   data.frames then expression \code{expr} will be evaluated inside each
 #'   data.frame separately.
+#' @param ... expressions that should be evaluated in the context of data.frame
+#'   \code{data}. It can be arbitrary code in curly brackets or assignments. See
+#'   examples.
 #' @param expr expression that should be evaluated in the context of data.frame \code{data}
 #' @param cond logical vector or expression. Expression will be evaluated in the context of the data.  
 #' @param use_labels logical. Experimental feature. If it equals to \code{TRUE} 
@@ -87,8 +90,6 @@
 #' name1 = "a"
 #' name2 = "new_var"
 #' 
-#' # example with short notation but it can be applied only for simple cases - 
-#' # when 'name' is vector of length 1
 #' compute(dfs, {
 #'      ..$name2 = ..$name1*2    
 #' })
@@ -154,18 +155,37 @@
 #'        summary()
 #' 
 #' @export
-compute =  function (data, expr) {
+compute =  function (data, ...) {
     UseMethod("compute")
 }
 
+#' @export
+compute.list = function (data, ...) {
+    for(each in seq_along(data)){
+        data[[each]] = eval.parent(substitute(compute(data[[each]], ...)))
+    }
+    data
+}
 
 #' @export
-compute.data.frame = function (data, expr) {
+compute.data.frame = function (data, ...) {
     # based on 'within' from base R by R Core team
-    expr = substitute(expr)
+    dots = substitute(list(...))
+    dots = get_named_expressions(dots)
     e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = nrow(data), column_names = colnames(data))
-    eval(expr, envir = e, enclos = baseenv())
+    for(i in seq_along(dots)){
+        curr_name = names(dots)[i]
+        expr = dots[[i]]
+        if(curr_name != ""){
+            lhs_expr = parse(text = curr_name)
+            if(length(lhs_expr)!=1){
+                stop(paste0("'compute': incorrect expression '", curr_name, "'."))
+            }
+            expr = bquote(.(lhs_expr[[1]])<-.(expr))
+        }
+        eval(expr, envir = e, enclos = baseenv())
+    }
     clear_env(e)
     l = as.list(e, all.names = TRUE)
     l = l[!vapply(l, is.null, NA, USE.NAMES = FALSE)]
@@ -189,9 +209,10 @@ compute.data.frame = function (data, expr) {
 
 
 #' @export
-compute.data.table = function (data, expr) {
+compute.data.table = function (data, ...) {
     # based on 'within' from base R by R Core team
-    expr = substitute(expr)
+    dots = substitute(list(...))
+    dots = get_named_expressions(dots)
     e = evalq(environment(), list(), parent.frame())
     orig_names = colnames(data)
     prepare_env(e, n = nrow(data), column_names = orig_names)
@@ -209,7 +230,18 @@ compute.data.table = function (data, expr) {
     for(j in names(data)){
         makeActiveBinding(j, binding(j), e)
     }
-    eval(expr, envir = e, enclos = baseenv())
+    for(i in seq_along(dots)){
+        curr_name = names(dots)[i]
+        expr = dots[[i]]
+        if(curr_name != ""){
+            lhs_expr = parse(text = curr_name)
+            if(length(lhs_expr)!=1){
+                stop(paste0("'compute': incorrect expression '", curr_name, "'."))
+            }
+            expr = bquote(.(lhs_expr[[1]])<-.(expr))
+        }
+        eval(expr, envir = e, enclos = baseenv())
+    }
     clear_env(e)
     remove_active_bindings(e)
     l = as.list(e, all.names = TRUE)
@@ -240,13 +272,7 @@ remove_active_bindings = function(env){
     invisible(env)
 }
 
-#' @export
-compute.list = function (data, expr) {
-    for(each in seq_along(data)){
-        data[[each]] = eval.parent(substitute(compute(data[[each]], expr)))
-    }
-    data
-}
+
 
 
 

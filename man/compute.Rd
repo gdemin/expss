@@ -13,9 +13,9 @@
 \alias{\%calculate\%}
 \title{Modify data.frame/modify subset of the data.frame}
 \usage{
-compute(data, expr)
+compute(data, ...)
 
-modify(data, expr)
+modify(data, ...)
 
 do_if(data, cond, expr)
 
@@ -38,9 +38,13 @@ data \%calculate\% expr
 data.frames then expression \code{expr} will be evaluated inside each
 data.frame separately.}
 
-\item{expr}{expression that should be evaluated in the context of data.frame \code{data}}
+\item{...}{expressions that should be evaluated in the context of data.frame
+\code{data}. It can be arbitrary code in curly brackets or assignments. See
+examples.}
 
 \item{cond}{logical vector or expression. Expression will be evaluated in the context of the data.}
+
+\item{expr}{expression that should be evaluated in the context of data.frame \code{data}}
 
 \item{use_labels}{logical. Experimental feature. If it equals to \code{TRUE} 
 then we will try to replace variable names with labels. So many base R
@@ -127,8 +131,6 @@ do_if(dfs, test \%in\% 2:4, {
 name1 = "a"
 name2 = "new_var"
 
-# example with short notation but it can be applied only for simple cases - 
-# when 'name' is vector of length 1
 compute(dfs, {
      ..$name2 = ..$name1*2    
 })

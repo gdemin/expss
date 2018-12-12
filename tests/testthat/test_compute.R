@@ -63,6 +63,42 @@ expect_identical(
 
 set.seed(1)
 expect_identical(
+    compute(dfs, 
+        b_total = sum_row(vars(b_1 %to% b_5)),
+        random_numer = runif(.n)
+    ), 
+    result_dfs
+)
+
+set.seed(1)
+expect_identical(
+    compute(dfs, 
+            b_total <- sum_row(vars(b_1 %to% b_5)),
+            random_numer <- runif(.n)
+    ), 
+    result_dfs
+)
+
+set.seed(1)
+expect_identical(
+    compute(dfs, 
+            {b_total = sum_row(vars(b_1 %to% b_5))},
+            {random_numer = runif(.n)}
+    ), 
+    result_dfs
+)
+
+
+expect_error(
+    compute(dfs, 
+            'b_total = sum_row(vars(b_1 %to% b_5))
+            a_total = 1
+            ' =
+            {random_numer = runif(.n)}
+    )
+)
+set.seed(1)
+expect_identical(
     compute(dfs, {
         b_total = sum_row(vars(from("b_1") & to("b_5")))
         random_numer = runif(.n)
@@ -242,6 +278,17 @@ expect_identical(
         
         
     }),
+    result_dfs3
+)
+
+expect_identical(
+    compute(dfs, 
+        b_total = sum_row(b_1, b_2, b_4, b_5),
+        'var_lab(aa)' = "my label",
+        'val_lab(aa)' = c(one = 1, two = 2)
+        
+        
+    ),
     result_dfs3
 )
 
@@ -447,3 +494,53 @@ expect_identical(
     data.table(iris2)
 )
 
+context("compute chain")
+data(mtcars)
+res_mtcars = mtcars
+res_mtcars$mpg2 = res_mtcars$mpg*2
+res_mtcars$mpg4 = res_mtcars$mpg2*2
+res_mtcars$am = NULL
+expect_identical(compute(mtcars, 
+        mpg2 = mpg*2,
+        mpg4 = mpg2*2,
+        am = NULL
+        ),
+        res_mtcars)
+
+expect_identical(compute(mtcars, 
+                         {mpg2 = mpg*2
+                         mpg4 = mpg2*2
+                         am = NULL}
+),
+res_mtcars)
+
+expect_identical(compute(mtcars, 
+                         mpg2 <- mpg*2,
+                         mpg4 <- mpg2*2,
+                         am = NULL
+),
+res_mtcars)
+
+dt_mtcars = as.data.table(mtcars)
+dt_res = as.data.table(res_mtcars)
+
+expect_identical(compute(dt_mtcars, 
+                         mpg2 = mpg*2,
+                         mpg4 = mpg2*2,
+                         am = NULL
+),
+dt_res)
+
+expect_identical(compute(dt_mtcars, 
+                         {mpg2 = mpg*2
+                         mpg4 = mpg2*2
+                         am = NULL}
+),
+dt_res)
+
+expect_identical(compute(dt_mtcars, 
+                         mpg2 <- mpg*2,
+                         mpg4 <- mpg2*2,
+                         am = NULL
+),
+dt_res)
