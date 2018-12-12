@@ -3,8 +3,8 @@
 \name{experimental}
 \alias{experimental}
 \alias{.compute}
-\alias{.modify_if}
 \alias{.do_if}
+\alias{.modify_if}
 \alias{.modify}
 \alias{.calculate}
 \alias{.calc}
@@ -28,9 +28,9 @@
 \usage{
 .compute(expr)
 
-.modify_if(cond, expr)
-
 .do_if(cond, expr)
+
+.modify_if(cond, expr)
 
 .modify(expr)
 

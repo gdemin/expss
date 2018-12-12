@@ -258,10 +258,7 @@ modify = compute
 #' @export
 #' @rdname compute
 do_if = function (data, cond, expr){
-    cond = substitute(cond)
-    expr = substitute(expr)
-    parent = parent.frame()
-    do_if_internal(data, cond, expr, parent = parent)
+    UseMethod("do_if")
 }
 
 
@@ -269,14 +266,13 @@ do_if = function (data, cond, expr){
 #' @rdname compute
 modify_if = do_if 
 
-do_if_internal = function (data, cond, expr, parent){
-    UseMethod("do_if_internal")
-} 
 
 #' @export
-do_if_internal.data.frame = function (data, cond, expr, parent) {
+do_if.data.frame = function (data, cond, expr) {
     # based on 'within' from base R by R Core team
-    e = evalq(environment(), data, parent)
+    cond = substitute(cond)
+    expr = substitute(expr)
+    e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = NROW(data), column_names = colnames(data))
     cond = calc_cond(cond, envir = e)
     if(is.logical(cond)) {
@@ -284,7 +280,7 @@ do_if_internal.data.frame = function (data, cond, expr, parent) {
     } else {
         cond_integer = cond
     }    
-    e = evalq(environment(), list(), parent)
+    e = evalq(environment(), list(), parent.frame())
     orig_names = colnames(data)
     number_of_rows = length(cond_integer)
     prepare_env(e, n = length(cond_integer), column_names = orig_names)
@@ -358,9 +354,9 @@ do_if_internal.data.frame = function (data, cond, expr, parent) {
 
 
 #' @export
-do_if_internal.list = function (data, cond, expr, parent) {
+do_if.list = function (data, cond, expr) {
     for(each in seq_along(data)){
-        data[[each]] = do_if_internal(data[[each]], cond, expr, parent = parent)
+        data[[each]] = eval.parent(substitute(do_if(data[[each]], cond, expr)))
     }
     data
 }

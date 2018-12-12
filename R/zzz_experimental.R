@@ -128,14 +128,10 @@
 
 #' @export
 #' @rdname experimental
-.modify_if = function (cond, expr) {
+.do_if = function (cond, expr) {
     # based on 'within' from base R by R Core team
     reference = suppressMessages(default_dataset())
-    data = ref(reference)
-    cond = substitute(cond)
-    expr = substitute(expr)
-    parent = parent.frame()
-    data = do_if_internal(data, cond, expr, parent)
+    data = eval.parent(substitute(do_if(ref(reference), cond, expr)))
     ref(reference) = data
     invisible(data)
 }
@@ -153,7 +149,7 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 
 #' @export
 #' @rdname experimental
-.do_if = .modify_if
+.modify_if = .do_if 
 
 
 #' @export
