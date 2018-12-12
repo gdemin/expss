@@ -117,13 +117,9 @@
 #' default_dataset(NULL)
 #' @export
 #' @name experimental
-.modify = function (expr) {
-    # based on 'within' from base R by R Core team
+.compute = function (expr) {
     reference = suppressMessages(default_dataset())
-    data = ref(reference)
-    parent = parent.frame()
-    expr = substitute(expr)
-    data = compute_internal(data, expr, parent)
+    data = eval.parent(substitute(compute(ref(reference), expr)))
     ref(reference) = data
     invisible(data)
 }
@@ -162,7 +158,7 @@ in_place_if_val = function(x, ..., from = NULL, to = NULL){
 
 #' @export
 #' @rdname experimental
-.compute = .modify
+.modify = .compute 
 
 
 #' @export

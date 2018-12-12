@@ -155,20 +155,15 @@
 #' 
 #' @export
 compute =  function (data, expr) {
-    parent = parent.frame()
-    expr = substitute(expr)
-    compute_internal(data, expr, parent = parent)
+    UseMethod("compute")
 }
 
-
-compute_internal =  function (data, expr, parent) {
-    UseMethod("compute_internal")
-}
 
 #' @export
-compute_internal.data.frame = function (data, expr, parent) {
+compute.data.frame = function (data, expr) {
     # based on 'within' from base R by R Core team
-    e = evalq(environment(), data, parent)
+    expr = substitute(expr)
+    e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = nrow(data), column_names = colnames(data))
     eval(expr, envir = e, enclos = baseenv())
     clear_env(e)
@@ -194,9 +189,10 @@ compute_internal.data.frame = function (data, expr, parent) {
 
 
 #' @export
-compute_internal.data.table = function (data, expr, parent) {
+compute.data.table = function (data, expr) {
     # based on 'within' from base R by R Core team
-    e = evalq(environment(), list(), parent)
+    expr = substitute(expr)
+    e = evalq(environment(), list(), parent.frame())
     orig_names = colnames(data)
     prepare_env(e, n = nrow(data), column_names = orig_names)
     binding = function(var_name){
@@ -245,9 +241,9 @@ remove_active_bindings = function(env){
 }
 
 #' @export
-compute_internal.list = function (data, expr, parent) {
+compute.list = function (data, expr) {
     for(each in seq_along(data)){
-        data[[each]] = compute_internal(data[[each]], expr, parent = parent)
+        data[[each]] = eval.parent(substitute(compute(data[[each]], expr)))
     }
     data
 }
