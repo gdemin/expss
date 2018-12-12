@@ -40,39 +40,33 @@
 #' # two random elements from the each list item
 #' where(my_list, sample(.N, 2))
 where = function (data, cond) {
-    cond = substitute(cond)
-    parent = parent.frame()
-    where_internal(data, cond, parent)
+    UseMethod("where")
 }
 
 
 #' @rdname where
 #' @export
 .where = function (cond) {
-    cond = substitute(cond)
-    parent = parent.frame()
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    ref(reference) = where_internal(data, cond, parent)
+    reference = suppressMessages(default_dataset())
+    ref(reference) = eval.parent(substitute(where(ref(reference), cond)))
     invisible(data)
 }
 
-# 'cond' is expression - result of 'substitute'
-where_internal = function(data, cond, parent){
-    UseMethod("where_internal")    
-}
+
 
 #' @export
-where_internal.data.frame = function (data, cond, parent) {
-    e = evalq(environment(), data, parent)
+where.data.frame = function (data, cond) {
+    cond = substitute(cond)
+    e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = NROW(data), column_names = colnames(data))
     cond = calc_cond(cond, envir = e)
     data[cond,, drop = FALSE] 
 }
 
 #' @export
-where_internal.default = function (data, cond, parent) {
-    e = evalq(environment(), list(), parent)
+where.default = function (data, cond) {
+    cond = substitute(cond)
+    e = evalq(environment(), list(), parent.frame())
     prepare_env(e, n = NROW(data), NULL)
     cond = calc_cond(cond, envir = e)
     
@@ -84,9 +78,9 @@ where_internal.default = function (data, cond, parent) {
 }
 
 #' @export
-where_internal.list = function (data, cond, parent) {
+where.list = function (data, cond) {
     for(each in seq_along(data)){
-        data[[each]] = where_internal(data[[each]], cond, parent)
+        data[[each]] = eval.parent(substitute(where(data[[each]], cond)))
     }
     data
 }
