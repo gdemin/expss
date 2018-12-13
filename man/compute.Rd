@@ -17,9 +17,9 @@ compute(data, ...)
 
 modify(data, ...)
 
-do_if(data, cond, expr)
+do_if(data, cond, ...)
 
-modify_if(data, cond, expr)
+modify_if(data, cond, ...)
 
 calculate(data, expr, use_labels = FALSE)
 

@@ -210,7 +210,6 @@ compute.data.frame = function (data, ...) {
 
 #' @export
 compute.data.table = function (data, ...) {
-    # based on 'within' from base R by R Core team
     dots = substitute(list(...))
     dots = get_named_expressions(dots)
     e = evalq(environment(), list(), parent.frame())
@@ -283,7 +282,7 @@ modify = compute
 
 #' @export
 #' @rdname compute
-do_if = function (data, cond, expr){
+do_if = function (data, cond, ...){
     UseMethod("do_if")
 }
 
@@ -294,10 +293,11 @@ modify_if = do_if
 
 
 #' @export
-do_if.data.frame = function (data, cond, expr) {
+do_if.data.frame = function (data, cond, ...) {
     # based on 'within' from base R by R Core team
     cond = substitute(cond)
-    expr = substitute(expr)
+    dots = substitute(list(...))
+    dots = get_named_expressions(dots)
     e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = NROW(data), column_names = colnames(data))
     cond = calc_cond(cond, envir = e)
@@ -343,7 +343,18 @@ do_if.data.frame = function (data, cond, expr) {
     for(j in names(data)){
         makeActiveBinding(j, binding(j), e)
     }
-    eval(expr, envir = e, enclos = baseenv())
+    for(i in seq_along(dots)){
+        curr_name = names(dots)[i]
+        expr = dots[[i]]
+        if(curr_name != ""){
+            lhs_expr = parse(text = curr_name)
+            if(length(lhs_expr)!=1){
+                stop(paste0("'do_if': incorrect expression '", curr_name, "'."))
+            }
+            expr = bquote(.(lhs_expr[[1]])<-.(expr))
+        }
+        eval(expr, envir = e, enclos = baseenv())
+    }
     clear_env(e)
     remove_active_bindings(e)
     l = as.list(e, all.names = TRUE)
@@ -380,9 +391,9 @@ do_if.data.frame = function (data, cond, expr) {
 
 
 #' @export
-do_if.list = function (data, cond, expr) {
+do_if.list = function (data, cond, ...) {
     for(each in seq_along(data)){
-        data[[each]] = eval.parent(substitute(do_if(data[[each]], cond, expr)))
+        data[[each]] = eval.parent(substitute(do_if(data[[each]], cond, ...)))
     }
     data
 }

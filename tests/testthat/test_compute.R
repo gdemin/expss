@@ -496,6 +496,7 @@ expect_identical(
 
 context("compute chain")
 data(mtcars)
+mtcars = unlab(mtcars)
 res_mtcars = mtcars
 res_mtcars$mpg2 = res_mtcars$mpg*2
 res_mtcars$mpg4 = res_mtcars$mpg2*2
@@ -530,17 +531,65 @@ expect_identical(compute(dt_mtcars,
                          am = NULL
 ),
 dt_res)
-
+dt_mtcars = as.data.table(mtcars)
 expect_identical(compute(dt_mtcars, 
                          {mpg2 = mpg*2
                          mpg4 = mpg2*2
                          am = NULL}
 ),
 dt_res)
-
+dt_mtcars = as.data.table(mtcars)
 expect_identical(compute(dt_mtcars, 
                          mpg2 <- mpg*2,
                          mpg4 <- mpg2*2,
                          am = NULL
+),
+dt_res)
+
+
+context("do_if chain")
+data(mtcars)
+res_mtcars = mtcars
+res_mtcars$mpg2[mtcars$cyl>4] = res_mtcars$mpg[mtcars$cyl>4]*2
+res_mtcars$mpg4[mtcars$cyl>4] = res_mtcars$mpg2[mtcars$cyl>4]*2
+expect_identical(do_if(mtcars, cyl>4, 
+                       mpg2 = mpg*2,
+                       mpg4 = mpg2*2
+                       
+),
+res_mtcars)
+
+expect_identical(do_if(mtcars, cyl>4, 
+                       {mpg2 = mpg*2
+                       mpg4 = mpg2*2
+                       }
+),
+res_mtcars)
+
+expect_identical(do_if(mtcars, cyl>4, 
+                       mpg2 <- mpg*2,
+                       mpg4 <- mpg2*2
+),
+res_mtcars)
+
+dt_mtcars = as.data.table(mtcars)
+dt_res = as.data.table(res_mtcars)
+
+expect_identical(do_if(dt_mtcars, cyl>4, 
+                       mpg2 = mpg*2,
+                       mpg4 = mpg2*2
+),
+dt_res)
+dt_mtcars = as.data.table(mtcars)
+expect_identical(do_if(dt_mtcars, cyl>4, 
+                       {mpg2 = mpg*2
+                       mpg4 = mpg2*2
+                       }
+),
+dt_res)
+dt_mtcars = as.data.table(mtcars)
+expect_identical(do_if(dt_mtcars, cyl>4, 
+                       mpg2 <- mpg*2,
+                       mpg4 <- mpg2*2
 ),
 dt_res)
