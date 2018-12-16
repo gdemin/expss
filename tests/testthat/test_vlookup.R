@@ -275,6 +275,18 @@ sh2 = sheet(e = 4:2, d = 4:2)
 expect_identical(add_columns(sh1, sh2, by = 1), res)
 sh1 = data.table(a = 1:5, b = 5:1)
 expect_identical(add_columns(sh1, sh2, by = c(a = "e")), res)
+sh1 = data.table(a = 1:5, b = 5:1)
+sh2 = data.table(a = 4:2, b = 2:4, d = c(NA, NA, 42L))
+res = as.data.table(text_to_columns_csv("
+                a,b,d
+                    1,5,NA
+                    2,4,NA
+                    3,3,NA
+                    4,2,42
+                    5,1,NA
+                    "))
+
+expect_identical(add_columns(sh1, sh2, by = c("b" = "a", "a" = "b")), res)
 
 
 # only dict is data.table
@@ -295,3 +307,4 @@ expect_identical(add_columns(sh1, sh2, by = 1), res)
 sh2 =  data.table(e = 4:2, d = 4:2)
 expect_identical(add_columns(sh1, sh2, by = 1), res)
 expect_identical(add_columns(sh1, sh2, by = c(a = "e")), res)
+
