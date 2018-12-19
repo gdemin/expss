@@ -260,8 +260,8 @@ add_columns.data.frame = function(data, dict,
 ){
     if(!is.data.frame(data)) data = as.sheet(data)
     if(!is.data.frame(dict)) dict = as.sheet(dict)
-    ..by_data = NULL
-    ..by = NULL
+    # ..by_data = NULL
+    # ..by = NULL
     colnames_data = colnames(data)
     colnames_dict = colnames(dict)
     if(is.null(by)){
@@ -289,12 +289,12 @@ add_columns.data.frame = function(data, dict,
             stopif(anyDuplicated(by_data), "'add_columns'- duplicated variable names in 'by': ", 
                    paste(dQuote(by_data[duplicated(by_data)]), collapse = ", "))
             if(is.data.table(data)){
-                lookup_value = data[ , ..by_data]     
+                lookup_value = data[ , by_data, with = FALSE]     
             } else {
                 lookup_value = data[ , by_data]
             }
             if(is.data.table(dict)){
-                lookup_column = dict[ , ..by]                     
+                lookup_column = dict[ , by, with = FALSE]                     
             } else {
                 lookup_column = dict[ , by] 
             }
