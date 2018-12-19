@@ -221,13 +221,44 @@ expr_internal_to = as.call(list(as.name(":::"), as.name("expss"), as.name(".inte
 
 ###################################
 internal_parameter_set = function(name, value, envir){
-    stopif(length(name)!=1, "'..' - variable name should be a vector of length 1.")
-    name = as.character(name)
-    assign(name, value = value, pos = envir, inherits = FALSE)
-    name
+    
+    if(is.character(name)){
+        expr = parse(text = name)
+        if(length(expr)!=1){
+            stop(paste0("'..$': incorrect expression '", name, "'."))
+        }
+        expr = expr[[1]]
+    } else if(inherits(name, "formula")){
+        expr = name[[2]]    
+    } else if(is.language(name)){
+        expr = name
+    } else {
+        stop("'..' - variable name should be character, formula or language.")    
+    }
+    expr = bquote(.(expr)<-.(value))
+    eval(expr, envir = envir, enclos = baseenv())
+    invisible(NULL)
 }
 
 internal_parameter_get = function(name, envir){
+    
+    if(is.character(name)){
+        expr = parse(text = name)
+        if(length(expr)!=1){
+            stop(paste0("'..$': incorrect expression '", name, "'."))
+        }
+        expr = expr[[1]]
+    } else if(inherits(name, "formula")){
+        expr = name[[2]]    
+    } else if(is.language(name)){
+        expr = name
+    } else {
+        stop("'..' - variable name should be character, formula or language.")    
+    }
+    eval(expr, envir = envir, enclos = baseenv())
+}
+
+get_parameter = function(name, envir){
     stopif(length(name)!=1, "'..' - variable name should be a vector of length 1.")
     name = as.character(name)
     get(name, pos = envir, inherits = TRUE)
@@ -249,13 +280,14 @@ print.parameter = function(x, ...){
 
 #' @export
 '$.parameter' = function(x, name){
-    name = internal_parameter_get(name, envir = parent.frame())  
+    name = get_parameter(name, envir = parent.frame())  
     internal_parameter_get(name, envir = parent.frame())  
 }
 
 #' @export
 '$<-.parameter' = function(x, name, value){
-    name = internal_parameter_get(name, envir = parent.frame())
+    # value = substitute(value)
+    name = get_parameter(name, envir = parent.frame())
     internal_parameter_set(name, value, envir = parent.frame())
     x
 }
@@ -292,8 +324,8 @@ expr_internal_parameter = as.call(list(as.name(":::"), as.name("expss"), as.name
 
 #' @export
 '$.internal_parameter' = function(x, name){
-    name = internal_parameter_get(name, envir = parent.frame())  
-    name  
+    get_parameter(name, envir = parent.frame())  
+    
 }
 
 #' @export
