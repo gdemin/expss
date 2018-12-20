@@ -135,6 +135,14 @@ expect_equal(htmlTable(mtcars_table),
              htmlTable(mtcars_table, digits = 1))
 
 
+mtcars_table = cro_cpct(list(mtcars$vs), 
+                        list(mtcars$vs %nest% mtcars$am, "#Total")) 
+
+expect_equal_to_reference(htmlTable(mtcars_table, align = rep("c", "6")),
+                           "rds/htmlTable14_2.rds",  update = FALSE)
+expect_equal_to_reference(htmlTable(mtcars_table, align = rep("c", "6"), row_groups = FALSE),
+                          "rds/htmlTable14_3.rds",  update = FALSE)
+
 # simple_table = cro(list(1:5), list(1:5))
 # 
 # expss_output_viewer()

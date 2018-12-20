@@ -198,67 +198,29 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
     }
     # cgroup = cgroup[-NROW(cgroup), ,drop = FALSE]
     # n.cgroup = n.cgroup[-NROW(n.cgroup), , drop = FALSE]
+    html_table_args = list()
     if(NCOL(x)>0){
-    if(NROW(cgroup)>0){
-        cgroup = cgroup[,colSums(!is.na(cgroup))>0, drop = FALSE]
-        n.cgroup = n.cgroup[,colSums(!is.na(n.cgroup))>0, drop = FALSE]
-        if(is.null(rgroup)){
-            htmlTable(as.sheet(x), 
-                      header = html_header,
-                      cgroup = cgroup, 
-                      align = align,
-                      n.cgroup = n.cgroup, 
-                      rnames = rnames, 
-                      rowlabel = first_lab,
-                      escape.html = escape.html, 
-                      ...)   
-        } else {
-            htmlTable(as.sheet(x), 
-                      header = html_header,
-                      cgroup = cgroup, 
-                      align = align,
-                      n.cgroup = n.cgroup, 
-                      rnames = rnames,  
-                      rgroup = rgroup,
-                      n.rgroup = n.rgroup,
-                      rowlabel = first_lab,
-                      escape.html = escape.html, 
-                      ...)     
+        html_table_args$x = as.sheet(x)
+        html_table_args$header = html_header
+        html_table_args$align = align
+        if(NROW(cgroup)>0){
+            html_table_args$cgroup = cgroup[,colSums(!is.na(cgroup))>0, drop = FALSE]
+            html_table_args$n.cgroup = n.cgroup[,colSums(!is.na(n.cgroup))>0, drop = FALSE]
         }
-    } else {
-        if(is.null(rgroup)){
-            htmlTable(as.sheet(x), 
-                      header = html_header,
-                      align = align,
-                      rnames = rnames, 
-                      rowlabel = first_lab,
-                      escape.html = escape.html, 
-                      ...)   
-        } else {
-            htmlTable(as.sheet(x), 
-                      header = html_header,
-                      align = align,
-                      rnames = rnames, 
-                      rgroup = rgroup,
-                      n.rgroup = n.rgroup,
-                      rowlabel = first_lab,
-                      escape.html = escape.html, 
-                      ...)     
-        }
-    }
     } else {
         x = rep("", NROW(x))
-        htmlTable(sheet(x), 
-                  header = "",
-                  rnames = rnames, 
-                  rgroup = rgroup,
-                  n.rgroup = n.rgroup,
-                  rowlabel = first_lab,
-                  escape.html = escape.html, 
-                  ...) 
-        
+        html_table_args$x = as.sheet(x)
+        html_table_args$header = ""
     }
- 
+    html_table_args$rnames = rnames  
+    html_table_args$rgroup = rgroup
+    html_table_args$n.rgroup = n.rgroup
+    html_table_args$rowlabel = first_lab
+    html_table_args$escape.html = escape.html
+    supplied_args = list(...)
+    html_table_args = html_table_args %n_d% names(supplied_args)
+    html_table_args = c(html_table_args, supplied_args)
+    do.call(htmlTable, html_table_args)
 }
 
 #' @export
@@ -463,41 +425,27 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
     }
     # cgroup = cgroup[-NROW(cgroup), ,drop = FALSE]
     # n.cgroup = n.cgroup[-NROW(n.cgroup), , drop = FALSE]
+    html_table_args = list()
     if(NCOL(x)>0){
+        html_table_args$x = as.sheet(x)
+        html_table_args$header = html_header
+        html_table_args$align = align
         if(NROW(cgroup)>0){
-            cgroup = cgroup[,colSums(!is.na(cgroup))>0, drop = FALSE]
-            n.cgroup = n.cgroup[,colSums(!is.na(n.cgroup))>0, drop = FALSE]
-                htmlTable(as.sheet(x), 
-                          header = html_header,
-                          cgroup = cgroup, 
-                          align = align,
-                          n.cgroup = n.cgroup, 
-                          rnames = rnames, 
-                          rowlabel = first_lab,
-                          escape.html = escape.html, 
-                          ...)   
-            
-        } else {
-
-                htmlTable(as.sheet(x), 
-                          header = html_header,
-                          align = align,
-                          rnames = rnames, 
-                          rowlabel = first_lab,
-                          escape.html = escape.html, 
-                          ...)   
-            
+            html_table_args$cgroup = cgroup[,colSums(!is.na(cgroup))>0, drop = FALSE]
+            html_table_args$n.cgroup = n.cgroup[,colSums(!is.na(n.cgroup))>0, drop = FALSE]
         }
     } else {
         x = rep("", NROW(x))
-        htmlTable(sheet(x), 
-                  header = "",
-                  rnames = rnames, 
-                  rowlabel = first_lab,
-                  escape.html = escape.html, 
-                  ...) 
-        
+        html_table_args$x = as.sheet(x)
+        html_table_args$header = ""
     }
+    html_table_args$rnames = rnames  
+    html_table_args$rowlabel = first_lab
+    html_table_args$escape.html = escape.html
+    supplied_args = list(...)
+    html_table_args = html_table_args %n_d% names(supplied_args)
+    html_table_args = c(html_table_args, supplied_args)
+    do.call(htmlTable, html_table_args)
     
 }
 
