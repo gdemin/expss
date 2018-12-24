@@ -1,3 +1,8 @@
+0.8.11 (.01.2019)
+================
+* now htmlTable respects 'align' argument (Issue #20)
+* fix 'add_labelled_class' for 'haven' 2.0
+
 0.8.10 (12.12.2018)
 ================
 * 'nest' - more consistent behaviour for 'a %nest% list(x, y, z)`

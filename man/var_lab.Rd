@@ -19,12 +19,16 @@ unvr(x)
 
 drop_var_labs(x)
 
-add_labelled_class(x)
+add_labelled_class(x, remove_classes = c("haven_labelled",
+  "spss_labelled"))
 }
 \arguments{
 \item{x}{Variable. In the most cases it is numeric vector.}
 
 \item{value}{A character scalar - label for the variable x.}
+
+\item{remove_classes}{A character vector of classes which should be removed
+from the class attribute of the \code{x}.}
 }
 \value{
 \code{var_lab} return variable label. If label doesn't exist it return

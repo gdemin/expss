@@ -494,3 +494,9 @@ expect_identical(add_labelled_class(df), fixed_df)
 df = as.list(df)
 fixed_df = as.list(fixed_df)
 expect_identical(add_labelled_class(df), fixed_df)
+
+class(df$b) =  c("spss_labelled", "haven_labelled")
+expect_identical(add_labelled_class(df), fixed_df)
+
+class(fixed_df$b) =  c("spss_labelled", "haven_labelled")
+expect_identical(add_labelled_class(df, remove_classes = NULL), fixed_df)

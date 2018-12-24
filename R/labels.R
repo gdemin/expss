@@ -17,6 +17,8 @@
 #' load 'expss' strictly after 'haven' to avoid conflicts.} }
 #' @param x Variable. In the most cases it is numeric vector.
 #' @param value A character scalar - label for the variable x.
+#' @param remove_classes A character vector of classes which should be removed
+#'   from the class attribute of the \code{x}.
 #' @return \code{var_lab} return variable label. If label doesn't exist it return
 #'   NULL . \code{var_lab<-} and \code{set_var_lab} return variable (vector x)
 #'   of class "labelled" with attribute "label" which equals submitted value.
@@ -116,7 +118,7 @@ set_var_lab.default = function(x, value){
     if (length(value)==0){
         attr(x,"label")=NULL
         if(length(val_lab(x))==0){
-            class(x)=setdiff(class(x), c("labelled", "labelled_spss"))
+            class(x)=setdiff(class(x), c("labelled", "spss_labelled", "haven_labelled"))
         }
         return(x)
     }
@@ -162,12 +164,13 @@ drop_var_labs = unvr
 #### add_labelled_class
 #' @rdname var_lab
 #' @export
-add_labelled_class = function(x){
+add_labelled_class = function(x, remove_classes = c("haven_labelled", "spss_labelled")){
     UseMethod("add_labelled_class")
 }
 
 #' @export
-add_labelled_class.default = function(x){
+add_labelled_class.default = function(x, remove_classes = c("haven_labelled", "spss_labelled")){
+    x = remove_class(x, remove_classes)
     if((!is.null(var_lab(x)) || !is.null(val_lab(x))) && !inherits(x, "labelled")){
         x = add_class(x, "labelled")
     }
@@ -175,9 +178,9 @@ add_labelled_class.default = function(x){
 }
 
 #' @export
-add_labelled_class.list = function(x){
+add_labelled_class.list = function(x, remove_classes = c("haven_labelled", "spss_labelled")){
     for(i in seq_along(x)){
-        x[[i]] =  add_labelled_class(x[[i]])
+        x[[i]] =  add_labelled_class(x[[i]], remove_classes = remove_classes)
     }
     x
 }
@@ -337,7 +340,7 @@ set_val_lab.default = function(x, value, add = FALSE){
             attr(x, "labels") = NULL
         }
         if(length(val_lab(x)) == 0 && is.null(var_lab(x))){
-            class(x)=setdiff(class(x), c("labelled", "labelled_spss"))
+            class(x)=setdiff(class(x), c("labelled", "spss_labelled", "haven_labelled"))
         }
         return(x)
      }
