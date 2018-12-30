@@ -1,6 +1,6 @@
 Package: expss
 Type: Package
-Title: Tables with Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
+Title: Tables, Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
 Version: 0.8.11
 Date: 2018-12-12
 Maintainer: Gregory Demin <gdemin@gmail.com>
@@ -26,7 +26,7 @@ Suggests:
     ggplot2,
     testthat,
     openxlsx
-Description: Package provides tabulation functions with support for 'SPSS'-style 
+Description: Package computes and displays tables with support for 'SPSS'-style 
         labels, multiple / nested banners, weights, multiple-response variables 
         and significance testing. There are facilities for nice output of tables 
         in 'knitr', 'Shiny', R and 'Jupyter' notebooks, '*.xlsx' files. Proper methods 
