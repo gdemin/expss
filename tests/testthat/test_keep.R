@@ -110,7 +110,7 @@ expect_error(keep(mtcars, am %to% carb1))
 expect_error(keep(mtcars, carb %to% am))
 
 
-context("keep/except subst")
+context("keep/except text_expand")
 dfs = data.frame(
     aa = 10 %r% 5,
     b_ = 20 %r% 5,
@@ -123,18 +123,18 @@ dfs = data.frame(
 
 aaa = paste0("b_", 1:5)
 bbb = c("aa", "b_")
-expect_identical(keep(dfs, subst("b_`1:5`")), dfs[, aaa])
+expect_identical(keep(dfs, text_expand("b_{1:5}")), dfs[, aaa])
 
-expect_identical(except(dfs, subst("b_`1:5`")), dfs[, bbb])
+expect_identical(except(dfs, text_expand("b_{1:5}")), dfs[, bbb])
 
 i = 1:5
-expect_identical(keep(dfs, subst("b_`i`")), dfs[, aaa])
+expect_identical(keep(dfs, text_expand("b_{i}")), dfs[, aaa])
 
-expect_identical(except(dfs, subst("b_`i`")), dfs[, bbb])
+expect_identical(except(dfs, text_expand("b_{i}")), dfs[, bbb])
 
 ex1 = function(){
     items = 1:5
-    keep(dfs, subst("b_`items`"))
+    keep(dfs, text_expand("b_{items}"))
 
 }
 
@@ -151,11 +151,11 @@ expect_identical(ex1(), dfs[, aaa])
 def_dfs = dfs
 default_dataset(def_dfs)
 
-.keep(subst("b_`i`"))
+.keep(text_expand("b_{i}"))
 expect_identical(def_dfs, dfs[, aaa])
 
 def_dfs = dfs
-.except(subst("b_`i`"))
+.except(text_expand("b_{i}"))
 expect_identical(def_dfs, dfs[, bbb])
 
 context("keep edge cases")

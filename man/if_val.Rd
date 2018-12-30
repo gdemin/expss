@@ -163,7 +163,7 @@ recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% (x_rec_1 \%to\% x_rec_3)
 fre(x_rec_1)
 # the same operation with characters expansion
 i = 1:3
-recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% subst('x_rec2_`i`')
+recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% text_expand('x_rec2_{i}')
 fre(x_rec2_1)
 
 # example with function in RHS

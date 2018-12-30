@@ -110,7 +110,7 @@ calculate(dfs, sum_row(b_1 \%to\% b_5))
 
 # set values to existing/new variables
 compute(dfs, {
-    (b_1 \%to\% b_5) \%into\% subst('new_b`1:5`')
+    (b_1 \%to\% b_5) \%into\% text_expand('new_b{1:5}')
 })
 
 # .new_var usage

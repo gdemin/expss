@@ -49,7 +49,7 @@
 #'  )
 #'  i = 1:5
 #'  keep(dfs, b_1 %to% b_5) 
-#'  keep(dfs, subst("b_`i`")) # the same result  
+#'  keep(dfs, text_expand("b_{i}")) # the same result  
 keep = function(data, ...){
     variables_names = substitute(list(...))
     keep_internal(data, variables_names, envir = parent.frame())

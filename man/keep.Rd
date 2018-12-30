@@ -67,5 +67,5 @@ dfs = data.frame(
  )
  i = 1:5
  keep(dfs, b_1 \%to\% b_5) 
- keep(dfs, subst("b_`i`")) # the same result  
+ keep(dfs, text_expand("b_{i}")) # the same result  
 }
