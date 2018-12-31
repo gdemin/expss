@@ -79,7 +79,7 @@ split_separate = function(data, ..., drop = TRUE){
 split_by.data.frame = function(data, ..., drop = TRUE){
     variables_names = substitute(list(...))
     stopif(length(variables_names)==0, "'split_by' - no grouping variables.")
-    splitter = keep_internal(data, variables_names, envir = parent.frame())
+    splitter = eval.parent(substitute(keep(data, ...)))
     splitter = do.call(nest, splitter)
     if(drop && is.labelled(splitter)){
         splitter = drop_unused_labels(splitter)

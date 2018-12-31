@@ -51,43 +51,40 @@
 #'  keep(dfs, b_1 %to% b_5) 
 #'  keep(dfs, text_expand("b_{i}")) # the same result  
 keep = function(data, ...){
-    variables_names = substitute(list(...))
-    keep_internal(data, variables_names, envir = parent.frame())
+    UseMethod("keep")
 }
 
-keep_internal = function(data, variables_names, envir){
-    UseMethod("keep_internal")
-}
 
 #' @export
-keep_internal.list = function(data, variables_names, envir){
+keep.list = function(data, ...){
     for(each in seq_along(data)){
-        data[[each]] = keep_internal(data[[each]], variables_names, envir = envir)
+        data[[each]] = eval.parent(substitute(keep(data[[each]], ...)))
     }
     data
 }
 
 #' @export
-keep_internal.data.frame = function(data, variables_names, envir){
+keep.data.frame = function(data, ...){
+    variables_names = substitute(list(...))
     curr_names = colnames(data)
-    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = parent.frame())
     if(is.data.table(data)){
         res = data[ , new_vars, with = FALSE]
     } else {
         res = data[ , new_vars, drop = FALSE]
         colnames(res) = curr_names[new_vars] # prevents names correction    
     }
-   
     res
 }
 
 #' @export
-keep_internal.matrix = function(data, variables_names, envir){
+keep.matrix = function(data, ...){
+    variables_names = substitute(list(...))
     curr_names = colnames(data)
     if(is.null(curr_names)){
         curr_names = rep("", NCOL(data))
     }
-    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = parent.frame())
     res = data[ , new_vars, drop = FALSE]
     if(!is.null(colnames(data))) colnames(res) = curr_names[new_vars] # prevents names correction
     res
@@ -98,9 +95,8 @@ keep_internal.matrix = function(data, variables_names, envir){
 #' @rdname keep
 .keep = function(...){
     reference = suppressMessages(default_dataset() )
-    data = ref(reference)
     variables_names = substitute(list(...))
-    data = keep_internal(data, variables_names, envir = parent.frame())
+    data = eval.parent(substitute(keep(ref(reference), ...)))
     ref(reference) = data
     invisible(data)
 }
@@ -109,28 +105,24 @@ keep_internal.matrix = function(data, variables_names, envir){
 #' @export
 #' @rdname keep
 except = function(data, ...){
-    variables_names = substitute(list(...))
-    except_internal(data, variables_names, envir = parent.frame())
+    UseMethod("except")
 }
 
-
-except_internal = function(data, variables_names, envir){
-    UseMethod("except_internal")
-}
 
 
 #' @export
-except_internal.list = function(data, variables_names, envir){
+except.list = function(data, ...){
     for(each in seq_along(data)){
-        data[[each]] = except_internal(data[[each]], variables_names, envir = envir)
+        data[[each]] = eval.parent(substitute(except(data[[each]], ...)))
     }
     data
 }
 
 #' @export
-except_internal.data.frame = function(data, variables_names, envir){
+except.data.frame = function(data, ...){
+    variables_names = substitute(list(...))
     curr_names = colnames(data)
-    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = parent.frame())
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
@@ -145,9 +137,10 @@ except_internal.data.frame = function(data, variables_names, envir){
 }
 
 #' @export
-except_internal.matrix = function(data, variables_names, envir){
+except.matrix = function(data, ...){
+    variables_names = substitute(list(...))
     curr_names = colnames(data)
-    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = envir)
+    new_vars = variables_names_to_indexes(curr_names, variables_names, envir = parent.frame())
     new_vars = -unique(new_vars)
     if(length(new_vars)==0){
         return(data)
@@ -165,9 +158,7 @@ except_internal.matrix = function(data, variables_names, envir){
 #' @rdname keep
 .except = function(...){
     reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    variables_names = substitute(list(...))
-    data = except_internal(data, variables_names, envir = parent.frame())
+    data = eval.parent(substitute(except(ref(reference), ...)))
     ref(reference) = data
     invisible(data)
 }
