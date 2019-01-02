@@ -11,6 +11,7 @@
 \alias{..}
 \alias{..f}
 \alias{..p}
+\alias{..t}
 \title{Get variables/range of variables by name/by pattern.}
 \format{An object of class \code{parameter} of length 1.}
 \usage{
@@ -31,6 +32,8 @@ e1 \%to_list\% e2
 ..f(...)
 
 ..p(...)
+
+..t(...)
 }
 \arguments{
 \item{...}{characters names of variables or criteria/logical functions}
@@ -56,6 +59,9 @@ characters. It is a shortcut for \code{vars(perl(pattern))}.}
 \item{\code{..f}}{ returns data.frame with all variables which names contain
 supplied pattern. Arguments for this function can be unquoted. It is a
 shortcut for \code{vars(fixed(pattern))}.}
+\item{\code{..t}}{ returns data.frame with variables which names are stored
+in the supplied arguments. Expressions in characters in curly brackets are
+expanded. See \link{text_expand}.}
 \item{\code{..[]}}{ returns data.frame with all variables by their names or 
 by criteria (see \link{criteria}).  Names at the top-level can be unquoted 
 (non-standard evaluation). For standard evaluation of parameters you can 
@@ -102,6 +108,10 @@ compute(dfs, {
     b_total = sum_row(..f(b_))
 })
 
+compute(dfs, {
+    b_total = sum_row(..t("b_{1:5}"))
+})
+
 # In global environement
 a = rep(10, 5)
 a1 = rep(1, 5)
@@ -115,6 +125,7 @@ a1 \%to\% a5
 vars(perl("^a[0-9]$"))
 ..[perl("^a[0-9]$")]
 ..p("^a[0-9]$")
+..t("a{1:5}")
 
 # sum each row
 sum_row(a1 \%to\% a5)

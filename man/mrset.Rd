@@ -7,6 +7,8 @@
 \alias{mdset_f}
 \alias{mrset_p}
 \alias{mdset_p}
+\alias{mrset_t}
+\alias{mdset_t}
 \title{Create multiple response set/multiple dichotomy set from variables}
 \usage{
 mrset(..., label = NULL)
@@ -20,6 +22,10 @@ mdset_f(..., label = NULL)
 mrset_p(..., label = NULL)
 
 mdset_p(..., label = NULL)
+
+mrset_t(..., label = NULL)
+
+mdset_t(..., label = NULL)
 }
 \arguments{
 \item{...}{variables}
@@ -35,13 +41,18 @@ These functions are intended for usage with tables - \link{tables},
 muliple-response set with category encoding and result of \code{mdset} is 
 considered as multiple response set with dichotomy (dummy) encoding e. g. 
 with 0 or 1 in the each column. Each column in the \code{dichotomy} is 
-indicator of absense or presense of particular feature. Both functions don't 
+indicator of absence or presence of particular feature. Both functions don't 
 convert its arguments to anything - it is supposed that arguments already 
 have appropriate encoding. For conversation see \link{as.dichotomy} or 
-\link{as.category}. \code{mrset_p} and \code{mdset_p} select variables for
-multiple-responses by perl-style regular expresssion.
-\code{mrset_f} and \code{mdset_f} select variables by fixed pattern. Fixed
-pattern can be unquoted. For details see \link{..p}.
+\link{as.category}. 
+\itemize{
+\item{\code{mrset_f} and \code{mdset_f} }{select variables by fixed pattern. Fixed
+pattern can be unquoted. For details see \link{..f}.}
+\item{\code{mrset_p} and \code{mdset_p} }{select variables for
+multiple-responses by perl-style regular expresssion. For details see \link{..p}.}
+\item{\code{mrset_t} and \code{mdset_t} }{select variables by expanding text
+arguments. For details see \link{..t} and \link{text_expand}.}
+}
 }
 \examples{
 data(product_test)
@@ -53,6 +64,9 @@ calc_cro_cpct(product_test, mrset_f(a1_))
 
 # same result
 calc_cro_cpct(product_test, mrset_p("a1_"))
+
+# same result
+calc_cro_cpct(product_test, mrset_t("a1_{1:6}"))
 }
 \seealso{
 \link{as.dichotomy}, \link{as.category}

@@ -2,38 +2,43 @@
 % Please edit documentation in R/qc.R
 \name{qc}
 \alias{qc}
-\alias{text_expand}
 \alias{qe}
+\alias{text_expand}
 \alias{subst}
 \title{Create vector of characters from unquoted strings (variable names)}
 \usage{
 qc(...)
 
-text_expand(..., delim = c("\\\\{", "\\\\}"))
-
 qe(...)
+
+text_expand(..., delim = c("\\\\{", "\\\\}"))
 
 subst(...)
 }
 \arguments{
-\item{...}{characters in \code{subst}, unquoted names of variables in
+\item{...}{characters in \code{text_expand}, unquoted names of variables in
 \code{qc} or unquoted expressions in \code{qe}.}
 
 \item{delim}{character vector of length 2 - pair of opening and closing
-delimiters for the templating tags. By default it is curly brackets.}
+delimiters for the templating tags. By default it is curly brackets. Note
+that \code{delim} will be used in the perl-style regular expression so you
+need to escape special characters, e. g. use \code{"\\\{"} instead of
+\code{"\{"}.}
 }
 \value{
 Vector of characters
 }
 \description{
-Often it is needed to address variables in  the data.frame in the such 
+\itemize{
+\item{\code{qc} }{It is often needed to address variables in the data.frame in the such 
 manner: \code{dfs[ , c("var1", "var2", "var3")]}. \code{qc} ("quoted c") is a
 shortcut for the such cases to reduce keystrokes. With \code{qc} you can write:
-\code{dfs[ , qc(var1, var2, var3)]}.
-\code{text_expand} is simple string interpolation function. It searches in its
-arguments expressions in curly brackets (\code{{expr}}), evaluate them and substitute with
-the result of evaluation. See examples.
-\code{qe} returns list of expression. It is useful to create substitution list for \code{..$arg}.
+\code{dfs[ , qc(var1, var2, var3)]}.}
+\item{\code{qe} }{returns list of expression. It is useful to create substitution list for \code{..$arg}.}
+\item{\code{text_expand} }{is simple string interpolation function. It searches in its
+arguments expressions in curly brackets \code{{expr}}, evaluate them and substitute with
+the result of evaluation. See examples.}
+}
 }
 \examples{
 

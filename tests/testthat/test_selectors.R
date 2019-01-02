@@ -199,6 +199,12 @@ expect_identical(
 )
 
 expect_identical(
+    with(dfs, ..t("b_{1:5}")), 
+    with(dfs, data.frame(b_1 = b_1, b_2 = b_2, b_3 = b_3, b_4 = b_4, b_5 = b_5))
+)
+
+
+expect_identical(
     with(dfs, ..f(a)), 
     with(dfs, data.frame(aa = aa))
 )
@@ -226,6 +232,7 @@ expect_identical(
 )
 
 expect_warning(with(dfs, ..p("a", "a")))
+expect_warning(with(dfs, ..t("aa", "aa")))
 
 expect_identical(
     within(dfs, {
@@ -246,6 +253,7 @@ expect_identical(
 
 context("vars")
 expect_identical(vars(text_expand("a_{c(1:2,4:5)}")), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
+expect_identical(..t("a_{c(1:2,4:5)}"), data.frame(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 expect_identical(vars_list(text_expand("a_{c(1:2,4:5)}")), list(a_1 = a_1, a_2 = a_2, a_4 = a_4, a_5 = a_5))
 
 
@@ -268,10 +276,16 @@ expect_identical(
     result_dfs
 )
 
-
+expect_identical(
+    transform(dfs,
+              b_total = sum_row(..t("b_{c(1:2,4:5)}"))
+    ), 
+    result_dfs
+)
 
 expect_error(vars())
 expect_error(vars(text_expand("z{1:5}")))
+expect_error(..t("z{1:5}"))
 expect_error(vars(text_expand("a_{c(1:2,4:5)}"), text_expand("z{1:5}")))
 # expect_error(a_5 %to% a_1)
 # expect_error(a_1a %to% a_5)

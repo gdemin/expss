@@ -139,16 +139,6 @@ read_labelled_csv = function(filename,
                              dec = ".",
                              undouble_quotes = TRUE,
                              ...){
-    # w = utils::read.table(file = filename,
-    #                header = TRUE,
-    #                sep = sep,
-    #                dec = dec,
-    #                stringsAsFactors = FALSE,
-    #                na.strings = "",
-    #                fileEncoding = fileEncoding,
-    #                check.names = FALSE,
-    #                ...
-    #                )
     w = data.table::fread(filename, 
               sep = sep,  
               header= TRUE, 
@@ -176,13 +166,6 @@ read_labelled_csv = function(filename,
     w
   
 }
-
-# @export
-# @rdname write_labels
-# fread_df = data.table::fread
-# 
-# formals(fread_df)$data.table = FALSE
-# formals(fread_df)$integer64 = "character"
 
 
 #' @export
@@ -509,13 +492,3 @@ make_make_labs_spss = function(vars,named_vec){
     
 }
 
-# apply_labels_from_file = function(x, filename, fileEncoding = ""){
-#     
-#     if (file.exists(filename)){
-#         source(filename, local = TRUE, encoding = fileEncoding, verbose = FALSE)
-#     } else {
-#         warning(paste(filename,"file doesn't exists. Labels will not be applied to data."))
-#     }
-#     x
-#     
-# }
