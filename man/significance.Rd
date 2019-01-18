@@ -126,7 +126,7 @@ for marking difference with first column of the table. First mark means
 "sd" or "none". This argument determines which statistics will remain in
 the table after significance marking.}
 
-\item{total_marker}{character. Mark of total rows in table.}
+\item{total_marker}{character. Mark of total rows in the table. "#" by default.}
 
 \item{total_row}{integer/character. In case of several totals per subtable it
 is number or name of total row for significance calculation.}

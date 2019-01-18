@@ -568,17 +568,6 @@ as.labelled.default = function(x, label = NULL){
     res
 }
 
-
-#' @export
-as.labelled.data.frame = function(x, label = NULL){
-    stop("Labelled 'data.frame' is not implemented.")
-}
-
-#' @export
-as.labelled.list = function(x, label = NULL){
-    stop("Labelled 'list' is not implemented.")
-}
-
 #' @export
 as.labelled.factor = function(x, label = NULL){
     values = seq_along(levels(x))
@@ -591,7 +580,6 @@ as.labelled.factor = function(x, label = NULL){
 }
 
 
-
 #' @export
 as.labelled.labelled = function(x, label = NULL){
     if(is.null(val_lab(x))){
@@ -602,6 +590,19 @@ as.labelled.labelled = function(x, label = NULL){
     }
     x
 }
+
+#' @export
+as.labelled.data.frame = function(x, label = NULL){
+    stop("'as.labelled': labelled 'data.frame' is not implemented.")
+}
+
+#' @export
+as.labelled.list = function(x, label = NULL){
+    stop("'as.labelled': labelled 'list' is not implemented.")
+}
+
+
+
 
 #' @export
 #' @rdname as.labelled
@@ -617,7 +618,7 @@ combine_labels = function(...){
     if(length(new_lab)>0) sort(new_lab) else new_lab
 }
 
-labelled_and_unlabelled = function(uniqs,vallab){
+labelled_and_unlabelled = function(uniqs, vallab){
     uniqs = unlab(uniqs)
     if (length(uniqs)>0) {
         uniqs=uniqs[!is.na(uniqs)]

@@ -207,50 +207,6 @@ unique.labelled = function(x, ...){
 }
 
 
-# # @export
-# abline = function(a = NULL, b = NULL, h = NULL, v = NULL, reg = NULL, coef = NULL, untf = FALSE, ...){
-#     UseMethod("abline")
-# }
-#
-# # @export
-# abline.default =  function(a = NULL, 
-#                            b = NULL, 
-#                            h = NULL, 
-#                            v = NULL, 
-#                            reg = NULL, 
-#                            coef = NULL, 
-#                            untf = FALSE, 
-#                            ...){
-#     graphics::abline(a = a, 
-#                      b = b, 
-#                      h = h, 
-#                      v = v, 
-#                      reg = reg, 
-#                      coef = coef, 
-#                      untf = untf, 
-#                      ...)
-#     
-# }    
-# 
-# # @export
-# abline.labelled =  function(a = NULL, 
-#                            b = NULL, 
-#                            h = NULL, 
-#                            v = NULL, 
-#                            reg = NULL, 
-#                            coef = NULL, 
-#                            untf = FALSE, 
-#                            ...){
-#     graphics::abline(a = unlab(a), 
-#                      b = b, 
-#                      h = h, 
-#                      v = v, 
-#                      reg = reg, 
-#                      coef = coef, 
-#                      untf = untf, 
-#                      ...)
-#     
-# } 
 
 #' @export
 as.logical.labelled = function (x, ...){

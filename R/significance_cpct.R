@@ -92,7 +92,7 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'   the table after significance marking.
 #' @param na_as_zero logical. \code{FALSE} by default. Should we treat
 #'   \code{NA}'s as zero cases?
-#' @param total_marker character. Mark of total rows in table.
+#' @param total_marker character. Mark of total rows in the table. "#" by default.
 #' @param total_row integer/character. In case of several totals per subtable it
 #'   is number or name of total row for significance calculation.
 #' @param var_equal a logical variable indicating whether to treat the two
