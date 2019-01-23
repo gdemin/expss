@@ -337,7 +337,14 @@ elementary_cro_fun_df = function(cell_var,
                    labels_length)
             stopif(anyDuplicated(use_lapply),  "'cro_fun'/'cro_fun_df' - duplicated labels provided with 'unsafe': ", 
                    paste(unique(use_lapply[duplicated(use_lapply)])), collapse = ", ")
-            dtable[ , row_labels := paste(row_labels, use_lapply, sep = "|")]
+            if(NROW(dtable)==0 && length(levels(dtable[["row_labels"]]))>0) {
+              # fix bug with unneseccary line: 
+              #            cro_mean_sd_n(1:4, total(), row_vars = set_val_lab(rep(NA, 4), c(a=1, b =2, c= 3, d= 4)))
+              new_levels = expand.grid(use_lapply, levels(dtable[["row_labels"]]))
+              levels(dtable[["row_labels"]])  = paste(new_levels[[2]], new_levels[[1]], sep = "|")
+            } else {
+              dtable[ , row_labels := paste(row_labels, use_lapply, sep = "|")]
+            }
         }
         
     }    

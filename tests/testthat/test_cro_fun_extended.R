@@ -438,3 +438,24 @@ structure(list(row_labels = "c(1:3, NA, NA, NA)", `c(1, 1, 1, 2, 2, 2)|1` = 0.89
 # cro_fun(list(a), fun = sum)
 # cro_fun_df(a, fun = colSums)
 # cro(list(1:20))
+
+# bug 2019.01.23
+
+res = cro_mean_sd_n(1:4, total(), row_vars = set_val_lab(rep(NA, 4), c(a=1, b =2, c= 3, d= 4)))
+correct = structure(list(row_labels = c("set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|a|1:4|Mean", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|a|1:4|Std. dev.", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|a|1:4|Unw. valid N", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|b|1:4|Mean", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|b|1:4|Std. dev.", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|b|1:4|Unw. valid N", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|c|1:4|Mean", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|c|1:4|Std. dev.", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|c|1:4|Unw. valid N", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|d|1:4|Mean", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|d|1:4|Std. dev.", 
+"set_val_lab(rep(NA, 4), c(a = 1, b = 2, c = 3, d = 4))|d|1:4|Unw. valid N"
+), `#Total` = c(NA_real_, NA_real_, NA_real_, NA_real_, NA_real_, 
+NA_real_, NA_real_, NA_real_, NA_real_, NA_real_, NA_real_, NA_real_
+)), row.names = c(NA, -12L), class = c("etable", "data.frame"
+))
+expect_identical(res, correct)
