@@ -396,6 +396,8 @@ write_labelled_spss = function(x,
     writeLines(text = syntax, con = conn)
     writeLines(text = "\n\n\n\n", con = conn)
     write_labels_spss(x, filename = conn)
+    syntax = sprintf("\nSAVE OUTFILE='%s'.\nEXECUTE.\n", paste0(normalizePath(filename, mustWork = FALSE), ".sav"))
+    writeLines(text = syntax, con = conn)
     invisible(NULL) 
 }
 
@@ -481,7 +483,7 @@ make_make_labs_spss = function(vars,named_vec){
     named_vec = named_vec[sorted]
     
     if (length(vars)>1) {
-        vars = paste0("VAL LAB ",paste(vars,collapse = " "))
+        vars = paste0("VAL LAB ",paste0(vars[1], " TO ", vars[length(vars)]))
     } else {
         vars = paste0("VAL LAB ",vars)
     }
