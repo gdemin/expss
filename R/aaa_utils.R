@@ -688,6 +688,17 @@ remove_class = function(x, ...){
 }
 
 ############
+
+
+
+#' Bug workaround
+#' 
+#' Function is added to workaround strange bug with data.table (issue #10).
+#' @param ... arguments
+#'
+#' @return list 
+#' @export
+#'
 ## copied from https://github.com/Rdatatable/data.table/blob/master/R/utils.R
 ## added exclusively to workaround strange bug with data.table (issue #10)
 name_dots <- function(...) {
