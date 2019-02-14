@@ -14,7 +14,7 @@ vignette: >
 Variable label is human readable description of the variable. R supports rather long variable names and these names can contain even spaces and punctuation but short variables names make coding easier. Variable label can give a nice, long description of variable. With this description it is easier to remember what those variable names refer to.
 Value labels are similar to variable labels, but value labels are descriptions of the values a variable can take. Labeling values means we don’t have to remember if 1=Extremely poor and 7=Excellent or vice-versa. We can easily get dataset description and variables summary with `info` function.
 
-The usual way to connect numeric data to labels in R is in factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, we can’t calculate means or other numeric statistics on factors. 
+The usual way to connect numeric data to labels in R is factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, we can’t calculate means or other numeric statistics on factors. 
 
 With labels we can manipulate short variable names and codes when we analyze our data but in the resulting tables and graphs we will see human-readable text. 
 
