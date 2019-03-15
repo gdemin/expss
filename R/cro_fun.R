@@ -638,47 +638,69 @@ cro_mean_sd_n = function(cell_vars,
                          labels = NULL
                          
 ){
-    
-    str_cell_vars = expr_to_character(substitute(cell_vars))
-    str_row_vars = expr_to_character(substitute(row_vars))
-    str_col_vars = expr_to_character(substitute(col_vars))
-    
-    cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
-    row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
-    col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
-    if(is.null(labels)) {
-        labels = c("Mean", "Std. dev.", 
-                   ifelse(weighted_valid_n, "Valid N", "Unw. valid N"))    
-    } else {
-        stopif(anyDuplicated(labels), "'cro_mean_sd_n' - all 'labels' should be unduplicated.")
-        stopif(length(labels)!=3, "'cro_mean_sd_n' - 'labels' should be vector of three elements.")
-    }
-    if(weighted_valid_n){
-        # here we heavy rely on the fact that weight already checked on NA and negative values
-        fun = function(x, weight = NULL) {
-            c(
-                matrixStats::weightedMean(x, w = weight, na.rm = TRUE),
-                weight_helper(matrixStats::weightedSd)(x, weight, na.rm = TRUE), 
-                if(is.null(weight)) sum(!is.na(x)) else sum(weight, na.rm = TRUE)
-            )
+  
+  str_cell_vars = expr_to_character(substitute(cell_vars))
+  str_row_vars = expr_to_character(substitute(row_vars))
+  str_col_vars = expr_to_character(substitute(col_vars))
+  
+  cell_vars = test_for_null_and_make_dataframe(cell_vars, str_cell_vars)
+  row_vars = test_for_null_and_make_list(row_vars, str_row_vars)
+  col_vars = test_for_null_and_make_list(col_vars, str_col_vars)
+  if(is.null(labels)) {
+    labels = c("Mean", "Std. dev.", 
+               ifelse(weighted_valid_n, "Valid N", "Unw. valid N"))    
+  } else {
+    stopif(anyDuplicated(labels), "'cro_mean_sd_n' - all 'labels' should be unduplicated.")
+    stopif(length(labels)!=3, "'cro_mean_sd_n' - 'labels' should be vector of three elements.")
+  }
+  if(weighted_valid_n){
+    # here we heavy rely on the fact that weight already checked on NA and negative values
+    fun = function(x, weight = NULL) {
+      if(is.logical(x)){
+        x = as.numeric(x)
+      }
+      c(
+        {
+          res = matrixStats::weightedMean(x, w = weight, na.rm = TRUE)
+          if(is.nan(res)) res = NA
+          res
+        },
+        weight_helper(matrixStats::weightedSd)(x, weight, na.rm = TRUE), 
+        {
+          validn = if(is.null(weight)) sum(!is.na(x)) else sum(weight[!is.na(x)], na.rm = TRUE)
+          if(!is.na(validn) && validn==0) validn = NA
+          validn
         }
-    } else {
-        fun = function(x, weight = NULL) {
-            c(
-                matrixStats::weightedMean(x, w = weight, na.rm = TRUE),
-                weight_helper(matrixStats::weightedSd)(x, weight, na.rm = TRUE),
-                sum(!is.na(x))
-            )
-        }
+      )
     }
-    cro_fun(cell_vars = cell_vars, 
-            col_vars = col_vars, 
-            row_vars = row_vars, 
-            weight = weight,
-            subgroup = subgroup,
-            fun = fun,
-            unsafe = labels
-    )
+  } else {
+    fun = function(x, weight = NULL) {
+      if(is.logical(x)){
+        x = as.numeric(x)
+      }
+      c(
+        {
+          res = matrixStats::weightedMean(x, w = weight, na.rm = TRUE)
+          if(is.nan(res)) res = NA
+          res
+        },
+        weight_helper(matrixStats::weightedSd)(x, weight, na.rm = TRUE),
+        {
+          validn = sum(!is.na(x))
+          if(!is.na(validn) && validn==0) validn = NA
+          validn
+        }
+      )
+    }
+  }
+  cro_fun(cell_vars = cell_vars, 
+          col_vars = col_vars, 
+          row_vars = row_vars, 
+          weight = weight,
+          subgroup = subgroup,
+          fun = fun,
+          unsafe = labels
+  )
 }
 
 

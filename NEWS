@@ -2,6 +2,8 @@
 ================
 * now htmlTable respects 'align' argument (Issue #20)
 * fix 'add_labelled_class' for 'haven' 2.0
+* improve SPSS syntax in 'write_labelled_spss'
+* fix bug in 'cro_mean_sd_n with incorrect weighted valid n in some cases
 
 0.8.10 (12.12.2018)
 ================

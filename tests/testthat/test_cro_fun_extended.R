@@ -382,6 +382,45 @@ expect_equal_to_reference(
 )
 
 
+mtcars2 = mtcars
+
+mtcars2$mpg[1:5] = NA
+set.seed(123)
+mtcars2$ww = runif(NROW(mtcars), 0.5, 1.5)
+mtcars2$ww[6:10] = NA
+mtcars2$empty = NA
+expect_equal_to_reference(calc_cro_mean_sd_n(mtcars2, 
+                   empty, 
+                   list(total(), am, vs),
+                   weight = ww,
+                   weighted_valid_n = TRUE),
+                   "rds/cro_mean_sd_n4.rds",  update = FALSE
+)
+
+expect_equal_to_reference(
+    calc_cro_mean_sd_n(mtcars2, 
+                   empty, 
+                   list(total(), am, vs),
+                   weight = ww,
+                   weighted_valid_n = FALSE),
+                   "rds/cro_mean_sd_n4_1.rds",  update = FALSE
+)
+mtcars2$empty = NA_real_
+expect_equal_to_reference(calc_cro_mean_sd_n(mtcars2, 
+                   empty, 
+                   list(total(), am, vs),
+                   weight = ww,
+                   weighted_valid_n = TRUE),
+"rds/cro_mean_sd_n4.rds",  update = FALSE
+)
+
+expect_equal_to_reference(calc_cro_mean_sd_n(mtcars2, 
+                   empty, 
+                   list(total(), am, vs),
+                   weight = ww,
+                   weighted_valid_n = FALSE),
+"rds/cro_mean_sd_n4_1.rds",  update = FALSE
+)
 
 context("cro_fun unsafe labels")
 
