@@ -428,7 +428,12 @@ make_datatable_for_cro = function(cell_var,
                                   subgroup){
     
     max_nrow = max(NROW(cell_var), NROW(col_var), NROW(row_var), NROW(weight))
-    non_empty_rows = valid(cell_var) & valid(col_var) & if_null(subgroup, TRUE)
+    if(is.null(subgroup)){
+        non_empty_rows = valid(cell_var) & valid(col_var) 
+    } else {
+        non_empty_rows = valid(cell_var) & valid(col_var)  & subgroup & !is.na(subgroup)
+    }
+    
     col_var = recycle_if_single_row(col_var, max_nrow)
     cell_var = recycle_if_single_row(cell_var, max_nrow)
     
