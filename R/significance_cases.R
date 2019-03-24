@@ -3,6 +3,7 @@
 significance_cases = function(x, 
                               sig_level = 0.05, 
                               min_base = 2,
+                              correct = TRUE,
                               keep = c("cases", "bases"), 
                               total_marker = "#",
                               total_row = 1,
@@ -16,6 +17,7 @@ significance_cases = function(x,
 significance_cases.etable = function(x, 
                                      sig_level = 0.05, 
                                      min_base = 2,
+                                     correct = TRUE,
                                      keep = c("cases", "bases"), 
                                      total_marker = "#",
                                      total_row = 1,
@@ -41,7 +43,8 @@ significance_cases.etable = function(x,
         chisq_row = section_sig_chisq(curr_cases = curr_cases, 
                                       curr_base = curr_base,
                                       groups = groups,
-                                      sig_level = sig_level)
+                                      sig_level = sig_level,
+                                      correct = correct)
         
         # we need total only as template so we take first row
         total = each_section[total_rows_indicator, ][1, ]
@@ -102,7 +105,7 @@ make_chisq_row = function(total, chisq_row, total_marker){
 
 ########################
 
-section_sig_chisq = function(curr_cases, curr_base, groups, sig_level) {
+section_sig_chisq = function(curr_cases, curr_base, groups, sig_level, correct) {
     chisq_result_row = curr_base
     chisq_result_row[] = ""
     for(each_group in groups){
@@ -111,7 +114,7 @@ section_sig_chisq = function(curr_cases, curr_base, groups, sig_level) {
         cases = as.matrix(cases[,!is.na(bases)])
         first_group_column = each_group[1]
         if(length(cases)>1){
-            chisq = suppressWarnings(chisq.test(cases, correct = FALSE))
+            chisq = suppressWarnings(chisq.test(cases, correct = correct))
             pvalue = chisq$p.value
             if_na(pvalue) = 1
             expected = chisq$expected
