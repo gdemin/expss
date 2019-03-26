@@ -37,7 +37,9 @@ if(dir.exists("data_files")){
     etalon_dat = readLines("data_files/etalon_labelled_iris.csv")
     etalon_sps = readLines("data_files/etalon_labelled_iris.csv.sps")
     expect_identical(dat, etalon_dat)
-    expect_identical(sps[-2], etalon_sps[-2])
+    sps = sps[!grepl("OUTFILE", sps)]
+    etalon_sps = etalon_sps[!grepl("OUTFILE", etalon_sps)]
+    # expect_identical(sps[-2], etalon_sps[-2])
     
     raw_data = readRDS("data_files/raw.rds")
     data(iris)
