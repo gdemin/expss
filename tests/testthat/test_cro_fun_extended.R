@@ -405,6 +405,16 @@ expect_equal_to_reference(
                    weighted_valid_n = FALSE),
                    "rds/cro_mean_sd_n4_1.rds",  update = FALSE
 )
+
+expect_equal_to_reference(
+    tab_cells(mtcars2) %>% 
+        tab_cells(empty) %>% 
+        tab_cols(total(), am, vs) %>% 
+        tab_weight(ww) %>% 
+        tab_stat_mean_sd_n(weighted_valid_n = FALSE) %>% 
+        tab_pivot(),
+    "rds/cro_mean_sd_n4_1.rds",  update = FALSE
+)
 mtcars2$empty = NA_real_
 expect_equal_to_reference(calc_cro_mean_sd_n(mtcars2, 
                    empty, 

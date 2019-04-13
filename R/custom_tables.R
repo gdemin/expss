@@ -600,12 +600,43 @@ tab_stat_mean_sd_n = function(data, weighted_valid_n = FALSE,
     check_class_for_stat(data)
     label = substitute(label)
     if(weighted_valid_n){
+        # here we heavy rely on the fact that weight already checked on NA and negative values
         fun = function(x, weight = NULL) {
-            c(w_mean(x, weight), w_sd(x, weight), valid_n(x, weight))
+            if(is.logical(x)){
+                x = as.numeric(x)
+            }
+            c(
+                {
+                    res = matrixStats::weightedMean(x, w = weight, na.rm = TRUE)
+                    if(is.nan(res)) res = NA
+                    res
+                },
+                weight_helper(matrixStats::weightedSd)(x, weight, na.rm = TRUE), 
+                {
+                    validn = if(is.null(weight)) sum(!is.na(x)) else sum(weight[!is.na(x)], na.rm = TRUE)
+                    if(!is.na(validn) && validn==0) validn = NA
+                    validn
+                }
+            )
         }
     } else {
         fun = function(x, weight = NULL) {
-            c(w_mean(x, weight), w_sd(x, weight), unweighted_valid_n(x, weight))
+            if(is.logical(x)){
+                x = as.numeric(x)
+            }
+            c(
+                {
+                    res = matrixStats::weightedMean(x, w = weight, na.rm = TRUE)
+                    if(is.nan(res)) res = NA
+                    res
+                },
+                weight_helper(matrixStats::weightedSd)(x, weight, na.rm = TRUE),
+                {
+                    validn = sum(!is.na(x))
+                    if(!is.na(validn) && validn==0) validn = NA
+                    validn
+                }
+            )
         }
     }
     tab_stat_fun_internal(data, 
