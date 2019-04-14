@@ -1018,7 +1018,17 @@ make_total_rows = function(need_row_var,
         dtotal
     })
     if(length(total_statistic)>1){
+        # restore factor levels
+        old_levels = lapply(total_row[[1]], levels)
         total_row = rbindlist(total_row, fill = FALSE, use.names = TRUE)
+        
+        # workaround for new behavior of data.table - rbind drop levels so we restore them
+        for(i in seq_along(total_row)){
+            if(!is.null(old_levels[[i]])){
+                levels(total_row[[i]]) = old_levels[[i]]
+            }
+        }
+        
     } else {
         total_row = total_row[[1]]
     }

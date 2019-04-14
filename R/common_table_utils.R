@@ -178,11 +178,21 @@ long_datatable_to_table = function(dtable, rows, columns, values){
     }
     if(nrow(dtable)==0){
         # we need at least one row in our table
-        # and we want NA only when there are no other levels in the variable
+        
         empty_dt = data.table(NA)
         empty_dt = set_names(empty_dt, rows[[1]]) 
+        old_levels = lapply(dtable, levels)
         dtable = rbind(dtable, empty_dt, use.names = TRUE, fill = TRUE)  
+         
+        # workaround for new behavior of data.table - rbind drop levels so we restore them
+        for(i in seq_along(dtable)){
+            if(!is.null(old_levels[[i]])){
+                levels(dtable[[i]]) = old_levels[[i]]
+            }
+        }
         
+        # and we want NA only when there are no other levels in the variable
+        # thats why we replace NA with first level
         for (each in rows_columns){
             curr_levels = levels(dtable[[each]])
             if(length(curr_levels)>0){
