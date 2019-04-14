@@ -1,9 +1,15 @@
-0.8.11 (.01.2019)
+0.8.11 (16.04.2019)
 ================
+* UPDATE IS REQUIRED. fixes for R>=3.6 and data.table >=1.12.2.
 * now htmlTable respects 'align' argument (Issue #20)
 * fix 'add_labelled_class' for 'haven' 2.0
 * improve SPSS syntax in 'write_labelled_spss'
+* add new significance test - 'significance_cell_chisq'/'tab_last_sig_cell_chisq'. Idea by Roberto Gilsaura. 
+* now 'significance_cases' has new argument 'correct' for Yates' correction. By default it is TRUE
+* add 'qe' function for making list of expressions
+* ..$ selector now supports arbitrary expression
 * fix bug in 'cro_mean_sd_n with incorrect weighted valid n in some cases
+* Numerous small bugfixes
 
 0.8.10 (12.12.2018)
 ================
