@@ -27,6 +27,7 @@ tab_significance_options(data, sig_level = 0.05, min_base = 2,
   sig_labels_previous_column = c("v", "^"),
   sig_labels_first_column = c("-", "+"), sig_labels_chisq = c("<",
   ">"), keep = c("percent", "cases", "means", "sd", "bases"),
+  row_margin = c("auto", "sum_row", "first_column"),
   total_marker = "#", total_row = 1, digits = get_expss_digits(),
   na_as_zero = FALSE, var_equal = FALSE, mode = c("replace",
   "append"))
@@ -159,6 +160,16 @@ for marking a difference with row margin of the table. First mark means
 "sd" or "none". This argument determines which statistics will remain in
 the table after significance marking.}
 
+\item{row_margin}{character. One of values "auto" (default), "sum_row", or
+"first_column". If it is "auto" we try to find total column in the subtable
+by \code{total_column_marker}. If the search is failed, we use the sum of
+each rows as row total. With "sum_row" option we always sum each row to get
+margin. Note that in this case result for multiple response variables in
+banners may be incorrect. With "first_column" option we use table first
+column as row margin for all subtables. In this case result for the
+subtables with incomplete bases may be incorrect. Only for
+\code{significance_cell_chisq}.}
+
 \item{total_marker}{character. Total rows mark in the table. "#" by default.}
 
 \item{total_row}{integer/character. In the case of the several totals per
@@ -182,16 +193,6 @@ calculation.}
 
 \item{label}{character. Label for the statistic in the \code{tab_*}. Ignored
 if the \code{mode} is equals to \code{replace}.}
-
-\item{row_margin}{character. One of values "auto" (default), "sum_row", or
-"first_column". If it is "auto" we try to find total column in the subtable
-by \code{total_column_marker}. If the search is failed, we use the sum of
-each rows as row total. With "sum_row" option we always sum each row to get
-margin. Note that in this case result for multiple response variables in
-banners may be incorrect. With "first_column" option we use table first
-column as row margin for all subtables. In this case result for the
-subtables with incomplete bases may be incorrect. Only for
-\code{significance_cell_chisq}.}
 
 \item{total_column_marker}{character. Mark for total columns in the
 subtables. "#" by default.}

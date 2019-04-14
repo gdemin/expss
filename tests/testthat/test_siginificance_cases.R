@@ -161,3 +161,23 @@ expect_equal_to_reference(
     significance_cases(cro_cases(NA)),
     "rds/significance_cases17.rds",  update = FALSE
 )
+
+tbl = calc_cro_cases(mtcars, am, vs) %>% drop_empty_columns()
+
+correct_true = structure(list(row_labels = structure(c("Transmission|Automatic", 
+"Transmission|Manual", "Transmission|#Chi-squared p-value", "Transmission|#Total cases"
+), class = "AsIs"), `Engine|V-engine` = structure(c("12.0", " 6.0", 
+"", "18.0"), class = "AsIs"), `Engine|Straight engine` = structure(c("7.0", 
+"7.0", "", "14.0"), class = "AsIs")), row.names = c("1", "2", 
+"3", "31"), class = c("etable", "data.frame"))
+
+correct_false = structure(list(row_labels = structure(c("Transmission|Automatic", 
+"Transmission|Manual", "Transmission|#Chi-squared p-value", "Transmission|#Total cases"
+), class = "AsIs"), `Engine|V-engine` = structure(c("12.0", " 6.0", 
+"<0.4", "18.0"), class = "AsIs"), `Engine|Straight engine` = structure(c("7.0", 
+"7.0", "", "14.0"), class = "AsIs")), row.names = c("1", "2", 
+"3", "31"), class = c("etable", "data.frame"))
+expect_equal(significance_cases(tbl, sig_level = 0.4, correct = FALSE), correct_false)
+expect_equal(significance_cases(tbl, sig_level = 0.4, correct = TRUE), correct_true)
+
+
