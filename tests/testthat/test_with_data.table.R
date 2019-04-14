@@ -1,4 +1,6 @@
 context("data.table modify")
+suppressWarnings(RNGversion("3.5.0"))
+
 
 dt = data.table(
     zz = 42,

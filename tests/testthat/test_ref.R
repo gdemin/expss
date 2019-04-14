@@ -1,4 +1,6 @@
 context("ref")
+suppressWarnings(RNGversion("3.5.0"))
+
 
 a = 1:3
 

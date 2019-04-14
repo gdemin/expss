@@ -1,4 +1,6 @@
 context("if_na.vector")
+suppressWarnings(RNGversion("3.5.0"))
+
 
 a = 1:4
 b = a

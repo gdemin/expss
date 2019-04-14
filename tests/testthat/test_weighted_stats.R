@@ -1,4 +1,6 @@
 context("w_* unweighted")
+suppressWarnings(RNGversion("3.5.0"))
+
 
 set.seed(123)
 x = round(c(NA, runif(8, 1,2), NA), 5)

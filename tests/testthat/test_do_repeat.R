@@ -1,4 +1,5 @@
 context("do_repeat")
+suppressWarnings(RNGversion("3.5.0"))
 
 data(iris)
 

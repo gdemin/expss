@@ -1,4 +1,5 @@
 context("custom tables")
+suppressWarnings(RNGversion("3.5.0"))
 
 data(mtcars)
 # add labels to dataset

@@ -1,4 +1,5 @@
 context("category")
+suppressWarnings(RNGversion("3.5.0"))
 
 set.seed(123)
 dichotomy_matrix = matrix(sample(0:1,40,replace = TRUE,prob=c(.6,.4)),nrow=10)

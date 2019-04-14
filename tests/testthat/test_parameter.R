@@ -1,4 +1,6 @@
 context("..")
+suppressWarnings(RNGversion("3.5.0"))
+
 
 data(iris)
 

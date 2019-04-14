@@ -1,4 +1,5 @@
 context("dichotomy.default")
+suppressWarnings(RNGversion("3.5.0"))
 
 expect_error(as.dichotomy(NULL))
 

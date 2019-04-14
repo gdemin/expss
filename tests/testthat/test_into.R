@@ -1,4 +1,5 @@
 context("%into%_2")
+suppressWarnings(RNGversion("3.5.0"))
 
 data(iris)
 

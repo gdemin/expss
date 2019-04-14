@@ -1,5 +1,7 @@
 # example with dplyr
 context("dplyr count_if")
+suppressWarnings(RNGversion("3.5.0"))
+
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     set.seed(123)
     df2 = as.data.frame(

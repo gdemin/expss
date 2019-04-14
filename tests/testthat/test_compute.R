@@ -1,4 +1,6 @@
 context("compute")
+suppressWarnings(RNGversion("3.5.0"))
+
 aa = 10 %r% 5
 a_ = 20 %r% 5
 a_1 = 1 %r% 5

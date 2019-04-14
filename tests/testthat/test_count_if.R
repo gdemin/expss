@@ -1,4 +1,5 @@
 context("count_if")
+suppressWarnings(RNGversion("3.5.0"))
 df1 = data.frame(
     a=c("apples",   "oranges",     "peaches",     "apples"),
     b = c(32, 54, 75, 86)

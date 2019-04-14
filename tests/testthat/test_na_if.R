@@ -1,4 +1,5 @@
 context("na_if vector")
+suppressWarnings(RNGversion("3.5.0"))
 
 a = 1:5
 

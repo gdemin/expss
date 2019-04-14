@@ -1,4 +1,5 @@
 context("recode simple vector")
+suppressWarnings(RNGversion("3.5.0"))
 
 
 expect_error(recode(1, 42))

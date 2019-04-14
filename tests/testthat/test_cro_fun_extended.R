@@ -1,4 +1,5 @@
 context("cro_fun extended")
+suppressWarnings(RNGversion("3.5.0"))
 
 
 data(mtcars)
