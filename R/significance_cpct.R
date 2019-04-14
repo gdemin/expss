@@ -4,7 +4,7 @@ COMPARE_TYPE = c("subtable",
 
 KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 
-#' Mark significant differences between columns of the table
+#' Mark significant differences between columns in the table
 #' 
 #' \itemize{
 #' \item{\code{significance_cpct}}{ conducts z-tests between column percent in
@@ -15,37 +15,54 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' as in \link[stats]{t.test}.}
 #' \item{\code{significance_cases}}{ conducts chi-squared tests on the subtable of
 #' table with counts in the result of \link{cro_cases}. Results are calculated
-#' with the same formula as in \link[stats]{chisq.test} without continuity
-#' correction.}} 
-#' There are three type of comparisons which can be conducted simultaneously 
-#' (argument \code{compare_type}). \code{subtable} provide comparison between
-#' all columns inside each subtable. \code{previous_column} is comparison of
-#' each column in the subtable with previous column. It is useful if columns are
-#' periods or waves of survey. \code{first_column} provide comparison of table
-#' first column with all other columns in the table.
-#' \code{adjusted_first_column} is comparison with first column but with
-#' adjustment for common base. It is useful if first column is total column and
-#' other columns are subgroup of this total. Adjustments are made according to
-#' algorithm in IBM SPSS Statistics Algorithms v20, p. 263. Note that with these
-#' adjustments t-tests between means are made with equal variance assumed (as
-#' with \code{var_equal = TRUE}).
+#' with the same formula as in \link[stats]{chisq.test}.}
+#' \item{\code{significance_cell_chisq}}{ compute cell chi-square test on table
+#' with column percent. The cell chi-square test looks at each table cell and
+#' tests whether it is significantly different from its expected value in the
+#' overall table. For example, if it is thought that variations in political
+#' opinions might depend on the respondent's age, this test can be used to
+#' detect which cells contribute significantly to that dependence. Unlike the
+#' chi-square test (\code{significance_cases}), which is carried out on a whole
+#' set of rows and columns, the cell chi-square test is carried out
+#' independently on each table cell. Although the significance level of the cell
+#' chi-square test is accurate for any given cell, the cell tests cannot be used
+#' instead of the chi-square test carried out on the overall table. Their
+#' purpose is simply to point to the parts of the table where dependencies
+#' between row and column categories may exist.}}
+#' For \code{significance_cpct} and \code{significance_means} there are three
+#' type of comparisons which can be conducted simultaneously (argument
+#' \code{compare_type}):
+#' \itemize{
+#' \item{\code{subtable}}{ provide comparisons between all columns inside each
+#' subtable.}
+#' \item{\code{previous_column}}{ is a comparison of each column of the subtable
+#' with the previous column. It is useful if columns are periods or survey
+#' waves.}
+#' \item{\code{first_column}}{ provides comparison the table first column with
+#' all other columns in the table. \code{adjusted_first_column} is also
+#' comparison with the first column but with adjustment for common base. It is
+#' useful if the first column is total column and other columns are subgroups of
+#' this total. Adjustments are made according to algorithm in IBM SPSS
+#' Statistics Algorithms v20, p. 263. Note that with these adjustments t-tests
+#' between means are made with equal variance assumed (as with \code{var_equal =
+#' TRUE}).}}
 #' By now there are no adjustments for multiple-response variables (results of 
 #' \link{mrset}) in the table columns so significance tests are rather 
 #' approximate for such cases.
-#' Also there are functions for significance testing in the sequence of custom
-#' tables calculations (see \link{tables}).
+#' Also, there are functions for the significance testing in the sequence of
+#' custom tables calculations (see \link{tables}):
 #' \itemize{
 #' \item{\code{tab_last_sig_cpct}, \code{tab_last_sig_means} and 
-#' \code{tab_last_sig_cpct}}{ make the same tests as there analogs mentioned 
+#' \code{tab_last_sig_cpct}}{ make the same tests as their analogs mentioned 
 #' above. It is recommended to use them after appropriate statistic function: 
 #' \link{tab_stat_cpct}, \link{tab_stat_mean_sd_n} and \link{tab_stat_cases}.
 #' }
 #' \item{\code{tab_significance_options}}{ With this function we can set
-#' significance options for entire custom table creation sequence.}
+#' significance options for the entire custom table creation sequence.}
 #' \item{\code{tab_last_add_sig_labels}}{ This function applies 
-#' \code{add_sig_labels} to last calculated table - it add labels (letters by
-#' default) for significance to columns header. It may be useful if you want to
-#' combine table with significance with table without it.}
+#' \code{add_sig_labels}  to the last calculated table - it adds labels (letters
+#' by default) for significance to columns header. It may be useful if you want
+#' to combine a table with significance with table without it.}
 #' \item{\code{tab_last_round}}{ This function rounds numeric columns in the
 #' last calculated table to specified number of digits. It is sometimes
 #' needed if you want to combine table with significance with table without it.}
@@ -63,38 +80,58 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' @param delta_means numeric. Minimal delta between means for which we mark 
 #'   significant differences  - by default it equals to zero.
 #' @param min_base numeric. Significance test will be conducted if both
-#'   columns have bases greater or equal to \code{min_base}. By default it equals to \code{2}.
-#' @param compare_type Type of compare between columns. By default it is 
+#'   columns have bases greater or equal to \code{min_base}. By default, it equals to \code{2}.
+#' @param compare_type Type of compare between columns. By default, it is 
 #'   \code{subtable} - comparisons will be conducted between columns of each 
 #'   subtable. Other possible values are: \code{first_column}, 
 #'   \code{adjusted_first_column} and \code{previous_column}. We can conduct
 #'   several tests simultaneously.
 #' @param bonferroni logical. \code{FALSE} by default. Should we use Bonferroni
-#'   adjustment by number of comparisons in each row? 
+#'   adjustment by the number of comparisons in each row? 
 #' @param subtable_marks character. One of "greater", "both" or "less". By
 #'   deafult we mark only values which are significantly greater than some other
-#'   columns. We can change this behavior by setting argument to \code{less} or
-#'   \code{both}.
+#'   columns. For \code{significance_cell_chisq} default is "both".We can change
+#'   this behavior by setting an argument to \code{less} or \code{both}.
 #' @param inequality_sign logical. FALSE if \code{subtable_marks} is "less" or 
 #'   "greater". Should we show \code{>} or \code{<} before significance marks of
 #'   subtable comparisons.
 #' @param sig_labels character vector. Labels for marking differences between
 #'   columns of subtable.
 #' @param sig_labels_previous_column a character vector with two elements. Labels
-#'   for marking difference with previous column. First mark means 'lower' (by
+#'   for marking a difference with the previous column. First mark means 'lower' (by
 #'   default it is \code{v}) and the second means greater (\code{^}).
 #' @param sig_labels_first_column a character vector with two elements. Labels 
-#'   for marking difference with first column of the table. First mark means
+#'   for marking a difference with the first column of the table. First mark means
 #'   'lower' (by default it is \code{-}) and the second means 'greater'
 #'   (\code{+}).
+#' @param sig_labels_chisq a character vector with two labels 
+#'   for marking a difference with row margin of the table. First mark means
+#'   'lower' (by default it is \code{<}) and the second means 'greater'
+#'   (\code{>}). Only for \code{significance_cell_chisq}.
+#' @param correct logical indicating whether to apply continuity correction when
+#'   computing the test statistic for 2 by 2 tables. Only for
+#'   \code{significance_cases} and \code{significance_cell_chisq}. For details
+#'   see \link[stats]{chisq.test}. \code{TRUE} by default.
+#' @param row_margin character. One of values "auto" (default), "sum_row", or
+#'   "first_column". If it is "auto" we try to find total column in the subtable
+#'   by \code{total_column_marker}. If the search is failed, we use the sum of
+#'   each rows as row total. With "sum_row" option we always sum each row to get
+#'   margin. Note that in this case result for multiple response variables in
+#'   banners may be incorrect. With "first_column" option we use table first
+#'   column as row margin for all subtables. In this case result for the
+#'   subtables with incomplete bases may be incorrect. Only for
+#'   \code{significance_cell_chisq}.
+#' @param total_column_marker character. Mark for total columns in the
+#'   subtables. "#" by default.
 #' @param keep character. One or more from "percent", "cases", "means", "bases", 
 #'   "sd" or "none". This argument determines which statistics will remain in
 #'   the table after significance marking.
 #' @param na_as_zero logical. \code{FALSE} by default. Should we treat
 #'   \code{NA}'s as zero cases?
-#' @param total_marker character. Mark of total rows in the table. "#" by default.
-#' @param total_row integer/character. In case of several totals per subtable it
-#'   is number or name of total row for significance calculation.
+#' @param total_marker character. Total rows mark in the table. "#" by default.
+#' @param total_row integer/character. In the case of the several totals per
+#'   subtable it is a number or name of total row for the significance
+#'   calculation.
 #' @param var_equal a logical variable indicating whether to treat the two
 #'   variances as being equal. For details see \link[stats]{t.test}.
 #' @param digits an integer indicating how much digits after decimal separator 
@@ -107,10 +144,10 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'   calculation.
 #' @param label character. Label for the statistic in the \code{tab_*}. Ignored
 #'   if the \code{mode} is equals to \code{replace}.
-#' @return \code{tab_last_*} functions return objects of class 
-#'   \code{intermediate_table}. Use \link{tab_pivot} to get final result - 
-#'   object of class \code{etable}. Other functions return object of class
-#'   \code{etable} with marks of significant differences between columns.
+#' @return \code{tab_last_*} functions return objects of class
+#'   \code{intermediate_table}. Use \link{tab_pivot} to get the final result -
+#'   \code{etable} object. Other functions return \code{etable} object with
+#'   significant differences.
 #'   
 #' @seealso \link{cro_cpct}, \link{cro_cases}, \link{cro_mean_sd_n}, \link{tables},
 #'   \link{compare_proportions}, \link{compare_means}, \link[stats]{prop.test},
@@ -144,7 +181,7 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'                          )
 #' 
 #' significance_cpct(mtcars_table)
-#' 
+#' \dontrun{
 #' # comparison with first column
 #' significance_cpct(mtcars_table, compare_type = "first_column")
 #' 
@@ -172,7 +209,18 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'                             list(total(), vs, am))
 #'                          )
 #'                          
-#' significance_cases(mtcars_cases)    
+#' significance_cases(mtcars_cases)  
+#' 
+#' # cell chi-squared test
+#' # increase number of cases to avoid warning about chi-square approximation
+#' mtcars2 = add_rows(mtcars, mtcars, mtcars)
+#'
+#' tbl = calc_cro_cpct(mtcars2, gear, am)
+#' significance_cell_chisq(tbl)
+#' 
+#' # table with multiple variables
+#' tbl = calc_cro_cpct(mtcars2, list(gear, cyl), list(total(), am, vs))
+#' significance_cell_chisq(tbl, sig_level = .0001)  
 #' 
 #' # custom tables with significance
 #' mtcars %>% 
@@ -203,7 +251,8 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'     tab_last_sig_cpct() %>% 
 #'     tab_last_hstack("inside_columns") %>% 
 #'     tab_pivot(stat_position = "inside_rows") %>% 
-#'     drop_empty_columns()       
+#'     drop_empty_columns()    
+#' }   
 significance_cpct = function(x, 
                              sig_level = 0.05, 
                              delta_cpct = 0,

@@ -5,6 +5,7 @@ tab_significance_options = function(data,
                                     min_base = 2,
                                     delta_cpct = 0,
                                     delta_means = 0,
+                                    correct = TRUE,
                                     compare_type ="subtable",
                                     bonferroni = FALSE,
                                     subtable_marks = "greater",
@@ -12,6 +13,7 @@ tab_significance_options = function(data,
                                     sig_labels = LETTERS,
                                     sig_labels_previous_column = c("v", "^"),
                                     sig_labels_first_column = c("-", "+"),
+                                    sig_labels_chisq = c("<", ">"),
                                     keep = c("percent", "cases", "means", "sd", "bases"), 
                                     total_marker = "#",
                                     total_row = 1,
@@ -108,6 +110,7 @@ tab_last_sig_means = function(data,
 tab_last_sig_cases = function(data, 
                                  sig_level = 0.05, 
                                  min_base = 2,
+                                 correct = TRUE,
                                  keep = c("cases", "bases"), 
                                  total_marker = "#",
                                  total_row = 1,
@@ -127,6 +130,35 @@ tab_last_sig_cases = function(data,
     )
 }
 
+######################
+#' @rdname significance
+#' @export
+tab_last_sig_cell_chisq = function(data, 
+                                   sig_level = 0.05, 
+                                   min_base = 2,
+                                   subtable_marks = c("both", "greater", "less"),
+                                   sig_labels_chisq = c("<", ">"),
+                                   correct = TRUE,
+                                   keep = c("percent", "bases", "none"), 
+                                   row_margin = c("auto", "sum_row", "first_column"),
+                                   total_marker = "#",
+                                   total_row = 1,
+                                   total_column_marker = "#",
+                                   digits = get_expss_digits(),
+                                   mode = c("replace", "append"),
+                                   label = NULL){
+    matched_call = match.call()
+    env = parent.frame()
+    tab_last_internal_significance(
+        data = data,
+        matched_call = matched_call,
+        sig_params = names(formals(tab_last_sig_cell_chisq)) %d% 
+            c("data", "label"),
+        sig_fun = significance_cell_chisq,
+        label_expr = substitute(label),
+        env = parent.frame()
+    )
+}
 ############################
 
 tab_last_internal_significance = function(data,

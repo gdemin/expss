@@ -1,36 +1,10 @@
-#' Compute cell chi-square test on table with column percents
-#' 
-#' @param x table (class \code{etable}): result of \link{cro_cpct} with 
-#'   proportions and bases.
-#' @param sig_level numeric. Significance level - by default it equals to \code{0.05}.
-#' @param min_base numeric. Significance test will be conducted if 
-#'   column have base greater or equal to \code{min_base}. By default it equals to \code{2}.
-#' @param subtable_marks character. One of "both" , "greater" or "less". By
-#'   default it is "both".
-#' @param sig_labels a character vector with two elements. Labels 
-#'   for marking difference with row margin of the table. First mark means
-#'   'lower' (by default it is \code{<}) and the second means 'greater'
-#'   (\code{>}). 
-#' @param correct logical indicating whether to apply continuity correction when
-#'   computing the test statistic for 2 by 2 tables. For details see
-#'   \link[stats]{chisq.test}.
-#' @param keep character. One or more from "percent", "bases", 
-#'   or "none". This argument determines which statistics will remain in
-#'   the table after significance marking.
-#' @param row_margin character. One of values "auto", "sum_row", or "first_column"
-#' @param total_marker character. Mark of total rows in the table. "#" by default.
-#' @param total_row integer/character. In case of several totals per subtable it
-#'   is number or name of total row for significance calculation.
-#' @param total_column_marker character  
-#' @param digits an integer indicating how much digits after decimal separator 
-#'   will be shown in the final table.
-#'
 #' @export
+#' @rdname significance
 significance_cell_chisq = function(x, 
                                    sig_level = 0.05, 
                                    min_base = 2,
                                    subtable_marks = c("both", "greater", "less"),
-                                   sig_labels = c("<", ">"),
+                                   sig_labels_chisq = c("<", ">"),
                                    correct = TRUE,
                                    keep = c("percent", "bases", "none"), 
                                    row_margin = c("auto", "sum_row", "first_column"),
@@ -47,7 +21,7 @@ significance_cell_chisq.etable = function(x,
                                           sig_level = 0.05, 
                                           min_base = 2,
                                           subtable_marks = c("both", "greater", "less"),
-                                          sig_labels = c("<", ">"),
+                                          sig_labels_chisq = c("<", ">"),
                                           correct = TRUE,
                                           keep = c("percent", "bases"), 
                                           row_margin = c("auto", "sum_row", "first_column"),
@@ -59,7 +33,7 @@ significance_cell_chisq.etable = function(x,
     stopifnot(
         is.numeric(sig_level) && length(sig_level)==1 && sig_level<=1 && sig_level>=0,
         is.numeric(min_base) && length(min_base)==1 && min_base>=0,
-        length(sig_labels) == 2,
+        length(sig_labels_chisq) == 2,
         is.logical(correct) && !is.na(correct),
         is.character(total_marker) && length(total_marker)==1,
         (is.numeric(total_row)||is.character(total_row)) && length(total_row)==1 && total_row>=1L,
@@ -92,7 +66,7 @@ significance_cell_chisq.etable = function(x,
                                                           min_base = min_base,
                                                           groups = groups,
                                                           sig_level = sig_level,
-                                                          sig_labels = sig_labels,
+                                                          sig_labels_chisq = sig_labels_chisq,
                                                           mark_greater = mark_greater,
                                                           mark_less = mark_less,
                                                           correct = correct, 
@@ -144,7 +118,7 @@ section_sig_cell_chisq = function(sig_section,
                                   min_base,
                                   groups,
                                   sig_level, 
-                                  sig_labels,
+                                  sig_labels_chisq,
                                   mark_greater, 
                                   mark_less, 
                                   correct,
@@ -199,13 +173,13 @@ section_sig_cell_chisq = function(sig_section,
             greater_than_total = curr_cpct>total_cpct
             if(mark_greater){
                 sig_section[,each_group] = ifelse(greater_than_total & pval<sig_level,
-                                                  sig_labels[[2]],
+                                                  sig_labels_chisq[[2]],
                                                   ""
                 )
             }
             if(mark_less){
                 sig_section[,each_group] = ifelse(!greater_than_total & pval<sig_level,
-                                                  sig_labels[[1]],
+                                                  sig_labels_chisq[[1]],
                                                   as.matrix(sig_section[,each_group])
                 )
             }
@@ -220,11 +194,11 @@ cpct_to_cases = function(cpct, col_base){
     round(t(t(cpct)*col_base))
 }
 
-#' @param  cases_matrix matrix with counts size R*C
-#' @param  row_base vector with row bases, length R
-#' @param  col_base vector with col bases, length C
-#' @param  total_base single value, total base
-#' @rdname significance_cell_chisq
+#' @param  cases_matrix numeric matrix with counts size R*C
+#' @param  row_base numeric vector with row bases, length R
+#' @param  col_base numeric vector with col bases, length C
+#' @param  total_base numeric single value, total base
+#' @rdname significance
 #' @export
 cell_chisq = function(cases_matrix, row_base, col_base, total_base, correct){
     cases_matrix = as.matrix(cases_matrix)
