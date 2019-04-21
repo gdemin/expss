@@ -1,4 +1,4 @@
-context("create dictionary")
+context("create dictionary/apply_dictionary")
 
 
 df = sheet(
@@ -54,6 +54,7 @@ NA, NA, NA, NA)), row.names = c(NA, -13L), class = "data.frame")
 
 
 expect_identical(dict, res)
+expect_equal(apply_dictionary(unlab(df), dict), df)
 
 dict = create_dictionary(df, remove_repeated = TRUE)
 
@@ -67,6 +68,7 @@ value = c(NA, NA, 1, 2, 3, NA, NA, NA, 1, 2, 3, 1, 2), label = c("Repsondent ID"
 -13L), class = "data.frame")
 
 expect_identical(dict, res)
+expect_equal(apply_dictionary(unlab(df), dict), df)
 
 dict = create_dictionary(df, remove_repeated = TRUE, use_references = FALSE)
 
@@ -80,6 +82,7 @@ NA), value = c(NA, NA, 1, 2, 3, 1, 2, 3, 1, 2, 3, NA, 1, 2, 3,
 NA, NA, NA)), row.names = c(NA, -17L), class = "data.frame")
 
 expect_identical(dict, res)
+expect_equal(apply_dictionary(unlab(df), dict), df)
 
 dict = create_dictionary(df, use_references = FALSE)
 
@@ -96,11 +99,14 @@ NA, "varlab", NA, NA, NA, NA, NA)), row.names = c(NA, -17L), class = "data.frame
 
 
 expect_identical(dict, res)
+expect_equal(apply_dictionary(unlab(df), dict), df)
+
 
 dict = create_dictionary(unlab(df))
 res = structure(list(varname = logical(0), value = logical(0), label = logical(0), 
 meta = logical(0)), row.names = integer(0), class = "data.frame")
 expect_identical(dict, res)
+expect_equal(apply_dictionary(unlab(df), dict), unlab(df))
 
 my_vec = set_val_lab(1:3, c(one = 1, two = 2))
 res = structure(list(varname = logical(0), value = logical(0), label = logical(0), 
@@ -109,3 +115,19 @@ dict = create_dictionary(my_vec)
 res = structure(list(varname = c("x", "x"), value = c(1, 2), label = c("one", 
 "two"), meta = c(NA, NA)), row.names = c(NA, -2L), class = "data.frame")
 expect_identical(dict, res)
+
+###########
+
+dict = create_dictionary(df)
+dict = dict[dict$meta %in% "reference", ]
+
+expect_warning(apply_dictionary(unlab(df), dict))
+expect_equal(suppressWarnings(apply_dictionary(unlab(df), dict)), unlab(df))
+
+dict = create_dictionary(df)
+dict = dict[dict$meta %in% "varlab", ]
+expect_equal(apply_dictionary(unlab(df), dict), unvl(df))
+
+dict = create_dictionary(df)
+dict = dict[dict$meta %in% c(NA, "reference"), ]
+expect_equal(apply_dictionary(unlab(df), dict), unvr(df))

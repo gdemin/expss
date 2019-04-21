@@ -545,3 +545,46 @@ create_dictionary = function(x, remove_repeated = FALSE, use_references = TRUE){
   res
 }
 
+
+#' @export
+#' @rdname write_labels
+apply_dictionary = function(x, dict){
+  stopifnot(is.data.frame(x),
+            is.data.frame(dict),
+            all(c("varname", "value", "label", "meta") %in% colnames(dict)) 
+            )
+  if(nrow(dict)==0) return(x)
+  dict[["varname"]][dict[["varname"]] %in% ""] = NA
+  dict[["meta"]][dict[["meta"]] %in% ""] = NA
+  # fill NA
+  for(i in seq_len(nrow(dict))[-1]){
+    if(is.na(dict[["varname"]][i])) {
+      dict[["varname"]][i] = dict[["varname"]][i - 1]
+    } 
+  }
+  dict = dict[dict$varname %in% colnames(x), ]
+  # variable labels 
+  all_varlabs = dict[dict$meta %in% "varlab",]
+  for(i in seq_len(nrow(all_varlabs))){
+    var_lab(x[[all_varlabs$varname[i]]]) = all_varlabs$label[i]   
+  }
+  # value labels
+  vallabs = dict[dict$meta %in% NA,]
+  references = dict[dict$meta %in% "reference",]
+  vallabs = lapply(
+    split(vallabs, vallabs$varname),
+    function(each_dict) setNames(type.convert(each_dict$value, as.is = TRUE), each_dict$label)
+  )
+  missing_references = setdiff(unique(references$label), names(vallabs))
+  if(length(missing_references)>0){
+    warning(paste0(" missing references - ", paste(paste0("'", missing_references, "'"), collapse = ", ")))
+    references = references[references$label %in% names(vallabs), ]
+  }
+  for(i in seq_len(nrow(references))){
+    add_val_lab(x[[references$varname[i]]]) = vallabs[[references$label[i]]]
+  }
+  for(i in seq_along(vallabs)){
+    add_val_lab(x[[names(vallabs)[i]]]) = vallabs[[i]]
+  }
+  x
+}
