@@ -73,62 +73,56 @@
 #' 
 #' }
 write_labels = function(x, filename, fileEncoding = ""){
-    var_labs = lapply(x,var_lab)
-    val_labs = lapply(x,val_lab)
-    var_num = ncol(x)
-    x_names = colnames(x)
-    code = ""
-    identical_vallabs = vector()
-    write_labels = TRUE
-    curr_val_lab = NULL
+  var_labs = lapply(x,var_lab)
+  val_labs = lapply(x,val_lab)
+  var_num = ncol(x)
+  x_names = colnames(x)
+  code = ""
+  identical_vallabs = vector()
+  write_labels = TRUE
+  curr_val_lab = NULL
+  
+  for (each in seq_len(var_num)){
     
-    for (each in seq_len(var_num)){
-        
-        next_val_lab = val_labs[[each]]
-        if(identical(curr_val_lab,next_val_lab)){
-            identical_vallabs = c(identical_vallabs,x_names[each])
-        } else {
-            if(!is.null(curr_val_lab) && (curr_val_lab!="")){
-                code = paste0(code,
-                              make_make_labs(identical_vallabs,curr_val_lab),           
-                              "\n\n")
-            }
-            identical_vallabs = x_names[each]
-            curr_val_lab = next_val_lab
-        }
-        
-        ##### 
-        curr_var_lab = var_labs[[each]]
-        if (!is.null(curr_var_lab) && (curr_var_lab!="")){
-            curr_var_lab = gsub("\\", "\\\\", curr_var_lab, fixed = TRUE) # escape backslash
-            code = paste0(code,
-                          'var_lab(w$',x_names[each],') = "', gsub('"','\\\\"',curr_var_lab),'\"',           
-                          "\n")
-            
-        }
-        
-    }
-    
-    if (length(identical_vallabs)>0){
+    next_val_lab = val_labs[[each]]
+    if(identical(curr_val_lab,next_val_lab)){
+      identical_vallabs = c(identical_vallabs,x_names[each])
+    } else {
+      if(!is.null(curr_val_lab) && (curr_val_lab!="")){
         code = paste0(code,
                       make_make_labs(identical_vallabs,curr_val_lab),           
-                      "\n")       
-        
+                      "\n\n")
+      }
+      identical_vallabs = x_names[each]
+      curr_val_lab = next_val_lab
     }
-    conn = file(filename, encoding = fileEncoding)
-    on.exit(close(conn))
-    writeLines(text= code,con = conn)
-    invisible(NULL)
     
+    ##### 
+    curr_var_lab = var_labs[[each]]
+    if (!is.null(curr_var_lab) && (curr_var_lab!="")){
+      curr_var_lab = gsub("\\", "\\\\", curr_var_lab, fixed = TRUE) # escape backslash
+      code = paste0(code,
+                    'var_lab(w$',x_names[each],') = "', gsub('"','\\\\"',curr_var_lab),'\"',           
+                    "\n")
+      
+    }
+    
+  }
+  
+  if (length(identical_vallabs)>0){
+    code = paste0(code,
+                  make_make_labs(identical_vallabs,curr_val_lab),           
+                  "\n")       
+    
+  }
+  conn = file(filename, encoding = fileEncoding)
+  on.exit(close(conn))
+  writeLines(text= code,con = conn)
+  invisible(NULL)
+  
 }
 
-write_dictionary_csv = function(x, filename, fileEncoding = ""){
-    
-}
 
-read_dictionary_csv = function(filename, fileEncoding = ""){
-    
-}
 
 #' @export
 #' @rdname write_labels
@@ -139,31 +133,31 @@ read_labelled_csv = function(filename,
                              dec = ".",
                              undouble_quotes = TRUE,
                              ...){
-    w = data.table::fread(filename, 
-              sep = sep,  
-              header= TRUE, 
-              na.strings="", 
-              stringsAsFactors=FALSE, 
-              integer64 = "character",         
-              dec = dec, 
-              encoding = encoding, 
-              data.table = FALSE)
-    if(undouble_quotes){
-        all_columns = seq_along(w)
-        for(i in all_columns){
-            if(is.character(w[[i]])){
-                w[[i]] = gsub('\"\"','\"',w[[i]], fixed = TRUE)    
-            }
-        }
+  w = data.table::fread(filename, 
+                        sep = sep,  
+                        header= TRUE, 
+                        na.strings="", 
+                        stringsAsFactors=FALSE, 
+                        integer64 = "character",         
+                        dec = dec, 
+                        encoding = encoding, 
+                        data.table = FALSE)
+  if(undouble_quotes){
+    all_columns = seq_along(w)
+    for(i in all_columns){
+      if(is.character(w[[i]])){
+        w[[i]] = gsub('\"\"','\"',w[[i]], fixed = TRUE)    
+      }
     }
-    dic_file = paste0(filename,".dic.R")
-    if (file.exists(dic_file)){
-        source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
-    } else {
-        warning(".dic.R file doesn't exists. Labels will not be applied to data.")
-    }
-
-    w
+  }
+  dic_file = paste0(filename,".dic.R")
+  if (file.exists(dic_file)){
+    source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
+  } else {
+    warning(".dic.R file doesn't exists. Labels will not be applied to data.")
+  }
+  
+  w
   
 }
 
@@ -177,13 +171,13 @@ read_labelled_csv2 = function(filename,
                               dec = ",",
                               undouble_quotes = TRUE,
                               ...){
-    read_labelled_csv(filename = filename,
-                      fileEncoding = fileEncoding,
-                      encoding = encoding, 
-                      sep = sep, 
-                      dec = dec, 
-                      undouble_quotes = undouble_quotes,
-                      ...)
+  read_labelled_csv(filename = filename,
+                    fileEncoding = fileEncoding,
+                    encoding = encoding, 
+                    sep = sep, 
+                    dec = dec, 
+                    undouble_quotes = undouble_quotes,
+                    ...)
 }
 
 #' @export
@@ -195,13 +189,13 @@ read_labelled_tab = function(filename,
                              dec = ".", 
                              undouble_quotes = TRUE,
                              ...){
-    read_labelled_csv(filename = filename,
-                      fileEncoding = fileEncoding,
-                      encoding = encoding, 
-                      sep = sep, 
-                      dec = dec, 
-                      undouble_quotes = undouble_quotes,
-                      ...)
+  read_labelled_csv(filename = filename,
+                    fileEncoding = fileEncoding,
+                    encoding = encoding, 
+                    sep = sep, 
+                    dec = dec, 
+                    undouble_quotes = undouble_quotes,
+                    ...)
 }
 
 #' @export
@@ -213,13 +207,13 @@ read_labelled_tab2 = function(filename,
                               dec = ",", 
                               undouble_quotes = TRUE,
                               ...){
-    read_labelled_csv(filename = filename,
-                      fileEncoding = fileEncoding,
-                      encoding = encoding, 
-                      sep = sep, 
-                      dec = dec, 
-                      undouble_quotes = undouble_quotes,
-                      ...)
+  read_labelled_csv(filename = filename,
+                    fileEncoding = fileEncoding,
+                    encoding = encoding, 
+                    sep = sep, 
+                    dec = dec, 
+                    undouble_quotes = undouble_quotes,
+                    ...)
 }
 
 #' @export
@@ -232,34 +226,34 @@ write_labelled_csv = function(x,
                               qmethod = c("double", "escape"), 
                               remove_new_lines = TRUE,
                               ...){
-    if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
-    if(remove_new_lines){
-        for(each in seq_along(x)){
-            if (is.factor(x[[each]])){
-                levels(x[[each]]) = gsub("[\\n\\r]+"," ", levels(x[[each]]), perl = TRUE)
-            }
-            if (is.character(x[[each]])){
-                x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
-                # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
-            }
-        }
+  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
+  if(remove_new_lines){
+    for(each in seq_along(x)){
+      if (is.factor(x[[each]])){
+        levels(x[[each]]) = gsub("[\\n\\r]+"," ", levels(x[[each]]), perl = TRUE)
+      }
+      if (is.character(x[[each]])){
+        x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
+        # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
+      }
     }
-    qmethod = match.arg(qmethod)
-    data.table::fwrite(x = x, 
-           file = filename,
-           quote = TRUE,
-           col.names = TRUE,
-           row.names = FALSE,
-           sep = sep,
-           dec = dec,
-           na = "",
-           qmethod = qmethod,
-           ...
-    )
-    dic_file = paste0(filename,".dic.R")
-    write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
-    invisible(NULL)
-    
+  }
+  qmethod = match.arg(qmethod)
+  data.table::fwrite(x = x, 
+                     file = filename,
+                     quote = TRUE,
+                     col.names = TRUE,
+                     row.names = FALSE,
+                     sep = sep,
+                     dec = dec,
+                     na = "",
+                     qmethod = qmethod,
+                     ...
+  )
+  dic_file = paste0(filename,".dic.R")
+  write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
+  invisible(NULL)
+  
 }
 
 #' @export
@@ -268,15 +262,15 @@ write_labelled_csv2 = function(x, filename, fileEncoding = "", sep = ";", dec = 
                                qmethod = c("double", "escape"), 
                                remove_new_lines = TRUE,
                                ...){
-    write_labelled_csv(x = x, 
-                       filename = filename,
-                       fileEncoding = fileEncoding,
-                       sep = sep, 
-                       dec = dec,
-                       qmethod = qmethod,
-                       remove_new_lines = remove_new_lines,
-                       ...                       
-    )
+  write_labelled_csv(x = x, 
+                     filename = filename,
+                     fileEncoding = fileEncoding,
+                     sep = sep, 
+                     dec = dec,
+                     qmethod = qmethod,
+                     remove_new_lines = remove_new_lines,
+                     ...                       
+  )
 }
 
 #' @export
@@ -285,15 +279,15 @@ write_labelled_tab = function(x, filename, fileEncoding = "", sep = "\t", dec = 
                               qmethod = c("double", "escape"), 
                               remove_new_lines = TRUE,
                               ...){
-    write_labelled_csv(x = x, 
-                       filename = filename,
-                       fileEncoding = fileEncoding,
-                       sep = sep, 
-                       dec = dec,
-                       qmethod = qmethod,
-                       remove_new_lines = remove_new_lines,
-                       ...                       
-    )
+  write_labelled_csv(x = x, 
+                     filename = filename,
+                     fileEncoding = fileEncoding,
+                     sep = sep, 
+                     dec = dec,
+                     qmethod = qmethod,
+                     remove_new_lines = remove_new_lines,
+                     ...                       
+  )
 }
 
 #' @export
@@ -302,15 +296,15 @@ write_labelled_tab2 = function(x, filename, fileEncoding = "", sep = "\t", dec =
                                qmethod = c("double", "escape"), 
                                remove_new_lines = TRUE,
                                ...){
-    write_labelled_csv(x = x, 
-                       filename = filename,
-                       fileEncoding = fileEncoding,
-                       sep = sep, 
-                       dec = dec,
-                       qmethod = qmethod,
-                       remove_new_lines = remove_new_lines,
-                       ...                       
-    )
+  write_labelled_csv(x = x, 
+                     filename = filename,
+                     fileEncoding = fileEncoding,
+                     sep = sep, 
+                     dec = dec,
+                     qmethod = qmethod,
+                     remove_new_lines = remove_new_lines,
+                     ...                       
+  )
 }
 
 #' @export
@@ -320,38 +314,38 @@ write_labelled_spss = function(x,
                                fileEncoding = "",
                                remove_new_lines = TRUE,
                                ...){
-    if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
-    cln = colnames(x)
-    # replace starting point in variables names .name -> name
-    cln = gsub("^\\.", "", cln)
-    cln = make.unique(cln, sep = "_")
-    colnames(x) = cln
-    all_columns = seq_along(x)
-    for(each in all_columns){
-        if (is.factor(x[[each]])){
-            x[[each]] = as.character(x[[each]])
-        }
-        if (remove_new_lines && is.character(x[[each]])){
-            x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
-            # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
-        }
-        if(is.logical(x[[each]])){
-            x[[each]] = 1*x[[each]]
-        }
+  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
+  cln = colnames(x)
+  # replace starting point in variables names .name -> name
+  cln = gsub("^\\.", "", cln)
+  cln = make.unique(cln, sep = "_")
+  colnames(x) = cln
+  all_columns = seq_along(x)
+  for(each in all_columns){
+    if (is.factor(x[[each]])){
+      x[[each]] = as.character(x[[each]])
     }
-    data.table::fwrite(x = x, 
-           file = filename,
-           col.names = TRUE,
-           row.names = FALSE,
-           sep = ",",
-           na = "",
-           qmethod = "double",
-           quote = TRUE,
-           ...
-    )
-    #dic_file = paste0(filename,".dic.R")
-    #write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
-    syntax = "GET DATA  /TYPE = TXT
+    if (remove_new_lines && is.character(x[[each]])){
+      x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
+      # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
+    }
+    if(is.logical(x[[each]])){
+      x[[each]] = 1*x[[each]]
+    }
+  }
+  data.table::fwrite(x = x, 
+                     file = filename,
+                     col.names = TRUE,
+                     row.names = FALSE,
+                     sep = ",",
+                     na = "",
+                     qmethod = "double",
+                     quote = TRUE,
+                     ...
+  )
+  #dic_file = paste0(filename,".dic.R")
+  #write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
+  syntax = "GET DATA  /TYPE = TXT
          /FILE = '%s'
          /DELCASE = LINE
          /DELIMITERS = \",\"
@@ -359,138 +353,195 @@ write_labelled_spss = function(x,
          /ARRANGEMENT = DELIMITED
          /FIRSTCASE = 2
          /VARIABLES ="
-    syntax = sprintf(syntax, normalizePath(filename, mustWork = FALSE))
-    vars = lapply(colnames(x), function(col){
-        
-        if(is.numeric(x[[col]])){
-            if (all(is.na(x[[col]]))){
-                paste0(col, " F1.0")    
-            } else {
-                resid = max(abs(trunc(x[[col]]) - x[[col]]), na.rm = TRUE)
-                if (resid ==0 ){
-                    paste0(col, " F8.0")
-                } else {
-                    paste0(col, " F8.3")
-                }
-            }
-            
-        }       
-        else {
-            if (all(is.na(x[[col]]))){
-                paste0(col, " A1")    
-            } else {
-                paste0(col, " A", max(nchar(x[[col]]), na.rm = TRUE)) 
-            }    
-        }
-        
-        
-        
-    })
-    vars = paste(unlist(vars), collapse = "\n")
-    syntax = paste0(syntax, "\n", vars,
-                    " .\nCACHE.\nEXECUTE.\n")
+  syntax = sprintf(syntax, normalizePath(filename, mustWork = FALSE))
+  vars = lapply(colnames(x), function(col){
     
-    file.create(paste0(filename, ".sps"))
-    conn = file(paste0(filename, ".sps"), encoding = fileEncoding, open = "at")
-    on.exit(close(conn))
-    writeLines(text = syntax, con = conn)
-    writeLines(text = "\n\n\n\n", con = conn)
-    write_labels_spss(x, filename = conn)
-    syntax = sprintf("\nSAVE OUTFILE='%s'.\nEXECUTE.\n", paste0(normalizePath(filename, mustWork = FALSE), ".sav"))
-    writeLines(text = syntax, con = conn)
-    invisible(NULL) 
+    if(is.numeric(x[[col]])){
+      if (all(is.na(x[[col]]))){
+        paste0(col, " F1.0")    
+      } else {
+        resid = max(abs(trunc(x[[col]]) - x[[col]]), na.rm = TRUE)
+        if (resid ==0 ){
+          paste0(col, " F8.0")
+        } else {
+          paste0(col, " F8.3")
+        }
+      }
+      
+    }       
+    else {
+      if (all(is.na(x[[col]]))){
+        paste0(col, " A1")    
+      } else {
+        paste0(col, " A", max(nchar(x[[col]]), na.rm = TRUE)) 
+      }    
+    }
+    
+    
+    
+  })
+  vars = paste(unlist(vars), collapse = "\n")
+  syntax = paste0(syntax, "\n", vars,
+                  " .\nCACHE.\nEXECUTE.\n")
+  
+  file.create(paste0(filename, ".sps"))
+  conn = file(paste0(filename, ".sps"), encoding = fileEncoding, open = "at")
+  on.exit(close(conn))
+  writeLines(text = syntax, con = conn)
+  writeLines(text = "\n\n\n\n", con = conn)
+  write_labels_spss(x, filename = conn)
+  syntax = sprintf("\nSAVE OUTFILE='%s'.\nEXECUTE.\n", paste0(normalizePath(filename, mustWork = FALSE), ".sav"))
+  writeLines(text = syntax, con = conn)
+  invisible(NULL) 
 }
 
 #' @export
 #' @rdname write_labels
 write_labels_spss = function(x, filename){
-    var_labs = lapply(x,var_lab)
-    val_labs = lapply(x,val_lab)
-    var_num = ncol(x)
-    x_names = colnames(x)
-    code = ""
-    identical_vallabs = vector()
-    write_labels = TRUE
-    curr_val_lab = NULL
+  var_labs = lapply(x,var_lab)
+  val_labs = lapply(x,val_lab)
+  var_num = ncol(x)
+  x_names = colnames(x)
+  code = ""
+  identical_vallabs = vector()
+  write_labels = TRUE
+  curr_val_lab = NULL
+  
+  for (each in seq_len(var_num)){
     
-    for (each in seq_len(var_num)){
-        
-        next_val_lab = val_labs[[each]]
-        if(identical(curr_val_lab,next_val_lab)){
-            identical_vallabs = c(identical_vallabs,x_names[each])
-        } else {
-            if(!is.null(curr_val_lab) && (curr_val_lab!="")){
-                code = paste0(code,
-                              make_make_labs_spss(identical_vallabs,curr_val_lab),           
-                              "\n\n")
-            }
-            identical_vallabs = x_names[each]
-            curr_val_lab = next_val_lab
-        }
-        
-        ##### 
-        curr_var_lab = var_labs[[each]]
-        if (!is.null(curr_var_lab) && (curr_var_lab!="")){
-            code = paste0(code,
-                          'VAR LAB ',x_names[each],' "', gsub('"', "'", curr_var_lab),'".\n')
-            
-        }
-        
-    }
-    
-    if (length(identical_vallabs)>0){
+    next_val_lab = val_labs[[each]]
+    if(identical(curr_val_lab,next_val_lab)){
+      identical_vallabs = c(identical_vallabs,x_names[each])
+    } else {
+      if(!is.null(curr_val_lab) && (curr_val_lab!="")){
         code = paste0(code,
                       make_make_labs_spss(identical_vallabs,curr_val_lab),           
-                      "\n")       
-        
+                      "\n\n")
+      }
+      identical_vallabs = x_names[each]
+      curr_val_lab = next_val_lab
     }
-
-    writeLines(text= code, con = filename)
-    invisible(NULL)
     
+    ##### 
+    curr_var_lab = var_labs[[each]]
+    if (!is.null(curr_var_lab) && (curr_var_lab!="")){
+      code = paste0(code,
+                    'VAR LAB ',x_names[each],' "', gsub('"', "'", curr_var_lab),'".\n')
+      
+    }
+    
+  }
+  
+  if (length(identical_vallabs)>0){
+    code = paste0(code,
+                  make_make_labs_spss(identical_vallabs,curr_val_lab),           
+                  "\n")       
+    
+  }
+  
+  writeLines(text= code, con = filename)
+  invisible(NULL)
+  
 }
 
 
 make_make_labs = function(vars, named_vec){
-    if (is.null(named_vec) || is.null(names(named_vec)) || (length(vars)==0)) return(NULL)
-    if (length(vars)>1) {
-        vars = paste0("val_lab(w[,c(",paste(paste0('"',vars,'"'),collapse = ", "),")])")
-    } else {
-        vars = paste0("val_lab(w$",vars,")")
-    }
-    labs = gsub("\\", "\\\\", names(named_vec), fixed = TRUE) # escape backslash
-    labs = gsub('"','\\\\"', labs)
-    vallab = paste0("    ",named_vec,' ',labs,'')#[labs!=""]
-    pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]+)(.+?)$"
-    if(all(grepl(pattern, gsub("^([\\s\\t]+)|([\\s\\t]+)$","",vallab,perl = TRUE), perl = TRUE))){
-        vallab = paste(vallab, collapse = "\n")
-        sprintf('%s = make_labels("\n%s\n")',vars,vallab) 
-    } else {
-        store = ""
-        con = textConnection("store", "w", local = TRUE)
-        dput(named_vec, con)
-        close(con)
-        sprintf('%s = %s',vars,paste(store, collapse = "\n"))
-    }   
-    
-    
+  if (is.null(named_vec) || is.null(names(named_vec)) || (length(vars)==0)) return(NULL)
+  if (length(vars)>1) {
+    vars = paste0("val_lab(w[,c(",paste(paste0('"',vars,'"'),collapse = ", "),")])")
+  } else {
+    vars = paste0("val_lab(w$",vars,")")
+  }
+  labs = gsub("\\", "\\\\", names(named_vec), fixed = TRUE) # escape backslash
+  labs = gsub('"','\\\\"', labs)
+  vallab = paste0("    ",named_vec,' ',labs,'')#[labs!=""]
+  pattern = "^(-*)([\\d\\.]+)([\\.\\s\\t]+)(.+?)$"
+  if(all(grepl(pattern, gsub("^([\\s\\t]+)|([\\s\\t]+)$","",vallab,perl = TRUE), perl = TRUE))){
+    vallab = paste(vallab, collapse = "\n")
+    sprintf('%s = make_labels("\n%s\n")',vars,vallab) 
+  } else {
+    store = ""
+    con = textConnection("store", "w", local = TRUE)
+    dput(named_vec, con)
+    close(con)
+    sprintf('%s = %s',vars,paste(store, collapse = "\n"))
+  }   
+  
+  
 }
 
 
 make_make_labs_spss = function(vars,named_vec){
-    if (is.null(named_vec) || is.null(names(named_vec)) || (length(vars)==0)) return(NULL)
-    sorted = order(as.numeric(named_vec))
-    named_vec = named_vec[sorted]
-    
-    if (length(vars)>1) {
-        vars = paste0("VAL LAB ",paste0(vars[1], " TO ", vars[length(vars)]))
-    } else {
-        vars = paste0("VAL LAB ",vars)
+  if (is.null(named_vec) || is.null(names(named_vec)) || (length(vars)==0)) return(NULL)
+  sorted = order(as.numeric(named_vec))
+  named_vec = named_vec[sorted]
+  
+  if (length(vars)>1) {
+    vars = paste0("VAL LAB ",paste0(vars[1], " TO ", vars[length(vars)]))
+  } else {
+    vars = paste0("VAL LAB ",vars)
+  }
+  labs = paste0('"', gsub('"',"'",names(named_vec)), '"')
+  vallab = paste0("    ",named_vec,' ',labs,'')[labs!=""]
+  vallab = paste(vallab, collapse = "\n")
+  sprintf('%s\n%s.\n',vars,vallab)
+  
+}
+
+#' @export
+#' @rdname write_labels
+create_dictionary = function(x, remove_repeated = FALSE, use_references = TRUE){
+  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
+  all_names = unique(colnames(x))
+  
+  raw_dict = lapply(all_names, function(each_var) list(varname = each_var, 
+                                                       var_lab = var_lab(x[[each_var]]),
+                                                       val_lab = val_lab(x[[each_var]])
+  )
+  )
+  
+  if(use_references){
+    references = rep(NA, length(all_names))
+    for(i in seq_along(raw_dict)[-1]){
+      if(!is.null(raw_dict[[i]]$val_lab) && identical(raw_dict[[i]]$val_lab, raw_dict[[i-1]]$val_lab)){
+        if(is.na(references[i-1])){
+          references[i] = all_names[i-1]
+        } else {
+          references[i] = references[i-1]
+        }
+      } 
     }
-    labs = paste0('"', gsub('"',"'",names(named_vec)), '"')
-    vallab = paste0("    ",named_vec,' ',labs,'')[labs!=""]
-    vallab = paste(vallab, collapse = "\n")
-    sprintf('%s\n%s.\n',vars,vallab)
-    
+  } 
+  for(i in seq_along(raw_dict)){
+    curr_dict = raw_dict[[i]]
+    varlabs = NULL
+    vallabs = NULL
+    if(!is.null(curr_dict$var_lab)){
+      varlabs = sheet(value = NA, label = curr_dict$var_lab, meta = "varlab")
+    } 
+    if(!is.null(curr_dict$val_lab)){
+      if(use_references && !is.na(references[i])){
+        vallabs = sheet(value = NA, label = references[i], meta = "reference")
+      } else {
+        vallabs = sheet(value = curr_dict$val_lab, label = names(curr_dict$val_lab), meta = NA)
+      }
+    }
+    if(!is.null(varlabs) || !is.null(vallabs)){
+      raw_dict[[i]] = sheet(varname = curr_dict$varname, rbind(varlabs, vallabs))
+    } else {
+      raw_dict[[i]] = logical(0)
+    }
+  }
+  raw_dict = raw_dict[lengths(raw_dict)>0]
+  if(length(raw_dict)>0){
+    res = do.call(rbind, c(raw_dict, list(stringsAsFactors = FALSE, make.row.names = FALSE)))
+    if(remove_repeated){
+      to_na = c(FALSE, res[["varname"]][-1] == res[["varname"]][-NROW(res)]) 
+      res[["varname"]][to_na] = NA
+    }
+  } else {
+    res = sheet(varname = NA, value = NA, label = NA, meta = NA)[FALSE,]
+  }
+  res
 }
 

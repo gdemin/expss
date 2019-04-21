@@ -12,6 +12,7 @@
 \alias{write_labelled_tab2}
 \alias{write_labelled_spss}
 \alias{write_labels_spss}
+\alias{create_dictionary}
 \title{Write data with labels to file in R code or in SPSS syntax.}
 \usage{
 write_labels(x, filename, fileEncoding = "")
@@ -48,6 +49,8 @@ write_labelled_spss(x, filename, fileEncoding = "",
   remove_new_lines = TRUE, ...)
 
 write_labels_spss(x, filename)
+
+create_dictionary(x, remove_repeated = FALSE, use_references = TRUE)
 }
 \arguments{
 \item{x}{data.frame to be written/data.frame whose labels to be written}
