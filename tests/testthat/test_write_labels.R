@@ -1,7 +1,5 @@
-context("write_labels")
-
-test_that("write_labels", { 
-    skip_on_cran()
+if(isTRUE(getOption("covr"))){ 
+    context("write_labels")
     if(dir.exists("data_files")){
         # if(TRUE){
         is_windows = any(grepl("windows", tolower(sessionInfo()$running)))
@@ -222,6 +220,27 @@ test_that("write_labels", {
         unlink("data_files/aaa_csv2.csv")
         unlink("data_files/aaa_tab.csv")
         unlink("data_files/aaa_tab2.csv")
+        context("write_labelled_xlsx")
+        aaa = suppressWarnings(read_spss("data_files/7556w2_4Client_prelaunch.sav"))
+        bbb = suppressWarnings(read_spss("data_files/2014-2016final.sav"))
+        nsk = suppressWarnings(read_spss("data_files/NSK_all.sav"))
+        write_labelled_xlsx(aaa, "xlsx.xlsx")
+        res = read_labelled_xlsx("xlsx.xlsx")
+        expect_equal(drop_c(aaa), drop_c(res))
+        write_labelled_xlsx(bbb, "xlsx.xlsx", remove_repeated = TRUE, use_references = FALSE)
+        res = read_labelled_xlsx("xlsx.xlsx")
+        expect_equal(drop_c(bbb), drop_c(res))
+        
+        write_labelled_xlsx(nsk, "xlsx.xlsx")
+        res = read_labelled_xlsx("xlsx.xlsx")
+        expect_equal(drop_c(nsk), drop_c(res))
+        expect_error(read_labelled_xlsx("xlsx.xlsx", data_sheet = "wow"))
+        res = read_labelled_xlsx("xlsx.xlsx", dict_sheet =  42)
+        expect_equal(drop_c(unlab(nsk)), drop_c(res))
+        write_labelled_xlsx(unlab(nsk), "xlsx.xlsx")
+        res = read_labelled_xlsx("xlsx.xlsx")
+        expect_equal(drop_c(unlab(nsk)), drop_c(res))
+        unlink("xlsx.xlsx")
         
     }
-})
+}
