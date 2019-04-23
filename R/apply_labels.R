@@ -1,15 +1,15 @@
 #' Set variable labels/value labels on variables in the data.frame
 #' 
 #' \code{apply_labels} tries automatically detect what is variable label and
-#' what are value labels. \code{.apply_*} are versions for working
+#' what are value labels. \code{.apply_labels} is version for working
 #' with default dataset. See also \link{var_lab} and \link{val_lab}.
 #'
 #' @param data data.frame/list 
-#' @param ...  named arguments. Name of argument is a variable name in 
-#'   \code{data}. Arguments values is variable label/value labels. For 
-#'   \code{apply_labels} unnamed characters of length 1 are considered as
-#'   variable labels and named vectors are considered as value labels.
-#'
+#' @param ...  named arguments. Name of argument is a variable name in
+#'   \code{data}. Argument values are variable or value labels. Unnamed
+#'   characters of length 1 are considered as variable labels and named vectors
+#'   are considered as value labels.
+#'   
 #' @return \code{data} with applied labels
 #' @export
 #'
@@ -71,7 +71,9 @@ apply_labels.data.frame = function(data, ...){
 
 #' @export
 #' @rdname apply_labels
+#' @usage NULL
 apply_var_labs = function(data, ...){
+    .Deprecated("apply_labels")
     UseMethod("apply_var_labs")
 }
 
@@ -108,7 +110,9 @@ apply_var_labs.data.frame = function(data, ...){
 
 #' @export
 #' @rdname apply_labels
+#' @usage NULL
 apply_val_labs = function(data, ...){
+    .Deprecated("apply_labels")
     UseMethod("apply_val_labs")
 }
 
@@ -156,6 +160,7 @@ apply_val_labs.data.frame = function(data, ...){
 
 #' @export
 #' @rdname apply_labels
+#' @usage NULL
 .apply_val_labs = function(...){
     reference = suppressMessages(default_dataset())
     data = ref(reference)
@@ -166,6 +171,7 @@ apply_val_labs.data.frame = function(data, ...){
 
 #' @export
 #' @rdname apply_labels
+#' @usage NULL
 .apply_var_labs = function(...){
     reference = suppressMessages(default_dataset())
     data = ref(reference)

@@ -11,30 +11,22 @@
 \usage{
 apply_labels(data, ...)
 
-apply_var_labs(data, ...)
-
-apply_val_labs(data, ...)
-
 .apply_labels(...)
-
-.apply_val_labs(...)
-
-.apply_var_labs(...)
 }
 \arguments{
 \item{data}{data.frame/list}
 
-\item{...}{named arguments. Name of argument is a variable name in 
-\code{data}. Arguments values is variable label/value labels. For 
-\code{apply_labels} unnamed characters of length 1 are considered as
-variable labels and named vectors are considered as value labels.}
+\item{...}{named arguments. Name of argument is a variable name in
+\code{data}. Argument values are variable or value labels. Unnamed
+characters of length 1 are considered as variable labels and named vectors
+are considered as value labels.}
 }
 \value{
 \code{data} with applied labels
 }
 \description{
 \code{apply_labels} tries automatically detect what is variable label and
-what are value labels. \code{.apply_*} are versions for working
+what are value labels. \code{.apply_labels} is version for working
 with default dataset. See also \link{var_lab} and \link{val_lab}.
 }
 \examples{
