@@ -77,6 +77,7 @@ write_labelled_csv = function(x,
                               sep = ",", 
                               dec = ".", 
                               remove_new_lines = TRUE,
+                              single_file = TRUE,
                               ...){
   if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
   if(remove_new_lines){
@@ -90,19 +91,23 @@ write_labelled_csv = function(x,
       }
     }
   }
-  data.table::fwrite(x = x, 
-                     file = filename,
-                     quote = TRUE,
-                     col.names = TRUE,
-                     row.names = FALSE,
-                     sep = sep,
-                     dec = dec,
-                     na = "",
-                     logical01 = FALSE,
-                     ...
-  )
-  dic_file = paste0(filename,".dic.R")
-  write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
+
+  fwrite_args = list(file = filename, sep = sep, dec = dec, ...) 
+  internal_args = list(quote = "auto",
+                       col.names = TRUE,
+                       row.names = FALSE,
+                       na = "",
+                       logical01 = FALSE)
+  internal_args = internal_args %n_d% names(fwrite_args)
+  fwrite_args = c(fwrite_args, internal_args)
+  dict = create_dictionary(x, remove_repeated = FALSE, use_references = TRUE)
+  if(nrow(dict)>0){
+    colnames(dict)[1] = paste0("#", colnames(dict)[1])
+    dict[[1]] = paste0("#", dict[[1]])
+    do.call(fwrite, c(list(x = dict), fwrite_args))
+    fwrite_args[["append"]] = TRUE
+  }
+  do.call(fwrite, c(list(x = x), fwrite_args))
   invisible(NULL)
   
 }
@@ -114,12 +119,14 @@ write_labelled_csv2 = function(x,
                                sep = ";",
                                dec = ",", 
                                remove_new_lines = TRUE,
+                               single_file = TRUE,
                                ...){
   write_labelled_csv(x = x, 
                      filename = filename,
                      sep = sep, 
                      dec = dec,
                      remove_new_lines = remove_new_lines,
+                     single_file = single_file,
                      ...                       
   )
 }
@@ -131,12 +138,14 @@ write_labelled_tab = function(x,
                               sep = "\t", 
                               dec = ".", 
                               remove_new_lines = TRUE,
+                              single_file = TRUE,
                               ...){
   write_labelled_csv(x = x, 
                      filename = filename,
                      sep = sep, 
                      dec = dec,
                      remove_new_lines = remove_new_lines,
+                     single_file = single_file,
                      ...                       
   )
 }
@@ -148,12 +157,14 @@ write_labelled_tab2 = function(x,
                                sep = "\t", 
                                dec = ",", 
                                remove_new_lines = TRUE,
+                               single_file = TRUE,
                                ...){
   write_labelled_csv(x = x, 
                      filename = filename,
                      sep = sep, 
                      dec = dec,
                      remove_new_lines = remove_new_lines,
+                     single_file = single_file,
                      ...                       
   )
 }
@@ -163,38 +174,61 @@ write_labelled_tab2 = function(x,
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_csv = function(filename, 
-                             fileEncoding = "", 
                              encoding = "unknown", 
                              sep = ",", 
                              dec = ".",
                              undouble_quotes = TRUE,
                              ...){
-  w = data.table::fread(filename, 
-                        sep = sep,  
-                        header= TRUE, 
-                        na.strings="", 
-                        stringsAsFactors=FALSE, 
-                        integer64 = "character",         
-                        dec = dec, 
-                        encoding = encoding, 
-                        data.table = FALSE)
-  if(undouble_quotes){
-    all_columns = seq_along(w)
-    for(i in all_columns){
-      if(is.character(w[[i]])){
-        w[[i]] = gsub('\"\"','\"',w[[i]], fixed = TRUE)    
-      }
+  fread_args = list(file = filename, sep = sep, dec = dec, encoding = encoding, ...) 
+  internal_args = list(header= TRUE, 
+                       na.strings="", 
+                       stringsAsFactors=FALSE, 
+                       integer64 = "character",
+                       logical01 = FALSE,
+                       data.table = FALSE)
+  internal_args = internal_args %n_d% names(fread_args)
+  fread_args = c(fread_args, internal_args)
+  dict = extract_dictionary(fread_args)
+  if(!is.null(dict)){
+    fread_args$skip = nrow(dict) + 1 
+    if(undouble_quotes) dict = remove_duplicated_quotes(dict)
+  }
+  res = do.call(fread, fread_args)
+  if(undouble_quotes) res = remove_duplicated_quotes(res)
+  if(!is.null(dict)) res = apply_dictionary(res, dict)
+  res
+}
+
+remove_duplicated_quotes = function(df){
+  all_columns = seq_along(df)
+  for(i in all_columns){
+    if(is.character(df[[i]])){
+      df[[i]] = gsub('\"\"','\"',df[[i]], fixed = TRUE)    
     }
   }
-  dic_file = paste0(filename,".dic.R")
-  if (file.exists(dic_file)){
-    source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
-  } else {
-    warning(".dic.R file doesn't exists. Labels will not be applied to data.")
+  df
+}
+
+extract_dictionary = function(fread_args){
+  filename = fread_args[["file"]]
+  first_line = readLines(filename, n = 1)
+  if(substr(first_line, 1, 8) != "#varname") return(NULL)
+  
+  con = file(filename, "r")
+  on.exit(close(con))
+  nrows = 0
+  while(TRUE) {
+    line = readLines(con, n = 1)
+    if(length(line) == 0 || substr(line, 1, 1) != "#"){
+      break
+    }
+    nrows = nrows + 1
   }
-  
-  w
-  
+  fread_args$nrows = nrows - 1
+  res = do.call(fread, fread_args)
+  colnames(res)[1] = "varname"
+  res[[1]] = sub("^#", "", res[[1]], perl = TRUE)
+  res
 }
 
 
@@ -252,8 +286,7 @@ read_labelled_tab2 = function(filename,
                     ...)
 }
 
-#' @export
-#' @rdname write_labelled_csv
+
 
 
 #' @export

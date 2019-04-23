@@ -19,19 +19,19 @@
 \title{Write data with labels to file in R code or in SPSS syntax.}
 \usage{
 write_labelled_csv(x, filename, sep = ",", dec = ".",
-  remove_new_lines = TRUE, ...)
+  remove_new_lines = TRUE, single_file = TRUE, ...)
 
 write_labelled_csv2(x, filename, sep = ";", dec = ",",
-  remove_new_lines = TRUE, ...)
+  remove_new_lines = TRUE, single_file = TRUE, ...)
 
 write_labelled_tab(x, filename, sep = "\\t", dec = ".",
-  remove_new_lines = TRUE, ...)
+  remove_new_lines = TRUE, single_file = TRUE, ...)
 
 write_labelled_tab2(x, filename, sep = "\\t", dec = ",",
-  remove_new_lines = TRUE, ...)
+  remove_new_lines = TRUE, single_file = TRUE, ...)
 
-read_labelled_csv(filename, fileEncoding = "", encoding = "unknown",
-  sep = ",", dec = ".", undouble_quotes = TRUE, ...)
+read_labelled_csv(filename, encoding = "unknown", sep = ",",
+  dec = ".", undouble_quotes = TRUE, ...)
 
 read_labelled_csv2(filename, fileEncoding = "", encoding = "unknown",
   sep = ";", dec = ",", undouble_quotes = TRUE, ...)
@@ -48,7 +48,7 @@ write_labelled_spss(x, filename, fileEncoding = "",
 write_labels_spss(x, filename)
 
 write_labelled_xlsx(x, filename, remove_repeated = FALSE,
-  use_references = TRUE, autofilter = FALSE)
+  use_references = TRUE)
 
 read_labelled_xlsx(filename, data_sheet = 1, dict_sheet = "dictionary")
 
@@ -75,11 +75,6 @@ the character variables. TRUE by default.}
 \item{...}{additional arguments for
 \link[data.table]{fwrite}/\link[data.table]{fread}}
 
-\item{fileEncoding}{character string: if non-empty declares the encoding to 
-be used on a file (not a connection) so the character data can be 
-re-encoded as they are written. Used for writing dictionary. See
-\link[base]{file}.}
-
 \item{encoding}{default is "unknown". Other possible options are "UTF-8" and 
 "Latin-1". Note: it is not used to re-encode the input, rather enables 
 handling of encoded strings in their native encoding. Used for writing data
@@ -88,6 +83,11 @@ file. See \link[data.table]{fread}.}
 \item{undouble_quotes}{A logical indicating should we undouble quotes which
 were escaped by doubling (see \code{qmethod}). TRUE by default. Argument
 will be removed when data.table issue #1109 will be fixed.}
+
+\item{fileEncoding}{character string: if non-empty declares the encoding to 
+be used on a file (not a connection) so the character data can be 
+re-encoded as they are written. Used for writing dictionary. See
+\link[base]{file}.}
 
 \item{qmethod}{A character string specifying how to deal with embedded double
 quote characters when quoting strings. "escape" - the quote character (as
