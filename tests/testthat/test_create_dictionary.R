@@ -42,7 +42,7 @@ df = sheet(
 
 
 dict = create_dictionary(df)
-res = structure(list(varname = c("id", "with_labels", "with_labels", 
+res = structure(list(variable = c("id", "with_labels", "with_labels", 
 "with_labels", "with_labels", "same_labels1", "same_labels2", 
 "other_labels", "other_labels", "other_labels", "other_labels", 
 "no_var_lab", "no_var_lab"), value = c(NA, NA, 1, 2, 3, NA, NA, 
@@ -58,7 +58,7 @@ expect_equal(apply_dictionary(unlab(df), dict), df)
 
 dict = create_dictionary(df, remove_repeated = TRUE)
 
-res = structure(list(varname = c("id", "with_labels", NA, NA, NA, "same_labels1", 
+res = structure(list(variable = c("id", "with_labels", NA, NA, NA, "same_labels1", 
 "same_labels2", "other_labels", NA, NA, NA, "no_var_lab", NA), 
 value = c(NA, NA, 1, 2, 3, NA, NA, NA, 1, 2, 3, 1, 2), label = c("Repsondent ID", 
 "Brand awarness", "One", "Two", "Three", "with_labels", "with_labels", 
@@ -72,7 +72,7 @@ expect_equal(apply_dictionary(unlab(df), dict), df)
 
 dict = create_dictionary(df, remove_repeated = TRUE, use_references = FALSE)
 
-res = structure(list(varname = c("id", "with_labels", NA, NA, NA, "same_labels1", 
+res = structure(list(variable = c("id", "with_labels", NA, NA, NA, "same_labels1", 
 NA, NA, "same_labels2", NA, NA, "other_labels", NA, NA, NA, "no_var_lab", 
 NA), value = c(NA, NA, 1, 2, 3, 1, 2, 3, 1, 2, 3, NA, 1, 2, 3, 
 1, 2), label = c("Repsondent ID", "Brand awarness", "One", "Two", 
@@ -86,7 +86,7 @@ expect_equal(apply_dictionary(unlab(df), dict), df)
 
 dict = create_dictionary(df, use_references = FALSE)
 
-res = structure(list(varname = c("id", "with_labels", "with_labels", 
+res = structure(list(variable = c("id", "with_labels", "with_labels", 
 "with_labels", "with_labels", "same_labels1", "same_labels1", 
 "same_labels1", "same_labels2", "same_labels2", "same_labels2", 
 "other_labels", "other_labels", "other_labels", "other_labels", 
@@ -103,16 +103,16 @@ expect_equal(apply_dictionary(unlab(df), dict), df)
 
 
 dict = create_dictionary(unlab(df))
-res = structure(list(varname = logical(0), value = logical(0), label = logical(0), 
+res = structure(list(variable = logical(0), value = logical(0), label = logical(0), 
 meta = logical(0)), row.names = integer(0), class = "data.frame")
 expect_identical(dict, res)
 expect_equal(apply_dictionary(unlab(df), dict), unlab(df))
 
 my_vec = set_val_lab(1:3, c(one = 1, two = 2))
-res = structure(list(varname = logical(0), value = logical(0), label = logical(0), 
+res = structure(list(variable = logical(0), value = logical(0), label = logical(0), 
 meta = logical(0)), row.names = integer(0), class = "data.frame")
 dict = create_dictionary(my_vec)
-res = structure(list(varname = c("x", "x"), value = c(1, 2), label = c("one", 
+res = structure(list(variable = c("x", "x"), value = c(1, 2), label = c("one", 
 "two"), meta = c(NA, NA)), row.names = c(NA, -2L), class = "data.frame")
 expect_identical(dict, res)
 

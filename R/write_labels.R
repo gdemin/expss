@@ -102,10 +102,16 @@ write_labelled_csv = function(x,
   fwrite_args = c(fwrite_args, internal_args)
   dict = create_dictionary(x, remove_repeated = FALSE, use_references = TRUE)
   if(nrow(dict)>0){
-    colnames(dict)[1] = paste0("#", colnames(dict)[1])
-    dict[[1]] = paste0("#", dict[[1]])
-    do.call(fwrite, c(list(x = dict), fwrite_args))
-    fwrite_args[["append"]] = TRUE
+    if(single_file){
+      colnames(dict)[1] = paste0("#", colnames(dict)[1])
+      dict[[1]] = paste0("#", dict[[1]])
+      do.call(fwrite, c(list(x = dict), fwrite_args))
+      fwrite_args[["append"]] = TRUE
+    } else {
+      fwrite_args$file = dic_filename(filename)
+      do.call(fwrite, c(list(x = dict), fwrite_args))
+      fwrite_args$file = filename
+    }
   }
   do.call(fwrite, c(list(x = x), fwrite_args))
   invisible(NULL)
@@ -191,8 +197,15 @@ read_labelled_csv = function(filename,
   dict = extract_dictionary(fread_args)
   if(!is.null(dict)){
     fread_args$skip = nrow(dict) + 1 
-    if(undouble_quotes) dict = remove_duplicated_quotes(dict)
+    
+  } else {
+    if(file.exists(dic_filename(filename))){
+      fread_args$file = dic_filename(filename)
+      dict = do.call(fread, fread_args) 
+      fread_args$file = filename
+    }
   }
+  if(undouble_quotes && !is.null(dict)) dict = remove_duplicated_quotes(dict)
   res = do.call(fread, fread_args)
   if(undouble_quotes) res = remove_duplicated_quotes(res)
   if(!is.null(dict)) res = apply_dictionary(res, dict)
@@ -212,7 +225,7 @@ remove_duplicated_quotes = function(df){
 extract_dictionary = function(fread_args){
   filename = fread_args[["file"]]
   first_line = readLines(filename, n = 1)
-  if(substr(first_line, 1, 8) != "#varname") return(NULL)
+  if(substr(first_line, 1, 9) != "#variable") return(NULL)
   
   con = file(filename, "r")
   on.exit(close(con))
@@ -226,7 +239,7 @@ extract_dictionary = function(fread_args){
   }
   fread_args$nrows = nrows - 1
   res = do.call(fread, fread_args)
-  colnames(res)[1] = "varname"
+  colnames(res)[1] = "variable"
   res[[1]] = sub("^#", "", res[[1]], perl = TRUE)
   res
 }
@@ -235,14 +248,12 @@ extract_dictionary = function(fread_args){
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_csv2 = function(filename, 
-                              fileEncoding = "", 
                               encoding = "unknown", 
                               sep = ";", 
                               dec = ",",
                               undouble_quotes = TRUE,
                               ...){
   read_labelled_csv(filename = filename,
-                    fileEncoding = fileEncoding,
                     encoding = encoding, 
                     sep = sep, 
                     dec = dec, 
@@ -253,14 +264,12 @@ read_labelled_csv2 = function(filename,
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_tab = function(filename, 
-                             fileEncoding = "", 
                              encoding = "unknown", 
                              sep = "\t", 
                              dec = ".", 
                              undouble_quotes = TRUE,
                              ...){
   read_labelled_csv(filename = filename,
-                    fileEncoding = fileEncoding,
                     encoding = encoding, 
                     sep = sep, 
                     dec = dec, 
@@ -271,14 +280,12 @@ read_labelled_tab = function(filename,
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_tab2 = function(filename, 
-                              fileEncoding = "", 
                               encoding = "unknown", 
                               sep = "\t", 
                               dec = ",", 
                               undouble_quotes = TRUE,
                               ...){
   read_labelled_csv(filename = filename,
-                    fileEncoding = fileEncoding,
                     encoding = encoding, 
                     sep = sep, 
                     dec = dec, 
@@ -563,7 +570,7 @@ create_dictionary = function(x, remove_repeated = FALSE, use_references = TRUE){
   if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
   all_names = unique(colnames(x))
   
-  raw_dict = lapply(all_names, function(each_var) list(varname = each_var, 
+  raw_dict = lapply(all_names, function(each_var) list(variable = each_var, 
                                                        var_lab = var_lab(x[[each_var]]),
                                                        val_lab = val_lab(x[[each_var]])
   )
@@ -596,7 +603,7 @@ create_dictionary = function(x, remove_repeated = FALSE, use_references = TRUE){
       }
     }
     if(!is.null(varlabs) || !is.null(vallabs)){
-      raw_dict[[i]] = sheet(varname = curr_dict$varname, rbind(varlabs, vallabs))
+      raw_dict[[i]] = sheet(variable = curr_dict$variable, rbind(varlabs, vallabs))
     } else {
       raw_dict[[i]] = logical(0)
     }
@@ -605,11 +612,11 @@ create_dictionary = function(x, remove_repeated = FALSE, use_references = TRUE){
   if(length(raw_dict)>0){
     res = do.call(rbind, c(raw_dict, list(stringsAsFactors = FALSE, make.row.names = FALSE)))
     if(remove_repeated){
-      to_na = c(FALSE, res[["varname"]][-1] == res[["varname"]][-NROW(res)]) 
-      res[["varname"]][to_na] = NA
+      to_na = c(FALSE, res[["variable"]][-1] == res[["variable"]][-NROW(res)]) 
+      res[["variable"]][to_na] = NA
     }
   } else {
-    res = sheet(varname = NA, value = NA, label = NA, meta = NA)[FALSE,]
+    res = sheet(variable = NA, value = NA, label = NA, meta = NA)[FALSE,]
   }
   res
 }
@@ -620,28 +627,28 @@ create_dictionary = function(x, remove_repeated = FALSE, use_references = TRUE){
 apply_dictionary = function(x, dict){
   stopifnot(is.data.frame(x),
             is.data.frame(dict),
-            all(c("varname", "value", "label", "meta") %in% colnames(dict)) 
+            all(c("variable", "value", "label", "meta") %in% colnames(dict)) 
             )
   if(nrow(dict)==0) return(x)
-  dict[["varname"]][dict[["varname"]] %in% ""] = NA
+  dict[["variable"]][dict[["variable"]] %in% ""] = NA
   dict[["meta"]][dict[["meta"]] %in% ""] = NA
   # fill NA
   for(i in seq_len(nrow(dict))[-1]){
-    if(is.na(dict[["varname"]][i])) {
-      dict[["varname"]][i] = dict[["varname"]][i - 1]
+    if(is.na(dict[["variable"]][i])) {
+      dict[["variable"]][i] = dict[["variable"]][i - 1]
     } 
   }
-  dict = dict[dict$varname %in% colnames(x), ]
+  dict = dict[dict$variable %in% colnames(x), ]
   # variable labels 
   all_varlabs = dict[dict$meta %in% "varlab",]
   for(i in seq_len(nrow(all_varlabs))){
-    var_lab(x[[all_varlabs$varname[i]]]) = all_varlabs$label[i]   
+    var_lab(x[[all_varlabs$variable[i]]]) = all_varlabs$label[i]   
   }
   # value labels
   vallabs = dict[dict$meta %in% NA,]
   references = dict[dict$meta %in% "reference",]
   vallabs = lapply(
-    split(vallabs, vallabs$varname),
+    split(vallabs, vallabs$variable),
     function(each_dict) setNames(type.convert(each_dict$value, as.is = TRUE), if_na(each_dict$label, ""))
   )
   missing_references = setdiff(unique(references$label), names(vallabs))
@@ -650,7 +657,7 @@ apply_dictionary = function(x, dict){
     references = references[references$label %in% names(vallabs), ]
   }
   for(i in seq_len(nrow(references))){
-    add_val_lab(x[[references$varname[i]]]) = vallabs[[references$label[i]]]
+    add_val_lab(x[[references$variable[i]]]) = vallabs[[references$label[i]]]
   }
   for(i in seq_along(vallabs)){
     add_val_lab(x[[names(vallabs)[i]]]) = vallabs[[i]]
@@ -692,6 +699,17 @@ old_read_labelled_csv = function(filename,
   
   w
   
+}
+
+dic_filename = function(filename, dic_ext = "dic"){
+  base = gsub("^(.+)\\.(.+)$", "\\1", filename, perl = TRUE)
+  ext = gsub("^(.+)\\.(.+)$", "\\2", filename, perl = TRUE)
+  c(base, ext)
+  if(base==filename){
+    paste(base, dic_ext, sep = ".")
+  } else {
+    paste(base, dic_ext, ext, sep = ".")
+  }
 }
 
 #' @rdname write_labelled_csv

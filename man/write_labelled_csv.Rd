@@ -33,14 +33,14 @@ write_labelled_tab2(x, filename, sep = "\\t", dec = ",",
 read_labelled_csv(filename, encoding = "unknown", sep = ",",
   dec = ".", undouble_quotes = TRUE, ...)
 
-read_labelled_csv2(filename, fileEncoding = "", encoding = "unknown",
-  sep = ";", dec = ",", undouble_quotes = TRUE, ...)
+read_labelled_csv2(filename, encoding = "unknown", sep = ";",
+  dec = ",", undouble_quotes = TRUE, ...)
 
-read_labelled_tab(filename, fileEncoding = "", encoding = "unknown",
-  sep = "\\t", dec = ".", undouble_quotes = TRUE, ...)
+read_labelled_tab(filename, encoding = "unknown", sep = "\\t",
+  dec = ".", undouble_quotes = TRUE, ...)
 
-read_labelled_tab2(filename, fileEncoding = "", encoding = "unknown",
-  sep = "\\t", dec = ",", undouble_quotes = TRUE, ...)
+read_labelled_tab2(filename, encoding = "unknown", sep = "\\t",
+  dec = ",", undouble_quotes = TRUE, ...)
 
 write_labelled_spss(x, filename, fileEncoding = "",
   remove_new_lines = TRUE, ...)
