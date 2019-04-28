@@ -24,7 +24,8 @@ Suggests:
     repr,
     ggplot2,
     testthat,
-    openxlsx
+    openxlsx,
+    fst
 Description: Package computes and displays tables with support for 'SPSS'-style 
         labels, multiple and nested banners, weights, multiple-response variables 
         and significance testing. There are facilities for nice output of tables 

@@ -5,16 +5,19 @@
 \alias{write_labelled_csv2}
 \alias{write_labelled_tab}
 \alias{write_labelled_tab2}
+\alias{write_labelled_xlsx}
+\alias{write_labelled_fst}
 \alias{read_labelled_csv}
 \alias{read_labelled_csv2}
 \alias{read_labelled_tab}
 \alias{read_labelled_tab2}
-\alias{write_labelled_spss}
-\alias{write_labels_spss}
-\alias{write_labelled_xlsx}
 \alias{read_labelled_xlsx}
+\alias{read_labelled_fst}
 \alias{create_dictionary}
 \alias{apply_dictionary}
+\alias{old_read_labelled_csv}
+\alias{write_labelled_spss}
+\alias{write_labels_spss}
 \alias{write_labels}
 \title{Write data with labels to file in R code or in SPSS syntax.}
 \usage{
@@ -30,6 +33,11 @@ write_labelled_tab(x, filename, sep = "\\t", dec = ".",
 write_labelled_tab2(x, filename, sep = "\\t", dec = ",",
   remove_new_lines = TRUE, single_file = TRUE, ...)
 
+write_labelled_xlsx(x, filename, remove_repeated = FALSE,
+  use_references = TRUE)
+
+write_labelled_fst(x, filename, ...)
+
 read_labelled_csv(filename, encoding = "unknown", sep = ",",
   dec = ".", undouble_quotes = TRUE, ...)
 
@@ -42,19 +50,22 @@ read_labelled_tab(filename, encoding = "unknown", sep = "\\t",
 read_labelled_tab2(filename, encoding = "unknown", sep = "\\t",
   dec = ",", undouble_quotes = TRUE, ...)
 
-write_labelled_spss(x, filename, fileEncoding = "",
-  remove_new_lines = TRUE, ...)
-
-write_labels_spss(x, filename)
-
-write_labelled_xlsx(x, filename, remove_repeated = FALSE,
-  use_references = TRUE)
-
 read_labelled_xlsx(filename, data_sheet = 1, dict_sheet = "dictionary")
+
+read_labelled_fst(filename, ...)
 
 create_dictionary(x, remove_repeated = FALSE, use_references = TRUE)
 
 apply_dictionary(x, dict)
+
+old_read_labelled_csv(filename, fileEncoding = "",
+  encoding = "unknown", sep = ",", dec = ".",
+  undouble_quotes = TRUE, ...)
+
+write_labelled_spss(x, filename, fileEncoding = "",
+  remove_new_lines = TRUE, ...)
+
+write_labels_spss(x, filename)
 
 write_labels(x, filename, fileEncoding = "")
 }
