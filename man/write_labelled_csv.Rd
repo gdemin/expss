@@ -33,7 +33,8 @@ write_labelled_tab(x, filename, sep = "\\t", dec = ".",
 write_labelled_tab2(x, filename, sep = "\\t", dec = ",",
   remove_new_lines = TRUE, single_file = TRUE, ...)
 
-write_labelled_xlsx(x, filename, remove_repeated = FALSE,
+write_labelled_xlsx(x, filename, data_sheet = "data",
+  dict_sheet = "dictionary", remove_repeated = FALSE,
   use_references = TRUE)
 
 write_labelled_fst(x, filename, ...)
@@ -92,19 +93,13 @@ handling of encoded strings in their native encoding. Used for writing data
 file. See \link[data.table]{fread}.}
 
 \item{undouble_quotes}{A logical indicating should we undouble quotes which
-were escaped by doubling (see \code{qmethod}). TRUE by default. Argument
+were escaped by doubling. TRUE by default. Argument
 will be removed when data.table issue #1109 will be fixed.}
 
 \item{fileEncoding}{character string: if non-empty declares the encoding to 
 be used on a file (not a connection) so the character data can be 
 re-encoded as they are written. Used for writing dictionary. See
 \link[base]{file}.}
-
-\item{qmethod}{A character string specifying how to deal with embedded double
-quote characters when quoting strings. "escape" - the quote character (as
-well as the backslash character) is escaped in C style by a
-backslash, or "double" (default), in which case the double quote is doubled with
-another one.}
 }
 \value{
 Functions for writing invisibly return NULL. Functions for reading

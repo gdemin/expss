@@ -13,10 +13,6 @@
 #' 
 #' @param x data.frame to be written/data.frame whose labels to be written
 #' @param filename the name of the file which the data are to be read from/write to.
-#' @param fileEncoding character string: if non-empty declares the encoding to 
-#'   be used on a file (not a connection) so the character data can be 
-#'   re-encoded as they are written. Used for writing dictionary. See
-#'   \link[base]{file}.
 #' @param encoding default is "unknown". Other possible options are "UTF-8" and 
 #'   "Latin-1". Note: it is not used to re-encode the input, rather enables 
 #'   handling of encoded strings in their native encoding. Used for writing data
@@ -25,18 +21,17 @@
 #'   separated by this string.
 #' @param dec the string to use for decimal points in numeric or complex
 #'   columns: must be a single character.
-#' @param qmethod A character string specifying how to deal with embedded double
-#'   quote characters when quoting strings. "escape" - the quote character (as
-#'   well as the backslash character) is escaped in C style by a
-#'   backslash, or "double" (default), in which case the double quote is doubled with
-#'   another one.
 #' @param remove_new_lines A logical indicating should we replace new lines with spaces in
 #'   the character variables. TRUE by default.
 #' @param undouble_quotes A logical indicating should we undouble quotes which
-#'   were escaped by doubling (see \code{qmethod}). TRUE by default. Argument
+#'   were escaped by doubling. TRUE by default. Argument
 #'   will be removed when data.table issue #1109 will be fixed.
 #' @param ... additional arguments for
 #'   \link[data.table]{fwrite}/\link[data.table]{fread}
+#' @param fileEncoding character string: if non-empty declares the encoding to 
+#'   be used on a file (not a connection) so the character data can be 
+#'   re-encoded as they are written. Used for writing dictionary. See
+#'   \link[base]{file}.
 #'
 #' @return Functions for writing invisibly return NULL. Functions for reading
 #'   return labelled data.frame.
@@ -104,8 +99,7 @@ write_labelled_csv = function(x,
   if(single_file){
     if(nrow(dict)>0){
       # we don't write empty dictionary to single file
-      colnames(dict)[1] = paste0("#", colnames(dict)[1])
-      dict[[1]] = paste0("#", dict[[1]])
+      dict = sheet("#dict" = "#", dict)
       do.call(fwrite, c(list(x = dict), fwrite_args))
       fwrite_args[["append"]] = TRUE
     }
@@ -180,6 +174,8 @@ write_labelled_tab2 = function(x,
 #' @rdname write_labelled_csv
 write_labelled_xlsx = function(x, 
                                filename, 
+                               data_sheet = "data",
+                               dict_sheet = "dictionary",
                                remove_repeated = FALSE, 
                                use_references = TRUE){
   if(!requireNamespace("openxlsx", quietly = TRUE)){
@@ -192,10 +188,14 @@ write_labelled_xlsx = function(x,
     length(remove_repeated)==1,
     remove_repeated %in% c(TRUE, FALSE),
     length(use_references)==1,
-    use_references %in% c(TRUE, FALSE)
+    use_references %in% c(TRUE, FALSE),
+    is.character(data_sheet),
+    length(data_sheet) == 1,
+    is.character(dict_sheet),
+    length(dict_sheet) == 1
   )
   wb = openxlsx::createWorkbook()
-  sh = openxlsx::addWorksheet(wb, sheetName = "data")
+  sh = openxlsx::addWorksheet(wb, sheetName = data_sheet)
   openxlsx::writeData(wb = wb, 
                       sheet = sh,
                       x = unlab(x),
@@ -208,7 +208,7 @@ write_labelled_xlsx = function(x,
                            use_references = use_references
   )
   if(nrow(dict)>0){
-    sh = openxlsx::addWorksheet(wb, sheetName = "dictionary")
+    sh = openxlsx::addWorksheet(wb, sheetName = dict_sheet)
     openxlsx::writeData(wb = wb, 
                         sheet = sh,
                         x = dict,
@@ -345,7 +345,7 @@ read_labelled_tab2 = function(filename,
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_xlsx = function(filename, 
-                              data_sheet = 1, 
+                              data_sheet = 1,
                               dict_sheet = "dictionary"){
   if(!requireNamespace("openxlsx", quietly = TRUE)){
     stop("read_labelled_xlsx: 'openxlsx' is required for this function. Please, install it with 'install.packages('openxlsx')'.")
@@ -745,22 +745,28 @@ remove_duplicated_quotes = function(df){
 extract_dictionary = function(fread_args){
   filename = fread_args[["file"]]
   first_line = readLines(filename, n = 1)
-  if(substr(first_line, 1, 9) != "#variable") return(NULL)
+  if(substr(first_line, 1, 5) != "#dict" &&
+     substr(first_line, 1, 6) != '"#dict' &&
+     substr(first_line, 1, 6) != "'#dict" 
+     ) return(NULL)
   
   con = file(filename, "r")
   on.exit(close(con))
   nrows = 0
   while(TRUE) {
     line = readLines(con, n = 1)
-    if(length(line) == 0 || substr(line, 1, 1) != "#"){
+    if(length(line) == 0 || (
+       substr(line, 1, 1) != "#" &&
+       substr(line, 1, 2) != '"#' &&
+       substr(line, 1, 2) != "'#" )
+       ){
       break
     }
     nrows = nrows + 1
   }
   fread_args$nrows = nrows - 1
   res = do.call(fread, fread_args)
-  colnames(res)[1] = "variable"
-  res[[1]] = sub("^#", "", res[[1]], perl = TRUE)
+  res[[1]] = NULL
   res
 }
 
