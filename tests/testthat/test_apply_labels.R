@@ -95,67 +95,11 @@ correct_mtcars = modify(mtcars,{
 })
 
 
-test_mtcars = apply_var_labs(mtcars, 
-                           mpg = "Miles/(US) gallon",
-                           cyl = "Number of cylinders",
-                           disp = "Displacement (cu.in.)",
-                           hp = "Gross horsepower",
-                           drat = "Rear axle ratio",
-                           wt = "Weight (lb/1000)",
-                           qsec = "1/4 mile time",
-                           vs = "Engine",
-                           am = "Transmission",
-                           gear = "Number of forward gears",
-                           carb = "Number of carburetors"
-)
 
-expect_identical(correct_mtcars, test_mtcars)
 
-expect_warning(apply_var_labs(mtcars, 
-                            mpg = "Miles/(US) gallon",
-                            cyl = "Number of cylinders",
-                            disp = "Displacement (cu.in.)",
-                            hp = "Gross horsepower",
-                            drat = "Rear axle ratio",
-                            wt = "Weight (lb/1000)",
-                            qsec = "1/4 mile time",
-                            vs = "Engine",
-                            am = "Transmission",
-                            gear = "Number of forward gears",
-                            carb = "Number of carburetors",
-                            doentexists = "one",
-                            doentexists2 = "two"
-))
 
-expect_warning(apply_var_labs(mtcars, 
-                              mpg = "Miles/(US) gallon",
-                              cyl = "Number of cylinders",
-                              disp = "Displacement (cu.in.)",
-                              hp = "Gross horsepower",
-                              drat = "Rear axle ratio",
-                              wt = "Weight (lb/1000)",
-                              qsec = "1/4 mile time",
-                              vs = "Engine",
-                              am = "Transmission",
-                              gear = "Number of forward gears",
-                              gear = "Number of forward gears",
-                              carb = "Number of carburetors"
-))
 
-expect_error(apply_var_labs(mtcars, 
-                          mpg = "Miles/(US) gallon",
-                          cyl = "Number of cylinders",
-                          disp = "Displacement (cu.in.)",
-                          hp = c("Gross horsepower", 1),
-                          drat = "Rear axle ratio",
-                          wt = "Weight (lb/1000)",
-                          qsec = "1/4 mile time",
-                          vs = c("V-engine" = 0, 
-                                 "Straight engine" = 1),
-                          am = "Transmission",
-                          gear = "Number of forward gears",
-                          carb = "Number of carburetors"
-))
+
 
 
 data(mtcars)
@@ -166,7 +110,7 @@ correct_mtcars = modify(mtcars,{
                     manual=1)
 })
 
-test_mtcars = apply_val_labs(mtcars, 
+test_mtcars = apply_labels(mtcars, 
                            vs = c("V-engine" = 0, 
                                   "Straight engine" = 1),
                            am = c(automatic = 0, 
@@ -175,7 +119,7 @@ test_mtcars = apply_val_labs(mtcars,
 
 expect_identical(correct_mtcars, test_mtcars)
 
-expect_warning(apply_val_labs(mtcars, 
+expect_warning(apply_labels(mtcars, 
                             vs = c("V-engine" = 0, 
                                    "Straight engine" = 1),
                             am = c(automatic = 0, 
@@ -184,18 +128,6 @@ expect_warning(apply_val_labs(mtcars,
                             doentexists2 = "two"
 ))
 
-expect_warning(apply_val_labs(mtcars, 
-                              vs = c("V-engine" = 0, 
-                                     "Straight engine" = 1),
-                              am = c(automatic = 0, 
-                                     manual=1),
-                              am = c(automatic = 0, 
-                                     manual=1)
-))
-
-expect_error(apply_val_labs(mtcars, 
-                          vs = "Engine"
-))
 
 
 context("apply_labels default_dataset")
@@ -263,7 +195,7 @@ correct_mtcars = modify(mtcars,{
 })
 
 
-.apply_var_labs( 
+.apply_labels( 
               mpg = "Miles/(US) gallon",
               cyl = "Number of cylinders",
               disp = "Displacement (cu.in.)",
@@ -292,11 +224,3 @@ correct_mtcars = modify(mtcars,{
 })
 
 
-.apply_val_labs(
-              vs = c("V-engine" = 0, 
-                     "Straight engine" = 1),
-              am = c(automatic = 0, 
-                     manual=1)
-)
-
-expect_identical(correct_mtcars, default_mtcars)
