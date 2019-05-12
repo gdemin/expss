@@ -1,7 +1,5 @@
-test_that("recode", { 
-    skip_on_cran()
-    
-    
+if(isTRUE(getOption("covr"))) { 
+
     context("recode simple vector")
     suppressWarnings(RNGversion("3.5.0"))
     
@@ -701,4 +699,4 @@ test_that("recode", {
     # recode(df[,-1], "" ~ 0, other ~ 1)
     # recode(new_df[,-1]) = c("" ~ 0, other ~ 1)
     
-})
+}

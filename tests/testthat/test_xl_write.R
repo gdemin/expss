@@ -1,8 +1,7 @@
 context("xl_write")
 
 if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
-    test_that("xl_write", { 
-        skip_on_cran()
+    if(isTRUE(getOption("covr"))) { 
         data(mtcars)
         mtcars = apply_labels(mtcars,
                               mpg = "Miles/(US) gallon|Mean",
@@ -425,6 +424,6 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
             sh
         )
         # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
-    })
+    }
 }
 

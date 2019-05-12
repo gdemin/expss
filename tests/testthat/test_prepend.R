@@ -1,5 +1,4 @@
-test_that("prepend_names/prepend_values", { 
-    skip_on_cran()
+if(isTRUE(getOption("covr"))){ 
     context("prepend_names/prepend_values")
     
     data(mtcars)
@@ -216,4 +215,4 @@ test_that("prepend_names/prepend_values", {
     
     expect_equal_to_reference(res, "rds/prepend6.rds",  update = FALSE)
     
-})
+}

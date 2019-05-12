@@ -1,6 +1,5 @@
-test_that("significance_means", { 
-    skip_on_cran()
-    
+if(isTRUE(getOption("covr"))) { 
+
     data(mtcars)
     mtcars = apply_labels(mtcars,
                           mpg = "Miles/(US) gallon",
@@ -391,4 +390,4 @@ test_that("significance_means", {
         ),
         "rds/signif_means36.rds",  update = FALSE)
     
-})
+}

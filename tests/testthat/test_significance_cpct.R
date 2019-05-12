@@ -1,7 +1,6 @@
 context("significance tests")
-test_that("significance tests", { 
-    skip_on_cran()
-    
+if(isTRUE(getOption("covr"))) { 
+
     
     data(mtcars)
     mtcars = apply_labels(mtcars,
@@ -494,4 +493,4 @@ test_that("significance tests", {
         significance_cpct(mtcars_table5), "rds/signif_cpct38.rds",  update = FALSE)
     
     
-})
+}

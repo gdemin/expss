@@ -1,6 +1,5 @@
-test_that("htmlTable", { 
-  skip_on_cran()
-  
+if(isTRUE(getOption("covr"))){ 
+
   context("htmlTable")
   
   data(mtcars)
@@ -218,4 +217,4 @@ test_that("htmlTable", {
     htmlTable(my_df), 
     "rds/htmlTable21.rds",  update = FALSE)
   
-})
+}

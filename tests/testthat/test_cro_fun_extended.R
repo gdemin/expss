@@ -1,5 +1,5 @@
-test_that("cro_fun extended", { 
-    skip_on_cran()
+if(isTRUE(getOption("covr"))){ 
+
     
     context("cro_fun extended")
     suppressWarnings(RNGversion("3.5.0"))
@@ -513,4 +513,4 @@ test_that("cro_fun extended", {
     ))
     expect_identical(res, correct)
     
-})
+}

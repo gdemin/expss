@@ -1,6 +1,4 @@
-test_that("significance_cases", { 
-    skip_on_cran()
-    
+if(isTRUE(getOption("covr"))){ 
     context("significance_cases")
     
     data(mtcars)
@@ -184,4 +182,4 @@ test_that("significance_cases", {
     expect_equal(significance_cases(tbl, sig_level = 0.4, correct = TRUE), correct_true)
     
     
-})
+}

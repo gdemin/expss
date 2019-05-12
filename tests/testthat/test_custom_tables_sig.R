@@ -1,5 +1,5 @@
-test_that("custom tables significance cpct", { 
-    skip_on_cran()
+if(isTRUE(getOption("covr"))){ 
+
     
     context("custom tables significance cpct")
     
@@ -333,4 +333,4 @@ test_that("custom tables significance cpct", {
                               "rds/ct_signif_many3.rds",  update = FALSE
     )
     
-})
+}

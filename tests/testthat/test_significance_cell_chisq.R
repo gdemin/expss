@@ -1,5 +1,4 @@
-test_that("significance_cell_chisq", { 
-    skip_on_cran()
+if(isTRUE(getOption("covr"))) { 
     context("significance_cell_chisq")
     
     test_table = text_to_columns("
@@ -252,4 +251,4 @@ NEWBALANCE	56	8	8	40
     
     expss_digits()
     
-})
+}

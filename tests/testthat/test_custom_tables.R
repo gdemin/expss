@@ -1,6 +1,5 @@
-test_that("custom tables", { 
-    skip_on_cran()
-    
+if(isTRUE(getOption("covr"))) { 
+
     context("custom tables")
     suppressWarnings(RNGversion("3.5.0"))
     
@@ -1152,4 +1151,4 @@ test_that("custom tables", {
         "rds/ctable41.rds",  update = FALSE
     )
     
-})
+}

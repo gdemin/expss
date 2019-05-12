@@ -1,5 +1,5 @@
-test_that("output methods print labelled", { 
-    skip_on_cran()
+if(isTRUE(getOption("covr"))){ 
+
     context("output methods print labelled")
     
     x = c(letters, LETTERS)
@@ -179,4 +179,4 @@ test_that("output methods print labelled", {
     expect_output_file(print(tbl), 
                        "rds/print_etable_rnotebook.txt")
     
-})
+}

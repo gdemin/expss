@@ -1,5 +1,4 @@
-test_that("fre/cro", { 
-  skip_on_cran()
+if(isTRUE(getOption("covr"))){ 
   context("elementary_fre")
   suppressWarnings(RNGversion("3.5.0"))
   
@@ -786,4 +785,4 @@ test_that("fre/cro", {
   )
   
   
-})
+}
