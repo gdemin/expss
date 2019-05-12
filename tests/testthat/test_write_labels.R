@@ -89,7 +89,7 @@ if(isTRUE(getOption("covr"))){
         expect_equal(length(res), 0 )
         res = sapply(colnames(obj1), function(col) all(var_lab(obj1[[col]]) == var_lab(obj2[[col]]), na.rm = TRUE)) %d% TRUE
         expect_equal(length(res), 0 )
-        if(is_windows){
+
             write_labelled_csv(bbb, "data_files/bbb.csv")
             b2 = read_labelled_csv("data_files/bbb.csv")
             obj1 = bbb
@@ -111,7 +111,7 @@ if(isTRUE(getOption("covr"))){
             unlink("data_files/bbb.csv")
             unlink("data_files/bbb.csv.dic.R")
             # write_labelled_csv(raw_data, "data_files/raw.csv.gz")
-        }
+
         
         a2 = read_labelled_csv("data_files/aaa.csv")
         
@@ -165,9 +165,6 @@ if(isTRUE(getOption("covr"))){
         # obj2 = raw_gz
         # res = sapply(colnames(obj1), function(col) all(var_lab(obj1[[col]]) == var_lab(obj2[[col]]), na.rm = TRUE)) %d% TRUE
         # expect_equal(length(res), 0 )
-        
-        unlink("data_files/aaa.csv.dic.R")
-        expect_warning(read_labelled_csv("data_files/aaa.csv"))
         
         ####### wrong slash
         w = read_spss("data_files/wrong_slash.sav")

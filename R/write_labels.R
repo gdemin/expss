@@ -13,21 +13,14 @@
 #' 
 #' @param x data.frame to be written/data.frame whose labels to be written
 #' @param filename the name of the file which the data are to be read from/write to.
-#' @param encoding default is "unknown". Other possible options are "UTF-8" and 
-#'   "Latin-1". Note: it is not used to re-encode the input, rather enables 
-#'   handling of encoded strings in their native encoding. Used for writing data
-#'   file. See \link[data.table]{fread}.
-#' @param sep the field separator string. Values within each row of x are
-#'   separated by this string.
-#' @param dec the string to use for decimal points in numeric or complex
-#'   columns: must be a single character.
 #' @param remove_new_lines A logical indicating should we replace new lines with spaces in
 #'   the character variables. TRUE by default.
 #' @param undouble_quotes A logical indicating should we undouble quotes which
 #'   were escaped by doubling. TRUE by default. Argument
 #'   will be removed when data.table issue #1109 will be fixed.
 #' @param ... additional arguments for
-#'   \link[data.table]{fwrite}/\link[data.table]{fread}
+#'   \link[data.table]{fwrite}/\link[data.table]{fread}, e. g. column separator,
+#'   decimal separtor, encoding and etc.
 #' @param fileEncoding character string: if non-empty declares the encoding to 
 #'   be used on a file (not a connection) so the character data can be 
 #'   re-encoded as they are written. Used for writing dictionary. See
@@ -69,12 +62,9 @@
 #' }
 write_labelled_csv = function(x, 
                               filename, 
-                              sep = ",", 
-                              dec = ".", 
                               remove_new_lines = TRUE,
                               single_file = TRUE,
                               ...){
-  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
   if(remove_new_lines){
     col_index = seq_along(x)
     for(each in col_index){
@@ -87,10 +77,12 @@ write_labelled_csv = function(x,
     }
   }
 
-  fwrite_args = list(file = filename, sep = sep, dec = dec, ...) 
+  fwrite_args = list(file = filename, ...) 
   internal_args = list(quote = "auto",
                        col.names = TRUE,
                        row.names = FALSE,
+                       sep = ",",
+                       dec = ".",
                        na = "",
                        logical01 = FALSE)
   internal_args = internal_args %n_d% names(fwrite_args)
@@ -117,17 +109,15 @@ write_labelled_csv = function(x,
 #' @rdname write_labelled_csv
 write_labelled_csv2 = function(x, 
                                filename, 
-                               sep = ";",
-                               dec = ",", 
                                remove_new_lines = TRUE,
                                single_file = TRUE,
                                ...){
   write_labelled_csv(x = x, 
                      filename = filename,
-                     sep = sep, 
-                     dec = dec,
                      remove_new_lines = remove_new_lines,
                      single_file = single_file,
+                     sep = ";", 
+                     dec = ",",
                      ...                       
   )
 }
@@ -136,17 +126,15 @@ write_labelled_csv2 = function(x,
 #' @rdname write_labelled_csv
 write_labelled_tab = function(x, 
                               filename, 
-                              sep = "\t", 
-                              dec = ".", 
                               remove_new_lines = TRUE,
                               single_file = TRUE,
                               ...){
   write_labelled_csv(x = x, 
                      filename = filename,
-                     sep = sep, 
-                     dec = dec,
                      remove_new_lines = remove_new_lines,
                      single_file = single_file,
+                     sep = "\t", 
+                     dec = ".",
                      ...                       
   )
 }
@@ -155,17 +143,15 @@ write_labelled_tab = function(x,
 #' @rdname write_labelled_csv
 write_labelled_tab2 = function(x, 
                                filename, 
-                               sep = "\t", 
-                               dec = ",", 
                                remove_new_lines = TRUE,
                                single_file = TRUE,
                                ...){
   write_labelled_csv(x = x, 
                      filename = filename,
-                     sep = sep, 
-                     dec = dec,
                      remove_new_lines = remove_new_lines,
                      single_file = single_file,
+                     sep = "\t", 
+                     dec = ",", 
                      ...                       
   )
 }
@@ -181,18 +167,18 @@ write_labelled_xlsx = function(x,
   if(!requireNamespace("openxlsx", quietly = TRUE)){
     stop("write_labelled_xlsx: 'openxlsx' is required for this function. Please, install it with 'install.packages('openxlsx')'.")
   }
-  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
   stopifnot(
-    length(filename)==1,
+    is.data.frame(x),
+    length(filename)==1L,
     is.character(filename),
-    length(remove_repeated)==1,
+    length(remove_repeated)==1L,
     remove_repeated %in% c(TRUE, FALSE),
-    length(use_references)==1,
+    length(use_references)==1L,
     use_references %in% c(TRUE, FALSE),
     is.character(data_sheet),
-    length(data_sheet) == 1,
+    length(data_sheet) == 1L,
     is.character(dict_sheet),
-    length(dict_sheet) == 1
+    length(dict_sheet) == 1L
   )
   wb = openxlsx::createWorkbook()
   sh = openxlsx::addWorksheet(wb, sheetName = data_sheet)
@@ -229,9 +215,21 @@ write_labelled_fst = function(x,
     stop("write_labelled_fst: 'fst' package is required for this function. 
          Please, install it with 'install.packages('fst')'.")
   }
-  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = FALSE)
+  stopifnot(
+    is.data.frame(x),
+    is.character(filename),
+    length(filename)==1L
+  )
   dict = create_dictionary(x, remove_repeated = FALSE, use_references = TRUE)
-  fst::write_fst(dict, dic_filename(filename), ...)
+  if(nrow(dict)>0){
+    # it's a pity but fst cannot write empty data.frame
+    fst::write_fst(dict, dic_filename(filename), ...)
+  } else {
+    if(file.exists(dic_filename(filename))){
+      # if we rewrite file without labels over file which had labels we need to remove old dictionary
+      unlink(dic_filename(filename))      
+    }
+  }
   fst::write_fst(x, filename, ...)
   invisible(NULL)
 }
@@ -239,13 +237,12 @@ write_labelled_fst = function(x,
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_csv = function(filename, 
-                             encoding = "unknown", 
-                             sep = ",", 
-                             dec = ".",
                              undouble_quotes = TRUE,
                              ...){
-  fread_args = list(file = filename, sep = sep, dec = dec, encoding = encoding, ...) 
+  fread_args = list(file = filename, ...) 
   internal_args = list(header= TRUE, 
+                       sep = ",", 
+                       dec = ".",
                        na.strings="", 
                        stringsAsFactors=FALSE, 
                        integer64 = "character",
@@ -269,18 +266,17 @@ read_labelled_csv = function(filename,
       # old format dictionary
       old_dic = paste0(filename,".dic.R")
       if(file.exists(old_dic)){
+        old_read_labelled_csv_args = fread_args %n_i% c("sep", "dec", "encoding")
+        old_read_labelled_csv_args = c(list(filename =filename), 
+                                       old_read_labelled_csv_args,
+                                       list(undouble_quotes = undouble_quotes))
         return(
-          old_read_labelled_csv(filename, 
-                                encoding = encoding, 
-                                sep = sep, 
-                                dec = dec,
-                                undouble_quotes = undouble_quotes,
-                                ...)
+          do.call(old_read_labelled_csv, old_read_labelled_csv_args)
         )
       } else {
         # dictionary not found
-        message("read_labelled_csv: file '", basename(dic_filename),
-                "' with dictionary not found. Labels will not be applied to data.")
+        message("read_labelled_csv: embedded dictionary or dictionary file '", basename(dic_filename),
+                "' not found. Labels will not be applied to data.")
       }
     }
   }
@@ -297,48 +293,36 @@ read_labelled_csv = function(filename,
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_csv2 = function(filename, 
-                              encoding = "unknown", 
-                              sep = ";", 
-                              dec = ",",
                               undouble_quotes = TRUE,
                               ...){
   read_labelled_csv(filename = filename,
-                    encoding = encoding, 
-                    sep = sep, 
-                    dec = dec, 
                     undouble_quotes = undouble_quotes,
+                    sep = ";", 
+                    dec = ",",
                     ...)
 }
 
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_tab = function(filename, 
-                             encoding = "unknown", 
-                             sep = "\t", 
-                             dec = ".", 
                              undouble_quotes = TRUE,
                              ...){
   read_labelled_csv(filename = filename,
-                    encoding = encoding, 
-                    sep = sep, 
-                    dec = dec, 
                     undouble_quotes = undouble_quotes,
+                    sep = "\t", 
+                    dec = ".", 
                     ...)
 }
 
 #' @export
 #' @rdname write_labelled_csv
 read_labelled_tab2 = function(filename, 
-                              encoding = "unknown", 
-                              sep = "\t", 
-                              dec = ",", 
                               undouble_quotes = TRUE,
                               ...){
   read_labelled_csv(filename = filename,
-                    encoding = encoding, 
-                    sep = sep, 
-                    dec = dec, 
                     undouble_quotes = undouble_quotes,
+                    sep = "\t", 
+                    dec = ",", 
                     ...)
 }
 
@@ -359,7 +343,7 @@ read_labelled_xlsx = function(filename,
     is.numeric(dict_sheet) || is.character(dict_sheet)
   )
   wb = openxlsx::loadWorkbook(file = filename)
-  data = readWorkbook(wb,
+  data = openxlsx::readWorkbook(wb,
                       sheet = data_sheet,
                       colNames = TRUE,
                       rowNames = FALSE,
@@ -369,7 +353,7 @@ read_labelled_xlsx = function(filename,
   )
   sheet_names = names(wb)
   if((dict_sheet %in% sheet_names) ||(dict_sheet %in% seq_along(sheet_names))){
-    dict = readWorkbook(wb,
+    dict = openxlsx::readWorkbook(wb,
                         sheet = dict_sheet,
                         colNames = TRUE,
                         rowNames = FALSE,
@@ -406,143 +390,7 @@ read_labelled_fst = function(filename,
   data
 }
 
-#' @export
-#' @rdname write_labelled_csv
-create_dictionary = function(x, remove_repeated = FALSE, use_references = TRUE){
-  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
-  all_names = unique(colnames(x))
-  
-  raw_dict = lapply(all_names, function(each_var) list(variable = each_var, 
-                                                       var_lab = var_lab(x[[each_var]]),
-                                                       val_lab = val_lab(x[[each_var]])
-  )
-  )
-  
-  if(use_references){
-    references = rep(NA, length(all_names))
-    for(i in seq_along(raw_dict)[-1]){
-      if(!is.null(raw_dict[[i]]$val_lab) && identical(raw_dict[[i]]$val_lab, raw_dict[[i-1]]$val_lab)){
-        if(is.na(references[i-1])){
-          references[i] = all_names[i-1]
-        } else {
-          references[i] = references[i-1]
-        }
-      } 
-    }
-  } 
-  for(i in seq_along(raw_dict)){
-    curr_dict = raw_dict[[i]]
-    varlabs = NULL
-    vallabs = NULL
-    if(!is.null(curr_dict$var_lab)){
-      varlabs = sheet(value = NA, label = curr_dict$var_lab, meta = "varlab")
-    } 
-    if(!is.null(curr_dict$val_lab)){
-      if(use_references && !is.na(references[i])){
-        vallabs = sheet(value = NA, label = references[i], meta = "reference")
-      } else {
-        vallabs = sheet(value = curr_dict$val_lab, label = names(curr_dict$val_lab), meta = NA)
-      }
-    }
-    if(!is.null(varlabs) || !is.null(vallabs)){
-      raw_dict[[i]] = sheet(variable = curr_dict$variable, rbind(varlabs, vallabs))
-    } else {
-      raw_dict[[i]] = logical(0)
-    }
-  }
-  raw_dict = raw_dict[lengths(raw_dict)>0]
-  if(length(raw_dict)>0){
-    res = do.call(rbind, c(raw_dict, list(stringsAsFactors = FALSE, make.row.names = FALSE)))
-    if(remove_repeated){
-      to_na = c(FALSE, res[["variable"]][-1] == res[["variable"]][-NROW(res)]) 
-      res[["variable"]][to_na] = NA
-    }
-  } else {
-    res = sheet(variable = NA, value = NA, label = NA, meta = NA)[FALSE,]
-  }
-  res
-}
 
-
-#' @export
-#' @rdname write_labelled_csv
-apply_dictionary = function(x, dict){
-  stopifnot(is.data.frame(x),
-            is.data.frame(dict),
-            all(c("variable", "value", "label", "meta") %in% colnames(dict)) 
-  )
-  if(nrow(dict)==0) return(x)
-  dict[["variable"]][dict[["variable"]] %in% ""] = NA
-  dict[["meta"]][dict[["meta"]] %in% ""] = NA
-  # fill NA
-  for(i in seq_len(nrow(dict))[-1]){
-    if(is.na(dict[["variable"]][i])) {
-      dict[["variable"]][i] = dict[["variable"]][i - 1]
-    } 
-  }
-  dict = dict[dict$variable %in% colnames(x), ]
-  # variable labels 
-  all_varlabs = dict[dict$meta %in% "varlab",]
-  for(i in seq_len(nrow(all_varlabs))){
-    var_lab(x[[all_varlabs$variable[i]]]) = all_varlabs$label[i]   
-  }
-  # value labels
-  vallabs = dict[dict$meta %in% NA,]
-  references = dict[dict$meta %in% "reference",]
-  vallabs = lapply(
-    split(vallabs, vallabs$variable),
-    function(each_dict) setNames(type.convert(each_dict$value, as.is = TRUE), if_na(each_dict$label, ""))
-  )
-  missing_references = setdiff(unique(references$label), names(vallabs))
-  if(length(missing_references)>0){
-    warning(paste0(" missing references - ", paste(paste0("'", missing_references, "'"), collapse = ", ")))
-    references = references[references$label %in% names(vallabs), ]
-  }
-  for(i in seq_len(nrow(references))){
-    add_val_lab(x[[references$variable[i]]]) = vallabs[[references$label[i]]]
-  }
-  for(i in seq_along(vallabs)){
-    add_val_lab(x[[names(vallabs)[i]]]) = vallabs[[i]]
-  }
-  x
-}
-
-#' @export
-#' @rdname write_labelled_csv
-old_read_labelled_csv = function(filename, 
-                                 fileEncoding = "", 
-                                 encoding = "unknown", 
-                                 sep = ",", 
-                                 dec = ".",
-                                 undouble_quotes = TRUE,
-                                 ...){
-  w = data.table::fread(filename, 
-                        sep = sep,  
-                        header= TRUE, 
-                        na.strings="", 
-                        stringsAsFactors=FALSE, 
-                        integer64 = "character",         
-                        dec = dec, 
-                        encoding = encoding, 
-                        data.table = FALSE)
-  if(undouble_quotes){
-    all_columns = seq_along(w)
-    for(i in all_columns){
-      if(is.character(w[[i]])){
-        w[[i]] = gsub('\"\"','\"',w[[i]], fixed = TRUE)    
-      }
-    }
-  }
-  dic_file = paste0(filename,".dic.R")
-  if (file.exists(dic_file)){
-    source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
-  } else {
-    warning(".dic.R file doesn't exists. Labels will not be applied to data.")
-  }
-  
-  w
-  
-}
 
 
 #' @export
@@ -552,7 +400,6 @@ write_labelled_spss = function(x,
                                fileEncoding = "",
                                remove_new_lines = TRUE,
                                ...){
-  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
   cln = colnames(x)
   # replace starting point in variables names .name -> name
   cln = gsub("^\\.", "", cln)
@@ -744,7 +591,7 @@ remove_duplicated_quotes = function(df){
 
 extract_dictionary = function(fread_args){
   filename = fread_args[["file"]]
-  first_line = readLines(filename, n = 1)
+  first_line = fread(filename, nrows = 1, sep = NULL, header = FALSE)[[1]]
   if(substr(first_line, 1, 5) != "#dict" &&
      substr(first_line, 1, 6) != '"#dict' &&
      substr(first_line, 1, 6) != "'#dict" 
@@ -773,7 +620,6 @@ extract_dictionary = function(fread_args){
 dic_filename = function(filename, dic_ext = "dic"){
   base = gsub("^(.+)\\.(.+)$", "\\1", filename, perl = TRUE)
   ext = gsub("^(.+)\\.(.+)$", "\\2", filename, perl = TRUE)
-  c(base, ext)
   if(base==filename){
     paste(base, dic_ext, sep = ".")
   } else {
@@ -830,5 +676,171 @@ write_labels = function(x, filename, fileEncoding = ""){
   on.exit(close(conn))
   writeLines(text= code,con = conn)
   invisible(NULL)
+  
+}
+
+#' @export
+#' @rdname write_labelled_csv
+create_dictionary = function(x, remove_repeated = FALSE, use_references = TRUE){
+  if (!is.data.frame(x)) x = as.data.frame(x, stringsAsFactors = FALSE, check.names = TRUE)
+  all_names = unique(colnames(x))
+  
+  raw_dict = lapply(all_names, function(each_var) list(variable = each_var, 
+                                                       var_lab = var_lab(x[[each_var]]),
+                                                       val_lab = val_lab(x[[each_var]])
+  )
+  )
+  
+  if(use_references){
+    references = rep(NA, length(all_names))
+    for(i in seq_along(raw_dict)[-1]){
+      if(!is.null(raw_dict[[i]]$val_lab) && identical(raw_dict[[i]]$val_lab, raw_dict[[i-1]]$val_lab)){
+        if(is.na(references[i-1])){
+          references[i] = all_names[i-1]
+        } else {
+          references[i] = references[i-1]
+        }
+      } 
+    }
+  } 
+  for(i in seq_along(raw_dict)){
+    curr_dict = raw_dict[[i]]
+    varlabs = NULL
+    vallabs = NULL
+    if(!is.null(curr_dict$var_lab)){
+      varlabs = sheet(value = NA, label = curr_dict$var_lab, meta = "varlab")
+    } 
+    if(!is.null(curr_dict$val_lab)){
+      if(use_references && !is.na(references[i])){
+        vallabs = sheet(value = NA, label = references[i], meta = "reference")
+      } else {
+        vallabs = sheet(value = curr_dict$val_lab, label = names(curr_dict$val_lab), meta = NA)
+      }
+    }
+    if(!is.null(varlabs) || !is.null(vallabs)){
+      raw_dict[[i]] = sheet(variable = curr_dict$variable, rbind(varlabs, vallabs))
+    } else {
+      raw_dict[[i]] = logical(0)
+    }
+  }
+  raw_dict = raw_dict[lengths(raw_dict)>0]
+  if(length(raw_dict)>0){
+    res = do.call(rbind, c(raw_dict, list(stringsAsFactors = FALSE, make.row.names = FALSE)))
+    if(remove_repeated){
+      to_na = c(FALSE, res[["variable"]][-1] == res[["variable"]][-NROW(res)]) 
+      res[["variable"]][to_na] = NA
+    }
+  } else {
+    res = sheet(variable = NA, value = NA, label = NA, meta = NA)[FALSE,]
+  }
+  res
+}
+
+
+#' @export
+#' @rdname write_labelled_csv
+apply_dictionary = function(x, dict){
+  stopifnot(is.data.frame(x),
+            is.data.frame(dict),
+            all(c("variable", "value", "label", "meta") %in% colnames(dict)) 
+  )
+  if(nrow(dict)==0) return(x)
+  dict[["variable"]][dict[["variable"]] %in% ""] = NA
+  dict[["meta"]][dict[["meta"]] %in% ""] = NA
+  # fill NA
+  for(i in seq_len(nrow(dict))[-1]){
+    if(is.na(dict[["variable"]][i])) {
+      dict[["variable"]][i] = dict[["variable"]][i - 1]
+    } 
+  }
+  dict = dict[dict$variable %in% colnames(x), ]
+  # variable labels 
+  all_varlabs = dict[dict$meta %in% "varlab",]
+  for(i in seq_len(nrow(all_varlabs))){
+    var_lab(x[[all_varlabs$variable[i]]]) = all_varlabs$label[i]   
+  }
+  # value labels
+  vallabs = dict[dict$meta %in% NA,]
+  references = dict[dict$meta %in% "reference",]
+  vallabs = lapply(
+    split(vallabs, vallabs$variable),
+    function(each_dict) setNames(type.convert(each_dict$value, as.is = TRUE), if_na(each_dict$label, ""))
+  )
+  missing_references = setdiff(unique(references$label), names(vallabs))
+  if(length(missing_references)>0){
+    warning(paste0(" missing references - ", paste(paste0("'", missing_references, "'"), collapse = ", ")))
+    references = references[references$label %in% names(vallabs), ]
+  }
+  for(i in seq_len(nrow(references))){
+    add_val_lab(x[[references$variable[i]]]) = vallabs[[references$label[i]]]
+  }
+  for(i in seq_along(vallabs)){
+    add_val_lab(x[[names(vallabs)[i]]]) = vallabs[[i]]
+  }
+  x
+}
+
+
+#' @export
+#' @rdname write_labelled_csv
+old_write_labelled_csv = function(x, 
+                              filename, 
+                              fileEncoding = "", 
+                              remove_new_lines = TRUE,
+                              ...){
+  if(remove_new_lines){
+    for(each in seq_along(x)){
+      if (is.factor(x[[each]])){
+        levels(x[[each]]) = gsub("[\\n\\r]+"," ", levels(x[[each]]), perl = TRUE)
+      }
+      if (is.character(x[[each]])){
+        x[[each]] = gsub("[\\n\\r]+"," ", x[[each]], perl = TRUE)
+        # x[[each]] = gsub('"',"'", x[[each]], fixed = TRUE)
+      }
+    }
+  }
+  data.table::fwrite(x = x, 
+                     file = filename,
+                     quote = TRUE,
+                     col.names = TRUE,
+                     row.names = FALSE,
+                     na = "",
+                     ...
+  )
+  dic_file = paste0(filename,".dic.R")
+  write_labels(x = x, filename = dic_file, fileEncoding = fileEncoding)
+  invisible(NULL)
+  
+}
+
+#' @export
+#' @rdname write_labelled_csv
+old_read_labelled_csv = function(filename, 
+                                 fileEncoding = "", 
+                                 undouble_quotes = TRUE,
+                                 ...){
+  w = data.table::fread(filename, 
+                        header= TRUE, 
+                        na.strings="", 
+                        stringsAsFactors=FALSE, 
+                        integer64 = "character",         
+                        data.table = FALSE,
+                        ...)
+  if(undouble_quotes){
+    all_columns = seq_along(w)
+    for(i in all_columns){
+      if(is.character(w[[i]])){
+        w[[i]] = gsub('\"\"','\"',w[[i]], fixed = TRUE)    
+      }
+    }
+  }
+  dic_file = paste0(filename,".dic.R")
+  if (file.exists(dic_file)){
+    source(dic_file, local = TRUE, encoding = fileEncoding, verbose = FALSE)
+  } else {
+    warning(".dic.R file doesn't exists. Labels will not be applied to data.")
+  }
+  
+  w
   
 }

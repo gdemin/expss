@@ -13,25 +13,26 @@
 \alias{read_labelled_tab2}
 \alias{read_labelled_xlsx}
 \alias{read_labelled_fst}
-\alias{create_dictionary}
-\alias{apply_dictionary}
-\alias{old_read_labelled_csv}
 \alias{write_labelled_spss}
 \alias{write_labels_spss}
 \alias{write_labels}
+\alias{create_dictionary}
+\alias{apply_dictionary}
+\alias{old_write_labelled_csv}
+\alias{old_read_labelled_csv}
 \title{Write data with labels to file in R code or in SPSS syntax.}
 \usage{
-write_labelled_csv(x, filename, sep = ",", dec = ".",
-  remove_new_lines = TRUE, single_file = TRUE, ...)
+write_labelled_csv(x, filename, remove_new_lines = TRUE,
+  single_file = TRUE, ...)
 
-write_labelled_csv2(x, filename, sep = ";", dec = ",",
-  remove_new_lines = TRUE, single_file = TRUE, ...)
+write_labelled_csv2(x, filename, remove_new_lines = TRUE,
+  single_file = TRUE, ...)
 
-write_labelled_tab(x, filename, sep = "\\t", dec = ".",
-  remove_new_lines = TRUE, single_file = TRUE, ...)
+write_labelled_tab(x, filename, remove_new_lines = TRUE,
+  single_file = TRUE, ...)
 
-write_labelled_tab2(x, filename, sep = "\\t", dec = ",",
-  remove_new_lines = TRUE, single_file = TRUE, ...)
+write_labelled_tab2(x, filename, remove_new_lines = TRUE,
+  single_file = TRUE, ...)
 
 write_labelled_xlsx(x, filename, data_sheet = "data",
   dict_sheet = "dictionary", remove_repeated = FALSE,
@@ -39,29 +40,17 @@ write_labelled_xlsx(x, filename, data_sheet = "data",
 
 write_labelled_fst(x, filename, ...)
 
-read_labelled_csv(filename, encoding = "unknown", sep = ",",
-  dec = ".", undouble_quotes = TRUE, ...)
+read_labelled_csv(filename, undouble_quotes = TRUE, ...)
 
-read_labelled_csv2(filename, encoding = "unknown", sep = ";",
-  dec = ",", undouble_quotes = TRUE, ...)
+read_labelled_csv2(filename, undouble_quotes = TRUE, ...)
 
-read_labelled_tab(filename, encoding = "unknown", sep = "\\t",
-  dec = ".", undouble_quotes = TRUE, ...)
+read_labelled_tab(filename, undouble_quotes = TRUE, ...)
 
-read_labelled_tab2(filename, encoding = "unknown", sep = "\\t",
-  dec = ",", undouble_quotes = TRUE, ...)
+read_labelled_tab2(filename, undouble_quotes = TRUE, ...)
 
 read_labelled_xlsx(filename, data_sheet = 1, dict_sheet = "dictionary")
 
 read_labelled_fst(filename, ...)
-
-create_dictionary(x, remove_repeated = FALSE, use_references = TRUE)
-
-apply_dictionary(x, dict)
-
-old_read_labelled_csv(filename, fileEncoding = "",
-  encoding = "unknown", sep = ",", dec = ".",
-  undouble_quotes = TRUE, ...)
 
 write_labelled_spss(x, filename, fileEncoding = "",
   remove_new_lines = TRUE, ...)
@@ -69,28 +58,28 @@ write_labelled_spss(x, filename, fileEncoding = "",
 write_labels_spss(x, filename)
 
 write_labels(x, filename, fileEncoding = "")
+
+create_dictionary(x, remove_repeated = FALSE, use_references = TRUE)
+
+apply_dictionary(x, dict)
+
+old_write_labelled_csv(x, filename, fileEncoding = "",
+  remove_new_lines = TRUE, ...)
+
+old_read_labelled_csv(filename, fileEncoding = "",
+  undouble_quotes = TRUE, ...)
 }
 \arguments{
 \item{x}{data.frame to be written/data.frame whose labels to be written}
 
 \item{filename}{the name of the file which the data are to be read from/write to.}
 
-\item{sep}{the field separator string. Values within each row of x are
-separated by this string.}
-
-\item{dec}{the string to use for decimal points in numeric or complex
-columns: must be a single character.}
-
 \item{remove_new_lines}{A logical indicating should we replace new lines with spaces in
 the character variables. TRUE by default.}
 
 \item{...}{additional arguments for
-\link[data.table]{fwrite}/\link[data.table]{fread}}
-
-\item{encoding}{default is "unknown". Other possible options are "UTF-8" and 
-"Latin-1". Note: it is not used to re-encode the input, rather enables 
-handling of encoded strings in their native encoding. Used for writing data
-file. See \link[data.table]{fread}.}
+\link[data.table]{fwrite}/\link[data.table]{fread}, e. g. column separator,
+decimal separtor, encoding and etc.}
 
 \item{undouble_quotes}{A logical indicating should we undouble quotes which
 were escaped by doubling. TRUE by default. Argument
