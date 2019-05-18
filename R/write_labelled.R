@@ -1,15 +1,44 @@
-#' Write data with labels to file in R code or in SPSS syntax.
+#' Write labelled data to file or export to SPSS syntax.
+#' 
+#' \itemize{
+#' \item{\code{write_labelled_csv} and \code{read_labelled_csv}}{
+#' 
+#' \code{*_csv2} write and read data with semicolon separator and comma as
+#' decimal delimiter. \code{*_tab/*_tab2} write and read data with 'tab'
+#' separator and "."/"," as decimal delimiter. }
+#' \item{\code{write_labelled_xlsx} and \code{read_labelled_xlsx}}{ }
+#' \item{\code{write_labelled_fst} and \code{read_labelled_fst}}{ }
+#' \item{write_labelled_spss}{ }
+#' \item{\code{create_dictionary} and \code{apply_dictionary}}{
+#' }
+#' \item{\code{write_labels} and \code{write_labels_spss}}{ Write R code and
+#' SPSS syntax for labelling data. It allows to extract labels from *.sav files
+#' that come without accompanying syntax. }
+#' \item{\code{old_write_labelled_csv} and \code{old_read_labelled_csv}}{
+#' }
+
+#' }
+#' 
+#' @details Dictionary is a data.frame with the following columns:
+#' \itemize{
+#' \item{variable}{ variable name in the data set. It can be omitted
+#' (\code{NA}). In this case name from the previous row will be taken.}
+#' \item{value}{ code for label in the column \code{'label'}.}
+#' \item{label}{ in most cases it is value label but its meaning can be changed
+#' by the column \code{'meta'}.}
+#' \item{meta}{ if it is NA then we have value label in the \code{'label'}
+#' column. If it is \code{'varlab'}, then there is a variable label in the
+#' \code{'label'} column and column \code{'value'} is ignored. If it is
+#' \code{'reference'}, then there is a variable name in the \code{'label'}
+#' column and we use value labels from this variable, column \code{'value'} is
+#' ignored.}
+#' }
 #' 
 #' \code{write_labelled_*} functions write data in the CSV format and file with 
 #' R code/SPSS syntax for labelling data.  SPSS syntax also contains code for 
 #' reading data in SPSS. \code{write_labelled_*} doesn't save rownames of 
-#' data.frame. \code{write_labels_*} functions write R code/SPSS syntax for 
-#' labelling data. It allows to extract labels from *.sav files that come 
-#' without accompanying syntax. \code{read_labelled_csv} reads data file in CSV 
-#' format and apply labels from accompanying file with R code. \code{*_csv2} 
-#' write/read data with semicolon separator and comma as decimal delimiter. 
-#' \code{*_tab/*_tab2} write/read data with tab separator and "."/"," as
-#' decimal delimiter.
+#' data.frame. \code{write_labels_*}  \code{read_labelled_csv} reads data file in CSV 
+#' format and apply labels from accompanying file with R code. 
 #' 
 #' @param x data.frame to be written/data.frame whose labels to be written
 #' @param filename the name of the file which the data are to be read from/write to.
@@ -21,6 +50,19 @@
 #' @param ... additional arguments for
 #'   \link[data.table]{fwrite}/\link[data.table]{fread}, e. g. column separator,
 #'   decimal separtor, encoding and etc.
+#' @param single_file logical. TRUE by default. Should we write labels into the
+#'   same file as data? If it is FALSE dictionary will be written in the
+#'   separate file.
+#' @param use_references logical. When TRUE (default) then if the variable has
+#'   the same value labels as the previous variable we use reference to this
+#'   variable. It makes dictionary significnatly more compact for datasets
+#'   with many variables with the same value labels.
+#' @param remove_repeated logical. FALSE by default. If TRUE then we remove
+#'   repeated variable names. It makes dictionary to look nicer for humans but
+#'   less convenient for usage.
+#' @param data_sheet character "data" by default. Where data will be placed in the '*.xlsx' file.
+#' @param dict_sheet character "dictionary" by default. Where dictionary will be placed in the '*.xlsx' file.
+#' @param dict data.frame with labels - result of \code{create_dictionary}.  
 #' @param fileEncoding character string: if non-empty declares the encoding to 
 #'   be used on a file (not a connection) so the character data can be 
 #'   re-encoded as they are written. Used for writing dictionary. See
@@ -51,10 +93,9 @@
 #'                 var_lab(carb) = "Number of carburetors"
 #' })
 #' 
-#' # to R code
-#' # rownames are not preserved
 #' write_labelled_csv(mtcars, "mtcars.csv")
 #' new_mtcars = read_labelled_csv("mtcars.csv")
+#' str(new_mtcars)
 #' 
 #' # to SPSS syntax
 #' write_labelled_spss(mtcars, "mtcars.csv")
