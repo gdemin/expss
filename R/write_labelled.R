@@ -2,7 +2,6 @@
 #' 
 #' \itemize{
 #' \item{\code{write_labelled_csv} and \code{read_labelled_csv}}{
-#' 
 #' \code{*_csv2} write and read data with semicolon separator and comma as
 #' decimal delimiter. \code{*_tab/*_tab2} write and read data with 'tab'
 #' separator and "."/"," as decimal delimiter. }
@@ -16,7 +15,6 @@
 #' that come without accompanying syntax. }
 #' \item{\code{old_write_labelled_csv} and \code{old_read_labelled_csv}}{
 #' }
-
 #' }
 #' 
 #' @details Dictionary is a data.frame with the following columns:
@@ -33,7 +31,6 @@
 #' column and we use value labels from this variable, column \code{'value'} is
 #' ignored.}
 #' }
-#' 
 #' \code{write_labelled_*} functions write data in the CSV format and file with 
 #' R code/SPSS syntax for labelling data.  SPSS syntax also contains code for 
 #' reading data in SPSS. \code{write_labelled_*} doesn't save rownames of 
