@@ -25,15 +25,14 @@
 #' \itemize{
 #' \item{vector/single value}{ All values in \code{x} which equal to elements of
 #' vector in LHS will be replaced with RHS.}
+#' \item{logical vector}{ All elements in \code{x} for which elements of vector
+#' in LHS is TRUE will be replaced with RHS. It means you can use logical
+#' condition on other variable during recoding.}
 #' \item{function}{ Values for which function gives TRUE will be replaced with 
-#' RHS. There are some special functions for the convenience - see \link{criteria}.
-#' One of special functions is \code{other}. It means all other unrecoded values
-#' (ELSE in SPSS RECODE). All other unrecoded values will be changed to RHS
-#' of formula or appropriate element of \code{to}.}
-#' \item{logical vector/matrix/data.frame}{ Values for which LHS equals to TRUE 
-#' will be recoded. Logical vector will be recycled across all columns of 
-#' \code{x}. If LHS is matrix/data.frame then column from this matrix/data.frame
-#' will be used for corresponding column/element of \code{x}.}
+#' RHS. There are some special functions for the convenience - see \link{criteria}}.
+#' \item{single logical value \code{TRUE}}{It means all other unrecoded values
+#' (ELSE in SPSS RECODE). All other unrecoded values will be changed to RHS of
+#' formula or appropriate element of \code{to}.} 
 #' }
 #' Output values - possible values for right-hand side (RHS) of formula or
 #' element of \code{to} list:
@@ -43,16 +42,10 @@
 #' \item{vector}{ values of this vector will be replace values in corresponding
 #' position in rows of \code{x}. Vector will be recycled across columns of
 #' \code{x}.}
-#' \item{list/matrix/data.frame}{ Element of list/column of matrix/data.frame
-#' will be used as a replacement value for corresponding column/element of
-#' \code{x}.}
 #' \item{function}{ This function will be applied to values of \code{x} which 
 #' satisfy recoding condition.There is special auxiliary function \code{copy} 
 #' which just returns its argument. So in the \code{recode} it just copies old 
-#' value (COPY in SPSS RECODE).  See examples. \code{copy} is useful in the
-#' usual form of \code{recode} and doesn't do anything in the case of the
-#' assignment form \code{recode() = ...} because this form don't modify values
-#' which are not satisfying any of the conditions.}}
+#' value (COPY in SPSS RECODE).  See examples.}}
 #' \code{\%into\%} tries to mimic SPSS 'INTO'. Values from left-hand side will 
 #' be assigned to right-hand side. You can use \code{\%to\%} expression in the 
 #' RHS of \code{\%into\%}. See examples. 
@@ -77,13 +70,6 @@
 #'
 #' @return object of same form as \code{x} with recoded values
 #' @examples
-#' # `ifs` examples
-#' a = 1:5
-#' b = 5:1
-#' ifs(b>3 ~ 1)                       # c(1, 1, NA, NA, NA)
-#' ifs(b>3 ~ 1, TRUE ~ 3)             # c(1, 1, 3, 3, 3)
-#' ifs(b>3 ~ 1, a>4 ~ 7, TRUE ~ 3)    # c(1, 1, 3, 3, 7)
-#' ifs(b>3 ~ a, TRUE ~ 42)            # c(1, 2, 42, 42, 42)
 #' # some examples from SPSS manual
 #' # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 #' set.seed(123)
@@ -184,29 +170,37 @@
 #' voter = recode(age, from = fr, to = to)
 #' voter
 #' 
+#' # `ifs` examples
+#' a = 1:5
+#' b = 5:1
+#' ifs(b>3 ~ 1)                       # c(1, 1, NA, NA, NA)
+#' ifs(b>3 ~ 1, TRUE ~ 3)             # c(1, 1, 3, 3, 3)
+#' ifs(b>3 ~ 1, a>4 ~ 7, TRUE ~ 3)    # c(1, 1, 3, 3, 7)
+#' ifs(b>3 ~ a, TRUE ~ 42)            # c(1, 2, 42, 42, 42)
+#' 
 #' @export
-if_val = function(x, ..., from = NULL, to = NULL){
-    UseMethod("if_val")
+recode = function(x, ..., from = NULL, to = NULL){
+    UseMethod("recode")
     
 }
 
 #' @export
-#' @rdname if_val
-"if_val<-" = function(x, from = NULL, value){
-    UseMethod("if_val<-")
+#' @rdname recode
+"recode<-" = function(x, from = NULL, value){
+    UseMethod("recode<-")
 }
 
 #' @export
-#' @rdname if_val
-"recode<-" = `if_val<-`
+#' @rdname recode
+"if_val<-" = `recode<-`
 
 
 #' @export
-#' @rdname if_val
-recode = if_val
+#' @rdname recode
+if_val = recode
 
 #' @export
-"if_val<-.default" = function(x, from = NULL, value){
+"recode<-.default" = function(x, from = NULL, value){
     if (!is.null(from)){
         if(is.function(from)) from = list(from)
         if(is.function(value)) value = list(value)
@@ -256,7 +250,7 @@ recode = if_val
             # to: list
             for (each_col in seq_len(NCOL(x))){
                 curr_cond = column(cond, each_col)
-                if (any(curr_cond))  if_val(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
+                if (any(curr_cond))  recode(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
             }     
             
         }
@@ -268,16 +262,16 @@ recode = if_val
 }
 
 #' @export
-"if_val<-.list" = function(x, from = NULL, value){
+"recode<-.list" = function(x, from = NULL, value){
     
     for(each in seq_along(x)){
-        if_val(x[[each]], from = from) = value
+        recode(x[[each]], from = from) = value
     }
     x
 }
 
 #' @export
-if_val.default = function(x, ..., from = NULL, to = NULL){
+recode.default = function(x, ..., from = NULL, to = NULL){
     if (is.null(from) && is.null(to)){
         stopif(!length(list(...)), "Formulas or `from`/`to` arguments should be provided.")
         recoding_list = lapply(unlist(list(...)), parse_formula)
@@ -326,7 +320,7 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
             # to: list
             for (each_col in seq_len(NCOL(x))){
                 curr_cond = column(cond, each_col)
-                if (any(curr_cond))  if_val(column(res, each_col), from = list(curr_cond)) = list(column(to, each_col))
+                if (any(curr_cond))  recode(column(res, each_col), from = list(curr_cond)) = list(column(to, each_col))
             }     
             
         }
@@ -339,17 +333,21 @@ if_val.default = function(x, ..., from = NULL, to = NULL){
 
 
 #' @export
-if_val.list = function(x, ..., from = NULL, to = NULL){
-    lapply(x, if_val, ..., from = from, to = to)
+recode.list = function(x, ..., from = NULL, to = NULL){
+    lapply(x, recode, ..., from = from, to = to)
 }
 
 
 
 parse_formula = function(elementary_recoding){
     # strange behavior with parse_formula.formula - it doesn't work with formulas so we use default method and check argument type
-    stopif(!inherits(elementary_recoding, what = "formula"),"All recodings should be formula but: ", elementary_recoding)
-    stopif(length(elementary_recoding)!=3,"All formulas should have left and right parts but: ",
-           paste(elementary_recoding, collapse = " "))
+    if(!inherits(elementary_recoding, what = "formula")) {
+        stop(paste0("'recode': all recodings should be formula but: ", elementary_recoding))
+    }
+    if(length(elementary_recoding)!=3) {
+        stop(paste0("'recode': all formulas should have left and right parts but: ",
+                    paste(elementary_recoding, collapse = " ")))
+    }
     formula_envir = environment(elementary_recoding)
     from = elementary_recoding[[2]]
     to = elementary_recoding[[3]]
@@ -359,7 +357,7 @@ parse_formula = function(elementary_recoding){
 }
 
 #' @export
-#' @rdname if_val
+#' @rdname recode
 ifs = function(... , from = NULL, to = NULL){
     if (is.null(from) && is.null(to)){
         recoding_list = lapply(unlist(list(...)), parse_formula)
@@ -383,19 +381,19 @@ ifs = function(... , from = NULL, to = NULL){
     stopif(!all(from_rows %in% c(1, max_rows)), "All values should have the same number of rows or have length 1.")
     res = rep(NA, max_rows)
     if_na(from) = FALSE
-    if_val(res, from = from, to = to)
+    recode(res, from = from, to = to)
 }
 
 #' @export
-#' @rdname if_val
+#' @rdname recode
 lo = -Inf
 
 #' @export
-#' @rdname if_val
+#' @rdname recode
 hi = Inf
 
 #' @export
-#' @rdname if_val
+#' @rdname recode
 copy = function(x) {
     if(missing(x)){
         copy
@@ -409,7 +407,7 @@ copy = function(x) {
 }    
 
 #' @export
-#' @rdname if_val
+#' @rdname recode
 '%into%' = function(values, names){
     variables_names = substitute(names)
     if(length(variables_names)==1){
