@@ -226,12 +226,12 @@ expect_identical(df, df_test)
 
 df = data.frame(x1, x2, x3)
 
-if_val(df, from = NA) = list(as.list(colMeans(df, na.rm = TRUE)))
+if_val(df) = from_to(NA, list(as.list(colMeans(df, na.rm = TRUE))))
 expect_identical(df, df_test)
 
 # just for curiosity - assignment form doesn't work inside mutate
 df_test2 = modify(df_test2, {
-    if_val(x1, NA) = mean(x1, na.rm = TRUE)
+    if_val(x1) = from_to(NA, mean(x1, na.rm = TRUE))
     if_val(x2) = NA ~ mean(x2, na.rm = TRUE)
     if_val(x3) = NA ~ mean(x3, na.rm = TRUE)
     

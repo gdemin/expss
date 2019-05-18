@@ -51,16 +51,14 @@
 #' @export
 na_if = function(x, value){
     if(!length(value)) return(x)
-    if_val(x, from=list(value)) = list(NA)
+    recode(x) = value ~ NA
     x
 }
 
 #' @rdname na_if
 #' @export
 'na_if<-' = function(x, value){
-    if(!length(value)) return(x)
-    if_val(x, from=list(value)) = list(NA)
-    x
+    na_if(x, value)
 }
 
 #' @rdname na_if

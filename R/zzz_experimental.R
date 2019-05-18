@@ -136,12 +136,8 @@
     invisible(data)
 }
 
-in_place_if_val = function(x, ..., from = NULL, to = NULL){
-    if(is.null(from)){
-        if_val(x) = list(...)
-    } else {
-        if_val(x, from = from) = to
-    }
+in_place_if_val = function(x, ...){
+    if_val(x) = list(...)
     x
 }
 

@@ -151,23 +151,23 @@
 #' # RECODE V1 TO V3 (0=1) (1=0) (2,3=-1) (9=9) (ELSE=SYSMIS)
 #' fr = list(0, 1, 2:3, 9, other)
 #' to = list(1, 0, -1, 9, NA)
-#' recode(v1, from = fr) = to
+#' recode(v1) = from_to(fr, to)
 #' v1
 #' 
 #' # RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 #' fr = list(1 %thru% 5, 6 %thru% 10, ge(11), other)
 #' to = list(1, 2, 3, 0)
-#' recode(qvar, from = fr, to = to)
+#' recode(qvar, from_to(fr, to))
 #' 
 #' # RECODE STRNGVAR ('A','B','C'='A')('D','E','F'='B')(ELSE=' ').
 #' fr = list(c('A','B','C'), c('D','E','F') , other)
 #' to = list("A", "B", " ")
-#' recode(strngvar, from = fr, to = to)
+#' recode(strngvar, from_to(fr, to))
 #' 
 #' # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER.
 #' fr = list(NA, 18 %thru% hi, 0 %thru% 18)
 #' to = list(9, 1, 0)
-#' voter = recode(age, from = fr, to = to)
+#' voter = recode(age, from_to(fr, to))
 #' voter
 #' 
 #' # `ifs` examples
@@ -179,14 +179,95 @@
 #' ifs(b>3 ~ a, TRUE ~ 42)            # c(1, 2, 42, 42, 42)
 #' 
 #' @export
-recode = function(x, ..., from = NULL, to = NULL){
-    UseMethod("recode")
-    
+recode = function(x, ...){
+    UseMethod("recode")    
 }
 
 #' @export
 #' @rdname recode
-"recode<-" = function(x, from = NULL, value){
+from_to = function(from, to){
+    stopifnot(
+        length(from)>0,
+        length(to)>0,
+        length(from) == length(to)
+    )
+    if(is.function(from)) from = list(from)
+    if(is.function(to)) to = list(to)
+    res = lapply(seq_along(from), function(i) {
+        force(i)
+        from[[i]] ~ to[[i]]
+        })
+    names(res) = names(to)
+    res
+}
+
+#' @export
+#' @rdname recode
+if_val = recode
+
+
+
+#' @export
+recode.default = function(x, ...){
+    stopif(!length(list(...)), "'recode': recoding formula should be provided.")
+    recoding_list = lapply(unlist(list(...)), parse_formula)
+    recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
+    res = make_empty_object(x)
+    x = as.data.frame(x,
+                      stringsAsFactors = FALSE,
+                      check.names = FALSE)
+    
+    for (each_recoding in recoding_list){
+        if (all(recoded)) break # if all values were recoded
+        cond = build_criterion(each_recoding[["from"]], x)
+        cond = cond & !recoded # we don't recode already recoded value
+        
+        target = each_recoding[["to"]]
+        
+        if (!is.function(target)) check_conformance(cond, target)
+        if(!is.list(target) || is.data.frame(target) || is.function(target)){
+            if(is.function(target)){
+                # target: function
+                for (each_col in seq_len(NCOL(x))){
+                    curr_cond = column(cond, each_col)
+                    if (any(curr_cond)) column(res, each_col, curr_cond) = target(column(x, each_col, curr_cond))
+                }
+                
+                
+            } else {
+                # target: matrix, data.frame, vector
+                for (each_col in seq_len(NCOL(x))){
+                    curr_cond = column(cond, each_col)
+                    if (any(curr_cond)) column(res, each_col, curr_cond) = column(target, each_col, curr_cond)
+                }
+            }
+        } else {
+            # target: list
+            for (each_col in seq_len(NCOL(x))){
+                curr_cond = column(cond, each_col)
+                if (any(curr_cond))  recode(column(res, each_col)) = from_to(list(curr_cond),
+                                                                             list(column(target, each_col)))
+            }     
+            
+        }
+        
+        recoded = recoded | (cond & !is.na(cond)) # we don't recode already recoded value
+    }
+    
+    res
+}
+
+
+#' @export
+recode.list = function(x, ...){
+    lapply(x, recode, ...)
+}
+
+################# recode<- ###############
+
+#' @export
+#' @rdname recode
+"recode<-" = function(x, value){
     UseMethod("recode<-")
 }
 
@@ -194,24 +275,12 @@ recode = function(x, ..., from = NULL, to = NULL){
 #' @rdname recode
 "if_val<-" = `recode<-`
 
-
 #' @export
-#' @rdname recode
-if_val = recode
+"recode<-.default" = function(x, value){
+    value = unlist(value) # for case when we have nested lists in 'value'
+    if(!is.list(value)) value = list(value) # for case when 'value' is single formula
+    recoding_list = lapply(value, parse_formula)
 
-#' @export
-"recode<-.default" = function(x, from = NULL, value){
-    if (!is.null(from)){
-        if(is.function(from)) from = list(from)
-        if(is.function(value)) value = list(value)
-        stopif(length(from)!=length(value), 
-               "length(value) should be equal to length(from) but length(from) = ", length(from),
-               " and length(value) = ", length(value))
-        recoding_list = mapply(function(x,y) list(from = x, to = y), from, value, SIMPLIFY = FALSE)
-    } else {
-        if(inherits(value, what = "formula")) value = list(value)
-        recoding_list = lapply(value, parse_formula)
-    }
     
     recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
     dfs_x = as.data.frame(x,
@@ -250,7 +319,10 @@ if_val = recode
             # to: list
             for (each_col in seq_len(NCOL(x))){
                 curr_cond = column(cond, each_col)
-                if (any(curr_cond))  recode(column(x, each_col), from = list(curr_cond)) = list(column(to, each_col))
+                if (any(curr_cond))  recode(column(x, each_col)) = from_to(
+                    list(curr_cond),
+                    list(column(to, each_col))
+                )
             }     
             
         }
@@ -262,82 +334,13 @@ if_val = recode
 }
 
 #' @export
-"recode<-.list" = function(x, from = NULL, value){
+"recode<-.list" = function(x, value){
     
     for(each in seq_along(x)){
-        recode(x[[each]], from = from) = value
+        recode(x[[each]]) = value
     }
     x
 }
-
-#' @export
-recode.default = function(x, ..., from = NULL, to = NULL){
-    if (is.null(from) && is.null(to)){
-        stopif(!length(list(...)), "Formulas or `from`/`to` arguments should be provided.")
-        recoding_list = lapply(unlist(list(...)), parse_formula)
-    } else {
-        stopif(is.null(from) || is.null(to), "Both 'from' and 'to' arguments should be not NULL.")
-        stopif(length(from)!=length(to), 
-               "length(to) should be equal to length(from) but length(from)=", length(from),
-               " and length(to)=", length(to))
-        
-        recoding_list = mapply(function(x,y) list(from = x, to = y), from, to, SIMPLIFY = FALSE)
-    }
-    recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
-    res = make_empty_object(x)
-    x = as.data.frame(x,
-                      stringsAsFactors = FALSE,
-                      check.names = FALSE)
-    
-    for (from_to in recoding_list){
-        if (all(recoded)) break # if all values were recoded
-        from = from_to$from
-        #if (identical(from, NA)) from = as.numeric(NA)
-        cond = build_criterion(from, x)
-        cond = cond & !recoded # we don't recode already recoded value
-        
-        to = from_to$to
-        
-        if (!is.function(to)) check_conformance(cond, to)
-        # dot in `to` means copy (simply doesn't change values that meet condition - "copy" from SPSS ) 
-        if(!is.list(to) || is.data.frame(to) || is.function(to)){
-            if(is.function(to)){
-                # to: function
-                for (each_col in seq_len(NCOL(x))){
-                    curr_cond = column(cond, each_col)
-                    if (any(curr_cond)) column(res, each_col, curr_cond) = to(column(x, each_col, curr_cond))
-                }
-                
-                
-            } else {
-                # to: matrix, data.frame, vector
-                for (each_col in seq_len(NCOL(x))){
-                    curr_cond = column(cond, each_col)
-                    if (any(curr_cond)) column(res, each_col, curr_cond) = column(to, each_col, curr_cond)
-                }
-            }
-        } else {
-            # to: list
-            for (each_col in seq_len(NCOL(x))){
-                curr_cond = column(cond, each_col)
-                if (any(curr_cond))  recode(column(res, each_col), from = list(curr_cond)) = list(column(to, each_col))
-            }     
-            
-        }
-        
-        recoded = recoded | (cond & !is.na(cond)) # we don't recode already recoded value
-    }
-    
-    res
-}
-
-
-#' @export
-recode.list = function(x, ..., from = NULL, to = NULL){
-    lapply(x, recode, ..., from = from, to = to)
-}
-
-
 
 parse_formula = function(elementary_recoding){
     # strange behavior with parse_formula.formula - it doesn't work with formulas so we use default method and check argument type
@@ -350,38 +353,36 @@ parse_formula = function(elementary_recoding){
     }
     formula_envir = environment(elementary_recoding)
     from = elementary_recoding[[2]]
+    # from = substitute_symbols(from, list(":" = `%thru%`))
     to = elementary_recoding[[3]]
     from = eval(from, envir = formula_envir)
     to = eval(to, envir = formula_envir)
     list(from = from, to = to)
 }
 
+
+
+############ ifs ####################
+
 #' @export
 #' @rdname recode
-ifs = function(... , from = NULL, to = NULL){
-    if (is.null(from) && is.null(to)){
-        recoding_list = lapply(unlist(list(...)), parse_formula)
-        from = lapply(recoding_list, "[[", "from")
-        to = lapply(recoding_list, "[[", "to")
-    } else {
-        stopif(is.null(from) || is.null(to), "Both 'from' and 'to' arguments should be not NULL.")
-        stopif(length(from)!=length(to), 
-               "length(to) should be equal to length(from) but length(from)=", length(from),
-               " and length(to)=", length(to))
-        
-        
-    } 
+ifs = function(...){
+
+    recoding_list = lapply(unlist(list(...)), parse_formula)
+    from = lapply(recoding_list, "[[", "from")
+    to = lapply(recoding_list, "[[", "to")
+    
     from = lapply(from, as.matrix)
     test = vapply(from, is.logical, logical(1))
-    stopif(!all(test), "All conditions should be logical")
+    stopif(!all(test), "'ifs': all conditions should be logical")
     from_rows = unique(vapply(from, nrow, numeric(1)))
     from_cols = unique(vapply(from, ncol, numeric(1)))
-    stopif(!all(from_cols %in% 1), "All conditions should be single column objects.")
+    stopif(!all(from_cols %in% 1), "'ifs': all conditions should be single column objects.")
     max_rows = max(from_rows, na.rm = TRUE)
-    stopif(!all(from_rows %in% c(1, max_rows)), "All values should have the same number of rows or have length 1.")
+    stopif(!all(from_rows %in% c(1, max_rows)), "'ifs': all values should have the same number of rows or have length 1.")
     res = rep(NA, max_rows)
     if_na(from) = FALSE
-    recode(res, from = from, to = to)
+    recode(res, ...)
 }
 
 #' @export
@@ -557,3 +558,9 @@ make_empty_object.default = function(x){
     res
 }
                 
+
+make_empty_vec = function(x){
+    res = rep(NA, length(x))
+    names(res) = names(x)
+    res
+}

@@ -105,7 +105,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     cat("dplyr not found\n")
 }
 
-context("recode dplyr")
+context("if_val dplyr")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
@@ -122,7 +122,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     )  %>% tbl_df()
     
     dfs  = dfs %>% mutate(
-        w = recode(x, from = c(gt(2), other), to = list(y, copy))
+        w = if_val(x, from_to(c(gt(2), other), to = list(y, copy)))
         # zzz = predict(lm(x ~ y))
         # w = ifelse(x>2, y , x)
     )
@@ -132,18 +132,18 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     dfs$x = NULL
     dfs$w = NULL
     dfs  = dfs %>% mutate(
-        w = recode(x, from = c(gt(2), other), to = list(y, copy))
+        w = if_val(x, from_to(c(gt(2), other), to = list(y, copy)))
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))
     dfs  = dfs %>% mutate(
-        w = recode(y, 18 ~ 1, 19 ~ 2)
+        w = if_val(y, 18 ~ 1, 19 ~ 2)
     )
     expect_identical(dfs$w, c(1, 1, 1, 2, 2))
 } else {
     cat("dplyr not found\n")
 }
 
-context("recode 'from, to' notation dplyr")
+context("if_val 'from, to' notation dplyr")
 
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
@@ -159,7 +159,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     )
     
     dfs  = dfs %>% mutate(
-        w = recode(x, from = list(gt(2), other), to = list(y, copy))
+        w = if_val(x, from_to(list(gt(2), other), to = list(y, copy)))
     )
     
     expect_identical(dfs$w, c(2, 18, 2, 19, NA))
@@ -167,7 +167,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     dfs$x = NULL
     dfs$w = NULL
     dfs  = dfs %>% mutate(
-        w = recode(x, from = list(gt(2), other), to = list(y, copy))
+        w = if_val(x, from_to(list(gt(2), other), to = list(y, copy)))
     )
     expect_identical(dfs$w, c(1, 18, 1, 19, NA))
 } else {
@@ -227,7 +227,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 }
 
 
-context("na_if tbl_df")
+context("mis_val tbl_df")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
@@ -236,23 +236,23 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     b = a
     b[a$a>3,"a"] = NA
     b[a$b>3,"b"] = NA
-    expect_equal(na_if(a, gt(3)),b)
-    expect_equal(na_if(a, 4:5),b)
+    expect_equal(mis_val(a, gt(3)),b)
+    expect_equal(mis_val(a, 4:5),b)
     
     cond = cbind(a$a>3, a$b>3)
-    expect_equal(na_if(a, cond),b)
+    expect_equal(mis_val(a, cond),b)
     
     b = a
     b[1:2,] = NA
     
-    expect_equal(na_if(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
+    expect_equal(mis_val(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
     
     
     b = a
     b[,1] = NA
     b$a = as.integer(b$a)
     
-    expect_equal(na_if(a, t(c(TRUE, FALSE))),b)
+    expect_equal(mis_val(a, t(c(TRUE, FALSE))),b)
 } else {
     cat("dplyr not found\n")
 }
@@ -377,7 +377,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     # replace NA's with group means
     df_clean = df %>% group_by(group) %>% 
         mutate(
-            param = if_val(param, from = list(NA, other), to = list(mean_col(param), copy))
+            param = if_val(param, from_to(list(NA, other), to = list(mean_col(param), copy)))
         )
     
     df = within(df, {

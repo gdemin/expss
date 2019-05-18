@@ -3,9 +3,10 @@
 \docType{data}
 \name{recode}
 \alias{recode}
+\alias{from_to}
+\alias{if_val}
 \alias{recode<-}
 \alias{if_val<-}
-\alias{if_val}
 \alias{ifs}
 \alias{lo}
 \alias{hi}
@@ -14,15 +15,17 @@
 \title{Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
 \usage{
-recode(x, ..., from = NULL, to = NULL)
+recode(x, ...)
 
-recode(x, from = NULL) <- value
+from_to(from, to)
 
-if_val(x, from = NULL) <- value
+if_val(x, ...)
 
-if_val(x, ..., from = NULL, to = NULL)
+recode(x) <- value
 
-ifs(..., from = NULL, to = NULL)
+if_val(x) <- value
+
+ifs(...)
 
 lo
 
@@ -193,23 +196,23 @@ v1  = sample(c(0:3,9,10), 20, replace = TRUE)
 # RECODE V1 TO V3 (0=1) (1=0) (2,3=-1) (9=9) (ELSE=SYSMIS)
 fr = list(0, 1, 2:3, 9, other)
 to = list(1, 0, -1, 9, NA)
-recode(v1, from = fr) = to
+recode(v1) = from_to(fr, to)
 v1
 
 # RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
 fr = list(1 \%thru\% 5, 6 \%thru\% 10, ge(11), other)
 to = list(1, 2, 3, 0)
-recode(qvar, from = fr, to = to)
+recode(qvar, from_to(fr, to))
 
 # RECODE STRNGVAR ('A','B','C'='A')('D','E','F'='B')(ELSE=' ').
 fr = list(c('A','B','C'), c('D','E','F') , other)
 to = list("A", "B", " ")
-recode(strngvar, from = fr, to = to)
+recode(strngvar, from_to(fr, to))
 
 # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER.
 fr = list(NA, 18 \%thru\% hi, 0 \%thru\% 18)
 to = list(9, 1, 0)
-voter = recode(age, from = fr, to = to)
+voter = recode(age, from_to(fr, to))
 voter
 
 # `ifs` examples
