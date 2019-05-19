@@ -360,9 +360,23 @@ as.criterion = function(crit){
         }
     } else {
         if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
+            crit = c(crit, recursive = TRUE, use.names = FALSE)
             res = function(x) crit & !is.na(crit)
         } else {
-            res = function(x) x %in% crit       
+            if(is.list(crit) || is.data.frame(crit) || is.matrix(crit)){
+                crit = c(crit, recursive = TRUE, use.names = FALSE)
+            }
+            res = function(x) {
+                if(inherits(x, "POSIXct") & !inherits(crit, "POSIXct")){
+                    # because '%in%' doesn't coerce POSIXct in a sensible way 
+                    x = as.character(x)
+                } 
+                if(inherits(x, "Date") & !inherits(crit, "Date")){
+                    # because '%in%' doesn't coerce Date in a sensible way 
+                    x = as.character(x)
+                } 
+                x %in% crit
+            }
         }    
     }
     class(res) = union("criterion",class(res))

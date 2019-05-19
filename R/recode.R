@@ -119,31 +119,6 @@
 #' # the same example with logical criteria
 #' recode(a, a<(-.5) ~ abs, other ~ copy) 
 #' 
-#' # replace with specific value for each column
-#' # we replace values greater than 0.75 with column max and values less than 0.25 with column min
-#' # and NA with column means
-#' # make data.frame
-#' set.seed(123)
-#' x1 = runif(30)
-#' x2 = runif(30)
-#' x3 = runif(30)
-#' x1[sample(30, 10)] = NA # place 10 NA's
-#' x2[sample(30, 10)] = NA # place 10 NA's
-#' x3[sample(30, 10)] = NA # place 10 NA's
-#' dfs = data.frame(x1, x2, x3)
-#' 
-#' #replacement. Note the necessary transpose operation
-#' recode(dfs, 
-#'         lt(0.25) ~ t(min_col(dfs)), 
-#'         gt(0.75) ~ t(max_col(dfs)), 
-#'         NA ~ t(mean_col(dfs)), 
-#'         other ~ copy
-#'       )
-#' 
-#' # replace NA with row means
-#' # some rows which contain only NaN's remain unchanged because mean_row for them also is NaN
-#' recode(dfs, NA ~ mean_row(dfs), other ~ copy) 
-#' 
 #' # some of the above examples with from/to notation
 #' 
 #' set.seed(123)
@@ -211,56 +186,90 @@ if_val = recode
 recode.default = function(x, ...){
     stopif(!length(list(...)), "'recode': recoding formula should be provided.")
     recoding_list = lapply(unlist(list(...)), parse_formula)
-    recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
-    res = make_empty_object(x)
-    x = as.data.frame(x,
-                      stringsAsFactors = FALSE,
-                      check.names = FALSE)
+    process_recodings(x, recoding_list, make_empty_vec(x))
     
+}
+
+
+process_recodings = function(x, recoding_list, res){
+    recoded = logical(length(x))
     for (each_recoding in recoding_list){
         if (all(recoded)) break # if all values were recoded
-        cond = build_criterion(each_recoding[["from"]], x)
+        cond = as.criterion(each_recoding[["from"]])(x)
         cond = cond & !recoded # we don't recode already recoded value
-        
+        if(!any(cond)) next
         target = each_recoding[["to"]]
+        if (length(target)>1 && length(target)!=length(res)){
+            stop("'recode': length of 'RHS' should be
+               1 or equals to length of 'x' but length(RHS) = ",length(target),", length(x) = ", length(res))
+        } 
         
-        if (!is.function(target)) check_conformance(cond, target)
-        if(!is.list(target) || is.data.frame(target) || is.function(target)){
-            if(is.function(target)){
-                # target: function
-                for (each_col in seq_len(NCOL(x))){
-                    curr_cond = column(cond, each_col)
-                    if (any(curr_cond)) column(res, each_col, curr_cond) = target(column(x, each_col, curr_cond))
-                }
-                
-                
-            } else {
-                # target: matrix, data.frame, vector
-                for (each_col in seq_len(NCOL(x))){
-                    curr_cond = column(cond, each_col)
-                    if (any(curr_cond)) column(res, each_col, curr_cond) = column(target, each_col, curr_cond)
-                }
-            }
+        if(is.function(target)){
+            # target: function
+            res  = modify_vec(res, cond, target(x[cond]))
         } else {
-            # target: list
-            for (each_col in seq_len(NCOL(x))){
-                curr_cond = column(cond, each_col)
-                if (any(curr_cond))  recode(column(res, each_col)) = from_to(list(curr_cond),
-                                                                             list(column(target, each_col)))
-            }     
-            
+            # target: vector
+            if(length(target)==1){
+                res  = modify_vec(res, cond, target)
+            } else {
+                res  = modify_vec(res, cond, target[cond])
+            }
         }
-        
-        recoded = recoded | (cond & !is.na(cond)) # we don't recode already recoded value
+        recoded = recoded | cond # we don't recode already recoded value
     }
-    
     res
 }
 
+modify_vec = function(x, condition, value){
+    #### obvious and non-obvious fixes based on practice for smooth working
+    if(is.factor(x)){
+        fac_levels = levels(x)
+        if(!all(value %in% fac_levels)){
+            fac_levels = union(fac_levels, value)
+            levels(x) = fac_levels
+        }
+        x[condition] = value
+        return(x)
+    } 
+    ###########
+    if(is.factor(value)){
+        x = as.factor(x)
+        return(modify_vec(x, condition, value))
+    } 
+    ###############
+    if(inherits(value, "POSIXct") && !inherits(x, "POSIXct") & all(is.na(x))){
+        # first assignment - we expect that x with all NA and set its class to POSIXct
+        x = as.POSIXct(x)
+        return(modify_vec(x, condition, value))
+    } 
+    if(inherits(value, "Date") && !inherits(x, "Date") && all(is.na(x))){
+        # first assignment - we expect that x with all NA and set its class to Date
+        x = as.Date(x)
+        return(modify_vec(x, condition, value))
+    } 
+    x[condition] = value
+    x
+}  
+
+  
 
 #' @export
 recode.list = function(x, ...){
     lapply(x, recode, ...)
+}
+
+#' @export
+recode.data.frame = function(x, ...){
+    for(i in seq_along(x)){
+        x[[i]] = recode(x[[i]], ...)
+    }
+    x
+}
+
+#' @export
+recode.matrix = function(x, ...){
+    x[] = recode(c(x, use.names = FALSE), ...)
+    x
 }
 
 ################# recode<- ###############
@@ -280,76 +289,35 @@ recode.list = function(x, ...){
     value = unlist(value) # for case when we have nested lists in 'value'
     if(!is.list(value)) value = list(value) # for case when 'value' is single formula
     recoding_list = lapply(value, parse_formula)
-
-    
-    recoded = matrix(FALSE, nrow = NROW(x), ncol = NCOL(x))
-    dfs_x = as.data.frame(x,
-                          stringsAsFactors = FALSE,
-                          check.names = FALSE)
-    
-    for (from_to in recoding_list){
-        if (all(recoded)) break # if all values were recoded
-        from = from_to$from
-        
-        #if (identical(from, NA)) from = as.numeric(NA)
-        cond = build_criterion(from, dfs_x)
-        cond = cond & !recoded # we don't recode already recoded value
-        
-        to = from_to$to
-        
-        if (!is.function(to)) check_conformance(cond, to)
-        # dot in `to` means copy (simply doesn't change values that meet condition - "copy" from SPSS ) 
-        if(!is.list(to) || is.data.frame(to) || is.function(to)){
-            if(is.function(to)){
-                # to: function
-                for (each_col in seq_len(NCOL(x))){
-                    curr_cond = column(cond, each_col)
-                    if (any(curr_cond)) column(x, each_col, curr_cond) = to(column(x, each_col, curr_cond))
-                }
-                
-                
-            } else {
-                # to: matrix, data.frame, vector
-                for (each_col in seq_len(NCOL(x))){
-                    curr_cond = column(cond, each_col)
-                    if (any(curr_cond)) column(x, each_col, curr_cond) = column(to, each_col, curr_cond)
-                }
-            }
-        } else {
-            # to: list
-            for (each_col in seq_len(NCOL(x))){
-                curr_cond = column(cond, each_col)
-                if (any(curr_cond))  recode(column(x, each_col)) = from_to(
-                    list(curr_cond),
-                    list(column(to, each_col))
-                )
-            }     
-            
-        }
-        
-        recoded = recoded | (cond & !is.na(cond)) # we don't recode already recoded value
-    }
-    
-    x
+    process_recodings(x, recoding_list, x)
 }
 
 #' @export
 "recode<-.list" = function(x, value){
-    
     for(each in seq_along(x)){
         recode(x[[each]]) = value
     }
     x
 }
 
+#' @export
+"recode<-.data.frame" = function(x, value){
+    for(each in seq_along(x)){
+        recode(x[[each]]) = value
+    }
+    x
+}
+
+
+
 parse_formula = function(elementary_recoding){
     # strange behavior with parse_formula.formula - it doesn't work with formulas so we use default method and check argument type
     if(!inherits(elementary_recoding, what = "formula")) {
-        stop(paste0("'recode': all recodings should be formula but: ", elementary_recoding))
+        stop(paste0("'recode': all recodings should be formula but: ",  expr_to_character(elementary_recoding)))
     }
     if(length(elementary_recoding)!=3) {
         stop(paste0("'recode': all formulas should have left and right parts but: ",
-                    paste(elementary_recoding, collapse = " ")))
+                    expr_to_character(elementary_recoding)))
     }
     formula_envir = environment(elementary_recoding)
     from = elementary_recoding[[2]]
@@ -357,6 +325,10 @@ parse_formula = function(elementary_recoding){
     to = elementary_recoding[[3]]
     from = eval(from, envir = formula_envir)
     to = eval(to, envir = formula_envir)
+    if(is.list(to) || is.data.frame(to)) {
+        stop("'recode': formula RHS should be vector or function, but we have list or data.frame - ", 
+             expr_to_character(elementary_recoding))
+    }
     list(from = from, to = to)
 }
 

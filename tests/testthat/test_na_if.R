@@ -23,8 +23,7 @@ b[a$b>3,"b"] = NA
 expect_equal(na_if(a, gt(3)),b)
 expect_equal(na_if(a, 4:5),b)
 
-cond = cbind(a$a>3, a$b>3)
-expect_equal(na_if(a, cond),b)
+
 
 b = a
 b[3,"b"] = NA
@@ -38,7 +37,7 @@ bb = aa
 bb[bb[,1] == max(bb[,1]),1] = NA
 bb[bb[,2] == max(bb[,2]),2] = NA
 # we set to NA maximum values in each column
-expect_error(na_if(aa, as.list(max_col(aa))))
+expect_error(na_if(aa, max_col(aa)))
 expect_error(na_if(aa, aa))
 expect_error(na_if(aa, as.data.frame(aa)))
 

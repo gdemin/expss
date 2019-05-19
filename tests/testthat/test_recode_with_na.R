@@ -26,10 +26,9 @@ context("if_val with NA.data.frame")
 
 a = data.frame(a = as.double(1:4), b = as.double(5:8), d = as.double(10:13))
 b = a
-rownames(b) = rownames(a)
 val_lab(a$a) = c('aaa' = 1)
 
-expect_identical(if_val(a, NA ~ 2, other ~ copy), b)
+expect_equal(if_val(a, NA ~ 2, other ~ copy), b)
 
 a[1,1] = NA
 b[1,1] = 2
@@ -52,16 +51,11 @@ expect_equal(if_val(a, NA ~ (4:1)*1.0, other ~ copy), b)
 b[1,1] = 3
 b[4,1] = 3
 b[1,3] = 1
-expect_equal(if_val(a, NA ~ t(3:1)*1.0, other ~ copy), b)
+expect_error(if_val(a, NA ~ t(3:1)*1.0, other ~ copy))
 expect_error(if_val(a, NA ~ t(3:2), other ~ copy))
 expect_error(if_val(a, NA ~ 3:2, other ~ copy))
 
 
-b[1,1] = 4
-b[4,1] = 1
-b[1,3] = -1
-expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4)), other ~ copy), b)
-expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), other ~ copy), b)
 
 
 context("if_val with NA.matrix")
@@ -83,16 +77,15 @@ expect_identical(if_val(a, NA ~ 2, other ~ copy), b)
 b[1,1] = 4
 b[4,1] = 1
 
-expect_equal(if_val(a, NA ~ 4:1, other ~ copy), b)
+expect_equal(if_val(a, NA ~ rep(4:1, 3), other ~ copy), b)
 
 a[1,3] = NA
 b[1,3] = 4
-expect_equal(if_val(a, NA ~ 4:1, other ~ copy), b)
+expect_equal(if_val(a, NA ~  rep(4:1, 3), other ~ copy), b)
 
 b[1,1] = 3
 b[4,1] = 3
 b[1,3] = 1
-expect_equal(if_val(a, NA ~ t(3:1)*1.0, other ~ copy), b)
 expect_error(if_val(a, NA ~ t(3:2)))
 expect_error(if_val(a, NA ~ 3:2))
 
@@ -101,7 +94,7 @@ b[1,1] = 4
 b[4,1] = 1
 b[1,3] = -1
 expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4)), other ~ copy), b)
-expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), other ~ copy), b)
+expect_error(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), other ~ copy))
 
 
 
@@ -113,8 +106,7 @@ ab = list(a,b)
 val_lab(ab) = c("a"=1, "b" = 2)
 
 expect_identical(if_val(ab, NA ~ 42,  other ~ copy), unlab(ab))
-expect_identical(if_val(ab, NA ~ list(42), other ~ copy), unlab(ab))
-expect_error(if_val(ab, NA ~ list(42,43,44), other ~ copy))
+expect_error(if_val(ab, NA ~ list(42), other ~ copy))
 
 ab[[1]][1] = NA
 ab[[2]][4] = NA
@@ -128,7 +120,6 @@ expect_identical(if_val(ab, NA ~ 42, other ~ copy), unlab(ab_no_na))
 ab_no_na[[1]][1] = 42
 ab_no_na[[2]][4] = 42
 expect_error(if_val(ab, NA ~ list(42,43)))
-expect_identical(if_val(ab, NA ~ list(42), other ~ copy), unlab(ab_no_na))
 expect_error(if_val(ab, NA ~ list(42:39,40:43)))
 expect_error(if_val(ab, NA ~ data.frame(42:39,40:43)))
 
@@ -177,26 +168,10 @@ x3[sample(30, 10)] = NA # place 10 NA's
 
 df = data.frame(x1, x2, x3)
 
-df_res1 = df
 
-mins = sapply(df, min, na.rm = TRUE)
-maxs = sapply(df, max, na.rm = TRUE)
-means = sapply(df, mean, na.rm = TRUE)
-
-for(i in seq_along(df_res1)){
-    df_res1[df_res1[,i]<0.25 & !is.na(df_res1[,i]),i] = mins[i]
-    df_res1[df_res1[,i]>0.75 & !is.na(df_res1[,i]),i] = maxs[i]
-    df_res1[is.na(df_res1[,i]),i] = means[i]
-}
-
-rownames(df_res1) = rownames(df)
-expect_identical(
-    if_val(df, lt(0.25) ~ t(min_col(df)), gt(0.75) ~ t(max_col(df)), NA ~ t(mean_col(df)), other ~ copy), 
-    df_res1
-)
 
 df_res2 = df
-rownames(df_res2) = rownames(df)
+# rownames(df_res2) = rownames(df)
 means = rowMeans(df, na.rm = TRUE)
 for(i in seq_along(df_res2)){
     df_res2[is.na(df_res2[,i]),i] = means[is.na(df_res2[,i])]
@@ -208,36 +183,6 @@ expect_identical(
 
 
 
-
-
-
-
-df_test = df
-df_test2 = df
-if_val(df) = NA ~ t(colMeans(df, na.rm = TRUE))
-
-df_test = within(df_test, {
-    x1[is.na(x1)] = mean(x1, na.rm = TRUE)
-    x2[is.na(x2)] = mean(x2, na.rm = TRUE)
-    x3[is.na(x3)] = mean(x3, na.rm = TRUE)
-})
-
-expect_identical(df, df_test)
-
-df = data.frame(x1, x2, x3)
-
-if_val(df) = from_to(NA, list(as.list(colMeans(df, na.rm = TRUE))))
-expect_identical(df, df_test)
-
-# just for curiosity - assignment form doesn't work inside mutate
-df_test2 = modify(df_test2, {
-    if_val(x1) = from_to(NA, mean(x1, na.rm = TRUE))
-    if_val(x2) = NA ~ mean(x2, na.rm = TRUE)
-    if_val(x3) = NA ~ mean(x3, na.rm = TRUE)
-    
-})
-
-expect_identical(df, df_test2)
 
 context("if_val with NA add_val_lab")
 

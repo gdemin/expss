@@ -356,9 +356,6 @@ if(isTRUE(getOption("covr"))) {
         ifs(b>3 ~ cbind(a,b))
     )
     
-    expect_error(
-        ifs(b>3 ~ t(a))
-    )
     
     expect_error(
         ifs(45 ~ 1)
@@ -417,13 +414,21 @@ if(isTRUE(getOption("covr"))) {
     b = recode(a, "2016-10-01" ~ as.POSIXct("2016-10-02"), "2017-05-10" ~ "2017-05-11")
     expect_equal(b, res)
     
+    recode(a) = "2016-10-01" ~ "2016-10-02"
+    expect_identical(a, as.POSIXct(c("2016-10-02", "2017-05-10")))
+    
+    a = as.Date(c("2016-10-01", "2017-05-10"))
+    res = as.Date(c("2016-10-02", "2017-05-11"))
+    b = recode(a, "2016-10-01" ~ as.Date("2016-10-02"), "2017-05-10" ~ "2017-05-11")
+    expect_equal(b, res)
+    
     b = recode(a, "2016-10-01" ~ "2016-10-02", "2017-05-10" ~ "2017-05-11")
     expect_equal(b, as.character(res))
     
     recode(a) = "2016-10-01" ~ "2016-10-02"
-    expect_identical(a, as.POSIXct(c("2016-10-02", "2017-05-10")))
+    expect_identical(a, as.Date(c("2016-10-02", "2017-05-10")))
     
-    context("dot notation")
+    context("recode copy")
     
     a = 1:5
     

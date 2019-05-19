@@ -164,31 +164,6 @@ recode(a, lt(-0.5) ~ abs, other ~ copy)
 # the same example with logical criteria
 recode(a, a<(-.5) ~ abs, other ~ copy) 
 
-# replace with specific value for each column
-# we replace values greater than 0.75 with column max and values less than 0.25 with column min
-# and NA with column means
-# make data.frame
-set.seed(123)
-x1 = runif(30)
-x2 = runif(30)
-x3 = runif(30)
-x1[sample(30, 10)] = NA # place 10 NA's
-x2[sample(30, 10)] = NA # place 10 NA's
-x3[sample(30, 10)] = NA # place 10 NA's
-dfs = data.frame(x1, x2, x3)
-
-#replacement. Note the necessary transpose operation
-recode(dfs, 
-        lt(0.25) ~ t(min_col(dfs)), 
-        gt(0.75) ~ t(max_col(dfs)), 
-        NA ~ t(mean_col(dfs)), 
-        other ~ copy
-      )
-
-# replace NA with row means
-# some rows which contain only NaN's remain unchanged because mean_row for them also is NaN
-recode(dfs, NA ~ mean_row(dfs), other ~ copy) 
-
 # some of the above examples with from/to notation
 
 set.seed(123)
