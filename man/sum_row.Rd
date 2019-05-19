@@ -21,41 +21,41 @@
 \alias{all_in_col}
 \title{Compute sum/mean/sd/median/max/min/custom function on rows/columns}
 \usage{
-sum_row(...)
+sum_row(..., na.rm = TRUE)
 
-sum_col(...)
+sum_col(..., na.rm = TRUE)
 
-mean_row(...)
+mean_row(..., na.rm = TRUE)
 
-mean_col(...)
+mean_col(..., na.rm = TRUE)
 
-sd_row(...)
+sd_row(..., na.rm = TRUE)
 
-sd_col(...)
+sd_col(..., na.rm = TRUE)
 
-median_row(...)
+median_row(..., na.rm = TRUE)
 
-median_col(...)
+median_col(..., na.rm = TRUE)
 
-max_row(...)
+max_row(..., na.rm = TRUE)
 
-max_col(...)
+max_col(..., na.rm = TRUE)
 
-min_row(...)
+min_row(..., na.rm = TRUE)
 
-min_col(...)
+min_col(..., na.rm = TRUE)
 
 apply_row(fun, ...)
 
 apply_col(fun, ...)
 
-any_in_row(...)
+any_in_row(..., na.rm = TRUE)
 
-any_in_col(...)
+any_in_col(..., na.rm = TRUE)
 
-all_in_row(...)
+all_in_row(..., na.rm = TRUE)
 
-all_in_col(...)
+all_in_col(..., na.rm = TRUE)
 }
 \arguments{
 \item{...}{data. Vectors, matrixes, data.frames, list. Shorter arguments

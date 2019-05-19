@@ -56,22 +56,21 @@
 #' sum_row(x); sum_col(x); mean_row(x); mean_col(x)
 #' 
 #' @export
-sum_row=function(...){
-    data = dots2data_frame(...)
-    #nas = is.na(rowMeans(data, na.rm=TRUE))
-    res = rowSums(data, na.rm=TRUE)
-    #res[nas] = NA
-    res
+sum_row=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    matrixStats::rowSums2(data, na.rm = na.rm)
+
 }
 
 
 #' @export
 #' @rdname sum_row
-sum_col =function(...){
-    data = dots2data_frame(...)
-    #nas = is.na(colMeans(data, na.rm=TRUE))
-    res = colSums(data, na.rm=TRUE)
-    #res[nas] = NA
+sum_col =function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    res = matrixStats::colSums2(data, na.rm = na.rm)
+    names(res) = colnames(data)
     res
 }
 
@@ -79,21 +78,25 @@ sum_col =function(...){
 ################################################
 
 #' @export
-mean.data.frame = function(x, ...) mean(unlist(x), ...)
+mean.data.frame = function(x, ...) mean(unlist(x, use.names = FALSE, recursive = TRUE), ...)
 
 #' @export
 #' @rdname sum_row
-mean_row=function(...){
-    data = dots2data_frame(...)
-    rowMeans(data, na.rm=TRUE)
+mean_row=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    matrixStats::rowMeans2(data, na.rm = na.rm)
 }
 
 
 #' @export
 #' @rdname sum_row
-mean_col=function(...){
-    data = dots2data_frame(...)
-    colMeans(data, na.rm=TRUE)
+mean_col=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    res = matrixStats::colMeans2(data, na.rm = na.rm)
+    names(res) = colnames(data)
+    res
 }
 
 
@@ -103,37 +106,45 @@ mean_col=function(...){
 
 #' @export
 #' @rdname sum_row
-sd_row=function(...){
-    data = dots2data_frame(...)
-    apply(data, 1, stats::sd, na.rm=TRUE)
+sd_row=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    matrixStats::rowSds(data, na.rm = na.rm)
 }
 
 
 #' @export
 #' @rdname sum_row
-sd_col=function(...){
-    data = dots2data_frame(...)
-    vapply(data, stats::sd, FUN.VALUE = numeric(1), na.rm=TRUE)
+sd_col=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    res = matrixStats::colSds(data, na.rm = na.rm)
+    names(res) = colnames(data)
+    res
 }
 
 ################################################
 
 # @export
-# median.data.frame = function(x, ...) stats::median(as.matrix(x), ...)
+median.data.frame = function(x, ...) stats::median(as.matrix(x), ...)
 
 #' @export
 #' @rdname sum_row
-median_row=function(...){
-    data = dots2data_frame(...)
-    apply(data, 1, stats::median, na.rm=TRUE)
+median_row=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    matrixStats::rowMedians(data, na.rm = na.rm)
 }
 
 
 #' @export
 #' @rdname sum_row
-median_col=function(...){
-    data = dots2data_frame(...)
-    vapply(data, stats::median, FUN.VALUE = numeric(1), na.rm=TRUE)
+median_col=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    res = matrixStats::colMedians(data, na.rm = na.rm)
+    names(res) = colnames(data)
+    res
 }
 
 
@@ -141,20 +152,23 @@ median_col=function(...){
 
 #' @export
 #' @rdname sum_row
-max_row=function(...){
-    data = dots2data_frame(...)
-    res = suppressWarnings(do.call(pmax, c(data, na.rm=TRUE)))
-    if(is.numeric(res)) res[!is.finite(res)] = NA
+max_row=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    res = matrixStats::rowMaxs(data, na.rm = na.rm)
+    res[!is.finite(res)] = NA
     res
 }
 
 
 #' @export
 #' @rdname sum_row
-max_col=function(...){
-    data = dots2data_frame(...)
-    res = suppressWarnings(apply(data, 2, max, na.rm=TRUE))
-    if(is.numeric(res)) res[!is.finite(res)] = NA
+max_col=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    res = matrixStats::colMaxs(data, na.rm = na.rm)
+    res[!is.finite(res)] = NA
+    names(res) = colnames(data)
     res
 }
 
@@ -163,20 +177,23 @@ max_col=function(...){
 
 #' @export
 #' @rdname sum_row
-min_row=function(...){
-    data = dots2data_frame(...)
-    res = suppressWarnings(do.call(pmin, c(data, na.rm=TRUE)))
-    if(is.numeric(res)) res[!is.finite(res)] = NA
+min_row=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    res = matrixStats::rowMins(data, na.rm = na.rm)
+    res[!is.finite(res)] = NA
     res
 }
 
 
 #' @export
 #' @rdname sum_row
-min_col=function(...){
-    data = dots2data_frame(...)
-    res = suppressWarnings(apply(data, 2, min, na.rm=TRUE))
-    if(is.numeric(res)) res[!is.finite(res)] = NA
+min_col=function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(is.logical(data)) data = as.numeric(data)
+    res = matrixStats::colMins(data, na.rm = na.rm)
+    res[!is.finite(res)] = NA
+    names(res) = colnames(data)
     res
 }
 
@@ -186,17 +203,45 @@ min_col=function(...){
 #' @export
 #' @rdname sum_row
 apply_row = function(fun, ...){
-    data = dots2data_frame(...)   
-    apply(data, 1, fun)
+    data = dots2matrix(...)
+    fun = match.fun(fun)
+    rows = seq_len(nrow(data))
+    res = lapply(rows, function(each_row){
+        fun(data[each_row, ])
+    })
+    if(any(lengths(res) != 1)){
+        stop("'apply_col': incorrect result - function returns values with length greater than one.")    
+    }
+    unlist(res, use.names = FALSE, recursive = TRUE)
 }
 
 #' @export
 #' @rdname sum_row
 apply_col = function(fun, ...){
-    data = dots2data_frame(...)  
-    sapply(data, fun)
+    data = dots2matrix(...)
+    fun = match.fun(fun)
+    cols = seq_len(ncol(data))
+    res = lapply(cols, function(each_col){
+        fun(data[, each_col])
+    })
+    if(any(lengths(res) != 1)){
+        stop("'apply_col': incorrect result - function returns values with length greater than one.")    
+    }
+    res = unlist(res, use.names = FALSE, recursive = TRUE)
+    names(res) = colnames(data)
+    res
 }
 
+
+dots2matrix = function(...){
+    res = flat_list(
+        list(...), 
+        flat_df = FALSE
+    )
+    res = do.call(cbind, res)
+    if(!is.matrix(res)) res = as.matrix(res)
+    res
+}
 
 dots2list = function(...){
     values = as.character(substitute(c(...))[-1])
@@ -232,36 +277,36 @@ dots2data_frame = function(...){
 #################
 #' @export
 #' @rdname sum_row
-any_in_row =function(...){
-    data = dots2data_frame(...)
-    
-    res = Reduce(`|`, data)
+any_in_row =function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(!is.logical(data)) data = as.logical(data)
+    matrixStats::rowAnys(data, na.rm = na.rm)
+}
+
+#' @export
+#' @rdname sum_row
+any_in_col =function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(!is.logical(data)) data = as.logical(data)
+    res = matrixStats::colAnys(data, na.rm = na.rm)
+    names(res) = colnames(data)
     res
 }
 
 #' @export
 #' @rdname sum_row
-any_in_col =function(...){
-    data = dots2data_frame(...)
-    
-    res = vapply(data, any, logical(1))
-    res
+all_in_row =function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(!is.logical(data)) data = as.logical(data)
+    matrixStats::rowAlls(data, na.rm = na.rm)
 }
 
 #' @export
 #' @rdname sum_row
-all_in_row =function(...){
-    data = dots2data_frame(...)
-    
-    res = Reduce(`&`, data)
-    res
-}
-
-#' @export
-#' @rdname sum_row
-all_in_col =function(...){
-    data = dots2data_frame(...)
-    
-    res = vapply(data, all, logical(1))
+all_in_col =function(..., na.rm = TRUE){
+    data = dots2matrix(...)
+    if(!is.logical(data)) data = as.logical(data)
+    res = matrixStats::colAlls(data, na.rm = na.rm)
+    names(res) = colnames(data)
     res
 }
