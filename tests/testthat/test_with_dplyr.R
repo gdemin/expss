@@ -239,20 +239,13 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     expect_equal(mis_val(a, gt(3)),b)
     expect_equal(mis_val(a, 4:5),b)
     
-    cond = cbind(a$a>3, a$b>3)
-    expect_equal(mis_val(a, cond),b)
     
     b = a
     b[1:2,] = NA
     
     expect_equal(mis_val(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
     
-    
-    b = a
-    b[,1] = NA
-    b$a = as.integer(b$a)
-    
-    expect_equal(mis_val(a, t(c(TRUE, FALSE))),b)
+
 } else {
     cat("dplyr not found\n")
 }
@@ -400,16 +393,16 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     b = as.data.frame(a)
     rownames(b) = rownames(data.frame(a = 1:4, b = 5:8, d = 10:13))
-    expect_identical(if_val(a, NA ~ 2, other ~ copy), b)
+    expect_equal(if_val(a, NA ~ 2, other ~ copy), b)
     
     a[1,1] = NA
     b[1,1] = 2
     
-    expect_identical(if_val(a, NA ~ 2, other ~ copy), b)
+    expect_equal(if_val(a, NA ~ 2, other ~ copy), b)
     
     a[4,1] = NA 
     b[4,1] = 2
-    expect_identical(if_val(a, NA ~ 2, other ~ copy), b)
+    expect_equal(if_val(a, NA ~ 2, other ~ copy), b)
     
     b[1,1] = 4L
     b[4,1] = 1L
@@ -426,7 +419,6 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     b[1,3] = 1
     b$a = as.integer(b$a)
     b$d = as.integer(b$d)
-    expect_equal(if_val(a, NA ~ t(3:1), other ~ copy), b)
     expect_error(if_val(a, NA ~ t(3:2), other ~ copy))
     expect_error(if_val(a, NA ~ 3:2, other ~ copy))
     
@@ -435,8 +427,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     b[4,1] = 1
     b[1,3] = -1
     
-    expect_equal(if_val(a, NA ~ cbind(4:1,2,-(1:4)), other ~ copy), b)
-    expect_equal(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), other ~ copy), b)
+    
 } else {
     cat("dplyr not found\n")
 }

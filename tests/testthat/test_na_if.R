@@ -36,10 +36,7 @@ aa = matrix(rnorm(50), ncol = 2)
 bb = aa
 bb[bb[,1] == max(bb[,1]),1] = NA
 bb[bb[,2] == max(bb[,2]),2] = NA
-# we set to NA maximum values in each column
-expect_error(na_if(aa, max_col(aa)))
-expect_error(na_if(aa, aa))
-expect_error(na_if(aa, as.data.frame(aa)))
+
 
 b = a
 b[1:2,] = NA
@@ -52,9 +49,7 @@ b = a
 b[,1] = NA
 b$a = as.numeric(b$a)
 
-expect_equal(na_if(a, t(c(TRUE, FALSE))),b)
-# expect_equal(na_if(a, list(TRUE, FALSE)),b)
-expect_equal(na_if(a, as.data.frame(t(c(TRUE, FALSE)))),b)
+expect_error(suppressWarnings(na_if(a, t(c(TRUE, FALSE)))))
 
 
 context("na_if matrix")
@@ -78,8 +73,6 @@ expect_equal(na_if(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
 b = a
 b[,1] = NA
 
-
-expect_equal(na_if(a, t(c(TRUE, FALSE))),b)
 
 
 a = c(1:5,99)
