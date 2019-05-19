@@ -359,13 +359,12 @@ as.criterion = function(crit){
             cond & !is.na(cond)
         }
     } else {
-        if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
+        if(is.list(crit) || is.data.frame(crit)){
             crit = c(crit, recursive = TRUE, use.names = FALSE)
+        }
+        if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
             res = function(x) crit & !is.na(crit)
         } else {
-            if(is.list(crit) || is.data.frame(crit) || is.matrix(crit)){
-                crit = c(crit, recursive = TRUE, use.names = FALSE)
-            }
             res = function(x) {
                 if(inherits(x, "POSIXct") & !inherits(crit, "POSIXct")){
                     # because '%in%' doesn't coerce POSIXct in a sensible way 
