@@ -11,109 +11,7 @@ stopif = function(cond,...){
 }
 
 
-######## build_criterion ###########
-build_criterion = function(criterion,dfs){
-    # dfs should be data.frame
-    # build criterion should return logical matrix with the form of dfs (e. g. the same dimension)
-    UseMethod("build_criterion")
-}
 
-#' @export
-build_criterion.function = function(criterion,dfs){
-    res = lapply(dfs,function(colmn){
-        cond = criterion(colmn)
-        stopif(length(cond)!=length(colmn),"Cells number of criterion doesn't equal cells number of argument.")
-        if_na(as.logical(cond), FALSE)
-    })
-    do.call(cbind,res)
-}
-
-#' @export
-build_criterion.default = function(criterion,dfs){
-    res = lapply(dfs, function(colmn){
-        if(("POSIXct" %in% class(colmn)) & !("POSIXct" %in% class(criterion))){
-            criterion = as.POSIXct(criterion)
-        }
-        colmn %in% criterion
-    })
-    do.call(cbind,res)
-}
-
-
-#' @export
-build_criterion.logical = function(criterion,dfs){
-    # uncertainty if criterion is result of something is.na(dfs[,i]) 
-    # should we count NA in such case - possible solution - forbid logical criterion for count if
-    if (is.atomic(criterion) && (length(criterion)==1) && is.na(criterion)) {
-        return(build_criterion(as.numeric(criterion), dfs))
-    }
-    check_conformance(dfs, criterion)
-    res = matrix(nrow = NROW(dfs), ncol = NCOL(dfs))
-    if(NCOL(criterion)>1){
-        for(i in seq_along(dfs)){
-            res[,i] = criterion[,i] 
-        }
-    } else {
-        for(i in seq_along(dfs)){
-            res[,i] = criterion 
-        }
-    }
-    if_na(res, FALSE)
-}
-
-#' @export
-build_criterion.data.frame = function(criterion,dfs){
-    build_criterion(as.matrix(criterion), dfs)
-}
-
-#' @export
-build_criterion.matrix = function(criterion,dfs){
-    stopif(!is.logical(criterion), "matrix/data.frame criterion should be logical.")
-    build_criterion.logical(criterion, dfs)
-}
-
-#' @export
-build_criterion.list = function(criterion,dfs){
-    stop("Condition of type 'list' doesn't supported.")
-    #stopif(length(criterion)==0, "Zero-length list is provided as argument.")
-    #res = lapply(seq_along(criterion), function(i) build_criterion(column(criterion, i), as.data.frame(column(dfs, i))))
-    #do.call(cbind, res)
-}
-
-#' @export
-build_criterion.criterion = function(criterion,dfs){
-    build_criterion.function(criterion,dfs) 
-}
-
-
-###### check_conformance ################
-
-# value should be ncol(value)==1 or ncol(value) = ncol(x) 
-# value should be nrow(value)==1 or nrow(value) = nrow(x) 
-check_conformance = function(x,value){
-    UseMethod("check_conformance")
-}
-
-#' @export
-check_conformance.default = function(x,value){
-    stopif(length(value)==0, "'value' has zero length.")
-    if(is.list(value) && !is.data.frame(value)){
-        stopif(length(value)>1 && NCOL(x)!=length(value), "Length of 'value' should be 
-               1 or equals to number of columns of 'x' but length(value)=",length(value),", NCOL(x)=", NCOL(x))
-    } else {
-        stopif(NCOL(value)>1 && NCOL(x)!=NCOL(value), "Number of columns in 'value' should be 
-               1 or equals to number of columns of 'x' but NCOL(value)=",NCOL(value),", NCOL(x)=", NCOL(x))
-        stopif(NROW(value)>1 && NROW(x)!=NROW(value), "Number of rows in 'value' should be
-               1 or equals number of rows of 'x' but NROW(value)=",NROW(value),", NROW(x)=", NROW(x))
-    }
-    invisible(TRUE)
-}
-
-#' @export
-check_conformance.list = function(x, value){
-    
-    invisible(TRUE)    
-}
 
 ####### column ###########
 
@@ -176,68 +74,6 @@ column.default = function(x, column_num, condition = NULL){
     
 }    
 
-#######
-"column<-" = function(x, column_num, condition = NULL, value){
-    UseMethod("column<-")
-}
-
-#' @export
-"column<-.data.frame" = function(x, column_num, condition = NULL, value){
-    stopif(column_num>ncol(x), "Too large column_num:",column_num, " only ", ncol(x), " columns in the data.frame.")
-    column(x[[column_num]], 1, condition = condition) = value
-    x
-}
-
-#' @export
-"column<-.matrix" = function(x, column_num, condition = NULL, value){
-    stopif(column_num>ncol(x), "Too large column_num:",column_num, " only ", ncol(x), " columns in the matrix.")
-    column(x[, column_num], 1, condition = condition) = value
-    x
-}
-
-#' @export
-"column<-.list" = function(x, column_num, condition = NULL, value){
-    stop("Assignment for list doesn't implemented.")
-    
-}
-
-#' @export
-"column<-.default" = function(x, column_num, condition = NULL, value){
-    if(is.factor(value)){
-        x = as.factor(x)
-        column(x, column_num = column_num, condition) = value
-        return(x)
-    } 
-    
-    if(inherits(value, "POSIXct") && (is.logical(x) || is.numeric(x))){
-        # first assignment - we expect that x with all NA and set its class to POSIXct
-        x = as.POSIXct(x)
-        column(x, column_num = column_num, condition) = value
-        return(x)
-    } 
-    if(is.null(condition)){
-        x[] = value
-    } else {
-        x[condition] = value
-    } 
-    
-    x
-}  
-
-#' @export
-"column<-.factor" = function(x, column_num, condition = NULL, value){
-    fac_levels = levels(x)
-    if(!all(value %in% fac_levels)){
-        fac_levels = union(fac_levels, value)
-        levels(x) = fac_levels
-    }
-    if(is.null(condition)){
-        x[] = value
-    } else {
-        x[condition] = value
-    }     
-    x
-}  
 
 ###########################
 # use this function only inside other functions
@@ -376,9 +212,7 @@ new_var_generator = function(FUN, number_of_rows){
 
 
 ### TRUE if argument is list, not data.frame
-is_list=function(x)
-    
-{
+is_list=function(x){
     is.list(x) && (!is.data.frame(x))
 }
 
@@ -435,8 +269,7 @@ integer_encoding.data.frame=function(x, dict = NULL){
 ### list(a,list(b,c))->list(a,b,c)
 ### flat_df = FALSE data.frame will be left as data.frame
 ### flat_df = TRUE data.frame will be converted to list
-flat_list=function(x, flat_df = FALSE)
-{
+flat_list=function(x, flat_df = FALSE){
     if(flat_df){
         check_list = is.list
     } else {

@@ -77,29 +77,7 @@ expect_identical(as.data.frame(a), as.data.frame(a, stringsAsFactors = FALSE))
 # 
 # as.data.frame(a)
 
-context("utils")
 
-expect_identical(expss:::check_conformance.list(list(1,2), 42), TRUE)
-
-aaa = matrix(1:9, 3)
-bbb = aaa
-bbb[,1] = 1
-
-'tested<-' = expss:::`column<-.matrix`
-tested(aaa, 1) = 1
-expect_identical(aaa, bbb)
-
-
-'tested<-' = expss:::`column<-.list`
-aaa = list(1,2)
-expect_error({tested(aaa, 1) = 1})
-
-'tested<-' = expss:::`column<-.factor`
-fff = factor(c("a", "b", "c"))
-f2 = fff
-f2[] = "a"
-tested(fff) = "a"
-expect_identical(fff, f2)
 
 context("type conversion")
 a = 1:0
