@@ -90,10 +90,14 @@ expect_equal(df1 %col_in% 'apples', c(a = TRUE, b = FALSE))
 context("count_col_if")
 
 
-expect_equal(count_col_if(function(x) grepl("^a",x),t(df1)),c('1' = 1, '2' = 0, '3' = 0, '4' = 1))
-expect_equal(count_col_if(perl("^a"),t(df1)),c('1' = 1, '2' = 0, '3' = 0, '4' = 1))
-expect_equal(count_col_if(function(x) grepl("^a",x),df1),c(a = 2, b = 0))
-expect_equal(count_col_if(perl("^a"),df1),c(a = 2, b = 0))
+expect_equal(count_col_if(function(x) grepl("^a",x),t(df1)),
+             c(1, 0, 0, 1))
+expect_equal(count_col_if(perl("^a"),t(df1)),
+             c(1, 0, 0, 1))
+expect_equal(count_col_if(function(x) grepl("^a",x),df1),
+             c(a = 2, b = 0))
+expect_equal(count_col_if(perl("^a"),df1),
+             c(a = 2, b = 0))
 
 set.seed(123)
 df2 = as.data.frame(
@@ -185,8 +189,7 @@ result  = modify(dfs, {
                    na = count_row_if(is.na, V1, V2, V3)
                    not_na = count_row_if(not_na, V1, V2, V3)
                 })  
-result
- 
+
 expect_equal(
     mean_row_if(6, dfs$V1, data = dfs),
     ifelse(dfs$V1==6, apply(dfs, 1, mean, na.rm = TRUE), NaN)
@@ -209,7 +212,7 @@ expect_identical(
 )
 expect_identical(
     apply_row_if(prod, gt(2), dfs$V1, data = dfs),
-    ifelse(dfs$V1>2, apply(dfs, 1, prod, na.rm = TRUE), NA)
+    ifelse(dfs$V1>2, apply(dfs, 1, prod, na.rm = TRUE), 1)
 )
 # apply_row_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements
 

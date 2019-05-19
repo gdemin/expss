@@ -90,20 +90,7 @@ expect_equal(
     20
 )
 
-dfs = read.csv(
-    text = '
-daily_measurements,first_day,second_day,third_day,fourth_day
-"Rain (total inches)",3.3,0.8,5.5,5.5
-"Average temperature (degrees)",55,39,39,57.5
-"Average wind speed (miles per hour)",6.5,19.5,6,6.5'
-,stringsAsFactors = FALSE
-)
 
-
-expect_equal(
-    sum_if(dfs[2, -1]>=40 & dfs[3, -1]<10, dfs[1, -1]),
-    8.8
-)
 
 
 context("excel averageif")
@@ -220,7 +207,7 @@ expect_equal(
 
 expect_equal(
     with(dfs, max_if("e", grade[2:5], data = weight[1:4])),
-    NA
+    NA_real_
 )
 
 context("median/sd if")
@@ -268,12 +255,12 @@ expect_equal(
 data(iris)
 
 test_iris = as.matrix(iris[,-5])
-expect_identical(
+expect_equal(
     median_row_if(1:150<75, test_iris),
     ifelse(1:150<75, apply(test_iris, 1, median, na.rm = TRUE), NA)
 )
 
-expect_identical(
+expect_equal(
    sd_row_if(1:150<75, test_iris),
     ifelse(1:150<75, apply(test_iris, 1, sd, na.rm = TRUE), NA)
 )
@@ -285,7 +272,7 @@ expect_identical(
     apply(test_iris2, 2, median, na.rm = TRUE)
 )
 
-expect_identical(
+expect_equal(
     sd_col_if(1:150<75, test_iris),
     apply(test_iris2, 2, sd, na.rm = TRUE)
 )

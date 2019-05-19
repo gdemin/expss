@@ -154,20 +154,17 @@ expect_identical(unname(min_col_if(gt(5), df2)), do.call(pmin, c(as.sheet(t(df2_
 
 #######
 
+context("errors")
+
 data(iris)
 iris$Species = as.character(iris$Species)
-expect_equal(max_row_if(gt("0"), iris), apply(iris, 1, max))
-expect_equal(max_col_if(gt("0"), iris), apply(iris, 2, max))
-
-expect_equal(min_row_if(gt("0"), iris), gsub("\\.0$","", apply(iris, 1, min), perl = TRUE))
-expect_equal(min_col_if(gt("0"), iris), apply(iris, 2, min))
+expect_error(max_row_if(gt("0"), iris))
 
 
-context("errors")
 data(iris)
 expect_error(sd_if(gt(0), iris))
 expect_error(median_if(gt(0), iris))
 
-expect_identical(mean_col_if(gt(5), iris[,-5], data = as.list(iris)[-5]), 
+expect_equal(mean_col_if(gt(5), iris[,-5], data = iris[,-5]), 
              colMeans(na_if(iris[,-5], le(5)), na.rm = TRUE))
 
