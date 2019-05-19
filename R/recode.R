@@ -268,8 +268,10 @@ recode.data.frame = function(x, ...){
 
 #' @export
 recode.matrix = function(x, ...){
-    x[] = recode(c(x, use.names = FALSE), ...)
-    x
+    res = recode(c(x, use.names = FALSE), ...)
+    res = matrix(res, nrow = nrow(x), ncol = ncol(x))
+    dimnames(res) = dimnames(x)
+    res
 }
 
 ################# recode<- ###############
