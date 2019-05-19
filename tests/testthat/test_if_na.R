@@ -63,16 +63,8 @@ expect_equal(if_na(a, c(4:2,1.0)), b)
 b[1,1] = 3
 b[4,1] = 3
 b[1,3] = 1
-expect_equal(if_na(a, t(c(3:2,1.0))), b)
-expect_error(if_na(a, t(3:2)))
-expect_error(if_na(a, 3:2))
 
 
-b[1,1] = 4
-b[4,1] = 1
-b[1,3] = -1
-expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
-expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
 
 
 context("if_na.matrix")
@@ -94,27 +86,11 @@ expect_identical(if_na(a, 2), b)
 b[1,1] = 4
 b[4,1] = 1
 
-expect_equal(if_na(a, 4:1), b)
+expect_equal(if_na(a, rep(4:1, 3)), b)
 
 a[1,3] = NA
 b[1,3] = 4
-expect_equal(if_na(a, 4:1), b)
-
-b[1,1] = 3
-b[4,1] = 3
-b[1,3] = 1
-expect_equal(if_na(a, t(3:1)), b)
-expect_equal(a  %if_na% t(3:1), b)
-expect_error(if_na(a, t(3:2)))
-expect_error(if_na(a, 3:2))
-
-
-b[1,1] = 4
-b[4,1] = 1
-b[1,3] = -1
-expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
-expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
-
+expect_equal(if_na(a, rep(4:1, 3)), b)
 
 
 context("if_na list")
@@ -125,8 +101,6 @@ ab = list(a,b)
 val_lab(ab) = c("a"=1, "b" = 2)
 
 expect_identical(if_na(ab, 42), ab)
-expect_identical(if_na(ab, list(42)), ab)
-expect_error(if_na(ab, list(42,43,44)))
 
 ab[[1]][1] = NA
 ab[[2]][4] = NA
@@ -140,9 +114,6 @@ expect_identical(if_na(ab, 42), ab_no_na)
 ab_no_na[[1]][1] = 42
 ab_no_na[[2]][4] = 42
 expect_error(if_na(ab, list(42,43)))
-expect_identical(if_na(ab, list(42)), ab_no_na)
-expect_error(if_na(ab, list(42:39,40:43)))
-expect_error(if_na(ab, data.frame(42:39,40:43)))
 
 context("if_na help")
 
@@ -168,42 +139,6 @@ df = data.frame(group, param)
 
 # replacement with column means
 
-# make data.frame
-set.seed(123)
-x1 = runif(30)
-x2 = runif(30)
-x3 = runif(30)
-x1[sample(30, 10)] = NA # place 10 NA's
-x2[sample(30, 10)] = NA # place 10 NA's
-x3[sample(30, 10)] = NA # place 10 NA's
-
-df = data.frame(x1, x2, x3)
-df_test = df
-df_test2 = df
-if_na(df) = t(colMeans(df, na.rm = TRUE))
-
-df_test = within(df_test, {
-    x1[is.na(x1)] = mean(x1, na.rm = TRUE)
-    x2[is.na(x2)] = mean(x2, na.rm = TRUE)
-    x3[is.na(x3)] = mean(x3, na.rm = TRUE)
-})
-
-expect_identical(df, df_test)
-
-df = data.frame(x1, x2, x3)
-
-if_na(df) = as.list(colMeans(df, na.rm = TRUE))
-expect_identical(df, df_test)
-
-# just for curiosity - assignment form doesn't work inside mutate
-df_test2 = modify(df_test2, {
-    if_na(x1) = mean_col(x1)
-    if_na(x2) = mean_col(x2)
-    if_na(x3) = mean_col(x3)
-    
-})
-
-expect_identical(df, df_test2)
 
 context("if_na add_val_lab")
 

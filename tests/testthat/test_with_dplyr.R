@@ -59,22 +59,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     b$d = as.integer(b$d)
     expect_equal(if_na(a, 4:1), b)
     
-    b[1,1] = 3
-    b[4,1] = 3
-    b[1,3] = 1
-    b$a = as.integer(b$a)
-    b$d = as.integer(b$d)
-    expect_equal(if_na(a, t(3:1)), b)
-    expect_error(if_na(a, t(3:2)))
-    expect_error(if_na(a, 3:2))
     
-    
-    b[1,1] = 4
-    b[4,1] = 1
-    b[1,3] = -1
-    
-    expect_equal(if_na(a, cbind(4:1,2,-(1:4))), b)
-    expect_equal(if_na(a, as.data.frame(cbind(4:1,2,-(1:4)))), b)
 } else {
     cat("dplyr not found\n")
 }

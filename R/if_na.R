@@ -71,7 +71,8 @@
 #' 
 #'@export
 if_na = function(x, value){
-    UseMethod("if_na")
+    recode(x) = NA ~ value
+    x
 }
 
 
@@ -87,36 +88,7 @@ if_na = function(x, value){
 #' @rdname if_na
 '%if_na%' = if_na
 
-#' @export
-if_na.default = function(x, value){
-    check_conformance(x, value)
-    if (anyNA(x)){
-        if(!is.list(value) || is.data.frame(value)){
-            nas = is.na(x)
-            for (each_col in seq_len(NCOL(x))){
-                cond = column(nas, each_col)
-                if (any(cond)) column(x, each_col, cond) = column(value, each_col, cond)
-            }
-        } else {
-            # if 'value' is list - we don't know what is inside element thats why we cannot subset it
-            for (each_col in seq_len(NCOL(x))){
-                if_na(column(x, each_col)) = column(value, each_col)
-            }            
-        }
-    }
-    x
-}
 
-
-
-
-#' @export
-if_na.list = function(x, value){
-    for(each in seq_along(x)){
-        if_na(x[[each]]) = value
-    }
-    x
-}
 
 
 
