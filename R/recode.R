@@ -195,7 +195,9 @@ process_recodings = function(x, recoding_list, res){
     recoded = logical(length(x))
     for (each_recoding in recoding_list){
         if (all(recoded)) break # if all values were recoded
-        cond = as.criterion(each_recoding[["from"]])(x)
+        crit = each_recoding[["from"]]
+        if(!inherits(crit, "criterion")) crit = as.criterion(crit)
+        cond = crit(x)
         cond = cond & !recoded # we don't recode already recoded value
         if(!any(cond)) next
         target = each_recoding[["to"]]

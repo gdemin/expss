@@ -506,6 +506,24 @@ fast_match = function(x, table, nomatch = NA_integer_, NA_incomparable = FALSE){
     ind
 }
 
+fast_in = function(x, value){
+    if(is.numeric(value) && 
+       length(value)>0 && 
+       length(value)<3 && 
+       !anyNA(value) && 
+       !any(is.infinite(value)) && 
+       is.numeric(x)){
+        # optimization for very special and very frequent case after profiling
+        res = x == value[[1]]
+        for(each in value[-1]){
+            res = res | (x==each)
+        }
+        res & !is.na(res)
+    } else {
+        fast_match(x, value, nomatch = 0L)>0
+    }
+}
+
 #################
 
 add_class = function(x, ...){

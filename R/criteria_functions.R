@@ -374,7 +374,7 @@ as.criterion = function(crit){
                     # because '%in%' doesn't coerce Date in a sensible way 
                     x = as.character(x)
                 } 
-                x %in% crit
+                fast_in(x, crit)
             }
         }    
     }

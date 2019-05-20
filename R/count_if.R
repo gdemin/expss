@@ -600,11 +600,6 @@ apply_criterion.data.frame = function(obj, crit){
     obj
 }
 
-#' @export
-apply_criterion.data.frame = function(obj, crit){
-    obj[] = lapply(obj, apply_criterion, crit)   
-    obj
-}
 
 #' @export
 apply_criterion.default = function(obj, crit){
