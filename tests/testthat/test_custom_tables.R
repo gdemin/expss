@@ -32,7 +32,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun(w_mean) %>% 
         tab_pivot
     
-    expect_equal_to_reference(res, "rds/ctable0.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable0.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cols(vs) %>% 
@@ -41,7 +41,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun(w_mean) %>% 
         tab_pivot
     
-    expect_equal_to_reference(res, "rds/ctable0.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable0.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_rows(am) %>% 
@@ -50,7 +50,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun(w_mean) %>% 
         tab_pivot
     
-    expect_equal_to_reference(res, "rds/ctable0.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable0.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -59,7 +59,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun(w_mean = w_mean) %>% 
         tab_pivot
     
-    expect_equal_to_reference(res, "rds/ctable1.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable1.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -67,7 +67,7 @@ if(isTRUE(getOption("covr"))) {
         tab_rows(am) %>% 
         tab_stat_fun("|" = w_mean) %>% 
         tab_pivot
-    expect_equal_to_reference(res, "rds/ctable2.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable2.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -76,7 +76,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun("|" = w_mean, label = "Mean value") %>% 
         tab_pivot
     
-    expect_equal_to_reference(res, "rds/ctable3.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable3.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -85,7 +85,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun("|" = w_mean, label = "Mean value") %>% 
         tab_pivot(stat_position = "inside_rows")
     
-    expect_equal_to_reference(res, "rds/ctable3.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable3.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -94,7 +94,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun("|" = w_mean, label = "Mean value") %>% 
         tab_pivot(stat_position = "inside_columns")
     
-    expect_equal_to_reference(res, "rds/ctable4.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable4.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -102,7 +102,7 @@ if(isTRUE(getOption("covr"))) {
         tab_rows(am) %>% 
         tab_stat_mean(label = "Mean value") %>% 
         tab_pivot()
-    expect_equal_to_reference(res, "rds/ctable3.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable3.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -111,7 +111,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_mean(label = "Mean value") %>% 
         tab_pivot(stat_position = "inside_columns")
     
-    expect_equal_to_reference(res, "rds/ctable4.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable4.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -122,7 +122,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_valid_n() %>% 
         tab_pivot(stat_position = "inside_rows")
     
-    expect_equal_to_reference(res, "rds/ctable5.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable5.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -133,7 +133,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_valid_n() %>% 
         tab_pivot(stat_position = "inside_columns")
     
-    expect_equal_to_reference(res, "rds/ctable6.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable6.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp) %>% 
@@ -143,9 +143,9 @@ if(isTRUE(getOption("covr"))) {
         tab_pivot()
     
     if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
-        expect_equal_to_reference(res, "rds/ctable7.rds",  update = FALSE)
+        expect_known_value(res, "rds/ctable7.rds",  update = FALSE)
     } else {
-        expect_equal_to_reference(res, "rds/ctable7_R3.4.rds",  update = FALSE)
+        expect_known_value(res, "rds/ctable7_R3.4.rds",  update = FALSE)
     }
     
     res = mtcars %>% 
@@ -158,7 +158,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cases(total_row_position = "none") %>% 
         tab_pivot(stat_position = "inside_rows") 
     
-    expect_equal_to_reference(res, "rds/ctable8.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable8.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_total_row_position("none") %>% 
@@ -171,7 +171,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cases() %>% 
         tab_pivot(stat_position = "inside_rows") 
     
-    expect_equal_to_reference(res, "rds/ctable8.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable8.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_subgroup(vs == 0) %>% 
@@ -185,7 +185,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cases(total_row_position = "none") %>% 
         tab_pivot(stat_position = "inside_rows") 
     
-    expect_equal_to_reference(res, "rds/ctable8.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable8.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_subgroup(vs == 0) %>% 
@@ -198,7 +198,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cases(total_row_position = "none") %>% 
         tab_pivot(stat_position = "inside_rows") 
     
-    expect_equal_to_reference(res, "rds/ctable9.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable9.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(cyl) %>% 
@@ -208,7 +208,7 @@ if(isTRUE(getOption("covr"))) {
         tab_transpose() %>% 
         tab_sort_desc()
     
-    expect_equal_to_reference(res, "rds/ctable10.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable10.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, disp, hp) %>% 
@@ -219,7 +219,7 @@ if(isTRUE(getOption("covr"))) {
         tab_pivot() %>% 
         split_columns()
     
-    expect_equal_to_reference(res, "rds/ctable11.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable11.rds",  update = FALSE)
     
     set.seed(1)
     df = data.frame(area=rep(c('Area 1','Area 2'), each=6),
@@ -235,7 +235,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cpct_responses(total_row_position = "below", total_statistic = "u_responses") %>% 
         tab_pivot()
     
-    expect_equal_to_reference(res, "rds/ctable12.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable12.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(cyl, carb) %>% 
@@ -244,7 +244,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cpct() %>% 
         tab_pivot() 
     
-    expect_equal_to_reference(res, "rds/ctable13.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable13.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cols(total(), am %nest% vs) %>%
@@ -256,7 +256,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cpct() %>% 
         tab_pivot() 
     
-    expect_equal_to_reference(res, "rds/ctable14.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable14.rds",  update = FALSE)
     
     
     
@@ -270,7 +270,7 @@ if(isTRUE(getOption("covr"))) {
     }
     res = res %>% tab_pivot()
     
-    expect_equal_to_reference(res, "rds/ctable15.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable15.rds",  update = FALSE)
     
     
     res = mtcars %>% 
@@ -278,7 +278,7 @@ if(isTRUE(getOption("covr"))) {
         tab_cols(total(), am %nest% vs) %>%
         tab_stat_fun(w_mean, w_sd, w_n, method = list) %>% 
         tab_pivot()
-    expect_equal_to_reference(res, "rds/ctable16.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable16.rds",  update = FALSE)
     
     res = mtcars %>%
         tab_cells(cyl) %>%
@@ -287,7 +287,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_rpct(total_row_position = "none", label = "row %") %>%
         tab_stat_tpct(total_row_position = "none", label = "table %") %>%
         tab_pivot(stat_position = "inside_columns")
-    expect_equal_to_reference(res, "rds/ctable17.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable17.rds",  update = FALSE)
     
     res = mtcars %>%
         tab_cells(cyl) %>%
@@ -297,7 +297,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_rpct(label = "row %") %>%
         tab_stat_tpct(label = "table %") %>%
         tab_pivot(stat_position = "inside_columns")
-    expect_equal_to_reference(res, "rds/ctable17.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable17.rds",  update = FALSE)
     
     res = mtcars %>%
         tab_cells(cyl) %>%
@@ -307,7 +307,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_rpct(total_row_position = "none", label = "row %") %>%
         tab_stat_tpct(total_row_position = "none", label = "table %") %>%
         tab_pivot(stat_position = "inside_rows")
-    expect_equal_to_reference(res, "rds/ctable18.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable18.rds",  update = FALSE)
     
     context("custom tables summary stats")
     
@@ -334,7 +334,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "inside_columns")
     
-    expect_equal_to_reference(res, "rds/ctable19.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable19.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_weight(wt) %>% 
@@ -351,7 +351,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "inside_columns")
     
-    expect_equal_to_reference(res, "rds/ctable19.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable19.rds",  update = FALSE)
     
     
     
@@ -369,7 +369,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "inside_columns")
     
-    expect_equal_to_reference(res, "rds/ctable20.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable20.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, qsec, hp, disp) %>% 
@@ -386,7 +386,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "inside_columns")
     
-    expect_equal_to_reference(res, "rds/ctable20.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable20.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_subgroup(!is.na(wt) & wt>0) %>% 
@@ -403,7 +403,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "inside_columns")
     
-    expect_equal_to_reference(res, "rds/ctable20.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable20.rds",  update = FALSE)
     
     res1 = sheet(a = c(1, 2, 3, 4, 5), b = c(5, 5, 1, 2, NA)) %>% 
         tab_cells(a, b) %>% 
@@ -539,7 +539,7 @@ if(isTRUE(getOption("covr"))) {
             )) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable20_1.rds",  update = FALSE
     )
@@ -551,7 +551,7 @@ if(isTRUE(getOption("covr"))) {
                                                     "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct")
     )
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable20_1.rds",  update = FALSE
     )
@@ -563,7 +563,7 @@ if(isTRUE(getOption("covr"))) {
     )
     
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable20_1a.rds",  update = FALSE
     )
@@ -578,7 +578,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cases() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable20_1.rds",  update = FALSE
     )
@@ -594,7 +594,7 @@ if(isTRUE(getOption("covr"))) {
             )) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable21.rds",  update = FALSE
     )
@@ -610,7 +610,7 @@ if(isTRUE(getOption("covr"))) {
             )) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable22.rds",  update = FALSE
     )
@@ -625,7 +625,7 @@ if(isTRUE(getOption("covr"))) {
             )) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable23.rds",  update = FALSE
     )
@@ -641,7 +641,7 @@ if(isTRUE(getOption("covr"))) {
             )) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable24.rds",  update = FALSE
     )
@@ -656,7 +656,7 @@ if(isTRUE(getOption("covr"))) {
             )) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable25.rds",  update = FALSE
     )
@@ -678,7 +678,7 @@ if(isTRUE(getOption("covr"))) {
         tab_sort_asc() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable25_sorting.rds",  update = FALSE
     )
@@ -696,7 +696,7 @@ if(isTRUE(getOption("covr"))) {
         tab_sort_asc() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable25_sorting.rds",  update = FALSE
     )
@@ -715,7 +715,7 @@ if(isTRUE(getOption("covr"))) {
         tab_sort_asc() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable25_different_total.rds",  update = FALSE
     )
@@ -734,7 +734,7 @@ if(isTRUE(getOption("covr"))) {
         tab_sort_asc() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable25_different_total2.rds",  update = FALSE
     )
@@ -756,7 +756,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun(my_fun = w_mean, w_median) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable26.rds",  update = FALSE
     )
@@ -768,7 +768,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun_df(w_cor) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable27.rds",  update = FALSE
     )
@@ -779,7 +779,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun_df(w_cor) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable28.rds",  update = FALSE
     )
@@ -790,7 +790,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cases() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable29.rds",  update = FALSE
     )
@@ -802,7 +802,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_fun_df(sum = colSums, mean = colMeans, method = list) %>% 
         tab_pivot()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable30.rds",  update = FALSE
     )
@@ -821,7 +821,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "inside_columns", stat_label = "outside")
     
-    expect_equal_to_reference(res, "rds/ctable31.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable31.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, qsec, hp, disp) %>% 
@@ -837,7 +837,33 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "inside_rows", stat_label = "outside")
     
-    expect_equal_to_reference(res, "rds/ctable32.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable32.rds",  update = FALSE)
+    
+    mtcars32a = apply_labels(mtcars,
+                          mpg = "Miles/(US) gallon",
+                          cyl = "Number of cylinders",
+                          disp = "Displacement (cu.in.)",
+                          hp = "Gross horsepower",
+                          drat = "Rear axle ratio",
+                          wt = "Weight (lb/1000)",
+                          qsec = "1/4 mile time",
+                          vs = "Engine",
+                          vs = c("V-engine" = 0,
+                                 "Straight engine" = 1),
+                          am = "Transmission",
+                          am = c("Automatic" = 0,
+                                 "Manual"=1),
+                          gear = "Number of forward gears",
+                          carb = "Number of carburetors"
+    )    
+    res = mtcars32a %>%  
+        tab_cells(am %to% carb) %>%  
+        tab_cols(total(), vs) %>% 
+        tab_stat_cpct() %>% 
+        tab_stat_mean() %>% 
+        tab_pivot(stat_position = "inside_rows")   
+    
+    expect_known_value(res, "rds/ctable32a.rds",  update = FALSE) 
     
     res = mtcars %>% 
         tab_cells(mpg, qsec, hp, disp) %>% 
@@ -853,7 +879,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "outside_rows", stat_label = "outside")
     
-    expect_equal_to_reference(res, "rds/ctable33.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable33.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, qsec, hp, disp) %>% 
@@ -870,7 +896,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "outside_columns", stat_label = "outside")
     
-    expect_equal_to_reference(res, "rds/ctable34.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable34.rds",  update = FALSE)
     
     mtcars2 = mtcars
     mtcars2$am = unvr(mtcars2$am)
@@ -889,7 +915,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_max() %>% 
         tab_pivot(stat_position = "outside_columns", stat_label = "outside")
     
-    expect_equal_to_reference(res, "rds/ctable35.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable35.rds",  update = FALSE)
     
     mtcars2$vs = unvr(mtcars2$vs)
     res = mtcars2 %>% 
@@ -898,7 +924,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cpct() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(res, "rds/ctable36.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable36.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_cells(mpg, qsec, hp, disp) %>% 
@@ -965,7 +991,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_mean() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(res, "rds/ctable37.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable37.rds",  update = FALSE)
     
     res = mtcars %>% 
         tab_total_row_position("above") %>% 
@@ -1097,7 +1123,7 @@ if(isTRUE(getOption("covr"))) {
         tab_row_label("### the end ###") %>% 
         tab_pivot() 
     
-    expect_equal_to_reference(res, "rds/ctable38.rds",  update = FALSE)
+    expect_known_value(res, "rds/ctable38.rds",  update = FALSE)
     
     
     
@@ -1125,7 +1151,7 @@ if(isTRUE(getOption("covr"))) {
         tab_pivot() %>% 
         make_subheadings()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable40.rds",  update = FALSE
     )
@@ -1146,7 +1172,7 @@ if(isTRUE(getOption("covr"))) {
         tab_pivot() %>% 
         make_subheadings()
     
-    expect_equal_to_reference(
+    expect_known_value(
         res,
         "rds/ctable41.rds",  update = FALSE
     )
