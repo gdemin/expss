@@ -562,7 +562,7 @@ fun_if_helper = function(criterion,..., data){
         NROW(cond)==NROW(data),
         NCOL(cond)==1 || NCOL(cond)==NCOL(data)
     )
-    data[cond] = NA
+    data[!cond] = NA
     data
 
 }
@@ -573,13 +573,48 @@ build_condition_matrix = function(criterion, ..., result = TRUE){
         list(...), 
         flat_df = FALSE
     )
-    if(is.numeric(result)){
-        neg_result = 1 - result
-    } else {
-        neg_result = !result
-    }
-    cond = recode(cond, criterion ~ result, TRUE ~ neg_result) 
+
+    if(!inherits(criterion, "criterion")) criterion = as.criterion(criterion)
+    cond = apply_criterion(cond, criterion)
     cond = do.call(cbind, cond)
     if(!is.matrix(cond)) cond = as.matrix(cond)
+    if(is.numeric(result)){
+        return(1*cond)
+    } 
     cond
+}
+
+# optimization after profiling
+apply_criterion = function(obj, crit){
+    UseMethod("apply_criterion")    
+}
+
+#' @export
+apply_criterion.list = function(obj, crit){
+    lapply(obj, apply_criterion, crit)   
+}
+
+#' @export
+apply_criterion.data.frame = function(obj, crit){
+    obj[] = lapply(obj, apply_criterion, crit)   
+    obj
+}
+
+#' @export
+apply_criterion.data.frame = function(obj, crit){
+    obj[] = lapply(obj, apply_criterion, crit)   
+    obj
+}
+
+#' @export
+apply_criterion.default = function(obj, crit){
+    crit(obj)
+}
+
+#' @export
+apply_criterion.matrix = function(obj, crit){
+    res = crit(obj)
+    res = matrix(res, nrow = nrow(obj), ncol = ncol(obj))
+    dimnames(res) = dimnames(obj)
+    res
 }
