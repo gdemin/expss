@@ -229,8 +229,7 @@ thru = function(lower, upper){
 from = function(x){
     x
     as.criterion(function(y){
-        first = match_col(x, y)[1]
-        stopif(is.na(first), "'",x, "' not found." )
+        first = match_col(x, y)
         positions = seq_along(y)
         positions>=first
         
@@ -243,8 +242,7 @@ from = function(x){
 to = function(x){
     x
     as.criterion(function(y){
-        last = match_col(x, y)[1]
-        stopif(is.na(last), "'",x, "' not found." )
+        last = match_col(x, y)
         positions = seq_along(y)
         positions<=last
         
@@ -254,7 +252,7 @@ to = function(x){
 #' @export
 #' @rdname criteria
 items = function(...){
-    args = c(list(...), recursive = TRUE)
+    args = c(list(...), recursive = TRUE, use.names = FALSE)
     as.criterion(function(x){
         numbers = seq_along(x)    
         numbers %in% args
@@ -273,7 +271,7 @@ not_na = function(x){
     }    
 }
 
-class(not_na) = union("criterion",class(not_na))
+class(not_na) = union("criterion", class(not_na))
 
 #' @export
 #' @rdname criteria
@@ -286,7 +284,7 @@ other = function(x){
 }
 
 
-class(other) = union("criterion",class(other))
+class(other) = union("criterion", class(other))
 
 build_compare = function(x, compare){
     UseMethod("build_compare")
@@ -302,6 +300,7 @@ build_compare.default = function(x, compare){
     })
 }
 
+# to catch only numeric values
 build_compare.numeric = function(x, compare){
     force(x)
     force(compare)
