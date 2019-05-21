@@ -185,27 +185,38 @@ if_val = recode
 #' @export
 recode.default = function(x, ...){
     stopif(!length(list(...)), "'recode': recoding formula should be provided.")
-    recoding_list = lapply(unlist(list(...)), parse_formula)
-    process_recodings(x, recoding_list, make_empty_vec(x))
+    process_recodings(x, unlist(list(...), recursive = TRUE), make_empty_vec(x))
     
 }
 
 
-process_recodings = function(x, recoding_list, res){
+process_recodings = function(x, recoding_formulas, res){
+    recoding_list = lapply(recoding_formulas, parse_formula)
     recoded = logical(length(x))
-    for (each_recoding in recoding_list){
+    labels = names(recoding_list)
+    value_labels = c()
+    for (i in seq_along(recoding_list)){
+        each_recoding = recoding_list[[i]]
+        target = each_recoding[["to"]]
+        if (length(target)>1 && length(target)!=length(res) ){
+            stop("'recode' - length of 'RHS' should be
+               1 or equals to length of 'x' but we have: ", expr_to_character(recoding_formulas[[i]]))
+        } 
+        curr_label = labels[[i]]
+        if(length(curr_label)>0 && !is.na(curr_label) && curr_label!=""){
+            if(is.function(target) || length(target)!=1 || is.logical(target) || is.na(target)){
+                stop("'recode' - labelled recodings should recode into single not-NA value but we have: ", 
+                     expr_to_character(recoding_formulas[[i]]))
+            }
+            value_labels[curr_label] = target 
+        }
         if (all(recoded)) break # if all values were recoded
         crit = each_recoding[["from"]]
         if(!inherits(crit, "criterion")) crit = as.criterion(crit)
         cond = crit(x)
         cond = cond & !recoded # we don't recode already recoded value
         if(!any(cond)) next
-        target = each_recoding[["to"]]
-        if (length(target)>1 && length(target)!=length(res)){
-            stop("'recode': length of 'RHS' should be
-               1 or equals to length of 'x' but length(RHS) = ",length(target),", length(x) = ", length(res))
-        } 
-        
+
         if(is.function(target)){
             # target: function
             res  = modify_vec(res, cond, target(x[cond]))
@@ -218,6 +229,9 @@ process_recodings = function(x, recoding_list, res){
             }
         }
         recoded = recoded | cond # we don't recode already recoded value
+    }
+    if(length(value_labels)>0){
+        add_val_lab(res) = value_labels
     }
     res
 }
@@ -290,10 +304,9 @@ recode.matrix = function(x, ...){
 
 #' @export
 "recode<-.default" = function(x, value){
-    value = unlist(value) # for case when we have nested lists in 'value'
+    value = unlist(value, recursive = TRUE) # for case when we have nested lists in 'value'
     if(!is.list(value)) value = list(value) # for case when 'value' is single formula
-    recoding_list = lapply(value, parse_formula)
-    process_recodings(x, recoding_list, x)
+    process_recodings(x, value, x)
 }
 
 #' @export
