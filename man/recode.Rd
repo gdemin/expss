@@ -15,15 +15,19 @@
 \title{Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
 \usage{
-recode(x, ...)
+recode(x, ..., with_labels = FALSE, new_label = c("all", "range",
+  "first", "last"))
 
 from_to(from, to)
 
-if_val(x, ...)
+if_val(x, ..., with_labels = FALSE, new_label = c("all", "range",
+  "first", "last"))
 
-recode(x) <- value
+recode(x, with_labels = FALSE, new_label = c("all", "range", "first",
+  "last")) <- value
 
-if_val(x) <- value
+if_val(x, with_labels = FALSE, new_label = c("all", "range", "first",
+  "last")) <- value
 
 ifs(...)
 

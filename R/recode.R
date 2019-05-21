@@ -154,7 +154,7 @@
 #' ifs(b>3 ~ a, TRUE ~ 42)            # c(1, 2, 42, 42, 42)
 #' 
 #' @export
-recode = function(x, ...){
+recode = function(x, ..., with_labels = FALSE, new_label = c("all", "range", "first", "last")){
     UseMethod("recode")    
 }
 
@@ -183,14 +183,17 @@ if_val = recode
 
 
 #' @export
-recode.default = function(x, ...){
+recode.default = function(x, ..., with_labels = FALSE, new_label = c("all", "range", "first", "last")){
     stopif(!length(list(...)), "'recode': recoding formula should be provided.")
-    process_recodings(x, unlist(list(...), recursive = TRUE), make_empty_vec(x))
+    process_recodings(x, unlist(list(...), recursive = TRUE), make_empty_vec(x),
+                      with_labels = with_labels, new_label = new_label)
     
 }
 
 
-process_recodings = function(x, recoding_formulas, res){
+process_recodings = function(x, recoding_formulas, res, 
+                             with_labels, 
+                             new_label = c("all", "range", "first", "last")){
     recoding_list = lapply(recoding_formulas, parse_formula)
     recoded = logical(length(x))
     labels = names(recoding_list)
@@ -230,10 +233,54 @@ process_recodings = function(x, recoding_formulas, res){
         }
         recoded = recoded | cond # we don't recode already recoded value
     }
+    if(with_labels){
+        vallab = val_lab(x)
+        if(!is.null(vallab)){
+            vallab = process_recodings(vallab, 
+                                       unname(recoding_formulas), 
+                                       if(is.null(val_lab(res))) make_empty_vec(vallab) else vallab,
+                                       with_labels = FALSE, 
+                                       new_label = new_label)
+            
+            val_lab(res) = fix_new_labels(vallab, new_label = new_label)
+        }
+        var_lab(res) = var_lab(x)
+        
+    }
     if(length(value_labels)>0){
         add_val_lab(res) = value_labels
     }
     res
+}
+
+fix_new_labels = function(vallab, new_label = c("all", "range", "first", "last")){
+    vallab = vallab[!is.na(vallab)]
+    if(!anyDuplicated(vallab)) return(vallab)
+    vallab = sort(vallab)
+    labels = split(names(vallab), vallab)
+    if(is.function(new_label)){
+        labels = 
+            vapply(labels, function(items){
+                if(length(items)==1) return(items)
+                as.character(new_label(items))
+            }, FUN.VALUE = character(1))
+    } else {
+        new_label = match.arg(new_label[[1]], c("all", "range", "first", "last"))
+        labels = unlist(
+            lapply(labels, function(items){
+                if(length(items)==1) return(items)
+                switch(new_label,
+                       all = paste(items, collapse = "/"),
+                       range = paste0(items[1], " - ", items[length(items)]),
+                       first = first(items),
+                       last = last(items)
+                )
+            })
+        )
+    }
+    vallab = unique(vallab)
+    names(vallab) = labels
+    vallab
 }
 
 modify_vec = function(x, condition, value){
@@ -270,21 +317,24 @@ modify_vec = function(x, condition, value){
   
 
 #' @export
-recode.list = function(x, ...){
-    lapply(x, recode, ...)
+recode.list = function(x, ..., with_labels = FALSE, new_label = c("all", "range", "first", "last")){
+    lapply(x, recode, ..., with_labels = with_labels, new_label = new_label)
 }
 
 #' @export
-recode.data.frame = function(x, ...){
+recode.data.frame = function(x, ..., with_labels = FALSE, new_label = c("all", "range", "first", "last")){
     for(i in seq_along(x)){
-        x[[i]] = recode(x[[i]], ...)
+        x[[i]] = recode(x[[i]], ..., with_labels = with_labels, new_label = new_label)
     }
     x
 }
 
 #' @export
-recode.matrix = function(x, ...){
-    res = recode(c(x, use.names = FALSE), ...)
+recode.matrix = function(x, ..., with_labels = FALSE, new_label = c("all", "range", "first", "last")){
+    if(isTRUE(with_labels) || !is.null(names(list(...)))){
+        warning("'recode' - trying to recode matrix with labels. Matrix can not have labels. All operations with labels will be ignored.")  
+    } 
+    res = recode(c(x, use.names = FALSE), ..., with_labels = FALSE, new_label = new_label)
     res = matrix(res, nrow = nrow(x), ncol = ncol(x))
     dimnames(res) = dimnames(x)
     res
@@ -294,7 +344,7 @@ recode.matrix = function(x, ...){
 
 #' @export
 #' @rdname recode
-"recode<-" = function(x, value){
+"recode<-" = function(x, with_labels = FALSE, new_label = c("all", "range", "first", "last"), value){
     UseMethod("recode<-")
 }
 
@@ -303,29 +353,39 @@ recode.matrix = function(x, ...){
 "if_val<-" = `recode<-`
 
 #' @export
-"recode<-.default" = function(x, value){
+"recode<-.default" = function(x, with_labels = FALSE, new_label = c("all", "range", "first", "last"), value){
     value = unlist(value, recursive = TRUE) # for case when we have nested lists in 'value'
     if(!is.list(value)) value = list(value) # for case when 'value' is single formula
-    process_recodings(x, value, x)
+    process_recodings(x, value, x, with_labels = with_labels, new_label = new_label)
 }
 
 #' @export
-"recode<-.list" = function(x, value){
+"recode<-.list" = function(x, with_labels = FALSE, new_label = c("all", "range", "first", "last"), value){
     for(each in seq_along(x)){
-        recode(x[[each]]) = value
+        recode(x[[each]], with_labels = with_labels, new_label = new_label) = value
     }
     x
 }
 
 #' @export
-"recode<-.data.frame" = function(x, value){
+"recode<-.data.frame" = function(x, with_labels = FALSE, new_label = c("all", "range", "first", "last"), value){
     for(each in seq_along(x)){
-        recode(x[[each]]) = value
+        recode(x[[each]], with_labels = with_labels, new_label = new_label) = value
     }
     x
 }
 
-
+#' @export
+"recode<-.matrix" = function(x, with_labels = FALSE, new_label = c("all", "range", "first", "last"), value){
+    if(isTRUE(with_labels) || !is.null(names(unlist(value, recursive = TRUE)))){
+        warning("'recode' - trying to recode matrix with labels. Matrix can not have labels. All operations with labels will be ignored.")  
+    } 
+    res = c(x, use.names = FALSE)
+    recode(res, with_labels = FALSE, new_label = new_label) = value
+    res = matrix(res, nrow = nrow(x), ncol = ncol(x))
+    dimnames(res) = dimnames(x)
+    res
+}
 
 parse_formula = function(elementary_recoding){
     # strange behavior with parse_formula.formula - it doesn't work with formulas so we use default method and check argument type
