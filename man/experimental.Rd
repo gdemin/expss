@@ -42,8 +42,6 @@
 
 .var_lab(...)
 
-.if_val(x, ...)
-
 .recode(x, ...)
 
 .fre(...)
@@ -108,8 +106,7 @@ SPSS DO IF operator. See \link{modify_if}.}
 \item{\code{.where}}{ Leave subset of default data.frame which meet
 condition. See \link{where}, \link[base]{subset}.}
 \item{\code{.recode}}{ Change, rearrange or consolidate the values of an existing
-variable inside default data.frame. See \link{recode}.}
-\item{\code{.if_val}}{ Shortcut for \code{.recode}. See \link{recode}.} }
+variable inside default data.frame. See \link{recode}.} }
 Other functions:
 \itemize{
 \item{\code{.var_lab}}{ Return variable label from default dataset. See

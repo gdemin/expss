@@ -90,7 +90,7 @@ function of class 'criterion' which tests its argument against
 }
 \description{
 These functions returns criteria functions which could be used in different 
-situation - see \link{keep}, \link{except}, \link{recode}, \link{na_if},
+situation - see \link{recode}, \link{na_if},
 \link{\%i\%}, \link{\%d\%}, \link{count_if}, \link{match_row} etc. For
 example, \code{gt(5)} returns function which tests whether its argument
 greater than five.
@@ -119,7 +119,7 @@ vector after the first occurrence of \code{x} and for \code{x}. \code{from} and
 \code{to} are intended for usage with \link{keep} and \link{except}.}
 \item{\code{not_na}}{ return TRUE for all non-NA elements of vector.} 
 \item{\code{other}}{ return TRUE for all elements of vector. It is intended
-for usage with \code{if_val}, \code{keep}, \code{except}}
+for usage with \code{recode}.}
 \item{\code{items}}{ return TRUE for elements of vector with given
 sequential number. It is intended for usage with \code{keep}, \code{except}}
 }
@@ -176,10 +176,9 @@ iris \%>\% except(from("Petal.Length"))
 # except first column
 iris \%n_d\% items(1)
 
-# if_val examples
+# 'recode' examples
 # From SPSS: RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
-set.seed(123)
-qvar = sample((-5):20, 50, replace = TRUE)
+qvar = c(1:20, 97, NA, NA)
 recode(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, other ~ 0)
 # the same result
 recode(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, ge(11) ~ 3, other ~ 0)

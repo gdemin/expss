@@ -178,7 +178,7 @@ split_columns.data.frame  = function(data,
             setNames(data[, -seq_len(each_column), drop = FALSE], part2_names)
         )
     }
-    if_val(colnames(data)) = perl("^\\.\\.new_columns__\\d+_\\d+$") ~ ""
+    recode(colnames(data)) = perl("^\\.\\.new_columns__\\d+_\\d+$") ~ ""
     if(NCOL(data)>0 && !(first_column_name %in% c(NA, "row_labels"))){
         colnames(data)[1] = first_column_name
     }
@@ -290,7 +290,7 @@ make_subheadings.default = function(data, number_of_columns = 1){
            number_of_columns, ".")
     subheading_columns = data[, seq_len(number_of_columns), drop = FALSE]
     data[, seq_len(number_of_columns)] = NULL
-    if_val(subheading_columns) = c(NA ~ "", perl("^\\s*$") ~ "")
+    recode(subheading_columns) = c(NA ~ "", perl("^\\s*$") ~ "")
     last_nonempty_cell = ""
     for(col in rev(seq_len(NCOL(subheading_columns)))[-1]){
         for(row in seq_len(NROW(subheading_columns))){
@@ -344,7 +344,7 @@ make_subheadings.etable = function(data, number_of_columns = 1){
     res = make_subheadings(res, number_of_columns = number_of_columns)
     if(row_labels_width > number_of_columns){
         row_labels = res[, seq_len(row_labels_width - number_of_columns), drop = FALSE] # columns with row labels
-        if_val(row_labels) = NA ~ ""
+        recode(row_labels) = NA ~ ""
         last_nonempty_cell = ""
         for(col in rev(seq_len(NCOL(row_labels)))[-1]){
             for(row in seq_len(NROW(row_labels))){

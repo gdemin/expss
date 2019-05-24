@@ -17,7 +17,7 @@
 #'   
 #' @return x with NA's instead of \code{value}
 #' 
-#' @seealso For reverse operation see \link{if_na}, \link{if_val} for more
+#' @seealso For reverse operation see \link{if_na}, \link{recode} for more
 #'   general recodings.
 #'   
 #' @examples

@@ -118,7 +118,7 @@ be assigned to right-hand side. You can use \code{\%to\%} expression in the
 RHS of \code{\%into\%}. See examples. 
 \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\%
-hi}. \code{if_val} is an alias for \code{recode}.
+hi}.
 }
 \examples{
 # some examples from SPSS manual

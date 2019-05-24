@@ -63,7 +63,7 @@ mdset = function(..., label = NULL){
     } else {
         res = sheet(...)
     }
-    if_val(res) = c(c(NA, 0) ~ 0, other ~ 1)
+    recode(res) = c(c(NA, 0) ~ 0, other ~ 1)
     res = make_labels_from_names(res)
     if(!is.null(label)){
         for(each in seq_along(res)){

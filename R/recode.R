@@ -51,7 +51,7 @@
 #' RHS of \code{\%into\%}. See examples. 
 #' \code{lo} and \code{hi} are shortcuts for \code{-Inf} and \code{Inf}. They
 #' can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\%
-#' hi}. \code{if_val} is an alias for \code{recode}.
+#' hi}.
 #' 
 #' @param x vector/matrix/data.frame/list
 #' @param ... sequence of formulas which describe recodings. They are used when

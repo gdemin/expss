@@ -72,6 +72,6 @@ na_if(a, lt(-1) | gt(1))
 na_if(a, -1 \%thru\% 1)
 }
 \seealso{
-For reverse operation see \link{if_na}, \link{if_val} for more
+For reverse operation see \link{if_na}, \link{recode} for more
   general recodings.
 }
