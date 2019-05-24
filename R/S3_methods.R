@@ -75,6 +75,37 @@ rep.labelled = function (x, ...){
     y
 }
 
+#' @export
+levels.labelled = function(x){
+  if(is.factor(x)){
+    return(levels(unlab(x)))
+  }
+  names(val_lab(x))
+}
+
+#' @export
+relevel.labelled = function(x, ref, ...){
+  if(is.factor(x)){
+    res = relevel(unlab(x), ref, ...)
+  } else {
+    res = relevel(factor(x), ref, ...)
+  }
+  var_lab(res) = var_lab(x)
+  return(res)
+}
+
+#' @export
+`levels<-.labelled` = function(x, value){
+  if(is.factor(x)){
+    res = unlab(x)
+    levels(res) = value
+    var_lab(res) = var_lab(x)
+    return(res)
+  }
+  names(val_lab(x)) = value
+  x
+}
+
 # var_attr = function(x){
 #     list(label = var_lab(x), labels = val_lab(x))
 # }
