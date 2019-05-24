@@ -75,54 +75,39 @@ rep.labelled = function (x, ...){
     y
 }
 
-#' @export
-levels.labelled = function(x){
-  if(is.factor(x)){
-    return(levels(unlab(x)))
-  }
-  names(val_lab(x))
-}
-
-#' @export
-relevel.labelled = function(x, ref, ...){
-  if(is.factor(x)){
-    res = relevel(unlab(x), ref, ...)
-  } else {
-    res = relevel(factor(x), ref, ...)
-  }
-  var_lab(res) = var_lab(x)
-  return(res)
-}
-
-#' @export
-`levels<-.labelled` = function(x, value){
-  if(is.factor(x)){
-    res = unlab(x)
-    levels(res) = value
-    var_lab(res) = var_lab(x)
-    return(res)
-  }
-  names(val_lab(x)) = value
-  x
-}
-
-# var_attr = function(x){
-#     list(label = var_lab(x), labels = val_lab(x))
+# # @export
+# levels.labelled = function(x){
+#   if(is.factor(x)){
+#     return(levels(unlab(x)))
+#   }
+#   names(val_lab(x))
 # }
 # 
-# set_var_attr = function(x, value){
-#     #####
-#     # we bypass interfaces set_val_lab, set_var_lab to 
-#     # skip perfomance unfriendly sorting of labels
-#     attr(x, "label") = value[["label"]]
-#     attr(x, "labels") = value[["labels"]]
-#     if(length(value[["label"]])==0 && length(value[["labels"]])==0){
-#         class(x) = setdiff(class(x), c("labelled", "labelled_spss"))
-#     } else {
-#         class(x) = union("labelled", class(x))
-#     }
-#     x
+# # @export
+# relevel.labelled = function(x, ref, ...){
+#   if(is.factor(x)){
+#     res = relevel(unlab(x), ref, ...)
+#   } else {
+#     # nmax = 1 for future usage, see unique.labelled
+#     res = relevel(factor(x, nmax = 1), ref, ...)
+#   }
+#   var_lab(res) = var_lab(x)
+#   res
 # }
+# 
+# # @export
+# `levels<-.labelled` = function(x, value){
+#   if(is.factor(x)){
+#     res = unlab(x)
+#     levels(res) = value
+#     var_lab(res) = var_lab(x)
+#     return(res)
+#   }
+#   names(val_lab(x)) = value
+#   x
+# }
+
+
 
 restore_attributes = function(new_var, old_var){
     # "measurement", "spss_measure", "spss.measure", "measure",
