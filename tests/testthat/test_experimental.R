@@ -13,8 +13,8 @@ data(iris)
 default_iris = iris
 default_dataset(default_iris)
 
-.if_val(Species, from_to("setosa", "versicolor"))
-.recode(Species, from_to("virginica", "versicolor"))
+.if_val(Species, from_to("setosa", factor("versicolor")))
+.recode(Species, from_to("virginica", factor("versicolor")))
 iris$Species[iris$Species == "setosa"] = "versicolor"
 iris$Species[iris$Species == "virginica"] = "versicolor"
 expect_identical(default_iris, iris)

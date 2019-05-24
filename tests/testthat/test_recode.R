@@ -375,7 +375,7 @@ if(isTRUE(getOption("covr"))) {
     
     a = factor(letters[1:4])
     
-    res = factor(c("a", "z", "c", "d"), levels = c("z", "a", "c", "d"))
+    res = factor(c("a", "z", "c", "d"), levels = c("a", "b", "c", "d", "z"))
     b = recode(a, "b" ~ "z", other ~ copy)
     expect_identical(b, res)
     
@@ -383,14 +383,20 @@ if(isTRUE(getOption("covr"))) {
     b = recode(a, "a" ~ factor("z"))
     res2 = res
     res2[2:4] = NA
-    expect_identical(b, factor(res2)) 
+    expect_identical(b, res2) 
     
-    recode(a) = "a" ~ "z"
+    
+    b = recode(a, "a" ~ factor("z"), TRUE ~ copy)
+    expect_identical(b, res) 
+    
+    
+    a = factor(letters[1:4])
+    recode(a) = "a" ~ factor("z")
     expect_identical(a, res)
     
     a = factor(letters[1:4])
     var_lab(a) = "factor"
-    recode(a) = "a" ~ "z"
+    recode(a) = "a" ~ factor("z")
     var_lab(res) = "factor"
     expect_identical(a, res)
     
@@ -445,27 +451,6 @@ if(isTRUE(getOption("covr"))) {
     recode(letters2) = c(other ~ toupper)
     expect_identical(letters2, LETTERS)
     
-    
-    context("recode list")
-    
-    mk_emtpy_obj = expss:::make_empty_object
-    data(iris)
-    a = 1:4
-    b = 4:1
-    ab = list(a,b, iris)
-    names(ab) = c("a", "b", "c")
-    empty_iris = iris
-    
-    empty_iris[[1]] = NA
-    empty_iris[[2]] = NA
-    empty_iris[[3]] = NA
-    empty_iris[[4]] = NA
-    empty_iris[[5]] = NA
-    rownames(empty_iris) = as.character(1:150)
-    res = list(rep(NA, 4), rep(NA, 4), empty_iris)
-    names(res) = c("a", "b", "c")
-    
-    expect_identical(mk_emtpy_obj(ab), res)
     
     
     context("%into%")
@@ -702,5 +687,12 @@ if(isTRUE(getOption("covr"))) {
     # 
     # recode(df[,-1], "" ~ 0, other ~ 1)
     # recode(new_df[,-1]) = c("" ~ 0, other ~ 1)
+    data(iris) 
+    iris_2 = iris
+    res_iris = iris
+    # res_iris$Species = as.character(res_iris$Species)
+    res_iris[, 1:4] = scale(res_iris[, 1:4])
+    recode(iris_2) = c(is.numeric ~ scale, is.factor ~ as.character)
+    expect_equal(iris_2, res_iris)
     
 }

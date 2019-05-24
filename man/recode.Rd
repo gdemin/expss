@@ -3,14 +3,16 @@
 \docType{data}
 \name{recode}
 \alias{recode}
-\alias{from_to}
+\alias{rec}
 \alias{if_val}
 \alias{recode<-}
 \alias{if_val<-}
+\alias{rec<-}
 \alias{ifs}
 \alias{lo}
 \alias{hi}
 \alias{copy}
+\alias{from_to}
 \alias{\%into\%}
 \title{Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
@@ -18,15 +20,13 @@
 recode(x, ..., with_labels = FALSE, new_label = c("all", "range",
   "first", "last"))
 
-from_to(from, to)
-
-if_val(x, ..., with_labels = FALSE, new_label = c("all", "range",
-  "first", "last"))
+rec(x, ..., with_labels = TRUE, new_label = c("all", "range", "first",
+  "last"))
 
 recode(x, with_labels = FALSE, new_label = c("all", "range", "first",
   "last")) <- value
 
-if_val(x, with_labels = FALSE, new_label = c("all", "range", "first",
+rec(x, with_labels = TRUE, new_label = c("all", "range", "first",
   "last")) <- value
 
 ifs(...)
@@ -37,6 +37,8 @@ hi
 
 copy(x)
 
+from_to(from, to)
+
 values \%into\% names
 }
 \arguments{
@@ -45,14 +47,14 @@ values \%into\% names
 \item{...}{sequence of formulas which describe recodings. They are used when
 \code{from}/\code{to} arguments are not provided.}
 
+\item{value}{list with formulas which describe recodings in assignment form
+of function/\code{to} list if \code{from}/\code{to} notation is used.}
+
 \item{from}{list of conditions for values which should be recoded (in the
 same format as LHS of formulas).}
 
 \item{to}{list of values into which old values should be recoded (in the same
 format as RHS of formulas).}
-
-\item{value}{list with formulas which describe recodings in assignment form
-of function/\code{to} list if \code{from}/\code{to} notation is used.}
 
 \item{values}{object(-s) which will be assigned to \code{names} for 
 \code{\%into\%} operation. \code{\%into\%} supports multivalue assignments.
@@ -121,33 +123,79 @@ hi}. \code{if_val} is an alias for \code{recode}.
 \examples{
 # some examples from SPSS manual
 # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
-set.seed(123)
-v1  = sample(c(0:3, 9, 10), 20, replace = TRUE)
-recode(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, other ~ NA)
+v1  = c(0, 1, 2, 3, 9, 10)
+recode(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, TRUE ~ NA)
 v1
 
 # RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
-set.seed(123)
-qvar = sample((-5):20, 50, replace = TRUE)
-recode(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, other ~ 0)
+qvar = c(1:20, 97, NA, NA)
+recode(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, 11 \%thru\% hi ~ 3, TRUE ~ 0)
 # the same result
-recode(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, ge(11) ~ 3, other ~ 0)
+recode(qvar, 1 \%thru\% 5 ~ 1, 6 \%thru\% 10 ~ 2, ge(11) ~ 3, TRUE ~ 0)
 
 # RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). 
 strngvar = LETTERS
-recode(strngvar, c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', other ~ ' ')
+recode(strngvar, c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', TRUE ~ ' ')
+
+# recode in place. Note that we recode only first six letters
+recode(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B')
+strngvar
 
 # RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. 
-set.seed(123)
-age = sample(c(sample(5:30, 40, replace = TRUE), rep(9, 10)))
+age = c(NA, 2:40, NA)
 voter = recode(age, NA ~ 9, 18 \%thru\% hi ~ 1, 0 \%thru\% 18 ~ 0)
 voter
 # the same result with '\%into\%'
 recode(age, NA ~ 9, 18 \%thru\% hi ~ 1, 0 \%thru\% 18 ~ 0) \%into\% voter2
 voter2
+# recode with adding labels
+voter = recode(age, "Refuse to answer" = NA ~ 9, 
+                    "Vote" = 18 \%thru\% hi ~ 1, 
+                    "Don't vote" = 0 \%thru\% 18 ~ 0)
+voter
 
-# multiple assignment with '\%into\%'
-#' set.seed(123)
+# recoding with labels
+ol = c(1:7, 99)
+var_lab(ol) = "Liking"
+val_lab(ol)  = num_lab("
+                     1 Disgusting
+                     2 Very Poor
+                     3 Poor
+                     4 So-so
+                     5 Good
+                     6 Very good
+                     7 Excellent
+                     99 Hard to say
+                     ")
+
+recode(ol, 1:3 ~ 1, 5:7 ~ 7, TRUE ~ copy, with_labels = TRUE)
+# 'rec' is a shortcut for recoding with labels. Same result: 
+rec(ol, 1:3 ~ 1, 5:7 ~ 7, TRUE ~ copy)
+# another method of combining labels
+recode(ol, 1:3 ~ 1, 5:7 ~ 7, TRUE ~ copy, with_labels = TRUE, new_label = "range")
+# example with from/to notation
+# RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
+list_from = list(1 \%thru\% 5, 6 \%thru\% 10, ge(11), TRUE)
+list_to = list(1, 2, 3, 0)
+recode(qvar, from_to(list_from, list_to))
+
+
+list_from = list(NA, 18 \%thru\% hi, 0 \%thru\% 18)
+list_to = list("Refuse to answer" = 9, "Vote" = 1, "Don't vote" = 0)
+voter = recode(age, from_to(list_from, list_to))
+voter
+
+# 'ifs' examples
+a = 1:5
+b = 5:1
+ifs(b>3 ~ 1)                       # c(1, 1, NA, NA, NA)
+ifs(b>3 ~ 1, TRUE ~ 3)             # c(1, 1, 3, 3, 3)
+ifs(b>3 ~ 1, a>4 ~ 7, TRUE ~ 3)    # c(1, 1, 3, 3, 7)
+ifs(b>3 ~ a, TRUE ~ 42)            # c(1, 2, 42, 42, 42)
+
+# advanced usage
+#' # multiple assignment with '\%into\%'
+set.seed(123)
 x1 = runif(30)
 x2 = runif(30)
 x3 = runif(30)
@@ -159,7 +207,15 @@ i = 1:3
 recode(x1 \%to\% x3, gt(0.5) ~ 1, other ~ 0) \%into\% text_expand('x_rec2_{i}')
 fre(x_rec2_1)
 
+# factor recoding
+a = factor(letters[1:4])
+recode(a, "a" ~ "z", TRUE ~ copy) # we get factor
+
 # example with function in RHS
+data(iris)
+new_iris = recode(iris, is.numeric ~ scale, other ~ copy)
+str(new_iris)
+
 set.seed(123)
 a = rnorm(20)
 # if a<(-0.5) we change it to absolute value of a (abs function)
@@ -167,40 +223,5 @@ recode(a, lt(-0.5) ~ abs, other ~ copy)
 
 # the same example with logical criteria
 recode(a, a<(-.5) ~ abs, other ~ copy) 
-
-# some of the above examples with from/to notation
-
-set.seed(123)
-v1  = sample(c(0:3,9,10), 20, replace = TRUE)
-# RECODE V1 TO V3 (0=1) (1=0) (2,3=-1) (9=9) (ELSE=SYSMIS)
-fr = list(0, 1, 2:3, 9, other)
-to = list(1, 0, -1, 9, NA)
-recode(v1) = from_to(fr, to)
-v1
-
-# RECODE QVAR(1 THRU 5=1)(6 THRU 10=2)(11 THRU HI=3)(ELSE=0).
-fr = list(1 \%thru\% 5, 6 \%thru\% 10, ge(11), other)
-to = list(1, 2, 3, 0)
-recode(qvar, from_to(fr, to))
-
-# RECODE STRNGVAR ('A','B','C'='A')('D','E','F'='B')(ELSE=' ').
-fr = list(c('A','B','C'), c('D','E','F') , other)
-to = list("A", "B", " ")
-recode(strngvar, from_to(fr, to))
-
-# RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER.
-fr = list(NA, 18 \%thru\% hi, 0 \%thru\% 18)
-to = list(9, 1, 0)
-voter = recode(age, from_to(fr, to))
-voter
-
-# `ifs` examples
-a = 1:5
-b = 5:1
-ifs(b>3 ~ 1)                       # c(1, 1, NA, NA, NA)
-ifs(b>3 ~ 1, TRUE ~ 3)             # c(1, 1, 3, 3, 3)
-ifs(b>3 ~ 1, a>4 ~ 7, TRUE ~ 3)    # c(1, 1, 3, 3, 7)
-ifs(b>3 ~ a, TRUE ~ 42)            # c(1, 2, 42, 42, 42)
-
 }
 \keyword{datasets}

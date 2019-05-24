@@ -179,3 +179,6 @@ ct = c(as.POSIXct("2016-09-24"), NA)
 expect_equal(if_na(ct, "2016-09-25"), as.POSIXct(c("2016-09-24", "2016-09-25")))
 
 
+ct = c(as.Date("2016-09-24"), NA)
+expect_equal(if_na(ct, "2016-09-25"), as.Date(c("2016-09-24", "2016-09-25")))
+
