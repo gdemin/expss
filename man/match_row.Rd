@@ -5,6 +5,8 @@
 \alias{match_col}
 \alias{index_row}
 \alias{index_col}
+\alias{value_row_if}
+\alias{value_col_if}
 \title{Match finds value in rows or columns/index returns value by index from rows or columns}
 \usage{
 match_row(criterion, ...)
@@ -14,6 +16,10 @@ match_col(criterion, ...)
 index_row(index, ...)
 
 index_col(index, ...)
+
+value_row_if(criterion, ...)
+
+value_col_if(criterion, ...)
 }
 \arguments{
 \item{criterion}{Vector of values to be matched, or

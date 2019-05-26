@@ -98,3 +98,16 @@ index_col = function(index, ...){
     res
     
 }
+
+
+#' @export
+#' @rdname match_row
+value_row_if = function(criterion, ...){
+    index_row(match_row(criterion, ...), ...)
+}
+
+#' @export
+#' @rdname match_row
+value_col_if = function(criterion, ...){
+    index_col(match_col(criterion, ...), ...)
+}

@@ -100,3 +100,18 @@ expect_equal(ix, c(3,2,1))
 # return values by result of previous 
 expect_equal(index_row(ix, dfs), c(7,3,3))
 
+
+df = sheet(v1 = c(11, 12, 11, 12), v2 = c(12, 11, 12, 11), v3 = NA)
+
+expect_equal(match_row(is_max, df), c(2, 1, 2, 1))
+expect_equal(match_row(is_min, df), c(1, 2, 1, 2))
+
+expect_equal(index_row(match_row(is_max, df), df), c(12, 12, 12, 12))
+expect_equal(index_row(match_row(is_min, df), df), c(11, 11, 11, 11))
+
+expect_equal(value_row_if(is_max, df), c(12, 12, 12, 12))
+expect_equal(value_row_if(is_min, df), c(11, 11, 11, 11))
+
+
+expect_equal(value_col_if(is_max, df), c(v1 = 12, v2 = 12, v3 = NA))
+expect_equal(value_col_if(is_min, df), c(v1 = 11, v2 = 11, v3 = NA))
