@@ -288,16 +288,14 @@ count_col_if=function(criterion,...){
 #' @export
 #' @rdname count_if
 sum_if=function(criterion, ..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     matrixStats::sum2(data, na.rm = TRUE)
 }
 
 #' @export
 #' @rdname count_if
 sum_row_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     matrixStats::rowSums2(data, na.rm=TRUE)
 }
 
@@ -305,8 +303,7 @@ sum_row_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 sum_col_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = matrixStats::colSums2(data, na.rm=TRUE)
     names(res) = colnames(data)
     res
@@ -318,16 +315,14 @@ sum_col_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 mean_if=function(criterion, ..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     matrixStats::mean2(data, na.rm=TRUE)
 }
 
 #' @export
 #' @rdname count_if
 mean_row_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     matrixStats::rowMeans2(data, na.rm=TRUE)
 }
 
@@ -335,8 +330,7 @@ mean_row_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 mean_col_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = matrixStats::colMeans2(data, na.rm=TRUE)
     names(res) = colnames(data)
     res
@@ -348,8 +342,7 @@ mean_col_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 sd_if=function(criterion, ..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     if(!is.numeric(data)) stop("sd_if: argument should be numeric.")
     stats::sd(data, na.rm=TRUE)
 }
@@ -357,8 +350,7 @@ sd_if=function(criterion, ..., data = NULL){
 #' @export
 #' @rdname count_if
 sd_row_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     matrixStats::rowSds(data, na.rm=TRUE)
 }
 
@@ -366,8 +358,7 @@ sd_row_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 sd_col_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = matrixStats::colSds(data, na.rm=TRUE)
     names(res) = colnames(data)
     res
@@ -378,8 +369,7 @@ sd_col_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 median_if=function(criterion, ..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     if(!is.numeric(data)) stop("median_if: argument should be numeric.")
     stats::median(data, na.rm=TRUE)
 }
@@ -387,8 +377,7 @@ median_if=function(criterion, ..., data = NULL){
 #' @export
 #' @rdname count_if
 median_row_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     matrixStats::rowMedians(data, na.rm=TRUE)
 }
 
@@ -396,8 +385,7 @@ median_row_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 median_col_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = matrixStats::colMedians(data, na.rm=TRUE)
     names(res) = colnames(data)
     res
@@ -409,8 +397,7 @@ median_col_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 max_if=function(criterion, ..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = suppressWarnings(max(data, na.rm=TRUE))
     res[!is.finite(res)] = NA
     res
@@ -419,8 +406,7 @@ max_if=function(criterion, ..., data = NULL){
 #' @export
 #' @rdname count_if
 max_row_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = matrixStats::rowMaxs(data, na.rm=TRUE)
     res[!is.finite(res)] = NA
     res
@@ -430,8 +416,7 @@ max_row_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 max_col_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = matrixStats::colMaxs(data, na.rm=TRUE)
     res[!is.finite(res)] = NA
     names(res) = colnames(data)
@@ -443,8 +428,7 @@ max_col_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 min_if=function(criterion, ..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = suppressWarnings(min(data, na.rm=TRUE))
     res[!is.finite(res)] = NA
     res
@@ -453,8 +437,7 @@ min_if=function(criterion, ..., data = NULL){
 #' @export
 #' @rdname count_if
 min_row_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = matrixStats::rowMins(data, na.rm=TRUE)
     res[!is.finite(res)] = NA
     res
@@ -464,8 +447,7 @@ min_row_if=function(criterion,..., data = NULL){
 #' @export
 #' @rdname count_if
 min_col_if=function(criterion,..., data = NULL){
-    data = fun_if_helper(criterion = criterion, ..., data = data)
-    if(is.logical(data)) data = as.numeric(data)
+    data = fun_if_helper(criterion = criterion, ..., data = data, logical_as_numeric = TRUE)
     res = matrixStats::colMins(data, na.rm=TRUE)
     res[!is.finite(res)] = NA
     names(res) = colnames(data)
@@ -548,7 +530,7 @@ apply_col_if=function(fun, criterion,..., data = NULL){
 }
 
 #########################################################
-fun_if_helper = function(criterion,..., data){
+fun_if_helper = function(criterion,..., data, logical_as_numeric = FALSE){
     if(is.null(data)){
         args = flat_list(
             list(...), 
@@ -557,6 +539,7 @@ fun_if_helper = function(criterion,..., data){
         data = do.call(cbind, args)
     }
     if(!is.matrix(data)) data = as.matrix(data)
+    if(logical_as_numeric && is.logical(data)) storage.mode(data) = "integer"
     cond = build_condition_matrix(criterion, ..., result = FALSE)
     stopifnot(
         NROW(cond)==NROW(data),

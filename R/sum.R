@@ -57,8 +57,7 @@
 #' 
 #' @export
 sum_row=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     matrixStats::rowSums2(data, na.rm = na.rm)
 
 }
@@ -67,8 +66,7 @@ sum_row=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 sum_col =function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     res = matrixStats::colSums2(data, na.rm = na.rm)
     names(res) = colnames(data)
     res
@@ -83,8 +81,7 @@ mean.data.frame = function(x, ...) mean(unlist(x, use.names = FALSE, recursive =
 #' @export
 #' @rdname sum_row
 mean_row=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     matrixStats::rowMeans2(data, na.rm = na.rm)
 }
 
@@ -92,8 +89,7 @@ mean_row=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 mean_col=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     res = matrixStats::colMeans2(data, na.rm = na.rm)
     names(res) = colnames(data)
     res
@@ -107,8 +103,7 @@ mean_col=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 sd_row=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     matrixStats::rowSds(data, na.rm = na.rm)
 }
 
@@ -116,8 +111,7 @@ sd_row=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 sd_col=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     res = matrixStats::colSds(data, na.rm = na.rm)
     names(res) = colnames(data)
     res
@@ -131,8 +125,7 @@ median.data.frame = function(x, ...) stats::median(as.matrix(x), ...)
 #' @export
 #' @rdname sum_row
 median_row=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     matrixStats::rowMedians(data, na.rm = na.rm)
 }
 
@@ -140,8 +133,7 @@ median_row=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 median_col=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     res = matrixStats::colMedians(data, na.rm = na.rm)
     names(res) = colnames(data)
     res
@@ -153,8 +145,7 @@ median_col=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 max_row=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     res = matrixStats::rowMaxs(data, na.rm = na.rm)
     res[!is.finite(res)] = NA
     res
@@ -164,8 +155,7 @@ max_row=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 max_col=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     res = matrixStats::colMaxs(data, na.rm = na.rm)
     res[!is.finite(res)] = NA
     names(res) = colnames(data)
@@ -178,8 +168,7 @@ max_col=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 min_row=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     res = matrixStats::rowMins(data, na.rm = na.rm)
     res[!is.finite(res)] = NA
     res
@@ -189,8 +178,7 @@ min_row=function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 min_col=function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(is.logical(data)) data = as.numeric(data)
+    data = dots2matrix(..., logical_as_numeric = TRUE)
     res = matrixStats::colMins(data, na.rm = na.rm)
     res[!is.finite(res)] = NA
     names(res) = colnames(data)
@@ -233,12 +221,13 @@ apply_col = function(fun, ...){
 }
 
 
-dots2matrix = function(...){
+dots2matrix = function(..., logical_as_numeric = FALSE){
     res = flat_list(
         list(...), 
         flat_df = FALSE
     )
     res = do.call(cbind, res)
+    if(logical_as_numeric && is.logical(res)) storage.mode(res) = "integer"
     if(!is.matrix(res)) res = as.matrix(res)
     res
 }
