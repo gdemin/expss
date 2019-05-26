@@ -241,14 +241,14 @@
 #' 
 #' 
 count_if=function(criterion,...){
-    cond = build_condition_matrix(criterion, ..., result = 1)
+    cond = build_condition_matrix(criterion, ..., logical_as_numeric = TRUE)
     matrixStats::sum2(cond, na.rm=TRUE)
 }
 
 #' @export
 #' @rdname count_if
 count_row_if=function(criterion,...){
-    cond = build_condition_matrix(criterion, ..., result = 1)
+    cond = build_condition_matrix(criterion, ..., logical_as_numeric = TRUE)
     matrixStats::rowSums2(cond)
 }
 
@@ -256,7 +256,7 @@ count_row_if=function(criterion,...){
 #' @export
 #' @rdname count_if
 count_col_if=function(criterion,...){
-    cond = build_condition_matrix(criterion, ..., result = 1)
+    cond = build_condition_matrix(criterion, ..., logical_as_numeric = TRUE)
     res = matrixStats::colSums2(cond)
     names(res) = colnames(cond)
     res
@@ -268,7 +268,7 @@ count_col_if=function(criterion,...){
 #' @export
 #' @rdname count_if
 '%row_in%'=function(x, criterion){
-    cond = build_condition_matrix(criterion, x, result = TRUE)
+    cond = build_condition_matrix(criterion, x)
     matrixStats::rowAnys(cond)
 }
 
@@ -279,7 +279,7 @@ count_col_if=function(criterion,...){
 #' @export
 #' @rdname count_if
 '%col_in%'=function(x, criterion){
-    cond = build_condition_matrix(criterion, x, result = TRUE)
+    cond = build_condition_matrix(criterion, x)
     res = matrixStats::colAnys(cond)
     names(res) = colnames(cond)
     res
@@ -460,7 +460,7 @@ min_col_if=function(criterion,..., data = NULL){
 #' @rdname count_if
 apply_row_if=function(fun, criterion,..., data = NULL){
     fun = match.fun(fun)
-    cond = build_condition_matrix(criterion, ..., result = TRUE)
+    cond = build_condition_matrix(criterion, ...)
     if (is.null(data)){
         data = flat_list(
             list(...), 
@@ -493,7 +493,7 @@ apply_row_if=function(fun, criterion,..., data = NULL){
 #' @rdname count_if
 apply_col_if=function(fun, criterion,..., data = NULL){
     fun = match.fun(fun)
-    cond = build_condition_matrix(criterion, ..., result = TRUE)
+    cond = build_condition_matrix(criterion, ...)
     if (is.null(data)){
         data = flat_list(
             list(...), 
@@ -540,7 +540,7 @@ fun_if_helper = function(criterion,..., data, logical_as_numeric = FALSE){
     }
     if(!is.matrix(data)) data = as.matrix(data)
     if(logical_as_numeric && is.logical(data)) storage.mode(data) = "integer"
-    cond = build_condition_matrix(criterion, ..., result = FALSE)
+    cond = build_condition_matrix(criterion, ...)
     stopifnot(
         NROW(cond)==NROW(data),
         NCOL(cond)==1 || NCOL(cond)==NCOL(data)
@@ -551,7 +551,7 @@ fun_if_helper = function(criterion,..., data, logical_as_numeric = FALSE){
 }
 
 
-build_condition_matrix = function(criterion, ..., result = TRUE){
+build_condition_matrix = function(criterion, ..., logical_as_numeric = FALSE){
     cond = flat_list(
         list(...), 
         flat_df = FALSE
@@ -561,9 +561,7 @@ build_condition_matrix = function(criterion, ..., result = TRUE){
     cond = apply_criterion(cond, criterion)
     cond = do.call(cbind, cond)
     if(!is.matrix(cond)) cond = as.matrix(cond)
-    if(is.numeric(result)){
-        return(1*cond)
-    } 
+    if(logical_as_numeric && is.logical(cond)) storage.mode(cond) = "integer"
     cond
 }
 

@@ -47,7 +47,7 @@
 #' index_row(ix, dfs) # c(7,3,3)
 #' @export
 match_row = function(criterion, ...){
-    cond = build_condition_matrix(criterion, ..., result = TRUE)
+    cond = build_condition_matrix(criterion, ...)
     res = numeric(nrow(cond))
     for(i in seq_len(nrow(cond))){
         res[i] = which(cond[i, ])[1]    
@@ -59,7 +59,7 @@ match_row = function(criterion, ...){
 #' @export
 #' @rdname match_row
 match_col = function(criterion, ...){
-    cond = build_condition_matrix(criterion, ..., result = TRUE)
+    cond = build_condition_matrix(criterion, ...)
     res = numeric(ncol(cond))
     for(i in seq_len(ncol(cond))){
         res[i] = which(cond[, i])[1]    

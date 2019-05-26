@@ -221,62 +221,33 @@ apply_col = function(fun, ...){
 }
 
 
-dots2matrix = function(..., logical_as_numeric = FALSE){
+dots2matrix = function(..., logical_as_numeric = FALSE, as_logical = FALSE){
     res = flat_list(
         list(...), 
         flat_df = FALSE
     )
     res = do.call(cbind, res)
-    if(logical_as_numeric && is.logical(res)) storage.mode(res) = "integer"
     if(!is.matrix(res)) res = as.matrix(res)
+    if(logical_as_numeric && is.logical(res)) storage.mode(res) = "integer"
+    if(as_logical && !is.logical(res)) storage.mode(res) = "logical"
     res
 }
 
-dots2list = function(...){
-    values = as.character(substitute(c(...))[-1])
-    args = list(...)
-    curr_names = names(args)
-    has_names = vapply(args, FUN = function(x) is.data.frame(x) || is.matrix(x) || is.list(x), FUN.VALUE = TRUE)
-    if (is.null(curr_names)) {
-        curr_names = values
-        curr_names[has_names] = ""
-    } else {
-        
-        no_names = (is.na(curr_names) | curr_names == "") & (!has_names)
-        curr_names[no_names] = values[no_names]
-        
-    }
-    names(args) = curr_names
-    args
-    
-}
 
-dots2data_frame = function(...){
-    args = dots2list(...)
-    if(length(args)==1 && is.data.frame(args[[1]])) return(args[[1]])
-    zero_length = lengths(args)==0
-    args[zero_length] = NA
-    suppressWarnings(
-        as.data.frame(args,stringsAsFactors=FALSE, check.names = FALSE)
-    )
-    
-}
     
 
 #################
 #' @export
 #' @rdname sum_row
 any_in_row =function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(!is.logical(data)) data = as.logical(data)
+    data = dots2matrix(..., as_logical = TRUE)
     matrixStats::rowAnys(data, na.rm = na.rm)
 }
 
 #' @export
 #' @rdname sum_row
 any_in_col =function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(!is.logical(data)) data = as.logical(data)
+    data = dots2matrix(..., as_logical = TRUE)
     res = matrixStats::colAnys(data, na.rm = na.rm)
     names(res) = colnames(data)
     res
@@ -285,16 +256,14 @@ any_in_col =function(..., na.rm = TRUE){
 #' @export
 #' @rdname sum_row
 all_in_row =function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(!is.logical(data)) data = as.logical(data)
+    data = dots2matrix(..., as_logical = TRUE)
     matrixStats::rowAlls(data, na.rm = na.rm)
 }
 
 #' @export
 #' @rdname sum_row
 all_in_col =function(..., na.rm = TRUE){
-    data = dots2matrix(...)
-    if(!is.logical(data)) data = as.logical(data)
+    data = dots2matrix(..., as_logical = TRUE)
     res = matrixStats::colAlls(data, na.rm = na.rm)
     names(res) = colnames(data)
     res
