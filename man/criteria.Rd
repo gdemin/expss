@@ -2,6 +2,7 @@
 % Please edit documentation in R/criteria_functions.R
 \name{criteria}
 \alias{criteria}
+\alias{as.criterion}
 \alias{eq}
 \alias{ne}
 \alias{neq}
@@ -21,9 +22,12 @@
 \alias{items}
 \alias{not_na}
 \alias{other}
-\alias{as.criterion}
+\alias{is_max}
+\alias{is_min}
 \title{Criteria functions}
 \usage{
+as.criterion(crit)
+
 eq(x)
 
 ne(x)
@@ -62,9 +66,14 @@ not_na(x)
 
 other(x)
 
-as.criterion(crit)
+is_max(x)
+
+is_min(x)
 }
 \arguments{
+\item{crit}{vector of values/function which returns logical or vector. It will be
+converted to function of class criterion.}
+
 \item{x}{vector}
 
 \item{pattern}{character string containing a regular expression (or character
@@ -80,9 +89,6 @@ Coerced by as.character to a character string if possible.}
 \item{upper}{vector/single value - upper bound of interval}
 
 \item{...}{numeric indexes of desired items}
-
-\item{crit}{vector of values/function which returns logical or vector. It will be
-converted to function of class criterion.}
 }
 \value{
 function of class 'criterion' which tests its argument against

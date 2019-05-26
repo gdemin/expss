@@ -114,6 +114,41 @@
 #' 
 #' @name criteria
 #' @export
+as.criterion = function(crit){
+    force(crit)
+    if (is.function(crit)) {
+        crit = match.fun(crit)
+        res = function(x) {
+            cond = crit(x)
+            cond & !is.na(cond)
+        }
+    } else {
+        if(is.list(crit) || is.data.frame(crit)){
+            crit = c(crit, recursive = TRUE, use.names = FALSE)
+        }
+        if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
+            res = function(x) crit & !is.na(crit)
+        } else {
+            res = function(x) {
+                if(inherits(x, "POSIXct") & !inherits(crit, "POSIXct")){
+                    # because '%in%' doesn't coerce POSIXct in a sensible way 
+                    x = as.character(x)
+                } 
+                if(inherits(x, "Date") & !inherits(crit, "Date")){
+                    # because '%in%' doesn't coerce Date in a sensible way 
+                    x = as.character(x)
+                } 
+                fast_in(x, crit)
+            }
+        }    
+    }
+    class(res) = union("criterion",class(res))
+    res
+}
+
+
+#' @export
+#' @rdname criteria
 eq = function(x){
     force(x)
     as.criterion(function(y) {
@@ -285,6 +320,20 @@ other = function(x){
 
 class(other) = union("criterion", class(other))
 
+#' @export
+#' @rdname criteria
+is_max = as.criterion(function(x){
+    x == max_col(x)
+})
+
+#' @export
+#' @rdname criteria
+is_min = as.criterion(function(x){
+    x == min_col(x)
+})
+
+
+
 build_compare = function(x, compare){
     UseMethod("build_compare")
     
@@ -346,39 +395,6 @@ build_compare.numeric = function(x, compare){
 }
 
 
-#' @export
-#' @rdname criteria
-as.criterion = function(crit){
-    force(crit)
-    if (is.function(crit)) {
-        crit = match.fun(crit)
-        res = function(x) {
-            cond = crit(x)
-            cond & !is.na(cond)
-        }
-    } else {
-        if(is.list(crit) || is.data.frame(crit)){
-            crit = c(crit, recursive = TRUE, use.names = FALSE)
-        }
-        if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
-            res = function(x) crit & !is.na(crit)
-        } else {
-            res = function(x) {
-                if(inherits(x, "POSIXct") & !inherits(crit, "POSIXct")){
-                    # because '%in%' doesn't coerce POSIXct in a sensible way 
-                    x = as.character(x)
-                } 
-                if(inherits(x, "Date") & !inherits(crit, "Date")){
-                    # because '%in%' doesn't coerce Date in a sensible way 
-                    x = as.character(x)
-                } 
-                fast_in(x, crit)
-            }
-        }    
-    }
-    class(res) = union("criterion",class(res))
-    res
-}
 
 
 
