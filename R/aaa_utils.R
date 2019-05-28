@@ -75,82 +75,11 @@ column.default = function(x, column_num, condition = NULL){
 }    
 
 
-###########################
-# use this function only inside other functions
-# eval_dynamic_scoping = function(expr, envir, skip_up_to_frame = ""){
-#     all_env = rev(sys.frames())[-(1:2)] # remove current and calling environement
-#     sys_calls = lapply(rev(sys.calls())[-(1:2)], function(each_call){
-#         res = as.character(as.list(each_call)[[1]])
-#         if(res[1] %in% c("::", ":::")){
-#             res[3]
-#         } else {
-#             res[1]
-#         }
-#     })
-#     sys_calls = unlist(sys_calls)
-#     skip = stats::na.omit(match(skip_up_to_frame, sys_calls))
-#     if(length(skip)==0) {
-#         skip = 0
-#     } else {
-#         skip = max(skip)
-#     }    
-#     
-#     if(skip>0){
-#         all_env = c(all_env[-seq_len(skip)], .GlobalEnv) 
-#     } else {
-#         all_env = c(all_env, .GlobalEnv) 
-#     }
-#     
-#     succ = FALSE
-#     i = 1
-#     while(!succ && i<=length(all_env)){
-#         succ = TRUE
-#         parent.env(envir) = all_env[[i]]
-#         res = tryCatch(eval(expr, envir), error = function(e) {succ<<-FALSE})
-#         if(!succ) i = i + 1
-#     }
-#     stopif(!succ, "`", deparse(substitute(expr)),"` - some variables not found.")
-#     res
-# }
 
 
-
-#############################
-
-#########################################
-
-valid = function(x){
-    UseMethod("valid")
-}
-
-#' @export
-valid.default = function(x){
-    !is.na(x)
-}
-
-#' @export
-valid.data.frame = function(x){
-    if (length(x)) {
-        res = do.call(cbind, lapply(x, is.na))
-    } else {
-        res = matrix(FALSE, NROW(x), 0)
-    }    
-    !rowAlls(res)
-}
-
-#' @export
-valid.dichotomy = function(x){
-    rowSums(x, na.rm = TRUE)>0
-}
-
-#' @export
-valid.matrix = function(x){
-    !rowAlls(is.na(x))
-}
-
-
-
-
+ENV_INTERNAL_NAMES = c(".n", ".N", "..", 
+                       ".new_var", ".new_character", 
+                       ".new_numeric", ".new_logical")
 ###########
 
 prepare_env = function(env, n, column_names){
@@ -165,19 +94,11 @@ prepare_env = function(env, n, column_names){
         env$.internal_column_names0 = column_names
         lockBinding(".internal_column_names0", env)
     }
-    lockBinding(".n", env)
-    lockBinding(".N", env)
-    lockBinding(".new_var", env)
-    lockBinding(".new_character", env)
-    lockBinding(".new_numeric", env)
-    lockBinding(".new_logical", env)
-
+    lapply(ENV_INTERNAL_NAMES %d% "..", lockBinding, env)
 }
 
 clear_env = function(env){
-    rm(".n", ".N", "..", 
-       ".new_var", ".new_character", 
-       ".new_numeric", ".new_logical",
+    rm(list = ENV_INTERNAL_NAMES,
        envir = env)  
     if(exists(".internal_column_names0", envir = env)) rm(".internal_column_names0", envir = env)
 }
@@ -188,8 +109,7 @@ get_current_variables = function(envir){
         if(exists(".internal_column_names0", envir =envir)){
             column_names = envir[[".internal_column_names0"]]
             curr = ls(envir = envir, all.names = TRUE, sorted = FALSE)
-            curr = curr %d% c(".n",  ".N", ".internal_column_names0", 
-                              "..", ".new_var", ".new_character", ".new_numeric", ".new_logical")
+            curr = curr %d% c(ENV_INTERNAL_NAMES, ".internal_column_names0")
             # removed = names(curr)[vapply(curr, is.null, NA, USE.NAMES = FALSE)]
             # curr = names(curr) %d% removed # remove deleted variables?
             new_names = column_names %i% curr 
