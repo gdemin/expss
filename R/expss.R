@@ -168,8 +168,6 @@ data.table::inrange
 #' @export
 data.table::key
 
-#' @export
-data.table::like
 
 #' @export
 data.table::rbindlist

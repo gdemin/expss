@@ -2,10 +2,12 @@ context("criteria")
 
 expect_equal(gt(5)(5), FALSE)
 expect_equal((5 | gt(5))(5), TRUE)
+expect_equal(or(5, gt(5))(5), TRUE)
 
 
 expect_equal((6 & gt(5))(5), FALSE)
 expect_equal((6 & gt(5))(6), TRUE)
+expect_equal(and(6, gt(5))(6), TRUE)
 
 expect_equal((gt(5) & 6)(5), FALSE)
 expect_equal((gt(5) & 6)(6), TRUE)
@@ -28,3 +30,27 @@ expect_identical(logi_crit(1:4), c(TRUE, FALSE, FALSE, TRUE))
 fun_crit = as.criterion(function(x) x>2)
 
 expect_identical((num_crit | logi_crit | fun_crit) (1:4), c(TRUE, FALSE, TRUE, TRUE))
+expect_identical(or(num_crit, logi_crit, fun_crit) (1:4), c(TRUE, FALSE, TRUE, TRUE))
+
+
+# check correctness of perl/regex/fixed
+
+pattern = "[:alpha:]"
+
+test_str = "abc"
+
+expect_false(contains(pattern)(test_str))
+expect_false(fixed(pattern)(test_str))
+expect_true(regex(pattern)(test_str))
+expect_error(suppressWarning(perl(pattern)(test_str)))
+
+expect_true(not(contains(pattern))(test_str))
+expect_true(not(fixed(pattern))(test_str))
+expect_false(not(regex(pattern))(test_str))
+
+
+test_str = c("Abc", "abc", "bcd", "a")
+
+expect_equal(like("a")(test_str), c(FALSE, FALSE, FALSE, TRUE))
+expect_equal(like("a*")(test_str), c(TRUE, TRUE, FALSE, TRUE))
+expect_equal(like("*d")(test_str), c(FALSE, FALSE, TRUE, FALSE))
