@@ -504,3 +504,12 @@ get_named_expressions = function(dots){
     }
     setNames(res, vnames)
 }
+
+############
+
+# for assignment functions
+# to avoid warning about shallow copy
+fix_datatable = function(x){
+    if(is.data.table(x)) setDT(x, check.names = FALSE)
+    x
+}

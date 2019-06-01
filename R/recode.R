@@ -387,10 +387,10 @@ recode.matrix = function(x, ..., with_labels = FALSE, new_label = c("all", "rang
 
 #' @export
 "recode<-.data.frame" = function(x, with_labels = FALSE, new_label = c("all", "range", "first", "last"), value){
-    for(each in seq_along(x)){
-        recode(x[[each]], with_labels = with_labels, new_label = new_label) = value
-    }
-    x
+  for(each in seq_along(x)){
+    recode(x[[each]], with_labels = with_labels, new_label = new_label) = value
+  }
+  fix_datatable(x)
 }
 
 #' @export

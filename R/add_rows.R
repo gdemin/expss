@@ -57,12 +57,23 @@ add_rows = function(..., nomatch_columns = c("add", "drop", "stop")){
 #' @rdname add_rows
 #' @export
 add_rows.data.frame = function(..., nomatch_columns = c("add", "drop", "stop")){
+    args = list(...)
+    is_dt = unlist(lapply(args, is.data.table), use.names = FALSE)
+    if(any(is_dt)){
+        # not optimal solution for data.table 
+        # TODO all should be rewritten with rbindlist
+        args = lapply(list(...), as.sheet)        
+    }
+    
     f = function(x, y){
         force(nomatch_columns)
         add_rows1(x, y, nomatch_columns = nomatch_columns)
     }
-    Reduce(f, list(...))
+    Reduce(f, args)
 }
+
+
+
 
 #' @export
 add_rows.default =  function(..., nomatch_columns = c("add", "drop", "stop")){
