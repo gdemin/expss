@@ -28,6 +28,8 @@
 #' regular expression (\code{'perl = TRUE'}). For details see \link[base]{grepl}}
 #' \item{\code{'regex'}}{ use POSIX 1003.2 extended regular expressions
 #' (\code{'fixed = FALSE'}). For details see \link[base]{grepl}}
+#' \item{\code{'has_label'}}{ searches values which have supplied label(-s).  We
+#' can used criteria as an argument for 'has_label'.}
 #' \item{\code{'to'}}{ returns function which gives TRUE for all elements of
 #' vector before the first occurrence of \code{'x'} and for  \code{'x'}.}
 #' \item{\code{'from'}}{ returns function which gives TRUE for all elements of 
@@ -263,8 +265,8 @@ gte = greater_or_equal
 #' @export
 #' @rdname criteria
 thru = function(lower, upper){
-    stopif(is.function(lower) | is.function(upper),
-           "'thru' is not defined for functions but 'lower' = ", lower, " and 'upper' = ", upper)
+    !(is.function(lower) || is.function(upper)) || 
+        stop("'thru' is not defined for functions but 'lower' = ", lower, " and 'upper' = ", upper)
     force(lower)
     force(upper)
     ge(lower) & le(upper)
@@ -324,6 +326,10 @@ like = function(pattern){
     })
 }
 
+
+
+
+
 #' @export
 #' @rdname criteria
 fixed = contains
@@ -342,7 +348,17 @@ regex = contains
 formals(regex)$fixed = FALSE
 
 
-
+#' @export
+#' @rdname criteria
+has_label = function(x){
+    if(!inherits(x, "criterion")){
+        x = as.criterion(x)
+    }
+    as.criterion(function(y){
+        values = n_intersect(val_lab(y), x)
+        y %has% values
+    })
+}
 
 #' @export
 #' @rdname criteria
@@ -381,6 +397,7 @@ items = function(...){
     })
 
 }
+
 
 
 #' @export

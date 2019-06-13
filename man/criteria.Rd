@@ -27,6 +27,7 @@
 \alias{fixed}
 \alias{perl}
 \alias{regex}
+\alias{has_label}
 \alias{from}
 \alias{to}
 \alias{items}
@@ -72,6 +73,8 @@ perl(pattern, ignore.case = FALSE, perl = TRUE, fixed = FALSE,
 
 regex(pattern, ignore.case = FALSE, perl = FALSE, fixed = FALSE,
   useBytes = FALSE)
+
+has_label(x)
 
 from(x)
 
@@ -146,6 +149,8 @@ Case insensitive.}
 regular expression (\code{'perl = TRUE'}). For details see \link[base]{grepl}}
 \item{\code{'regex'}}{ use POSIX 1003.2 extended regular expressions
 (\code{'fixed = FALSE'}). For details see \link[base]{grepl}}
+\item{\code{'has_label'}}{ searches values which have supplied label(-s).  We
+can used criteria as an argument for 'has_label'.}
 \item{\code{'to'}}{ returns function which gives TRUE for all elements of
 vector before the first occurrence of \code{'x'} and for  \code{'x'}.}
 \item{\code{'from'}}{ returns function which gives TRUE for all elements of 
