@@ -345,6 +345,36 @@ expect_identical(
     res
 )
 
+
+val_lab(character_vector) = c("uno" = "one", "duo" = "two")
+
+var_lab(character_vector) = "Chars"
+
+expect_equal(as.labelled(character_vector), 
+structure(c(1L, 3L, 3L, 2L), labels = structure(1:3, .Names = c("uno", 
+"three", "duo")), class = c("labelled", "integer"), label = "Chars"))
+
+expect_equal(as.labelled(character_vector, label = "Numbers"), 
+structure(c(1L, 3L, 3L, 2L), labels = structure(1:3, .Names = c("uno", 
+"three", "duo")), class = c("labelled", "integer"), label = "Numbers"))
+
+val_lab(character_vector) = c("uno" = "one", "duo" = "two", "other" = "some other value" )
+expect_equal(
+as.labelled(character_vector),
+structure(c(1L, 4L, 4L, 3L), labels = structure(1:4, .Names = c("uno", 
+"other", "three", "duo")), class = c("labelled", "integer"), label = "Chars")
+)
+
+vec = set_val_lab(c(1, 2, 3, NA), c(One = 1, Four = 4))
+var_lab(vec) = "My vec"
+expect_equal(as.labelled(vec),
+structure(c(1, 2, 3, NA), labels = c(One = 1, `2` = 2, `3` = 3, 
+Four = 4), class = c("labelled", "numeric"), label = "My vec"))
+
+expect_equal(as.labelled(vec, label = "Other vec"),
+structure(c(1, 2, 3, NA), labels = c(One = 1, `2` = 2, `3` = 3, 
+Four = 4), class = c("labelled", "numeric"), label = "Other vec"))
+
 data(iris)
 species = rep(1:3, each = 50) * 1.0
 val_lab(species) = c("setosa" = 1L, "versicolor" = 2L, "virginica" = 3L) 

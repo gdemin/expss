@@ -126,7 +126,7 @@ set_var_lab.default = function(x, value){
     # with 'lm' with labelled integers
     # if(is.integer(x)) x[] = as.double(x)
     value = as.character(value)
-    stopif(length(value)>1, "Label should be vector of length 1.")
+    length(value)==1 || stop("'set_var_lab' - label should be vector of length 1.")
     attr(x, "label")=value
     class(x)=union("labelled", class(x))
     x
@@ -350,8 +350,8 @@ set_val_lab.default = function(x, value, add = FALSE){
         if(!is.null(label)) var_lab(x) = label
         warning("You are trying to put value labels on factor. It can lead to unexpected results. Factor will be converted to character.")
     }
-    stopif(is.null(names(value)), "Labels should be named vector.")
-    stopif(anyDuplicated(value), "duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
+    !is.null(names(value)) || stop("'set_val_lab' - labels should be named vector.")
+    !anyDuplicated(value)  || stop("'set_val_lab' - duplicated values in labels: ",paste(value[duplicated(value)],collapse=" "))
     
     # this conversion is needed to avoid strange bug (incorrect residuals)
     # with 'lm' with labelled integers 
@@ -421,7 +421,7 @@ make_labels=function(text, code_position=c("left","right", "autonum")){
             label_pattern = "\\1"
             
         }
-        stopif(!all(grepl(pattern, res,perl=TRUE)), "Incorrect pattern for labels:\n", paste(res[!grepl(pattern, res,perl=TRUE)], collapse = "\n"))
+        all(grepl(pattern, res, perl=TRUE)) || stop("'make_labels' - incorrect pattern for labels:\n", paste(res[!grepl(pattern, res,perl=TRUE)], collapse = "\n"))
         code=as.numeric(gsub(pattern,code_pattern,res,perl=TRUE))
         #     if (!any(abs(floor(code)-code)>0)) code = as.integer(code)
         lab=gsub(pattern,label_pattern,res,perl=TRUE)
@@ -546,7 +546,7 @@ drop_all_labels = unlab
 #' @param x numeric vector/character vector/factor 
 #' @param label optional variable label
 #'
-#' @return numeric vector with labels
+#' @return numeric vector with value labels
 #' @export
 #' @examples
 #' character_vector = c("one", "two",  "two", "three")
@@ -564,7 +564,7 @@ as.labelled.default = function(x, label = NULL){
     res = fast_match(x, labels)
     names(values) = as.character(labels)
     val_lab(res) = values
-    if(!is.null(label)) var_lab(res) = label
+    var_lab(res) = label
     res
 }
 
@@ -582,11 +582,23 @@ as.labelled.factor = function(x, label = NULL){
 
 #' @export
 as.labelled.labelled = function(x, label = NULL){
-    if(is.null(val_lab(x))){
-        label = if_null(label, var_lab(x))
-        x = as.labelled(unlab(x), label = label)
+    vallab = val_lab(x)
+    label = c(label, var_lab(x))[1]
+    if(length(vallab)>0){
+        # we need to add labels if some values don't have labels
+        values = unlab(unique(x))
+        values = structure(values, names = values)
+        vallab =  v_union(vallab, values)
+        vallab = sort(vallab, na.last = NA)
+        if(!is.numeric(x)){
+            # and we need to convert 'x' to numeric if it is not numeric
+            x = fast_match(x, vallab) 
+            vallab = structure(seq_along(vallab), names = names(vallab))
+        }
+        val_lab(x) = vallab
+        var_lab(x) = label    
     } else {
-        if(!is.null(label)) var_lab(x) = label    
+        x = as.labelled(unlab(x), label = label)
     }
     x
 }

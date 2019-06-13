@@ -15,7 +15,7 @@ is.labelled(x)
 \item{label}{optional variable label}
 }
 \value{
-numeric vector with labels
+numeric vector with value labels
 }
 \description{
 Recode vector into numeric vector with value labels
