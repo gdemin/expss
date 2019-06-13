@@ -54,3 +54,27 @@ test_str = c("Abc", "abc", "bcd", "a")
 expect_equal(like("a")(test_str), c(FALSE, FALSE, FALSE, TRUE))
 expect_equal(like("a*")(test_str), c(TRUE, TRUE, FALSE, TRUE))
 expect_equal(like("*d")(test_str), c(FALSE, FALSE, TRUE, FALSE))
+
+
+vec = c(1:3, 1:3)
+val_lab(vec) = num_lab("
+                       1 One
+                       2 Two
+                       3 Three
+                       ")
+
+expect_identical(
+    has_label("One")(vec),
+    vec == 1)
+
+expect_identical(
+    has_label(perl("o|O"))(vec),
+    vec %in% 1:2)
+
+expect_identical(
+    has_label(like("t*"))(vec),
+    vec %in% 2:3)
+
+expect_identical(
+    has_label("One")(unlab(vec)),
+    vec == 99)
