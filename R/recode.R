@@ -209,10 +209,10 @@ process_recodings = function(x, recoding_formulas, res,
     for (i in seq_along(recoding_list)){
         each_recoding = recoding_list[[i]]
         target = each_recoding[["to"]]
-        if (length(target)>1 && length(target)!=length(res) ){
+         (length(target)>1 && length(target)!=length(res) ) &&
             stop("'recode' - length of 'RHS' should be
                1 or equals to length of 'x' but we have: ", expr_to_character(recoding_formulas[[i]]))
-        } 
+        
         curr_label = labels[[i]]
         if(length(curr_label)>0 && !is.na(curr_label) && curr_label!=""){
             if(is.function(target) || length(target)!=1 || is.logical(target) || is.na(target)){
@@ -223,7 +223,19 @@ process_recodings = function(x, recoding_formulas, res,
         }
         if (all(recoded)) break # if all values were recoded
         crit = each_recoding[["from"]]
-        if(!inherits(crit, "criterion")) crit = as.criterion(crit)
+        if(is.logical(crit)){
+          (length(crit)>1 && length(crit)!=length(res)) &&  stop("'recode' - length of logical 'LHS' should be
+               1 or equals to length of 'x' but we have: ", expr_to_character(recoding_formulas[[i]]))
+          
+          # because we cannot recode labels when source is logical vector
+          (with_labels && length(crit)>1) &&
+            stop("'recode' - you cannot recode labels when you use logical 'LHS': ", 
+                    expr_to_character(recoding_formulas[[i]]))
+
+        }
+        if(!inherits(crit, "criterion")) {
+          crit = as.criterion(crit)
+        }
         cond = crit(x)
         cond = cond & !recoded # we don't recode already recoded value
         if(!any(cond)) next
@@ -245,6 +257,7 @@ process_recodings = function(x, recoding_formulas, res,
         vallab = val_lab(x)
         if(!is.null(vallab)){
             vallab = process_recodings(vallab, 
+                                       # if recodings based on logical...!!??
                                        unname(recoding_formulas), 
                                        if(is.null(val_lab(res))) make_empty_vec(vallab) else vallab,
                                        with_labels = FALSE, 

@@ -1,6 +1,21 @@
 context("na_if vector")
 suppressWarnings(RNGversion("3.5.0"))
 
+a = c(1, 1, 2, 2, 99)
+val_lab(a) = c(Yes = 1, No = 2, "Hard to say" = 99)
+res = c(1, 1, 2, 2, NA)
+val_lab(res) = c(Yes = 1, No = 2)
+
+expect_equal(
+    mis_val(a, 99, with_labels = TRUE),
+    res)
+
+mis_val(a, with_labels = TRUE) = 99
+
+expect_equal(
+    a,
+    res)
+
 a = 1:5
 
 a[a>3] = NA
@@ -29,6 +44,8 @@ b = a
 b[3,"b"] = NA
 b[1:5,"a"] = NA
 expect_equal(na_if(a, eq(a$a)),b)
+
+
 
 set.seed(123)
 
@@ -65,13 +82,7 @@ expect_equal(na_if(a, 4:5),b)
 cond = cbind(a[,1]>3, a[,2]>3)
 expect_equal(na_if(a, cond),b)
 
-b = a
-b[1:2,] = NA
 
-expect_equal(na_if(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
-
-b = a
-b[,1] = NA
 
 
 
