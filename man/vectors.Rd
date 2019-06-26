@@ -47,25 +47,27 @@ n_diff(e1, e2)
 e1 \%n_d\% e2
 }
 \arguments{
-\item{e1}{vector (possibly data.frame/matrix/list for \code{\%n_d\%}, \code{\%n_i\%})}
+\item{e1}{vector or data.frame, matrix, list for \code{\%n_d\%}, \code{\%n_i\%})}
 
-\item{e2}{vector (or function for \code{\%d\%}, \code{\%i\%})}
+\item{e2}{vector or function for \code{\%d\%}, \code{\%i\%}}
 }
 \value{
-vector (possibly data.frame/matrix/list for \code{\%n_d\%}, \code{\%n_i\%})
+vector or data.frame, matrix, list for \code{\%n_d\%}, \code{\%n_i\%})
 }
 \description{
+All these functions except \code{\%n_d\%}, \code{\%n_i\%} preserve names of
+vectors and don't remove duplicates.
 \itemize{
-\item{\code{\%a\%}}{ a(ppends) second argument to first argument. See also
+\item{\code{\%a\%}}{ a(ppends) second argument to the first argument. See also
 \link[base]{append}.}
 \item{\code{\%u\%} and \code{v_union}}{ u(nite) first and second arguments.
-Remove elements from second argument which exist in first argument. }
-\item{\code{\%d\%} and \code{v_diff}}{ d(iff) second argument from first
+Remove elements from the second argument which exist in the first argument. }
+\item{\code{\%d\%} and \code{v_diff}}{ d(iff) second argument from the first
 argument. Second argument could be a function which returns logical value. In
-this case elements of first argument which give TRUE will be removed. }
+this case elements of the first argument which give TRUE will be removed. }
 \item{\code{\%i\%} and \code{v_intersect}}{ i(ntersect) first argument and
 second argument. Second argument could be a function which returns logical
-value. In this case elements of first argument which give FALSE will be
+value. In this case elements of the first argument which give FALSE will be
 removed. }
 \item{\code{\%e\%} and \code{v_xor}}{ e(xclusive OR). Returns elements that
 contained only in one of arguments.}
@@ -73,15 +75,13 @@ contained only in one of arguments.}
 also \link[base]{rep}.}
 \item{\code{\%n_d\%} and \code{n_diff}}{ n(ames) d(iff) - diff second argument
 from names of first argument. Second argument could be a function which
-returns logical value. In this case elements of first argument which names
+returns logical value. In this case elements of the first argument which names
 give TRUE will be removed. }
 \item{\code{\%n_i\%} and \code{n_intersect}}{ n(ames) i(ntersect) - intersect
-names of first argument with second argument. Second argument could be a
-function which returns logical value. In this case elements of first argument
+names of the first argument with the second argument. Second argument could be a
+function which returns logical value. In this case elements of the first argument
 which names give FALSE will be removed. }
 } 
-All these functions except \code{\%n_d\%}, \code{\%n_i\%} preserve names of
-vectors and don't remove duplicates.
 For \code{\%d\%}, \code{\%i\%}, \code{\%n_d\%}, \code{\%n_i\%} one can use
 criteria functions. See \link{criteria} for details.
 }
@@ -96,15 +96,14 @@ criteria functions. See \link{criteria} for details.
 1:6 \%d\% 5:6   # 1:4
 
 # function as criterion
-1:6 \%d\% gt(4) # 1:4
+1:6 \%d\% greater(4) # 1:4
 
 1:4 \%i\% 4:5   # 4
 
-# function as criterion
-letters \%i\% perl("[a-d]") # a,b,c,d
+# with criteria functions 
+letters \%i\% (contains("a") | contains("z")) # a, z
 
-# function as criterion 
-letters \%i\% (fixed("a") | fixed("z")) # a, z
+letters \%i\% perl("[a-d]") # a,b,c,d
 
 1:4 \%e\% 4:5   # 1, 2, 3, 5
 
@@ -116,9 +115,10 @@ letters \%i\% (fixed("a") | fixed("z")) # a, z
 iris \%n_d\% "Species" 
 
 # leave only columns which names start with "Sepal"
-iris \%n_i\% perl("^Sepal") 
+iris \%n_i\% like("Sepal*") 
 
 # leave column "Species" and columns which names start with "Sepal" 
-iris \%n_i\% (perl("^Sepal")|"Species") 
+iris \%n_i\% ("Species" | like("Sepal*")) 
+iris \%n_i\% or("Species", like("Sepal*")) # same result
 
 }
