@@ -30,7 +30,7 @@
 #' condition on other variable during recoding.}
 #' \item{function}{ Values for which function gives TRUE will be replaced with 
 #' RHS. There are some special functions for the convenience - see \link{criteria}}.
-#' \item{single logical value \code{TRUE}}{It means all other unrecoded values
+#' \item{single logical value \code{TRUE}}{ It means all other unrecoded values
 #' (ELSE in SPSS RECODE). All other unrecoded values will be changed to RHS of
 #' formula or appropriate element of \code{to}.} 
 #' }

@@ -23,7 +23,7 @@
 #' @export
 #' @examples
 #' ## Inside example
-#' iris = modify(iris,{
+#' iris = compute(iris,{
 #'   new_median = median_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 #'   new_mean = mean_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 #'   })
@@ -39,21 +39,16 @@
 #' )
 #' 
 #' # calculate sum of b* variables
-#' modify(dfs, {
+#' compute(dfs, {
 #'     b_total = sum_row(b_, b_1 %to% b_5)
 #' })
 #' 
 #' # conditional modification
-#' modify_if(dfs, test %in% 2:4, {
+#' do_if(dfs, test %in% 2:4, {
 #'     b_total = sum_row(b_, b_1 %to% b_5)
 #' })
 #' 
-#' # Examples from rowSums/colSums manual.
-#' ## Compute row and column sums for a matrix:
-#' x = cbind(x1 = 3, x2 = c(4:1, 2:5))
-#' sum_row(x); sum_col(x)
-#' dimnames(x)[[1]] <- letters[1:8]
-#' sum_row(x); sum_col(x); mean_row(x); mean_col(x)
+
 #' 
 #' @export
 sum_row=function(..., na.rm = TRUE){
