@@ -14,6 +14,11 @@ val_lab(a) = c(one = 1)
 b = a
 b[1] = 2
 expect_identical(if_na(a, c(two = 2)), b)
+expect_identical(if_na(a, 2, label = "Hard to say"), add_val_lab(b, c("Hard to say" = 2)))
+a2 = a
+if_na(a2, label = "Hard to say") = 2
+expect_identical(a2, add_val_lab(b, c("Hard to say" = 2)))
+expect_error(if_na(a, 1:4, label = "Error"))
 
 a = 1:4
 b = a
