@@ -210,16 +210,25 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
     
 
 #' @export
-unique.labelled = function(x, ...){
-    y = NextMethod()
-    labels_support = getOption("expss.enable_value_labels_support", 1) 
-    if(!identical(labels_support, 0)){
-        if(identical(labels_support, 2)){
-            y = unique(c(y, val_lab(x), use.names = FALSE))
-        }
-        y = restore_attributes(y, x)
+unique.labelled = function(x, nmax = NA, ...){
+  # TODO additional arguments with sensible names about labels support
+  y = NextMethod()
+  if(identical(nmax, 1)) {
+    labels_support = 2
+  } else {
+    if(is.null(nmax)){
+      labels_support = 0  
+    } else {
+      labels_support = getOption("expss.enable_value_labels_support", 1) 
     }
-    y
+  }
+  if(!identical(labels_support, 0)){
+    if(identical(labels_support, 2)){
+      y = unique(c(y, val_lab(x), use.names = FALSE), ...)
+    }
+    y = restore_attributes(y, x)
+  }
+  y
 }
 
 
