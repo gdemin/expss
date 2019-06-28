@@ -1,19 +1,29 @@
-#' Write labelled data to file or export to SPSS syntax.
+#' Write labelled data to file or export file to SPSS syntax.
 #' 
 #' \itemize{
-#' \item{\code{write_labelled_csv} and \code{read_labelled_csv}}{
-#' \code{*_csv2} write and read data with semicolon separator and comma as
-#' decimal delimiter. \code{*_tab/*_tab2} write and read data with 'tab'
-#' separator and "."/"," as decimal delimiter. }
-#' \item{\code{write_labelled_xlsx} and \code{read_labelled_xlsx}}{ }
-#' \item{\code{write_labelled_fst} and \code{read_labelled_fst}}{ }
-#' \item{write_labelled_spss}{ }
-#' \item{\code{create_dictionary} and \code{apply_dictionary}}{
-#' }
+#' \item{\code{write_labelled_csv} and \code{read_labelled_csv}}{ writes csv
+#' file with labels. By default labels are stored in the commented lines at the
+#' beginning of the file before the data part. \code{*_csv2} write and read data
+#' with a semicolon separator and comma as decimal delimiter. \code{*_tab/*_tab2}
+#' write and read data with 'tab' separator and "."/"," as decimal delimiter. }
+#' \item{\code{write_labelled_xlsx} and \code{read_labelled_xlsx}}{ write and
+#' read labelled 'xlsx' format. It is a simple Excel file with data and labels on
+#' separate sheets. It can help you with labelled data exchange in the
+#' corporate environment.}
+#' \item{\code{write_labelled_fst} and \code{read_labelled_fst}}{ write and read
+#' labelled data in the 'fst' format. See \link{https://www.fstpackage.org/}.
+#' Data and labels are stored in the separate files. With 'fst' format you can
+#' read and write a huge amount of data very quickly.}
+#' \item{write_labelled_spss}{ write 'csv' file with SPSS syntax for reading it.
+#' You can use it for the data exchange with SPSS.}
+#' \item{\code{create_dictionary} and \code{apply_dictionary}}{ make data.frame
+#' with dictionary, e. g. variable and value labels for each variable. See
+#' format description in the 'Details' section.}
 #' \item{\code{write_labels} and \code{write_labels_spss}}{ Write R code and
 #' SPSS syntax for labelling data. It allows to extract labels from *.sav files
 #' that come without accompanying syntax. }
-#' \item{\code{old_write_labelled_csv} and \code{old_read_labelled_csv}}{
+#' \item{\code{old_write_labelled_csv} and \code{old_read_labelled_csv}}{ Read
+#' and write labelled 'csv' in format of the 'expss' version before 0.9.0.
 #' }
 #' }
 #' 
@@ -31,11 +41,6 @@
 #' column and we use value labels from this variable, column \code{'value'} is
 #' ignored.}
 #' }
-#' \code{write_labelled_*} functions write data in the CSV format and file with 
-#' R code/SPSS syntax for labelling data.  SPSS syntax also contains code for 
-#' reading data in SPSS. \code{write_labelled_*} doesn't save rownames of 
-#' data.frame. \code{write_labels_*}  \code{read_labelled_csv} reads data file in CSV 
-#' format and apply labels from accompanying file with R code. 
 #' 
 #' @param x data.frame to be written/data.frame whose labels to be written
 #' @param filename the name of the file which the data are to be read from/write to.
@@ -46,20 +51,20 @@
 #'   will be removed when data.table issue #1109 will be fixed.
 #' @param ... additional arguments for
 #'   \link[data.table]{fwrite}/\link[data.table]{fread}, e. g. column separator,
-#'   decimal separtor, encoding and etc.
+#'   decimal separator, encoding and etc.
 #' @param single_file logical. TRUE by default. Should we write labels into the
 #'   same file as data? If it is FALSE dictionary will be written in the
 #'   separate file.
 #' @param use_references logical. When TRUE (default) then if the variable has
-#'   the same value labels as the previous variable we use reference to this
-#'   variable. It makes dictionary significnatly more compact for datasets
+#'   the same value labels as the previous variable, we use reference to this
+#'   variable. It makes dictionary significantly more compact for datasets
 #'   with many variables with the same value labels.
 #' @param remove_repeated logical. FALSE by default. If TRUE then we remove
-#'   repeated variable names. It makes dictionary to look nicer for humans but
+#'   repeated variable names. It makes a dictionary to look nicer for humans but
 #'   less convenient for usage.
 #' @param data_sheet character "data" by default. Where data will be placed in the '*.xlsx' file.
 #' @param dict_sheet character "dictionary" by default. Where dictionary will be placed in the '*.xlsx' file.
-#' @param dict data.frame with labels - result of \code{create_dictionary}.  
+#' @param dict data.frame with labels - a result of \code{create_dictionary}.  
 #' @param fileEncoding character string: if non-empty declares the encoding to 
 #'   be used on a file (not a connection) so the character data can be 
 #'   re-encoded as they are written. Used for writing dictionary. See
@@ -92,6 +97,11 @@
 #' 
 #' write_labelled_csv(mtcars, "mtcars.csv")
 #' new_mtcars = read_labelled_csv("mtcars.csv")
+#' str(new_mtcars)
+#' 
+#' # identically, for xlsx
+#' write_labelled_xlsx(mtcars, "mtcars.xlsx")
+#' new_mtcars = read_labelled_xlsx("mtcars.xlsx")
 #' str(new_mtcars)
 #' 
 #' # to SPSS syntax
@@ -313,8 +323,8 @@ read_labelled_csv = function(filename,
         )
       } else {
         # dictionary not found
-        message("read_labelled_csv: embedded dictionary or dictionary file '", basename(dic_filename),
-                "' not found. Labels will not be applied to data.")
+        # message("read_labelled_csv: embedded dictionary or dictionary file '", basename(dic_filename),
+        #         "' not found. Labels will not be applied to data.")
       }
     }
   }
@@ -382,27 +392,29 @@ read_labelled_xlsx = function(filename,
   )
   wb = openxlsx::loadWorkbook(file = filename)
   data = openxlsx::readWorkbook(wb,
-                      sheet = data_sheet,
-                      colNames = TRUE,
-                      rowNames = FALSE,
-                      skipEmptyRows = FALSE,
-                      check.names = FALSE,
-                      na.strings = ""
+                                sheet = data_sheet,
+                                colNames = TRUE,
+                                rowNames = FALSE,
+                                skipEmptyRows = FALSE,
+                                check.names = FALSE,
+                                na.strings = ""
   )
   sheet_names = names(wb)
   if((dict_sheet %in% sheet_names) ||(dict_sheet %in% seq_along(sheet_names))){
     dict = openxlsx::readWorkbook(wb,
-                        sheet = dict_sheet,
-                        colNames = TRUE,
-                        rowNames = FALSE,
-                        skipEmptyRows = FALSE,
-                        check.names = FALSE,
-                        na.strings = ""
+                                  sheet = dict_sheet,
+                                  colNames = TRUE,
+                                  rowNames = FALSE,
+                                  skipEmptyRows = FALSE,
+                                  check.names = FALSE,
+                                  na.strings = ""
     ) 
     data = apply_dictionary(data, dict)
   } else {
-    message("read_labelled_xlsx: sheet '", dict_sheet,
-            "' with dictionary not found. Labels will not be applied to data.")
+    if(!missing(dict_sheet)){
+      message("read_labelled_xlsx: sheet '", dict_sheet,
+              "' with dictionary not found. Labels will not be applied to data.")
+    }
   }
   data
 }  
@@ -422,8 +434,8 @@ read_labelled_fst = function(filename,
     dict = fst::read_fst(dic_filename)  
     data = apply_dictionary(data, dict)
   } else {
-    message("read_labelled_fst: file '", basename(dic_filename),
-            "' with dictionary not found. Labels will not be applied to data.")  
+    # message("read_labelled_fst: file '", basename(dic_filename),
+    #         "' with dictionary not found. Labels will not be applied to data.")  
   }
   data
 }
