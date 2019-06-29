@@ -47,6 +47,14 @@ values \%into\% names
 \item{...}{sequence of formulas which describe recodings. They are used when
 \code{from}/\code{to} arguments are not provided.}
 
+\item{with_labels}{logical. FALSE by default for 'recode' and TRUE for 'rec'.
+Should we also recode value labels with the same recodings as variable?}
+
+\item{new_label}{one of "all", "range", "first", or "last". If we recode
+value labels ('with_labels = TRUE') how we will combine labels for
+duplicated values? "all" will use all labels, "range" will use first and
+last labels. See examples.}
+
 \item{value}{list with formulas which describe recodings in assignment form
 of function/\code{to} list if \code{from}/\code{to} notation is used.}
 
