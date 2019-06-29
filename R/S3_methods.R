@@ -210,7 +210,8 @@ labelled_to_character_internal = function(x, prepend_varlab, ...) {
     
 
 #' @export
-unique.labelled = function(x, nmax = NA, ...){
+unique.labelled = function(x, incomparables = FALSE, fromLast = FALSE,
+                           nmax = NA, ...){
   # TODO additional arguments with sensible names about labels support
   y = NextMethod()
   if(identical(nmax, 1)) {
@@ -224,7 +225,11 @@ unique.labelled = function(x, nmax = NA, ...){
   }
   if(!identical(labels_support, 0)){
     if(identical(labels_support, 2)){
-      y = unique(c(y, val_lab(x), use.names = FALSE), ...)
+      y = unique(c(y, val_lab(x), use.names = FALSE), 
+                 incomparables = incomparables, 
+                 fromLast = fromLast, 
+                 nmax = nmax, 
+                 ...)
     }
     y = restore_attributes(y, x)
   }
