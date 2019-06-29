@@ -1,9 +1,9 @@
-#' Change, rearrange or consolidate the values of an existing/new variable. Inspired by RECODE command from SPSS.
+#' Change, rearrange or consolidate the values of an existing or new variable. Inspired by the RECODE command from SPSS.
 #' 
 #' \code{recode} change, rearrange or consolidate the values of an existing 
 #' variable based on conditions. Design of this function inspired by RECODE from
 #' SPSS. Sequence of recodings provided in the form of formulas. For example, 
-#' 1:2 ~ 1 means that all 1's and 2's will be replaced with 1. Each value will 
+#' 1:2 ~ 1 means that all 1's and 2's will be replaced with 1. Each value will be
 #' recoded only once. In the assignment form \code{recode(...) = ...} of this 
 #' function values which doesn't meet any condition remain unchanged. In case of
 #' the usual form \code{... = recode(...)} values which doesn't meet any 
@@ -16,22 +16,22 @@
 #' returns a value that corresponds to the first TRUE condition. \code{ifs} can
 #' take the place of multiple nested \code{ifelse} statements and is much
 #' easier to read with multiple conditions. \code{ifs} works in the same manner
-#' as \code{recode} - e. g. with formulas or with from/to notation. But conditions
+#' as \code{recode} - e. g. with formulas. But conditions
 #' should be only logical and it doesn't operate on multicolumn objects.
 #' 
 #' @details 
 #' Input conditions - possible values for left-hand side (LHS) of formula or
 #' element of \code{from} list:
 #' \itemize{
-#' \item{vector/single value}{ All values in \code{x} which equal to elements of
+#' \item{vector/single value}{ All values in \code{x} which equal to elements of the
 #' vector in LHS will be replaced with RHS.}
 #' \item{logical vector}{ All elements in \code{x} for which elements of vector
 #' in LHS is TRUE will be replaced with RHS. It means you can use logical
-#' condition on other variable during recoding.}
+#' condition on the other variable during recoding.}
 #' \item{function}{ Values for which function gives TRUE will be replaced with 
 #' RHS. There are some special functions for the convenience - see \link{criteria}}.
 #' \item{single logical value \code{TRUE}}{ It means all other unrecoded values
-#' (ELSE in SPSS RECODE). All other unrecoded values will be changed to RHS of
+#' (ELSE in SPSS RECODE). All other unrecoded values will be changed to RHS of the
 #' formula or appropriate element of \code{to}.} 
 #' }
 #' Output values - possible values for right-hand side (RHS) of formula or
@@ -39,12 +39,12 @@
 #' \itemize{
 #' \item{value}{ replace elements of \code{x}. This value will be
 #' recycled across rows and columns of \code{x}.}
-#' \item{vector}{ values of this vector will be replace values in corresponding
+#' \item{vector}{ values of this vector will replace values in the corresponding
 #' position in rows of \code{x}. Vector will be recycled across columns of
 #' \code{x}.}
 #' \item{function}{ This function will be applied to values of \code{x} which 
-#' satisfy recoding condition.There is special auxiliary function \code{copy} 
-#' which just returns its argument. So in the \code{recode} it just copies old 
+#' satisfy recoding condition. There is a special auxiliary function \code{copy} 
+#' which just returns its argument. So, in the \code{recode} it just copies old 
 #' value (COPY in SPSS RECODE).  See examples.}}
 #' \code{\%into\%} tries to mimic SPSS 'INTO'. Values from left-hand side will 
 #' be assigned to right-hand side. You can use \code{\%to\%} expression in the 
@@ -74,7 +74,7 @@
 #' @param names name(-s) which will be given to \code{values} expression. For 
 #'   \code{\%into\%}.
 #'
-#' @return object of same form as \code{x} with recoded values
+#' @return object of the same form as \code{x} with recoded values
 #' @examples
 #' # some examples from SPSS manual
 #' # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
