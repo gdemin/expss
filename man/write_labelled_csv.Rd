@@ -125,7 +125,7 @@ read labelled 'xlsx' format. It is a simple Excel file with data and labels on
 separate sheets. It can help you with labelled data exchange in the
 corporate environment.}
 \item{\code{write_labelled_fst} and \code{read_labelled_fst}}{ write and read
-labelled data in the 'fst' format. See \link{https://www.fstpackage.org/}.
+labelled data in the 'fst' format. See \href{https://www.fstpackage.org/}{Fst Package}.
 Data and labels are stored in the separate files. With 'fst' format you can
 read and write a huge amount of data very quickly.}
 \item{write_labelled_spss}{ write 'csv' file with SPSS syntax for reading it.
