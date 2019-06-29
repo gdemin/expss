@@ -2,13 +2,16 @@
 #' 
 #' These functions are intended for usage inside \link{modify}, 
 #' \link{modify_if}, \link[base]{with} and \link[base]{within} functions. 
-#' sum/mean/sd/median/max/min always omits NA. \code{any_in_*} checks existence 
+#' sum/mean/sd/median/max/min by default omits NA. \code{any_in_*} checks existence 
 #' of any TRUE in each row/column. It is equivalent of \link[base]{any} applied 
 #' to each row/column. \code{all_in_*} is equivalent of \link[base]{all} applied
-#' to each row/column. They don't remove NA.
+#' to each row/column. 
 #' 
 #' @param ... data. Vectors, matrixes, data.frames, list. Shorter arguments
 #'   will be recycled.
+#'  
+#' @param na.rm logical. Contrary to the base 'sum' it is TRUE by default. Should missing values (including NaN)
+#'   be removed?
 #'   
 #' @param fun custom function that will be applied to \dots
 #' 
