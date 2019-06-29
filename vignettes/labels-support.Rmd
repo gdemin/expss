@@ -94,7 +94,6 @@ with(mtcars,
          beside = TRUE, 
          legend = TRUE)
      )
-boxplot(mpg ~ am, data = mtcars)
 ```
 
 There is a special function for variables labels support - `use_labels`. By now variables labels support available only for expression which will be evaluated inside data.frame.
@@ -104,9 +103,12 @@ use_labels(mtcars, table(am, vs))
 
 # linear regression
 use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %>% summary
+
+# boxplot with variable labels
+use_labels(mtcars, boxplot(mpg ~ am))
 ```
 
-And, finally, `ggplot2` graphics with variables and value labels:
+And, finally, `ggplot2` graphics with variables and value labels. Note that with ggplot2 version 3.2.0 and higher you need to explicitly convert labelled variables to factors in the `facet_grid` formula:
 ```{r, fig.height=6, fig.width=7}
 library(ggplot2, warn.conflicts = FALSE)
 
@@ -114,7 +116,7 @@ use_labels(mtcars, {
     # '..data' is shortcut for all 'mtcars' data.frame inside expression 
     ggplot(..data) +
         geom_point(aes(y = mpg, x = wt, color = qsec)) +
-        facet_grid(am ~ vs)
+        facet_grid(factor(am) ~ factor(vs))
 }) 
 ```
 
