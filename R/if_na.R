@@ -9,7 +9,7 @@
 #' vector/data.frame/matrix/list. Another alias for this is \code{mis_val}.}
 #' \item{\code{valid}}{ returns logical vector which indicate the presence of at
 #' least one not-NA value in row.  For vector or single column data.frame result
-#' is the same as with \link[base]{complete.cases}. There is a special case
+#' is the same as with \link[stats]{complete.cases}. There is a special case
 #' for data.frame of class \code{dichotomy}. In this case result indicate the
 #' presence of at least one 1 in a row.} }
 #'
@@ -18,7 +18,7 @@
 #'   \code{x}, or function (\link{criteria}) for \code{na_if}. See \link{recode}
 #'   for details.
 #' @param label a character of length 1. Label for \code{value} which replace NA.
-#' @param with_label logical. FALSE by default. Should we also remove labels of
+#' @param with_labels logical. FALSE by default. Should we also remove labels of
 #'   values which we recode to NA?
 #'
 #'  
@@ -116,7 +116,7 @@ if_na = function(x, value, label = NULL){
 
 #' @export
 #' @rdname if_na
-'%if_na%' = if_na
+'%if_na%' = function(x, value) if_na(x, value)
 
 #############
 #' @export
@@ -135,7 +135,7 @@ na_if = function(x, value, with_labels = FALSE){
 
 #' @rdname if_na
 #' @export
-'%na_if%' = na_if
+'%na_if%' = function(x, value) na_if(x, value)
 
 
 #' @rdname if_na
@@ -148,7 +148,7 @@ mis_val = na_if
 
 #' @rdname if_na
 #' @export
-'%mis_val%' = na_if
+'%mis_val%' = '%na_if%'
 
 
 
