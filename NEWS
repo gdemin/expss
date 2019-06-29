@@ -1,3 +1,17 @@
+0.9.0 (16.04.2019)
+================
+* 'recode' now can recode value labels to keep them consistent with values (see argument 'with_labels')
+* add alias 'rec' to recode with argument 'with_labels = TRUE' by default
+* now you can assign new labels in 'recode' ("TOP" = 4:5 ~ 5)
+* improve 'recode' performance
+* simplify 'recode' behavior. Now RHS and LHS part in the recoding formula should be single column object. However, you can still recode entire data.frame or list.
+* improve preformance of 'sum_row', 'mean_row', 'median_row' and etc.
+* change labelled 'csv' format. Now labels are stored in the same file as data. Labels are located in the commented lines at the begining of the file. Ispite of changing format, 'read_labelled_csv' should detect and read the old format automatically.
+* add new functions: 'read_labelled_xlsx' and 'write_labelled_xlsx'. Now you can save and restore labelled data to Excel file. Labels are stored on the separate sheet. 
+* add new functions: 'read_labelled_fst' and 'write_labelled_fst' for storing data in the 'fst' format (https://www.fstpackage.org/). With this format you can read and write a huge amount of labelled data very quickly.
+* Small bugfixes.
+
+
 0.8.11 (16.04.2019)
 ================
 * UPDATE IS REQUIRED. fixes for R>=3.6 and data.table >=1.12.2.

@@ -1,5 +1,5 @@
 context("write_labelled_*")
-if(isTRUE(getOption("covr"))){
+if(isTRUE(getOption("covr")) && dir.exists("data_files")){
     data(mtcars)
     mtcars = apply_labels(mtcars,
                           mpg = "Miles/(US) gallon",
