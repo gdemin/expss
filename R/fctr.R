@@ -56,7 +56,7 @@ fctr.labelled = function(x, ..., drop_unused_labels = FALSE, prepend_var_lab = T
     vallab = val_lab(x)
     varlab = var_lab(x)
     x = unlab(x)
-    stopif(anyDuplicated(vallab),"duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
+    !anyDuplicated(vallab) || stop("duplicated values in labels: ",paste(vallab[duplicated(vallab)],collapse=" "))
 
     uniqs=unique(x)
     vallab = labelled_and_unlabelled(uniqs,vallab) 
