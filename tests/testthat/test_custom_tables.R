@@ -839,32 +839,6 @@ if(isTRUE(getOption("covr"))) {
     
     expect_known_value(res, "rds/ctable32.rds",  update = FALSE)
     
-    mtcars32a = apply_labels(mtcars,
-                          mpg = "Miles/(US) gallon",
-                          cyl = "Number of cylinders",
-                          disp = "Displacement (cu.in.)",
-                          hp = "Gross horsepower",
-                          drat = "Rear axle ratio",
-                          wt = "Weight (lb/1000)",
-                          qsec = "1/4 mile time",
-                          vs = "Engine",
-                          vs = c("V-engine" = 0,
-                                 "Straight engine" = 1),
-                          am = "Transmission",
-                          am = c("Automatic" = 0,
-                                 "Manual"=1),
-                          gear = "Number of forward gears",
-                          carb = "Number of carburetors"
-    )    
-    res = mtcars32a %>%  
-        tab_cells(am %to% carb) %>%  
-        tab_cols(total(), vs) %>% 
-        tab_stat_cpct() %>% 
-        tab_stat_mean() %>% 
-        tab_pivot(stat_position = "inside_rows")   
-    
-    expect_known_value(res, "rds/ctable32a.rds",  update = FALSE) 
-    
     res = mtcars %>% 
         tab_cells(mpg, qsec, hp, disp) %>% 
         tab_weight(wt) %>% 

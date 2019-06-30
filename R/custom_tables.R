@@ -1059,7 +1059,7 @@ tab_last_hstack = function(data, stat_position = c("outside_columns",
 #' @rdname tables
 #' @export
 tab_pivot = function(data, stat_position = c("outside_rows",
-                                             "inside_rows", 
+                                             "inside_rows",
                                              "outside_columns",
                                              "inside_columns"), 
                      stat_label = c("inside", "outside")){
@@ -1111,7 +1111,7 @@ tab_transpose.intermediate_table = function(data){
 
 ################
 
-pivot_rows = function(data, stat_position = c("inside",  "outside"), 
+pivot_rows = function(data, stat_position = c("inside", "outside"), 
                       stat_label = c("inside", "outside")){
     stat_position = match.arg(stat_position)  
     stat_label = match.arg(stat_label)  
@@ -1128,19 +1128,15 @@ pivot_rows = function(data, stat_position = c("inside",  "outside"),
     old_colnames = colnames(results)
     labels_and_index = do.call(rbind, labels_and_index)
 
-    if(stat_position == "inside" ){
-        row_labels = strip_value_labels(results[["row_labels"]])
-        labels_and_index[["row_labels"]] = match(row_labels, 
-                                            unique(row_labels)
+    if(stat_position == "inside"){
+        labels_and_index[["row_labels"]] = match(results[["row_labels"]], 
+                                            unique(results[["row_labels"]])
         )
-        labels_and_index[["seq_num"]] = seq_len(nrow(labels_and_index))
         results = results[order(labels_and_index[["row_labels"]],
-                                labels_and_index[["label_index"]],
-                                labels_and_index[["seq_num"]]),
+                                labels_and_index[["label_index"]]),
                           ]
         labels_and_index = labels_and_index[order(labels_and_index[["row_labels"]],
-                                labels_and_index[["label_index"]],
-                                labels_and_index[["seq_num"]]),
+                                labels_and_index[["label_index"]]),
                           ]
         
     }
@@ -1155,14 +1151,6 @@ pivot_rows = function(data, stat_position = c("inside",  "outside"),
     
 }
 
-strip_value_labels = function(x){
-    x = strsplit(
-        remove_unnecessary_splitters(x),
-        split = "|", 
-        fixed = TRUE)
-    need_elem = seq_len(min(lengths(x)))
-    vapply(x, FUN = function(item) paste(item[need_elem], collapse = "|"), FUN.VALUE = character(1))
-}
 ################
 
 pivot_columns = function(data, stat_position = c("inside", "outside"), 
@@ -1173,9 +1161,8 @@ pivot_columns = function(data, stat_position = c("inside", "outside"),
     labels = data[[STAT_LABELS]]
     labels_index = seq_along(labels)
     
-    all_colnames = strip_value_labels(unlist(lapply(results, function(item) colnames(item)[-1])))
+    all_colnames = unlist(lapply(results, function(item) colnames(item)[-1]))
     colnames_index = match(all_colnames, unique(all_colnames))
-    seq_num = seq_along(colnames_index)
     results_ncols = vapply(results, NCOL, FUN.VALUE = numeric(1)) - 1 # 'row_labels' excluded
     
     results = lapply(labels_index, function(item_num){
@@ -1192,9 +1179,9 @@ pivot_columns = function(data, stat_position = c("inside", "outside"),
     
     labels_index = rep.int(labels_index, times = results_ncols)
     if(stat_position == "inside"){
-        new_order = order(colnames_index, labels_index, seq_num, decreasing = FALSE)
+        new_order = order(colnames_index, labels_index, decreasing = FALSE)
     } else {
-        new_order = order(labels_index, colnames_index, seq_num, decreasing = FALSE)   
+        new_order = order(labels_index, colnames_index, decreasing = FALSE)   
     }
     old_colnames = colnames(results)
     results = results[, c(1, new_order + 1), drop = FALSE]
