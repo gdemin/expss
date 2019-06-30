@@ -1,69 +1,149 @@
+#' Subtotal
+#' @param x a
+#'
+#' @param ... a
+#' @param position a
+#' @param prefix a
+#' @param new_label a
+#'
 #' @export
-net = function(x, ..., position = c("below", "above", "top", "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first", "last")){
+net = function(x, ..., 
+               position = c("below", "above", "top", "bottom"), 
+               prefix = "TOTAL ", 
+               new_label = c("all", "range", "first", "last")
+){
     UseMethod("net")
 }
 
 #' @export
-net.default = function(x, ..., position = c("below", "above", "top", "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first", "last")){
-     position = match.arg(position)  
-     new_label = match.arg(new_label)
-     possible_values = unique(x, nmax = 1)
-     args = list(...)
-     arg_names = names(args)
-     if(is.null(arg_names)) arg_names = rep("", length(args))
-     first_col = x
-     other_cols = vector(mode = "list", length = length(args))
-     for(i in seq_along(args)){
-         possible_values = possible_values[!is.na(possible_values)]
-         curr_net = args[[i]]
-         curr_names = arg_names[i]
-         if(!inherits(curr_net, "formula")){
-             if(!inherits(curr_net, "criterion")) curr_net = as.criterion(curr_net)
-             source_codes = x %i% curr_net
-             target = find_code(source_codes, possible_values, position = position)
-             frm_net = curr_net ~ target
-         } else {
-             frm_net = curr_net
-         }
-         recode_args = list(x, frm_net, new_label = new_label, with_labels = TRUE)
-         names(recode_args)[[2]] = curr_names 
-         # browser()
-         res = do.call(recode, recode_args)
-         possible_values = union(possible_values, unique(res)) 
-         if(!is.null(val_lab(res))) names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
-         other_cols[[i]] = res
-         frm_net[[3]] = NA
-         recode(first_col, with_labels = TRUE) = frm_net
-     }
-     res = c(list(first_col), other_cols)
-     # if(names(res)
-     do.call(mrset, res)
+net.numeric = function(x, ..., 
+                       position = c("below", "above", "top", "bottom"), 
+                       prefix = "TOTAL ", 
+                       new_label = c("all", "range", "first", "last")){
+    
+    # overlap = TRUE?
+    x = as.labelled(x) # we need this because all values should have labels
+    position = match.arg(position)  
+    new_label = match.arg(new_label)
+    possible_values = unique(x, nmax = 1)
+    args = list(...)
+    arg_names = names(args)
+    if(is.null(arg_names)) arg_names = rep("", length(args))
+    first_col = x
+    other_cols = vector(mode = "list", length = length(args))
+    for(i in seq_along(args)){
+        possible_values = possible_values[!is.na(possible_values)]
+        curr_net = args[[i]]
+        curr_names = arg_names[i]
+        if(!inherits(curr_net, "formula")){
+            if(!inherits(curr_net, "criterion")) curr_net = as.criterion(curr_net)
+            source_codes = x %i% curr_net
+            target = find_code(source_codes, possible_values, position = position)
+            frm_net = curr_net ~ target
+        } else {
+            frm_net = curr_net
+        }
+        recode_args = list(x, frm_net, new_label = new_label, with_labels = TRUE)
+        names(recode_args)[[2]] = curr_names 
+        # browser()
+        res = do.call(recode, recode_args)
+        possible_values = union(possible_values, unique(res)) 
+        if(!is.null(val_lab(res))) names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
+        other_cols[[i]] = res
+        frm_net[[3]] = NA
+        recode(first_col, with_labels = TRUE) = frm_net
+    }
+    res = c(list(first_col), other_cols)
+    # if(names(res)
+    do.call(mrset, res)
 }
 
+
+
+
 #' @export
-net.category = function(x, ..., position = c("below", "above", "top", "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first", "last")){
+net.default = function(x, ..., 
+                       position = c("below", "above", "top", "bottom"), 
+                       prefix = "TOTAL ", 
+                       new_label = c("all", "range", "first", "last")){
+    
+    # overlap = TRUE?
+    position = match.arg(position)  
+    new_label = match.arg(new_label)
+    labelled_x = as.labelled(x) 
+    translate_orig_to_num = function(criteria){
+        
+    }
+    args = list(...)
+    for(i in seq_along(args)){
+        curr_net = args[[i]]
+        inherits(curr_net, "formula") && 
+            stop("'net' -  manual coding for subtotals via formulas currently supported only for labelled numerics.")
+        if(!inherits(curr_net, "criterion")) curr_net = as.criterion(curr_net)
+        net_values = curr_net(x)
+        
+        recode_args = list(x, frm_net, new_label = new_label, with_labels = TRUE)
+        names(recode_args)[[2]] = curr_names 
+        # browser()
+        res = do.call(recode, recode_args)
+        possible_values = union(possible_values, unique(res)) 
+        if(!is.null(val_lab(res))) names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
+        other_cols[[i]] = res
+        frm_net[[3]] = NA
+        recode(first_col, with_labels = TRUE) = frm_net
+    }
+    res = c(list(first_col), other_cols)
+    # if(names(res)
+    do.call(mrset, res)
+}
+
+
+
+#' @export
+net.category = function(x, ..., 
+                        position = c("below", "above", "top", "bottom"), 
+                        prefix = "TOTAL ", 
+                        new_label = c("all", "range", "first", "last")
+){
     
 }
 
 #' @export
-net.dichotomy = function(x, ..., position = c("below", "above", "top", "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first", "last")){
+net.dichotomy = function(x, ..., 
+                         position = c("below", "above", "top", "bottom"), 
+                         prefix = "TOTAL ", 
+                         new_label = c("all", "range", "first", "last")
+){
     
 }
 
 #' @export
-net.list = function(x, ..., position = c("below", "above", "top", "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first", "last")){
-    
+net.list = function(x, ..., 
+                    position = c("below", "above", "top", "bottom"), 
+                    prefix = "TOTAL ", 
+                    new_label = c("all", "range", "first", "last")
+){
+    position = match.arg(position)
+    new_label = match.arg(new_label)
+    for(i in seq_along(x)){
+        x[[i]] = net(x[[i]], ..., position = position, prefix = prefix, new_label = new_label)
+    }
+    x
 }
 
 #' @export
-net.data.frame = function(x, ..., position = c("below", "above", "top", "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first", "last")){
+net.data.frame = function(x, ..., 
+                          position = c("below", "above", "top", "bottom"), 
+                          prefix = "TOTAL ", 
+                          new_label = c("all", "range", "first", "last")
+){
+    position = match.arg(position)
+    new_label = match.arg(new_label)
+    
+    lapply(x, net, ..., position = position, prefix = prefix, new_label = new_label)
     
 }
 
-
-construct_new_label = function(values, val_labs, prefix, new_label){
-            
-}
 
 
 find_code = function(codes, possible_values, position = c("below", "above", "bottom", "top")){
