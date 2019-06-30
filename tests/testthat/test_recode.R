@@ -695,4 +695,8 @@ if(isTRUE(getOption("covr"))) {
     recode(iris_2) = c(is.numeric ~ scale, is.factor ~ as.character)
     expect_equal(iris_2, res_iris)
     
+    char_vec = c("a", "b")
+    fac_vec = recode(char_vec, "b" ~ factor("a"), other ~ copy)
+    expect_equal(fac_vec, factor(c("a", "a")))
+    
 }
