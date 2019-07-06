@@ -122,12 +122,12 @@ mtcars %>%
     tab_cols(total(label = "#Total| |"), am) %>% 
     tab_stat_fun_df(
         function(x){
-            frm = reformulate(".", response = names(x)[1])
+            frm = reformulate(".", response = as.name(names(x)[1]))
             model = lm(frm, data = x)
             sheet('Coef.' = coef(model), 
                   confint(model)
             )
-        }    
+        }  
     ) %>% 
     tab_pivot() 
 ```
@@ -358,9 +358,10 @@ var_lab(nps) = "Net promoter score"
 val_lab(nps) = num_lab("
             -1 Detractors
              0 Neutralists    
-             1 Promoters    To export `expss` tables to *.xlsx you need to install excellent `openxlsx` package. To install it just type in the console `install.packages("openxlsx")`. On Windows system you may need also install RTools. It can be downloaded from CRAN: [RTools](https://cran.r-project.org/bin/windows/Rtools/).
+             1 Promoters    
+")
 
-
+```
 We can read, add or remove existing labels:
 ```R
 var_lab(nps) # get variable label
@@ -399,7 +400,6 @@ with(mtcars,
          beside = TRUE, 
          legend = TRUE)
      )
-boxplot(mpg ~ am, data = mtcars)
 ```
 
 There is a special function for variables labels support - `use_labels`. By now variables labels support available only for expression which will be evaluated inside data.frame.
@@ -409,9 +409,12 @@ use_labels(mtcars, table(am, vs))
 
 # linear regression
 use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %>% summary
+
+# boxplot with variable labels
+use_labels(mtcars, boxplot(mpg ~ am))
 ```
 
-And, finally, `ggplot2` graphics with variables and value labels:
+And, finally, `ggplot2` graphics with variables and value labels. Note that with ggplot2 version 3.2.0 and higher you need to explicitly convert labelled variables to factors in the `facet_grid` formula:
 ```R
 library(ggplot2, warn.conflicts = FALSE)
 
@@ -419,7 +422,7 @@ use_labels(mtcars, {
     # '..data' is shortcut for all 'mtcars' data.frame inside expression 
     ggplot(..data) +
         geom_point(aes(y = mpg, x = wt, color = qsec)) +
-        facet_grid(am ~ vs)
+        facet_grid(factor(am) ~ factor(vs))
 }) 
 ```
 

@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2018-11-12" />
+<meta name="date" content="2019-07-06" />
 
 <title>expss: Tables with Labels in R</title>
 
@@ -73,9 +73,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -100,21 +98,82 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -192,8 +251,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -202,6 +259,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -220,7 +287,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">expss: Tables with Labels in R</h1>
-<h4 class="date"><em>2018-11-12</em></h4>
+<h4 class="date">2019-07-06</h4>
 
 </div>
 
@@ -2172,12 +2239,12 @@ mtcars %&gt;%
     tab_cols(total(label = &quot;#Total| |&quot;), am) %&gt;% 
     tab_stat_fun_df(
         function(x){
-            frm = reformulate(&quot;.&quot;, response = names(x)[1])
+            frm = reformulate(&quot;.&quot;, response = as.name(names(x)[1]))
             model = lm(frm, data = x)
             sheet(&#39;Coef.&#39; = coef(model), 
                   confint(model)
             )
-        }    
+        }   
     ) %&gt;% 
     tab_pivot() </code></pre>
 <table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
@@ -5205,7 +5272,7 @@ w %&gt;%
 <div id="labels-support-for-base-r" class="section level2">
 <h2>Labels support for base R</h2>
 <p>Variable label is human readable description of the variable. R supports rather long variable names and these names can contain even spaces and punctuation but short variables names make coding easier. Variable label can give a nice, long description of variable. With this description it is easier to remember what those variable names refer to. Value labels are similar to variable labels, but value labels are descriptions of the values a variable can take. Labeling values means we don’t have to remember if 1=Extremely poor and 7=Excellent or vice-versa. We can easily get dataset description and variables summary with <code>info</code> function.</p>
-<p>The usual way to connect numeric data to labels in R is in factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, we can’t calculate means or other numeric statistics on factors.</p>
+<p>The usual way to connect numeric data to labels in R is factor variables. However, factors miss important features which the value labels provide. Factors only allow for integers to be mapped to a text label, these integers have to be a count starting at 1 and every value need to be labelled. Also, we can’t calculate means or other numeric statistics on factors.</p>
 <p>With labels we can manipulate short variable names and codes when we analyze our data but in the resulting tables and graphs we will see human-readable text.</p>
 <p>It is easy to store labels as variable attributes in R but most R functions cannot use them or even drop them. <code>expss</code> package integrates value labels support into base R functions and into functions from other packages. Every function which internally converts variable to factor will utilize labels. Labels will be preserved during variables subsetting and concatenation. Additionally, there is a function (<code>use_labels</code>) which greatly simplify variable labels usage. See examples below.</p>
 <div id="getting-and-setting-variable-and-value-labels" class="section level3">
@@ -5304,8 +5371,6 @@ val_lab(nps) = val_lab(nps) %n_d% &quot;Other&quot;</code></pre>
          legend = TRUE)
      )</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<pre class="r"><code>boxplot(mpg ~ am, data = mtcars)</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <p>There is a special function for variables labels support - <code>use_labels</code>. By now variables labels support available only for expression which will be evaluated inside data.frame.</p>
 <pre class="r"><code># table with dimension names
 use_labels(mtcars, table(am, vs)) </code></pre>
@@ -5337,14 +5402,17 @@ use_labels(mtcars, lm(mpg ~ wt + hp + qsec)) %&gt;% summary</code></pre>
 ## Residual standard error: 2.578 on 28 degrees of freedom
 ## Multiple R-squared:  0.8348, Adjusted R-squared:  0.8171 
 ## F-statistic: 47.15 on 3 and 28 DF,  p-value: 4.506e-11</code></pre>
-<p>And, finally, <code>ggplot2</code> graphics with variables and value labels:</p>
+<pre class="r"><code># boxplot with variable labels
+use_labels(mtcars, boxplot(mpg ~ am))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>And, finally, <code>ggplot2</code> graphics with variables and value labels. Note that with ggplot2 version 3.2.0 and higher you need to explicitly convert labelled variables to factors in the <code>facet_grid</code> formula:</p>
 <pre class="r"><code>library(ggplot2, warn.conflicts = FALSE)
 
 use_labels(mtcars, {
     # &#39;..data&#39; is shortcut for all &#39;mtcars&#39; data.frame inside expression 
     ggplot(..data) +
         geom_point(aes(y = mpg, x = wt, color = qsec)) +
-        facet_grid(am ~ vs)
+        facet_grid(factor(am) ~ factor(vs))
 }) </code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
