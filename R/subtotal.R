@@ -110,22 +110,39 @@ net.numeric = function(x, ...,
     new_label = match.arg(new_label)
     
     args = list(...)
+    if(identical(position, "top")){
+        args = rev(args)
+    }
     arg_names = names(args)
     if(is.null(arg_names)) arg_names = rep("", length(args))
     first_col = x
     other_cols = vector(mode = "list", length = length(args))
     for(i in seq_along(args)){
-        possible_values = possible_values[!is.na(possible_values)]
         curr_net = args[[i]]
+        inherits(curr_net, "formula") && 
+            stop("'net' -  manual coding for subtotals via formulas currently not supported.")
         label = arg_names[i]
-        if(!inherits(curr_net, "formula")){
-            if(!inherits(curr_net, "criterion")) curr_net = as.criterion(curr_net)
-            source_codes = all_values %i% curr_net
-            target = find_code(source_codes, possible_values, position = position)
-            frm_net = curr_net ~ target
+        possible_values = possible_values[!is.na(possible_values)]
+        if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
+            curr_net = as.criterion(curr_net)
+            
+        }  
+        if(inherits(curr_net, "criterion")){
+            source_codes = sort(all_values %i% curr_net)
         } else {
-            frm_net = curr_net
+            # we want this to provide possibility for custom sorting
+            # all items will be in the order as declasred in subtotal
+            source_codes = curr_net
+        }  
+        
+        target = find_code(source_codes, possible_values, position = position)
+        if(position %in% c("above", "below")){
+            new_codes = transform_codes(source_codes, cat_code = target, position = position)
+        } else {
+            new_codes = source_codes
         }
+        frm_net = curr_net ~ target
+        
         recode_args = list(x, frm_net, new_label = new_label, with_labels = TRUE)
         names(recode_args)[[2]] = label 
         # browser()
@@ -134,12 +151,18 @@ net.numeric = function(x, ...,
         if(!is.null(val_lab(res)) && (is.null(label) || is.na(label) || identical(label, ""))) {
             names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
         }
-        other_cols[[i]] = res
-        if(!add){
-            frm_net[[3]] = NA
-            recode(first_col, with_labels = TRUE) = frm_net
+        
+        frm_net[[3]] = NA
+        recode(first_col, with_labels = TRUE) = frm_net
+        if(add){
+            items = recode(x, from_to(source_codes, new_codes), with_labels = TRUE) 
+            other_cols[[i]] = list(items, res)
+        } else {
+            other_cols[[i]] = list(res)    
         }
+        
     }
+    other_cols = unlist(other_cols, recursive = FALSE, use.names = FALSE)
     res = c(list("v1" = first_col), setNames(other_cols, paste0("v", seq_along(other_cols) + 1)))
     # if(names(res)
     do.call(mrset, res)
@@ -167,6 +190,9 @@ net.default = function(x, ...,
     if(!is.factor(x)) x = factor(x, nmax = 1)
     possible_values = as.numeric(unique(x))
     args = list(...)
+    if(identical(position, "top")){
+        args = rev(args)
+    }
     arg_names = names(args)
     if(is.null(arg_names)) arg_names = rep("", length(args))
     labelled_x = as.labelled(x, label = varlab)
@@ -176,7 +202,7 @@ net.default = function(x, ...,
         possible_values = possible_values[!is.na(possible_values)]
         curr_net = args[[i]]
         inherits(curr_net, "formula") && 
-            stop("'net' -  manual coding for subtotals via formulas currently supported only for labelled numerics.")
+            stop("'net' -  manual coding for subtotals via formulas currently not supported.")
         
         label = arg_names[i]
         if(!inherits(curr_net, "criterion")) curr_net = as.criterion(curr_net)
@@ -217,6 +243,10 @@ net.category = function(x, ...,
     possible_values = all_values %d% NA
     val_lab(x) = val_lab(x) %u% setNames(possible_values, possible_values)
     args = list(...)
+    args = list(...)
+    if(identical(position, "top")){
+        args = rev(args)
+    }
     arg_names = names(args)
     if(is.null(arg_names)) arg_names = rep("", length(args))
     first_col = x
@@ -225,8 +255,7 @@ net.category = function(x, ...,
         possible_values = possible_values[!is.na(possible_values)]
         curr_net = args[[i]]
         inherits(curr_net, "formula") && 
-            stop("'net' -  manual coding for subtotals via formulas currently supported only for labelled numerics.")
-        
+            stop("'net' -  manual coding for subtotals via formulas currently not supported.") 
         label = arg_names[i]
 
         if(!inherits(curr_net, "criterion")) curr_net = as.criterion(curr_net)
@@ -436,6 +465,7 @@ find_code = function(codes, possible_values, position = c("below", "above", "bot
                        0)     # all is NA
                res[is.finite(res)][1]
                
+               
            },
            below = {
                # we need number x: x > max_code and x < next_code
@@ -467,5 +497,33 @@ find_code = function(codes, possible_values, position = c("below", "above", "bot
            }
            
     )
-    
+}
+
+# cat_code - result of the find_code
+transform_codes = function(codes, cat_code, position = c("below", "above")){
+    position = match.arg(position)
+    switch(position, 
+           above = {
+               n_codes = length(codes)
+               if(n_codes == 1) return(codes)
+               # We need number to place all codes between cat_code and min(codes) .
+               min_code = suppressWarnings(min(codes, na.rm = TRUE))
+               delta = (min_code - cat_code)/n_codes
+               new_max = min_code - delta/2
+               new_min = cat_code + delta/2
+               seq(new_min, new_max, length.out = n_codes)
+           },
+           below = {
+               n_codes = length(codes)
+               if(n_codes == 1) return(codes)
+               # We need number to place all codes between max(codes) and cat_code.
+               max_code = suppressWarnings(max(codes, na.rm = TRUE))
+               delta = (cat_code - max_code)/n_codes
+               new_max = cat_code - delta/2
+               new_min = max_code + delta/2
+               seq(new_min, new_max, length.out = n_codes)
+               
+           }
+           
+    )        
 }

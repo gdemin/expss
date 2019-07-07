@@ -1,4 +1,5 @@
 context("subtotal")
+suppressWarnings(RNGversion("3.5.0"))
 
 a = 1:7
 expect_known_value(cro(net(a, Bottom = 1:2, Top = 6:7, position = "below")),
@@ -14,8 +15,7 @@ expect_known_value(cro(net(a, Bottom = 1:2, Top = 6:7, position = "bottom")),
 
 expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, position = "below")),
                    "rds/subtotal5.rds", update = FALSE)
-expect_known_value(cro(subtotal(a, Bottom = 1:2 ~ 2.1, Top = 6:7 ~ 7.1, position = "below")),
-                   "rds/subtotal5.rds", update = FALSE)
+expect_error(cro(subtotal(a, Bottom = 1:2 ~ 2.1, Top = 6:7 ~ 7.1, position = "below")))
 expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, position = "above")),
                    "rds/subtotal6.rds", update = FALSE)
 expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, position = "top")),
@@ -106,7 +106,7 @@ mtcars = apply_labels(mtcars,
                       carb = "Number of carburetors"
 )
 
-expect_equal_to_reference(
+expect_known_value(
 mtcars %>% 
     tab_cells(mpg) %>% 
     tab_net_cells("Low mpg" = less(mean(mpg)), "High mpg" = greater_or_equal(mean(mpg))) %>% 
@@ -115,7 +115,7 @@ mtcars %>%
     tab_pivot()
 , "rds/subtotal19.rds", update = FALSE)
 
-expect_equal_to_reference(
+expect_known_value(
 mtcars %>% 
     tab_cells(mpg) %>% 
     tab_net_cells("Low mpg" = less(mean(mpg)), "High mpg" = greater_or_equal(mean(mpg))) %>% 
@@ -125,7 +125,7 @@ mtcars %>%
     tab_pivot()
 , "rds/subtotal20.rds", update = FALSE)
 
-expect_equal_to_reference(
+expect_known_value(
 mtcars %>% 
     tab_cells(mpg) %>% 
     tab_rows(gear) %>%
@@ -135,7 +135,7 @@ mtcars %>%
 , "rds/subtotal21.rds", update = FALSE)
 
 #####
-expect_equal_to_reference(
+expect_known_value(
     mtcars %>% 
         tab_cells(mpg) %>% 
         tab_subtotal_cells("Low mpg" = less(mean(mpg)), "High mpg" = greater_or_equal(mean(mpg)), position = "top") %>% 
@@ -144,7 +144,7 @@ expect_equal_to_reference(
         tab_pivot()
     , "rds/subtotal22.rds", update = FALSE)
 
-expect_equal_to_reference(
+expect_known_value(
     mtcars %>% 
         tab_cells(mpg) %>% 
         tab_net_cells("Low mpg" = less(mean(mpg)), "High mpg" = greater_or_equal(mean(mpg))) %>% 
@@ -154,7 +154,7 @@ expect_equal_to_reference(
         tab_pivot()
     , "rds/subtotal23.rds", update = FALSE)
 
-expect_equal_to_reference(
+expect_known_value(
     mtcars %>% 
         tab_cells(mpg) %>% 
         tab_rows(gear) %>%
@@ -175,12 +175,96 @@ val_lab(categ) = c(
 
 var_lab(categ) = "My multiple"
 
-expect_equal_to_reference(
+expect_known_value(
     cro(subtotal(categ, 1:2, 3:4))
     , "rds/subtotal25.rds", update = FALSE)
-expect_equal_to_reference(
+expect_known_value(
     cro(subtotal(categ, 1:2, 3:4, position = "bottom", prefix = "SUBTOTAL "))
     , "rds/subtotal26.rds", update = FALSE)
-expect_equal_to_reference(
+expect_known_value(
     cro(net(categ, 1:2, "ThreeFour" = 3:4, new_label = "range"))
     , "rds/subtotal27.rds", update = FALSE)
+
+
+################
+
+set.seed(311265)
+
+brand = sample(c(1:9),100, replace=TRUE)
+gender = sample(1:2, 100, replace=TRUE)
+wave = rep(1, 50)
+data2018 = data.frame(gender, brand, wave)
+
+brand = sample(c(1:9, 15, 21),50, replace=TRUE)
+gender = sample(1:2, 50, replace=TRUE)
+wave = rep(2,50)
+data2019 = data.frame(gender, brand, wave)
+
+data = rbind(data2018, data2019)
+
+val_lab(data$gender) = c("female"=2, "male"=1)
+val_lab(data$brand) = c("AA1" = 1, "AA2" = 2, "AA3" = 3, "AA4"=15, "AA5"=21, "BB1" = 4, "BB2" = 5, "BB3" = 6, "CC1" = 7, "CC2" = 8, "CC3" = 9)
+val_lab(data$wave) <- c("Wave 2018"=1, "Wave 2019"=2)
+
+expect_known_value(
+    data %>%
+        tab_cols(wave %nest% gender) %>%
+        tab_cells(brand) %>%
+        tab_subtotal_cells(c(1:3,15,21), 4:6, 7:9, position = "above", prefix = "GROUP ", new_label = "range") %>%
+        tab_stat_cases() %>%
+        tab_pivot()
+    
+    , "rds/subtotal28.rds", update = FALSE)
+
+
+expect_known_value(
+    data %>%
+        tab_cols(wave %nest% gender) %>%
+        tab_cells(brand) %>%
+        tab_subtotal_cells(c(3, 15, 21,2,1), 7:9, position = "above", prefix = "GROUP ", new_label = "range") %>%
+        tab_stat_cases() %>%
+        tab_pivot() 
+    , "rds/subtotal29.rds", update = FALSE)
+
+
+expect_known_value(
+    data %>%
+        tab_cols(wave %nest% gender) %>%
+        tab_cells(brand) %>%
+        tab_subtotal_cells(c(1:3,15,21), 4:6, 7:9, position = "below", prefix = "GROUP ", new_label = "range") %>%
+        tab_stat_cases() %>%
+        tab_pivot()
+    
+    , "rds/subtotal30.rds", update = FALSE)
+
+
+expect_known_value(
+    data %>%
+        tab_cols(wave %nest% gender) %>%
+        tab_cells(brand) %>%
+        tab_subtotal_cells(c(3, 15, 21,2,1), 7:9, position = "below", prefix = "GROUP ", new_label = "range") %>%
+        tab_stat_cases() %>%
+        tab_pivot() 
+    , "rds/subtotal31.rds", update = FALSE)
+
+
+expect_known_value(
+    data %>%
+        tab_cols(wave %nest% gender) %>%
+        tab_cells(brand) %>%
+        tab_subtotal_cells(c(1:3,15,21), 4:6, 7:9, position = "top", prefix = "GROUP ", new_label = "range") %>%
+        tab_stat_cases() %>%
+        tab_pivot()
+    
+    , "rds/subtotal30.rds", update = FALSE)
+
+
+expect_known_value(
+    data %>%
+        tab_cols(wave %nest% gender) %>%
+        tab_cells(brand) %>%
+        tab_subtotal_cells(c(3, 15, 21,2,1), 7:9, position = "bottom", prefix = "GROUP ", new_label = "range") %>%
+        tab_stat_cases() %>%
+        tab_pivot() 
+    , "rds/subtotal31.rds", update = FALSE)
+
