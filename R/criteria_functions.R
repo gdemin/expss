@@ -146,6 +146,11 @@ as.criterion = function(crit){
         if(is.list(crit) || is.data.frame(crit)){
             crit = c(crit, recursive = TRUE, use.names = FALSE)
         }
+        if(is.list(crit)){
+            # something we cannot convert to vector in the previous statement
+            return(Reduce("|", lapply(crit, as.criterion)))
+            
+        } 
         if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
             res = function(x) crit & !is.na(crit)
         } else {

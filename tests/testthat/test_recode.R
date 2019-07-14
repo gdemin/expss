@@ -231,6 +231,14 @@ if(isTRUE(getOption("covr"))) {
         recode(qvar, 1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, ge(11) ~ 3, other ~ 0),
         qvar_test
     )
+    expect_identical(
+        recode(qvar, 1 | 2 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, ge(11) ~ 3, other ~ 0),
+        qvar_test
+    )
+    expect_identical(
+        recode(qvar, c(1, 2 %thru% 5) ~ 1, 6 %thru% 10 ~ 2, ge(11) ~ 3, other ~ 0),
+        qvar_test
+    )
     recode(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% Inf ~ 3, other ~ 0)
     expect_identical(
         qvar,
