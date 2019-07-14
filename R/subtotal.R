@@ -252,12 +252,15 @@ net.category = function(x, ...,
                         new_label = c("all", "range", "first", "last"),
                         add = FALSE
 ){
-    position = match.arg(position)  
-    new_label = match.arg(new_label)
-    all_values = unique(unlist(lapply(x, unique, nmax = 1), use.names = FALSE))
+    extract_all_values = function(multiple_category) {
+        unique(unlist(lapply(multiple_category, unique, nmax = 1), use.names = FALSE))
+    }
+    all_values = extract_all_values(x)
     possible_values = all_values %d% NA
     val_lab(x) = val_lab(x) %u% setNames(possible_values, possible_values)
-    args = list(...)
+    position = match.arg(position)  
+    new_label = match.arg(new_label)
+    
     args = list(...)
     if(identical(position, "top")){
         args = rev(args)
@@ -272,10 +275,21 @@ net.category = function(x, ...,
         inherits(curr_net, "formula") && 
             stop("'net' -  manual coding for subtotals via formulas currently not supported.") 
         label = arg_names[i]
-
-        if(!inherits(curr_net, "criterion")) curr_net = as.criterion(curr_net)
-        source_codes = all_values %i% curr_net
-        target = find_code(source_codes, possible_values, position = position)
+        
+        if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
+            curr_net = as.criterion(curr_net)
+            
+        }  
+        if(inherits(curr_net, "criterion")){
+            source_codes = sort(all_values %i% curr_net)
+        } else {
+            # we want this to provide possibility for custom sorting
+            # all items will be in the order as declasred in subtotal
+            source_codes = curr_net
+        }  
+        new_codes = transform_codes(source_codes, possible_values)
+        target = find_code(new_codes, possible_values %d% source_codes, position = position)
+        
         frm_net = curr_net ~ target
         
         recode_args = list(x, frm_net, new_label = new_label, with_labels = TRUE)
@@ -289,15 +303,20 @@ net.category = function(x, ...,
         if(!is.null(val_lab(res)) && (is.null(label) || is.na(label) || identical(label, ""))) {
             names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
         }
-        other_cols[[i]] = res
-        if(!add){
-            frm_net[[3]] = NA
-            recode(first_col, with_labels = TRUE) = frm_net
+        frm_net[[3]] = NA
+        recode(first_col, with_labels = TRUE) = frm_net
+        if(add){
+            items = recode(x, from_to(source_codes, new_codes), with_labels = TRUE) 
+            other_cols[[i]] = list(items, res)
+            possible_values = union(possible_values, extract_all_values(items))
+        } else {
+            other_cols[[i]] = list(res)    
         }
     }
+    other_cols = unlist(other_cols, recursive = FALSE, use.names = FALSE)
     res = c(list("v1" = first_col), setNames(other_cols, paste0("v", seq_along(other_cols) + 1)))
-
-    do.call(mrset, res)    
+    # if(names(res)
+    do.call(mrset, res)  
 }
 
 #' @export
@@ -367,7 +386,7 @@ tab_net_cells = function(data, ...,
     
     curr = data[[CELL_VAR]]
     expr = substitute(
-        net(curr, ..., position = position, prefix = prefix, new_label = new_label)
+        net(x = curr, ..., position = position, prefix = prefix, new_label = new_label)
     )
     data[[CELL_VAR]] = calculate_internal(data[[DATA]], expr, parent.frame())
     data
@@ -384,7 +403,7 @@ tab_net_cols = function(data, ...,
            "'tab_net_*' - argument 'data' need to be result of 'tab_cells', 'tab_cols' or 'tab_rows'.") 
     curr = data[[COL_VAR]]
     expr = substitute(
-        net(curr, ..., position = position, prefix = prefix, new_label = new_label)
+        net(x = curr, ..., position = position, prefix = prefix, new_label = new_label)
     )
     data[[COL_VAR]] = calculate_internal(data[[DATA]], expr, parent.frame())
     data
@@ -402,7 +421,7 @@ tab_net_rows = function(data, ...,
            "'tab_net_*' - argument 'data' need to be result of 'tab_cells', 'tab_cols' or 'tab_rows'.") 
     curr = data[[ROW_VAR]]
     expr = substitute(
-        net(curr, ..., position = position, prefix = prefix, new_label = new_label)
+        net(x = curr, ..., position = position, prefix = prefix, new_label = new_label)
     )
     data[[ROW_VAR]] = calculate_internal(data[[DATA]], expr, parent.frame())
     data
@@ -421,7 +440,7 @@ tab_subtotal_cells = function(data, ...,
            "'tab_subtotal_*' - argument 'data' need to be result of 'tab_cells', 'tab_cols' or 'tab_rows'.") 
     curr = data[[CELL_VAR]]
     expr = substitute(
-        subtotal(curr, ..., position = position, prefix = prefix, new_label = new_label)
+        subtotal(x = curr, ..., position = position, prefix = prefix, new_label = new_label)
     )
     data[[CELL_VAR]] = calculate_internal(data[[DATA]], expr, parent.frame())
     data
@@ -439,7 +458,7 @@ tab_subtotal_cols = function(data, ...,
            "'tab_subtotal_*' - argument 'data' need to be result of 'tab_cells', 'tab_cols' or 'tab_rows'.") 
     curr = data[[COL_VAR]]
     expr = substitute(
-        subtotal(curr, ..., position = position, prefix = prefix, new_label = new_label)
+        subtotal(x = curr, ..., position = position, prefix = prefix, new_label = new_label)
     )
     data[[COL_VAR]] = calculate_internal(data[[DATA]], expr, parent.frame())
     data
@@ -457,7 +476,7 @@ tab_subtotal_rows = function(data, ...,
            "'tab_subtotal_*' - argument 'data' need to be result of 'tab_cells', 'tab_cols' or 'tab_rows'.") 
     curr = data[[ROW_VAR]]
     expr = substitute(
-        subtotal(curr, ..., position = position, prefix = prefix, new_label = new_label)
+        subtotal(x = curr, ..., position = position, prefix = prefix, new_label = new_label)
     )
     data[[ROW_VAR]] = calculate_internal(data[[DATA]], expr, parent.frame())
     data

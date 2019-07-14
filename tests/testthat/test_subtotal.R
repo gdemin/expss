@@ -1,8 +1,10 @@
 context("subtotal")
-suppressWarnings(RNGversion("3.5.0"))
+
 
 a = 1:7
 expect_known_value(cro(net(a, Bottom = 1:2, Top = 6:7, position = "below")),
+                   "rds/subtotal1.rds", update = FALSE)
+expect_known_value(cro(net(a, Bottom = function(x) x<3, Top = 6:7, position = "below")),
                    "rds/subtotal1.rds", update = FALSE)
 expect_known_value(cro(net(a, Bottom = 1 %thru% 2, Top = greater(5), position = "below")),
                    "rds/subtotal1.rds", update = FALSE)
@@ -54,6 +56,9 @@ var_lab(my_letters) = "MY LETTERS"
 expect_known_value(cro(subtotal(my_letters, c("b", "c", "d"), c("a", "e"), position = "below")),
                    "rds/subtotal13.rds", update = FALSE)
 
+expect_known_value(cro(subtotal(my_letters, function(x) x %in% c("b", "c", "d"), c("a", "e"), position = "below")),
+                   "rds/subtotal13.rds", update = FALSE)
+
 expect_known_value(cro(subtotal(my_letters, perl("b|c|d"), contains("a") | contains("e"), position = "below")),
                    "rds/subtotal13.rds", update = FALSE)
 
@@ -70,6 +75,8 @@ expect_known_value(cro(subtotal(my_letters, c("b", "c", "d"), c("a", "e"), posit
 expect_known_value(cro(subtotal(my_letters, "My bcd" = c("b", "c", "d"), "My ae" = c("a", "e"), 
                                 position = "top", new_label = "range")),
                    "rds/subtotal17.rds", update = FALSE)
+
+
 
 
 expect_known_value(
@@ -175,16 +182,56 @@ var_lab(categ) = "My multiple"
 expect_known_value(
     cro(subtotal(categ, 1:2, 3:4))
     , "rds/subtotal25.rds", update = FALSE)
+
+expect_known_value(
+    cro(subtotal(categ, 1:2, function(x) x>2))
+    , "rds/subtotal25.rds", update = FALSE)
+
 expect_known_value(
     cro(subtotal(categ, 1:2, 3:4, position = "bottom", prefix = "SUBTOTAL "))
     , "rds/subtotal26.rds", update = FALSE)
+
+expect_known_value(
+    cro(subtotal(categ, lte(2), gte(3), position = "bottom", prefix = "SUBTOTAL "))
+    , "rds/subtotal26.rds", update = FALSE)
+
 expect_known_value(
     cro(net(categ, 1:2, "ThreeFour" = 3:4, new_label = "range"))
     , "rds/subtotal27.rds", update = FALSE)
 
+expect_known_value(
+    cro(subtotal(categ, c(1, 3),  c(2, 4), position = "above"))
+    , "rds/subtotal27a.rds", update = FALSE)
+
+expect_known_value(
+    cro(subtotal(categ, c(1, 3),  c(2, 4), position = "above"))
+    , "rds/subtotal27a.rds", update = FALSE)
+
+# expect_known_value(
+#     categ %>% 
+#         tab_cells(mrset(v1, v2)) %>% 
+#         tab_subtotal_cells("Net One" = c(1, 3),  "Net Two" = c(2, 4), 
+#                            position = "above", 
+#                            prefix = "NET ", 
+#                            new_label = "first") %>% 
+#         tab_stat_cases() %>% 
+#         tab_pivot()
+#     , "rds/subtotal27b.rds", update = FALSE)
+
+expect_known_value(
+    cro(subtotal(categ, c(1, 3),  c(2, 4), position = "top"))
+    , "rds/subtotal27c.rds", update = FALSE)
+
+expect_known_value(
+    cro(subtotal(categ, ONE_THREE = c(1, 3),  position = "below"))
+    , "rds/subtotal27d.rds", update = FALSE)
+
+expect_known_value(
+    cro(subtotal(categ, c(1, 2),  c(3, 4, 5), position = "below"))
+    , "rds/subtotal27e.rds", update = FALSE)
 
 ################
-
+suppressWarnings(RNGversion("3.5.0"))
 set.seed(311265)
 
 brand = sample(c(1:9),100, replace=TRUE)
@@ -253,7 +300,7 @@ expect_known_value(
         tab_stat_cases() %>%
         tab_pivot()
     
-    , "rds/subtotal30.rds", update = FALSE)
+    , "rds/subtotal32.rds", update = FALSE)
 
 
 expect_known_value(
@@ -263,5 +310,5 @@ expect_known_value(
         tab_subtotal_cells(c(3, 15, 21,2,1), 7:9, position = "bottom", prefix = "GROUP ", new_label = "range") %>%
         tab_stat_cases() %>%
         tab_pivot() 
-    , "rds/subtotal31.rds", update = FALSE)
+    , "rds/subtotal33.rds", update = FALSE)
 
