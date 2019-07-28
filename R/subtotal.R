@@ -110,9 +110,9 @@ net.numeric = function(x, ...,
     new_label = match.arg(new_label)
     
     args = list(...)
-    if(identical(position, "top")){
-        args = rev(args)
-    }
+    # if(identical(position, "top")){
+    #     args = rev(args)
+    # }
     arg_names = names(args)
     if(is.null(arg_names)) arg_names = rep("", length(args))
     first_col = x
