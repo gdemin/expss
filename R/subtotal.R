@@ -101,10 +101,9 @@ net.numeric = function(x, ...,
                        new_label = c("all", "range", "first", "last"),
                        add = FALSE){
     
-    # overlap = TRUE?
-    # we need this because all values should have labels
     all_values = unique(x, nmax = 1) 
     possible_values = all_values %d% NA
+    # we need this because all values should have labels
     val_lab(x) = val_lab(x) %u% setNames(possible_values, possible_values)
     position = match.arg(position)  
     new_label = match.arg(new_label)
@@ -117,23 +116,34 @@ net.numeric = function(x, ...,
     if(is.null(arg_names)) arg_names = rep("", length(args))
     first_col = x
     other_cols = vector(mode = "list", length = length(args))
-    for(i in seq_along(args)){
-        curr_net = args[[i]]
+    subtotal_codes = lapply(args, function(curr_net){
         inherits(curr_net, "formula") && 
             stop("'net' -  manual coding for subtotals via formulas currently not supported.")
-        label = arg_names[i]
-        possible_values = possible_values[!is.na(possible_values)]
         if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
             curr_net = as.criterion(curr_net)
-            
         }  
         if(inherits(curr_net, "criterion")){
             source_codes = sort(all_values %i% curr_net)
         } else {
             # we want this to provide possibility for custom sorting
-            # all items will be in the order as declasred in subtotal
+            # all items will be in the order as declared in subtotal
             source_codes = curr_net
-        }  
+        } 
+        source_codes
+    })
+    # codes which is not included in subtotal
+    # all this complex things to place all codes in the correct order in the resulting variable
+    not_grouped_codes = vector(length(subtotal_codes)+1, mode = "list")
+    for(i in seq_along(subtotal_codes)){
+        not_grouped_codes = possible_values[possible_values<min(subtotal_codes[[i]], na.rm = TRUE)]        
+        possible_values = possible_values %d%  not_grouped_codes    
+    }
+    
+    not_grouped_codes[length(not_grouped_codes)] = possible_values
+    target_codes = vector(length(subtotal_codes)+1, mode = "list")
+    for(i in seq_along(subtotal_codes)){
+        curr_net = args[[i]]
+       
         new_codes = transform_codes(source_codes, possible_values)
         target = find_code(new_codes, possible_values %d% source_codes, position = position)
         
