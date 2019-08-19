@@ -376,7 +376,7 @@ internal_w_stat = function(x, weight, na.rm, check_weight_sum = FALSE, fun){
         if(length(weight) == 1L){
             weight = rep(weight, length(x))
         }
-        stopif(length(weight) != length(x),
+        (length(weight) == length(x)) || stop(
                "length of 'weight' must equal to the length of 'x' but length(x) == ", length(x),
                " and length(weight) == ", length(weight))
 
