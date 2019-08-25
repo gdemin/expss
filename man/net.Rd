@@ -61,7 +61,7 @@ created labels for nets and subtotals.}
 generated subtotal labels. Possible values are "all", "range", "first",
 "last". "all" collapse all labels, "range" take only first and last label,}
 
-\item{add}{logical. Auxiliary argument. Should we add subtotal to categories or replace categories with a net?}
+\item{add}{logical. Should we add subtotal to categories or replace categories with a net?}
 
 \item{data}{intermediate table. See \link{tables}.}
 }
@@ -92,11 +92,11 @@ val_lab(ol)  = num_lab("
                      99 Hard to say
                      ")
                      
-cro(subtotal(ol, TOP = 6:7, BOTTOM = 1:3, position = "top"))
+cro(subtotal(ol, BOTTOM = 1:3, TOP = 6:7, position = "top"))
 # autolabelling
-cro(subtotal(ol, 6:7, 1:3))
+cro(subtotal(ol, 1:3, 6:7))
 # replace original codes and another way of autolabelling
-cro(net(ol, 6:7, 1:3, new_label = "range", prefix = "NET "))
+cro(net(ol, 1:3, 6:7, new_label = "range", prefix = "NET "))
 
 # character variable and criteria usage
 items = c("apple", "banana", "potato", "orange", "onion", "tomato", "pineapple")

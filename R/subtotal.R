@@ -23,7 +23,7 @@
 #' @param new_label how we will combine original values for automatically
 #'   generated subtotal labels. Possible values are "all", "range", "first",
 #'   "last". "all" collapse all labels, "range" take only first and last label,
-#' @param add logical. Auxiliary argument. Should we add subtotal to categories or replace categories with a net? 
+#' @param add logical. Should we add subtotal to categories or replace categories with a net? 
 #' @param data intermediate table. See \link{tables}.
 #' @return multiple response set or list of the multiple response sets
 #' @examples 
@@ -40,11 +40,11 @@
 #'                      99 Hard to say
 #'                      ")
 #'                      
-#' cro(subtotal(ol, TOP = 6:7, BOTTOM = 1:3, position = "top"))
+#' cro(subtotal(ol, BOTTOM = 1:3, TOP = 6:7, position = "top"))
 #' # autolabelling
-#' cro(subtotal(ol, 6:7, 1:3))
+#' cro(subtotal(ol, 1:3, 6:7))
 #' # replace original codes and another way of autolabelling
-#' cro(net(ol, 6:7, 1:3, new_label = "range", prefix = "NET "))
+#' cro(net(ol, 1:3, 6:7, new_label = "range", prefix = "NET "))
 #' 
 #' # character variable and criteria usage
 #' items = c("apple", "banana", "potato", "orange", "onion", "tomato", "pineapple")
@@ -254,72 +254,16 @@ net.category = function(x, ...,
                         new_label = c("all", "range", "first", "last"),
                         add = FALSE
 ){
-    extract_all_values = function(multiple_category) {
-        unique(unlist(lapply(multiple_category, unique, nmax = 1), use.names = FALSE))
-    }
-    all_values = extract_all_values(x)
-    ################
-    possible_values = all_values %d% NA
-    val_lab(x) = val_lab(x) %u% setNames(possible_values, possible_values)
-    position = match.arg(position)  
+
+    position = match.arg(position)
     new_label = match.arg(new_label)
-    
-    args = list(...)
-    if(identical(position, "top")){
-        args = rev(args)
-    }
-    arg_names = names(args)
-    if(is.null(arg_names)) arg_names = rep("", length(args))
-    first_col = x
-    other_cols = vector(mode = "list", length = length(args))
-    for(i in seq_along(args)){
-        possible_values = possible_values[!is.na(possible_values)]
-        curr_net = args[[i]]
-        inherits(curr_net, "formula") && 
-            stop("'net' -  manual coding for subtotals via formulas currently not supported.") 
-        label = arg_names[i]
-        
-        if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
-            curr_net = as.criterion(curr_net)
-            
-        }  
-        if(inherits(curr_net, "criterion")){
-            source_codes = sort(all_values %i% curr_net)
-        } else {
-            # we want this to provide possibility for custom sorting
-            # all items will be in the order as declasred in subtotal
-            source_codes = curr_net
-        }  
-        new_codes = transform_codes(source_codes, possible_values)
-        target = find_code(new_codes, possible_values %d% source_codes, position = position)
-        
-        frm_net = curr_net ~ target
-        
-        recode_args = list(x, frm_net, new_label = new_label, with_labels = TRUE)
-        names(recode_args)[[2]] = label 
-        # TODO we do this only for labels
-        # should be rewritten
-        val_lab_res = val_lab(do.call(recode, recode_args))
-        res = target*((x %has% curr_net) | NA)
-        val_lab(res) = val_lab_res
-        possible_values = union(possible_values, unique(res, nmax = 1)) 
-        if(!is.null(val_lab(res)) && (is.null(label) || is.na(label) || identical(label, ""))) {
-            names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
-        }
-        frm_net[[3]] = NA
-        recode(first_col, with_labels = TRUE) = frm_net
-        if(add){
-            items = recode(x, from_to(source_codes, new_codes), with_labels = TRUE) 
-            other_cols[[i]] = list(items, res)
-            possible_values = union(possible_values, extract_all_values(items))
-        } else {
-            other_cols[[i]] = list(res)    
-        }
-    }
-    other_cols = unlist(other_cols, recursive = FALSE, use.names = FALSE)
-    res = c(list("v1" = first_col), setNames(other_cols, paste0("v", seq_along(other_cols) + 1)))
-    # if(names(res)
-    do.call(mrset, res)  
+    all_values = unique(unlist(lapply(x, unique, nmax = 1), use.names = FALSE))
+    val_lab(x) = val_lab(x) %u% setNames(all_values, all_values) 
+    res = lapply(x, net, ..., position = position, prefix = prefix, new_label = new_label, add = add)
+    res = unlist(res, recursive = FALSE, use.names = FALSE)
+    names(res) = paste0("v", seq_along(res))
+    res = do.call(mrset, res)
+    as.category(as.dichotomy(res, keep_unused = TRUE)) # to remove duplicates
 }
 
 #' @export
