@@ -108,9 +108,10 @@ net.default = function(x, ...,
     args = list(...)
     arg_names = names(args)
     if(is.null(arg_names)) arg_names = rep("", length(args))
-    all_values = unique(x, nmax = 1) 
     if(is.factor(x)) {
-        all_values = all_values %u% levels(x)
+        all_values = levels(x)
+    } else {
+        all_values = unique(x, nmax = 1) 
     }
     subtotal_codes = lapply(args, function(curr_net){
         if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
@@ -125,7 +126,12 @@ net.default = function(x, ...,
         } 
         source_codes
     })
-    all_values = sort(all_values %u% unlist(subtotal_codes, use.names = FALSE))
+    
+    if(is.factor(x)){
+        all_values = as.character(all_values) %u% sort(unlist(subtotal_codes, use.names = FALSE))
+    } else {
+        all_values = sort(all_values %u% unlist(subtotal_codes, use.names = FALSE))
+    }
     if(!is.numeric(x)){
         varlab = var_lab(x)
         x = match(x, all_values, incomparables = NA)
@@ -138,7 +144,7 @@ net.default = function(x, ...,
         
     } else {
         # we need this because all values should have labels
-        val_lab(x) = val_lab(x) %u% setNames(all_values, all_values)    
+        val_lab(x) = val_lab(x) %u% setNames(all_values, as.character(all_values))    
     }
 
     source_codes = create_groups(all_values, subtotal_codes)

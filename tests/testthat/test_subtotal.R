@@ -50,6 +50,12 @@ expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = gt(90
 expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = gt(90), position = "top")),
                    "rds/subtotal8c.rds", update = FALSE)
 
+expect_known_value(cro(subtotal(a, Bottom = 1:2, Top2 = 6:7, Top3 = 5:7, 'My new cat' = gt(90), position = "below")),
+                   "rds/subtotal8d.rds", update = FALSE)
+
+expect_known_value(cro(net(a, Bottom = 1:2, Top2 = 6:7, Top3 = 5:7, 'My new cat' = gt(90), position = "below")),
+                   "rds/subtotal8e.rds", update = FALSE)
+
 b = rev(a)
 val_lab(b) = c(Seven = 7)
 var_lab(b) = "My 'b'"
@@ -91,6 +97,12 @@ expect_known_value(cro(subtotal(my_letters, "My bcd" = c("b", "c", "d"), "My ae"
 
 
 expect_known_value(cro(subtotal(my_letters, "My bcd" = c("b", "c", "d"), "My ae" = c("a", "e"), c("x", "y", "z"),
+                                position = "above", new_label = "range")),
+                   "rds/subtotal18.rds", update = FALSE)
+
+expect_known_value(cro(subtotal(
+    set_var_lab(factor(my_letters), var_lab(my_letters)),
+    "My bcd" = c("b", "c", "d"), "My ae" = c("a", "e"), c("x", "y", "z"),
                                 position = "above", new_label = "range")),
                    "rds/subtotal18.rds", update = FALSE)
 
@@ -327,4 +339,8 @@ expect_known_value(
         tab_stat_cases() %>%
         tab_pivot() 
     , "rds/subtotal33.rds", update = FALSE)
+
+
+
+
 
