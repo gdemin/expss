@@ -1097,7 +1097,7 @@ multi_cro = function(cell_vars,
     })
     res = do.call(add_rows, res)
     rownames(res) = NULL
-    res
+    remove_unnecessary_splitters_from_table(res)
 }
 
 ######################################################

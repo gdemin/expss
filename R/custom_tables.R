@@ -1079,10 +1079,8 @@ tab_pivot = function(data, stat_position = c("outside_rows",
                  inside_columns = pivot_columns(data, stat_position = "inside", 
                                                 stat_label = stat_label)
     )
-    res[["row_labels"]] = remove_unnecessary_splitters(res[["row_labels"]])
-    colnames(res) = remove_unnecessary_splitters(colnames(res))
     rownames(res) = NULL
-    res
+    remove_unnecessary_splitters_from_table(res)
 }
 
 

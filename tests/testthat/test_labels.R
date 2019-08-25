@@ -31,7 +31,7 @@ context("val_lab")
 a = 1
 expect_error({val_lab(a) = c(a = 1, b = 1)})
 val_lab(a) = c(a = 1, a = 2)
-b = set_val_lab(1, c(a = 1, a_1 = 2))
+b = set_val_lab(1, c(a = 1, "a|" = 2))
 expect_identical(a, b)
 
 

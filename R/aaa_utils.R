@@ -263,17 +263,16 @@ format_to_character = function(x, digits = NULL){
 make_items_unique = function(x, with_warning = NULL, sep = "_"){
     if(!is.character(x)) x = as.character(x)
     if(length(x)<2) return(x)
-    if(!is.null(with_warning)){
-        if (anyDuplicated(x)){
+    if (anyDuplicated(x)){
+        duplicates = duplicated(x)
+        is.null(with_warning) || warning(paste0(with_warning, paste(paste0("'", x[duplicates], "'"), collapse = "', '")))
+        while(anyDuplicated(x)){
+            x[duplicates] = paste0(x[duplicates], "|")   
             duplicates = duplicated(x)
-            warning(paste0(with_warning, paste(paste0("'", x[duplicates], "'"), collapse = "', '")))
-            make.unique(x, sep = sep)
-        } else {
-            x
         }
-    } else {
-        make.unique(x, sep = sep)
-    }
+        
+    } 
+    x
 }
 
 

@@ -83,9 +83,17 @@ remove_unnecessary_splitters = function(labels){
     if(length(labels)>0) {
         labels = gsub("\\.\\.\\.bbbaaaddd__\\d+", "", labels, perl = TRUE)
         labels = gsub("\\|+", "|", labels, perl = TRUE)
-        labels = gsub("(^\\|)|(\\|$)", "", labels, perl = TRUE)
+        labels = gsub("(^\\|+)|(\\|+$)", "", labels, perl = TRUE)
     }
     labels
+}
+
+
+# remove duplicated or trailing splitters ('|') from labels
+remove_unnecessary_splitters_from_table = function(etable){
+    colnames(etable) = remove_unnecessary_splitters(colnames(etable))
+    etable[[1]] = remove_unnecessary_splitters(etable[[1]])
+    etable
 }
 
 ### add # as first symbol to the total title

@@ -86,13 +86,13 @@ attr(a, "labels") = c(a = 1, b = 1)
 expect_error(fctr(a))
 attr(a, "labels") = c(a = 1, a = 2)
 # expect_warning(fctr(a))
-expect_identical(suppressWarnings(fctr(a)), factor(1, levels = 1:2, labels = c("a","a_1")))
+expect_identical(suppressWarnings(fctr(a)), factor(1, levels = 1:2, labels = c("a","a|")))
 attr(a, "labels") = c(a = 1, a = 2, a = 3)
-expect_identical(suppressWarnings(fctr(a)), factor(1, levels = 1:3, labels = c("a","a_1","a_2")))
+expect_identical(suppressWarnings(fctr(a)), factor(1, levels = 1:3, labels = c("a","a|","a||")))
 
 
 a = 1:3
 val_lab(a) = c("1" = 3)
 # expect_warning(fctr(a))
-suppressWarnings(expect_identical(fctr(a), factor(c("1", "2", "1_1"), levels = c("1", "2", "1_1"))))
+suppressWarnings(expect_identical(fctr(a), factor(c("1", "2", "1|"), levels = c("1", "2", "1|"))))
 
