@@ -11,7 +11,7 @@ expect_known_value(add_rows(a, b, d, e), "rds/add_rows3.rds",  update = FALSE)
 
 expect_known_value(add_rows(a, b, nomatch_columns = "drop"), "rds/add_rows4.rds",  update = FALSE)
 expect_known_value(add_rows(a, b, d, nomatch_columns = "drop"), "rds/add_rows5.rds",  update = FALSE)
-expect_known_value(add_rows(a, b, d, e, nomatch_columns = "drop"), "rds/add_rows6.rds",  update = FALSE)
+
 
 expect_known_value(add_rows(a, NA), "rds/add_rows6a.rds",  update = FALSE)
 expect_known_value(add_rows(a, 1:2), "rds/add_rows6b.rds",  update = FALSE)
@@ -39,8 +39,7 @@ a = data.frame(x = 1:5, y = 6:10)
 expect_known_value(a, "rds/add_rows5.rds",  update = FALSE)
 
 a = data.frame(x = 1:5, y = 6:10)
-.add_rows(b, d, e, nomatch_columns = "drop")
-expect_known_value(a, "rds/add_rows6.rds",  update = FALSE)
+
 
 a = data.frame(x = 1:5, y = 6:10)
 .add_rows(NA)
