@@ -25,7 +25,18 @@ expect_known_value(cro(subtotal(a, Top = 6:7, Bottom = 1:2, position = "top")),
 expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, position = "bottom")),
                    "rds/subtotal8.rds", update = FALSE)
 
+
+
 val_lab(a) = c(Three = 3)
+expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = 98:99, position = "above")),
+                   "rds/subtotal8a.rds", update = FALSE)
+
+expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = gt(90), position = "above")),
+                   "rds/subtotal8b.rds", update = FALSE)
+
+expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = gt(90), position = "top")),
+                   "rds/subtotal8c.rds", update = FALSE)
+
 expect_known_value(cro(net(a, 2:3, position = "below")),
                    "rds/subtotal9.rds", update = FALSE)
 expect_known_value(cro(subtotal(a, 2:3, position = "above", new_label = "first")),

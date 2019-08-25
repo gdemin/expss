@@ -101,82 +101,135 @@ net.numeric = function(x, ...,
                        new_label = c("all", "range", "first", "last"),
                        add = FALSE){
     
-    all_values = unique(x, nmax = 1) 
-    possible_values = all_values %d% NA
-    # we need this because all values should have labels
-    val_lab(x) = val_lab(x) %u% setNames(possible_values, possible_values)
+
     position = match.arg(position)  
     new_label = match.arg(new_label)
     
     args = list(...)
-    # if(identical(position, "top")){
-    #     args = rev(args)
-    # }
     arg_names = names(args)
     if(is.null(arg_names)) arg_names = rep("", length(args))
-    first_col = x
-    other_cols = vector(mode = "list", length = length(args))
+    all_values = unique(x, nmax = 1)
     subtotal_codes = lapply(args, function(curr_net){
-        inherits(curr_net, "formula") && 
-            stop("'net' -  manual coding for subtotals via formulas currently not supported.")
         if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
             curr_net = as.criterion(curr_net)
         }  
         if(inherits(curr_net, "criterion")){
             source_codes = sort(all_values %i% curr_net)
         } else {
-            # we want this to provide possibility for custom sorting
+            # we want this to provide possibility for custom sorting.
             # all items will be in the order as declared in subtotal
             source_codes = curr_net
         } 
         source_codes
     })
-    # codes which is not included in subtotal
-    # all this complex things to place all codes in the correct order in the resulting variable
-    not_grouped_codes = vector(length(subtotal_codes)+1, mode = "list")
-    for(i in seq_along(subtotal_codes)){
-        not_grouped_codes = possible_values[possible_values<min(subtotal_codes[[i]], na.rm = TRUE)]        
-        possible_values = possible_values %d%  not_grouped_codes    
+    all_values = sort(all_values %u% unlist(subtotal_codes, use.names = FALSE))
+
+    # we need this because all values should have labels
+    val_lab(x) = val_lab(x) %u% setNames(all_values, all_values)
+    source_codes = create_groups(all_values, subtotal_codes)
+    new_codes = renumerate_codes(source_codes)
+    cat_codes = category_codes(new_codes, position = position)
+    not_in_net_old = unlist(lapply(source_codes, "[[", "copy_codes"), use.names = FALSE)
+    not_in_net_new = unlist(lapply(new_codes, "[[", "copy_codes"), use.names = FALSE)
+    in_net_old = lapply(source_codes, "[[", "cat_codes")
+    in_net_new = lapply(new_codes, "[[", "cat_codes")
+    length(not_in_net_old)==length(not_in_net_new) || stop("'net' - something is going wrong. Please, report to author.")
+    if(length(not_in_net_old)>0){
+        first_col = recode(x, from_to(not_in_net_old, not_in_net_new), with_labels = TRUE)
+    } else {
+        first_col = recode(x, TRUE ~ NA, with_labels = TRUE)
     }
-    
-    not_grouped_codes[length(not_grouped_codes)] = possible_values
-    target_codes = vector(length(subtotal_codes)+1, mode = "list")
-    for(i in seq_along(subtotal_codes)){
-        curr_net = args[[i]]
-       
-        new_codes = transform_codes(source_codes, possible_values)
-        target = find_code(new_codes, possible_values %d% source_codes, position = position)
+    j = 1 # for the case when we have empty subtotals
+    other_cols = vector(mode = "list", length = sum(lengths(in_net_old)>0))
+    for(i in seq_along(cat_codes)){
         
-        frm_net = curr_net ~ target
-        
-        recode_args = list(x, frm_net, new_label = new_label, with_labels = TRUE)
-        names(recode_args)[[2]] = label 
-        # browser()
-        res = do.call(recode, recode_args)
-        possible_values = union(possible_values, unique(res, nmax = 1)) 
-        if(!is.null(val_lab(res)) && (is.null(label) || is.na(label) || identical(label, ""))) {
-            names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
-        }
-        
-        frm_net[[3]] = NA
-        recode(first_col, with_labels = TRUE) = frm_net
-        if(add){
-            items = recode(x, from_to(source_codes, new_codes), with_labels = TRUE) 
-            other_cols[[i]] = list(items, res)
-            possible_values = union(possible_values, unique(items, nmax = 1))
-        } else {
-            other_cols[[i]] = list(res)    
+        if(length(in_net_old[[i]])>0){
+            frm_net = in_net_old[[i]] ~ cat_codes[[i]]
+            recode_args = list(x, frm_net, new_label = new_label, with_labels = TRUE)
+            label = arg_names[[i]] 
+            names(recode_args)[[2]] = label
+            arg_names[[i]]  = "" # we need to keep only orphan labels
+            res = do.call(recode, recode_args)
+            
+            if(!is.null(val_lab(res)) && (is.null(label) || is.na(label) || identical(label, ""))) {
+                names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
+            }
+            
+            if(add){
+                items = recode(x, from_to(in_net_old[[i]], in_net_new[[i]]), with_labels = TRUE) 
+                other_cols[[j]] = list(items, res)
+            } else {
+                other_cols[[j]] = list(res)    
+            }
+            j = j + 1
         }
         
     }
     other_cols = unlist(other_cols, recursive = FALSE, use.names = FALSE)
     res = c(list("v1" = first_col), setNames(other_cols, paste0("v", seq_along(other_cols) + 1)))
+    add_val_lab(res[[1]]) = setNames(cat_codes[arg_names!=""], arg_names[arg_names!=""])
     # if(names(res)
     do.call(mrset, res)
 }
 
+# @param subtotal_codes list of vectors with codes
+# @param possible_values vector with all original codes
+create_groups = function(possible_values, subtotal_codes){
+    res = list()
+    possible_values = possible_values %d% unique(unlist(subtotal_codes, use.names = FALSE))
+    for(i in seq_along(subtotal_codes)){
+        min_code = suppressWarnings(min(subtotal_codes[[i]], na.rm = TRUE)) 
+        if(is.finite(min_code)){
+            copy_codes = possible_values[possible_values<min_code]
+            possible_values = possible_values[possible_values>min_code & !(possible_values %in% subtotal_codes[[i]])]
+        } else {
+            copy_codes = integer(0) 
+        }
+        res[[i]] = list(copy_codes = copy_codes, cat_codes = subtotal_codes[[i]])
+    }
+    if(length(possible_values)>0) res[[i+1]] = list(copy_codes = possible_values)
+    res
+}
+
+# @param code_groups - result of `create_groups`
+renumerate_codes = function(code_groups){
+      res = list()
+      curr_max = 0
+      for(i in seq_along(code_groups)){
+          curr_codes = code_groups[[i]]
+          res[[i]] = list()
+          for(j in seq_along(curr_codes)){
+              new_seq = seq_along(curr_codes[[j]])
+              # if there is no codes for category we make single code as a placeholder
+              # it will be usefull when we will create category codes
+              if(length(new_seq)==0 & j==2) new_seq = 1 
+              new_codes = new_seq + curr_max
+              res[[i]][[j]] = new_codes
+              new_max = suppressWarnings(max(new_codes, na.rm = TRUE))
+              if(is.finite(new_max)){
+                curr_max = new_max        
+              }
+          }
+          names(res[[i]]) = names(code_groups[[i]])
+      }
+      res
+    
+}
 
 
+category_codes = function(new_codes, position = c("below", "above", "bottom", "top")){
+    position = match.arg(position)
+    cat_codes = lapply(new_codes, "[[", "cat_codes")
+    cat_codes = cat_codes[lengths(cat_codes)>0]
+    
+    # we shouldn't have empty cat_codes 
+    switch(position, 
+           above = unlist(lapply(cat_codes, min, na.rm = TRUE), use.names = FALSE) - 0.5 ,
+           below = unlist(lapply(cat_codes, max, na.rm = TRUE), use.names = FALSE) + 0.5 ,
+           top = seq_along(cat_codes) - length(cat_codes),
+           bottom =  seq_along(cat_codes) + max(unlist(new_codes), na.rm = TRUE)
+    )
+}
 
 #' @export
 net.default = function(x, ..., 
@@ -185,25 +238,27 @@ net.default = function(x, ...,
                        new_label = c("all", "range", "first", "last"),
                        add = FALSE){
     
-    # overlap = TRUE?
     position = match.arg(position)  
     new_label = match.arg(new_label)
     if(is.labelled(x) && is.numeric(x)){
         return(net.numeric(x, ..., position = position, prefix = prefix, new_label = new_label, add = add))
     }
-    # factor has usefull property that we can recode it as character
+    # factors have usefull property that we can recode it as character
     # but internally it have numeric codes which we can utilize to position totals 
     varlab = var_lab(x)
     if(!is.factor(x)) x = factor(x, nmax = 1)
+    labelled_x = as.labelled(x, label = varlab)
     all_values = unique(x, nmax = 1)
     possible_values = as.numeric(all_values) %d% NA
+    ########################
+    #########################
     args = list(...)
     if(identical(position, "top")){
         args = rev(args)
     }
     arg_names = names(args)
     if(is.null(arg_names)) arg_names = rep("", length(args))
-    labelled_x = as.labelled(x, label = varlab)
+   
     first_col = labelled_x
     other_cols = vector(mode = "list", length = length(args))
     for(i in seq_along(args)){
@@ -221,8 +276,8 @@ net.default = function(x, ...,
         if(inherits(curr_net, "criterion")){
             source_codes = as.numeric(sort(all_values %i% curr_net))
         } else {
-            # we want this to provide possibility for custom sorting
-            # all items will be in the order as declasred in subtotal
+            # we want this to provide possibility for custom sorting.
+            # All items will be in the order as declasred in subtotal
             source_codes = match(curr_net, levels(x)) %d% NA
         }  
         new_codes = transform_codes(source_codes, possible_values)
@@ -493,71 +548,3 @@ tab_subtotal_rows = function(data, ...,
 }
 
 
-find_code = function(codes, other_values, position = c("below", "above", "bottom", "top")){
-    position = match.arg(position)
-    switch(position, 
-           above = {
-               # We need number x: x < min_code and x > next_code.
-               # If some of the boundaries is NA we ignore them.
-               # All codes are always sorted in ascending order. So if 
-               # we want position above we need new code which is less than existing codes.
-               min_code = suppressWarnings(min(codes, na.rm = TRUE))
-               next_code = suppressWarnings(max(other_values[other_values < min_code], na.rm = TRUE))
-               res = c((min_code + next_code)/2, # no NAs 
-                       min_code - 1,             # next_code is NA
-                       suppressWarnings(min(other_values, na.rm = TRUE)) - 1, # min_code is NA
-                       0)     # all is NA
-               res[is.finite(res)][1]
-               
-               
-           },
-           below = {
-               # we need number x: x > max_code and x < next_code
-               # if some of the boundaries is NA we ignore them
-               max_code = suppressWarnings(max(codes, na.rm = TRUE))
-               next_code = suppressWarnings(min(other_values[other_values > max_code], na.rm = TRUE))
-               res = c((max_code + next_code)/2, # no NAs 
-                       max_code + 1,             # next_code is NA
-                       suppressWarnings(max(other_values, na.rm = TRUE)) + 1, # min_code is NA
-                       0)     # all is NA
-               res[is.finite(res)][1]
-               
-           },
-           top = {
-               min_code = suppressWarnings(min(c(codes, other_values), na.rm = TRUE))
-               if(is.finite(min_code)){
-                   min_code - 1
-               } else {
-                   0
-               }
-           },
-           bottom = {
-               max_code = suppressWarnings(max(c(codes, other_values), na.rm = TRUE))
-               if(is.finite(max_code)){
-                   max_code + 1
-               } else {
-                   0
-               }
-           }
-           
-    )
-}
-
-
-transform_codes = function(codes, possible_values){
-    # here we move all codes to one sequence
-    n_codes = length(codes)
-    if(n_codes == 1) return(codes)
-    other_possible_values = possible_values %d% codes
-    if(length(other_possible_values)==0) return(codes)
-    min_code = suppressWarnings(min(codes, na.rm = TRUE))
-    max_code = suppressWarnings(max(codes, na.rm = TRUE))
-    # we have connected codes, no other codes betweeb
-    if(!any(other_possible_values>min_code & other_possible_values<max_code)) return(codes)
-    last_code = suppressWarnings(
-        min(other_possible_values[other_possible_values>min_code & other_possible_values<max_code], na.rm = TRUE)
-        )
-    delta = (last_code - min_code)/n_codes
-    new_max = last_code - delta/2
-    seq(min_code, new_max, length.out = n_codes)
-}
