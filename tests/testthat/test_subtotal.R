@@ -28,14 +28,7 @@ expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, position = "bottom")
 
 
 val_lab(a) = c(Three = 3)
-expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = 98:99, position = "above")),
-                   "rds/subtotal8a.rds", update = FALSE)
 
-expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = gt(90), position = "above")),
-                   "rds/subtotal8b.rds", update = FALSE)
-
-expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = gt(90), position = "top")),
-                   "rds/subtotal8c.rds", update = FALSE)
 
 expect_known_value(cro(net(a, 2:3, position = "below")),
                    "rds/subtotal9.rds", update = FALSE)
@@ -47,9 +40,18 @@ expect_known_value(cro(subtotal(a, 2:3, position = "bottom")),
                    "rds/subtotal12.rds", update = FALSE)
 
 
+var_lab(a) = "My 'a'"
+expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = 98:99, position = "above")),
+                   "rds/subtotal8a.rds", update = FALSE)
+
+expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = gt(90), position = "above")),
+                   "rds/subtotal8b.rds", update = FALSE)
+
+expect_known_value(cro(subtotal(a, Bottom = 1:2, Top = 6:7, 'My new cat' = gt(90), position = "top")),
+                   "rds/subtotal8c.rds", update = FALSE)
+
 b = rev(a)
 val_lab(b) = c(Seven = 7)
-var_lab(a) = "My 'a'"
 var_lab(b) = "My 'b'"
 
 my_df = sheet(a, b)
@@ -74,12 +76,12 @@ expect_known_value(cro(subtotal(my_letters, perl("b|c|d"), contains("a") | conta
                    "rds/subtotal13.rds", update = FALSE)
 
 
-expect_known_value(cro(subtotal(my_letters, c("b", "c", "d"), c("a", "e"), position = "above", prefix = "NET ")),
+expect_known_value(cro(subtotal(my_letters,  c("a", "e"),  c("b", "c", "d"),position = "above", prefix = "NET ")),
                    "rds/subtotal14.rds", update = FALSE)
 
 expect_known_value(cro(subtotal(my_letters, c("a", "e"), c("b", "c", "d"), position = "top", new_label = "range")),
                    "rds/subtotal15.rds", update = FALSE)
-expect_known_value(cro(subtotal(my_letters, c("b", "c", "d"), c("a", "e"), position = "bottom", 
+expect_known_value(cro(subtotal(my_letters, c("a", "e"),  c("b", "c", "d"), position = "bottom", 
                                 prefix = "NET ", new_label = "first")),
                    "rds/subtotal16.rds", update = FALSE)
 
@@ -88,6 +90,9 @@ expect_known_value(cro(subtotal(my_letters, "My bcd" = c("b", "c", "d"), "My ae"
                    "rds/subtotal17.rds", update = FALSE)
 
 
+expect_known_value(cro(subtotal(my_letters, "My bcd" = c("b", "c", "d"), "My ae" = c("a", "e"), c("x", "y", "z"),
+                                position = "above", new_label = "range")),
+                   "rds/subtotal18.rds", update = FALSE)
 
 
 expect_known_value(
@@ -153,7 +158,7 @@ mtcars %>%
 expect_known_value(
     mtcars %>% 
         tab_cells(mpg) %>% 
-        tab_subtotal_cells("High mpg" = greater_or_equal(mean(mpg)), "Low mpg" = less(mean(mpg)), position = "top") %>% 
+        tab_subtotal_cells("Low mpg" = less(mean(mpg)), "High mpg" = greater_or_equal(mean(mpg)), position = "top") %>% 
         tab_cols(total(), carb) %>% 
         tab_stat_cases() %>% 
         tab_pivot()

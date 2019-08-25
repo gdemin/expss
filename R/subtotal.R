@@ -95,7 +95,7 @@ net = function(x, ...,
 }
 
 #' @export
-net.numeric = function(x, ..., 
+net.default = function(x, ..., 
                        position = c("below", "above", "top", "bottom"), 
                        prefix = "TOTAL ", 
                        new_label = c("all", "range", "first", "last"),
@@ -108,7 +108,10 @@ net.numeric = function(x, ...,
     args = list(...)
     arg_names = names(args)
     if(is.null(arg_names)) arg_names = rep("", length(args))
-    all_values = unique(x, nmax = 1)
+    all_values = unique(x, nmax = 1) 
+    if(is.factor(x)) {
+        all_values = all_values %u% levels(x)
+    }
     subtotal_codes = lapply(args, function(curr_net){
         if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
             curr_net = as.criterion(curr_net)
@@ -123,9 +126,21 @@ net.numeric = function(x, ...,
         source_codes
     })
     all_values = sort(all_values %u% unlist(subtotal_codes, use.names = FALSE))
+    if(!is.numeric(x)){
+        varlab = var_lab(x)
+        x = match(x, all_values, incomparables = NA)
+        subtotal_codes = lapply(subtotal_codes, match, all_values, incomparables = NA)
+        vallabs = as.character(all_values)
+        all_values = seq_along(all_values)
+        val_lab(x) = setNames(all_values, vallabs)
+        var_lab(x) = varlab
+        
+        
+    } else {
+        # we need this because all values should have labels
+        val_lab(x) = val_lab(x) %u% setNames(all_values, all_values)    
+    }
 
-    # we need this because all values should have labels
-    val_lab(x) = val_lab(x) %u% setNames(all_values, all_values)
     source_codes = create_groups(all_values, subtotal_codes)
     new_codes = renumerate_codes(source_codes)
     cat_codes = category_codes(new_codes, position = position)
@@ -134,6 +149,7 @@ net.numeric = function(x, ...,
     in_net_old = lapply(source_codes, "[[", "cat_codes")
     in_net_new = lapply(new_codes, "[[", "cat_codes")
     length(not_in_net_old)==length(not_in_net_new) || stop("'net' - something is going wrong. Please, report to author.")
+    
     if(length(not_in_net_old)>0){
         first_col = recode(x, from_to(not_in_net_old, not_in_net_new), with_labels = TRUE)
     } else {
@@ -168,7 +184,6 @@ net.numeric = function(x, ...,
     other_cols = unlist(other_cols, recursive = FALSE, use.names = FALSE)
     res = c(list("v1" = first_col), setNames(other_cols, paste0("v", seq_along(other_cols) + 1)))
     add_val_lab(res[[1]]) = setNames(cat_codes[arg_names!=""], arg_names[arg_names!=""])
-    # if(names(res)
     do.call(mrset, res)
 }
 
@@ -231,84 +246,6 @@ category_codes = function(new_codes, position = c("below", "above", "bottom", "t
     )
 }
 
-#' @export
-net.default = function(x, ..., 
-                       position = c("below", "above", "top", "bottom"), 
-                       prefix = "TOTAL ", 
-                       new_label = c("all", "range", "first", "last"),
-                       add = FALSE){
-    
-    position = match.arg(position)  
-    new_label = match.arg(new_label)
-    if(is.labelled(x) && is.numeric(x)){
-        return(net.numeric(x, ..., position = position, prefix = prefix, new_label = new_label, add = add))
-    }
-    # factors have usefull property that we can recode it as character
-    # but internally it have numeric codes which we can utilize to position totals 
-    varlab = var_lab(x)
-    if(!is.factor(x)) x = factor(x, nmax = 1)
-    labelled_x = as.labelled(x, label = varlab)
-    all_values = unique(x, nmax = 1)
-    possible_values = as.numeric(all_values) %d% NA
-    ########################
-    #########################
-    args = list(...)
-    if(identical(position, "top")){
-        args = rev(args)
-    }
-    arg_names = names(args)
-    if(is.null(arg_names)) arg_names = rep("", length(args))
-   
-    first_col = labelled_x
-    other_cols = vector(mode = "list", length = length(args))
-    for(i in seq_along(args)){
-        
-        curr_net = args[[i]]
-        inherits(curr_net, "formula") && 
-            stop("'net' -  manual coding for subtotals via formulas currently not supported.")
-        
-        label = arg_names[i]
-        possible_values = possible_values[!is.na(possible_values)]
-        if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
-            curr_net = as.criterion(curr_net)
-            
-        }  
-        if(inherits(curr_net, "criterion")){
-            source_codes = as.numeric(sort(all_values %i% curr_net))
-        } else {
-            # we want this to provide possibility for custom sorting.
-            # All items will be in the order as declasred in subtotal
-            source_codes = match(curr_net, levels(x)) %d% NA
-        }  
-        new_codes = transform_codes(source_codes, possible_values)
-        target = find_code(new_codes, possible_values %d% source_codes, position = position)
-        
-        frm_net = source_codes ~ target
-        
-        recode_args = list(labelled_x, frm_net, new_label = new_label, with_labels = TRUE)
-        names(recode_args)[[2]] = label 
-        
-        res = do.call(recode, recode_args)
-        possible_values = union(possible_values, unique(res, nmax = 1))  
-        if(!is.null(val_lab(res)) && (is.null(label) || is.na(label) || identical(label, ""))) {
-            names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
-        }
-        frm_net[[3]] = NA
-        recode(first_col, with_labels = TRUE) = frm_net
-        if(add){
-            items = recode(labelled_x, from_to(source_codes, new_codes), with_labels = TRUE) 
-            other_cols[[i]] = list(items, res)
-            possible_values = union(possible_values, unique(items, nmax = 1))
-        } else {
-            other_cols[[i]] = list(res)    
-        }
-    }
-    other_cols = unlist(other_cols, recursive = FALSE, use.names = FALSE)
-    res = c(list("v1" = first_col), setNames(other_cols, paste0("v", seq_along(other_cols) + 1)))
-    # if(names(res)
-    do.call(mrset, res)
-}
-
 
 #' @export
 net.category = function(x, ..., 
@@ -321,6 +258,7 @@ net.category = function(x, ...,
         unique(unlist(lapply(multiple_category, unique, nmax = 1), use.names = FALSE))
     }
     all_values = extract_all_values(x)
+    ################
     possible_values = all_values %d% NA
     val_lab(x) = val_lab(x) %u% setNames(possible_values, possible_values)
     position = match.arg(position)  
