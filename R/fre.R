@@ -109,7 +109,7 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
     weight = weight[valid]
     
     varlab = var_lab(x)
-    dtable = data.table(x = x, weight = weight)
+    dtable = as.data.table(x = x, weight = weight)
 
     dtable = dtable[!is.na(x), ]
     dtable = dtable[, list(weight = sum(weight, na.rm = TRUE)), by = "x"]
