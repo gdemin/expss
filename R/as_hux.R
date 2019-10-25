@@ -1,13 +1,5 @@
 #' Convert table to huxtable
 #' 
-#' @param x etable. Table to convert to a huxtable.
-#' @export
-as_huxtable <- function (x, ...) UseMethod("as_huxtable")
-
-#' @export
-#' @rdname as_huxtable
-as_hux <- as_huxtable
-
 #' @export
 #' @rdname as_huxtable
 as_huxtable.etable <- function(x, ...) {
@@ -155,7 +147,10 @@ as_huxtable.etable <- function(x, ...) {
       }
     }
   }
-  
+ 
+  # Check for caption
+  if(!is.null(attr(x, "caption")))
+    caption(ht) <- attr(x, "caption")
   
   return(ht)
   
