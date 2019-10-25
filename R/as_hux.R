@@ -2,6 +2,15 @@
 #' 
 #' @export
 #' @rdname as_huxtable
+#' @param x etable. Table to convert to a huxtable.
+as_huxtable <- function (x, ...) UseMethod("as_huxtable")
+
+#' @export
+#' @rdname as_huxtable
+as_hux <- as_huxtable
+
+#' @export
+#' @rdname as_huxtable
 as_huxtable.etable <- function(x, ...) {
   
   if (!requireNamespace("huxtable", quietly = TRUE)) {
