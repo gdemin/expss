@@ -150,3 +150,9 @@ expss_fix_encoding_on = function(){
 expss_fix_encoding_off = function(){
     options(expss.fix_encoding = NULL)
 }
+
+#' @rdname expss.options
+#' @export
+expss_fre_stat_lab = function(label = c("Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %")){
+    options(expss.fre_stat_lab = label)
+}
