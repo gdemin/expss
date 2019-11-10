@@ -15,7 +15,9 @@
 #' @param prepend_var_lab logical. Should we prepend variable label before value
 #'   labels? By default we will add variable labels to value labels only if
 #'   \code{x} or predictor is list (several variables).
-#'
+#' @param labels character vector of length 5. Labels for columns. By default it
+#'   is "Count", "Valid percent", "Percent", "Responses, \%", "Cumulative
+#'   responses, \%"
 #' @return object of class 'etable'. Basically it's a data.frame but class
 #'   is needed for custom methods.
 #'
@@ -64,12 +66,18 @@
 #' fre(list(score, brands))
 #' 
 #' @export
-fre = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE){
+fre = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE, 
+               labels = c("Count", "Valid percent", 
+                          "Percent", "Responses, %",
+                          "Cumulative responses, %")){
     UseMethod("fre")
 }
 
 #' @export
-fre.list = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = TRUE){
+fre.list = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = TRUE, 
+                    labels = c("Count", "Valid percent", 
+                               "Percent", "Responses, %",
+                               "Cumulative responses, %")){
     x = flat_list(x, flat_df = FALSE)
     res = lapply(x, fre, 
                  weight = weight, 
@@ -80,12 +88,14 @@ fre.list = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab
 }
 
 #' @export
-fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE){
+fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE, 
+                       labels = c("Count", "Valid percent", 
+                                  "Percent", "Responses, %",
+                                  "Cumulative responses, %")){
     str_x = expr_to_character(substitute(x))
-    if(is.null(x)){
-        stop(paste0(str_x," is NULL. Perhaps a variable does not exist."))
-    }
-    
+    !is.null(x) || stop(paste0("'fre' - ", str_x," is NULL. Perhaps a variable does not exist."))
+    length(labels) == 5 || stop(paste0("'fre' -  labels should have exactly five elements. But it has ", length(labels), "elements"))
+    labels = unlist(labels)
     check_sizes("fre", x, weight)
     
     if(is.dichotomy(x)){
@@ -170,10 +180,7 @@ fre.default = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_
         first_column_label = if_null(varlab, str_x)
     }
     res[[1]] = remove_unnecessary_splitters(res[[1]]) 
-    colnames(res) = c(first_column_label, 
-                      "Count", "Valid percent", 
-                      "Percent", "Responses, %",
-                      "Cumulative responses, %")
+    colnames(res) = c(first_column_label, labels)
     
     class(res) = union("etable", class(res))
     res
