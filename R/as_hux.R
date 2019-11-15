@@ -1,8 +1,51 @@
 #' Convert table to huxtable
 #' 
+#' This function converts a \code{etable} object to a \code{huxtable}.
+#' The \code{\link[huxtable]{huxtable-package}} needs to be installed to use this function.
+#' 
+#' \code{huxtable} allows to export formated tables to LaTeX, HTML, Microsoft Word, 
+#' Microsoft Excel, Microsoft Powerpoint, RTF and Markdown.
+#' 
+#' Tables in knitr or rmarkdown documents of type LaTeX or Word 
+#' are converted by default. 
+#' 
+#' 
 #' @export
 #' @rdname as_huxtable
 #' @param x etable. Table to convert to a huxtable.
+#' @examples 
+#' \dontrun{ 
+#' data(mtcars)
+#' mtcars = apply_labels(mtcars,
+#'                       mpg = "Miles/(US) gallon",
+#'                       cyl = "Number of cylinders",
+#'                       disp = "Displacement (cu.in.)",
+#'                       hp = "Gross horsepower",
+#'                       drat = "Rear axle ratio",
+#'                       wt = "Weight (1000 lbs)",
+#'                       qsec = "1/4 mile time",
+#'                       vs = "Engine",
+#'                       vs = c("V-engine" = 0,
+#'                              "Straight engine" = 1),
+#'                       am = "Transmission",
+#'                       am = c("Automatic" = 0,
+#'                              "Manual"=1),
+#'                       gear = "Number of forward gears",
+#'                       carb = "Number of carburetors"
+#' )
+#' 
+#' tab <- mtcars \%>\% 
+#' tab_cols(total(), am \%nest\% vs) \%>\% 
+#' tab_cells(mpg, hp) \%>\% 
+#' tab_stat_mean() \%>\% 
+#' tab_cells(cyl) \%>\% 
+#' tab_stat_cpct() \%>\% 
+#' tab_pivot() \%>\% 
+#' set_caption("Table 1. Some variables from mtcars dataset.")
+#' 
+#' ht <- as_huxtable(tab)
+#' ht
+#' }
 as_huxtable <- function (x, ...) UseMethod("as_huxtable")
 
 #' @export
