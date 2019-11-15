@@ -304,7 +304,9 @@ knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE
     }
     
     # For html or markdown use htmlTable, for latex and docx huxtable (if available)
-    if(type %in% c('html', 'markdown')) {
+    if(is.null(type)) {
+        print.etable(x)
+    } else if(type %in% c('html', 'markdown')) {
         knitr::knit_print(htmlTable.etable(x, digits = digits, 
                                     escape.html = escape.html,
                                        ..., row_groups = TRUE))
