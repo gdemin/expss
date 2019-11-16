@@ -15,6 +15,7 @@
 #' @param x etable. Table to convert to a huxtable.
 #' @examples 
 #' \dontrun{ 
+#' require(huxtable)
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
 #'                       mpg = "Miles/(US) gallon",
