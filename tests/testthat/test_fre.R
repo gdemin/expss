@@ -784,12 +784,5 @@ if(isTRUE(getOption("covr"))){
     cro_fun_df(iris[,-5], iris$Species, fun = sum_col, weight = runif(150))
   )
   
-expect_identical(
-fre(1, labels = c("N", "Valid, %", "%", "Resp, %", "Cum., %")),
-structure(list(`1` = c("1", "#Total", "<NA>"), N = c(1, 1, 0), 
-`Valid, %` = c(100, 100, NA), `%` = c(100, 100, 0), `Resp, %` = c(100, 
-100, NA), `Cum., %` = c(100, NA, NA)), row.names = c(NA, 
--3L), class = c("etable", "data.frame"))
-)
   
 }

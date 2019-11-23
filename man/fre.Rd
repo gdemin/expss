@@ -5,8 +5,7 @@
 \title{Simple frequencies with support of labels, weights and multiple response variables.}
 \usage{
 fre(x, weight = NULL, drop_unused_labels = TRUE,
-  prepend_var_lab = FALSE, labels = c("Count", "Valid percent",
-  "Percent", "Responses, \%", "Cumulative responses, \%"))
+  prepend_var_lab = FALSE)
 }
 \arguments{
 \item{x}{vector/data.frame/list. data.frames are considered as multiple
@@ -22,10 +21,6 @@ Default is TRUE.}
 \item{prepend_var_lab}{logical. Should we prepend variable label before value
 labels? By default we will add variable labels to value labels only if
 \code{x} or predictor is list (several variables).}
-
-\item{labels}{character vector of length 5. Labels for columns. By default it
-is "Count", "Valid percent", "Percent", "Responses, \%", "Cumulative
-responses, \%"}
 }
 \value{
 object of class 'etable'. Basically it's a data.frame but class
