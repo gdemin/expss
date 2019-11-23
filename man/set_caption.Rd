@@ -2,13 +2,19 @@
 % Please edit documentation in R/caption.R
 \name{set_caption}
 \alias{set_caption}
+\alias{set_caption.etable}
 \alias{get_caption}
+\alias{get_caption.etable}
 \alias{is.with_caption}
 \title{Add caption to the table}
 \usage{
-set_caption(obj, caption)
+set_caption(obj, ...)
 
-get_caption(obj)
+\method{set_caption}{etable}(obj, caption)
+
+get_caption(obj, ...)
+
+\method{get_caption}{etable}(obj)
 
 is.with_caption(obj)
 }

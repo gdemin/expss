@@ -14,6 +14,7 @@
 \alias{expss_output_rnotebook}
 \alias{expss_fix_encoding_on}
 \alias{expss_fix_encoding_off}
+\alias{expss_fre_stat_lab}
 \title{Options for controlling behavior of the package}
 \usage{
 expss_digits(digits = NULL)
@@ -39,6 +40,9 @@ expss_output_rnotebook()
 expss_fix_encoding_on()
 
 expss_fix_encoding_off()
+
+expss_fre_stat_lab(label = c("Count", "Valid percent", "Percent",
+  "Responses, \%", "Cumulative responses, \%"))
 }
 \arguments{
 \item{digits}{integer. Number of digits after decimal point. \code{NULL} is

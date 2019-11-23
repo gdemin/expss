@@ -3,8 +3,12 @@ Type: Package
 Title: Tables, Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
 Version: 0.9.1
 Maintainer: Gregory Demin <gdemin@gmail.com>
-Authors@R: person("Gregory", "Demin", email = "gdemin@gmail.com",
-         role = c("aut", "cre"))
+Authors@R: c(
+         person("Gregory", "Demin", email = "gdemin@gmail.com",
+         role = c("aut", "cre")),
+         person("Sebastian", "Jeworutzki", email="Sebastian.Jeworutzki@ruhr-uni-bochum.de", 
+         role = c("ctb"), comment = c(ORCID = "0000-0002-2671-5253"))
+         )
 URL: https://gdemin.github.io/expss/
 BugReports: https://github.com/gdemin/expss/issues
 Depends:
@@ -25,7 +29,8 @@ Suggests:
     ggplot2,
     testthat,
     openxlsx,
-    fst
+    fst,
+    huxtable
 Description: Package computes and displays tables with support for 'SPSS'-style 
         labels, multiple and nested banners, weights, multiple-response variables 
         and significance testing. There are facilities for nice output of tables 
