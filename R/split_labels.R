@@ -372,6 +372,10 @@ split_all_in_etable_for_print = function(data,
                                fixed = FALSE, 
                                perl = FALSE){
     if(NCOL(data) == 0) return(data)
+    
+    # for tibbles and etc:
+    data = as.data.frame(data, stringsAsFactors = FALSE, fix.empty.names = FALSE, check.names = FALSE)
+    ##
     data_ncol = NCOL(data)
     data = round_dataframe(data, digits = digits)
     cl_names = colnames(data)
