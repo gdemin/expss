@@ -178,10 +178,8 @@ compute.data.frame = function (data, ...) {
         curr_name = names(dots)[i]
         expr = dots[[i]]
         if(curr_name != ""){
+            curr_name = paste0("`", curr_name, "`")
             lhs_expr = parse(text = curr_name)
-            if(length(lhs_expr)!=1){
-                stop(paste0("'compute': incorrect expression '", curr_name, "'."))
-            }
             expr = bquote(.(lhs_expr[[1]])<-.(expr))
         }
         eval(expr, envir = e, enclos = baseenv())

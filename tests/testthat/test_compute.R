@@ -91,14 +91,7 @@ expect_identical(
 )
 
 
-expect_error(
-    compute(dfs, 
-            'b_total = sum_row(vars(b_1 %to% b_5))
-            a_total = 1
-            ' =
-            {random_numer = runif(.n)}
-    )
-)
+
 set.seed(1)
 expect_identical(
     compute(dfs, {
@@ -286,12 +279,13 @@ expect_identical(
 expect_identical(
     compute(dfs, 
         b_total = sum_row(b_1, b_2, b_4, b_5),
-        'var_lab(aa)' = "my label",
-        'val_lab(aa)' = c(one = 1, two = 2)
+        var_lab(aa) <- "my label",
+        val_lab(aa) <- c(one = 1, two = 2),
+        'var_lab(aa)' = "my label"
         
         
     ),
-    result_dfs3
+    sheet(result_dfs3, 'var_lab(aa)' = "my label")
 )
 
 
