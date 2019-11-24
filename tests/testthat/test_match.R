@@ -115,3 +115,10 @@ expect_equal(value_row_if(is_min, df), c(11, 11, 11, 11))
 
 expect_equal(value_col_if(is_max, df), c(v1 = 12, v2 = 12, v3 = NA))
 expect_equal(value_col_if(is_min, df), c(v1 = 11, v2 = 11, v3 = NA))
+
+
+df = sheet(v1 = c(11, 12, 11, 12), v2 = c(11, 11, 12, 11), v3 = NA)
+
+expect_equal(match_row(is_max, df), c(NA, 1, 2, 1))
+expect_equal(match_row(eq(max_row(df$v1, df$v2, df$v3)), df), c(1, 1, 2, 1))
+expect_equal(match_row(eq(min_row(df$v1, df$v2, df$v3)), df), c(1, 2, 1, 2))
