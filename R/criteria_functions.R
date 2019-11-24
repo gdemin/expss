@@ -152,7 +152,13 @@ as.criterion = function(crit){
             
         } 
         if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
-            res = function(x) crit & !is.na(crit)
+            res = function(x) {
+                res = crit & !is.na(crit)
+                if(length(res)==1L){
+                    res = rep(res, length(x))
+                } 
+                res
+            }
         } else {
             res = function(x) {
                 if(inherits(x, "POSIXct") & !inherits(crit, "POSIXct")){

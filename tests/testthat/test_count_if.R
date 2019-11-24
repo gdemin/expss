@@ -219,7 +219,9 @@ expect_identical(
 
 
 
+### issue #47
 
+expect_equal(count_if(TRUE, c(TRUE, FALSE), TRUE), 4)
 
 
 
