@@ -19,86 +19,170 @@
 \alias{significance_means}
 \title{Mark significant differences between columns in the table}
 \usage{
-tab_significance_options(data, sig_level = 0.05, min_base = 2,
-  delta_cpct = 0, delta_means = 0, correct = TRUE,
-  compare_type = "subtable", bonferroni = FALSE,
-  subtable_marks = "greater", inequality_sign = "both" \%in\%
-  subtable_marks, sig_labels = LETTERS,
+tab_significance_options(
+  data,
+  sig_level = 0.05,
+  min_base = 2,
+  delta_cpct = 0,
+  delta_means = 0,
+  correct = TRUE,
+  compare_type = "subtable",
+  bonferroni = FALSE,
+  subtable_marks = "greater",
+  inequality_sign = "both" \%in\% subtable_marks,
+  sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"),
-  sig_labels_first_column = c("-", "+"), sig_labels_chisq = c("<",
-  ">"), keep = c("percent", "cases", "means", "sd", "bases"),
+  sig_labels_first_column = c("-", "+"),
+  sig_labels_chisq = c("<", ">"),
+  keep = c("percent", "cases", "means", "sd", "bases"),
   row_margin = c("auto", "sum_row", "first_column"),
-  total_marker = "#", total_row = 1, digits = get_expss_digits(),
-  na_as_zero = FALSE, var_equal = FALSE, mode = c("replace",
-  "append"))
+  total_marker = "#",
+  total_row = 1,
+  digits = get_expss_digits(),
+  na_as_zero = FALSE,
+  var_equal = FALSE,
+  mode = c("replace", "append")
+)
 
-tab_last_sig_cpct(data, sig_level = 0.05, delta_cpct = 0,
-  min_base = 2, compare_type = "subtable", bonferroni = FALSE,
+tab_last_sig_cpct(
+  data,
+  sig_level = 0.05,
+  delta_cpct = 0,
+  min_base = 2,
+  compare_type = "subtable",
+  bonferroni = FALSE,
   subtable_marks = c("greater", "both", "less"),
-  inequality_sign = "both" \%in\% subtable_marks, sig_labels = LETTERS,
+  inequality_sign = "both" \%in\% subtable_marks,
+  sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"),
-  sig_labels_first_column = c("-", "+"), keep = c("percent", "bases"),
-  na_as_zero = FALSE, total_marker = "#", total_row = 1,
-  digits = get_expss_digits(), mode = c("replace", "append"),
-  label = NULL)
+  sig_labels_first_column = c("-", "+"),
+  keep = c("percent", "bases"),
+  na_as_zero = FALSE,
+  total_marker = "#",
+  total_row = 1,
+  digits = get_expss_digits(),
+  mode = c("replace", "append"),
+  label = NULL
+)
 
-tab_last_sig_means(data, sig_level = 0.05, delta_means = 0,
-  min_base = 2, compare_type = "subtable", bonferroni = FALSE,
+tab_last_sig_means(
+  data,
+  sig_level = 0.05,
+  delta_means = 0,
+  min_base = 2,
+  compare_type = "subtable",
+  bonferroni = FALSE,
   subtable_marks = c("greater", "both", "less"),
-  inequality_sign = "both" \%in\% subtable_marks, sig_labels = LETTERS,
+  inequality_sign = "both" \%in\% subtable_marks,
+  sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"),
-  sig_labels_first_column = c("-", "+"), keep = c("means", "sd",
-  "bases"), var_equal = FALSE, digits = get_expss_digits(),
-  mode = c("replace", "append"), label = NULL)
+  sig_labels_first_column = c("-", "+"),
+  keep = c("means", "sd", "bases"),
+  var_equal = FALSE,
+  digits = get_expss_digits(),
+  mode = c("replace", "append"),
+  label = NULL
+)
 
-tab_last_sig_cases(data, sig_level = 0.05, min_base = 2,
-  correct = TRUE, keep = c("cases", "bases"), total_marker = "#",
-  total_row = 1, digits = get_expss_digits(), mode = c("replace",
-  "append"), label = NULL)
+tab_last_sig_cases(
+  data,
+  sig_level = 0.05,
+  min_base = 2,
+  correct = TRUE,
+  keep = c("cases", "bases"),
+  total_marker = "#",
+  total_row = 1,
+  digits = get_expss_digits(),
+  mode = c("replace", "append"),
+  label = NULL
+)
 
-tab_last_sig_cell_chisq(data, sig_level = 0.05, min_base = 2,
+tab_last_sig_cell_chisq(
+  data,
+  sig_level = 0.05,
+  min_base = 2,
   subtable_marks = c("both", "greater", "less"),
-  sig_labels_chisq = c("<", ">"), correct = TRUE, keep = c("percent",
-  "bases", "none"), row_margin = c("auto", "sum_row", "first_column"),
-  total_marker = "#", total_row = 1, total_column_marker = "#",
-  digits = get_expss_digits(), mode = c("replace", "append"),
-  label = NULL)
+  sig_labels_chisq = c("<", ">"),
+  correct = TRUE,
+  keep = c("percent", "bases", "none"),
+  row_margin = c("auto", "sum_row", "first_column"),
+  total_marker = "#",
+  total_row = 1,
+  total_column_marker = "#",
+  digits = get_expss_digits(),
+  mode = c("replace", "append"),
+  label = NULL
+)
 
 tab_last_round(data, digits = get_expss_digits())
 
 tab_last_add_sig_labels(data, sig_labels = LETTERS)
 
-significance_cases(x, sig_level = 0.05, min_base = 2, correct = TRUE,
-  keep = c("cases", "bases"), total_marker = "#", total_row = 1,
-  digits = get_expss_digits())
+significance_cases(
+  x,
+  sig_level = 0.05,
+  min_base = 2,
+  correct = TRUE,
+  keep = c("cases", "bases"),
+  total_marker = "#",
+  total_row = 1,
+  digits = get_expss_digits()
+)
 
-significance_cell_chisq(x, sig_level = 0.05, min_base = 2,
+significance_cell_chisq(
+  x,
+  sig_level = 0.05,
+  min_base = 2,
   subtable_marks = c("both", "greater", "less"),
-  sig_labels_chisq = c("<", ">"), correct = TRUE, keep = c("percent",
-  "bases", "none"), row_margin = c("auto", "sum_row", "first_column"),
-  total_marker = "#", total_row = 1, total_column_marker = "#",
-  digits = get_expss_digits())
+  sig_labels_chisq = c("<", ">"),
+  correct = TRUE,
+  keep = c("percent", "bases", "none"),
+  row_margin = c("auto", "sum_row", "first_column"),
+  total_marker = "#",
+  total_row = 1,
+  total_column_marker = "#",
+  digits = get_expss_digits()
+)
 
 cell_chisq(cases_matrix, row_base, col_base, total_base, correct)
 
-significance_cpct(x, sig_level = 0.05, delta_cpct = 0, min_base = 2,
-  compare_type = "subtable", bonferroni = FALSE,
+significance_cpct(
+  x,
+  sig_level = 0.05,
+  delta_cpct = 0,
+  min_base = 2,
+  compare_type = "subtable",
+  bonferroni = FALSE,
   subtable_marks = c("greater", "both", "less"),
-  inequality_sign = "both" \%in\% subtable_marks, sig_labels = LETTERS,
+  inequality_sign = "both" \%in\% subtable_marks,
+  sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"),
-  sig_labels_first_column = c("-", "+"), keep = c("percent", "bases"),
-  na_as_zero = FALSE, total_marker = "#", total_row = 1,
-  digits = get_expss_digits())
+  sig_labels_first_column = c("-", "+"),
+  keep = c("percent", "bases"),
+  na_as_zero = FALSE,
+  total_marker = "#",
+  total_row = 1,
+  digits = get_expss_digits()
+)
 
 add_sig_labels(x, sig_labels = LETTERS)
 
-significance_means(x, sig_level = 0.05, delta_means = 0,
-  min_base = 2, compare_type = "subtable", bonferroni = FALSE,
+significance_means(
+  x,
+  sig_level = 0.05,
+  delta_means = 0,
+  min_base = 2,
+  compare_type = "subtable",
+  bonferroni = FALSE,
   subtable_marks = c("greater", "both", "less"),
-  inequality_sign = "both" \%in\% subtable_marks, sig_labels = LETTERS,
+  inequality_sign = "both" \%in\% subtable_marks,
+  sig_labels = LETTERS,
   sig_labels_previous_column = c("v", "^"),
-  sig_labels_first_column = c("-", "+"), keep = c("means", "sd",
-  "bases"), var_equal = FALSE, digits = get_expss_digits())
+  sig_labels_first_column = c("-", "+"),
+  keep = c("means", "sd", "bases"),
+  var_equal = FALSE,
+  digits = get_expss_digits()
+)
 }
 \arguments{
 \item{data}{data.frame/intermediate_table for \code{tab_*} functions.}

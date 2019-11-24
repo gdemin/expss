@@ -17,17 +17,18 @@
 \title{Change, rearrange or consolidate the values of an existing or new variable. Inspired by the RECODE command from SPSS.}
 \format{An object of class \code{numeric} of length 1.}
 \usage{
-recode(x, ..., with_labels = FALSE, new_label = c("all", "range",
-  "first", "last"))
+recode(
+  x,
+  ...,
+  with_labels = FALSE,
+  new_label = c("all", "range", "first", "last")
+)
 
-rec(x, ..., with_labels = TRUE, new_label = c("all", "range", "first",
-  "last"))
+rec(x, ..., with_labels = TRUE, new_label = c("all", "range", "first", "last"))
 
-recode(x, with_labels = FALSE, new_label = c("all", "range", "first",
-  "last")) <- value
+recode(x, with_labels = FALSE, new_label = c("all", "range", "first", "last")) <- value
 
-rec(x, with_labels = TRUE, new_label = c("all", "range", "first",
-  "last")) <- value
+rec(x, with_labels = TRUE, new_label = c("all", "range", "first", "last")) <- value
 
 ifs(...)
 

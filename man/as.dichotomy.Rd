@@ -7,17 +7,42 @@
 \alias{is.dichotomy}
 \title{Convert variable (possibly multiple choice question) to data.frame/matrix of dummy variables.}
 \usage{
-as.dichotomy(x, prefix = "v", keep_unused = FALSE, use_na = TRUE,
-  keep_values = NULL, keep_labels = NULL, drop_values = NULL,
-  drop_labels = NULL, presence = 1, absence = 0)
+as.dichotomy(
+  x,
+  prefix = "v",
+  keep_unused = FALSE,
+  use_na = TRUE,
+  keep_values = NULL,
+  keep_labels = NULL,
+  drop_values = NULL,
+  drop_labels = NULL,
+  presence = 1,
+  absence = 0
+)
 
-dummy(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-  keep_labels = NULL, drop_values = NULL, drop_labels = NULL,
-  presence = 1, absence = 0)
+dummy(
+  x,
+  keep_unused = FALSE,
+  use_na = TRUE,
+  keep_values = NULL,
+  keep_labels = NULL,
+  drop_values = NULL,
+  drop_labels = NULL,
+  presence = 1,
+  absence = 0
+)
 
-dummy1(x, keep_unused = FALSE, use_na = TRUE, keep_values = NULL,
-  keep_labels = NULL, drop_values = NULL, drop_labels = NULL,
-  presence = 1, absence = 0)
+dummy1(
+  x,
+  keep_unused = FALSE,
+  use_na = TRUE,
+  keep_values = NULL,
+  keep_labels = NULL,
+  drop_values = NULL,
+  drop_labels = NULL,
+  presence = 1,
+  absence = 0
+)
 
 is.dichotomy(x)
 }

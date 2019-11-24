@@ -41,8 +41,10 @@ expss_fix_encoding_on()
 
 expss_fix_encoding_off()
 
-expss_fre_stat_lab(label = c("Count", "Valid percent", "Percent",
-  "Responses, \%", "Cumulative responses, \%"))
+expss_fre_stat_lab(
+  label = c("Count", "Valid percent", "Percent", "Responses, \%",
+    "Cumulative responses, \%")
+)
 }
 \arguments{
 \item{digits}{integer. Number of digits after decimal point. \code{NULL} is

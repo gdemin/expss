@@ -16,64 +16,143 @@
 \alias{total}
 \title{Cross tabulation with support of labels, weights and multiple response variables.}
 \usage{
-cro(cell_vars, col_vars = total(), row_vars = NULL, weight = NULL,
-  subgroup = NULL, total_label = NULL, total_statistic = "u_cases",
-  total_row_position = c("below", "above", "none"))
+cro(
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-cro_cases(cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+cro_cases(
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-cro_cpct(cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+cro_cpct(
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-cro_rpct(cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+cro_rpct(
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-cro_tpct(cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+cro_tpct(
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-cro_cpct_responses(cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_responses", total_row_position = c("below",
-  "above", "none"))
+cro_cpct_responses(
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_responses",
+  total_row_position = c("below", "above", "none")
+)
 
-calc_cro(data, cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+calc_cro(
+  data,
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-calc_cro_cases(data, cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+calc_cro_cases(
+  data,
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-calc_cro_cpct(data, cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+calc_cro_cpct(
+  data,
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-calc_cro_rpct(data, cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+calc_cro_rpct(
+  data,
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-calc_cro_tpct(data, cell_vars, col_vars = total(), row_vars = NULL,
-  weight = NULL, subgroup = NULL, total_label = NULL,
-  total_statistic = "u_cases", total_row_position = c("below", "above",
-  "none"))
+calc_cro_tpct(
+  data,
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none")
+)
 
-calc_cro_cpct_responses(data, cell_vars, col_vars = total(),
-  row_vars = NULL, weight = NULL, subgroup = NULL,
-  total_label = NULL, total_statistic = "u_responses",
-  total_row_position = c("below", "above", "none"))
+calc_cro_cpct_responses(
+  data,
+  cell_vars,
+  col_vars = total(),
+  row_vars = NULL,
+  weight = NULL,
+  subgroup = NULL,
+  total_label = NULL,
+  total_statistic = "u_responses",
+  total_row_position = c("below", "above", "none")
+)
 
 total(x = 1, label = "#Total")
 }

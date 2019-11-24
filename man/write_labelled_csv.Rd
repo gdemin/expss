@@ -22,21 +22,46 @@
 \alias{old_read_labelled_csv}
 \title{Write labelled data to file or export file to SPSS syntax.}
 \usage{
-write_labelled_csv(x, filename, remove_new_lines = TRUE,
-  single_file = TRUE, ...)
+write_labelled_csv(
+  x,
+  filename,
+  remove_new_lines = TRUE,
+  single_file = TRUE,
+  ...
+)
 
-write_labelled_csv2(x, filename, remove_new_lines = TRUE,
-  single_file = TRUE, ...)
+write_labelled_csv2(
+  x,
+  filename,
+  remove_new_lines = TRUE,
+  single_file = TRUE,
+  ...
+)
 
-write_labelled_tab(x, filename, remove_new_lines = TRUE,
-  single_file = TRUE, ...)
+write_labelled_tab(
+  x,
+  filename,
+  remove_new_lines = TRUE,
+  single_file = TRUE,
+  ...
+)
 
-write_labelled_tab2(x, filename, remove_new_lines = TRUE,
-  single_file = TRUE, ...)
+write_labelled_tab2(
+  x,
+  filename,
+  remove_new_lines = TRUE,
+  single_file = TRUE,
+  ...
+)
 
-write_labelled_xlsx(x, filename, data_sheet = "data",
-  dict_sheet = "dictionary", remove_repeated = FALSE,
-  use_references = TRUE)
+write_labelled_xlsx(
+  x,
+  filename,
+  data_sheet = "data",
+  dict_sheet = "dictionary",
+  remove_repeated = FALSE,
+  use_references = TRUE
+)
 
 write_labelled_fst(x, filename, ...)
 
@@ -52,8 +77,13 @@ read_labelled_xlsx(filename, data_sheet = 1, dict_sheet = "dictionary")
 
 read_labelled_fst(filename, ...)
 
-write_labelled_spss(x, filename, fileEncoding = "",
-  remove_new_lines = TRUE, ...)
+write_labelled_spss(
+  x,
+  filename,
+  fileEncoding = "",
+  remove_new_lines = TRUE,
+  ...
+)
 
 write_labels_spss(x, filename)
 
@@ -63,11 +93,15 @@ create_dictionary(x, remove_repeated = FALSE, use_references = TRUE)
 
 apply_dictionary(x, dict)
 
-old_write_labelled_csv(x, filename, fileEncoding = "",
-  remove_new_lines = TRUE, ...)
+old_write_labelled_csv(
+  x,
+  filename,
+  fileEncoding = "",
+  remove_new_lines = TRUE,
+  ...
+)
 
-old_read_labelled_csv(filename, fileEncoding = "",
-  undouble_quotes = TRUE, ...)
+old_read_labelled_csv(filename, fileEncoding = "", undouble_quotes = TRUE, ...)
 }
 \arguments{
 \item{x}{data.frame to be written/data.frame whose labels to be written}

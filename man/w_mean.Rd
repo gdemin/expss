@@ -43,17 +43,13 @@ w_max(x, weight = NULL, na.rm = TRUE)
 
 w_min(x, weight = NULL, na.rm = TRUE)
 
-w_cov(x, weight = NULL, use = c("pairwise.complete.obs",
-  "complete.obs"))
+w_cov(x, weight = NULL, use = c("pairwise.complete.obs", "complete.obs"))
 
-w_cor(x, weight = NULL, use = c("pairwise.complete.obs",
-  "complete.obs"))
+w_cor(x, weight = NULL, use = c("pairwise.complete.obs", "complete.obs"))
 
-w_pearson(x, weight = NULL, use = c("pairwise.complete.obs",
-  "complete.obs"))
+w_pearson(x, weight = NULL, use = c("pairwise.complete.obs", "complete.obs"))
 
-w_spearman(x, weight = NULL, use = c("pairwise.complete.obs",
-  "complete.obs"))
+w_spearman(x, weight = NULL, use = c("pairwise.complete.obs", "complete.obs"))
 }
 \arguments{
 \item{x}{a numeric vector (matrix/data.frame for correlations) containing the

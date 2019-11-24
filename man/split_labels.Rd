@@ -7,15 +7,31 @@
 \alias{make_subheadings}
 \title{Split character vector to matrix/split columns in data.frame}
 \usage{
-split_labels(x, remove_repeated = TRUE, split = "\\\\|",
-  fixed = FALSE, perl = FALSE)
+split_labels(
+  x,
+  remove_repeated = TRUE,
+  split = "\\\\|",
+  fixed = FALSE,
+  perl = FALSE
+)
 
-split_columns(data, columns = 1, remove_repeated = TRUE,
-  split = "\\\\|", fixed = FALSE, perl = FALSE)
+split_columns(
+  data,
+  columns = 1,
+  remove_repeated = TRUE,
+  split = "\\\\|",
+  fixed = FALSE,
+  perl = FALSE
+)
 
-split_table_to_df(data, digits = get_expss_digits(),
-  remove_repeated = TRUE, split = "\\\\|", fixed = FALSE,
-  perl = FALSE)
+split_table_to_df(
+  data,
+  digits = get_expss_digits(),
+  remove_repeated = TRUE,
+  split = "\\\\|",
+  fixed = FALSE,
+  perl = FALSE
+)
 
 make_subheadings(data, number_of_columns = 1)
 }

@@ -3,7 +3,6 @@
 \docType{package}
 \name{expss}
 \alias{expss}
-\alias{expss-package}
 \title{expss: Tables with Labels and Some Useful Functions from Spreadsheets and SPSS Statistics}
 \description{
 'expss' package implements some popular functions from spreadsheets and SPSS 

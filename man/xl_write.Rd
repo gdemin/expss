@@ -10,48 +10,77 @@
 \usage{
 xl_write(obj, wb, sheet, row = 1, col = 1, ...)
 
-\method{xl_write}{default}(obj, wb, sheet, row = 1, col = 1,
-  rownames = FALSE, colnames = !is.atomic(obj), ...)
+\method{xl_write}{default}(
+  obj,
+  wb,
+  sheet,
+  row = 1,
+  col = 1,
+  rownames = FALSE,
+  colnames = !is.atomic(obj),
+  ...
+)
 
-\method{xl_write}{list}(obj, wb, sheet, row = 1, col = 1, gap = 1,
-  ...)
+\method{xl_write}{list}(obj, wb, sheet, row = 1, col = 1, gap = 1, ...)
 
-\method{xl_write}{etable}(obj, wb, sheet, row = 1, col = 1,
+\method{xl_write}{etable}(
+  obj,
+  wb,
+  sheet,
+  row = 1,
+  col = 1,
   remove_repeated = c("all", "rows", "columns", "none"),
-  format_table = TRUE, borders = list(borderColour = "black",
-  borderStyle = "thin"), header_format = openxlsx::createStyle(fgFill =
-  "#EBEBEB", halign = "left", wrapText = FALSE),
-  main_format = openxlsx::createStyle(halign = "right", numFmt =
-  format(0, nsmall = get_expss_digits())),
+  format_table = TRUE,
+  borders = list(borderColour = "black", borderStyle = "thin"),
+  header_format = openxlsx::createStyle(fgFill = "#EBEBEB", halign = "left", wrapText =
+    FALSE),
+  main_format = openxlsx::createStyle(halign = "right", numFmt = format(0, nsmall =
+    get_expss_digits())),
   row_labels_format = openxlsx::createStyle(halign = "left"),
-  total_format = openxlsx::createStyle(fgFill = "#EBEBEB", border =
-  "TopBottom", borderStyle = "thin", halign = "right", numFmt = "0"),
-  total_row_labels_format = openxlsx::createStyle(fgFill = "#EBEBEB",
-  border = "TopBottom", borderStyle = "thin", halign = "left"),
-  top_left_corner_format = header_format, row_symbols_to_remove = NULL,
-  col_symbols_to_remove = NULL, other_rows_formats = NULL,
-  other_row_labels_formats = NULL, other_cols_formats = NULL,
-  other_col_labels_formats = NULL, additional_cells_formats = NULL,
-  ...)
+  total_format = openxlsx::createStyle(fgFill = "#EBEBEB", border = "TopBottom",
+    borderStyle = "thin", halign = "right", numFmt = "0"),
+  total_row_labels_format = openxlsx::createStyle(fgFill = "#EBEBEB", border =
+    "TopBottom", borderStyle = "thin", halign = "left"),
+  top_left_corner_format = header_format,
+  row_symbols_to_remove = NULL,
+  col_symbols_to_remove = NULL,
+  other_rows_formats = NULL,
+  other_row_labels_formats = NULL,
+  other_cols_formats = NULL,
+  other_col_labels_formats = NULL,
+  additional_cells_formats = NULL,
+  ...
+)
 
-\method{xl_write}{with_caption}(obj, wb, sheet, row = 1, col = 1,
+\method{xl_write}{with_caption}(
+  obj,
+  wb,
+  sheet,
+  row = 1,
+  col = 1,
   remove_repeated = c("all", "rows", "columns", "none"),
-  format_table = TRUE, borders = list(borderColour = "black",
-  borderStyle = "thin"), header_format = openxlsx::createStyle(fgFill =
-  "#EBEBEB", halign = "left", wrapText = FALSE),
-  main_format = openxlsx::createStyle(halign = "right", numFmt =
-  format(0, nsmall = get_expss_digits())),
+  format_table = TRUE,
+  borders = list(borderColour = "black", borderStyle = "thin"),
+  header_format = openxlsx::createStyle(fgFill = "#EBEBEB", halign = "left", wrapText =
+    FALSE),
+  main_format = openxlsx::createStyle(halign = "right", numFmt = format(0, nsmall =
+    get_expss_digits())),
   row_labels_format = openxlsx::createStyle(halign = "left"),
-  total_format = openxlsx::createStyle(fgFill = "#EBEBEB", border =
-  "TopBottom", borderStyle = "thin", halign = "right", numFmt = "0"),
-  total_row_labels_format = openxlsx::createStyle(fgFill = "#EBEBEB",
-  border = "TopBottom", borderStyle = "thin", halign = "left"),
-  top_left_corner_format = header_format, row_symbols_to_remove = NULL,
-  col_symbols_to_remove = NULL, other_rows_formats = NULL,
-  other_row_labels_formats = NULL, other_cols_formats = NULL,
-  other_col_labels_formats = NULL, additional_cells_formats = NULL,
-  caption_format = openxlsx::createStyle(textDecoration = "bold", halign
-  = "left"), ...)
+  total_format = openxlsx::createStyle(fgFill = "#EBEBEB", border = "TopBottom",
+    borderStyle = "thin", halign = "right", numFmt = "0"),
+  total_row_labels_format = openxlsx::createStyle(fgFill = "#EBEBEB", border =
+    "TopBottom", borderStyle = "thin", halign = "left"),
+  top_left_corner_format = header_format,
+  row_symbols_to_remove = NULL,
+  col_symbols_to_remove = NULL,
+  other_rows_formats = NULL,
+  other_row_labels_formats = NULL,
+  other_cols_formats = NULL,
+  other_col_labels_formats = NULL,
+  additional_cells_formats = NULL,
+  caption_format = openxlsx::createStyle(textDecoration = "bold", halign = "left"),
+  ...
+)
 }
 \arguments{
 \item{obj}{\code{table} - result of \link{cro}, \link{fre} and etc.

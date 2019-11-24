@@ -49,8 +49,7 @@ tab_total_label(data, ...)
 
 tab_total_statistic(data, ...)
 
-tab_total_row_position(data, total_row_position = c("below", "above",
-  "none"))
+tab_total_row_position(data, total_row_position = c("below", "above", "none"))
 
 tab_subgroup(data, subgroup = NULL)
 
@@ -58,9 +57,12 @@ tab_row_label(data, ..., label = NULL)
 
 tab_stat_fun(data, ..., label = NULL, unsafe = FALSE)
 
-tab_stat_mean_sd_n(data, weighted_valid_n = FALSE, labels = c("Mean",
-  "Std. dev.", ifelse(weighted_valid_n, "Valid N", "Unw. valid N")),
-  label = NULL)
+tab_stat_mean_sd_n(
+  data,
+  weighted_valid_n = FALSE,
+  labels = c("Mean", "Std. dev.", ifelse(weighted_valid_n, "Valid N", "Unw. valid N")),
+  label = NULL
+)
 
 tab_stat_mean(data, label = "Mean")
 
@@ -82,31 +84,65 @@ tab_stat_unweighted_valid_n(data, label = "Unw. valid N")
 
 tab_stat_fun_df(data, ..., label = NULL, unsafe = FALSE)
 
-tab_stat_cases(data, total_label = NULL, total_statistic = "u_cases",
-  total_row_position = c("below", "above", "none"), label = NULL)
+tab_stat_cases(
+  data,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none"),
+  label = NULL
+)
 
-tab_stat_cpct(data, total_label = NULL, total_statistic = "u_cases",
-  total_row_position = c("below", "above", "none"), label = NULL)
+tab_stat_cpct(
+  data,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none"),
+  label = NULL
+)
 
-tab_stat_cpct_responses(data, total_label = NULL,
-  total_statistic = "u_responses", total_row_position = c("below",
-  "above", "none"), label = NULL)
+tab_stat_cpct_responses(
+  data,
+  total_label = NULL,
+  total_statistic = "u_responses",
+  total_row_position = c("below", "above", "none"),
+  label = NULL
+)
 
-tab_stat_tpct(data, total_label = NULL, total_statistic = "u_cases",
-  total_row_position = c("below", "above", "none"), label = NULL)
+tab_stat_tpct(
+  data,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none"),
+  label = NULL
+)
 
-tab_stat_rpct(data, total_label = NULL, total_statistic = "u_cases",
-  total_row_position = c("below", "above", "none"), label = NULL)
+tab_stat_rpct(
+  data,
+  total_label = NULL,
+  total_statistic = "u_cases",
+  total_row_position = c("below", "above", "none"),
+  label = NULL
+)
 
-tab_last_vstack(data, stat_position = c("outside_rows", "inside_rows"),
-  stat_label = c("inside", "outside"), label = NULL)
+tab_last_vstack(
+  data,
+  stat_position = c("outside_rows", "inside_rows"),
+  stat_label = c("inside", "outside"),
+  label = NULL
+)
 
-tab_last_hstack(data, stat_position = c("outside_columns",
-  "inside_columns"), stat_label = c("inside", "outside"), label = NULL)
+tab_last_hstack(
+  data,
+  stat_position = c("outside_columns", "inside_columns"),
+  stat_label = c("inside", "outside"),
+  label = NULL
+)
 
-tab_pivot(data, stat_position = c("outside_rows", "inside_rows",
-  "outside_columns", "inside_columns"), stat_label = c("inside",
-  "outside"))
+tab_pivot(
+  data,
+  stat_position = c("outside_rows", "inside_rows", "outside_columns", "inside_columns"),
+  stat_label = c("inside", "outside")
+)
 
 tab_transpose(data)
 }

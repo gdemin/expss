@@ -7,8 +7,16 @@
 \usage{
 compare_proportions(prop1, prop2, base1, base2, common_base = 0)
 
-compare_means(mean1, mean2, sd1, sd2, base1, base2, common_base = 0,
-  var_equal = FALSE)
+compare_means(
+  mean1,
+  mean2,
+  sd1,
+  sd2,
+  base1,
+  base2,
+  common_base = 0,
+  var_equal = FALSE
+)
 }
 \arguments{
 \item{prop1}{a numeric vector of proportions in the group 1. Values should be

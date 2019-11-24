@@ -8,12 +8,21 @@
 \usage{
 as.datatable_widget(data, ...)
 
-\method{as.datatable_widget}{etable}(data, repeat_row_labels = FALSE,
-  show_row_numbers = FALSE, digits = get_expss_digits(), ...)
+\method{as.datatable_widget}{etable}(
+  data,
+  repeat_row_labels = FALSE,
+  show_row_numbers = FALSE,
+  digits = get_expss_digits(),
+  ...
+)
 
-\method{as.datatable_widget}{with_caption}(data,
-  repeat_row_labels = FALSE, show_row_numbers = FALSE,
-  digits = get_expss_digits(), ...)
+\method{as.datatable_widget}{with_caption}(
+  data,
+  repeat_row_labels = FALSE,
+  show_row_numbers = FALSE,
+  digits = get_expss_digits(),
+  ...
+)
 }
 \arguments{
 \item{data}{a data object (result of \link{tables}/\link{fre}/\link{cro}).}

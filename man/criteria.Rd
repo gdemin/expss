@@ -60,19 +60,39 @@ is_max(x)
 
 is_min(x)
 
-contains(pattern, ignore.case = FALSE, perl = FALSE, fixed = TRUE,
-  useBytes = FALSE)
+contains(
+  pattern,
+  ignore.case = FALSE,
+  perl = FALSE,
+  fixed = TRUE,
+  useBytes = FALSE
+)
 
 like(pattern)
 
-fixed(pattern, ignore.case = FALSE, perl = FALSE, fixed = TRUE,
-  useBytes = FALSE)
+fixed(
+  pattern,
+  ignore.case = FALSE,
+  perl = FALSE,
+  fixed = TRUE,
+  useBytes = FALSE
+)
 
-perl(pattern, ignore.case = FALSE, perl = TRUE, fixed = FALSE,
-  useBytes = FALSE)
+perl(
+  pattern,
+  ignore.case = FALSE,
+  perl = TRUE,
+  fixed = FALSE,
+  useBytes = FALSE
+)
 
-regex(pattern, ignore.case = FALSE, perl = FALSE, fixed = FALSE,
-  useBytes = FALSE)
+regex(
+  pattern,
+  ignore.case = FALSE,
+  perl = FALSE,
+  fixed = FALSE,
+  useBytes = FALSE
+)
 
 has_label(x)
 

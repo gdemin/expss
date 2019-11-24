@@ -11,34 +11,71 @@
 \alias{tab_subtotal_rows}
 \title{Add subtotal to a set of categories}
 \usage{
-net(x, ..., position = c("below", "above", "top", "bottom"),
-  prefix = "TOTAL ", new_label = c("all", "range", "first", "last"),
-  add = FALSE)
+net(
+  x,
+  ...,
+  position = c("below", "above", "top", "bottom"),
+  prefix = "TOTAL ",
+  new_label = c("all", "range", "first", "last"),
+  add = FALSE
+)
 
-subtotal(x, ..., position = c("below", "above", "top", "bottom"),
-  prefix = "TOTAL ", new_label = c("all", "range", "first", "last"),
-  add = TRUE)
+subtotal(
+  x,
+  ...,
+  position = c("below", "above", "top", "bottom"),
+  prefix = "TOTAL ",
+  new_label = c("all", "range", "first", "last"),
+  add = TRUE
+)
 
-tab_net_cells(data, ..., position = c("below", "above", "top", "bottom"),
-  prefix = "TOTAL ", new_label = c("all", "range", "first", "last"))
+tab_net_cells(
+  data,
+  ...,
+  position = c("below", "above", "top", "bottom"),
+  prefix = "TOTAL ",
+  new_label = c("all", "range", "first", "last")
+)
 
-tab_net_cols(data, ..., position = c("below", "above", "top", "bottom"),
-  prefix = "TOTAL ", new_label = c("all", "range", "first", "last"))
+tab_net_cols(
+  data,
+  ...,
+  position = c("below", "above", "top", "bottom"),
+  prefix = "TOTAL ",
+  new_label = c("all", "range", "first", "last")
+)
 
-tab_net_rows(data, ..., position = c("below", "above", "top", "bottom"),
-  prefix = "TOTAL ", new_label = c("all", "range", "first", "last"))
+tab_net_rows(
+  data,
+  ...,
+  position = c("below", "above", "top", "bottom"),
+  prefix = "TOTAL ",
+  new_label = c("all", "range", "first", "last")
+)
 
-tab_subtotal_cells(data, ..., position = c("below", "above", "top",
-  "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first",
-  "last"))
+tab_subtotal_cells(
+  data,
+  ...,
+  position = c("below", "above", "top", "bottom"),
+  prefix = "TOTAL ",
+  new_label = c("all", "range", "first", "last")
+)
 
-tab_subtotal_cols(data, ..., position = c("below", "above", "top",
-  "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first",
-  "last"))
+tab_subtotal_cols(
+  data,
+  ...,
+  position = c("below", "above", "top", "bottom"),
+  prefix = "TOTAL ",
+  new_label = c("all", "range", "first", "last")
+)
 
-tab_subtotal_rows(data, ..., position = c("below", "above", "top",
-  "bottom"), prefix = "TOTAL ", new_label = c("all", "range", "first",
-  "last"))
+tab_subtotal_rows(
+  data,
+  ...,
+  position = c("below", "above", "top", "bottom"),
+  prefix = "TOTAL ",
+  new_label = c("all", "range", "first", "last")
+)
 }
 \arguments{
 \item{x}{variable, list, data.frame or multiple response set}

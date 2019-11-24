@@ -8,20 +8,55 @@
 \alias{text_to_columns_tab2}
 \title{Make data.frame from text}
 \usage{
-text_to_columns(text, header = TRUE, sep = "", quote = "",
-  dec = ".", encoding = "unknown", ...)
+text_to_columns(
+  text,
+  header = TRUE,
+  sep = "",
+  quote = "",
+  dec = ".",
+  encoding = "unknown",
+  ...
+)
 
-text_to_columns_csv(text, header = TRUE, sep = ",", quote = "",
-  dec = ".", encoding = "unknown", ...)
+text_to_columns_csv(
+  text,
+  header = TRUE,
+  sep = ",",
+  quote = "",
+  dec = ".",
+  encoding = "unknown",
+  ...
+)
 
-text_to_columns_csv2(text, header = TRUE, sep = ";", quote = "",
-  dec = ",", encoding = "unknown", ...)
+text_to_columns_csv2(
+  text,
+  header = TRUE,
+  sep = ";",
+  quote = "",
+  dec = ",",
+  encoding = "unknown",
+  ...
+)
 
-text_to_columns_tab(text, header = TRUE, sep = "\\t", quote = "",
-  dec = ".", encoding = "unknown", ...)
+text_to_columns_tab(
+  text,
+  header = TRUE,
+  sep = "\\t",
+  quote = "",
+  dec = ".",
+  encoding = "unknown",
+  ...
+)
 
-text_to_columns_tab2(text, header = TRUE, sep = "\\t", quote = "",
-  dec = ",", encoding = "unknown", ...)
+text_to_columns_tab2(
+  text,
+  header = TRUE,
+  sep = "\\t",
+  quote = "",
+  dec = ",",
+  encoding = "unknown",
+  ...
+)
 }
 \arguments{
 \item{text}{character/vector of characters}
