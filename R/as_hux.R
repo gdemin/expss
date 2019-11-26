@@ -226,7 +226,7 @@ as_huxtable.etable <- function(x, ...) {
  
   # Check for caption
   if(!is.null(attr(x, "caption")))
-    huxtable::set_caption(ht, attr(x, "caption"))
+    ht <- huxtable::set_caption(ht, attr(x, "caption"))
   
   # set width to 100%
   huxtable::width(ht) <- 1
