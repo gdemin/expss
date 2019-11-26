@@ -71,10 +71,10 @@ as_huxtable.etable <- function(x, ...) {
   
   
   # Assign correct type to data columns (counts to integer)
-  x <- as.etable(lapply(x, type.convert, as.is = T))
+  xt <- as.etable(lapply(x, type.convert, as.is = T))
   
   # start with default huxtable
-  ht <- huxtable:::as_huxtable.default(x)
+  ht <- huxtable:::as_huxtable.default(xt)
   
   
   
@@ -226,7 +226,7 @@ as_huxtable.etable <- function(x, ...) {
  
   # Check for caption
   if(!is.null(attr(x, "caption")))
-    huxtable::set_caption(ht, attr(x, "caption"))
+    ht <- huxtable::set_caption(ht, attr(x, "caption"))
   
   # set width to 100%
   huxtable::width(ht) <- 1
