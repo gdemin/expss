@@ -28,41 +28,59 @@
 #' tbl_with_caption
 #' 
 #' @export
-set_caption <- function (obj, ...) UseMethod("set_caption")
+set_caption <- function (obj, caption) UseMethod("set_caption")
+
 
 #' @export
-'caption<-' <- function (obj, ...) UseMethod("caption")
-
-#' @export
-caption.etable <- function (obj, value) {
-    set_caption.etable(obj, value)
-}
-
-#' @export
-#' @rdname set_caption
 set_caption.etable = function(obj, caption){
     if(length(caption)==0) {
         attr(obj, "caption") = NULL
-        obj = expss:::remove_class(obj, "with_caption")
+        obj = remove_class(obj, "with_caption")
     } else {
         attr(obj, "caption") = caption
-        obj = expss:::add_class(obj, "with_caption")
+        obj = add_class(obj, "with_caption")
     }
     obj    
 }
 
 #' @export
-'caption<-.etable*' <- set_caption.etable
+set_caption.huxtable = function(obj, caption){
+    huxtable::set_caption(obj, caption) 
+}
+#####################
 
+
+#' @rawNamespace if(getRversion() >= "3.6.0") {
+#' S3method(huxtable::"caption<-", etable)
+#' } else {
+#' export("caption.etable<-")
+#' }
+'caption<-.etable' <- function (obj, value) {
+    expss::set_caption(obj, value)
+}
+
+
+
+
+
+#######################
 #' @export
 #' @rdname set_caption
-get_caption <- function (obj, ...) UseMethod("get_caption")
+get_caption <- function (obj) UseMethod("get_caption")
 
 #' @export
-#' @rdname set_caption
 get_caption.etable = function(obj){
     attr(obj, "caption", exact = TRUE)     
 }
+
+#' @rawNamespace if(getRversion() >= "3.6.0") {
+#' S3method(huxtable::caption, etable)
+#' } else {
+#' export(caption.etable)
+#' }
+caption.etable = get_caption
+
+############
 
 #' @export
 #' @rdname set_caption
