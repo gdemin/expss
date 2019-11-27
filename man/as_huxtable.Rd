@@ -11,6 +11,8 @@ as_hux.etable(x, ...)
 }
 \arguments{
 \item{x}{etable. Table to convert to a huxtable.}
+
+\item{...}{arguments passed on to \link[huxtable]{huxtable}.}
 }
 \description{
 This function converts a \code{etable} object to a \code{huxtable}.

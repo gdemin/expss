@@ -13,9 +13,10 @@
 #' @export
 #' @rdname as_huxtable
 #' @param x etable. Table to convert to a huxtable.
+#' @param ... arguments passed on to \link[huxtable]{huxtable}.
 #' @examples 
 #' \dontrun{ 
-#' require(huxtable)
+#' library(huxtable)
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
 #'                       mpg = "Miles/(US) gallon",
@@ -35,32 +36,28 @@
 #'                       carb = "Number of carburetors"
 #' )
 #' 
-#' tab <- mtcars \%>\% 
-#' tab_cols(total(), am \%nest\% vs) \%>\% 
-#' tab_cells(mpg, hp) \%>\% 
-#' tab_stat_mean() \%>\% 
-#' tab_cells(cyl) \%>\% 
-#' tab_stat_cpct() \%>\% 
-#' tab_pivot() \%>\% 
-#' set_caption("Table 1. Some variables from mtcars dataset.")
+#' tab = mtcars %>% 
+#'     tab_cols(total(), am %nest% vs) %>% 
+#'     tab_cells(mpg, hp) %>% 
+#'     tab_stat_mean() %>% 
+#'     tab_cells(cyl) %>% 
+#'     tab_stat_cpct() %>% 
+#'     tab_pivot() %>% 
+#'     set_caption("Table 1. Some variables from mtcars dataset.")
 #' 
-#' ht <- as_huxtable(tab)
+#' ht = as_huxtable(tab)
 #' ht
 #' }
-as_huxtable <- function (x, ...) UseMethod("as_huxtable")
 
-#' @export
-#' @rdname as_huxtable
-as_hux <- as_huxtable
+#' @rawNamespace if(getRversion() >= "3.6.0") {
+#' S3method(huxtable::as_huxtable, etable)
+#' S3method(huxtable::as_hux, etable)
+#' } else {
+#' export(as_huxtable.etable)
+#' export(as_hux.etable)
+#' }
+as_huxtable.etable = function(x, ...) {
 
-#' @export
-#' @rdname as_huxtable
-as_huxtable.etable <- function(x, ...) {
-  
-  if (!requireNamespace("huxtable", quietly = TRUE)) {
-    stop("Package \"huxtable\" needed for this function to work. Please install it first.",
-         call. = FALSE)
-  }
   
   # is table empty?
   if(ncol(x)==0) {
@@ -71,13 +68,18 @@ as_huxtable.etable <- function(x, ...) {
   
   
   # Assign correct type to data columns (counts to integer)
-  xt <- as.etable(lapply(x, type.convert, as.is = T))
+  xt <- as.data.frame(lapply(x, type.convert, as.is = TRUE),
+                      optional = FALSE, 
+                      check.names = FALSE, 
+                      cut.names = FALSE,
+                      col.names = names(x),
+                      fix.empty.names = FALSE,
+                      stringsAsFactors = FALSE
+                      )
   
   # start with default huxtable
-  ht <- huxtable:::as_huxtable.default(xt)
-  
-  
-  
+  ht <- huxtable::as_huxtable(xt, ...)
+
   # Split row_labels of merged cells and save matrix
   rown <- do.call("rbind", strsplit(ht[[1]], "\\|"))
   
@@ -89,7 +91,7 @@ as_huxtable.etable <- function(x, ...) {
      if(ncol(ht) > 0) { 
       ht <- cbind(rown, ht)
      } else {
-     ht <- huxtable:::as_huxtable.default(rown)
+     ht <- huxtable::as_huxtable(rown, ...)
      }
     }
 
@@ -104,7 +106,7 @@ as_huxtable.etable <- function(x, ...) {
   if(nrow(ht)!=0) {
     ht <- rbind(coln, ht)
   } else {
-    ht <- huxtable:::as_huxtable.default(coln)
+    ht <- huxtable::as_huxtable(coln, ...)
   }
   }
   
@@ -142,14 +144,14 @@ as_huxtable.etable <- function(x, ...) {
         for(l in limits) {
           # If alternating labels exist, do nothing
           if(isTRUE(all.equal(min(mergel):max(mergel), mergel))) {
-            ht <- huxtable:::merge_cells(ht, j, na.omit(mergel[start:(start+l-1)]))
+            ht <- huxtable::merge_cells(ht, j, na.omit(mergel[start:(start+l-1)]))
             start <- start + l
           }
         }
       } else {
         # If alternating labels exist, do nothing
         if(isTRUE(all.equal(min(mergel):max(mergel), mergel))) {
-          ht <- huxtable:::merge_cells(ht, j, mergel)
+          ht <- huxtable::merge_cells(ht, j, mergel)
         }
       }
     }
@@ -210,7 +212,7 @@ as_huxtable.etable <- function(x, ...) {
         for(l in limits) {
           # If alternating labels exist and col is not merged  , do nothing
           if(isTRUE(all.equal(min(mergel):max(mergel), mergel)) & !any(mergemat[,j][mergel])) {
-            ht <- huxtable:::merge_cells(ht, na.omit(mergel[start:(start+l-1)]), j)
+            ht <- huxtable::merge_cells(ht, na.omit(mergel[start:(start+l-1)]), j)
             start <- start + l
           }
         }
@@ -218,12 +220,16 @@ as_huxtable.etable <- function(x, ...) {
         # If alternating labels exist and col is not merged  , do nothing
         if(isTRUE(all.equal(min(mergel):max(mergel), mergel)) & !any(mergemat[,j][mergel])) {
           
-          ht <- huxtable:::merge_cells(ht, mergel, j)
+          ht <- huxtable::merge_cells(ht, mergel, j)
         }
       }
     }
   }
- 
+  # top-left corner
+  # corner_width = ncol(split_labels(x[[1]])) 
+  # corner_height = ncol(split_labels(colnames(x))) 
+  # ht = huxtable::merge_cells(ht, c(1, corner_height), 1)
+  
   # Check for caption
   if(!is.null(attr(x, "caption")))
     ht <- huxtable::set_caption(ht, attr(x, "caption"))
@@ -234,3 +240,6 @@ as_huxtable.etable <- function(x, ...) {
   return(ht)
   
 }
+
+#' @rdname as_huxtable
+as_hux.etable = as_huxtable.etable
