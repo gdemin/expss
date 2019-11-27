@@ -290,11 +290,11 @@ matrix_to_cgroup = function(header){
 knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
     
     # Get type of document
-    type = knitr:::pandoc_to()
+    type = knitr::pandoc_to()
     
     
     if (is.null(type)) {
-        type = knitr:::out_format()
+        type = knitr::out_format()
     }
     
     # Check if huxtable is available
@@ -324,11 +324,11 @@ knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE
 knit_print.with_caption = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
 
     # Get type of document
-    type = knitr:::pandoc_to()
+    type = knitr::pandoc_to()
     
     
     if (is.null(type)) {
-        type = knitr:::out_format()
+        type = knitr::out_format()
     }
     
     # Check if huxtable is available

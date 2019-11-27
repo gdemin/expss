@@ -139,6 +139,15 @@ expss_output_rnotebook = function(){
     options(expss.output = "rnotebook")
 }
 
+
+#' @rdname expss.options
+#' @export
+expss_output_huxtable = function(){
+    requireNamespace("huxtable", quietly = TRUE) ||
+        stop("'expss_output_huxtable': 'huxtable' package is required for this function. Please, install it with 'install.packages('huxtable')'.")
+    options(expss.output = "huxtable")
+}
+
 #' @rdname expss.options
 #' @export
 expss_fix_encoding_on = function(){

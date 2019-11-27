@@ -154,11 +154,11 @@
 #' }
 #' @export
 xl_write = function(obj, wb, sheet, row = 1, col = 1, ...){
-    if(requireNamespace("openxlsx", quietly = TRUE)){
-        UseMethod("xl_write")
-    } else {
+    if(!requireNamespace("openxlsx", quietly = TRUE)){
         stop("xl_write: 'openxlsx' is required for this function. Please, install it with 'install.packages('openxlsx')'.")
-    }
+    }    
+    UseMethod("xl_write")
+
 }
 
 #' @export
