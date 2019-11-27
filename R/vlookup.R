@@ -342,6 +342,11 @@ add_columns.data.frame = function(data, dict,
 }
 
 #' @export
+add_columns.huxtable = function(...){
+    huxtable::add_columns(...)
+}
+
+#' @export
 #' @rdname vlookup
 .add_columns = function (dict, 
                          by = NULL, 

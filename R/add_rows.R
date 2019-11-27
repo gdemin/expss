@@ -72,7 +72,10 @@ add_rows.data.frame = function(..., nomatch_columns = c("add", "drop", "stop")){
     Reduce(f, args)
 }
 
-
+#' @export
+add_rows.huxtable = function(...){
+    huxtable::add_rows(...)
+}
 
 
 #' @export
