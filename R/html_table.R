@@ -290,32 +290,20 @@ matrix_to_cgroup = function(header){
 knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
     
     # Get type of document
-    type = knitr::pandoc_to()
+    type = knitr::is_html_output()
     
-    
-    if (is.null(type)) {
-        type = knitr::out_format()
-    }
     
     # Check if huxtable is available
-    hux_available <- FALSE
-    if (requireNamespace("huxtable", quietly = TRUE)) {
-        hux_available <- TRUE
-    }
+    hux_available = requireNamespace("huxtable", quietly = TRUE)
+    hux_output = identical(getOption("expss.output"), "huxtable")
     
     # For html or markdown use htmlTable, for latex and docx huxtable (if available)
-    if(is.null(type)) {
-        print.etable(x)
-    } else if(type %in% c('html', 'markdown')) {
+    if((type || !hux_available) & !hux_output) {
         knitr::knit_print(htmlTable.etable(x, digits = digits, 
                                     escape.html = escape.html,
                                        ..., row_groups = TRUE))
-    } else if (type == 'latex' & hux_available) {
-        huxtable:::knit_print.huxtable(expss::as_hux(x), ...)
-    } else if (type == 'docx' & hux_available) {
-        huxtable:::knit_print.huxtable(expss::as_hux(x), ...)
     } else {
-        print.etable(x)
+        knitr::knit_print(huxtable::as_hux(x), ...)
     }
 }
 
@@ -324,30 +312,20 @@ knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE
 knit_print.with_caption = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
 
     # Get type of document
-    type = knitr::pandoc_to()
+    type = knitr::is_html_output()
     
-    
-    if (is.null(type)) {
-        type = knitr::out_format()
-    }
     
     # Check if huxtable is available
-    hux_available <- FALSE
-    if (requireNamespace("huxtable", quietly = TRUE)) {
-        hux_available <- TRUE
-    }
+    hux_available = requireNamespace("huxtable", quietly = TRUE)
+    hux_output = identical(getOption("expss.output"), "huxtable")
     
     # For html or markdown use htmlTable, for latex and docx huxtable (if available)
-    if(type %in% c('html', 'markdown')) {
+    if((type || !hux_available) & !hux_output) {
         knitr::knit_print(htmlTable.with_caption(x, digits = digits, 
                                            escape.html = escape.html,
                                            ..., row_groups = TRUE))
-    } else if (type == 'latex' & hux_available) {
-        huxtable:::knit_print.huxtable(expss::as_hux(x), ...)
-    } else if (type == 'docx' & hux_available) {
-        huxtable:::knit_print.huxtable(expss::as_hux(x), ...)
     } else {
-        print.etable(x)
+        knitr::knit_print(huxtable::as_hux(x), ...)
     }
     
 }

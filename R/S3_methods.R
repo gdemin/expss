@@ -306,6 +306,11 @@ print.etable = function(x, digits = get_expss_digits(), remove_repeated = TRUE, 
             print(res)
             return(invisible(NULL))
         }
+        if("huxtable" %in% curr_output){
+          res = huxtable::as_huxtable(x)
+          print(res)
+          return(invisible(NULL))
+        }
 
     }
     if(!("raw" %in% curr_output)){
@@ -391,6 +396,11 @@ print.with_caption = function(x, digits = get_expss_digits(), remove_repeated = 
       res = fix_cyrillic_for_rstudio(res)
       attr(res, "html") = NULL
       class(res) = class(res) %d% "html"
+      print(res)
+      return(invisible(NULL))
+    }
+    if("huxtable" %in% curr_output){
+      res = huxtable::as_huxtable(x)
       print(res)
       return(invisible(NULL))
     }

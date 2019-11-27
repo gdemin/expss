@@ -12,6 +12,7 @@
 \alias{expss_output_raw}
 \alias{expss_output_viewer}
 \alias{expss_output_rnotebook}
+\alias{expss_output_huxtable}
 \alias{expss_fix_encoding_on}
 \alias{expss_fix_encoding_off}
 \alias{expss_fre_stat_lab}
@@ -37,6 +38,8 @@ expss_output_viewer()
 
 expss_output_rnotebook()
 
+expss_output_huxtable(...)
+
 expss_fix_encoding_on()
 
 expss_fix_encoding_off()
@@ -49,6 +52,8 @@ expss_fre_stat_lab(
 \arguments{
 \item{digits}{integer. Number of digits after decimal point. \code{NULL} is
 default and means 1 digit. \code{NA} means no rounding.}
+
+\item{...}{list of parameters for \code{huxtable::set_default_properties}. See \link[huxtable]{set_default_properties}.}
 }
 \description{
 All options can be set with \code{options(option.name = option.value)} or
@@ -78,18 +83,20 @@ will be added to unique values.  There are shortcuts for these options:
 \code{expss_enable_value_labels_support_extreme()} and
 \code{expss_disable_value_labels_support()}.}
 \item{\code{expss.output} }{ By default tables are printed in the console. 
-You can change this behavior by setting this option. There are four possible
-values: \code{'rnotebook'}, \code{'viewer'}, \code{'commented'} or 
-\code{'raw'}. First option is useful when you run your code in the R Notebook
+You can change this behavior by setting this option. There are five possible
+values: \code{'rnotebook'}, \code{'viewer'}, \code{'commented'},  
+\code{'raw'} or \code{'huxtable'}. First option is useful when you run your code in the R Notebook
 - output will be rendered to nice HTML. The second option will render tables 
 to RStudio viewer. \code{knitr} is supported automatically via 
 \code{knit_print} method. \code{'commented'} prints default output to the 
 console with comment symbol (\code{#}) at the beginning of the each line.
 With comment symbol you can easily copy and paste your output into the
 script. Option \code{raw} disables any formatting and all tables are printed
-as data.frames. Shortcuts for options: \code{expss_output_default()}, 
+as data.frames. Option \code{huxtable} print output via the huxtable library.
+Shortcuts for options: \code{expss_output_default()}, 
 \code{expss_output_raw()}, \code{expss_output_viewer()},
-\code{expss_output_commented()} and \code{expss_output_rnotebook()}.}
+\code{expss_output_commented()}, \code{expss_output_rnotebook()} and  
+\code{expss_output_huxtable()}.}
 \item{\code{expss_fix_encoding_on}/\code{expss_fix_encoding_off} }{ If you
 expreience problems with character encoding in RStudio Viewer/RNotebooks under Windows
 try \code{expss_fix_encoding_on()}. In some cases, it can help.}
