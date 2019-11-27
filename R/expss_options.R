@@ -49,6 +49,7 @@
 #' @param digits integer. Number of digits after decimal point. \code{NULL} is
 #'   default and means 1 digit. \code{NA} means no rounding.
 #' @param ... list of parameters for \code{huxtable::set_default_properties}. See \link[huxtable]{set_default_properties}.
+#' @param label character vector of length 5. Default labels for \link{fre}.
 #' @name expss.options
 #' @examples 
 #' 

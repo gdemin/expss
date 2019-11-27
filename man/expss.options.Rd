@@ -54,6 +54,8 @@ expss_fre_stat_lab(
 default and means 1 digit. \code{NA} means no rounding.}
 
 \item{...}{list of parameters for \code{huxtable::set_default_properties}. See \link[huxtable]{set_default_properties}.}
+
+\item{label}{character vector of length 5. Default labels for \link{fre}.}
 }
 \description{
 All options can be set with \code{options(option.name = option.value)} or
