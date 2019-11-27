@@ -30,7 +30,8 @@ Suggests:
     testthat,
     openxlsx,
     fst,
-    huxtable
+    huxtable,
+    rmarkdown
 Description: Package computes and displays tables with support for 'SPSS'-style 
         labels, multiple and nested banners, weights, multiple-response variables 
         and significance testing. There are facilities for nice output of tables 
