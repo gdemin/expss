@@ -65,18 +65,26 @@
 #' fre(list(score, brands))
 #' 
 #' @export
-fre = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = FALSE, stat_lab = getOption("expss.fre_stat_lab", c("Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %"))){
+fre = function(x, 
+               weight = NULL, 
+               drop_unused_labels = TRUE, 
+               prepend_var_lab = FALSE, 
+               stat_lab = getOption("expss.fre_stat_lab", c("Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %"))){
     UseMethod("fre")
 }
 
 #' @export
-fre.list = function(x, weight = NULL, drop_unused_labels = TRUE, prepend_var_lab = TRUE, stat_lab = getOption("expss.fre_stat_lab", c("Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %"))){
+fre.list = function(x, 
+                    weight = NULL, 
+                    drop_unused_labels = TRUE, 
+                    prepend_var_lab = TRUE, 
+                    stat_lab = getOption("expss.fre_stat_lab", c("Count", "Valid percent", "Percent", "Responses, %", "Cumulative responses, %"))){
     x = flat_list(x, flat_df = FALSE)
     res = lapply(x, fre, 
                  weight = weight, 
                  drop_unused_labels = drop_unused_labels, 
                  prepend_var_lab = prepend_var_lab,
-                 stat_lab = getOption("expss.fre_stat_lab")
+                 stat_lab = stat_lab
                  )
     do.call(add_rows, res)
 }
