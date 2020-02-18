@@ -45,4 +45,4 @@ Description: Package computes and displays tables with support for 'SPSS'-style
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
-RoxygenNote: 7.0.1
+RoxygenNote: 7.0.2

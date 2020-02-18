@@ -466,9 +466,12 @@ mtcars = apply_labels(mtcars,
 
 model = use_labels(mtcars, lm(mpg ~ vs + am + hp + wt))
 
-expect_equal_to_reference(unlab(model), "rds/unlab_list.rds",  update = FALSE)
-expect_equal_to_reference(unvr(model), "rds/unvr_list.rds",  update = FALSE)
-expect_equal_to_reference(unvl(model), "rds/unvl_list.rds",  update = FALSE)
+expect_equal(coef(model), 
+ c("(Intercept)" = 31.078787633184, Engine = 1.78554615438006, 
+                Transmission = 2.4171417451949, "`Gross horsepower`" = -0.0301008065670308, 
+                "`Weight (lb/1000)`" = -2.59099878666853))
+expect_equal(deparse(formula(model), width.cutoff = 500), 
+                          "`Miles/(US) gallon` ~ Engine + Transmission + `Gross horsepower` + `Weight (lb/1000)`")
 
 
 context("value labels on factor")
