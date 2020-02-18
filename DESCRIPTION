@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Package: expss
 Type: Package
 Title: Tables, Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
@@ -47,54 +46,3 @@ VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
 RoxygenNote: 7.0.2
-=======
-Package: expss
-Type: Package
-Title: Tables, Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
-Version: 0.10.1
-Maintainer: Gregory Demin <gdemin@gmail.com>
-Authors@R: c(
-         person("Gregory", "Demin", email = "gdemin@gmail.com",
-         role = c("aut", "cre")),
-         person("Sebastian", "Jeworutzki", email="Sebastian.Jeworutzki@ruhr-uni-bochum.de", 
-         role = c("ctb"), comment = c(ORCID = "0000-0002-2671-5253"))
-         )
-URL: https://gdemin.github.io/expss/
-BugReports: https://github.com/gdemin/expss/issues
-Depends:
-    R (>= 3.3.0),
-Imports:
-    foreign,
-    utils,
-    stats,
-    magrittr (>= 1.5),
-    htmlTable (>= 1.11.0),
-    matrixStats (>= 0.51.0),
-    data.table (>= 1.10),
-Suggests:
-    DT,
-    htmltools,
-    knitr,
-    repr,
-    ggplot2,
-    testthat,
-    openxlsx,
-    fst,
-    huxtable,
-    rmarkdown
-Description: Package computes and displays tables with support for 'SPSS'-style 
-        labels, multiple and nested banners, weights, multiple-response variables 
-        and significance testing. There are facilities for nice output of tables 
-        in 'knitr', 'Shiny', '*.xlsx' files, R and 'Jupyter' notebooks. Methods 
-        for labelled variables add value labels support to base R functions and to 
-        some functions from other packages. Additionally, the package brings 
-        popular data transformation functions from 'SPSS' Statistics and 'Excel': 
-        'RECODE', 'COUNT', 'COMPUTE', 'DO IF', 'COUNTIF', 'VLOOKUP' and etc. 
-        These functions are very useful for data processing in marketing research 
-        surveys. Package intended to help people to move data 
-        processing from 'Excel' and 'SPSS' to R.
-VignetteBuilder: knitr
-LazyData: yes
-License: GPL (>= 2)
-RoxygenNote: 7.0.1
->>>>>>> master
