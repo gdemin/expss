@@ -735,7 +735,7 @@ export(xl_write)
 if(getRversion() >= "3.6.0") {
 S3method(huxtable::"caption<-", etable)
 } else {
-export("caption.etable<-")
+export("caption<-.etable")
 }
 if(getRversion() >= "3.6.0") {
 S3method(huxtable::as_huxtable, etable)

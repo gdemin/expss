@@ -53,7 +53,7 @@ set_caption.huxtable = function(obj, caption){
 #' @rawNamespace if(getRversion() >= "3.6.0") {
 #' S3method(huxtable::"caption<-", etable)
 #' } else {
-#' export("caption.etable<-")
+#' export("caption<-.etable")
 #' }
 'caption<-.etable' <- function (obj, value) {
     expss::set_caption(obj, value)
