@@ -80,7 +80,7 @@ quantity_sold,product,salesperson
 ### too complex and useless
 expect_equal(
     with(dfs, 
-         sum_if(grepl("^A",product) & salesperson==1, quantity_sold)
+         sum_if(when(grepl("^A",product) & salesperson==1), quantity_sold)
          ),
     20
 )
@@ -254,26 +254,26 @@ expect_equal(
 
 data(iris)
 
-test_iris = as.matrix(iris[,-5])
+test_iris = iris[,-5]
 expect_equal(
-    median_row_if(1:150<75, test_iris),
+    median_row_if(when(1:150<75), test_iris),
     ifelse(1:150<75, apply(test_iris, 1, median, na.rm = TRUE), NA)
 )
 
 expect_equal(
-   sd_row_if(1:150<75, test_iris),
+   sd_row_if(when(1:150<75), test_iris),
     ifelse(1:150<75, apply(test_iris, 1, sd, na.rm = TRUE), NA)
 )
 
 test_iris2 = test_iris
 test_iris2[1:150>74, ] = NA
 expect_identical(
-    median_col_if(1:150<75, test_iris),
+    median_col_if(when(1:150<75), test_iris),
     apply(test_iris2, 2, median, na.rm = TRUE)
 )
 
 expect_equal(
-    sd_col_if(1:150<75, test_iris),
+    sd_col_if(when(1:150<75), test_iris),
     apply(test_iris2, 2, sd, na.rm = TRUE)
 )
 
@@ -284,26 +284,26 @@ m_med = function(x) median(x, na.rm = TRUE)
 m_sd = function(x) sd(x, na.rm = TRUE)
 data(iris)
 
-test_iris = as.matrix(iris[,-5])
+test_iris = iris[,-5]
 expect_identical(
-    apply_row_if(m_med, 1:150<75, test_iris),
+    apply_row_if(m_med, when(1:150<75), test_iris),
     ifelse(1:150<75, apply(test_iris, 1, median, na.rm = TRUE), NA)
 )
 
 expect_identical(
-    apply_row_if(m_sd, 1:150<75, test_iris),
+    apply_row_if(m_sd, when(1:150<75), test_iris),
     ifelse(1:150<75, apply(test_iris, 1, sd, na.rm = TRUE), NA)
 )
 
 test_iris2 = test_iris
 test_iris2[1:150>74, ] = NA
 expect_identical(
-    apply_col_if(m_med, 1:150<75, test_iris),
+    apply_col_if(m_med, when(1:150<75), test_iris),
     apply(test_iris2, 2, median, na.rm = TRUE)
 )
 
 expect_identical(
-    apply_col_if(m_sd, 1:150<75, test_iris),
+    apply_col_if(m_sd, when(1:150<75), test_iris),
     apply(test_iris2, 2, sd, na.rm = TRUE)
 )
 
@@ -311,11 +311,11 @@ expect_identical(
 bad_function = function(x) c(m_med(x), m_sd(x))
 
 expect_error(
-    apply_row_if(bad_function, 1:150<75, test_iris)
+    apply_row_if(bad_function, when(1:150<75), test_iris)
 )
 
 expect_error(
-    apply_col_if(bad_function, 1:150<75, test_iris)
+    apply_col_if(bad_function,when(1:150<75), test_iris)
 )
 
 

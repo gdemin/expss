@@ -208,7 +208,7 @@ if_na(dfs) = 5 # replace NA
 # custom apply
 expect_identical(
     apply_col_if(prod, gt(2), dfs$V1, data = dfs),
-    apply(na_if(dfs, dfs$V1<3), 2, prod, na.rm = TRUE)
+    apply(na_if(dfs, when(dfs$V1<3)), 2, prod, na.rm = TRUE)
 )
 expect_identical(
     apply_row_if(prod, gt(2), dfs$V1, data = dfs),
@@ -221,7 +221,7 @@ expect_identical(
 
 ### issue #47
 
-expect_equal(count_if(TRUE, c(TRUE, FALSE), TRUE), 4)
+expect_equal(count_if(TRUE, c(TRUE, FALSE), TRUE), 3)
 
 
 

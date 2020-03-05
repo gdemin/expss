@@ -23,7 +23,7 @@ num_crit = as.criterion(4)
 
 expect_identical(num_crit(1:4), c(FALSE, FALSE, FALSE, TRUE))
 
-logi_crit = as.criterion(c(TRUE, FALSE, FALSE, TRUE))
+logi_crit = when(c(TRUE, FALSE, FALSE, TRUE))
 expect_identical(logi_crit(1:4), c(TRUE, FALSE, FALSE, TRUE))
 
 

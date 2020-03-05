@@ -151,27 +151,19 @@ as.criterion = function(crit){
             return(Reduce("|", lapply(crit, as.criterion)))
             
         } 
-        if(is.logical(crit) && !(length(crit) == 1L && is.na(crit))){
-            res = function(x) {
-                res = crit & !is.na(crit)
-                if(length(res)==1L){
-                    res = rep(res, length(x))
-                } 
-                res
-            }
-        } else {
-            res = function(x) {
-                if(inherits(x, "POSIXct") & !inherits(crit, "POSIXct")){
-                    # because '%in%' doesn't coerce POSIXct in a sensible way 
-                    x = as.character(x)
-                } 
-                if(inherits(x, "Date") & !inherits(crit, "Date")){
-                    # because '%in%' doesn't coerce Date in a sensible way 
-                    x = as.character(x)
-                } 
-                fast_in(x, crit)
-            }
-        }    
+        
+        res = function(x) {
+            if(inherits(x, "POSIXct") & !inherits(crit, "POSIXct")){
+                # because '%in%' doesn't coerce POSIXct in a sensible way 
+                x = as.character(x)
+            } 
+            if(inherits(x, "Date") & !inherits(crit, "Date")){
+                # because '%in%' doesn't coerce Date in a sensible way 
+                x = as.character(x)
+            } 
+            fast_in(x, crit)
+        }
+        
     }
     class(res) = union("criterion",class(res))
     res
@@ -289,7 +281,22 @@ thru = function(lower, upper){
 '%thru%' = function(lower, upper) thru(lower, upper)
 
 
-
+#' @export
+#' @rdname criteria
+when = function(x) {
+    is.logical(x) || stop("'when' - argument should be logical.")
+    x = x & !is.na(x) # always FALSE when NA
+    as.criterion(function(y) {
+        (length(x)==1 || length(x)==length(y)) ||  stop("'when' - length of logical should be
+               1 or equals to length of argument but we have ", length(x), " and ", length(y), " elements.")
+        # yes, we always return the same result independently of argument
+        if(length(x)==1) {
+            rep(x, length(y))
+        } else {
+            x
+        }
+    })  
+}
 
 #' @export
 #' @rdname criteria
@@ -494,11 +501,15 @@ not = `!`
 }
 
 
+make_criterion_from_logical = function(x){
+    if(is.logical(x) && !identical(x, NA)) when(x) else as.criterion(x)
+}
+
 #' @export
 '|.criterion' = function(e1,e2) {
     # one or both e1, e2 is criterion and criterion can be only logical or function
-    f1 = as.criterion(e1)
-    f2 = as.criterion(e2)
+    f1 = make_criterion_from_logical(e1)
+    f2 = make_criterion_from_logical(e2)
     res = function(x) f1(x) | f2(x)
     class(res) = union("criterion",class(res))
     res
@@ -507,8 +518,8 @@ not = `!`
 
 #' @export
 '&.criterion' = function(e1,e2) {
-    f1 = as.criterion(e1)
-    f2 = as.criterion(e2)
+    f1 = make_criterion_from_logical(e1)
+    f2 = make_criterion_from_logical(e2)
     res = function(x) f1(x) & f2(x)
     class(res) = union("criterion",class(res))
     res

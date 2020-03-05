@@ -20,6 +20,7 @@
 \alias{gte}
 \alias{thru}
 \alias{\%thru\%}
+\alias{when}
 \alias{is_max}
 \alias{is_min}
 \alias{contains}
@@ -55,6 +56,8 @@ greater_or_equal(x)
 thru(lower, upper)
 
 lower \%thru\% upper
+
+when(x)
 
 is_max(x)
 

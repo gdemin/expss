@@ -22,11 +22,11 @@ a[a>3] = NA
 
 expect_equal(na_if(1:5, gt(3)),a)
 expect_equal(na_if(1:5, 4:5),a)
-expect_equal(na_if(1:5, c(FALSE,FALSE,FALSE,TRUE,TRUE)),a)
+expect_equal(na_if(1:5, when(c(FALSE,FALSE,FALSE,TRUE,TRUE))),a)
 
 expect_equal(1:5 %na_if% gt(3),a)
 expect_equal(1:5 %na_if% 4:5,a)
-expect_equal(1:5 %na_if% c(FALSE,FALSE,FALSE,TRUE,TRUE),a)
+expect_equal(1:5 %na_if% when(c(FALSE,FALSE,FALSE,TRUE,TRUE)),a)
 
 
 context("na_if data.frame")
@@ -58,15 +58,12 @@ bb[bb[,2] == max(bb[,2]),2] = NA
 b = a
 b[1:2,] = NA
 
-expect_equal(na_if(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
-expect_equal(na_if(a, as.data.frame(c(TRUE, TRUE, FALSE,FALSE,FALSE))),b)
-expect_equal(na_if(list(a,1:5), c(TRUE, TRUE, FALSE,FALSE,FALSE)),list(b,c(NA,NA,3,4,5)))
+expect_equal(na_if(a, when(c(TRUE, TRUE, FALSE,FALSE,FALSE))),b)
+expect_equal(na_if(list(a,1:5), when(c(TRUE, TRUE, FALSE,FALSE,FALSE))),list(b,c(NA,NA,3,4,5)))
 
 b = a
 b[,1] = NA
 b$a = as.numeric(b$a)
-
-expect_error(suppressWarnings(na_if(a, t(c(TRUE, FALSE)))))
 
 
 context("na_if matrix")
@@ -80,7 +77,7 @@ expect_equal(na_if(a, gt(3)),b)
 expect_equal(na_if(a, 4:5),b)
 
 cond = cbind(a[,1]>3, a[,2]>3)
-expect_equal(na_if(a, cond),b)
+expect_equal(na_if(a, when(cond)),b)
 
 
 
@@ -103,7 +100,7 @@ dfs = data.frame(
 dfs1 = dfs
 dfs1[1:2, ] = NA
 
-expect_identical(na_if(dfs, dfs$a=="bad value"), dfs1)
+expect_identical(na_if(dfs, when(dfs$a=="bad value")), dfs1)
 
 a = rnorm(50)
 a1 = a
@@ -121,3 +118,4 @@ data(iris)
 expect_identical(na_if(iris, NULL), iris)
 expect_identical(na_if(1:5, numeric(0)), 1:5)
 expect_identical(na_if(1:5, NULL), 1:5)
+

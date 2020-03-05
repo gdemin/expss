@@ -228,7 +228,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     b = a
     b[1:2,] = NA
     
-    expect_equal(mis_val(a, c(TRUE, TRUE, FALSE,FALSE,FALSE)),b)
+    expect_equal(mis_val(a, when(c(TRUE, TRUE, FALSE,FALSE,FALSE))),b)
     
 
 } else {

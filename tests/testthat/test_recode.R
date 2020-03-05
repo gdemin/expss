@@ -102,10 +102,10 @@ if(isTRUE(getOption("covr"))) {
     x = c(1,3,1,3,NA)
     y = c(8,8,8,9,9)
     z = c(4,4,4,5,5)
-    expect_identical(recode(x, (z>4)~y, other ~ copy), c(1, 3, 1, 9, 9))
-    expect_identical(recode(x, (z>4)~y), c(NA, NA, NA, 9, 9))
+    expect_identical(recode(x, when(z>4)~y, other ~ copy), c(1, 3, 1, 9, 9))
+    expect_identical(recode(x, when(z>4)~y), c(NA, NA, NA, 9, 9))
     
-    recode(x) = (z>4)~y
+    recode(x) = when(z>4)~y
     expect_identical(x, c(1, 3, 1, 9, 9))
     
     
@@ -198,9 +198,9 @@ if(isTRUE(getOption("covr"))) {
     
     expect_identical(recode(x, from_to(list(gt(2), le(2),other), to = list(y,z,99))), c(4, 8, 4, 9, 99))
     
-    expect_identical(recode(x, from_to(list(z>4, other), to = list(y, copy))), c(1, 3, 1, 9, 9))
+    expect_identical(recode(x, from_to(list(when(z>4), other), to = list(y, copy))), c(1, 3, 1, 9, 9))
     
-    expect_identical(recode(x, from_to(list(z>4), to = list(y))), c(NA, NA, NA, 9, 9))
+    expect_identical(recode(x, from_to(list(when(z>4)), to = list(y))), c(NA, NA, NA, 9, 9))
     
     
     

@@ -101,9 +101,6 @@ element of \code{from} list:
 \itemize{
 \item{vector/single value}{ All values in \code{x} which equal to elements of the
 vector in LHS will be replaced with RHS.}
-\item{logical vector}{ All elements in \code{x} for which elements of vector
-in LHS is TRUE will be replaced with RHS. It means you can use logical
-condition on the other variable during recoding.}
 \item{function}{ Values for which function gives TRUE will be replaced with 
 RHS. There are some special functions for the convenience - see \link{criteria}}.
 \item{single logical value \code{TRUE}}{ It means all other unrecoded values

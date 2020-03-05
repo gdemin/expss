@@ -25,9 +25,6 @@
 #' \itemize{
 #' \item{vector/single value}{ All values in \code{x} which equal to elements of the
 #' vector in LHS will be replaced with RHS.}
-#' \item{logical vector}{ All elements in \code{x} for which elements of vector
-#' in LHS is TRUE will be replaced with RHS. It means you can use logical
-#' condition on the other variable during recoding.}
 #' \item{function}{ Values for which function gives TRUE will be replaced with 
 #' RHS. There are some special functions for the convenience - see \link{criteria}}.
 #' \item{single logical value \code{TRUE}}{ It means all other unrecoded values
@@ -221,7 +218,7 @@ process_recodings = function(x, recoding_formulas, res,
         
         curr_label = labels[[i]]
         if(length(curr_label)>0 && !is.na(curr_label) && curr_label!=""){
-            if(is.function(target) || length(target)!=1 || is.logical(target) || is.na(target)){
+            if(is.function(target) || length(target)!=1 ||  is.na(target)){
                 stop("'recode' - labelled recodings should recode into single not-NA value but we have: ", 
                      expr_to_character(recoding_formulas[[i]]))
             }
@@ -229,16 +226,7 @@ process_recodings = function(x, recoding_formulas, res,
         }
         if (all(recoded)) break # if all values were recoded
         crit = each_recoding[["from"]]
-        if(is.logical(crit)){
-          (length(crit)>1 && length(crit)!=length(res)) &&  stop("'recode' - length of logical 'LHS' should be
-               1 or equals to length of 'x' but we have: ", expr_to_character(recoding_formulas[[i]]))
-          
-          # because we cannot recode labels when source is logical vector
-          (with_labels && length(crit)>1) &&
-            stop("'recode' - you cannot recode labels when you use logical 'LHS': ", 
-                    expr_to_character(recoding_formulas[[i]]))
-
-        }
+        if(isTRUE(crit)) crit = other
         if(!inherits(crit, "criterion")) {
           crit = as.criterion(crit)
         }
@@ -458,17 +446,17 @@ ifs = function(...){
     from = lapply(recoding_list, "[[", "from")
     to = lapply(recoding_list, "[[", "to")
     
-    from = lapply(from, as.matrix)
-    test = vapply(from, is.logical, logical(1))
+    from_test = lapply(from, as.matrix)
+    test = vapply(from_test, is.logical, logical(1))
     stopif(!all(test), "'ifs': all conditions should be logical")
-    from_rows = unique(vapply(from, nrow, numeric(1)))
-    from_cols = unique(vapply(from, ncol, numeric(1)))
+    from_rows = unique(vapply(from_test, nrow, numeric(1)))
+    from_cols = unique(vapply(from_test, ncol, numeric(1)))
     stopif(!all(from_cols %in% 1), "'ifs': all conditions should be single column objects.")
     max_rows = max(from_rows, na.rm = TRUE)
     stopif(!all(from_rows %in% c(1, max_rows)), "'ifs': all values should have the same number of rows or have length 1.")
     res = rep(NA, max_rows)
-    if_na(from) = FALSE
-    recode(res, ...)
+    from = lapply(from, when)
+    recode(res, from_to(from, to))
 }
 
 #' @export

@@ -7,10 +7,6 @@ expect_error(recode(a, all = 1 ~ 1:5))
 expect_error(recode(a, missing = 1 ~ NA))
 expect_error(recode(a, missing = 1 ~ sqrt))
 expect_error(recode(a, wah = other ~ copy()))
-expect_error(recode(a, wah = other ~ TRUE))
-expect_error(recode(a, c(TRUE, TRUE, TRUE) ~ 1))
-expect_equal(recode(a, c(TRUE, TRUE, TRUE, TRUE, TRUE) ~ 1), rep(1, 5))
-expect_error(recode(a, c(TRUE, TRUE, TRUE, TRUE, TRUE) ~ 1, with_labels = TRUE))
 expect_equal(recode(a, TRUE ~ 1, with_labels = TRUE), rep(1, 5))
 
 res = c(1, 1, 3, 4, 5)
@@ -183,3 +179,4 @@ b = as.matrix(a)
 expect_warning({
     recode(b, with_labels = TRUE) =c(99 ~ NA, TRUE ~ copy)
     })
+
