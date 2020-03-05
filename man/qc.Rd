@@ -4,7 +4,6 @@
 \alias{qc}
 \alias{qe}
 \alias{text_expand}
-\alias{subst}
 \title{Create vector of characters from unquoted strings (variable names)}
 \usage{
 qc(...)
@@ -12,8 +11,6 @@ qc(...)
 qe(...)
 
 text_expand(..., delim = c("\\\\{", "\\\\}"))
-
-subst(...)
 }
 \arguments{
 \item{...}{characters in \code{text_expand}, unquoted names of variables in

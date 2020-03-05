@@ -10,7 +10,6 @@ expect_identical(text_expand("q{1:2}"), c("q1", "q2"))
 expect_identical(text_expand("q{i}_{i}"), c("q1_1", "q2_2"))
 expect_identical(text_expand("q`i`_`i`", delim = c("`", "`")), c("q1_1", "q2_2"))
 expect_identical(text_expand("q/i}_/i}", delim = c("/", "}")), c("q1_1", "q2_2"))
-expect_identical(suppressWarnings(subst("q`i`_`i`")), c("q1_1", "q2_2"))
 expect_identical(text_expand("q{i}_{i}", "q{i}"), c("q1_1", "q2_2", "q1", "q2"))
 expect_identical(text_expand("q{sum(i)}"), c("q3"))
 j = 1:2

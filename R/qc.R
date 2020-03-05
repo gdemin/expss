@@ -89,12 +89,4 @@ text_expand = function(..., delim = c("\\{", "\\}")){
 }
 
 
-#' @export
-#' @rdname qc
-subst = function(...){
-    expr = substitute(text_expand(..., delim = c("`", "`")))
-    str_expr = expr_to_character(expr)
-    .Deprecated(new = str_expr)
-    eval.parent(expr)
-}
 

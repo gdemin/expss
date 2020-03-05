@@ -2,13 +2,10 @@
 % Please edit documentation in R/split_by.R
 \name{split_by}
 \alias{split_by}
-\alias{split_separate}
 \alias{split_off}
 \title{Splits data.frame into list of data.frames that can be analyzed separately}
 \usage{
 split_by(data, ..., drop = TRUE)
-
-split_separate(data, ..., drop = TRUE)
 
 split_off(data, groups = NULL, rownames = NULL)
 }

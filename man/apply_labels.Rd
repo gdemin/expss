@@ -2,11 +2,7 @@
 % Please edit documentation in R/apply_labels.R
 \name{apply_labels}
 \alias{apply_labels}
-\alias{apply_var_labs}
-\alias{apply_val_labs}
 \alias{.apply_labels}
-\alias{.apply_val_labs}
-\alias{.apply_var_labs}
 \title{Set variable labels/value labels on variables in the data.frame}
 \usage{
 apply_labels(data, ...)

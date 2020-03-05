@@ -68,12 +68,7 @@ split_by = function(data, ..., drop = TRUE){
     UseMethod("split_by")    
 }
 
-#' @export
-#' @rdname split_by
-split_separate = function(data, ..., drop = TRUE){
-    .Deprecated("split_by")
-    eval.parent(substitute(split_by(data, ..., drop = drop)))
-}
+
 
 #' @export
 split_by.data.frame = function(data, ..., drop = TRUE){
