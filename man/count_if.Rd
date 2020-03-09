@@ -82,14 +82,14 @@ apply_row_if(fun, criterion, ..., data = NULL)
 apply_col_if(fun, criterion, ..., data = NULL)
 }
 \arguments{
-\item{criterion}{Vector with counted values, logical vector/matrix or
+\item{criterion}{Vector with counted values or
 function. See details and examples.}
 
 \item{...}{Data on which criterion will be applied. Vector, matrix,
-data.frame, list. Shorter arguments will be recycled.}
+data.frame, list.}
 
 \item{x}{Data on which criterion will be applied. Vector, matrix,
-data.frame, list. Shorter arguments will be recycled.}
+data.frame, list.}
 
 \item{data}{Data on which function will be applied. Doesn't applicable to 
 \code{count_*_if} functions. If omitted then function will be applied on
@@ -106,7 +106,7 @@ presence of criterion in each row/column. \code{\%has\%} is an alias for
 \code{\%row_in\%}.
 }
 \description{
-These functions calculate count/sum/average/etc on values that meet a 
+These functions calculate count/sum/average/etc. on values that meet a 
 criterion that you specify. \code{apply_if_*} apply custom functions. There
 are different flavors of these functions: \code{*_if} work on entire
 dataset/matrix/vector, \code{*_row_if} works on each row and \code{*_col_if}
@@ -115,19 +115,13 @@ works on each column.
 \details{
 Possible type for criterion argument:
 \itemize{
-\item{vector/single value}{ All values in \code{...} which equal to elements of
-vector in criteria will be used as function \code{fun} argument.}
-\item{function}{ Values for which function gives TRUE will be used as 
+\item{vector/single value}{ All values in \code{...} which equal to the
+elements of vector in the criteria will be used as function \code{fun}
+argument.}
+\item{function}{ Values for which function gives TRUE will be used as
 function \code{fun} argument. There are some special functions for
 convenience (e. g. \code{gt(5)} is equivalent ">5" in spreadsheet) - see
-\link{criteria}.}
-\item{logical vector/matrix/data.frame}{ Values for which element of 
-criterion equals to TRUE will be used as function \code{fun} argument.
-Logical vector will be recycled across all columns of \code{...}\code{data}.
-If criteria is logical matrix/data.frame then column from this
-matrix/data.frame will be used for corresponding column/element of
-\code{...}\code{data}. Note that this kind of criterion doesn't use
-\code{...} so \code{...} can be used instead of \code{data} argument.}}
+\link{criteria}.}}
 
 \code{count*} and \code{\%in*\%} never returns NA's. Other functions remove
 NA's before calculations (as \code{na.rm = TRUE} in base R functions).
@@ -140,11 +134,11 @@ will be applied columnwise.
 }
 \examples{
 set.seed(123)
-dfs = as.data.frame(
+sheet1 = as.sheet(
        matrix(sample(c(1:10,NA), 30, replace = TRUE), 10)
 )
 
-result  = modify(dfs, {
+result  = compute(sheet1, {
              # count 8
              exact = count_row_if(8, V1, V2, V3)
              # count values greater than 8
@@ -162,162 +156,179 @@ result  = modify(dfs, {
          })  
 result
  
-mean_row_if(6, dfs$V1, data = dfs)
-median_row_if(gt(2), dfs$V1, dfs$V2, dfs$V3) 
-sd_row_if(5 \%thru\% 8, dfs$V1, dfs$V2, dfs$V3)
+mean_row_if(6, sheet1$V1, data = sheet1)
+median_row_if(gt(2), sheet1$V1, sheet1$V2, sheet1$V3) 
+sd_row_if(5 \%thru\% 8, sheet1$V1, sheet1$V2, sheet1$V3)
  
-if_na(dfs) = 5 # replace NA 
+if_na(sheet1) = 5 # replace NA 
 
 # custom apply
-apply_col_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements by columns
-apply_row_if(prod, gt(2), dfs$V1, data = dfs) # product of all elements by rows
+apply_col_if(prod, gt(2), sheet1$V1, data = sheet1) # product of all elements by columns
+apply_row_if(prod, gt(2), sheet1$V1, data = sheet1) # product of all elements by rows
  
 # Examples borrowed from Microsoft Excel help for COUNTIF
-df1 = data.frame(
-    a = c("apples",   "oranges",     "peaches",     "apples"),
-    b = c(32, 54, 75, 86)
+sheet1 = text_to_columns(
+    "
+       a       b
+    apples    32
+    oranges   54
+    peaches   75
+    apples    86
+    "
 )
 
-count_if("apples", df1$a) # 2
+count_if("apples", sheet1$a) # 2
 
-count_if("apples", df1) # 2
+count_if("apples", sheet1) # 2
 
-with(df1, count_if("apples", a, b)) # 2
+calc(sheet1, count_if("apples", a, b)) # 2
 
-count_if(gt(55), df1$b) # greater than 55 = 2
+count_if(gt(55), sheet1$b) # greater than 55 = 2
 
-count_if(ne(75), df1$b) # not equal 75 = 3
+count_if(ne(75), sheet1$b) # not equal 75 = 3
 
-count_if(ge(32), df1$b) # greater than or equal 32 = 4
+count_if(ge(32), sheet1$b) # greater than or equal 32 = 4
 
-count_if(gt(32) & lt(86), df1$b) # 2
+count_if(gt(32) & lt(86), sheet1$b) # 2
 
 # count only integer values between 33 and 85
-count_if(33:85, df1$b) # 2
+count_if(33:85, sheet1$b) # 2
 
 # values with letters
-count_if(regex("^[A-z]+$"), df1) # 4
+count_if(regex("^[A-z]+$"), sheet1) # 4
 
 # values that started on 'a'
-count_if(regex("^a"), df1) # 2
+count_if(regex("^a"), sheet1) # 2
 
 # count_row_if
-count_row_if(regex("^a"), df1) # c(1,0,0,1)
+count_row_if(regex("^a"), sheet1) # c(1,0,0,1)
 
-df1 \%row_in\% 'apples'  # c(TRUE,FALSE,FALSE,TRUE)
+sheet1 \%row_in\% 'apples'  # c(TRUE,FALSE,FALSE,TRUE)
 
 # Some of Microsoft Excel examples for SUMIF/AVERAGEIF/etc 
-dfs = read.csv(
-    text = "
-    property_value,commission,data
-    100000,7000,250000
-    200000,14000,	
-    300000,21000,	
-    400000,28000,"
+sheet1 = text_to_columns(
+    "
+    property_value commission data
+    100000              7000  250000
+    200000             14000	
+    300000             21000	
+    400000             28000
+    "
 )
 
 # Sum of commision for property value greater than 160000
-with(dfs, sum_if(gt(160000), property_value, data = commission)) # 63000
+calc(sheet1, sum_if(gt(160000), property_value, data = commission)) # 63000
     
 # Sum of property value greater than 160000
-with(dfs, sum_if(gt(160000), property_value)) # 900000
+calc(sheet1, sum_if(gt(160000), property_value)) # 900000
 
 # Sum of commision for property value equals to 300000
-with(dfs, sum_if(300000, property_value, data = commission)) # 21000
+calc(sheet1, sum_if(300000, property_value, data = commission)) # 21000
     
 # Sum of commision for property value greater than first value of data
-with(dfs, sum_if(gt(data[1]), property_value, data = commission)) # 49000
+calc(sheet1, sum_if(gt(data[1]), property_value, data = commission)) # 49000
     
-
-dfs = data.frame(
-    category = c("Vegetables", "Vegetables", "Fruits", "", "Vegetables", "Fruits"),
-    food = c("Tomatoes", "Celery", "Oranges", "Butter", "Carrots", "Apples"),
-    sales = c(2300, 5500, 800, 400, 4200, 1200),
-    stringsAsFactors = FALSE
-)
+sheet1 = text_to_columns(
+       "
+         category     food sales
+       Vegetables Tomatoes  2300
+       Vegetables   Celery  5500
+           Fruits  Oranges   800
+             NA     Butter   400
+       Vegetables  Carrots  4200
+           Fruits   Apples  1200
+       "
+       )
 
 # Sum of sales for Fruits
-with(dfs, sum_if("Fruits", category, data = sales)) # 2000
+calc(sheet1, sum_if("Fruits", category, data = sales)) # 2000
 
 # Sum of sales for Vegetables    
-with(dfs, sum_if("Vegetables", category, data = sales)) # 12000
+calc(sheet1, sum_if("Vegetables", category, data = sales)) # 12000
 
 # Sum of sales for food which is ending on 'es' 
-with(dfs, sum_if(perl("es$"), food, data = sales)) # 4300
+calc(sheet1, sum_if(perl("es$"), food, data = sales)) # 4300
 
 # Sum of sales for empty category
-with(dfs, sum_if("", category, data = sales))  # 400
+calc(sheet1, sum_if(NA, category, data = sales))  # 400
 
 
-dfs = read.csv(
-    text = "
-    property_value,commission,data
-    100000,7000,250000
-    200000,14000,	
-    300000,21000,	
-    400000,28000,"
+sheet1 = text_to_columns(
+    "
+    property_value commission data
+    100000              7000  250000
+    200000             14000	
+    300000             21000	
+    400000             28000
+    "
 )
 
 # Commision average for comission less than 23000
-with(dfs, mean_if(lt(23000), commission)) # 14000
+calc(sheet1, mean_if(lt(23000), commission)) # 14000
 
 
 # Property value average for property value less than 95000
-with(dfs, mean_if(lt(95000), property_value)) #  NaN
+calc(sheet1, mean_if(lt(95000), property_value)) #  NaN
 
 # Commision average for property value greater than 250000
-with(dfs, mean_if(gt(250000), property_value, data = commission)) # 24500
+calc(sheet1, mean_if(gt(250000), property_value, data = commission)) # 24500
 
 
-dfs = data.frame(
-    region = c("East", "West", "North", "South (New Office)",  "MidWest"),
-    profits = c(45678, 23789, -4789, 0, 9678),
-    stringsAsFactors = FALSE
+sheet1 = text_to_columns(
+    '
+                region  profits
+                  East   45678
+                  West   23789
+                 North   -4789
+    "South (New Office)"     0
+               MidWest    9678
+    ',
+    quote = '"'
 )
 
 
 # Mean profits for 'west' regions
-with(dfs, mean_if(fixed("West"), region, data = profits)) # 16733.5
+calc(sheet1, mean_if(contains("West"), region, data = profits)) # 16733.5
 
 
 # Mean profits for regions wich doesn't contain New Office
-with(dfs, mean_if(!fixed("(New Office)"), region, data = profits))  # 18589
+calc(sheet1, mean_if(not(contains("New Office")), region, data = profits))  # 18589
 
 
-dfs = read.csv(
-    text = '
-    grade,weight 
-    89,1
-    93,2
-    96,2
-    85,3
-    91,1
-    88,1'
-    ,stringsAsFactors = FALSE
+sheet1 = text_to_columns(
+    "
+    grade weight 
+    89      1
+    93      2
+    96      2
+    85      3
+    91      1
+    88      1
+    "
 )
 
 # Minimum grade for weight equals to 1
-with(dfs, min_if(1, weight, data = grade)) # 88
+calc(sheet1, min_if(1, weight, data = grade)) # 88
 
 
 # Maximum grade for weight equals to 1
-with(dfs, max_if(1, weight, data = grade)) #91
+calc(sheet1, max_if(1, weight, data = grade)) #91
 
 
 # Example with offset
-dfs = read.csv(
-    text = '
-    weight,grade 
-    10,b
-    11,a
-    100,a
-    111,b
-    1,a
-    1,a'
-    ,stringsAsFactors = FALSE
+sheet1 = text_to_columns(
+    "
+    weight grade 
+       10    b
+       11    a
+      100    a
+      111    b
+        1    a
+        1    a
+    "
 )
 
-with(dfs, min_if("a", grade[2:5], data = weight[1:4])) # 10
+calc(sheet1, min_if("a", grade[2:5], data = weight[1:4])) # 10
 
 
 }
