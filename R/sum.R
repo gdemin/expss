@@ -1,11 +1,10 @@
 #' Compute sum/mean/sd/median/max/min/custom function on rows/columns 
 #' 
-#' These functions are intended for usage inside \link{modify}, 
-#' \link{modify_if}, \link[base]{with} and \link[base]{within} functions. 
-#' sum/mean/sd/median/max/min by default omits NA. \code{any_in_*} checks existence 
-#' of any TRUE in each row/column. It is equivalent of \link[base]{any} applied 
-#' to each row/column. \code{all_in_*} is equivalent of \link[base]{all} applied
-#' to each row/column. 
+#' These functions are intended for usage inside \link{compute}, and
+#' \link{do_if}. sum/mean/sd/median/max/min by default omits NA. \code{any_in_*}
+#' checks existence of any TRUE in each row/column. It is equivalent of
+#' \link[base]{any} applied to each row/column. \code{all_in_*} is equivalent of
+#' \link[base]{all} applied to each row/column.
 #' 
 #' @param ... data. Vectors, matrixes, data.frames, list. Shorter arguments
 #'   will be recycled.
@@ -19,14 +18,13 @@
 #'   equals the number of argument columns/rows. Value of \code{apply_*} depends
 #'   on supplied \code{fun} function.
 #' 
-#' @seealso \link{modify}, \link{modify_if}, \link{\%to\%}, \link{count_if},
+#' @seealso \link{compute}, \link{do_if}, \link{\%to\%}, \link{count_if},
 #'   \link{sum_if}, \link{mean_if}, \link{median_if}, \link{sd_if},
 #'   \link{min_if}, \link{max_if}
 #' 
 #' @export
 #' @examples
-#' ## Inside example
-#' iris = compute(iris,{
+#' iris = compute(iris, {
 #'   new_median = median_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 #'   new_mean = mean_row(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
 #'   })
