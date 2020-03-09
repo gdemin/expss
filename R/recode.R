@@ -73,7 +73,7 @@
 #'
 #' @return object of the same form as \code{x} with recoded values
 #' @examples
-#' # some examples from SPSS manual
+#' # examples from SPSS manual
 #' # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 #' v1  = c(0, 1, 2, 3, 9, 10)
 #' recode(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, TRUE ~ NA)
@@ -174,7 +174,7 @@
 #' recode(a, lt(-0.5) ~ abs, other ~ copy) 
 #' 
 #' # the same example with logical criteria
-#' recode(a, a<(-.5) ~ abs, other ~ copy) 
+#' recode(a, when(a<(-.5)) ~ abs, other ~ copy) 
 #' @export
 recode = function(x, ..., with_labels = FALSE, new_label = c("all", "range", "first", "last")){
     UseMethod("recode")    

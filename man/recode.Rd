@@ -127,7 +127,7 @@ can be useful in expressions with \code{\%thru\%}, e. g. \code{1 \%thru\%
 hi}.
 }
 \examples{
-# some examples from SPSS manual
+# examples from SPSS manual
 # RECODE V1 TO V3 (0=1) (1=0) (2, 3=-1) (9=9) (ELSE=SYSMIS)
 v1  = c(0, 1, 2, 3, 9, 10)
 recode(v1) = c(0 ~ 1, 1 ~ 0, 2:3 ~ -1, 9 ~ 9, TRUE ~ NA)
@@ -228,6 +228,6 @@ a = rnorm(20)
 recode(a, lt(-0.5) ~ abs, other ~ copy) 
 
 # the same example with logical criteria
-recode(a, a<(-.5) ~ abs, other ~ copy) 
+recode(a, when(a<(-.5)) ~ abs, other ~ copy) 
 }
 \keyword{datasets}
