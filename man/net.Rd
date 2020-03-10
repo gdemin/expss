@@ -9,6 +9,8 @@
 \alias{tab_subtotal_cells}
 \alias{tab_subtotal_cols}
 \alias{tab_subtotal_rows}
+\alias{hide}
+\alias{unhide}
 \title{Add subtotal to a set of categories}
 \usage{
 net(
@@ -76,6 +78,10 @@ tab_subtotal_rows(
   prefix = "TOTAL ",
   new_label = c("all", "range", "first", "last")
 )
+
+hide(category)
+
+unhide(category)
 }
 \arguments{
 \item{x}{variable, list, data.frame or multiple response set}

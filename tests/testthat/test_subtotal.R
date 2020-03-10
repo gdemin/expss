@@ -166,6 +166,53 @@ mtcars %>%
     tab_pivot()
 , "rds/subtotal21.rds", update = FALSE)
 
+###########
+
+res = mtcars %>% 
+    tab_cells(mpg) %>% 
+    tab_rows(gear) %>%
+    tab_subtotal_rows(1:2, hide(3:4), "5 and more" = greater(4), position = "above", prefix = "NET ", new_label = "range") %>% 
+    tab_stat_mean() %>% 
+    tab_pivot()
+
+reference = structure(list(row_labels = c("Number of forward gears|NET One - Two|Miles/(US) gallon|Mean", 
+"Number of forward gears|One|Miles/(US) gallon|Mean", "Number of forward gears|Two|Miles/(US) gallon|Mean", 
+"Number of forward gears|NET Three - Four|Miles/(US) gallon|Mean", 
+"Number of forward gears|5 and more|Miles/(US) gallon|Mean", 
+"Number of forward gears|Five|Miles/(US) gallon|Mean"), `#Total` = c(NA, 
+NA, NA, 19.8518518518518, 21.38, 21.38)), row.names = c(NA, -6L
+), class = c("etable", "data.frame"))
+
+expect_equal(res, reference)
+
+
+res = mtcars %>% 
+    tab_cells(mpg) %>% 
+    tab_rows(gear) %>%
+    tab_subtotal_rows(hide(1:2), hide(3:4), "5 and more" = hide(greater(4)), position = "above", prefix = "NET ", new_label = "range") %>% 
+    tab_stat_mean() %>% 
+    tab_pivot()
+
+reference = structure(list(row_labels = c("Number of forward gears|NET One - Two|Miles/(US) gallon|Mean", 
+"Number of forward gears|NET Three - Four|Miles/(US) gallon|Mean", 
+"Number of forward gears|5 and more|Miles/(US) gallon|Mean"), 
+`#Total` = c(NA, 19.8518518518518, 21.38)), row.names = c(NA, 
+-3L), class = c("etable", "data.frame"))
+expect_equal(res, reference)
+
+res = mtcars %>% 
+    tab_cells(mpg) %>% 
+    tab_rows(gear) %>%
+    tab_net_rows(unhide(1:2), 3:4, "5 and more" = unhide(greater(4)), position = "below", prefix = "NET ", new_label = "range") %>% 
+    tab_stat_mean() %>% 
+    tab_pivot()
+
+reference = structure(list(row_labels = c("Number of forward gears|NET One - Two|Miles/(US) gallon|Mean", 
+                                          "Number of forward gears|NET Three - Four|Miles/(US) gallon|Mean", 
+                                          "Number of forward gears|5 and more|Miles/(US) gallon|Mean"), 
+                           `#Total` = c(NA, 19.8518518518518, 21.38)), row.names = c(NA, 
+                                                                                     -3L), class = c("etable", "data.frame"))
+expect_equal(res, reference)
 #####
 expect_known_value(
     mtcars %>% 

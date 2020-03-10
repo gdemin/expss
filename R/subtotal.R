@@ -107,6 +107,7 @@ net.default = function(x, ...,
     
     args = list(...)
     arg_names = names(args)
+    need_to_hide = lapply(args, attr, "hidden")
     if(is.null(arg_names)) arg_names = rep("", length(args))
     if(is.factor(x)) {
         all_values = levels(x)
@@ -177,8 +178,12 @@ net.default = function(x, ...,
             if(!is.null(val_lab(res)) && (is.null(label) || is.na(label) || identical(label, ""))) {
                 names(val_lab(res)) = paste0(prefix, names(val_lab(res)))
             }
-            
-            if(add){
+            # need_to_hide = NULL -> show_items = add
+            # need_to_hide = FALSE -> show_items = TRUE
+            # need_to_hide = TRUE -> show_items = FALSE
+            show_items = (add || identical(need_to_hide[[i]], FALSE)) && !isTRUE(need_to_hide[[i]])  
+ 
+            if(show_items){
                 items = recode(x, from_to(in_net_old[[i]], in_net_new[[i]]), with_labels = TRUE) 
                 other_cols[[j]] = list(items, res)
             } else {
@@ -437,3 +442,15 @@ tab_subtotal_rows = function(data, ...,
 }
 
 
+#' @rdname net
+#' @export
+hide = function(category){
+  attr(category, "hidden") = TRUE
+  category
+}
+
+#' @rdname net
+#' @export
+unhide = function(category){
+  attr(category, "hidden") = FALSE
+}
