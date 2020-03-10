@@ -114,6 +114,7 @@ net.default = function(x, ...,
         all_values = unique(x, nmax = 1) 
     }
     subtotal_codes = lapply(args, function(curr_net){
+        if(isTRUE(curr_net)) curr_net = eq(TRUE) # to avoid special TRUE meaning in the further recode
         if(!inherits(curr_net, "criterion") && !is.atomic(curr_net)) {
             curr_net = as.criterion(curr_net)
         }  

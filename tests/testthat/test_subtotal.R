@@ -341,6 +341,44 @@ expect_known_value(
     , "rds/subtotal33.rds", update = FALSE)
 
 
+suppressWarnings(RNGversion("3.5.0"))
+set.seed(12345)
+df = data.frame(group = rep(1:5, each = 4),
+                 varA = sample(1:4, 20, replace = TRUE),
+                 varB = sample(6:9, 20, replace = TRUE))
+output = df %>%
+    tab_cells(varA, varB) %>%
+    tab_cols(total(label = "")) %>% 
+    tab_rows(net(group, "Group 1" = 1,  "All Groups" = TRUE, position = "above")) %>%
+    tab_stat_fun("Valid N" = w_n, "Mean" = w_mean, "SD" = w_sd,
+                 "Median" = w_median, method = list) %>% 
+    tab_pivot()
+
+res = structure(list(row_labels = c("Group 1|varA", "Group 1|varB", 
+"All Groups|varA", "All Groups|varB", "2|varA", "2|varB", "3|varA", 
+"3|varB", "4|varA", "4|varB", "5|varA", "5|varB"), `Valid N` = c(4L, 
+4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L), Mean = c(3.75, 7.75, 
+3.75, 7.75, 2, 7.75, 2.25, 7, 2, 7, 2.25, 8), SD = c(0.5, 0.957427107756338, 
+0.5, 0.957427107756338, 0.816496580927726, 0.5, 1.5, 1.4142135623731, 
+0.816496580927726, 0.816496580927726, 1.25830573921179, 1.4142135623731
+), Median = c(4, 7.5, 4, 7.5, 2, 8, 2, 6.5, 2, 7, 2, 8.5)), row.names = c(NA, 
+-12L), class = c("etable", "data.frame"))
+
+expect_equal(output, res)
+
+output = df %>%
+    tab_cells(varA, varB) %>%
+    tab_cols(total(label = "")) %>% 
+    tab_rows(net(group, "Group 1" = 1,  "All Groups" = other(), position = "above")) %>%
+    tab_stat_fun("Valid N" = w_n, "Mean" = w_mean, "SD" = w_sd,
+                 "Median" = w_median, method = list) %>% 
+    tab_pivot()
 
 
+res = structure(list(row_labels = c("Group 1|varA", "Group 1|varB", 
+"All Groups|varA", "All Groups|varB"), `Valid N` = c(4L, 4L, 
+20L, 20L), Mean = c(3.75, 7.75, 2.45, 7.5), SD = c(0.5, 0.957427107756338, 
+1.14593101656986, 1.05131496607569), Median = c(4, 7.5, 2, 7.5
+)), row.names = c(NA, -4L), class = c("etable", "data.frame"))
 
+expect_equal(output, res)
