@@ -107,6 +107,9 @@ generated subtotal labels. Possible values are "all", "range", "first",
 \item{add}{logical. Should we add subtotal to categories or replace categories with a net?}
 
 \item{data}{intermediate table. See \link{tables}.}
+
+\item{category}{category (numeric vectors, ranges, criteria) which you want
+to 'hide' or 'unhide'.}
 }
 \value{
 multiple response set or list of the multiple response sets
@@ -120,6 +123,10 @@ provide overlapping categories then net and subtotals will also be
 overlapping. 'subtotal' and 'net' are intended for usage with \link{cro} and
 friends. 'tab_subtotal_*' and 'tab_net_*' are intended for usage with custom
 tables - see \link{tables}.
+There are auxiliary functions 'hide' and 'unhide'. 'hide' is used with
+'subtotal' when you need to leave only subtotal for some specific items.
+And 'unhide' is used with 'net' when you want to show items for some nets.
+See examples.
 }
 \examples{
 ol = c(1:7, 99)
@@ -136,11 +143,14 @@ val_lab(ol)  = num_lab("
                      ")
                      
 cro(subtotal(ol, BOTTOM = 1:3, TOP = 6:7, position = "top"))
+# example with hide
+cro(subtotal(ol, TOP1 = hide(7), TOP2 = hide(6:7), TOP3 = 5:7, BOTTOM = 1:3, position = "top"))
 # autolabelling
 cro(subtotal(ol, 1:3, 6:7))
 # replace original codes and another way of autolabelling
 cro(net(ol, 1:3, 6:7, new_label = "range", prefix = "NET "))
-
+# unhide
+cro(net(ol, 1:3, unhide(6:7), new_label = "range", prefix = "NET "))
 # character variable and criteria usage
 items = c("apple", "banana", "potato", "orange", "onion", "tomato", "pineapple")
 cro(

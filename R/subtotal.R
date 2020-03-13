@@ -8,6 +8,10 @@
 #' overlapping. 'subtotal' and 'net' are intended for usage with \link{cro} and
 #' friends. 'tab_subtotal_*' and 'tab_net_*' are intended for usage with custom
 #' tables - see \link{tables}.
+#' There are auxiliary functions 'hide' and 'unhide'. 'hide' is used with
+#' 'subtotal' when you need to leave only subtotal for some specific items.
+#' And 'unhide' is used with 'net' when you want to show items for some nets.
+#' See examples.
 #' @param x variable, list, data.frame or multiple response set
 #' @param ... list of categories for grouping. It can be numeric vectors (for
 #'   example, 1:2), ranges (for example, 4 %thru% hi) or criteria (for example,
@@ -24,6 +28,8 @@
 #'   generated subtotal labels. Possible values are "all", "range", "first",
 #'   "last". "all" collapse all labels, "range" take only first and last label,
 #' @param add logical. Should we add subtotal to categories or replace categories with a net? 
+#' @param category category (numeric vectors, ranges, criteria) which you want
+#'   to 'hide' or 'unhide'.
 #' @param data intermediate table. See \link{tables}.
 #' @return multiple response set or list of the multiple response sets
 #' @examples 
@@ -41,11 +47,14 @@
 #'                      ")
 #'                      
 #' cro(subtotal(ol, BOTTOM = 1:3, TOP = 6:7, position = "top"))
+#' # example with hide
+#' cro(subtotal(ol, TOP1 = hide(7), TOP2 = hide(6:7), TOP3 = 5:7, BOTTOM = 1:3, position = "top"))
 #' # autolabelling
 #' cro(subtotal(ol, 1:3, 6:7))
 #' # replace original codes and another way of autolabelling
 #' cro(net(ol, 1:3, 6:7, new_label = "range", prefix = "NET "))
-#' 
+#' # unhide
+#' cro(net(ol, 1:3, unhide(6:7), new_label = "range", prefix = "NET "))
 #' # character variable and criteria usage
 #' items = c("apple", "banana", "potato", "orange", "onion", "tomato", "pineapple")
 #' cro(
@@ -181,8 +190,11 @@ net.default = function(x, ...,
             # need_to_hide = NULL -> show_items = add
             # need_to_hide = FALSE -> show_items = TRUE
             # need_to_hide = TRUE -> show_items = FALSE
-            show_items = (add || identical(need_to_hide[[i]], FALSE)) && !isTRUE(need_to_hide[[i]])  
- 
+            if(is.null(need_to_hide[[i]])) {
+                show_items = add 
+            } else {
+                show_items = !need_to_hide[[i]]  
+            }
             if(show_items){
                 items = recode(x, from_to(in_net_old[[i]], in_net_new[[i]]), with_labels = TRUE) 
                 other_cols[[j]] = list(items, res)
@@ -453,4 +465,5 @@ hide = function(category){
 #' @export
 unhide = function(category){
   attr(category, "hidden") = FALSE
+  category
 }
