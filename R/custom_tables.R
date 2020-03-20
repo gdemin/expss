@@ -284,9 +284,9 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #'     tab_cols(total(), am) %>% 
 #'     tab_stat_fun_df(
 #'         function(x){
-#'             frm = reformulate(".", response = names(x)[1])
+#'             frm = reformulate(".", response = as.name(names(x)[1]))
 #'             model = lm(frm, data = x)
-#'             sheet('Coef. estimate' = coef(model), 
+#'             sheet('Coef.' = coef(model), 
 #'                   confint(model)
 #'             )
 #'         }    
