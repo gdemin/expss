@@ -5,42 +5,47 @@ output:
     html_document:
         toc: true
 vignette: >
-  %\VignetteIndexEntry{Examples}
+%\VignetteIndexEntry{Examples}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{utf8}
----
-
-## Introduction
-
-
-
-```{r, message=FALSE, warning=FALSE}
+  ---
+  
+  ## Introduction
+  
+  
+  First, we apply labels on the well-known `mtcars` dataset:
+  ```{r, message=FALSE, warning=FALSE}
 library(expss)
 data(mtcars)
 mtcars = apply_labels(mtcars,
-                      mpg = "Miles/(US) gallon",
-                      cyl = "Number of cylinders",
-                      disp = "Displacement (cu.in.)",
-                      hp = "Gross horsepower",
-                      drat = "Rear axle ratio",
-                      wt = "Weight (1000 lbs)",
-                      qsec = "1/4 mile time",
-                      vs = "Engine",
-                      vs = c("V-engine" = 0,
-                             "Straight engine" = 1),
-                      am = "Transmission",
-                      am = c("Automatic" = 0,
-                             "Manual"=1),
-                      gear = "Number of forward gears",
-                      carb = "Number of carburetors"
+mpg = "Miles/(US) gallon",
+cyl = "Number of cylinders",
+disp = "Displacement (cu.in.)",
+hp = "Gross horsepower",
+drat = "Rear axle ratio",
+wt = "Weight (1000 lbs)",
+qsec = "1/4 mile time",
+vs = "Engine",
+vs = c("V-engine" = 0,
+"Straight engine" = 1),
+am = "Transmission",
+am = c("Automatic" = 0,
+"Manual"=1),
+gear = "Number of forward gears",
+carb = "Number of carburetors"
 )
-# some examples from 'cro'
+
+```
+Table construction consists of at least of three functions chained with magrittr pipe operator: `%>%`. At first we need to specify variables for which statistics will be computed with tab_cells. Secondary, we calculate statistics with one of tab_stat_* functions. And last, we finalize table creation with tab_pivot: dataset %>% tab_cells(variable) %>% tab_stat_cases() %>% tab_pivot(). We can split our statistics by columns with `tab_cols` or by rows with `tab_rows`. After that we can sort table with `tab_sort_asc`, drop empty rows/columns with `drop_rc` and transpose with `tab_transpose`. Generally, table is just a data.frame so we can use arbitrary operations on it. Statistic is always calculated with the last cell, column/row variables, weight, missing values and subgroup. To define new cell/column/row variables we can call appropriate function one more time. `tab_pivot` defines how we combine different statistics and where statistic labels will appear - inside/outside rows/columns. 
+
+```{r}
 # simple example - generally with 'cro' it can be made with less typing
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(vs) %>% 
     tab_stat_cpct() %>% 
-    tab_pivot()
+    tab_pivot() %>% 
+    tab_caption("Simple table")
 
 # split rows
 mtcars %>% 
@@ -126,7 +131,7 @@ mtcars %>%
     tab_stat_valid_n() %>% 
     tab_stat_cpct() %>% 
     tab_pivot()
-    
+
 # stacked statistics with section headings
 mtcars %>% 
     tab_cells(cyl) %>% 
@@ -157,7 +162,7 @@ mtcars %>%
     tab_stat_valid_n() %>% 
     tab_stat_cpct(label = "Col %") %>% 
     tab_pivot(stat_label = "outside")
-    
+
 # example from 'cro_fun_df' - linear regression by groups with sorting 
 mtcars %>% 
     tab_cells(sheet(mpg, disp, hp, wt, qsec)) %>% 
@@ -213,7 +218,7 @@ product_test %>%
     tab_stat_cpct() %>% 
     tab_sort_desc() %>% 
     tab_pivot()
-    
+
 # trick to place cell variables labels inside columns
 # useful to compare two variables
 # '|' is needed to prevent automatic labels creation from argument
@@ -229,7 +234,7 @@ product_test %>%
 
 
 tables = mtcars %>%
-      tab_cols(total(), am %nest% vs)
+    tab_cols(total(), am %nest% vs)
 
 for(each in c("mpg", "disp", "hp", "qsec")){
     tables = tables %>% tab_cells(vars(each)) %>%
@@ -239,9 +244,9 @@ tables %>% tab_pivot()
 
 
 mtcars_table = calculate(mtcars,
-                   cro_cpct(list(cyl, gear),
-                            list(total(), vs, am))
-                         )
+                         cro_cpct(list(cyl, gear),
+                                  list(total(), vs, am))
+)
 
 significance_cpct(mtcars_table)
 ## Not run: 
@@ -250,17 +255,17 @@ significance_cpct(mtcars_table, compare_type = "first_column")
 
 # comparison with first column and inside subtable
 significance_cpct(mtcars_table, 
-            compare_type = c("first_column", "subtable"))
+                  compare_type = c("first_column", "subtable"))
 
 # only significance marks
 significance_cpct(mtcars_table, keep = "none")
 
 # means
 mtcars_means = calculate(mtcars,
-                   cro_mean_sd_n(list(mpg, wt, hp),
-                                 list(total(), vs, cyl))
-                        )
-                        
+                         cro_mean_sd_n(list(mpg, wt, hp),
+                                       list(total(), vs, cyl))
+)
+
 significance_means(mtcars_means) 
 
 # mark values which are less and greater
@@ -268,10 +273,10 @@ significance_means(mtcars_means, subtable_marks = "both")
 
 # chi-squared test
 mtcars_cases = calculate(mtcars,
-                   cro_cases(list(cyl, gear),
-                            list(total(), vs, am))
-                         )
-                         
+                         cro_cases(list(cyl, gear),
+                                   list(total(), vs, am))
+)
+
 significance_cases(mtcars_cases)  
 
 # cell chi-squared test
@@ -296,14 +301,14 @@ mtcars %>%
     tab_stat_cpct() %>% 
     tab_last_sig_cpct() %>% 
     tab_pivot()   
-    
+
 # Overcomplicated examples - we move significance marks to
 # separate columns. Columns with statistics remain numeric    
 mtcars %>% 
     tab_significance_options(keep = "none", 
-                         sig_labels = NULL, 
-                         subtable_marks = "both",  
-                         mode = "append") %>% 
+                             sig_labels = NULL, 
+                             subtable_marks = "both",  
+                             mode = "append") %>% 
     tab_cols(total(), vs, am) %>% 
     tab_cells(mpg, hp) %>% 
     tab_stat_mean_sd_n() %>% 
