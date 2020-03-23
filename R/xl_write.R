@@ -5,10 +5,15 @@
 #' Windows system you also may need to
 #' install \href{https://cran.r-project.org/bin/windows/Rtools/}{rtools}. You
 #' can export several tables at once by combining them in a list. See examples.
+#' If you need to write all tables to the single sheet you can use
+#' \code{xl_write_file}. It automatically creates workbook, worksheet and save
+#' *.xlsx file for you.
 #' @param obj \code{table} - result of \link{cro}, \link{fre} and etc.
 #'   \code{obj} also can be data.frame, list or other objects.
 #' @param wb xlsx workbook object, result of \link[openxlsx]{createWorkbook} function.
-#' @param sheet numeric or character - worksheet name/number in the workbook \code{wb}
+#' @param sheet character or numeric - worksheet name/number in the workbook \code{wb}
+#' @param filename A character string naming an xlsx file. For \code{xl_write_file}. 
+#' @param sheetname A character name for the worksheet. For \code{xl_write_file}.
 #' @param row numeric - starting row for writing data
 #' @param col numeric - starting column for writing data
 #' @param rownames logical should we write data.frame row names? 
@@ -64,7 +69,7 @@
 #'   formatted according to this style.
 #' @param caption_format result of the \link[openxlsx]{createStyle} function.
 #' @param gap integer. Number of rows between list elements.
-#' @param ... not yet used
+#' @param ... further arguments for \code{xl_write}
 #' @return invisibly return vector with rows and columns (\code{c(rows,
 #'   columns)}) occupied by outputted object.
 #' 
@@ -104,6 +109,9 @@
 #' # export table
 #' xl_write(mtcars_table, wb, sh)
 #' saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
+#' 
+#' ## quick export
+#' xl_write_file(mtcars_table, "table1.xlsx")
 #' 
 #' ## custom cells formatting
 #' wb = createWorkbook()
@@ -159,6 +167,15 @@ xl_write = function(obj, wb, sheet, row = 1, col = 1, ...){
     }    
     UseMethod("xl_write")
 
+}
+
+#' @export
+#' @rdname xl_write
+xl_write_file = function(obj, filename, sheetname = "Tables", ...){
+    wb = openxlsx::createWorkbook()
+    sh = openxlsx::addWorksheet(wb, sheetName = sheetname)
+    xl_write(obj, wb = wb, sheet = sh, ...)
+    openxlsx::saveWorkbook(wb, file = filename, overwrite = TRUE)
 }
 
 #' @export

@@ -2,6 +2,7 @@
 % Please edit documentation in R/xl_write.R
 \name{xl_write}
 \alias{xl_write}
+\alias{xl_write_file}
 \alias{xl_write.default}
 \alias{xl_write.list}
 \alias{xl_write.etable}
@@ -9,6 +10,8 @@
 \title{Write tables and other objects to an xlsx file with formatting}
 \usage{
 xl_write(obj, wb, sheet, row = 1, col = 1, ...)
+
+xl_write_file(obj, filename, sheetname = "Tables", ...)
 
 \method{xl_write}{default}(
   obj,
@@ -88,13 +91,17 @@ xl_write(obj, wb, sheet, row = 1, col = 1, ...)
 
 \item{wb}{xlsx workbook object, result of \link[openxlsx]{createWorkbook} function.}
 
-\item{sheet}{numeric or character - worksheet name/number in the workbook \code{wb}}
+\item{sheet}{character or numeric - worksheet name/number in the workbook \code{wb}}
 
 \item{row}{numeric - starting row for writing data}
 
 \item{col}{numeric - starting column for writing data}
 
-\item{...}{not yet used}
+\item{...}{further arguments for \code{xl_write}}
+
+\item{filename}{A character string naming an xlsx file. For \code{xl_write_file}.}
+
+\item{sheetname}{A character name for the worksheet. For \code{xl_write_file}.}
 
 \item{rownames}{logical should we write data.frame row names?}
 
@@ -179,6 +186,9 @@ install by printing \code{install.packages('openxlsx')} in the console. On
 Windows system you also may need to
 install \href{https://cran.r-project.org/bin/windows/Rtools/}{rtools}. You
 can export several tables at once by combining them in a list. See examples.
+If you need to write all tables to single sheet you can use
+\code{xl_write_file}. It automatically creates workbook, worksheet and save
+*.xlsx file for you.
 }
 \examples{
 \dontrun{
@@ -216,6 +226,9 @@ sh = addWorksheet(wb, "Tables")
 # export table
 xl_write(mtcars_table, wb, sh)
 saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
+
+## quick export
+xl_write_file(mtcars_table, "table1.xlsx")
 
 ## custom cells formatting
 wb = createWorkbook()

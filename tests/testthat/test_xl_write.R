@@ -120,6 +120,20 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
                        row_labels_format = createStyle(fg = "#00ffff"),
                        total_row_labels_format = createStyle(fg = "#ffff00")
         )
+        
+        xl_write_file(mtcars_table, "quick_export.xlsx", row = 3, col = 5, 
+                 header_format = createStyle(fg = "#00ff00"),
+                 top_left_corner_format = createStyle(fg = "#0000ff"),
+                 main_format = createStyle(
+                     halign = "right",
+                     fgFill = "#FF0000",
+                     numFmt = format(0, nsmall = get_expss_digits())
+                 ),
+                 total_format = createStyle(fontColour = "#00ffff"),
+                 row_labels_format = createStyle(fg = "#00ffff"),
+                 total_row_labels_format = createStyle(fg = "#ffff00")
+        )
+        unlink("quick_export.xlsx")
         # wb$core = ""
         # expect_known_hash(wb, "5874817cef")
         # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)

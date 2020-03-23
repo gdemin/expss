@@ -725,6 +725,7 @@ export(write_labelled_xlsx)
 export(write_labels)
 export(write_labels_spss)
 export(xl_write)
+export(xl_write_file)
 if(getRversion() >= "3.6.0") {
 S3method(huxtable::"caption<-", etable)
 } else {
