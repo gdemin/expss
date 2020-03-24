@@ -23,7 +23,8 @@ if(isTRUE(getOption("covr"))){
     )
     
     
-    res = mtcars %>% tab_cells(cyl, gear) %>% 
+    res = mtcars %>% 
+        tab_cells(cyl, gear) %>% 
         tab_cols(total(), vs, am) %>% 
         tab_stat_cpct() %>%
         tab_last_sig_cpct(keep = "none") %>% 

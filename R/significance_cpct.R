@@ -704,10 +704,10 @@ get_total_rows_indicator = function(tbl, total_marker = "#"){
 ########################
 
 paste_non_empty = function(x, y, sep = ""){
-    res = paste(x, y, sep = sep)
-    recode(res) = (x %in% c("", NA)) ~ y
-    recode(res) = (y %in% c("", NA)) ~ x
-    res
+    ifs(x %in% c("", NA) ~ y,
+        y %in% c("", NA) ~ x, 
+        TRUE ~ paste(x, y, sep = sep)
+    )
 }
 
 paste_df_non_empty = function(df1, df2, sep = ""){

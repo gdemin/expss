@@ -465,9 +465,11 @@ if(isTRUE(getOption("covr"))) {
         "rds/signif_cpct35.rds",  update = FALSE)
     
     if(sessionInfo()$R.version$arch!="i386"){
-        expect_equal_to_reference(
+        expect_identical(
             significance_cpct(cro_cpct(NA)),
-            "rds/signif_cpct36.rds",  update = FALSE)
+        structure(list(row_labels = c("NA", "NA|#Total cases"), `#Total` = c("", 
+        "")), row.names = c(NA, -2L), class = c("etable", "data.frame"
+        )))
     }
     
     mtcars_table4 = mtcars %calc% cro_cpct(list(cyl, gear),
