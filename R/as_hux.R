@@ -81,7 +81,11 @@ as_huxtable.etable = function(x, ...) {
   ht <- huxtable::as_huxtable(xt, ...)
 
   # Split row_labels of merged cells and save matrix
-  rown <- do.call("rbind", strsplit(ht[[1]], "\\|"))
+  if(length(ht[[1]])>0) {
+    rown = do.call("rbind", strsplit(ht[[1]], "\\|"))
+  } else {
+    rown = character(0)
+  }
   
   # Delete old row_labels
   ht[,1] <- NULL 

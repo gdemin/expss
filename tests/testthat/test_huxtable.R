@@ -140,17 +140,10 @@ if(isTRUE(getOption("covr"))){
   var_lab(q1) = "My label"
   
   expect_silent(
-    expss:::as_hux(fre(list(q1)))
+    as_hux(fre(list(q1)))
   )
   
-  
-  my_df = as.etable(data.frame(
-    row_labels = c("!", "!=", "$", "$<-", "%in%", "$", "(", "<NA>"),
-    # row_labels = c("!", "!=",  "%in%",  "(", "*"), 
-    a1 = c(1:7, "<NA>"),
-    "price, $" = paste0(11:18, "$"),
-    stringsAsFactors = FALSE,
-    check.names = FALSE))
+
   
   
 }
