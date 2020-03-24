@@ -1,20 +1,4 @@
----
-title: "Examples"
-date: "`r Sys.Date()`"
-output: 
-    html_document:
-        toc: true
-vignette: >
-    %\VignetteIndexEntry{Examples}
-    %\VignetteEngine{knitr::rmarkdown}
-    %\VignetteEncoding{utf8}
----
-  
-### Introduction
-
-
-First, we apply labels on the well-known `mtcars` dataset:
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 library(expss)
 data(mtcars)
 mtcars = apply_labels(mtcars,
@@ -35,11 +19,8 @@ mtcars = apply_labels(mtcars,
                       carb = "Number of carburetors"
 )
 
-```
-Table construction consists of at least of three functions chained with magrittr pipe operator: `%>%`. At first we need to specify variables for which statistics will be computed with `tab_cells`. Secondary, we calculate statistics with one of `tab_stat_*` functions. And last, we finalize table creation with `tab_pivot`: `dataset %>% tab_cells(variable) %>% tab_stat_cases() %>% tab_pivot()`. We can split our statistics by columns with `tab_cols` or by rows with `tab_rows`. After that we can sort table with `tab_sort_asc`, drop empty rows/columns with `drop_rc` and transpose with `tab_transpose`. Generally, resulting table is just a data.frame so we can use arbitrary operations on it. Statistic is always calculated on the last cells, column/row variables, weight, missing values and subgroup. To define new cell/column/row variables we can call appropriate function one more time. `tab_pivot` defines how we combine different statistics and where statistic labels will appear - inside/outside rows/columns. 
 
-### Simple column percent
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(vs) %>% 
@@ -47,9 +28,8 @@ mtcars %>%
     tab_pivot() %>% 
     tab_caption("Simple column percent")
 
-```
-### Split by columns and rows
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(vs) %>% 
@@ -58,9 +38,8 @@ mtcars %>%
     tab_pivot() %>% 
     tab_caption("Split by columns and rows")
 
-```
-### Multiple banners, table is sorted by total
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(total(), vs, am) %>% 
@@ -69,9 +48,8 @@ mtcars %>%
     tab_sort_desc() %>% 
     tab_caption("Multiple banners, table is sorted by total")
 
-```
-### Nested banners
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(total(), vs %nest% am) %>% 
@@ -79,9 +57,8 @@ mtcars %>%
     tab_pivot() %>% 
     tab_caption("Nested banners")
 
-```
-### Multiple nested banners
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(carb) %>% 
     tab_cols(total(), list(cyl, vs) %nest% am) %>% 
@@ -89,27 +66,24 @@ mtcars %>%
     tab_pivot() %>% 
     tab_caption("Multiple nested banners")
 
-```
-### Multiple variable and multiple summary statistics
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
     tab_cols(total(), am) %>% 
     tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n) %>%
     tab_pivot() %>% 
     tab_caption("Multiple variable and multiple summary statistics")
-```
-### Multiple variable and multiple summary statistics - statistic lables in columns
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
     tab_cols(total(), am) %>% 
     tab_stat_fun(Mean = w_mean, "Valid N" = w_n, method = list) %>%
     tab_pivot() %>% 
     tab_caption("Multiple variable and multiple summary statistics - statistic lables in columns")
-```
-### Filter dataset and exclude empty columns
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_subgroup(am == 0) %>% 
     tab_cells(cyl) %>% 
@@ -118,9 +92,8 @@ mtcars %>%
     tab_pivot() %>% 
     drop_empty_columns() %>%
     tab_caption("Filter dataset and exclude empty columns")
-```
-### Total at the top of the table
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(total(), vs) %>% 
@@ -130,9 +103,8 @@ mtcars %>%
                   total_statistic = c("u_cases", "u_rpct")) %>% 
     tab_pivot() %>% 
     tab_caption("Total at the top of the table")
-```
-### Three different statistics in each cell - stat. labels in rows
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>%
     tab_cells(am) %>%
     tab_cols(total(), vs) %>%
@@ -142,9 +114,8 @@ mtcars %>%
     tab_stat_tpct(label = "table %") %>%
     tab_pivot(stat_position = "inside_rows") %>% 
     tab_caption("Three different statistics in each cell - stat. labels in rows")
-```
-### Three different statistics in each cell - stat. labels in columns
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>%
     tab_cells(am) %>%
     tab_cols(total(), vs) %>%
@@ -154,9 +125,8 @@ mtcars %>%
     tab_stat_tpct(label = "table %") %>%
     tab_pivot(stat_position = "inside_columns") %>% 
     tab_caption("Three different statistics in each cell - stat. labels in columns")
-```
-### Stacked statistics
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(total(), am) %>% 
@@ -167,9 +137,8 @@ mtcars %>%
     tab_pivot() %>% 
     tab_caption("Stacked statistics")
 
-```
-### Stacked statistics with section headings
-```{r, message=FALSE, warning=FALSE}   
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(total(), am) %>% 
@@ -181,9 +150,8 @@ mtcars %>%
     tab_stat_cpct() %>% 
     tab_pivot() %>% 
     tab_caption("Stacked statistics with section headings")
-```
-### Stacked statistics - different statistics for different variables
-```{r, message=FALSE, warning=FALSE}
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cols(total(), am) %>% 
     tab_cells(mpg, hp, qsec) %>% 
@@ -192,9 +160,8 @@ mtcars %>%
     tab_stat_cpct() %>% 
     tab_pivot() %>% 
     tab_caption("Stacked statistics - different statistics for different variables")
-```
-### Linear regression by groups
-```{r, message=FALSE, warning=FALSE}    
+
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(sheet(mpg, disp, hp, wt, qsec)) %>% 
     tab_cols(total(), am) %>% 
@@ -209,10 +176,8 @@ mtcars %>%
     ) %>% 
     tab_pivot() %>% 
     tab_caption("Linear regression by groups")
-```
 
-### Subtotals
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(mpg) %>% 
     tab_cols(total(), vs) %>% 
@@ -220,10 +185,8 @@ mtcars %>%
     tab_stat_mean() %>% 
     tab_pivot() %>% 
     tab_caption("Subtotals in rows")
-```
 
-### Subtotals at the bottom of the table
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(mpg, qsec) %>% 
     tab_cols(total(), vs) %>% 
@@ -231,12 +194,8 @@ mtcars %>%
     tab_stat_mean() %>% 
     tab_pivot() %>% 
     tab_caption("Subtotals at the bottom of the table")
-```
 
-### Nets
-
-Net, contrary to `subtotal`, remove original categories.
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(mpg) %>% 
     tab_cols(total(), vs) %>% 
@@ -244,23 +203,16 @@ mtcars %>%
     tab_stat_mean() %>% 
     tab_pivot() %>% 
     tab_caption("Nets in rows, custom prefix")
-```
-### Nets with complex grouping
 
-```{r, message=FALSE, warning=FALSE} 
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(net(mpg, "Low mpg" = less(mean(mpg)), "High mpg" = greater_or_equal(mean(mpg)))) %>% 
     tab_cols(total(), am) %>% 
     tab_stat_cases() %>% 
     tab_pivot() %>% 
     tab_caption("Nets with complex grouping")
-```
 
-### Significance testing on column percent
-
-Letters marks cells which are significantly greater than cells in the appropriate columns. `-` and `+` marks values which are lower/greater than values in the first column. Significance testing on column percent should be applied on the result of `tab_stat_cpct` with total row.
-
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(cyl) %>% 
     tab_cols(total(), vs) %>% 
@@ -268,12 +220,8 @@ mtcars %>%
     tab_pivot() %>% 
     significance_cpct(compare_type = c("first_column", "subtable"), sig_level = 0.05) %>% 
     tab_caption("Significance testing on column percent")
-```
 
-### Significance testing on means
-
-Significance testing on means should be applied on the result of `tab_stat_mean_sd_n`.
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 mtcars %>% 
     tab_cells(mpg, disp, hp, wt, qsec) %>%
     tab_cols(total(), am) %>% 
@@ -281,12 +229,8 @@ mtcars %>%
     tab_pivot() %>% 
     significance_means(compare_type = c("first_column", "subtable")) %>% 
     tab_caption("Significance testing on means")
-```
 
-### Multiple-response variables with weighting
-
-Here we load data with multiple-responce questions. `mrset` means that we treat set of variables as multiple response varibale with category encoding. For dichotomy encoding use `mdset`.
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 
 data(product_test)
 codeframe_likes = num_lab("
@@ -327,14 +271,8 @@ product_test %>%
     tab_sort_desc() %>% 
     tab_pivot() %>% 
     tab_caption("Multiple-response variables with weighting")
-```
 
-### Side-by-side variables comparison
-
-To make side-by-side comparison we use "|" to suppress variable labels and put these labels to the statistic labels.
-Statistics labels we place in columns with `tab_pivot`.
-
-```{r, message=FALSE, warning=FALSE}
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 product_test %>% 
     tab_cols(total(), age_cat) %>% 
     tab_weight(wgt) %>% 
@@ -345,13 +283,8 @@ product_test %>%
     tab_stat_cpct(label = var_lab(b1_1)) %>% 
     tab_pivot(stat_position = "inside_columns") %>% 
     tab_caption("Side-by-side variables comparison")
-```
 
-### Multiple tables in the loop with knitr
-
-To make the task more practical we will create table with means for variables which have more than 6 unique elements. For other variables we will calculate column percent table. **Note that you need to set `results='asis'` in the chunk options.**
-
-```{r, message=FALSE, warning=FALSE, results='asis'}
+## ---- message=FALSE, warning=FALSE, results='asis'----------------------------
 
 # here we specify dataset and banner
 banner = mtcars %>%
@@ -380,12 +313,6 @@ for(each in colnames(mtcars)){
         htmlTable() %>% 
         print()
 }
-
-
-```
-
-
-
 
 
 

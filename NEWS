@@ -1,3 +1,13 @@
+0.10.2 (25.03.2020)
+================
+* fixes for R4.0
+* new vignette with examples
+* add functions 'hide' and 'unhide' for selective hiding and showing categories in 'net' and 'subtotal'
+* now logical don't have special meaning in the 'recode'. If you use this functionality than use 'when' instead. 
+    recode(y, x>5 ~ 1) need to be replaced with recode(y, when(x>5) ~ 1).
+* add 'xl_write_file' for quick export tables to Excel file
+* Add 'tab_caption' - alias for 'set_caption'
+
 0.10.1 (28.11.2019)
 ================
 * output to PDF, Word via huxtable package (thanks to Sebastian Jeworutzki). See 'as_hux' and 'expss_output_huxtable'.   
