@@ -33,6 +33,7 @@
 \alias{tab_last_hstack}
 \alias{tab_pivot}
 \alias{tab_transpose}
+\alias{tab_caption}
 \title{Functions for custom tables construction}
 \usage{
 tab_cols(data, ...)
@@ -145,6 +146,8 @@ tab_pivot(
 )
 
 tab_transpose(data)
+
+tab_caption(data, ...)
 }
 \arguments{
 \item{data}{data.frame/intermediate_table}
@@ -275,6 +278,7 @@ for percent is number of valid cases.}
 always omitted.}
 \item{\code{tab_pivot}}{ finalize table creation and define how different
 \code{tab_stat_*} will be combined}
+\item{\code{tab_caption}}{ set caption on the table. Should be used after the \code{tab_pivot}.}
 \item{\code{tab_transpose}}{ transpose final table after \code{tab_pivot} or last
 statistic.}}
 }

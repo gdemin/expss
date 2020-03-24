@@ -53,7 +53,6 @@
 #' 
 #'  
 #' \dontrun{
-#' # 'add_labelled_class' example doesn't work intentionally
 #' if(FALSE){ # to prevent execution
 #' # you need to load packages strictly in this order to avoid conflicts
 #' library(haven)

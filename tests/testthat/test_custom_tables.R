@@ -30,9 +30,36 @@ if(isTRUE(getOption("covr"))) {
         tab_cols(vs) %>% 
         tab_rows(am) %>% 
         tab_stat_fun(w_mean) %>% 
-        tab_pivot
+        tab_pivot()
     
     expect_known_value(res, "rds/ctable0.rds",  update = FALSE)
+    
+    expect_error(mtcars %>% 
+                     tab_cells(mpg, disp) %>% 
+                     tab_cols(vs) %>% 
+                     tab_rows(am) %>% 
+                     tab_stat_fun(w_mean) %>% 
+                     tab_caption("my table") %>% 
+                     tab_pivot()
+                 )
+    
+    expect_identical(
+        mtcars %>% 
+            tab_cells(mpg, disp) %>% 
+            tab_cols(vs) %>% 
+            tab_rows(am) %>% 
+            tab_stat_fun(w_mean) %>%   
+            tab_pivot() %>%
+            tab_caption("my ", "table"),
+        mtcars %>% 
+            tab_cells(mpg, disp) %>% 
+            tab_cols(vs) %>% 
+            tab_rows(am) %>% 
+            tab_stat_fun(w_mean) %>%   
+            tab_pivot() %>%
+            set_caption("my table")
+
+    )
     
     res = mtcars %>% 
         tab_cols(vs) %>% 

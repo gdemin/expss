@@ -186,7 +186,7 @@ install by printing \code{install.packages('openxlsx')} in the console. On
 Windows system you also may need to
 install \href{https://cran.r-project.org/bin/windows/Rtools/}{rtools}. You
 can export several tables at once by combining them in a list. See examples.
-If you need to write all tables to single sheet you can use
+If you need to write all tables to the single sheet you can use
 \code{xl_write_file}. It automatically creates workbook, worksheet and save
 *.xlsx file for you.
 }
