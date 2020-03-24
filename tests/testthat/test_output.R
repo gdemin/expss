@@ -170,9 +170,9 @@ if(isTRUE(getOption("covr"))){
     
     options(expss.output = NULL)
     
-    res = expss:::knit_print.etable(tbl)
-    expect_equal_to_reference(res, "rds/knit_print.rds",  update = FALSE)
-    
+    # res = expss:::knit_print.etable(tbl)
+    # expect_equal_to_reference(res, "rds/knit_print.rds",  update = FALSE)
+    # 
     options(expss.output = "rnotebook")
     colnames(tbl) = enc2utf8(colnames(tbl))
     tbl[[1]] = enc2utf8(tbl[[1]])

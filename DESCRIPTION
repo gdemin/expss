@@ -25,6 +25,7 @@ Suggests:
     DT,
     htmltools,
     knitr,
+    rmarkdown,
     repr,
     ggplot2,
     testthat,
