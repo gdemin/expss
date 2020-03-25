@@ -13,7 +13,9 @@
 \alias{\%mis_val\%}
 \alias{valid}
 \title{Replace values with NA and vice-versa}
-\format{An object of class \code{character} of length 1.}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 if_na(x, value, label = NULL)
 

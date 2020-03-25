@@ -702,7 +702,7 @@ sh = addWorksheet(wb, &quot;Tables&quot;)</code></pre>
 sh = addWorksheet(wb, &quot;Tables&quot;)</code></pre>
 <p>Here we export our list with tables with additional formatting. We remove ‘#’ sign from totals and mark total column with bold. You can read about formatting options in the manual fro <code>xl_write</code> (<code>?xl_write</code> in the console).</p>
 <pre class="r"><code>xl_write(list_of_tables, wb, sh, 
-         # remove '#' sign from totals 
+         # remove &#39;#&#39; sign from totals 
          col_symbols_to_remove = &quot;#&quot;,
          row_symbols_to_remove = &quot;#&quot;,
          # format total column as bold

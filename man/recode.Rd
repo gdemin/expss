@@ -15,7 +15,11 @@
 \alias{from_to}
 \alias{\%into\%}
 \title{Change, rearrange or consolidate the values of an existing or new variable. Inspired by the RECODE command from SPSS.}
-\format{An object of class \code{numeric} of length 1.}
+\format{
+An object of class \code{numeric} of length 1.
+
+An object of class \code{numeric} of length 1.
+}
 \usage{
 recode(
   x,

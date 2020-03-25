@@ -13,7 +13,9 @@
 \alias{..p}
 \alias{..t}
 \title{Get variables/range of variables by name/by pattern.}
-\format{An object of class \code{parameter} of length 1.}
+\format{
+An object of class \code{parameter} of length 1.
+}
 \usage{
 vars(...)
 

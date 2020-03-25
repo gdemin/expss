@@ -3761,7 +3761,7 @@ Stacked statistics - different statistics for different variables
         function(x){
             frm = reformulate(&quot;.&quot;, response = as.name(names(x)[1]))
             model = lm(frm, data = x)
-            sheet('Coef.' = coef(model), 
+            sheet(&#39;Coef.&#39; = coef(model), 
                   confint(model)
             )
         }    
@@ -6131,7 +6131,7 @@ Multiple-response variables with weighting
 <pre class="r"><code>product_test %&gt;% 
     tab_cols(total(), age_cat) %&gt;% 
     tab_weight(wgt) %&gt;% 
-    # '|' is needed to prevent automatic labels creation from argument
+    # &#39;|&#39; is needed to prevent automatic labels creation from argument
     tab_cells(&quot;|&quot; = unvr(mrset(a1_1 %to% a1_6))) %&gt;% 
     tab_stat_cpct(label = var_lab(a1_1)) %&gt;% 
     tab_cells(&quot;|&quot; = unvr(mrset(b1_1 %to% b1_6))) %&gt;% 
@@ -6554,7 +6554,7 @@ Side-by-side variables comparison
 </div>
 <div id="multiple-tables-in-the-loop-with-knitr" class="section level3">
 <h3>Multiple tables in the loop with knitr</h3>
-<p>To make the task more practical we will create table with means for variables which have more than 6 unique elements. For other variables we will calculate column percent table. <strong>Note that you need to set <code>results='asis'</code> in the chunk options.</strong></p>
+<p>To make the task more practical we will create table with means for variables which have more than 6 unique elements. For other variables we will calculate column percent table. <strong>Note that you need to set <code>results=&#39;asis&#39;</code> in the chunk options.</strong></p>
 <pre class="r"><code># here we specify dataset and banner
 banner = mtcars %&gt;%
     tab_cols(total(), am)
