@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2020-03-25" />
+<meta name="date" content="2020-03-31" />
 
 <title>Export tables to xlsx files</title>
 
@@ -363,7 +363,7 @@ summary {
 
 
 <h1 class="title toc-ignore">Export tables to xlsx files</h1>
-<h4 class="date">2020-03-25</h4>
+<h4 class="date">2020-03-31</h4>
 
 </div>
 
@@ -702,7 +702,7 @@ sh = addWorksheet(wb, &quot;Tables&quot;)</code></pre>
 sh = addWorksheet(wb, &quot;Tables&quot;)</code></pre>
 <p>Here we export our list with tables with additional formatting. We remove ‘#’ sign from totals and mark total column with bold. You can read about formatting options in the manual fro <code>xl_write</code> (<code>?xl_write</code> in the console).</p>
 <pre class="r"><code>xl_write(list_of_tables, wb, sh, 
-         # remove &#39;#&#39; sign from totals 
+         # remove '#' sign from totals 
          col_symbols_to_remove = &quot;#&quot;,
          row_symbols_to_remove = &quot;#&quot;,
          # format total column as bold

@@ -1,3 +1,7 @@
+0.10.3 (30.03.2020)
+================
+* very minor fix: revert back default method for 'set_caption'
+
 0.10.2 (25.03.2020)
 ================
 * fixes for R4.0

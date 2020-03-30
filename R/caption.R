@@ -32,7 +32,7 @@ set_caption <- function (obj, caption) UseMethod("set_caption")
 
 
 #' @export
-set_caption.etable = function(obj, caption){
+set_caption.default = function(obj, caption){
     if(length(caption)==0) {
         attr(obj, "caption") = NULL
         obj = remove_class(obj, "with_caption")
@@ -41,6 +41,12 @@ set_caption.etable = function(obj, caption){
         obj = add_class(obj, "with_caption")
     }
     obj    
+}
+
+
+#' @export
+set_caption.etable = function(obj, caption){
+   set_caption.default(obj, caption)  
 }
 
 #' @export
@@ -69,8 +75,13 @@ set_caption.huxtable = function(obj, caption){
 get_caption <- function (obj) UseMethod("get_caption")
 
 #' @export
-get_caption.etable = function(obj){
+get_caption.default = function(obj){
     attr(obj, "caption", exact = TRUE)     
+}
+
+#' @export
+get_caption.etable = function(obj){
+    get_caption.default(obj)     
 }
 
 #' @rawNamespace if(getRversion() >= "3.6.0") {

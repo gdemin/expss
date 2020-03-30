@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2020-03-25" />
+<meta name="date" content="2020-03-31" />
 
 <title>Tables with labels in R</title>
 
@@ -363,7 +363,7 @@ summary {
 
 
 <h1 class="title toc-ignore">Tables with labels in R</h1>
-<h4 class="date">2020-03-25</h4>
+<h4 class="date">2020-03-31</h4>
 
 </div>
 
@@ -421,8 +421,8 @@ mtcars = apply_labels(mtcars,
                       carb = &quot;Number of carburetors&quot;
 )</code></pre>
 <p>For quick cross-tabulation there are <code>fre</code> and <code>cro</code> family of function. For simplicity we demonstrate here only <code>cro_cpct</code> which caluclates column percent. Documentation for other functions, such as <code>cro_cases</code> for counts, <code>cro_rpct</code> for row percent, <code>cro_tpct</code> for table percent and <code>cro_fun</code> for custom summary functions can be seen by typing <code>?cro</code> and <code>?cro_fun</code> in the console.</p>
-<pre class="r"><code># &#39;cro&#39; examples
-# just simple crosstabulation, similar to base R &#39;table&#39; function
+<pre class="r"><code># 'cro' examples
+# just simple crosstabulation, similar to base R 'table' function
 cro(mtcars$am, mtcars$vs)</code></pre>
 <table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
@@ -2328,7 +2328,7 @@ mtcars %&gt;%
         function(x){
             frm = reformulate(&quot;.&quot;, response = as.name(names(x)[1]))
             model = lm(frm, data = x)
-            sheet(&#39;Coef.&#39; = coef(model), 
+            sheet('Coef.' = coef(model), 
                   confint(model)
             )
         }    
@@ -2619,7 +2619,7 @@ mtcars %&gt;%
 w = product_test # shorter name to save some keystrokes
 
 # here we recode variables from first/second tested product to separate variables for each product according to their cells
-# &#39;h&#39; variables - VSX123 sample, &#39;p&#39; variables - &#39;SDF456&#39; sample
+# 'h' variables - VSX123 sample, 'p' variables - 'SDF456' sample
 # also we recode preferences from first/second product to true names
 # for first cell there are no changes, for second cell we should exchange 1 and 2.
 w = w %&gt;% 
@@ -2695,7 +2695,7 @@ w = apply_labels(w,
     p22 = overall_liking_scale
 )</code></pre>
 <p>Are there any significant differences between preferences? Yes, difference is significant.</p>
-<pre class="r"><code># &#39;tab_mis_val(3)&#39; remove &#39;hard to say&#39; from vector 
+<pre class="r"><code># 'tab_mis_val(3)' remove 'hard to say' from vector 
 w %&gt;% tab_cols(total(), age_cat) %&gt;% 
       tab_cells(c1r) %&gt;% 
       tab_mis_val(3) %&gt;% 
@@ -5737,9 +5737,9 @@ END IF.</code></pre>
 <p><strong>R</strong>:</p>
 <pre class="r"><code>recode(qvar) = c(1 %thru% 5 ~ 1, 6 %thru% 10 ~ 2, 11 %thru% hi ~ 3, other ~ 0)</code></pre>
 <p><strong>SPSS</strong>:</p>
-<pre><code>RECODE STRNGVAR (&#39;A&#39;, &#39;B&#39;, &#39;C&#39;=&#39;A&#39;)(&#39;D&#39;, &#39;E&#39;, &#39;F&#39;=&#39;B&#39;)(ELSE=&#39; &#39;). </code></pre>
+<pre><code>RECODE STRNGVAR ('A', 'B', 'C'='A')('D', 'E', 'F'='B')(ELSE=' '). </code></pre>
 <p><strong>R</strong>:</p>
-<pre class="r"><code>recode(strngvar) = c(c(&#39;A&#39;, &#39;B&#39;, &#39;C&#39;) ~ &#39;A&#39;, c(&#39;D&#39;, &#39;E&#39;, &#39;F&#39;) ~ &#39;B&#39;, other ~ &#39; &#39;)</code></pre>
+<pre class="r"><code>recode(strngvar) = c(c('A', 'B', 'C') ~ 'A', c('D', 'E', 'F') ~ 'B', other ~ ' ')</code></pre>
 <p><strong>SPSS</strong>:</p>
 <pre><code>RECODE AGE (MISSING=9) (18 THRU HI=1) (0 THRU 18=0) INTO VOTER. </code></pre>
 <p><strong>R</strong>:</p>
