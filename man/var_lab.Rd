@@ -9,7 +9,7 @@
 \alias{add_labelled_class}
 \title{Set or get variable label}
 \usage{
-var_lab(x)
+var_lab(x, default = NULL)
 
 var_lab(x) <- value
 
@@ -23,6 +23,9 @@ add_labelled_class(x, remove_classes = c("haven_labelled", "spss_labelled"))
 }
 \arguments{
 \item{x}{Variable. In the most cases it is numeric vector.}
+
+\item{default}{A character scalar. What we want to get from 'var_lab' if
+there is no variable label. NULL by default.}
 
 \item{value}{A character scalar - label for the variable x.}
 

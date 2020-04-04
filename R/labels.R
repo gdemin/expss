@@ -17,6 +17,8 @@
 #' load 'expss' strictly after 'haven' to avoid conflicts.} }
 #' @param x Variable. In the most cases it is numeric vector.
 #' @param value A character scalar - label for the variable x.
+#' @param default A character scalar. What we want to get from 'var_lab' if
+#'   there is no variable label. NULL by default.
 #' @param remove_classes A character vector of classes which should be removed
 #'   from the class attribute of the \code{x}.
 #' @return \code{var_lab} return variable label. If label doesn't exist it return
@@ -62,7 +64,7 @@
 #' spss_data = add_labelled_class(spss_data) 
 #' }
 #' }
-var_lab=function(x){
+var_lab=function(x, default=NULL){
     UseMethod("var_lab")
 }
 
@@ -75,14 +77,14 @@ var_lab.default=function (x, default=NULL) {
 
 
 #' @export
-var_lab.data.frame=function(x)
+var_lab.data.frame=function(x, default=NULL)
     ## Drop this function???
     ## mainly for multiple choice questions
     ## we return first label 
 {
-    all_labs=lapply(x,var_lab)
+    all_labs=lapply(x, var_lab)
     all_labs=all_labs[!sapply(all_labs,is.null)]
-    if (length(all_labs)>0) res=all_labs[[1]] else res=NULL
+    if (length(all_labs)>0) res=all_labs[[1]] else res = default
     res
 }
 

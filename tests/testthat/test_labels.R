@@ -1,5 +1,18 @@
 context("var_lab")
 
+data(mtcars)
+
+expect_identical(var_lab(mtcars$am), NULL)
+expect_identical(var_lab(mtcars), NULL)
+
+expect_identical(var_lab(mtcars$am, default = "My default label"), "My default label")
+expect_identical(var_lab(mtcars, default = "My default label"), "My default label")
+
+var_lab(mtcars$am) = "My am"
+
+expect_identical(var_lab(mtcars$am, default = "My default label"), "My am")
+expect_identical(var_lab(mtcars, default = "My default label"), "My am")
+
 test_ds = data.frame(total = 1, s2b = sample(2:3,100,replace = TRUE))
 age_group = test_ds$s2b
 var_lab(test_ds$s2b) = "Age group"
