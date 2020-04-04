@@ -67,9 +67,12 @@ var_lab=function(x){
 }
 
 #' @export
-var_lab.default=function(x){
-    attr(x,"label", exact = TRUE)
+var_lab.default=function (x, default=NULL) {
+    y=attr(x, "label", exact = TRUE)
+    if(is.null(y)) return(default)
+    y
 }
+
 
 #' @export
 var_lab.data.frame=function(x)
