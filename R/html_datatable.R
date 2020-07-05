@@ -77,10 +77,11 @@ as.datatable_widget.default = function(data, ...){
 #' @export
 #' @rdname as.datatable_widget
 as.datatable_widget.etable = function(data, 
+                                      ...,
                             repeat_row_labels = FALSE, 
                             show_row_numbers = FALSE,
-                            digits = get_expss_digits(),
-                            ...){
+                            digits = get_expss_digits()
+                            ){
     data = round_dataframe(data, digits = digits)
     if(NCOL(data)>0){
         first_lab = colnames(data)[1]
@@ -240,18 +241,18 @@ matrix_header_to_html = function(corner, m_cols){
 #' @export
 #' @rdname as.datatable_widget
 as.datatable_widget.with_caption = function(data, 
+                                            ...,
                                       repeat_row_labels = FALSE, 
                                       show_row_numbers = FALSE,
-                                      digits = get_expss_digits(),
-                                      ...){
+                                      digits = get_expss_digits()){
     caption = get_caption(data)
     data = set_caption(data, NULL)
     as.datatable_widget(
         data,
+        ...,
         repeat_row_labels = repeat_row_labels, 
         show_row_numbers = show_row_numbers,
         digits = digits,
-        ...,
         caption = caption
         
     )

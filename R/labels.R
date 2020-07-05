@@ -64,12 +64,12 @@
 #' spss_data = add_labelled_class(spss_data) 
 #' }
 #' }
-var_lab=function(x, default=NULL){
+var_lab=function(x, default = NULL){
     UseMethod("var_lab")
 }
 
 #' @export
-var_lab.default=function (x, default=NULL) {
+var_lab.default=function (x, default = NULL) {
     y=attr(x, "label", exact = TRUE)
     if(is.null(y)) return(default)
     y
@@ -77,14 +77,14 @@ var_lab.default=function (x, default=NULL) {
 
 
 #' @export
-var_lab.data.frame=function(x, default=NULL)
+var_lab.data.frame=function(x, default = NULL)
     ## Drop this function???
     ## mainly for multiple choice questions
     ## we return first label 
 {
     all_labs=lapply(x, var_lab)
     all_labs=all_labs[!sapply(all_labs,is.null)]
-    if (length(all_labs)>0) res=all_labs[[1]] else res = default
+    if (length(all_labs) > 0) res=all_labs[[1]] else res = default
     res
 }
 
