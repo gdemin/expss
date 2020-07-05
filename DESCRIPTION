@@ -1,7 +1,7 @@
 Package: expss
 Type: Package
 Title: Tables, Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
-Version: 0.10.3
+Version: 0.10.4
 Maintainer: Gregory Demin <gdemin@gmail.com>
 Authors@R: c(
          person("Gregory", "Demin", email = "gdemin@gmail.com",
@@ -46,4 +46,4 @@ Description: Package computes and displays tables with support for 'SPSS'-style
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1

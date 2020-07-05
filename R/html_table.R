@@ -24,7 +24,22 @@
 #' @param row_groups logical Should we create row groups? TRUE by default.
 #' @param gap character Separator between tables if we output list of
 #'   tables. By default it is line break '<br>'.
-#'
+#' @param header Ignored.
+#' @param rnames Ignored.
+#' @param rowlabel Ignored.
+#' @param caption See manual for \link[htmlTable]{htmlTable}.
+#' @param tfoot See manual for \link[htmlTable]{htmlTable}.
+#' @param label See manual for \link[htmlTable]{htmlTable}.
+#' @param rgroup Ignored.
+#' @param n.rgroup Ignored.
+#' @param cgroup Ignored.
+#' @param n.cgroup Ignored.
+#' @param tspanner See manual for \link[htmlTable]{htmlTable}.
+#' @param n.tspanner See manual for \link[htmlTable]{htmlTable}.
+#' @param total See manual for \link[htmlTable]{htmlTable}.
+#' @param ctable See manual for \link[htmlTable]{htmlTable}. 
+#' @param compatibility See manual for \link[htmlTable]{htmlTable}.
+#' @param cspan.rgroup See manual for \link[htmlTable]{htmlTable}.
 #' @return Returns a string of class htmlTable
 #' @export
 #'
@@ -70,7 +85,14 @@
 #' expss_output_default()   
 #'  
 #' }
-htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE, ..., row_groups = TRUE){
+htmlTable.etable = function(x, header = NULL, rnames = NULL, rowlabel = NULL, caption = NULL, 
+                            tfoot = NULL, label = NULL, rgroup = NULL, n.rgroup = NULL, 
+                            cgroup = NULL, n.cgroup = NULL, tspanner = NULL, n.tspanner = NULL, 
+                            total = NULL, ctable = TRUE, 
+                            compatibility = getOption("htmlTableCompat", "LibreOffice"), 
+                            cspan.rgroup = "all",  escape.html = FALSE, ..., 
+                            digits = get_expss_digits(), row_groups = TRUE){
+#  old signature - function(x, digits = get_expss_digits(), escape.html = FALSE, ..., row_groups = TRUE)
     if(NCOL(x) == 0){
         return(htmlTable(setNames(sheet("Table is empty"), " "), escape.html = escape.html, ...))
     }
@@ -118,7 +140,21 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
    
 
     if(!row_groups){
-        return(html_table_no_row_groups(x = x, escape.html = escape.html, ...))
+        return(html_table_no_row_groups(x = x
+                                        ,caption = caption
+                                        ,rowlabel = rowlabel
+                                        ,tfoot = tfoot
+                                        ,label = label
+                                        ,tspanner = tspanner
+                                        ,n.tspanner = n.tspanner
+                                        ,total = total
+                                        ,ctable  = ctable 
+                                        ,compatibility = compatibility
+                                        ,cspan.rgroup = cspan.rgroup
+                                        ,escape.html = escape.html
+                                        ,...
+                                        )
+               )
     }
     first_lab = colnames(x)[1]
     if(first_lab == "row_labels") first_lab = ""
@@ -216,8 +252,20 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
     html_table_args$rgroup = rgroup
     html_table_args$n.rgroup = n.rgroup
     html_table_args$rowlabel = first_lab
-    html_table_args$escape.html = escape.html
-    supplied_args = list(...)
+
+    supplied_args = list(caption = caption
+                         ,rowlabel = rowlabel
+                         ,tfoot = tfoot
+                         ,label = label
+                         ,tspanner = tspanner
+                         ,n.tspanner = n.tspanner
+                         ,total = total
+                         ,ctable  = ctable 
+                         ,compatibility = compatibility
+                         ,cspan.rgroup = cspan.rgroup
+                         ,escape.html = escape.html
+                         ,...)
+    supplied_args = supplied_args[!sapply(supplied_args, is.null)]
     html_table_args = html_table_args %n_d% names(supplied_args)
     html_table_args = c(html_table_args, supplied_args)
     do.call(htmlTable, html_table_args)
@@ -225,17 +273,64 @@ htmlTable.etable = function(x, digits = get_expss_digits(), escape.html = FALSE,
 
 #' @export
 #' @rdname htmlTable.etable
-htmlTable.with_caption = function(x, digits = get_expss_digits(), escape.html = FALSE, ..., row_groups = TRUE){
-    caption = get_caption(x)
+htmlTable.with_caption = function(x, header = NULL, rnames = NULL, rowlabel = NULL, caption = NULL, 
+                                  tfoot = NULL, label = NULL, rgroup = NULL, n.rgroup = NULL, 
+                                  cgroup = NULL, n.cgroup = NULL, tspanner = NULL, n.tspanner = NULL, 
+                                  total = NULL, ctable = TRUE, 
+                                  compatibility = getOption("htmlTableCompat", "LibreOffice"), 
+                                  cspan.rgroup = "all",  escape.html = FALSE, ..., 
+                                  digits = get_expss_digits(), row_groups = TRUE){
+    if(is.null(caption)) caption = get_caption(x)
     x = set_caption(x, NULL)
-    htmlTable(x, caption = caption, digits = digits, escape.html = escape.html, ..., row_groups = row_groups)
+    html_table_args = list(x = x
+                         ,caption = caption
+                         ,rowlabel = rowlabel
+                         ,tfoot = tfoot
+                         ,label = label
+                         ,tspanner = tspanner
+                         ,n.tspanner = n.tspanner
+                         ,total = total
+                         ,ctable  = ctable 
+                         ,compatibility = compatibility
+                         ,cspan.rgroup = cspan.rgroup
+                         ,escape.html = escape.html
+                         ,...
+                         ,digits = digits 
+                         ,row_groups = row_groups)
+    html_table_args = html_table_args[!sapply(html_table_args, is.null)]
+    do.call(htmlTable, html_table_args)
 }
 
 
 #' @export
 #' @rdname htmlTable.etable
-htmlTable.list = function(x, gap = "<br>", ...){
-    res = lapply(x, htmlTable, ...)
+htmlTable.list = function(x, header = NULL, rnames = NULL, rowlabel = NULL, caption = NULL, 
+                          tfoot = NULL, label = NULL, rgroup = NULL, n.rgroup = NULL, 
+                          cgroup = NULL, n.cgroup = NULL, tspanner = NULL, n.tspanner = NULL, 
+                          total = NULL, ctable = TRUE, 
+                          compatibility = getOption("htmlTableCompat", "LibreOffice"), 
+                          cspan.rgroup = "all",  escape.html = FALSE, ..., 
+                          digits = get_expss_digits(), row_groups = TRUE, gap = "<br>"){
+    html_table_args = list(x = NA # just placeholder
+                            ,caption = caption
+                           ,rowlabel = rowlabel
+                           ,tfoot = tfoot
+                           ,label = label
+                           ,tspanner = tspanner
+                           ,n.tspanner = n.tspanner
+                           ,total = total
+                           ,ctable  = ctable 
+                           ,compatibility = compatibility
+                           ,cspan.rgroup = cspan.rgroup
+                           ,escape.html = escape.html
+                           ,...
+                           ,digits = digits 
+                           ,row_groups = row_groups)
+    html_table_args = html_table_args[!sapply(html_table_args, is.null)]
+    res = lapply(x, function(item){
+        html_table_args[["x"]] = item
+        do.call(htmlTable, html_table_args)
+    })
     res = do.call(paste, c(res, list(sep = gap)))
     class(res) = c("htmlTable", "character")
     res
@@ -287,7 +382,7 @@ matrix_to_cgroup = function(header){
 #' export(repr_text.with_caption)
 #' }
 #' @rdname htmlTable.etable
-knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
+knit_print.etable = function(x, ..., digits = get_expss_digits(), escape.html = FALSE){
     
     # Get type of document
     type = knitr::is_html_output()
@@ -309,7 +404,7 @@ knit_print.etable = function(x, digits = get_expss_digits(), escape.html = FALSE
 
 
 #' @rdname htmlTable.etable
-knit_print.with_caption = function(x, digits = get_expss_digits(), escape.html = FALSE, ...){
+knit_print.with_caption = function(x, ..., digits = get_expss_digits(), escape.html = FALSE){
 
     # Get type of document
     type = knitr::is_html_output()
@@ -333,20 +428,20 @@ knit_print.with_caption = function(x, digits = get_expss_digits(), escape.html =
 
 
 #' @rdname htmlTable.etable
-repr_html.etable = function(obj, digits = get_expss_digits(), escape.html = FALSE, ...){
+repr_html.etable = function(obj, ..., digits = get_expss_digits(), escape.html = FALSE){
     htmlTable(obj, digits = digits, escape.html = escape.html, ..., row_groups = FALSE)
     
 }
 
 
 #' @rdname htmlTable.etable
-repr_html.with_caption = function(obj, digits = get_expss_digits(), escape.html = FALSE, ...){
+repr_html.with_caption = function(obj, ..., digits = get_expss_digits(), escape.html = FALSE){
     htmlTable(obj, digits = digits, escape.html = escape.html, ..., row_groups = FALSE)
 }
 
 
 #' @rdname htmlTable.etable
-repr_text.etable = function(obj, digits = get_expss_digits(), ...){
+repr_text.etable = function(obj, ..., digits = get_expss_digits()){
     curr_output = getOption("expss.output")
     if(!("raw" %in% curr_output)){
         obj = split_all_in_etable_for_print(obj,
@@ -369,7 +464,7 @@ repr_text.etable = function(obj, digits = get_expss_digits(), ...){
 }
 
 #' @rdname htmlTable.etable
-repr_text.with_caption = function(obj, digits = get_expss_digits(), ...){
+repr_text.with_caption = function(obj, ..., digits = get_expss_digits()){
     width = getOption("width")
     on.exit(options(width = width))
     options(width = 1000)
@@ -379,7 +474,12 @@ repr_text.with_caption = function(obj, digits = get_expss_digits(), ...){
 }
 
 ## for Jupyter notebooks where row headings are not rendered correctly
-html_table_no_row_groups = function(x, escape.html = FALSE, ...){
+html_table_no_row_groups = function(x, header = NULL, rnames = NULL, rowlabel = NULL, caption = NULL, 
+                            tfoot = NULL, label = NULL, rgroup = NULL, n.rgroup = NULL, 
+                            cgroup = NULL, n.cgroup = NULL, tspanner = NULL, n.tspanner = NULL, 
+                            total = NULL, ctable = TRUE, 
+                            compatibility = getOption("htmlTableCompat", "LibreOffice"), 
+                            cspan.rgroup = "all",  escape.html = FALSE, ...){
     if(!escape.html){
         nb_space = "&nbsp;"
     } else {
@@ -469,8 +569,19 @@ html_table_no_row_groups = function(x, escape.html = FALSE, ...){
     }
     html_table_args$rnames = rnames  
     html_table_args$rowlabel = first_lab
-    html_table_args$escape.html = escape.html
-    supplied_args = list(...)
+    supplied_args = list(caption = caption
+                         ,rowlabel = rowlabel
+                         ,tfoot = tfoot
+                         ,label = label
+                         ,tspanner = tspanner
+                         ,n.tspanner = n.tspanner
+                         ,total = total
+                         ,ctable  = ctable 
+                         ,compatibility = compatibility
+                         ,cspan.rgroup = cspan.rgroup
+                         ,escape.html = escape.html
+                         ,...)
+    supplied_args = supplied_args[!sapply(supplied_args, is.null)]
     html_table_args = html_table_args %n_d% names(supplied_args)
     html_table_args = c(html_table_args, supplied_args)
     do.call(htmlTable, html_table_args)

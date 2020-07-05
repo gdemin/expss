@@ -14,55 +14,142 @@
 \usage{
 \method{htmlTable}{etable}(
   x,
-  digits = get_expss_digits(),
+  header = NULL,
+  rnames = NULL,
+  rowlabel = NULL,
+  caption = NULL,
+  tfoot = NULL,
+  label = NULL,
+  rgroup = NULL,
+  n.rgroup = NULL,
+  cgroup = NULL,
+  n.cgroup = NULL,
+  tspanner = NULL,
+  n.tspanner = NULL,
+  total = NULL,
+  ctable = TRUE,
+  compatibility = getOption("htmlTableCompat", "LibreOffice"),
+  cspan.rgroup = "all",
   escape.html = FALSE,
   ...,
+  digits = get_expss_digits(),
   row_groups = TRUE
 )
 
 \method{htmlTable}{with_caption}(
   x,
-  digits = get_expss_digits(),
+  header = NULL,
+  rnames = NULL,
+  rowlabel = NULL,
+  caption = NULL,
+  tfoot = NULL,
+  label = NULL,
+  rgroup = NULL,
+  n.rgroup = NULL,
+  cgroup = NULL,
+  n.cgroup = NULL,
+  tspanner = NULL,
+  n.tspanner = NULL,
+  total = NULL,
+  ctable = TRUE,
+  compatibility = getOption("htmlTableCompat", "LibreOffice"),
+  cspan.rgroup = "all",
   escape.html = FALSE,
   ...,
+  digits = get_expss_digits(),
   row_groups = TRUE
 )
 
-\method{htmlTable}{list}(x, gap = "<br>", ...)
+\method{htmlTable}{list}(
+  x,
+  header = NULL,
+  rnames = NULL,
+  rowlabel = NULL,
+  caption = NULL,
+  tfoot = NULL,
+  label = NULL,
+  rgroup = NULL,
+  n.rgroup = NULL,
+  cgroup = NULL,
+  n.cgroup = NULL,
+  tspanner = NULL,
+  n.tspanner = NULL,
+  total = NULL,
+  ctable = TRUE,
+  compatibility = getOption("htmlTableCompat", "LibreOffice"),
+  cspan.rgroup = "all",
+  escape.html = FALSE,
+  ...,
+  digits = get_expss_digits(),
+  row_groups = TRUE,
+  gap = "<br>"
+)
 
-knit_print.etable(x, digits = get_expss_digits(), escape.html = FALSE, ...)
+knit_print.etable(x, ..., digits = get_expss_digits(), escape.html = FALSE)
 
 knit_print.with_caption(
   x,
+  ...,
   digits = get_expss_digits(),
-  escape.html = FALSE,
-  ...
+  escape.html = FALSE
 )
 
-repr_html.etable(obj, digits = get_expss_digits(), escape.html = FALSE, ...)
+repr_html.etable(obj, ..., digits = get_expss_digits(), escape.html = FALSE)
 
 repr_html.with_caption(
   obj,
+  ...,
   digits = get_expss_digits(),
-  escape.html = FALSE,
-  ...
+  escape.html = FALSE
 )
 
-repr_text.etable(obj, digits = get_expss_digits(), ...)
+repr_text.etable(obj, ..., digits = get_expss_digits())
 
-repr_text.with_caption(obj, digits = get_expss_digits(), ...)
+repr_text.with_caption(obj, ..., digits = get_expss_digits())
 }
 \arguments{
 \item{x}{a data object of class 'etable' - result of \link{fre}/\link{cro} and etc.}
+
+\item{header}{Ignored.}
+
+\item{rnames}{Ignored.}
+
+\item{rowlabel}{Ignored.}
+
+\item{caption}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{tfoot}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{label}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{rgroup}{Ignored.}
+
+\item{n.rgroup}{Ignored.}
+
+\item{cgroup}{Ignored.}
+
+\item{n.cgroup}{Ignored.}
+
+\item{tspanner}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{n.tspanner}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{total}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{ctable}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{compatibility}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{cspan.rgroup}{See manual for \link[htmlTable]{htmlTable}.}
+
+\item{escape.html}{logical: should HTML characters be escaped? Defaults to FALSE.}
+
+\item{...}{further parameters for \link[htmlTable]{htmlTable}.}
 
 \item{digits}{integer By default, all numeric columns are rounded to one digit after
 decimal separator. Also you can set this argument by setting option 'expss.digits'
 - for example, \code{expss_digits(2)}. If it is NA than all
 numeric columns remain unrounded.}
-
-\item{escape.html}{logical: should HTML characters be escaped? Defaults to FALSE.}
-
-\item{...}{further parameters for \link[htmlTable]{htmlTable}.}
 
 \item{row_groups}{logical Should we create row groups? TRUE by default.}
 
