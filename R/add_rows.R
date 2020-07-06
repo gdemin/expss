@@ -50,7 +50,7 @@
 #' 
 #' tbl_mean %add_rows% tbl_percent
 #'
-add_rows = function(..., nomatch_columns = c("add", "drop", "stop")){
+add_rows = function(...){
     UseMethod("add_rows")
 }
 
