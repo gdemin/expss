@@ -148,14 +148,7 @@ expss_output_rnotebook = function(){
 expss_output_huxtable = function(...){
     requireNamespace("huxtable", quietly = TRUE) ||
         stop("'expss_output_huxtable': 'huxtable' package is required for this function. Please, install it with 'install.packages('huxtable')'.")
-    huxtable::set_default_properties(left_border =  1)
-    huxtable::set_default_properties(right_border =  1)
-    huxtable::set_default_properties(top_border =  1)
-    huxtable::set_default_properties(bottom_border =  1)
-    huxtable::set_default_properties(left_border_color =  "black")
-    huxtable::set_default_properties(right_border_color =  "black")
-    huxtable::set_default_properties(top_border_color =  "black")
-    huxtable::set_default_properties(bottom_border_color =  "black")
+    huxtable::set_default_properties(border =  1)
     if(length(list(...))>0) huxtable::set_default_properties(...)
     options(expss.output = "huxtable")
 }

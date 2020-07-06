@@ -1,3 +1,8 @@
+0.10.4 (05.07.2020)
+================
+* add argument 'default' for 'var_lab' function (issue #60). Thanks to Dan Chaltiel 
+* fixes for new versions of R, htmlTable, huxtable
+
 0.10.3 (30.03.2020)
 ================
 * very minor fix: revert back default method for 'set_caption'

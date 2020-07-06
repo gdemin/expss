@@ -60,7 +60,7 @@ as_huxtable.etable = function(x, ...) {
 
   
   # is table empty?
-  if(ncol(x)==0) {
+  if(NCOL(x)==0) {
     ht <- huxtable::hux()
     #huxtable::set_caption(ht, "Table is empty")
     return(ht)
@@ -78,52 +78,55 @@ as_huxtable.etable = function(x, ...) {
                       )
   
   # start with default huxtable
-  ht <- huxtable::as_huxtable(xt, ...)
+  ht <- huxtable::as_huxtable(xt, ...)[-1,] # delete first row with old columnnames
 
   # Split row_labels of merged cells and save matrix
+  rown = character(0)
   if(length(ht[[1]])>0) {
-    rown = do.call("rbind", strsplit(ht[[1]], "\\|"))
-  } else {
-    rown = character(0)
-  }
+    rown = as.matrix(do.call("rbind", strsplit(ht[[1]], "\\|")))
+  } 
   
   # Delete old row_labels
   ht[,1] <- NULL 
   
+  coln = character(0)
+  if(NCOL(ht)>0){
+      # Split column labels of merged cells
+      coln <- t(do.call("rbind", strsplit(names(ht), "\\|")))
+      top_left_corner = matrix("", nrow = NROW(coln), ncol = NCOL(rown))
+      coln = cbind(top_left_corner, coln)
+  }
   # Atttach splitted row_labels
-  if(!is.null(rown)) {
-     if(ncol(ht) > 0) { 
+  if(length(rown)>0) {
+     if(NCOL(ht) > 0) { 
       ht <- cbind(rown, ht)
      } else {
      ht <- huxtable::as_huxtable(rown, ...)
      }
     }
 
-  # Split column labels of merged cells
-  coln <- t(do.call("rbind", strsplit(names(ht), "\\|")))
-  
-  # Remove default data.frame names (V1, V2, ...)
-  coln[coln %in% paste0("V", seq_len(ncol(ht)))] <- ""
   
   # Attach splitted column names
-  if(!is.null(coln)) {
-  if(nrow(ht)!=0) {
-    ht <- rbind(coln, ht)
-  } else {
-    ht <- huxtable::as_huxtable(coln, ...)
-  }
+  if(length(coln)>0) {
+      # Remove default data.frame names (V1, V2, ...)
+      coln[coln %in% paste0("V", seq_len(NCOL(ht)))] <- ""
+      if(NROW(ht)!=0) {
+          ht <- rbind(coln, ht)
+      } else {
+          ht <- huxtable::as_huxtable(coln, ...)
+      }
   }
   
   ## Merge columns
   # Iterate over rows
-  for(j in seq_len(nrow(ht))) {
+  for(j in seq_len(NROW(ht))) {
     
     # Add new labels and merge cells
     # Restriction on row and column labels
-    if (j <= nrow(coln)) { # if in column with row labels
+    if (j <= NROW(coln)) { # if in column with row labels
       colnlab <- unique(ht[j, ])
     } else { # if else, stay in rows with column labels
-      colnlab <- unique(ht[j, 1:ncol(rown)])  
+      colnlab <- unique(ht[j, seq_len(NCOL(rown))])  
     }
     
     for(r in colnlab) {
@@ -167,11 +170,11 @@ as_huxtable.etable = function(x, ...) {
   tmp <- attr(ht, "colspan")
   mergemat <- NULL # keep results here
   
-  for(j in seq_len(nrow(tmp))){
+  for(j in seq_len(NROW(tmp))){
     row <- rep(FALSE, length(tmp[j,]))
     
     start <- 1
-    while(start < ncol(tmp)) {
+    while(start < NCOL(tmp)) {
       m <- tmp[j,][start]
       if(m > 1) {
         row[start:(start + m -1)] <- T
@@ -186,14 +189,14 @@ as_huxtable.etable = function(x, ...) {
   
   #, merge columns
   # Iterate over columns
-  for(j in seq_len(ncol(ht))) {
+  for(j in seq_len(NCOL(ht))) {
     
     # Add new labels and merge cells
     # Restriction on row and column labels
-    if (j <= ncol(ht)) { #  if in column with column labels
+    if (j <= NCOL(ht)) { #  if in column with column labels
       rownlab <- na.omit(unique(ht[[j]]))
     } else { # if in column without column labels
-      rownlab <- na.omit(unique(ht[[j]][1:nrow(coln)]))
+      rownlab <- na.omit(unique(ht[[j]][seq_len(NROW(coln))]))
     }
     
     
@@ -240,6 +243,14 @@ as_huxtable.etable = function(x, ...) {
   
   # set width to 100%
   huxtable::width(ht) <- 1
+  if(NROW(coln)>0){
+      ht = huxtable::set_header_rows(ht, seq_len(NROW(coln)), TRUE)
+      if(NCOL(rown)>0){
+          ht = huxtable::merge_cells(
+              huxtable::set_colspan(ht, seq_len(NROW(coln)), seq_len(NCOL(rown)), 1),
+              seq_len(NROW(coln)), seq_len(NCOL(rown)))
+      }
+  }
   
   return(ht)
   
