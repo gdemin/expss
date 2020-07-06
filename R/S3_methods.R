@@ -308,7 +308,7 @@ print.etable = function(x, digits = get_expss_digits(), remove_repeated = TRUE, 
         }
         if("huxtable" %in% curr_output){
           res = huxtable::as_huxtable(x)
-          print(res)
+          print(res, colnames = FALSE)
           return(invisible(NULL))
         }
 
