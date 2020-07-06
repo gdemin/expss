@@ -57,24 +57,20 @@ functions which show variable names will show labels.}
 }
 \description{
 \itemize{
-\item{{\code{compute}}{ evaluates expression \code{expr} in the context of data.frame 
-\code{data} and return original data possibly modified. It works similar to
-\code{\link[base]{within}} in base R but try to return new variables in order
-of their occurrence in the expression and make available
-full-featured \code{\%to\%} and \code{.N} in the expressions. See \link{vars}.}}
-\item{{\code{calculate}}{ evaluates expression \code{expr} in the context of 
-data.frame \code{data} and return value of the evaluated expression. It works
-similar to \code{\link[base]{with}} in base R but make available 
-full-featured \code{\%to\%} and \code{.N} in the expressions. See 
-\link{vars}. Function \code{use_labels} is shortcut for \code{calculate} with
+\item{\code{compute}}{ evaluates expression \code{expr} in the context of data.frame 
+\code{data} and return original data possibly modified.}
+\item{\code{calculate}}{ evaluates expression \code{expr} in the context of 
+data.frame \code{data} and return value of the evaluated expression. Function \code{use_labels} is shortcut for \code{calculate} with
 argument \code{use_labels} set to \code{TRUE}. When \code{use_labels} is TRUE
-there is a special shortcut for entire data.frame - \code{..data}.}}
-\item{{\code{do_if}}{ modifies only rows for which \code{cond} equals to
+there is a special shortcut for entire data.frame - \code{..data}.}
+\item{\code{do_if}}{ modifies only rows for which \code{cond} equals to
 TRUE. Other rows remain unchanged. Newly created variables also will have
 values only in rows for which \code{cond} have TRUE. There will be NA's in
 other rows. This function tries to mimic SPSS "DO IF(). ... END IF."
-statement.}}
+statement.}
 }
+Full-featured \code{\%to\%} is available in the expressions for addressing
+range of variables.
 There is a special constant \code{.N} which equals to number of cases in 
 \code{data} for usage in expression inside \code{compute}/\code{calculate}. 
 Inside \code{do_if} \code{.N} gives number of rows which will be affected by 

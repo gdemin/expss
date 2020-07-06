@@ -205,7 +205,7 @@ All of these functions return object of class
 }
 \description{
 Table construction consists of at least of three functions chained with 
-\code{magrittr} pipe operator: \link[magrittr]{\%>\%}. At first we need to 
+\code{magrittr} pipe operator. At first we need to 
 specify variables for which statistics will be computed with 
 \code{tab_cells}. Secondary, we calculate statistics with one of 
 \code{tab_stat_*} functions. And last, we finalize table creation with 

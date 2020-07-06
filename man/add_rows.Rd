@@ -28,11 +28,12 @@ columns, \code{"stop"} will raise an error.}
 \item{y}{data.frame/matrix/table for binding}
 }
 \value{
-See \link[base]{rbind}, \link{cro}, \link{cro_fun}, \link{fre}, \link{tables}
+See \link[base:cbind]{rbind}, \link{cro}, \link{cro_fun}, \link{fre}, \link{tables}
 }
 \description{
-\code{add_rows} is similar to \link[base]{rbind} but it handles non-matching 
-column names. \code{\%add_rows\%} is an infix version of \code{add_rows}. 
+Take a sequence of vector, matrix or data-frame arguments and combine by
+rows. Contrary to \link[base:cbind]{rbind} it handles non-matching column
+names. \code{\%add_rows\%} is an infix version of \code{add_rows}.
 There is also special method for the results of
 \link{cro}/\link{cro_fun}/\link{tables}/\link{fre}. \code{.add_rows} is
 version for adding rows to default dataset. See \link{default_dataset}.

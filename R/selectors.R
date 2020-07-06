@@ -32,9 +32,7 @@
 #' \item{\code{\%to\%}}{ returns range of variables between \code{e1} and 
 #' \code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if}, 
 #' \link{calculate}, \link{keep}, \link{except} and \link{where} support 
-#' \code{\%to\%}. Inside global environment \link[base]{with},
-#' \link[base]{within} \code{\%to\%} will take range from names of variables
-#' sorted in the alphabetic order.}
+#' \code{\%to\%}.}
 #' \item{\code{indirect}/\code{indirect_list}}{ are aliases for
 #' \code{vars}/\code{vars_list}.}
 #' }

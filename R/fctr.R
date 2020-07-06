@@ -4,24 +4,24 @@ LABELS_SEP = "|"
 #' 
 #' \code{fctr} converts variable to factor. It force labels usage as factor 
 #' labels for labelled variables even if 'expss.enable_value_labels_support' set
-#' to 0. For other types of variables base \link[base]{factor} is called. Factor
+#' to 0. For other types of variables base \link[base:factor]{factor} is called. Factor
 #' levels are constructed as values labels. If label doesn't exist for
 #' particular value then this value remain as is - so there is no information
 #' lost. This levels look like as "Variable_label|Value label" if argument
 #' \code{prepend} set to TRUE.
 #' 
 #' @param x a vector of data with labels.
-#' @param ... optional arguments for \code{\link[base]{factor}} 
+#' @param ... optional arguments for \code{\link[base:factor]{factor}} 
 #' @param drop_unused_labels logical. Should we drop unused value labels?
 #'   Default is FALSE.
 #' @param prepend_var_lab logical. Should we prepend variable label before value
 #'   labels? Default is TRUE.
-#' @return an object of class factor. For details see base \link[base]{factor} documentation.
+#' @return an object of class factor. For details see base \link[base:factor]{factor} documentation.
 #'  
 #' @seealso \link{values2labels}, \link{names2labels}, \link{val_lab}, 
-#'   \link{var_lab}. Materials for base functions: \code{\link[base]{factor}},
-#'   \code{\link[base]{as.factor}}, \code{\link[base]{ordered}},
-#'   \code{\link[base]{as.ordered}}
+#'   \link{var_lab}. Materials for base functions: \code{\link[base:factor]{factor}},
+#'   \code{\link[base:factor]{as.factor}}, \code{\link[base:factor]{ordered}},
+#'   \code{\link[base:factor]{as.ordered}}
 #' @export  
 #' @examples
 #' data(mtcars)

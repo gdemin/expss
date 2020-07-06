@@ -139,7 +139,7 @@ will be removed when data.table issue #1109 will be fixed.}
 \item{fileEncoding}{character string: if non-empty declares the encoding to 
 be used on a file (not a connection) so the character data can be 
 re-encoded as they are written. Used for writing dictionary. See
-\link[base]{file}.}
+\link[base:connections]{file}.}
 
 \item{dict}{data.frame with labels - a result of \code{create_dictionary}.}
 }

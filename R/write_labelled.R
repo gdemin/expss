@@ -68,7 +68,7 @@
 #' @param fileEncoding character string: if non-empty declares the encoding to 
 #'   be used on a file (not a connection) so the character data can be 
 #'   re-encoded as they are written. Used for writing dictionary. See
-#'   \link[base]{file}.
+#'   \link[base:connections]{file}.
 #'
 #' @return Functions for writing invisibly return NULL. Functions for reading
 #'   return labelled data.frame.
@@ -838,6 +838,7 @@ old_write_labelled_csv = function(x,
                               fileEncoding = "", 
                               remove_new_lines = TRUE,
                               ...){
+  .Deprecated("write_labelled_csv")
   if(remove_new_lines){
     for(each in seq_along(x)){
       if (is.factor(x[[each]])){

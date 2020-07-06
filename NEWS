@@ -1,4 +1,4 @@
-0.10.4 (05.07.2020)
+0.10.5 (05.07.2020)
 ================
 * add argument 'default' for 'var_lab' function (issue #60). Thanks to Dan Chaltiel 
 * fixes for new versions of R, htmlTable, huxtable

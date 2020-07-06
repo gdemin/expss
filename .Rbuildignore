@@ -6,6 +6,7 @@
 \.gitignore
 \.git
 ^SupplementaryMaterials
+\.SupplementaryMaterials
 README.MD
 tests/testthat/data_files
 tests/testthat/test_write_labels.R

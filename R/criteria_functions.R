@@ -19,15 +19,15 @@
 #' equals to maximum or minimum.}
 #' \item{\code{'contains'}}{ searches for the pattern in the strings. By default,
 #' it works with fixed patterns rather than regular expressions. For details
-#' about its arguments see \link[base]{grepl}}
+#' about its arguments see \link[base:grep]{grepl}}
 #' \item{\code{'like'}}{ searches for the Excel-style pattern in the strings. You
 #' can use wildcards: '*' means any number of symbols, '?' means single symbol.
 #' Case insensitive.}
 #' \item{\code{'fixed'}}{ alias for contains.}
 #' \item{\code{'perl'}}{ such as \code{'contains'} but the pattern is perl-compatible
-#' regular expression (\code{'perl = TRUE'}). For details see \link[base]{grepl}}
+#' regular expression (\code{'perl = TRUE'}). For details see \link[base:grep]{grepl}}
 #' \item{\code{'regex'}}{ use POSIX 1003.2 extended regular expressions
-#' (\code{'fixed = FALSE'}). For details see \link[base]{grepl}}
+#' (\code{'fixed = FALSE'}). For details see \link[base:grep]{grepl}}
 #' \item{\code{'has_label'}}{ searches values which have supplied label(-s).  We
 #' can used criteria as an argument for 'has_label'.}
 #' \item{\code{'to'}}{ returns function which gives TRUE for all elements of
@@ -56,10 +56,10 @@
 #' @param pattern character string containing a regular expression (or character
 #'   string for \code{'fixed'}) to be matched in the given character vector.
 #'   Coerced by as.character to a character string if possible.
-#' @param perl logical see \link[base]{grepl}
-#' @param fixed logical see \link[base]{grepl}
-#' @param ignore.case logical see \link[base]{grepl}
-#' @param useBytes logical see \link[base]{grepl}
+#' @param perl logical see \link[base:grep]{grepl}
+#' @param fixed logical see \link[base:grep]{grepl}
+#' @param ignore.case logical see \link[base:grep]{grepl}
+#' @param useBytes logical see \link[base:grep]{grepl}
 #' @param ... numeric indexes of desired items for items, logical vectors or criteria for boolean functions.
 #' @param crit vector of values/function which returns logical or vector. It will be
 #'   converted to function of class criterion.
