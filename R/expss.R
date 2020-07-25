@@ -137,7 +137,10 @@ data.table::frank
 
 #' @export
 data.table::frankv
+et2keyv
 
+#' @export
+data.table::setattr
 #' @export
 data.table::fsetdiff
 
@@ -186,12 +189,6 @@ data.table::rowidv
 
 #' @export
 data.table::set
-
-#' @export
-data.table::set2key
-
-#' @export
-data.table::set2keyv
 
 #' @export
 data.table::setattr
