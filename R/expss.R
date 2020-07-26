@@ -137,7 +137,6 @@ data.table::frank
 
 #' @export
 data.table::frankv
-et2keyv
 
 #' @export
 data.table::setattr
