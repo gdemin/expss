@@ -8,7 +8,37 @@ new_vec = c(vec_with_lab,vec_with_lab)
 
 expect_identical(var_lab(new_vec),var_lab(vec_with_lab))
 expect_identical(val_lab(new_vec),val_lab(vec_with_lab))
+###
+context("c on labelled factors")
 
+a = factor(0:1, levels = 0:1, labels = c("Zero", "One"))
+a = set_var_lab(a, "my labelled factor")
+expect_identical(a, c(a))
+####
+b = factor(1:2, levels = 1:2, labels = c("One", "Two"))
+b = set_var_lab(b, "my second labelled factor")
+
+res = factor(c(1,2,2,3), levels = 1:3, labels = c("Zero", "One", "Two"))
+res = set_var_lab(res, "my labelled factor")
+
+expect_identical(c(a,b), res)
+###
+b = ordered(1:2, levels = 1:2, labels = c("One", "Two"))
+b = set_var_lab(b, "my second labelled factor")
+
+res = ordered(c(1,2,2,3), levels = 1:3, labels = c("Zero", "One", "Two"))
+res = set_var_lab(res, "my labelled factor")
+
+expect_identical(c(a,b), res)
+###
+b = c("One", "Two")
+b = set_var_lab(b, "my second labelled factor")
+
+res = factor(c(1,2,2,3), levels = 1:3, labels = c("Zero", "One", "Two"))
+res = set_var_lab(res, "my labelled factor")
+
+expect_identical(c(a,b), res)
+###
 context("[")
 expect_identical(var_lab(vec_with_lab[1]),var_lab(vec_with_lab))
 expect_identical(val_lab(vec_with_lab[1]),val_lab(vec_with_lab))

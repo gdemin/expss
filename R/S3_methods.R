@@ -14,12 +14,27 @@ as.data.frame.labelled = function(x, ..., nm = paste(deparse(substitute(x), widt
     }
 }
 
+
+
+remove_incompatible_classes = function(x){
+    INCOMPATIBLE = c("haven_labelled", "spss_labelled", "vctrs_vctr")
+    class(x) = setdiff(class(x), INCOMPATIBLE) 
+    x
+}
+
 #' @export
-c.labelled = function(..., recursive = FALSE)
-    ### concatenate vectors of class 'labelled' and preserve labels
+c.labelled = function(..., recursive = FALSE, use.names = TRUE)
 {
-    y = NextMethod()
+    ### concatenate vectors of class 'labelled' and preserve labels
     vectors=list(...)
+    vectors = lapply(vectors, remove_incompatible_classes)
+    
+    factors = vapply(vectors, FUN = inherits, FUN.VALUE = TRUE, "factor")
+    if(any(factors)){
+        y = c_labelled_factors(vectors)    
+    } else {
+        y = NextMethod()
+    }
     dummy= lapply(vectors,var_lab)
     dummy=dummy[lengths(dummy)>0]
     if (length(dummy)>0) y = set_var_lab(y, dummy[[1]])
@@ -29,7 +44,27 @@ c.labelled = function(..., recursive = FALSE)
     y
 }
 
+extract_levels = function(x){
+    res = levels(x)
+    if(is.null(res)) res = sort(unique(x)) 
+    res
+}
 
+c_labelled_factors = function(vectors){
+    # to workaround strange dplyr behavior when
+    # dplyr applies 'c' in the ungrouped mutate for unknown reasons
+    if(length(vectors)==1) return(vectors[[1]])
+    is_ordered = any(vapply(vectors, FUN = is.ordered, FUN.VALUE = TRUE))
+    vectors = unlab(vectors)
+    all_levels = lapply(vectors, extract_levels)
+    all_levels = unique(unlist(all_levels, use.name = FALSE))
+    res = unlist(lapply(vectors, as.character), use.names = FALSE)
+    if(is_ordered){
+        ordered(res, levels = all_levels)
+    } else {
+        factor(res, levels = all_levels) 
+    }
+}
 
 #' @export
 rep.labelled = function (x, ...){
