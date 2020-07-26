@@ -58,7 +58,7 @@ c_labelled_factors = function(vectors){
     is_ordered = any(vapply(vectors, FUN = is.ordered, FUN.VALUE = TRUE))
     vectors = unlab(vectors)
     all_levels = lapply(vectors, extract_levels)
-    all_levels = unique(unlist(all_levels, use.name = FALSE))
+    all_levels = unique(unlist(all_levels, use.names = FALSE))
     res = unlist(lapply(vectors, as.character), use.names = FALSE)
     if(is_ordered){
         ordered(res, levels = all_levels)
