@@ -139,8 +139,6 @@ data.table::frank
 data.table::frankv
 
 #' @export
-data.table::setattr
-#' @export
 data.table::fsetdiff
 
 #' @export
@@ -155,8 +153,6 @@ data.table::funion
 #' @export
 data.table::getDTthreads
 
-#' @export
-data.table::getNumericRounding
 
 #' @export
 data.table::haskey
@@ -213,8 +209,6 @@ data.table::setkeyv
 #' @export
 data.table::setnames
 
-#' @export
-data.table::setNumericRounding
 
 #' @export
 data.table::setorder
@@ -233,18 +227,6 @@ data.table::tstrsplit
 
 #' @export
 data.table::uniqueN
-
-#' @export
-data.table::`%between%`
-
-#' @export
-data.table::`%chin%`
-
-#' @export
-data.table::`%inrange%`
-
-#' @export
-data.table::`%like%`
 
 
 #' @export

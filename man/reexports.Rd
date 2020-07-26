@@ -34,7 +34,6 @@
 \alias{fsort}
 \alias{funion}
 \alias{getDTthreads}
-\alias{getNumericRounding}
 \alias{haskey}
 \alias{indices}
 \alias{inrange}
@@ -45,23 +44,16 @@
 \alias{rowid}
 \alias{rowidv}
 \alias{set}
-\alias{set2key}
-\alias{set2keyv}
 \alias{setattr}
 \alias{setDTthreads}
 \alias{setindex}
 \alias{setindexv}
 \alias{setnames}
-\alias{setNumericRounding}
 \alias{setorderv}
 \alias{SJ}
 \alias{transpose}
 \alias{tstrsplit}
 \alias{uniqueN}
-\alias{\%between\%}
-\alias{\%chin\%}
-\alias{\%inrange\%}
-\alias{\%like\%}
 \alias{htmlTable}
 \alias{htmlTableWidget}
 \alias{htmlTableWidgetOutput}
@@ -73,7 +65,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{data.table}{\code{\link[data.table:between]{\%between\%}}, \code{\link[data.table:chmatch]{\%chin\%}}, \code{\link[data.table:between]{\%inrange\%}}, \code{\link[data.table:like]{\%like\%}}, \code{\link[data.table:J]{CJ}}, \code{\link[data.table:J]{SJ}}, \code{\link[data.table]{as.data.table}}, \code{\link[data.table]{between}}, \code{\link[data.table:chmatch]{chgroup}}, \code{\link[data.table]{chmatch}}, \code{\link[data.table:chmatch]{chorder}}, \code{\link[data.table]{data.table}}, \code{\link[data.table:setops]{fintersect}}, \code{\link[data.table:last]{first}}, \code{\link[data.table]{foverlaps}}, \code{\link[data.table]{frank}}, \code{\link[data.table:frank]{frankv}}, \code{\link[data.table]{fread}}, \code{\link[data.table:setops]{fsetdiff}}, \code{\link[data.table:setops]{fsetequal}}, \code{\link[data.table]{fsort}}, \code{\link[data.table:setops]{funion}}, \code{\link[data.table]{fwrite}}, \code{\link[data.table:openmp-utils]{getDTthreads}}, \code{\link[data.table:setNumericRounding]{getNumericRounding}}, \code{\link[data.table:setkey]{haskey}}, \code{\link[data.table:setkey]{indices}}, \code{\link[data.table:between]{inrange}}, \code{\link[data.table:as.data.table]{is.data.table}}, \code{\link[data.table:setkey]{key}}, \code{\link[data.table]{last}}, \code{\link[data.table]{rbindlist}}, \code{\link[data.table]{rleid}}, \code{\link[data.table:rleid]{rleidv}}, \code{\link[data.table]{rowid}}, \code{\link[data.table:rowid]{rowidv}}, \code{\link[data.table:assign]{set}}, \code{\link[data.table]{set2key}}, \code{\link[data.table:set2key]{set2keyv}}, \code{\link[data.table]{setDF}}, \code{\link[data.table]{setDT}}, \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table]{setNumericRounding}}, \code{\link[data.table]{setattr}}, \code{\link[data.table]{setcolorder}}, \code{\link[data.table]{setcolorder}}, \code{\link[data.table:setkey]{setindex}}, \code{\link[data.table:setkey]{setindexv}}, \code{\link[data.table]{setkey}}, \code{\link[data.table]{setkey}}, \code{\link[data.table:setkey]{setkeyv}}, \code{\link[data.table:setkey]{setkeyv}}, \code{\link[data.table:setattr]{setnames}}, \code{\link[data.table]{setorder}}, \code{\link[data.table]{setorder}}, \code{\link[data.table:setorder]{setorderv}}, \code{\link[data.table]{shift}}, \code{\link[data.table]{transpose}}, \code{\link[data.table]{tstrsplit}}, \code{\link[data.table:duplicated]{uniqueN}}}
+  \item{data.table}{\code{\link[data.table:J]{CJ}}, \code{\link[data.table:J]{SJ}}, \code{\link[data.table]{as.data.table}}, \code{\link[data.table]{between}}, \code{\link[data.table:chmatch]{chgroup}}, \code{\link[data.table]{chmatch}}, \code{\link[data.table:chmatch]{chorder}}, \code{\link[data.table]{data.table}}, \code{\link[data.table:setops]{fintersect}}, \code{\link[data.table:last]{first}}, \code{\link[data.table]{foverlaps}}, \code{\link[data.table]{frank}}, \code{\link[data.table:frank]{frankv}}, \code{\link[data.table]{fread}}, \code{\link[data.table:setops]{fsetdiff}}, \code{\link[data.table:setops]{fsetequal}}, \code{\link[data.table]{fsort}}, \code{\link[data.table:setops]{funion}}, \code{\link[data.table]{fwrite}}, \code{\link[data.table:openmp-utils]{getDTthreads}}, \code{\link[data.table:setkey]{haskey}}, \code{\link[data.table:setkey]{indices}}, \code{\link[data.table:between]{inrange}}, \code{\link[data.table:as.data.table]{is.data.table}}, \code{\link[data.table:setkey]{key}}, \code{\link[data.table]{last}}, \code{\link[data.table]{rbindlist}}, \code{\link[data.table]{rleid}}, \code{\link[data.table:rleid]{rleidv}}, \code{\link[data.table]{rowid}}, \code{\link[data.table:rowid]{rowidv}}, \code{\link[data.table:assign]{set}}, \code{\link[data.table]{setDF}}, \code{\link[data.table]{setDT}}, \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table]{setattr}}, \code{\link[data.table]{setcolorder}}, \code{\link[data.table]{setcolorder}}, \code{\link[data.table:setkey]{setindex}}, \code{\link[data.table:setkey]{setindexv}}, \code{\link[data.table]{setkey}}, \code{\link[data.table]{setkey}}, \code{\link[data.table:setkey]{setkeyv}}, \code{\link[data.table:setkey]{setkeyv}}, \code{\link[data.table:setattr]{setnames}}, \code{\link[data.table]{setorder}}, \code{\link[data.table]{setorder}}, \code{\link[data.table:setorder]{setorderv}}, \code{\link[data.table]{shift}}, \code{\link[data.table]{transpose}}, \code{\link[data.table]{tstrsplit}}, \code{\link[data.table:duplicated]{uniqueN}}}
 
   \item{htmlTable}{\code{\link[htmlTable]{htmlTable}}, \code{\link[htmlTable]{htmlTableWidget}}, \code{\link[htmlTable:htmlTableWidget-shiny]{htmlTableWidgetOutput}}, \code{\link[htmlTable]{interactiveTable}}}
 

@@ -1,3 +1,7 @@
+0.10.6 (26.07.2020)
+================
+* fix for new data.table version (issue #67). Thanks to John Williams.
+
 0.10.5 (05.07.2020)
 ================
 * add argument 'default' for 'var_lab' function (issue #60). Thanks to Dan Chaltiel 
