@@ -17,8 +17,9 @@ as.data.frame.labelled = function(x, ..., nm = paste(deparse(substitute(x), widt
 
 
 remove_incompatible_classes = function(x){
-    INCOMPATIBLE = c("haven_labelled", "spss_labelled", "vctrs_vctr")
-    class(x) = setdiff(class(x), INCOMPATIBLE) 
+    is.null(x) && return(x)
+    INCOMPATIBLE_CLASSES = c("haven_labelled", "spss_labelled", "haven_labelled_spss", "vctrs_vctr")
+    class(x) = setdiff(class(x), INCOMPATIBLE_CLASSES) 
     x
 }
 

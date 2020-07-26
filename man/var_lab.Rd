@@ -19,7 +19,11 @@ unvr(x)
 
 drop_var_labs(x)
 
-add_labelled_class(x, remove_classes = c("haven_labelled", "spss_labelled"))
+add_labelled_class(
+  x,
+  remove_classes = c("haven_labelled", "spss_labelled", "haven_labelled_spss",
+    "vctrs_vctr")
+)
 }
 \arguments{
 \item{x}{Variable. In the most cases it is numeric vector.}

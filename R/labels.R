@@ -119,10 +119,11 @@ set_var_lab.default = function(x, value){
     if(is.list(x)){
         return(set_var_lab.list(x, value = value))
     }
+    x = remove_incompatible_classes(x)
     if (length(value)==0){
         attr(x,"label")=NULL
         if(length(val_lab(x))==0){
-            class(x)=setdiff(class(x), c("labelled", "spss_labelled", "haven_labelled"))
+            class(x)=setdiff(class(x), "labelled")
         }
         return(x)
     }
@@ -168,12 +169,14 @@ drop_var_labs = unvr
 #### add_labelled_class
 #' @rdname var_lab
 #' @export
-add_labelled_class = function(x, remove_classes = c("haven_labelled", "spss_labelled")){
+add_labelled_class = function(x, 
+                              remove_classes = c("haven_labelled", "spss_labelled", "haven_labelled_spss", "vctrs_vctr")){
     UseMethod("add_labelled_class")
 }
 
 #' @export
-add_labelled_class.default = function(x, remove_classes = c("haven_labelled", "spss_labelled")){
+add_labelled_class.default = function(x, 
+                                      remove_classes = c("haven_labelled", "spss_labelled", "haven_labelled_spss", "vctrs_vctr")){
     x = remove_class(x, remove_classes)
     if((!is.null(var_lab(x)) || !is.null(val_lab(x))) && !inherits(x, "labelled")){
         x = add_class(x, "labelled")
@@ -182,7 +185,7 @@ add_labelled_class.default = function(x, remove_classes = c("haven_labelled", "s
 }
 
 #' @export
-add_labelled_class.list = function(x, remove_classes = c("haven_labelled", "spss_labelled")){
+add_labelled_class.list = function(x, remove_classes = c("haven_labelled", "spss_labelled", "haven_labelled_spss", "vctrs_vctr")){
     for(i in seq_along(x)){
         x[[i]] =  add_labelled_class(x[[i]], remove_classes = remove_classes)
     }
@@ -339,12 +342,13 @@ set_val_lab.default = function(x, value, add = FALSE){
      if(is.list(x)){
         return(set_val_lab.list(x, value = value, add = add))
      }
+    x = remove_incompatible_classes(x)
      if (length(value)==0){
         if(!add){
             attr(x, "labels") = NULL
         }
         if(length(val_lab(x)) == 0 && is.null(var_lab(x))){
-            class(x)=setdiff(class(x), c("labelled", "spss_labelled", "haven_labelled"))
+            class(x)=setdiff(class(x), "labelled")
         }
         return(x)
      }
