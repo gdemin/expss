@@ -31,11 +31,11 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     cat("dplyr not found\n")
 }
 
-context("if_na tbl_df")
+context("if_na as_tibble")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
-    a = tbl_df(data.frame(a = 1:4, b = 5:8, d = 10:13))
+    a = as_tibble(data.frame(a = 1:4, b = 5:8, d = 10:13))
     
     b = a
     expect_identical(if_na(a, 2), b)
@@ -43,11 +43,11 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     a[1,1] = NA
     b[1,1] = 2
     
-    expect_identical(if_na(a, 2), b)
+    expect_identical(if_na(a, 2L), b)
     
     a[4,1] = NA 
     b[4,1] = 2
-    expect_identical(if_na(a, 2), b)
+    expect_identical(if_na(a, 2L), b)
     
     b[1,1] = 4L
     b[4,1] = 1L
@@ -104,7 +104,7 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
         y = c(18,18,18,19,19),
         z = c(14,14,14,15,15)
         
-    )  %>% tbl_df()
+    )  %>% as_tibble()
     
     dfs  = dfs %>% mutate(
         w = if_val(x, from_to(c(gt(2), other), to = list(y, copy)))
@@ -159,11 +159,11 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
     cat("dplyr not found\n")
 }
 
-context("vlookup tbl_df")
+context("vlookup as_tibble")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
-    dict = tbl_df(data.frame(num=1:26, small=letters, cap=LETTERS, stringsAsFactors = FALSE))
+    dict = as_tibble(data.frame(num=1:26, small=letters, cap=LETTERS, stringsAsFactors = FALSE))
     # rownames(dict) = paste0('rows',1:26)
     expect_identical(vlookup_df(1:3, dict), dict[1:3,])
     
@@ -180,10 +180,10 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 data(iris)
 
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
-    expect_identical(as.tbl(iris) %n_d% "Species", as.tbl(iris)[, -5]) # remove column Species
-    expect_identical(as.tbl(iris) %n_i% perl("^Sepal"), as.tbl(iris)[, 1:2])
+    expect_identical(as_tibble(iris) %n_d% "Species", as_tibble(iris)[, -5]) # remove column Species
+    expect_identical(as_tibble(iris) %n_i% perl("^Sepal"), as_tibble(iris)[, 1:2])
     # leave column "Species" and columns which start with "Sepal" 
-    expect_identical(as.tbl(iris) %n_i% (perl("^Sepal")|"Species"), as.tbl(iris)[, c(1:2,5)]) 
+    expect_identical(as_tibble(iris) %n_i% (perl("^Sepal")|"Species"), as_tibble(iris)[, c(1:2,5)]) 
 } else {
     cat("dplyr not found\n")
 }
@@ -212,11 +212,11 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 }
 
 
-context("mis_val tbl_df")
+context("mis_val as_tibble")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
-    a = as.tbl(data.frame(a=1:5,b=5:1))
+    a = as_tibble(data.frame(a=1:5,b=5:1))
     
     b = a
     b[a$a>3,"a"] = NA
@@ -268,24 +268,24 @@ result_dfs2$aa = ifelse(dfs2$test %in% 2:4, result_dfs2$aa+1, result_dfs2$aa)
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     expect_identical(
-        tbl_df(dfs) %>% modify( {
+        as_tibble(dfs) %>% modify( {
             b_total = rowSums(vars(from("b_1") & to("b_5")))
         }), 
-        tbl_df(result_dfs)
+        as_tibble(result_dfs)
     )
     
     expect_identical(
-        tbl_df(dfs) %>% modify( {
+        as_tibble(dfs) %>% modify( {
             b_total = rowSums(vars(b_1 %to% b_5))
         }), 
-        tbl_df(result_dfs)
+        as_tibble(result_dfs)
     )
     
     expect_identical(
-        tbl_df(dfs) %>% modify( {
+        as_tibble(dfs) %>% modify( {
             b_total = sum_row(b_1 %to% b_5)
         }), 
-        tbl_df(result_dfs)
+        as_tibble(result_dfs)
     )
     
     
@@ -299,16 +299,16 @@ result_dfs2$random_numer = NULL
 context("modify_if dplyr")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     expect_identical(
-        modify_if(tbl_df(dfs2), test %in% 2:4,
+        modify_if(as_tibble(dfs2), test %in% 2:4,
                   {
                       b_total = sum_row(b_1 %to% b_5)
                       aa = aa + 1
                   }), 
-        tbl_df(result_dfs2)
+        as_tibble(result_dfs2)
     )
     
     expect_error(
-        modify_if(tbl_df(dfs2), test %in% 2:4,
+        modify_if(as_tibble(dfs2), test %in% 2:4,
                   {
                       a_total = sum_row(a_1 %to% a_5)
                       b_total = sum_row(b_1 %to% b_5)
@@ -370,34 +370,34 @@ if(suppressWarnings(require(dplyr, quietly = TRUE))){
 }
 
 
-context("if_val with NA tbl_df")
+context("if_val with NA as_tibble")
 if(suppressWarnings(require(dplyr, quietly = TRUE))){
     
     
-    a = tbl_df(data.frame(a = 1:4, b = 5:8, d = 10:13))
+    a = as_tibble(data.frame(a = 1:4, b = 5:8, d = 10:13))
     
-    b = as.data.frame(a)
-    rownames(b) = rownames(data.frame(a = 1:4, b = 5:8, d = 10:13))
-    expect_equal(if_val(a, NA ~ 2, other ~ copy), b)
+    b = a
+    #rownames(b) = rownames(data.frame(a = 1:4, b = 5:8, d = 10:13))
+    expect_equal(recode(a, NA ~ 2, other ~ copy), b)
     
     a[1,1] = NA
     b[1,1] = 2
     
-    expect_equal(if_val(a, NA ~ 2, other ~ copy), b)
+    expect_equal(recode(a, NA ~ 2L, other ~ copy), b)
     
     a[4,1] = NA 
     b[4,1] = 2
-    expect_equal(if_val(a, NA ~ 2, other ~ copy), b)
+    expect_equal(recode(a, NA ~ 2L, other ~ copy), b)
     
     b[1,1] = 4L
     b[4,1] = 1L
     b$a = as.integer(b$a)
-    expect_equal(if_val(a, NA ~ 4:1, other ~ copy), b)
+    expect_equal(recode(a, NA ~ 4:1, other ~ copy), b)
     
     a[1,3] = NA
     b[1,3] = 4L
     b$d = as.integer(b$d)
-    expect_equal(if_val(a, NA ~ 4:1, other ~ copy), b)
+    expect_equal(recode(a, NA ~ 4:1, other ~ copy), b)
     
     b[1,1] = 3
     b[4,1] = 3
