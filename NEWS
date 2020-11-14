@@ -1,3 +1,7 @@
+0.10.7 (26.07.2020)
+================
+* fix compatibility with SPSS in 'w_mean' function (issue #72)
+
 0.10.6 (26.07.2020)
 ================
 * fix for new data.table version (issue #67). Thanks to John Williams.

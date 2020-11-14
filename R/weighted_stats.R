@@ -67,7 +67,7 @@ w_mean = function(x, weight = NULL, na.rm = TRUE){
 #' @rdname w_mean
 w_median = function(x, weight = NULL, na.rm = TRUE){
     internal_w_stat(x = x,  weight = weight, na.rm = na.rm, fun = function(x, w, na.rm){
-        matrixStats::weightedMedian(x = x, w = w, na.rm = na.rm, interpolate = TRUE, ties = "weighted")
+        matrixStats::weightedMedian(x = x, w = w, na.rm = na.rm, interpolate = FALSE, ties = "weighted")
     })
 }
 

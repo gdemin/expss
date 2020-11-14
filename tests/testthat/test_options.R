@@ -93,11 +93,11 @@ expss_output_default()
 # res = expss:::knit_print.etable(tbl)
 # expect_equal_to_reference(res, "rds/knit_print.rds",  update = FALSE)
 
-expss_output_rnotebook()
-colnames(tbl) = enc2utf8(colnames(tbl))
-tbl[[1]] = enc2utf8(tbl[[1]])
-expect_output_file(print(tbl), 
-                   "rds/print_etable_rnotebook.txt")
+# expss_output_rnotebook()
+# colnames(tbl) = enc2utf8(colnames(tbl))
+# tbl[[1]] = enc2utf8(tbl[[1]])
+# expect_output_file(print(tbl), 
+#                    "rds/print_etable_rnotebook.txt")
 
 expss_output_default()
 
