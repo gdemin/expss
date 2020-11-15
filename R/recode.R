@@ -224,7 +224,9 @@ process_recodings = function(x, recoding_formulas, res,
             }
             value_labels[curr_label] = target 
         }
-        if (all(recoded)) break # if all values were recoded
+        # we don't break loop because we need to process all labels even we
+        # already recoded all values (issue #73)
+        if (all(recoded)) next 
         crit = each_recoding[["from"]]
         if(isTRUE(crit)) crit = other
         if(!inherits(crit, "criterion")) {

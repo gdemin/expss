@@ -180,3 +180,28 @@ expect_warning({
     recode(b, with_labels = TRUE) =c(99 ~ NA, TRUE ~ copy)
     })
 
+### bug with lost labels (issue #73)
+
+set.seed(123)
+df1 = data.frame("Q1" = sample(c(1,7), 50, replace = T),
+                  "Q2" = sample(c(1,4,5), 50, replace = T), 
+                  "Q3" = sample(c(4,5), 50, replace = T), 
+                  "Q4" = sample(c(1,4,5,6), 50, replace = T),
+                  "Q5" = sample(c(1,4,6), 50, replace = T), 
+                  "Q6" = sample(c(4,5,7,NA), 50, replace = T),
+                  "Q7" = sample(c(5,NA), 50, replace = T), 
+                  "Q8" = sample(c(1,4,5,6,7), 50, replace = T)
+                  )
+
+df2 = recode(df1[1:length(df1)], 
+              "Always" = 1 ~ 5, "Often" = 4 ~ 4, "Sometimes" = 5 ~ 3, "Rarely" = 6 ~ 2, "Never" = 7 ~ 1, TRUE ~ copy)
+
+res = lapply(df2, val_lab) %>% 
+    lapply(identical, 
+           rev(c("Always" = 5, "Often" = 4, "Sometimes" = 3, "Rarely" = 2, "Never" = 1))) %>% 
+    unlist() %>% 
+    all()
+
+
+expect_true(res)
+

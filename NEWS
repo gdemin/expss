@@ -1,6 +1,7 @@
 0.10.7 (26.07.2020)
 ================
 * fix compatibility with SPSS in 'w_mean' function (issue #72)
+* fix bug with incorrect labelling some cases in 'recode' (issue #73)
 
 0.10.6 (26.07.2020)
 ================
