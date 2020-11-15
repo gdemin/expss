@@ -123,4 +123,22 @@ expect_warning(apply_labels(mtcars,
 ))
 
 
+data("mtcars")
 
+dt_mt = as.data.table(mtcars)
+
+new_mt  = apply_labels(dt_mt,
+                       vs = "Engine",
+                       vs = c("V-engine" = 0, 
+                              "Straight engine" = 1)
+                       )
+
+
+expect_identical(dt_mt, new_mt)
+
+expect_identical(var_lab(dt_mt$vs), "Engine")
+expect_identical(val_lab(dt_mt$vs), c("V-engine" = 0, 
+                                      "Straight engine" = 1))
+
+expect_silent(dt_mt[,new:=1])
+expect_silent(new_mt[,new:=1])

@@ -52,16 +52,27 @@ apply_labels.list = function(data, ...){
         if(curr_name %in% data_names){
             curr_lab = args[[i]]
             if(is.null(names(curr_lab))){
-                stopif(length(curr_lab)>1, 
-                       "Variable label should have length 1 but label for `", 
-                       curr_name, "` has length ", length(curr_lab), ".")
-                var_lab(data[[curr_name]]) = curr_lab
+                (length(curr_lab)>1) && stop(paste0("Variable label should have length 1 but label for `", 
+                                                   curr_name, "` has length ", length(curr_lab), "."))
+                if(is.data.table(data)){
+                    set(data, i = NULL, j = curr_name, value = set_var_lab(data[[curr_name]], curr_lab))
+                } else {
+                    data[[curr_name]] = set_var_lab(data[[curr_name]], curr_lab)
+                }
             } else {
-                val_lab(data[[curr_name]]) = curr_lab
+                if(is.data.table(data)){
+                    set(data, i = NULL, j = curr_name, value = set_val_lab(data[[curr_name]], curr_lab))
+                } else {
+                    data[[curr_name]] = set_val_lab(data[[curr_name]], curr_lab)
+                }
             }
         }
     }
-    data
+    if(is.data.table(data)) {
+        invisible(data)
+    } else {
+        data
+    }
 }
 
 #' @export
