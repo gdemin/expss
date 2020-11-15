@@ -291,8 +291,7 @@ thru = function(lower, upper){
 #' @rdname criteria
 when = function(x) {
     if(is.criterion(x)) return(x)
-    if(is.function(x)) return(as.criterion(x))
-    is.logical(x) || stop("'when' - argument should be logical, criterion or function.")
+    if(!is.logical(x)) return(as.criterion(x))
 
     x = x & !is.na(x) # always FALSE when NA
     as.criterion(function(y) {
@@ -438,6 +437,18 @@ not_na = function(x){
 }
 
 class(not_na) = union("criterion", class(not_na))
+
+#' @export
+#' @rdname criteria
+is_na = function(x){
+    if(missing(x)){
+        is_na
+    } else {
+        is.na(x)
+    }    
+}
+
+class(is_na) = union("criterion", class(is_na))
 
 #' @export
 #' @rdname criteria

@@ -34,6 +34,7 @@
 \alias{to}
 \alias{items}
 \alias{not_na}
+\alias{is_na}
 \alias{other}
 \alias{and}
 \alias{or}
@@ -109,6 +110,8 @@ to(x)
 items(...)
 
 not_na(x)
+
+is_na(x)
 
 other(x)
 

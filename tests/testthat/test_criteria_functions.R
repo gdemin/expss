@@ -34,9 +34,16 @@ logi_crit = when(c(TRUE, FALSE, FALSE, TRUE))
 expect_identical(logi_crit(1:4), c(TRUE, FALSE, FALSE, TRUE))
 expect_identical(when(is.numeric)(c(1,2,3)), TRUE)
 expect_identical(when(is.numeric)(TRUE), FALSE)
+expect_identical(when(1:2)(1:3), c(TRUE, TRUE, FALSE))
 expect_identical(when(not_na)(1), TRUE)
 expect_identical(when(not_na)(NA), FALSE)
 
+expect_identical(when(is_na)(1), FALSE)
+expect_identical(when(is_na)(NA), TRUE)
+expect_identical(when(is_na())(1), FALSE)
+expect_identical(when(is_na())(NA), TRUE)
+expect_identical(is_na(1), FALSE)
+expect_identical(is_na(NA), TRUE)
 
 fun_crit = as.criterion(function(x) x>2)
 
