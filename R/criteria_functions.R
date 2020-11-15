@@ -61,7 +61,7 @@
 #' @param ignore.case logical see \link[base:grep]{grepl}
 #' @param useBytes logical see \link[base:grep]{grepl}
 #' @param ... numeric indexes of desired items for items, logical vectors or criteria for boolean functions.
-#' @param crit vector of values/function which returns logical or vector. It will be
+#' @param crit vector of values/function which returns logical or logical vector. It will be
 #'   converted to function of class criterion.
 #'
 #' @return function of class 'criterion' which tests its argument against
@@ -136,6 +136,7 @@
 #' @export
 as.criterion = function(crit){
     force(crit)
+    if(is.criterion(crit)) return(crit)
     if (is.function(crit)) {
         crit = match.fun(crit)
         res = function(x) {
@@ -169,6 +170,11 @@ as.criterion = function(crit){
     res
 }
 
+#' @name criteria
+#' @export
+is.criterion = function(x){
+    inherits(x, "criterion")
+}
 
 #' @export
 #' @rdname criteria
@@ -272,7 +278,7 @@ thru = function(lower, upper){
         stop("'thru' is not defined for functions but 'lower' = ", lower, " and 'upper' = ", upper)
     force(lower)
     force(upper)
-    ge(lower) & le(upper)
+    greater_or_equal(lower) & less_or_equal(upper)
 }
 
 
@@ -284,7 +290,10 @@ thru = function(lower, upper){
 #' @export
 #' @rdname criteria
 when = function(x) {
-    is.logical(x) || stop("'when' - argument should be logical.")
+    if(is.criterion(x)) return(x)
+    if(is.function(x)) return(as.criterion(x))
+    is.logical(x) || stop("'when' - argument should be logical, criterion or function.")
+
     x = x & !is.na(x) # always FALSE when NA
     as.criterion(function(y) {
         (length(x)==1 || length(x)==length(y)) ||  stop("'when' - length of logical should be
@@ -369,7 +378,7 @@ formals(regex)$fixed = FALSE
 #' @export
 #' @rdname criteria
 has_label = function(x){
-    if(!inherits(x, "criterion")){
+    if(!is.criterion(x)){
         x = as.criterion(x)
     }
     as.criterion(function(y){
@@ -407,7 +416,7 @@ to = function(x){
 #' @rdname criteria
 items = function(...){
     args = c(list(...), recursive = TRUE, use.names = FALSE)
-    args = lapply(args, function(x) if(inherits(x, "criterion")) x else as.criterion(x))
+    args = lapply(args, function(x) if(is.criterion(x)) x else as.criterion(x))
     args = do.call(or, args)
     as.criterion(function(x){
         numbers = seq_along(x)    
@@ -479,18 +488,39 @@ build_compare.numeric = function(x, compare){
 #' @export
 #' @rdname criteria
 and = function(...){
-    Reduce(`&`, list(...))
+    args = list(...)
+    args = lapply(args, function(x){
+        if(is.function(x)){
+            as.criterion(x)
+        } else {
+            x
+        }
+    })
+    Reduce(`&`, args)
 }
 
 #' @export
 #' @rdname criteria
 or = function(...){
-    Reduce(`|`, list(...))
+    args = list(...)
+    args = lapply(args, function(x){
+        if(is.function(x)){
+            as.criterion(x)
+        } else {
+            x
+        }
+    })
+    Reduce(`|`, args)
 }
 
 #' @export
 #' @rdname criteria
-not = `!`
+not = function(x){
+    if(is.function(x)){
+        x = as.criterion(x)
+    }
+    !x
+}
 
 #' @export
 '!.criterion' = function(a) {

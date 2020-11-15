@@ -1,9 +1,10 @@
-0.10.7 (26.07.2020)
+0.10.7 (15.11.2020)
 ================
 * fix compatibility with SPSS in 'w_mean' function (issue #72)
 * fix bug with incorrect labelling some cases in 'recode' (issue #73)
 * 'default_dataset' functionality is deprecated
 * 'apply_labels' now respects data.table (and assign labels by reference for data.table)
+* 'not', 'or', 'and', 'when' now respects criteria functions
 
 0.10.6 (26.07.2020)
 ================

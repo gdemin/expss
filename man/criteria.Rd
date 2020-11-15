@@ -3,6 +3,7 @@
 \name{criteria}
 \alias{criteria}
 \alias{as.criterion}
+\alias{is.criterion}
 \alias{equals}
 \alias{eq}
 \alias{not_equals}
@@ -40,6 +41,8 @@
 \title{Criteria functions}
 \usage{
 as.criterion(crit)
+
+is.criterion(x)
 
 equals(x)
 
@@ -113,10 +116,10 @@ and(...)
 
 or(...)
 
-not()
+not(x)
 }
 \arguments{
-\item{crit}{vector of values/function which returns logical or vector. It will be
+\item{crit}{vector of values/function which returns logical or logical vector. It will be
 converted to function of class criterion.}
 
 \item{x}{vector}
