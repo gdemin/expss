@@ -48,8 +48,6 @@ expect_identical(calc(dfs, sum_row(b_1 %to% b_5)), result_dfs$b_total)
 expect_identical(dfs %calc% sum_row(b_1 %to% b_5), result_dfs$b_total)
 expect_identical(dfs %calculate% sum_row(b_1 %to% b_5), result_dfs$b_total)
 
-default_dataset(dfs)
-expect_identical(.calc(sum_row(b_1 %to% b_5)), result_dfs$b_total)
 
 set.seed(1)
 expect_identical(calc(dfs, runif(.N)), result_dfs$random_numer)
@@ -429,12 +427,6 @@ expect_identical(
     res
 )
 
-default_dataset(mtcars)
-
-expect_identical(
-    .calculate(table(am, vs), use_labels = TRUE), 
-    res
-)
 
 expect_identical(
     use_labels(iris, summary(Sepal.Length)), 

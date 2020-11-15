@@ -229,9 +229,7 @@ res = text_to_columns_csv("
 
 expect_identical(add_columns(sh1, sh2, by = c("b" = "a", "a" = "b")), res)
 
-default_dataset(sh1)
-.add_columns(sh2, by = c("b" = "a", "a" = "b"))
-expect_identical(sh1, res)
+
 
 
 ############################

@@ -16,44 +16,6 @@ expect_known_value(add_rows(a, b, d, nomatch_columns = "drop"), "rds/add_rows5.r
 expect_known_value(add_rows(a, NA), "rds/add_rows6a.rds",  update = FALSE)
 expect_known_value(add_rows(a, 1:2), "rds/add_rows6b.rds",  update = FALSE)
 
-context("add_rows default dataset")
-a = data.frame(x = 1:5, y = 6:10)
-default_dataset(a)
-.add_rows(b)
-expect_known_value(a, "rds/add_rows1.rds",  update = FALSE)
-
-a = data.frame(x = 1:5, y = 6:10)
-.add_rows(b, d)
-expect_known_value(a, "rds/add_rows2.rds",  update = FALSE)
-
-a = data.frame(x = 1:5, y = 6:10)
-.add_rows(b, d, e)
-expect_known_value(a, "rds/add_rows3.rds",  update = FALSE)
-
-a = data.frame(x = 1:5, y = 6:10)
-.add_rows(b, nomatch_columns = "drop")
-expect_known_value(a, "rds/add_rows4.rds",  update = FALSE)
-
-a = data.frame(x = 1:5, y = 6:10)
-.add_rows(b, d, nomatch_columns = "drop")
-expect_known_value(a, "rds/add_rows5.rds",  update = FALSE)
-
-a = data.frame(x = 1:5, y = 6:10)
-
-
-a = data.frame(x = 1:5, y = 6:10)
-.add_rows(NA)
-expect_known_value(a, "rds/add_rows6a.rds",  update = FALSE)
-
-a = data.frame(x = 1:5, y = 6:10)
-.add_rows(1:2)
-expect_known_value(a, "rds/add_rows6b.rds",  update = FALSE)
-
-a = NULL
-.add_rows(1)
-expect_identical(a, rbind(NULL, 1))
-
-expect_error(add_rows(a, b, nomatch_columns = "stop"))
 
 context("add_rows.etable")
 

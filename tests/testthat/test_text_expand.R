@@ -35,12 +35,6 @@ dfs = data.frame( zzz = 67:68)
 expect_identical(with(dfs, text_expand("{zzz}")), as.character(67:68))
 expect_identical(with(dfs, text_expand("{k}")), '42')
 
-default_dataset(dfs)
-
-expect_identical(.calc(text_expand("{zzz}")), as.character(67:68))
-expect_identical(.calc(text_expand("{k}")), '42')
-
-default_dataset(NULL)
 
 context("qe")
 

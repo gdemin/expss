@@ -72,22 +72,6 @@ expect_identical(sort_desc(iris, Sepal.Length, na.last = FALSE),
 
 #################
 
-def = iris
-default_dataset(def)
-
-.sort_asc(Sepal.Length)
-expect_identical(def, iris[order(iris$Sepal.Length, decreasing = FALSE, na.last = FALSE), ])
-
-.sort_desc(Sepal.Length)
-expect_identical(def, iris[order(iris$Sepal.Length, decreasing = TRUE, na.last = TRUE), ])
-
-.sort_asc(Sepal.Length, na.last = TRUE)
-expect_identical(def, 
-                 iris[order(iris$Sepal.Length, decreasing = FALSE, na.last = TRUE), ])
-
-.sort_desc(Sepal.Length, na.last = FALSE)
-expect_identical(def, 
-                 iris[order(iris$Sepal.Length, decreasing = TRUE, na.last = FALSE), ])
 
 
 expect_error(sort_asc(iris, "not_exists"))

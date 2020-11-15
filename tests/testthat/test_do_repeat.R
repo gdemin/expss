@@ -198,58 +198,6 @@ res_iris = do_repeat(iris, i= qc(Sepal.Length, Sepal.Width, Petal.Length, Petal.
 
 expect_identical(res_iris, test_iris)
 
-context("do_repeat default_dataset")
-
-data(iris)
-def_iris = iris
-default_dataset(def_iris)
-
-test_iris = iris
-test_iris$i1 = 10
-test_iris$i2 = 20
-test_iris$i3 = 30
-
-res_iris = iris
-
-.do_repeat(i = qc(i1, i2, i3), value = c(10, 20, 30),
-           {
-               i = value
-           })
-
-expect_identical(def_iris, test_iris)
-
-k = 42
-test_iris = iris
-test_iris$i1 = 42
-test_iris$i2 = 42
-test_iris$i3 = 42
-
-def_iris = iris
-default_dataset(def_iris)
-.do_repeat(i = qc(i1, i2, i3),
-                     {
-                         i = k
-                     })
-
-expect_identical(def_iris, test_iris)
-
-
-test_iris = iris
-test_iris$i1 = 43
-test_iris$i2 = 43
-test_iris$i3 = 43
-
-def_iris = iris
-default_dataset(def_iris)
-fff = function(){
-    j = 43
-    .do_repeat(i = qc(i1, i2, i3),
-               {
-                   i = j
-               })
-}
-fff()
-expect_identical(def_iris, test_iris)
 
 
 data(iris)

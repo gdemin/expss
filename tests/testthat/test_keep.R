@@ -65,27 +65,6 @@ expect_identical(except(airquality, to("Wind")), airquality[, c("Temp", "Month",
 expect_identical(keep(airquality, from("Ozone") & to("Wind")), airquality[, c("Ozone", "Solar.R", "Wind")])
 
 
-context("keep default_dataset")
-data(iris)
-aaa = iris
-default_dataset(aaa)
-.keep("Species", other())
-expect_identical(aaa, iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
-
-aaa = iris
-default_dataset(aaa)
-.keep(Species, other())
-expect_identical(aaa, iris[, c("Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
-
-
-aaa = iris
-.except("Species", other())
-expect_identical(aaa, iris[, FALSE, drop = FALSE])
-
-aaa = iris
-.except("Species")
-expect_identical(aaa, iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])
-
 context("keep duplicted names")
 data(iris)
 ex_iris = iris[,-5]
@@ -148,15 +127,7 @@ global_items = 2:3
 expect_identical(ex1(), dfs[, aaa])
 
     
-def_dfs = dfs
-default_dataset(def_dfs)
 
-.keep(text_expand("b_{i}"))
-expect_identical(def_dfs, dfs[, aaa])
-
-def_dfs = dfs
-.except(text_expand("b_{i}"))
-expect_identical(def_dfs, dfs[, bbb])
 
 context("keep edge cases")
 
