@@ -34,8 +34,8 @@ tbl = mtcars %>%
 expss_output_default()
 expss_digits(NA)
 options(width = 1000)
-expect_output_file(print(tbl[, 1:3]), 
-                   "rds/print_etable_unrounded.txt")
+# expect_output_file(print(tbl[, 1:3]), 
+#                    "rds/print_etable_unrounded.txt")
 expect_output_file(print(tbl[, 1:4], remove_repeated = FALSE),
                    "rds/print_etable_unrounded2.txt")
 
@@ -46,8 +46,8 @@ expect_output_file(print(tbl[, 1:3]),
                    "rds/print_etable_digits2.txt")
 expect_output_file(print(tbl[, 1:4], remove_repeated = FALSE),
                    "rds/print_etable_digits2_2.txt")
-expect_output_file(print(tbl[, 1:3], digits = NA), 
-                   "rds/print_etable_unrounded.txt")
+# expect_output_file(print(tbl[, 1:3], digits = NA), 
+#                    "rds/print_etable_unrounded.txt")
 
 expss_digits()
 

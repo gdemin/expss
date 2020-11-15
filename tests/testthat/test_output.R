@@ -1,4 +1,5 @@
-if(isTRUE(getOption("covr"))){ 
+# if(isTRUE(getOption("covr"))){ 
+if(FALSE){ 
 
     context("output methods print labelled")
     
@@ -141,11 +142,11 @@ if(isTRUE(getOption("covr"))){
                        "rds/cro_mean_out.txt")
     options(expss.digits = NULL)
     options(expss.output = "rnotebook")
-    expect_output_file(print(tbl), 
-                       "rds/print_etable_rnotebook.txt")
-    
-    expect_output_file(print(set_caption(tbl, "Caption")), 
-                       "rds/print_etable_rnotebook_caption.txt")
+    # expect_output_file(print(tbl), 
+    #                    "rds/print_etable_rnotebook.txt")
+    # 
+    # expect_output_file(print(set_caption(tbl, "Caption")), 
+    #                    "rds/print_etable_rnotebook_caption.txt")
     
     options(expss.output = "viewer")
     aa = capture_output(
