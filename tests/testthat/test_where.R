@@ -71,8 +71,6 @@ expect_identical(where(iris, -sample(.N, 10)), iris[-rows, ])
 
 
 
-
-expect_error(.where("a"))
 expect_error(where(iris, "a"))
 
 #### vectors

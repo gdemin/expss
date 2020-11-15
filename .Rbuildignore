@@ -17,3 +17,4 @@ tests/testthat/test_fre_cro_cyrillic.R
 docs
 ^\.travis\.yml$
 ^codecov\.yml$
+^FUNDING\.yml$

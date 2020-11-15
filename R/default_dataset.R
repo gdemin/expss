@@ -32,6 +32,9 @@ default_dataset = local({
     dataset = NULL
     dataframe_name = NULL
     function(x){
+        .Deprecated("", 
+                    msg = "'default_dataset' functionality is deprecated because it seems no one need it.\n
+                    If you use 'default_dataset' please file an issue at https://github.com/gdemin/expss/issues/")
         if(missing(x)){
             stopif(is.null(dataset),"Default dataset isn't defined. Use 'default_dataset(dataframe_name)'.")
             message(paste0("Default dataset: '",dataframe_name,"'\n"))
