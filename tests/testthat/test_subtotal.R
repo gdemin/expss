@@ -428,5 +428,6 @@ res = structure(list(row_labels = c("Group 1|varA", "Group 1|varB",
 20L, 20L), Mean = c(3.75, 7.75, 2.45, 7.5), SD = c(0.5, 0.957427107756338, 
 1.14593101656986, 1.05131496607569), Median = c(4, 7.5, 2, 7.5
 )), row.names = c(NA, -4L), class = c("etable", "data.frame"))
-
-expect_equal(output, res)
+if(as.numeric(version$major) >=4){
+    expect_equal(output, res)
+}

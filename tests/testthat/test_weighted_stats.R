@@ -152,8 +152,10 @@ data(iris)
 expect_equal(w_mean(x, w), 1.679588893639)
 expect_equal(w_sum(x, w), 13.633172662)
 expect_equal(w_median(x, w), 1.78831) 
-expect_equal(w_median(iris$Petal.Length), 4.4)
-expect_equal(w_median(iris$Petal.Length, weight = rep(1, 150)), 4.4)
+if(as.numeric(version$major) >=4){
+    expect_equal(w_median(iris$Petal.Length), 4.4)
+    expect_equal(w_median(iris$Petal.Length, weight = rep(1, 150)), 4.4)
+}
 # expect_equal(w_mad(x, w), ???))
 expect_equal(w_sd(x, w), 0.2728535109892)
 expect_equal(w_var(x, w), 0.07444903845913)
