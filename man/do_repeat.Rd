@@ -2,13 +2,10 @@
 % Please edit documentation in R/do_repeat.R
 \name{do_repeat}
 \alias{do_repeat}
-\alias{.do_repeat}
 \alias{as_is}
 \title{Repeats the same transformations on a specified set of variables/values}
 \usage{
 do_repeat(data, ...)
-
-.do_repeat(...)
 
 as_is(...)
 }

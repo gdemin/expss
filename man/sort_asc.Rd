@@ -2,18 +2,12 @@
 % Please edit documentation in R/sort.R
 \name{sort_asc}
 \alias{sort_asc}
-\alias{.sort_asc}
 \alias{sort_desc}
-\alias{.sort_desc}
 \title{Sort data.frames/matrices/vectors}
 \usage{
 sort_asc(data, ..., na.last = FALSE)
 
-.sort_asc(..., na.last = FALSE)
-
 sort_desc(data, ..., na.last = TRUE)
-
-.sort_desc(..., na.last = TRUE)
 }
 \arguments{
 \item{data}{data.frame/matrix/vector}
@@ -33,8 +27,7 @@ sorted \code{data}
 }
 \description{
 \code{sort_asc} sorts in ascending order and \code{sort_desc} sorts in 
-descending order. \code{.sort_asc}/\code{.sort_desc} are versions for working
-with \link{default_dataset}.
+descending order.
 }
 \examples{
 data(mtcars)

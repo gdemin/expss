@@ -3,17 +3,11 @@
 \name{add_rows}
 \alias{add_rows}
 \alias{add_rows.data.frame}
-\alias{\%add_rows\%}
-\alias{.add_rows}
 \title{Add rows to data.frame/matrix/table}
 \usage{
 add_rows(...)
 
 \method{add_rows}{data.frame}(..., nomatch_columns = c("add", "drop", "stop"))
-
-x \%add_rows\% y
-
-.add_rows(..., nomatch_columns = c("add", "drop", "stop"))
 }
 \arguments{
 \item{...}{data.frame/matrix/table for binding}
@@ -33,42 +27,16 @@ See \link[base:cbind]{rbind}, \link{cro}, \link{cro_fun}, \link{fre}, \link{tabl
 \description{
 Take a sequence of vector, matrix or data-frame arguments and combine by
 rows. Contrary to \link[base:cbind]{rbind} it handles non-matching column
-names. \code{\%add_rows\%} is an infix version of \code{add_rows}.
+names. 
 There is also special method for the results of
-\link{cro}/\link{cro_fun}/\link{tables}/\link{fre}. \code{.add_rows} is
-version for adding rows to default dataset. See \link{default_dataset}.
+\link{cro}/\link{cro_fun}/\link{tables}/\link{fre}.
 }
 \examples{
 a = data.frame(x = 1:5, y = 6:10)
 b = data.frame(y = 6:10, z = 11:15)
 
 add_rows(a, b) # x, y, z
-a \%add_rows\% b # the same result
 
 add_rows(a, b, nomatch_columns = "drop")  # y
-
-# simple tables
-data(mtcars)
-# apply labels
-mtcars = apply_labels(mtcars,
-                mpg = "Miles/(US) gallon",
-                cyl = "Number of cylinders",
-                disp = "Displacement (cu.in.)",
-                hp = "Gross horsepower",
-                drat = "Rear axle ratio",
-                wt = "Weight (lb/1000)",
-                qsec = "1/4 mile time",
-                vs = "V/S",
-                vs = c("V-engine" = 0, "Straight engine" = 1),
-                am = "Transmission (0 = automatic, 1 = manual)",
-                am = c(automatic = 0, manual = 1),
-                gear = "Number of forward gears",
-                carb = "Number of carburetors"
-)
-
-tbl_mean = calculate(mtcars, cro_mean(cyl, am))
-tbl_percent = calculate(mtcars, cro_cpct(cyl, am))
-
-tbl_mean \%add_rows\% tbl_percent
 
 }

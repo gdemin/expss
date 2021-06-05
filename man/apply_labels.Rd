@@ -2,12 +2,9 @@
 % Please edit documentation in R/apply_labels.R
 \name{apply_labels}
 \alias{apply_labels}
-\alias{.apply_labels}
 \title{Set variable labels/value labels on variables in the data.frame}
 \usage{
 apply_labels(data, ...)
-
-.apply_labels(...)
 }
 \arguments{
 \item{data}{data.frame/list}
@@ -22,8 +19,7 @@ are considered as value labels.}
 }
 \description{
 \code{apply_labels} tries automatically detect what is variable label and
-what are value labels. \code{.apply_labels} is version for working
-with default dataset. See also \link{var_lab} and \link{val_lab}.
+what are value labels. See also \link{var_lab} and \link{val_lab}.
 }
 \examples{
 data(mtcars)

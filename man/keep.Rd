@@ -2,18 +2,12 @@
 % Please edit documentation in R/keep.R
 \name{keep}
 \alias{keep}
-\alias{.keep}
 \alias{except}
-\alias{.except}
 \title{Keep or drop elements by name/criteria in data.frame/matrix}
 \usage{
 keep(data, ...)
 
-.keep(...)
-
 except(data, ...)
-
-.except(...)
 }
 \arguments{
 \item{data}{data.frame/matrix/list}
@@ -30,8 +24,6 @@ data.frame by their names or by criteria. Names at the top-level can be
 unquoted (non-standard evaluation). For standard evaluation of parameters you
 can surround them by round brackets. See examples. Methods for list will apply
 \code{keep}/\code{except} to each element of the list separately.
-\code{.keep}/\code{.except} are versions which works with
-\link{default_dataset}.
 }
 \examples{
 data(iris)

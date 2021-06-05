@@ -2,12 +2,9 @@
 % Please edit documentation in R/where.R
 \name{where}
 \alias{where}
-\alias{.where}
 \title{Subset (filter) data.frames/matrices/vectors/lists}
 \usage{
 where(data, cond)
-
-.where(cond)
 }
 \arguments{
 \item{data}{data.frame/matrix/vector/list to be subsetted}
@@ -25,8 +22,7 @@ So columns can be referred as variables in the expression (see the examples).
 If \code{data} is list then \code{where} will be applied to each element of 
 the list. For other types (vector/matrix) there is no non-standard
 evaluation. There is a special constant \code{.N} which equals to number of
-rows in \code{data} for usage in \code{cond} expression. \code{.where} is
-version for working with default dataset. See \link{default_dataset}.
+rows in \code{data} for usage in \code{cond} expression.
 }
 \examples{
 # leave only 'setosa'

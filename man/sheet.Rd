@@ -3,14 +3,11 @@
 \name{sheet}
 \alias{sheet}
 \alias{as.sheet}
-\alias{.sheet}
 \title{Make data.frame without conversion to factors and without fixing names}
 \usage{
 sheet(...)
 
 as.sheet(x, ...)
-
-.sheet(...)
 }
 \arguments{
 \item{...}{objects, possibly named}
@@ -23,8 +20,6 @@ data.frame/list
 \description{
 \code{sheet} and \code{as.sheet} are shortcuts to \code{data.frame} and 
 \code{as.data.frame} with stringsAsFactors = FALSE, check.names = FALSE.
-\code{.sheet} is the same as above but works in the scope of default
-dataset.
 }
 \examples{
 
@@ -36,12 +31,7 @@ str(df1)
 str(df2)
 
 
-data(iris)
-default_dataset(iris)
-
-.sheet(Sepal.Width,  Sepal.Length)
-
 }
 \seealso{
-\link{default_dataset}, \link[base]{data.frame}, \link[base]{as.data.frame}
+\link[base]{data.frame}, \link[base]{as.data.frame}
 }
