@@ -202,7 +202,7 @@ expect_identical(
 
 
 expect_identical(
-    mtcars %>% where(cyl == 6) %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[mtcars$cyl == 6,] %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = am, 
                                            fun = colMeans
     ),
@@ -308,13 +308,13 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    mtcars %>% where(FALSE) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars[FALSE,] %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds",  update = FALSE
 )
 
 
 expect_equal_to_reference(
-    mtcars %>% where(FALSE) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars[FALSE,] %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds",  update = FALSE
 )
 
@@ -329,32 +329,32 @@ expect_equal_to_reference(
 )
 
 expect_identical(
-    mtcars %>% where(FALSE) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars[FALSE,] %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars %>% where(FALSE) %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars[FALSE,] %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars %>% where(cyl == 8) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars[mtcars$cyl == 8,] %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )
 
 
 expect_identical(
-    mtcars %>% where(cyl > 4) %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
+    mtcars[mtcars$cyl > 4,]  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
     ,
     mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl, subgroup = (cyl > 4))
 )
 
 expect_identical(
-    mtcars %>% where(cyl == 8) %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars[mtcars$cyl == 8,] %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
     mtcars  %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )

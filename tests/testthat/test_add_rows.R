@@ -79,16 +79,15 @@ tab2 = with(mtcars, cro_cpct(list(unvr(vs)), list(unvr(am), total())))
 tab3 = with(mtcars, cro_cpct(list(unvr(vs)), list(unvr(carb), total())))
 
 
-expect_known_value(tab1 %add_rows% tab2, "rds/add_rows7.rds",  update = FALSE)
-expect_identical(tab1 %add_rows% tab2, add_rows(tab1, tab2))
+expect_known_value(add_rows(tab1, tab2), "rds/add_rows7.rds",  update = FALSE)
+expect_identical(add_rows(tab1, tab2), add_rows(tab1, tab2))
 
-expect_known_value(tab1 %add_rows% tab3, "rds/add_rows8.rds",  update = FALSE)
-expect_identical(tab1 %add_rows% tab3, add_rows(tab1, tab3, nomatch_columns = "add"))
+expect_known_value(add_rows(tab1, tab3), "rds/add_rows8.rds",  update = FALSE)
+expect_identical(add_rows(tab1, tab3), add_rows(tab1, tab3, nomatch_columns = "add"))
 expect_known_value(add_rows(tab1, tab3, nomatch_columns = "drop"), "rds/add_rows9.rds",  update = FALSE)
 expect_error(add_rows(tab1, tab3, nomatch_columns = "stop"))
 
 
-expect_known_value(with(mtcars, fre(am) %add_rows% fre(vs)), "rds/add_rows10.rds",  update = FALSE)
 
 a = matrix(1:9, 3)
 expect_identical(add_rows(a, NA), rbind(a, NA))
