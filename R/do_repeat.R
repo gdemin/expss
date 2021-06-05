@@ -74,23 +74,15 @@
 #' 
 #' 
 do_repeat = function(data, ...){
+    .Deprecated("", 
+                msg = "'do_repeat' functionality is deprecated because it seems no one need it.\n
+                    If you use 'default_dataset' please file an issue at https://github.com/gdemin/expss/issues/")
     args = substitute(list(...))
     do_repeat_internal(data, args, parent = parent.frame())   
 }
 
 
 
-#' @export
-#' @name do_repeat
-.do_repeat = function (...) {
-    reference = suppressMessages(default_dataset())
-    data = ref(reference)
-    args = substitute(list(...))
-    data = do_repeat_internal(data, args, parent = parent.frame())
-    ref(reference) = data
-    invisible(data)
-
-}
 
 
 
