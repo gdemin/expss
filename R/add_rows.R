@@ -2,10 +2,9 @@
 #'
 #' Take a sequence of vector, matrix or data-frame arguments and combine by
 #' rows. Contrary to \link[base:cbind]{rbind} it handles non-matching column
-#' names. \code{\%add_rows\%} is an infix version of \code{add_rows}.
+#' names. 
 #' There is also special method for the results of
-#' \link{cro}/\link{cro_fun}/\link{tables}/\link{fre}. \code{.add_rows} is
-#' version for adding rows to default dataset. See \link{default_dataset}.
+#' \link{cro}/\link{cro_fun}/\link{tables}/\link{fre}.
 #'
 #' @param ... data.frame/matrix/table for binding
 #' @param x data.frame/matrix/table for binding
@@ -23,33 +22,8 @@
 #' b = data.frame(y = 6:10, z = 11:15)
 #'
 #' add_rows(a, b) # x, y, z
-#' a %add_rows% b # the same result
 #'
 #' add_rows(a, b, nomatch_columns = "drop")  # y
-#'
-#' # simple tables
-#' data(mtcars)
-#' # apply labels
-#' mtcars = apply_labels(mtcars,
-#'                 mpg = "Miles/(US) gallon",
-#'                 cyl = "Number of cylinders",
-#'                 disp = "Displacement (cu.in.)",
-#'                 hp = "Gross horsepower",
-#'                 drat = "Rear axle ratio",
-#'                 wt = "Weight (lb/1000)",
-#'                 qsec = "1/4 mile time",
-#'                 vs = "V/S",
-#'                 vs = c("V-engine" = 0, "Straight engine" = 1),
-#'                 am = "Transmission (0 = automatic, 1 = manual)",
-#'                 am = c(automatic = 0, manual = 1),
-#'                 gear = "Number of forward gears",
-#'                 carb = "Number of carburetors"
-#' )
-#' 
-#' tbl_mean = calculate(mtcars, cro_mean(cyl, am))
-#' tbl_percent = calculate(mtcars, cro_cpct(cyl, am))
-#' 
-#' tbl_mean %add_rows% tbl_percent
 #'
 add_rows = function(...){
     UseMethod("add_rows")
@@ -159,18 +133,3 @@ add_rows1 = function(x, y, nomatch_columns = c("add", "drop", "stop")){
     }
 }
 
-#' @rdname add_rows
-#' @export
-'%add_rows%' = function(x,y){
-    add_rows(x, y)
-}
-
-#' @rdname add_rows
-#' @export
-.add_rows = function(..., nomatch_columns = c("add", "drop", "stop")){
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    data = add_rows(data, ..., nomatch_columns = nomatch_columns)
-    ref(reference) = data
-    invisible(data)
-}
