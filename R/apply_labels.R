@@ -1,8 +1,7 @@
 #' Set variable labels/value labels on variables in the data.frame
 #' 
 #' \code{apply_labels} tries automatically detect what is variable label and
-#' what are value labels. \code{.apply_labels} is version for working
-#' with default dataset. See also \link{var_lab} and \link{val_lab}.
+#' what are value labels. See also \link{var_lab} and \link{val_lab}.
 #'
 #' @param data data.frame/list 
 #' @param ...  named arguments. Name of argument is a variable name in
@@ -78,17 +77,5 @@ apply_labels.list = function(data, ...){
 #' @export
 apply_labels.data.frame = function(data, ...){
     apply_labels.list(data, ...)
-}
-
-
-
-#' @export
-#' @rdname apply_labels
-.apply_labels = function(...){
-    reference = suppressMessages(default_dataset())
-    data = ref(reference)
-    data = apply_labels(data, ...)
-    ref(reference) = data
-    invisible(data)
 }
 
