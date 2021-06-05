@@ -1,8 +1,7 @@
 #' Sort data.frames/matrices/vectors
 #' 
 #' \code{sort_asc} sorts in ascending order and \code{sort_desc} sorts in 
-#' descending order. \code{.sort_asc}/\code{.sort_desc} are versions for working
-#' with \link{default_dataset}.
+#' descending order. 
 #'
 #' @param data data.frame/matrix/vector
 #' @param ... character/numeric or criteria/logical functions (see
@@ -69,12 +68,6 @@ sort_internal = function(data, ..., decreasing, na.last, envir){
     data[new_order, , drop = FALSE]    
 }
 
-#' @export
-sort_asc.list= function(data, ..., na.last = FALSE){
-    stop("Sorting not yet implemented for lists.")
-}
-
-
 
 
 
@@ -103,10 +96,7 @@ sort_desc.matrix = function(data, ..., na.last = TRUE){
     sort_internal(data, ..., decreasing = TRUE, na.last = na.last, envir = parent.frame())
 }
 
-#' @export
-sort_desc.list= function(data, ..., na.last = TRUE){
-    stop("Sorting in not implemented for lists.")
-}
+
 
 
 
