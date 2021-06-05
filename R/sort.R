@@ -77,15 +77,6 @@ sort_asc.list= function(data, ..., na.last = FALSE){
 
 
 
-#' @rdname sort_asc
-#' @export
-.sort_asc = function(..., na.last = FALSE){
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    data = sort_internal(data, ..., decreasing = FALSE, na.last = na.last, envir = parent.frame())
-    ref(reference) = data
-    invisible(data)
-}
 
 
 ######### sort_desc ##############
@@ -96,15 +87,6 @@ sort_desc = function(data, ..., na.last = TRUE){
     UseMethod("sort_desc")
 }
 
-#' @rdname sort_asc
-#' @export
-.sort_desc = function(..., na.last = TRUE){
-    reference = suppressMessages(default_dataset() )
-    data = ref(reference)
-    data = sort_internal(data, ..., decreasing = TRUE, na.last = na.last, envir = parent.frame())
-    ref(reference) = data
-    invisible(data)
-}
 
 #' @export
 sort_desc.default = function(data, ..., na.last = TRUE){
