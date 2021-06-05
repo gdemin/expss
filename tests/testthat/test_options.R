@@ -55,14 +55,12 @@ expect_output_file(print(tbl[, 1:3]),
                    "rds/print_etable.txt")
 expect_output_file(print(tbl[, 1:4], remove_repeated = FALSE),
                    "rds/print_etable_2.txt")
-expect_output_file(print(tbl[, FALSE]), 
-                   "rds/print_etable_zero_columns.txt")
+expect_silent(capture.output(print(tbl[, FALSE])))
 
 expect_output_file(print(tbl[FALSE, ]), 
                    "rds/print_etable_zero_rows.txt")
 
-expect_output_file(print(tbl[FALSE, FALSE]), 
-                   "rds/print_etable_zero.txt")
+expect_silent(capture.output(print(tbl[FALSE, FALSE])))
 
 expect_output_file(print(tbl[, 1]), 
                    "rds/print_etable_single_column.txt")
