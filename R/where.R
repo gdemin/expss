@@ -40,17 +40,10 @@
 #' # two random elements from the each list item
 #' where(my_list, sample(.N, 2))
 where = function (data, cond) {
+    .Deprecated(new = "rows")
     UseMethod("where")
 }
 
-
-#' @rdname where
-#' @export
-.where = function (cond) {
-    reference = suppressMessages(default_dataset())
-    ref(reference) = eval.parent(substitute(where(ref(reference), cond)))
-    invisible(data)
-}
 
 
 
