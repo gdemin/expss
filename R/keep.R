@@ -6,8 +6,6 @@
 #' unquoted (non-standard evaluation). For standard evaluation of parameters you
 #' can surround them by round brackets. See examples. Methods for list will apply
 #' \code{keep}/\code{except} to each element of the list separately.
-#' \code{.keep}/\code{.except} are versions which works with
-#' \link{default_dataset}.
 #'
 #' @param data data.frame/matrix/list
 #' @param ... column names of type character/numeric or criteria/logical functions
@@ -91,16 +89,6 @@ keep.matrix = function(data, ...){
 }
 
 
-#' @export
-#' @rdname keep
-.keep = function(...){
-    reference = suppressMessages(default_dataset() )
-    variables_names = substitute(list(...))
-    data = eval.parent(substitute(keep(ref(reference), ...)))
-    ref(reference) = data
-    invisible(data)
-}
-
 
 #' @export
 #' @rdname keep
@@ -150,18 +138,6 @@ except.matrix = function(data, ...){
     res
 }
 
-
-
-
-
-#' @export
-#' @rdname keep
-.except = function(...){
-    reference = suppressMessages(default_dataset() )
-    data = eval.parent(substitute(except(ref(reference), ...)))
-    ref(reference) = data
-    invisible(data)
-}
 
 
 
