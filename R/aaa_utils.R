@@ -512,3 +512,10 @@ fix_datatable = function(x){
     if(is.data.table(x)) setDT(x, check.names = FALSE)
     x
 }
+
+######
+
+set_names = function (object = nm, nm){
+    names(object) <- nm
+    object
+}
