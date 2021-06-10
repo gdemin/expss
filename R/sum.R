@@ -194,7 +194,7 @@ apply_row = function(fun, ...){
         fun(data[each_row, ])
     })
     if(any(lengths(res) != 1)){
-        stop("'apply_col': incorrect result - function returns values with length greater than one.")    
+        stop("'apply_row': incorrect result - function returns values with length greater than one.")    
     }
     unlist(res, use.names = FALSE, recursive = TRUE)
 }
