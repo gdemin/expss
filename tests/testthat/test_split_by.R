@@ -50,67 +50,6 @@ mtcars_list = mtcars %>% split_by(am, vs, drop = TRUE)
 expect_equal_to_reference(mtcars_list, "rds/split_by3.rds",  update = FALSE)
 
 
-regr = mtcars_list %>% 
-    use_labels({
-        res = lm(mpg ~ hp + disp + wt)
-        sheet(Estimate = coef(res), confint(res))
-    }) %>% 
-    split_off(groups = TRUE, rownames = TRUE)
-expect_equal_to_reference(regr, "rds/split_by5.rds",  update = FALSE)
-
-regr = mtcars_list %>% 
-    use_labels({
-        res = lm(mpg ~ hp + disp + wt)
-        sheet(Estimate = coef(res), confint(res))
-    }) %>% 
-    split_off(groups = "transmission-engine", rownames = "variables")
-expect_equal_to_reference(regr, "rds/split_by6.rds",  update = FALSE)
-
-regr = mtcars_list %>% 
-    use_labels({
-        res = lm(mpg ~ hp + disp + wt)
-        cbind(Estimate = coef(res), confint(res))
-    }) %>% 
-    split_off(groups = "transmission-engine", rownames = "variables")
-expect_equal_to_reference(regr, "rds/split_by6.rds",  update = FALSE)
-
-regr = mtcars_list %>% 
-    use_labels({
-        res = lm(mpg ~ hp + disp + wt)
-        list(Estimate = coef(res), confint(res))
-    }) %>% 
-    split_off(groups = "transmission-engine", rownames = "variables")
-expect_equal_to_reference(regr, "rds/split_by6.rds",  update = FALSE)
-
-
-regr = mtcars_list %>% 
-    unname() %>% 
-    use_labels({
-        res = lm(mpg ~ hp + disp + wt)
-        sheet(Estimate = coef(res), confint(res))
-    }) %>% 
-    split_off(groups = "transmission-engine", rownames = "variables")
-expect_equal_to_reference(regr, "rds/split_by7.rds",  update = FALSE)
-
-
-
-
-regr = mtcars_list %>% 
-    use_labels({
-        res = lm(mpg ~ hp + disp + wt)
-        coef(res)
-    }) %>% 
-    split_off(groups = "transmission-engine", rownames = "variables")
-expect_equal_to_reference(regr, "rds/split_by8.rds",  update = FALSE)
-
-regr = mtcars_list %>% 
-    use_labels({
-        cor(cbind(mpg, hp, disp, wt, qsec))
-    }) %>% 
-    split_off(groups = "transmission-engine", rownames = "variables")
-expect_equal_to_reference(regr, "rds/split_by9.rds",  update = FALSE)
-
-
 dt_mtcars = as.data.table(mtcars)
 
 

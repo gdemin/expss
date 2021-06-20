@@ -403,7 +403,22 @@ calculate =  function (data, expr, use_labels = FALSE) {
 #' @export
 #' @rdname compute
 use_labels =  function (data, expr) {
-    eval.parent(substitute(calculate(data, expr, use_labels = TRUE)))
+    expr = substitute(expr)
+    all_labs = all_labels(data)
+    if(length(all_labs)>0){
+        if(anyDuplicated(names(all_labs))){
+            dupl = duplicated(names(all_labs)) | duplicated(names(all_labs), fromLast = TRUE)
+            all_labs = all_labs[dupl]
+            names(all_labs) = paste(names(all_labs), colnames(data)[all_labs])
+            for(each in seq_along(all_labs)){
+                var_lab(data[[all_labs[each]]]) = names(all_labs)[each]
+            }
+        }
+        substitution_list = extract_var_labs_as_list_with_symbols(data)
+        expr = substitute_symbols(expr, c(substitution_list, list(..data = names2labels(data))))
+        data = names2labels(data) 
+    }
+    eval(expr = expr, envir = data, enclos = parent.frame())
 }
 
 
@@ -412,22 +427,6 @@ use_labels =  function (data, expr) {
 calculate.data.frame = function (data, expr, use_labels = FALSE) {
     # based on 'within' from base R by R Core team
     expr = substitute(expr)
-    if(use_labels){
-        all_labs = all_labels(data)
-        if(length(all_labs)>0){
-            if(anyDuplicated(names(all_labs))){
-                dupl = duplicated(names(all_labs)) | duplicated(names(all_labs), fromLast = TRUE)
-                all_labs = all_labs[dupl]
-                names(all_labs) = paste(names(all_labs), colnames(data)[all_labs])
-                for(each in seq_along(all_labs)){
-                    var_lab(data[[all_labs[each]]]) = names(all_labs)[each]
-                }
-            }
-            substitution_list = extract_var_labs_as_list_with_symbols(data)
-            expr = substitute_symbols(expr, c(substitution_list, list(..data = quote(expss::vars(other)))))
-            data = names2labels(data) 
-        }
-    }
     e = evalq(environment(), data, parent.frame())
     prepare_env(e, n = nrow(data), column_names = colnames(data))
     eval(expr, envir = e, enclos = baseenv())
