@@ -152,11 +152,13 @@
 #' 
 #' @export
 compute =  function (data, ...) {
+    .Deprecated(msg = "'compute'/'modify' is deprecated and will be removed in the next version. Please, use 'let' from maditr package.")
     UseMethod("compute")
 }
 
 #' @export
 compute.list = function (data, ...) {
+
     for(each in seq_along(data)){
         data[[each]] = eval.parent(substitute(compute(data[[each]], ...)))
     }
