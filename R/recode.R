@@ -471,17 +471,7 @@ hi = Inf
 
 #' @export
 #' @rdname recode
-copy = function(x) {
-    if(missing(x)){
-        copy
-    } else {
-        if(is.data.table(x)){
-            data.table::copy(x)
-        } else {
-            x    
-        }
-    }
-}    
+copy = maditr::copy
 
 
 #' @export
