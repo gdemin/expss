@@ -82,6 +82,8 @@ variable of length \code{.N} filled with NA. See examples.
 an alias for \code{do_if} and \code{calc} is an alias for \code{calculate}.
 }
 \examples{
+
+\dontrun{
 dfs = data.frame(
     test = 1:5,
     a = rep(10, 5),
@@ -160,7 +162,7 @@ compute(dfs, {
      }
      rm(i) # we don't need this variable as column in 'dfs'
 })
-
+}
 # 'use_labels' examples. Utilization of labels in base R.
 data(mtcars)
 mtcars = apply_labels(mtcars,

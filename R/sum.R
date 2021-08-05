@@ -1,7 +1,7 @@
 #' Compute sum/mean/sd/median/max/min/custom function on rows/columns 
 #' 
-#' These functions are intended for usage inside \link{compute}, and
-#' \link{do_if}. sum/mean/sd/median/max/min by default omits NA. \code{any_in_*}
+#' These functions are intended for usage inside \link[maditr]{let}, and
+#' \link[maditr]{let_if}. sum/mean/sd/median/max/min by default omits NA. \code{any_in_*}
 #' checks existence of any TRUE in each row/column. It is equivalent of
 #' \link[base]{any} applied to each row/column. \code{all_in_*} is equivalent of
 #' \link[base]{all} applied to each row/column.

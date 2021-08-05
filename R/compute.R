@@ -41,6 +41,8 @@
 #'   data.frame/list of modified data.frames, \code{calculate} returns value of
 #'   the evaluated expression/list of values.
 #' @examples
+#' 
+#' \dontrun{
 #' dfs = data.frame(
 #'     test = 1:5,
 #'     a = rep(10, 5),
@@ -119,7 +121,7 @@
 #'      }
 #'      rm(i) # we don't need this variable as column in 'dfs'
 #' })
-#' 
+#' }
 #' # 'use_labels' examples. Utilization of labels in base R.
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
@@ -279,6 +281,7 @@ modify = compute
 #' @export
 #' @rdname compute
 do_if = function (data, cond, ...){
+    .Deprecated(msg = "'do_if'/'modify_if' is deprecated and will be removed in the next version. Please, use 'let_if' from maditr package.")
     UseMethod("do_if")
 }
 
