@@ -19,7 +19,6 @@
 #'   stand-in variables values.
 #' @return transformed data.frame \code{data}
 #' @export
-#' @seealso \link{compute}, \link{do_if}
 #'
 #' @examples
 #' data(iris)

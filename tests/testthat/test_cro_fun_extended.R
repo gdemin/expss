@@ -6,21 +6,22 @@ if(isTRUE(getOption("covr"))){
     
     
     data(mtcars)
-    mtcars = modify(mtcars,{
-        var_lab(mpg) = "Miles/(US) gallon"
-        var_lab(cyl) = "Number of cylinders"
-        var_lab(disp) = "Displacement (cu.in.)"
-        var_lab(hp) = "Gross horsepower"
-        var_lab(drat) = "Rear axle ratio"
-        var_lab(wt) = "Weight (lb/1000)"
-        var_lab(qsec) = "1/4 mile time"
-        var_lab(vs) = "V/S"
-        val_lab(vs) = c("Straight" = 0, "V" = 1)
-        var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
-        val_lab(am) = c(" automatic" = 0, " manual" =  1)
-        var_lab(gear) = "Number of forward gears"
-        var_lab(carb) = "Number of carburetors"
-    })
+    mtcars = apply_labels(mtcars,
+                          mpg = "Miles/(US) gallon",
+                          cyl = "Number of cylinders",
+                          disp = "Displacement (cu.in.)",
+                          hp = "Gross horsepower",
+                          drat = "Rear axle ratio",
+                          wt = "Weight (lb/1000)",
+                          qsec = "1/4 mile time",
+                          vs = "V/S",
+                          vs = c("Straight" = 0, "V" = 1),
+                          am = "Transmission (0 = automatic, 1 = manual)",
+                          am = c(" automatic" = 0, " manual" =  1),
+                          gear = "Number of forward gears",
+                          carb = "Number of carburetors"
+    )
+    
     
     # row_labels = c("row_vars", "row_vars_values", "summary_vars", "fun_names", "stat_names"),
     # col_labels = c("col_vars", "col_vars_values")
@@ -79,21 +80,23 @@ if(isTRUE(getOption("covr"))){
     )
     
     data(mtcars)
-    mtcars = modify(mtcars,{
-        var_lab(mpg) = "Miles/(US) gallon"
-        var_lab(cyl) = "Number of cylinders"
-        var_lab(disp) = "Displacement (cu.in.)"
-        var_lab(hp) = "Gross horsepower"
-        var_lab(drat) = "Rear axle ratio"
-        var_lab(wt) = "Weight (lb/1000)"
-        var_lab(qsec) = "1/4 mile time"
-        var_lab(vs) = "V/S"
-        val_lab(vs) = c("Straight" = 0, "V" = 1)
-        var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
-        val_lab(am) = c(" automatic" = 0, " manual" =  1)
-        var_lab(gear) = "Number of forward gears"
-        var_lab(carb) = "Number of carburetors"
-    })
+    mtcars = apply_labels(mtcars,
+                          mpg = "Miles/(US) gallon",
+                          cyl = "Number of cylinders",
+                          disp = "Displacement (cu.in.)",
+                          hp = "Gross horsepower",
+                          drat = "Rear axle ratio",
+                          wt = "Weight (lb/1000)",
+                          qsec = "1/4 mile time",
+                          vs = "Engine",
+                          vs = c("V-engine" = 0,
+                                 "Straight engine" = 1),
+                          am = "Transmission",
+                          am = c("Automatic" = 0,
+                                 "Manual"=1),
+                          gear = "Number of forward gears",
+                          carb = "Number of carburetors"
+    )
     
     add_val_lab(mtcars$am) = c(HardToSay = 3)
     expect_equal_to_reference(
@@ -233,30 +236,31 @@ if(isTRUE(getOption("covr"))){
                           99 Hard to answer
                           ")
     
-    w = compute(w, {
+    w = w %>% let( 
         # recode age by groups
         age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
         
+    ) %>% 
         # Apply labels
-        
-        var_lab(c1) = "Preferences"
-        val_lab(c1) = num_lab("
+        apply_labels(
+            c1 = "Preferences",
+            c1 = num_lab("
                           1 VSX123 
                           2 SDF456
                           3 Hard to say
-                          ")
-        
-        var_lab(age_cat) = "Age"
-        val_lab(age_cat) = c("18 - 25" = 1, "26 - 35" = 2)
-        
-        var_lab(a1_1) = "Likes. VSX123"
-        var_lab(b1_1) = "Likes. SDF456"
-        val_lab(a1_1) = codeframe_likes
-        val_lab(b1_1) = codeframe_likes
-        
-        var_lab(a22) = "Overall quality. VSX123"
-        var_lab(b22) = "Overall quality. SDF456"
-        val_lab(a22) = num_lab("
+                          "),
+            
+            age_cat = "Age",
+            age_cat = c("18 - 25" = 1, "26 - 35" = 2),
+            
+            a1_1 = "Likes. VSX123",
+            b1_1 = "Likes. SDF456",
+            a1_1 = codeframe_likes,
+            b1_1 = codeframe_likes,
+            
+            a22 = "Overall quality. VSX123",
+            b22 = "Overall quality. SDF456",
+            a22 = num_lab("
                            1 Extremely poor 
                            2 Very poor
                            3 Quite poor
@@ -264,9 +268,9 @@ if(isTRUE(getOption("covr"))){
                            5 Quite good
                            6 Very good
                            7 Excellent
-                           ")
-        val_lab(b22) = val_lab(a22)
-    })
+                           "),
+            b22 = val_lab(a22)
+        )
     
     expect_equal_to_reference(
         calc(w, cro_fun(list(a22, b22), col_vars = mrset(a1_1 %to% a1_6), fun = combine_functions(w_mean)))
@@ -330,21 +334,23 @@ if(isTRUE(getOption("covr"))){
     context("cro_mean_sd_n")
     
     data(mtcars)
-    mtcars = modify(mtcars,{
-        var_lab(mpg) = "Miles/(US) gallon"
-        var_lab(cyl) = "Number of cylinders"
-        var_lab(disp) = "Displacement (cu.in.)"
-        var_lab(hp) = "Gross horsepower"
-        var_lab(drat) = "Rear axle ratio"
-        var_lab(wt) = "Weight (lb/1000)"
-        var_lab(qsec) = "1/4 mile time"
-        var_lab(vs) = "V/S"
-        val_lab(vs) = c("Straight" = 0, "V" = 1)
-        var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
-        val_lab(am) = c(" automatic" = 0, " manual" =  1)
-        var_lab(gear) = "Number of forward gears"
-        var_lab(carb) = "Number of carburetors"
-    })
+    mtcars = apply_labels(mtcars,
+                          mpg = "Miles/(US) gallon",
+                          cyl = "Number of cylinders",
+                          disp = "Displacement (cu.in.)",
+                          hp = "Gross horsepower",
+                          drat = "Rear axle ratio",
+                          wt = "Weight (lb/1000)",
+                          qsec = "1/4 mile time",
+                          vs = "Engine",
+                          vs = c("V-engine" = 0,
+                                 "Straight engine" = 1),
+                          am = "Transmission",
+                          am = c("Automatic" = 0,
+                                 "Manual"=1),
+                          gear = "Number of forward gears",
+                          carb = "Number of carburetors"
+    )
     
     expect_equal_to_reference(
         mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs)),

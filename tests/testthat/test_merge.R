@@ -2,11 +2,11 @@ context("merge etable")
 
 data("mtcars")
 
-mtcars = modify(mtcars, {
-    var_lab(vs) = "vs"
-    var_lab(am) = "am"
-    var_lab(gear) = "gear"
-    var_lab(carb) = "carb"})
+
+var_lab(mtcars$vs) = "vs"
+var_lab(mtcars$am) = "am"
+var_lab(mtcars$gear) = "gear"
+var_lab(mtcars$carb) = "carb"
 
 expect_equal_to_reference(with(mtcars, {
     counts = cro(list(vs, am, gear, carb), list("Count"), total_row_position = "none")
@@ -119,12 +119,12 @@ context("merge etable")
 
 data("mtcars")
 
-mtcars = modify(mtcars, {
-    var_lab(vs) = "vs"
-    var_lab(am) = "am"
-    val_lab(am) = c("automatic transmission" = 1, "manual transmission" = 0)
-    var_lab(gear) = "gear"
-    var_lab(carb) = "carb"})
+
+var_lab(mtcars$vs) = "vs"
+var_lab(mtcars$am) = "am"
+val_lab(mtcars$am) = c("automatic transmission" = 1, "manual transmission" = 0)
+var_lab(mtcars$gear) = "gear"
+var_lab(mtcars$carb) = "carb"
 
 
 expect_equal_to_reference(with(mtcars,{
@@ -171,12 +171,12 @@ expect_equal_to_reference(with(mtcars,{
 context("merge simple_summary")
 data("mtcars")
 
-mtcars = modify(mtcars, {
-    var_lab(vs) = "vs"
-    var_lab(am) = "am"
-    val_lab(am) = c("automatic transmission" = 1, "manual transmission" = 0)
-    var_lab(gear) = "gear"
-    var_lab(carb) = "carb"})
+
+var_lab(mtcars$vs) = "vs"
+var_lab(mtcars$am) = "am"
+val_lab(mtcars$am) = c("automatic transmission" = 1, "manual transmission" = 0)
+var_lab(mtcars$gear) = "gear"
+var_lab(mtcars$carb) = "carb"
 
 expect_equal_to_reference(
     with(mtcars, 

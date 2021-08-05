@@ -211,9 +211,9 @@ if(isTRUE(getOption("covr"))){
     )
     
     res = mtcars %>% 
-        compute({
+        let(
             weight = 2
-        }) %>% 
+        ) %>% 
         tab_significance_options(compare_type = c("first_column", 
                                                   "previous_column",
                                                   "subtable")

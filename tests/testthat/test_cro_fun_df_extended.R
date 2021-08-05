@@ -6,24 +6,22 @@ suppressWarnings(RNGversion("3.5.0"))
 context("cro_fun_df")
 
 data(mtcars)
-mtcars = modify(mtcars,{
-    var_lab(mpg) = "Miles/(US) gallon"
-    var_lab(cyl) = "Number of cylinders"
-    var_lab(disp) = "Displacement (cu.in.)"
-    var_lab(hp) = "Gross horsepower"
-    var_lab(drat) = "Rear axle ratio"
-    var_lab(wt) = "Weight (lb/1000)"
-    var_lab(qsec) = "1/4 mile time"
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (lb/1000)",
+                      qsec = "1/4 mile time",
+                      vs = "V/S",
+                      vs = c("Straight" = 0, "V" = 1),
+                      am = "Transmission (0 = automatic, 1 = manual)",
+                      am = c(" automatic" = 0, " manual" =  1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
 
-    var_lab(vs) = "V/S"
-    val_lab(vs) = c("Straight" = 0, "V" = 1)
-
-    var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
-    val_lab(am) = c(" automatic" = 0, " manual" =  1)
-
-    var_lab(gear) = "Number of forward gears"
-    var_lab(carb) = "Number of carburetors"
-})
 
 expect_equal_to_reference(
     mtcars %$% cro_fun_df(mpg, 

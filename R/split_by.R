@@ -23,20 +23,9 @@
 #' @return \code{split_by} returns list of data.frames/\code{split_off}
 #'   returns data.frame
 #' @export
-#' @seealso \link[base]{split}, \link{compute}, \link{calculate},
-#'   \link{do_repeat}, \link{where}
+#' @seealso \link[base]{split}
 #'
 #' @examples
-#' # example from base R 'split'
-#' data(airquality)
-#' airquality2 = airquality %>% 
-#'     split_by(Month) %>% 
-#'     compute({
-#'         Ozone_zscore = scale(Ozone)
-#'     }) %>% 
-#'     split_off() 
-#'     
-#' head(airquality2)
 #' 
 #' # usage of 'groups', 'rownames'
 #' data(mtcars)

@@ -1,24 +1,7 @@
 context("split_by")
 
 data(airquality)
-aq_list = airquality %>% 
-    split_by(Month) %>% 
-    compute({
-        Ozone_zscore = scale(Ozone)
-    }) 
 
-expect_equal_to_reference(aq_list, "rds/split_by1.rds",  update = FALSE)
-
-aq_list = airquality %>% 
-    split_by(Month) %>% 
-    compute({
-        Ozone_zscore = scale(Ozone)
-    }) 
-
-expect_equal_to_reference(aq_list, "rds/split_by1.rds",  update = FALSE)
-
-aq2 = aq_list %>% split_off()
-expect_equal_to_reference(aq2, "rds/split_by2.rds",  update = FALSE)
 
 data(mtcars)
 # add labels to dataset

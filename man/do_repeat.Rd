@@ -89,6 +89,3 @@ head(new_df)
 
 
 }
-\seealso{
-\link{compute}, \link{do_if}
-}

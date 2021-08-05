@@ -23,10 +23,8 @@ variable it remains unchanged. \code{v2l} is just shortcut to \code{values2label
 }
 \examples{
 data(mtcars)
-mtcars = modify(mtcars,{
-                var_lab(mpg) = NULL
-                val_lab(am) = c(" automatic" = 0, " manual" =  1)
-})
+var_lab(mtcars$mpg) = NULL
+val_lab(mtcars$am) = c(" automatic" = 0, " manual" =  1)
 
 summary(lm(mpg ~ ., data = values2labels(mtcars[,c("mpg","am")])))
 }

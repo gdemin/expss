@@ -3,23 +3,24 @@ if(isTRUE(getOption("covr"))){
   suppressWarnings(RNGversion("3.5.0"))
   
   data(mtcars)
-  mtcars = modify(mtcars,{
-    var_lab(mpg) = "Miles/(US) gallon"
-    var_lab(cyl) = "Number of cylinders"
-    var_lab(disp) = "Displacement (cu.in.)"
-    var_lab(hp) = "Gross horsepower"
-    var_lab(drat) = "Rear axle ratio"
-    var_lab(wt) = "Weight (lb/1000)"
-    var_lab(qsec) = "1/4 mile time"
-    var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0,
-                    "Straight engine" = 1)
-    var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0,
-                    manual=1)
-    var_lab(gear) = "Number of forward gears"
-    var_lab(carb) = "Number of carburetors"
-  })
+  mtcars = mtcars %>% 
+      apply_labels(
+          mpg = "Miles/(US) gallon",
+          cyl = "Number of cylinders",
+          disp = "Displacement (cu.in.)",
+          hp = "Gross horsepower",
+          drat = "Rear axle ratio",
+          wt = "Weight (lb/1000)",
+          qsec = "1/4 mile time",
+          vs = "Engine",
+          vs = c("V-engine" = 0, 
+                 "Straight engine" = 1),
+          am = "Transmission",
+          am = c(automatic = 0, 
+                 manual=1),
+          gear = "Number of forward gears",
+          carb = "Number of carburetors"
+      )
   
   
   
@@ -170,14 +171,14 @@ if(isTRUE(getOption("covr"))){
   
   
   # data(mtcars)
-  mtcars = modify(mtcars,{
-    var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
+
+    var_lab(mtcars$vs) = "Engine"
+    val_lab(mtcars$vs) = c("V-engine" = 0, 
                     "Straight engine" = 1) 
-    var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0, 
+    var_lab(mtcars$am) = "Transmission"
+    val_lab(mtcars$am) = c(automatic = 0, 
                     manual=1)
-  })
+ 
   
   expect_known_value(fre(mtcars$vs), "rds/fre_ex1.rds",  update = FALSE)
   expect_known_value(fre(mtcars$vs, weight = 1), "rds/fre_ex1.rds",  update = FALSE)
@@ -401,17 +402,24 @@ if(isTRUE(getOption("covr"))){
   expect_known_value(cro_fun(iris[,-5], list(iris$Species, total()), fun = median), "rds/cro_fun8.rds",  update = FALSE)
   
   # data(mtcars)
-  mtcars = modify(mtcars,{
-    var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
-    var_lab(disp) = "Displacement (cu.in.)"
-    var_lab(hp) = "Gross horsepower"
-    var_lab(mpg) = "Miles/(US) gallon"
-    var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0, 
-                    manual=1)
-  })
+  mtcars = mtcars %>% 
+      apply_labels(
+          mpg = "Miles/(US) gallon",
+          cyl = "Number of cylinders",
+          disp = "Displacement (cu.in.)",
+          hp = "Gross horsepower",
+          drat = "Rear axle ratio",
+          wt = "Weight (lb/1000)",
+          qsec = "1/4 mile time",
+          vs = "Engine",
+          vs = c("V-engine" = 0, 
+                 "Straight engine" = 1),
+          am = "Transmission",
+          am = c(automatic = 0, 
+                 manual=1),
+          gear = "Number of forward gears",
+          carb = "Number of carburetors"
+      )
   
   
   expect_known_value(
@@ -630,16 +638,24 @@ if(isTRUE(getOption("covr"))){
   
   context("table_summary methods")
   # data(mtcars)
-  mtcars = modify(mtcars,{
-    var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
-    var_lab(hp) = "Gross horsepower"
-    var_lab(mpg) = "Miles/(US) gallon"
-    var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0, 
-                    manual=1)
-  })
+  mtcars = mtcars %>% 
+      apply_labels(
+          mpg = "Miles/(US) gallon",
+          cyl = "Number of cylinders",
+          disp = "Displacement (cu.in.)",
+          hp = "Gross horsepower",
+          drat = "Rear axle ratio",
+          wt = "Weight (lb/1000)",
+          qsec = "1/4 mile time",
+          vs = "Engine",
+          vs = c("V-engine" = 0, 
+                 "Straight engine" = 1),
+          am = "Transmission",
+          am = c(automatic = 0, 
+                 manual=1),
+          gear = "Number of forward gears",
+          carb = "Number of carburetors"
+      )
   expect_known_value(cro_mean(mtcars$mpg, list(unvr(mtcars$am), total()))[,"manual"],
                      "rds/mean_methods_1.rds",  update = FALSE)
   expect_known_value(cro_fun(list(mtcars$mpg), list(unvr(mtcars$am), total()), fun = sum)[, 1], 

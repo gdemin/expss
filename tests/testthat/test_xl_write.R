@@ -235,11 +235,13 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
             tab_pivot(stat_position = "inside_columns")
         res_list = c(res_list, list(mtcars_table))
         mtcars_table = product_test %>%
-            compute({
+            let(
                 total = 1
-                var_lab(total) = "Total"
-                val_lab(total) = setNames(1, " ")
-            }) %>% 
+            ) %>% 
+            apply_labels(
+                total = "Total",
+                total = setNames(1, " ")
+            ) %>% 
             tab_cols(total) %>%
             tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
             tab_stat_cpct() %>%

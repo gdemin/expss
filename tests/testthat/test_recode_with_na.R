@@ -144,9 +144,9 @@ param = runif(30)
 param[sample(30, 10)] = NA # place 10 NA's
 df = data.frame(group, param)
 
-df_clean =  modify(df, {
-        param = if_val(param, NA ~ ave(param, group, FUN = mean_col), other ~ copy)
-    })
+df_clean = df
+df_clean$param = if_val(df_clean$param, NA ~ ave(param, group, FUN = mean_col), other ~ copy)
+    
 
 df = within(df, {
     param[group==1 & is.na(param)] = mean(param[group==1], na.rm = TRUE)

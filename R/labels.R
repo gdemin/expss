@@ -32,20 +32,18 @@
 #' @export  
 #' @examples
 #' data(mtcars)
-#' mtcars = modify(mtcars,{
-#'                 var_lab(mpg) = "Miles/(US) gallon"
-#'                 var_lab(cyl) = "Number of cylinders"
-#'                 var_lab(disp) = "Displacement (cu.in.)"
-#'                 var_lab(hp) = "Gross horsepower"
-#'                 var_lab(drat) = "Rear axle ratio"
-#'                 var_lab(wt) = "Weight (lb/1000)"
-#'                 var_lab(qsec) = "1/4 mile time"
-#'                 var_lab(vs) = "V/S"
-#'                 var_lab(am) = "Transmission (0 = automatic, 1 = manual)"
-#'                 val_lab(am) = c(automatic = 0, manual=1)
-#'                 var_lab(gear) = "Number of forward gears"
-#'                 var_lab(carb) = "Number of carburetors"
-#' })
+#' var_lab(mtcars$mpg) = "Miles/(US) gallon"
+#' var_lab(mtcars$cyl) = "Number of cylinders"
+#' var_lab(mtcars$disp) = "Displacement (cu.in.)"
+#' var_lab(mtcars$hp) = "Gross horsepower"
+#' var_lab(mtcars$drat) = "Rear axle ratio"
+#' var_lab(mtcars$wt) = "Weight (lb/1000)"
+#' var_lab(mtcars$qsec) = "1/4 mile time"
+#' var_lab(mtcars$vs) = "V/S"
+#' var_lab(mtcars$am) = "Transmission (0 = automatic, 1 = manual)"
+#' val_lab(mtcars$am) = c(automatic = 0, manual=1)
+#' var_lab(mtcars$gear) = "Number of forward gears"
+#' var_lab(mtcars$carb) = "Number of carburetors"
 #' 
 #' fre(mtcars$am)
 #' 

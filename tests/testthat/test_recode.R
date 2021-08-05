@@ -110,38 +110,7 @@ if(isTRUE(getOption("covr"))) {
     
     
     
-    context("modify")
-    x = c(1,3,1,3,NA)
-    y = c(8,8,8,9,9)
-    z = c(4,4,4,5,5)
-    
-    dfs = data.frame(
-        x = c(2,4,2,4,NA),
-        y = c(18,18,18,19,19),
-        z = c(14,14,14,15,15)
-        
-    ) 
-    
-    dfs  =  modify(dfs, {
-        w = recode(x, gt(2) ~ y, other ~ copy)
-    })
-    
-    expect_identical(dfs$w, c(2, 18, 2, 19, NA))
-    
-    dfs$x = NULL
-    dfs$w = NULL
-    dfs  =  modify(dfs, { 
-        w = recode(x, gt(2)~y, other ~ copy)
-    })
-    expect_identical(dfs$w, c(1, 18, 1, 19, NA))
-    
-    dfs$x = NULL
-    dfs$y = NULL
-    dfs$w = NULL
-    dfs  = modify(dfs, { 
-        w = recode(x, gt(2)~y, other ~ copy)
-    })
-    expect_identical(dfs$w, c(1, 8, 1, 9, NA))
+   
     ##########################
     
     context("recode 'from, to' notation simple vector")
@@ -647,12 +616,7 @@ if(isTRUE(getOption("covr"))) {
     )
     
     data(iris)
-    expect_error(
-        modify(iris, {
-            recode (Sepal.Length %to% Petal.Width, gt(1) ~ 1, other ~ 0) %into% ( Petal.Width %to% Sepal.Length)
-            
-        })
-    )
+
     expect_error(recode(sheet(b, b1=b, b2), 1~10, other ~ copy) %into%  (v0001 %to% v0002))
     
     recode(b, 1~10, other ~ copy) %into%  (v0001 %to% v0003)
@@ -661,28 +625,6 @@ if(isTRUE(getOption("covr"))) {
     expect_identical(v0003, c(10, 2, 3, 4, 5))
     
     
-    
-    data(iris)
-    new_iris = modify(iris, {
-        recode (Sepal.Length %to% Petal.Width, gt(1) ~ 1, other ~ 0) %into% (v01 %to% v04)
-        
-    })
-    
-    res_iris = iris
-    res_iris[, c("v01", "v02", "v03", "v04")] = 
-        calc(iris, recode (Sepal.Length %to% Petal.Width, gt(1) ~ 1, other ~ 0))
-    
-    expect_identical(new_iris, res_iris)
-    
-    new_iris = modify(new_iris, {
-        recode (v01 %to% v04, 1 ~ 1, 0 ~ NA) %into% (Sepal.Length %to% Petal.Width)
-        
-    })
-    
-    res_iris[, 1:4] = 
-        calc(res_iris, recode (v01 %to% v04, 1 ~ 1, 0 ~ NA))
-    
-    expect_identical(new_iris, res_iris)
     
     
     # context("recode factor")

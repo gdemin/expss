@@ -458,12 +458,13 @@ data(mtcars)
 dfs = mtcars %>% keep(mpg, disp, hp, wt)
 
 # apply labels
-dfs = modify(dfs, {
-    var_lab(mpg) = "Miles/(US) gallon"
-    var_lab(disp) = "Displacement (cu.in.)"
-    var_lab(hp) = "Gross horsepower"
-    var_lab(wt) = "Weight (1000 lbs)"
-})
+dfs = apply_labels(dfs,
+                      mpg = "Miles/(US) gallon",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      wt = "Weight (1000 lbs)"
+)
+
 
 labs =    c("Miles/(US) gallon"
             ,"Displacement (cu.in.)"

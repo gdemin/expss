@@ -41,16 +41,6 @@ assumed to have compatible structure. Resulting rows will be sorted in order
 of the split variables.
 }
 \examples{
-# example from base R 'split'
-data(airquality)
-airquality2 = airquality \%>\% 
-    split_by(Month) \%>\% 
-    compute({
-        Ozone_zscore = scale(Ozone)
-    }) \%>\% 
-    split_off() 
-    
-head(airquality2)
 
 # usage of 'groups', 'rownames'
 data(mtcars)
@@ -80,6 +70,5 @@ mtcars \%>\%
     split_off(groups = TRUE, rownames = "variable")
 }
 \seealso{
-\link[base]{split}, \link{compute}, \link{calculate},
-  \link{do_repeat}, \link{where}
+\link[base]{split}
 }

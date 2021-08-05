@@ -109,11 +109,11 @@ if(FALSE){ # isTRUE(getOption("covr"))
   # expect_equal_to_reference(as_hux(res), "rds/as_hux15.rds",  update = TRUE)
   
   res = product_test %>%
-    compute({
-      total = 1
-      var_lab(total) = "Total"
-      val_lab(total) = setNames(1, " ")
-    }) %>% 
+    let(
+      total = 1,
+      total = set_var_lab(total, "Total"),
+      total = set_val_lab(total, setNames(1, " "))
+    ) %>% 
     tab_cols(total) %>%
     tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%
     tab_stat_cpct() %>%

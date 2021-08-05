@@ -56,23 +56,23 @@
 #'        matrix(sample(c(1:10,NA), 30, replace = TRUE), 10)
 #' )
 #' 
-#' result  = compute(sheet1, {
+#' result  = let(sheet1, 
 #'              # count 8
-#'              exact = count_row_if(8, V1, V2, V3)
+#'              exact = count_row_if(8, V1, V2, V3),
 #'              # count values greater than 8
-#'              greater = count_row_if(gt(8), V1, V2, V3)
+#'              greater = count_row_if(gt(8), V1, V2, V3),
 #'              # count integer values between 5 and 8, e. g. 5, 6, 7, 8
-#'              integer_range = count_row_if(5:8, V1, V2, V3)
+#'              integer_range = count_row_if(5:8, V1, V2, V3),
 #'              # count values between 5 and 8 
-#'              range = count_row_if(5 %thru% 8, V1, V2, V3)
+#'              range = count_row_if(5 %thru% 8, V1, V2, V3),
 #'              # count NA 
-#'              na = count_row_if(is.na, V1, V2, V3)
+#'              na = count_row_if(is.na, V1, V2, V3),
 #'              # count not-NA 
-#'              not_na = count_row_if(not_na, V1, V2, V3) 
+#'              not_na = count_row_if(not_na, V1, V2, V3), 
 #'              # are there any 5 in each row?
 #'              has_five = cbind(V1, V2, V3) %row_in% 5   
-#'          })  
-#' result
+#'          )  
+#' print(result)
 #'  
 #' mean_row_if(6, sheet1$V1, data = sheet1)
 #' median_row_if(gt(2), sheet1$V1, sheet1$V2, sheet1$V3) 

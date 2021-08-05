@@ -42,14 +42,24 @@ responses.
 }
 \examples{
 data(mtcars)
-mtcars = modify(mtcars,{
-    var_lab(vs) = "Engine"
-    val_lab(vs) = c("V-engine" = 0, 
-                    "Straight engine" = 1) 
-    var_lab(am) = "Transmission"
-    val_lab(am) = c(automatic = 0, 
-                    manual=1)
-})
+mtcars = mtcars \%>\% 
+    apply_labels(
+        mpg = "Miles/(US) gallon",
+        cyl = "Number of cylinders",
+        disp = "Displacement (cu.in.)",
+        hp = "Gross horsepower",
+        drat = "Rear axle ratio",
+        wt = "Weight (lb/1000)",
+        qsec = "1/4 mile time",
+        vs = "Engine",
+        vs = c("V-engine" = 0, 
+                "Straight engine" = 1),
+        am = "Transmission",
+        am = c(automatic = 0, 
+                manual=1),
+        gear = "Number of forward gears",
+        carb = "Number of carburetors"
+    )
 
 fre(mtcars$vs)
 

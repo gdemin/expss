@@ -65,14 +65,24 @@ expect_identical(add_rows(a, b), res)
 
 context("etable")
 data(mtcars)
-mtcars = modify(mtcars, {
-    var_lab(mpg) = "Miles/(US) gallon"
-    var_lab(vs) = "vs"
-    val_lab(vs) = c("V-engine" = 0, "Straight engine" = 1)
-    var_lab(am) = "am"
-    val_lab(am) = c("automatic transmission" = 1, "manual transmission" = 0)
-    var_lab(gear) = "gear"
-    var_lab(carb) = "carb"})
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (lb/1000)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("automatic transmission" = 1,
+                             "manual transmission"=0),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
 
 tab1 = with(mtcars, cro_mean(mpg, list(unvr(am), total())))
 tab2 = with(mtcars, cro_cpct(list(unvr(vs)), list(unvr(am), total())))

@@ -182,13 +182,6 @@ dfs = as.data.frame(
        matrix(sample(c(1:10,NA),30,replace = TRUE),10)
 )
 
-result  = modify(dfs, {
-                   exact = count_row_if(8, V1, V2, V3)
-                   greater = count_row_if(gt(8), V1, V2, V3)
-                   range = count_row_if(5:8, V1, V2, V3)
-                   na = count_row_if(is.na, V1, V2, V3)
-                   not_na = count_row_if(not_na, V1, V2, V3)
-                })  
 
 expect_equal(
     mean_row_if(6, dfs$V1, data = dfs),
