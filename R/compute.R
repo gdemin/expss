@@ -42,7 +42,6 @@
 #'   the evaluated expression/list of values.
 #' @examples
 #' 
-#' \dontrun{
 #' dfs = data.frame(
 #'     test = 1:5,
 #'     a = rep(10, 5),
@@ -55,73 +54,39 @@
 #' 
 #' 
 #' # compute sum of b* variables and attach it to 'dfs'
-#' compute(dfs, {
-#'     b_total = sum_row(b_1 %to% b_5)
-#'     var_lab(b_total) = "Sum of b"
+#' let(dfs, 
+#'     b_total = sum_row(b_1 %to% b_5),
+#'     b_total = set_var_lab(b_total, "Sum of b"),
 #'     random_numbers = runif(.N) # .N usage
-#' })
+#' ) %>% print()
 #' 
 #' # calculate sum of b* variables and return it
-#' calculate(dfs, sum_row(b_1 %to% b_5))
+#' query(dfs, sum_row(b_1 %to% b_5))
 #' 
 #' 
 #' # set values to existing/new variables
-#' compute(dfs, {
-#'     (b_1 %to% b_5) %into% text_expand('new_b{1:5}')
-#' })
+#' let(dfs, 
+#'     columns('new_b{1:5}') := b_1 %to% b_5
+#' ) %>% print()
 #' 
-#' # .new_var usage
-#' compute(dfs, {
-#'     new_var = .new_var()
-#'     new_var[1] = 1 # this is not possible without preliminary variable creation
-#' })
 #' 
 #' # conditional modification
-#' do_if(dfs, test %in% 2:4, {
-#'     a = a + 1    
-#'     b_total = sum_row(b_1 %to% b_5)
+#' let_if(dfs, test %in% 2:4, 
+#'     a = a + 1,    
+#'     b_total = sum_row(b_1 %to% b_5),
 #'     random_numbers = runif(.N) # .N usage
-#' })
+#' ) %>% print()
 #' 
 #' 
 #' # variable substitution
 #' name1 = "a"
 #' name2 = "new_var"
 #' 
-#' compute(dfs, {
-#'      ..$name2 = ..$name1*2    
-#' })
+#' let(dfs, 
+#'      (name2) := get(name1)*2    
+#' ) %>% print()
 #' 
-#' compute(dfs, {
-#'      for(name1 in paste0("b_", 1:5)){
-#'          name2 = paste0("new_", name1) 
-#'          ..$name2 = ..$name1*2 
-#'      }
-#'      rm(name1, name2) # we don't need this variables as columns in 'dfs'
-#' })
 #' 
-#' # square brackets notation
-#' compute(dfs, {
-#'      ..[(name2)] = ..[(name1)]*2  
-#' })
-#' 
-#' compute(dfs, {
-#'      for(name1 in paste0("b_", 1:5)){
-#'          ..[paste0("new_", name1)] = ..$name1*2 
-#'      }
-#'      rm(name1) # we don't need this variable as column in 'dfs'
-#' })
-#' 
-#' # '..$' doesn't work for case below so we need to use square brackets form
-#' name1 = paste0("b_", 1:5)
-#' name2 = paste0("new_", name1)
-#' compute(dfs, {
-#'      for(i in 1:5){
-#'          ..[name2[i]] = ..[name1[i]]*3
-#'      }
-#'      rm(i) # we don't need this variable as column in 'dfs'
-#' })
-#' }
 #' # 'use_labels' examples. Utilization of labels in base R.
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
@@ -476,22 +441,6 @@ extract_var_labs_as_list_with_symbols = function(data){
 #' @export
 #' @rdname compute
 calc = calculate
-
-#' @export
-#' @rdname compute
-'%calc%' = function (data, expr) {
-    eval.parent(substitute(calculate(data, expr, use_labels = FALSE)))
-}
-
-#' @export
-#' @rdname compute
-'%use_labels%' = use_labels
-
-#' @export
-#' @rdname compute
-'%calculate%' = function (data, expr) {
-    eval.parent(substitute(calculate(data, expr, use_labels = FALSE)))
-}
 
 
 calculate_internal = function(data, expr, parent){
