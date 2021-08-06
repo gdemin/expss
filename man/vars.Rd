@@ -78,9 +78,7 @@ should be named list or data.frame. }
 variable \code{name}. It is convenient wrapper around 
 \link[base]{get}/\link[base]{assign} functions.}
 \item{\code{\%to\%}}{ returns range of variables between \code{e1} and 
-\code{e2} (similar to SPSS 'to'). \link{modify}, \link{modify_if}, 
-\link{calculate}, \link{keep}, \link{except} and \link{where} support 
-\code{\%to\%}.}
+\code{e2} (similar to SPSS 'to').}
 \item{\code{indirect}/\code{indirect_list}}{ are aliases for
 \code{vars}/\code{vars_list}.}
 }
