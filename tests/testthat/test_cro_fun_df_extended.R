@@ -360,19 +360,19 @@ expect_identical(
 set.seed(1)
 weight = runif(nrow(mtcars), 1,2)
 expect_equal_to_reference(
-    cro_pearson(mtcars %>% except(vs, am), col_vars = mtcars$am, weight = weight)
+    cro_pearson(mtcars %>% columns(-vs, -am), col_vars = mtcars$am, weight = weight)
     ,"rds/table_cor_3.rds",  update = FALSE
 )
 expect_equal_to_reference(
-    cro_spearman(mtcars %>% except(vs, am), col_vars = mtcars$am, weight = weight)
+    cro_spearman(mtcars %>% columns(-vs, -am), col_vars = mtcars$am, weight = weight)
     ,"rds/table_cor_4.rds",  update = FALSE
 )
 
 
-expect_equal(cro_pearson(mtcars %>% except(vs, am), col_vars = "Total")[[2]],
-             unname(cor(mtcars %>% except(vs, am))[,1]))
-expect_equal(cro_spearman(mtcars %>% except(vs, am), col_vars = "Total")[[2]],
-             unname(cor(mtcars %>% except(vs, am), method = "spearman")[,1]))
+expect_equal(cro_pearson(mtcars %>% columns(-vs, -am), col_vars = "Total")[[2]],
+             unname(cor(mtcars %>% columns(-vs, -am))[,1]))
+expect_equal(cro_spearman(mtcars %>% columns(-vs, -am), col_vars = "Total")[[2]],
+             unname(cor(mtcars %>% columns(-vs, -am), method = "spearman")[,1]))
 
 
 context("table_summary_df datetime")

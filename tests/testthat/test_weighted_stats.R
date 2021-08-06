@@ -455,7 +455,7 @@ context("weighted statistics labels")
 
 
 data(mtcars)
-dfs = mtcars %>% keep(mpg, disp, hp, wt)
+dfs = mtcars %>% columns(mpg, disp, hp, wt)
 
 # apply labels
 dfs = apply_labels(dfs,
