@@ -56,6 +56,7 @@
 
 #' @export
 '%merge%.default' = function(x, y) {
+    .Deprecated("'%merge%' is deprecated. Use 'df1 %>% merge(df2) instead.")
     common = intersect(colnames(x), colnames(y))
     stopif(!length(common), "`%merge%` - there are no common column names between `x` and `y`.")
     merge(x, y, all.x = TRUE, all.y = FALSE)

@@ -45,7 +45,7 @@ if(FALSE){ # isTRUE(getOption("covr"))
   expect_equal_to_reference(as_hux(set_caption(mtcars_table, "My caption")) ,
                             "rds/as_hux3_no_rowgroups_caption.rds",  update = TRUE)
   
-    mtcars_table = calculate(mtcars,
+    mtcars_table = query(mtcars,
                            cro_mean(list(mpg, hp), list(am %nest% vs)) )
   expect_equal_to_reference(as_hux(mtcars_table) ,
                             "rds/as_hux10.rds",  update = TRUE)
@@ -123,11 +123,11 @@ if(FALSE){ # isTRUE(getOption("covr"))
   expect_equal_to_reference(as_hux(res), "rds/as_hux16.rds",  update = TRUE)
   
   # single row header
-  res = mtcars %>% calc(cro(am, list(unvr(vs))))
+  res = mtcars %>% query(cro(am, list(unvr(vs))))
   expect_equal_to_reference(as_hux(res), "rds/as_hux17.rds",  update = TRUE)
   
   # single row header
-  res = mtcars %>% calc(cro(list(unvr(am)), list(unvr(vs))))
+  res = mtcars %>% query(cro(list(unvr(am)), list(unvr(vs))))
   expect_equal_to_reference(as_hux(res), "rds/as_hux18.rds",  update = TRUE)
   
   # temp = function(x) as_hux:::print.as_hux(x, useViewer = TRUE)

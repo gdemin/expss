@@ -227,11 +227,11 @@ val_lab(product_test$a1_1) = codeframe_likes
 var_lab(product_test$b1_1) = "Likes. SDF456"
 val_lab(product_test$b1_1) = codeframe_likes
 expect_known_value(
-    calc(product_test, cro(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    query(product_test, cro(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(
-    calc(product_test, cro_cpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    query(product_test, cro_cpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_cpct_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(
@@ -239,7 +239,7 @@ expect_known_value(
     "rds/cro_cpct_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(
-    calc(product_test, cro_cpct_responses(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    query(product_test, cro_cpct_responses(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_cpct_responses_mult_by_mult.rds",  update = FALSE)
 
 
@@ -249,7 +249,7 @@ expect_known_value(
 
 
 expect_known_value(
-    calc(product_test, cro_rpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    query(product_test, cro_rpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_rpct_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(
@@ -258,7 +258,7 @@ expect_known_value(
 
 
 expect_known_value(
-    calc(product_test, cro_tpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
+    query(product_test, cro_tpct(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6))),
     "rds/cro_tpct_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(

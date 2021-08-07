@@ -230,16 +230,16 @@ expect_identical(as.etable(matrix(1:9, 3)), res)
 mtcars = unlab(mtcars)
 
 expect_equal_to_reference(
-    calc(mtcars, as.etable(table(am))),
+    with(mtcars, as.etable(table(am))),
     "rds/as.etable1.rds",  update = FALSE)
 expect_equal_to_reference(
-    calc(mtcars, as.etable(table(am, vs))),
+    with(mtcars, as.etable(table(am, vs))),
     "rds/as.etable2.rds",  update = FALSE)
 expect_equal_to_reference(
-    calc(mtcars, as.etable(table(am, vs, cyl))),
+    with(mtcars, as.etable(table(am, vs, cyl))),
     "rds/as.etable3.rds",  update = FALSE)
 expect_equal_to_reference(
-    calc(mtcars, as.etable(table(am, vs, cyl, gear))),
+    with(mtcars, as.etable(table(am, vs, cyl, gear))),
     "rds/as.etable4.rds",  update = FALSE)
 
 mtcars = apply_labels(mtcars, 

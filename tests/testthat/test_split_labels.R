@@ -17,7 +17,7 @@ if(isTRUE(getOption("covr"))) {
     )
     
     # without sorting
-    tabl = mtcars %>% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am), total_label = "#Total"))
+    tabl = mtcars %>% query(cro_cpct(list(cyl, gear, carb), list("#total", vs, am), total_label = "#Total"))
     expect_equal_to_reference(split_labels(tabl[[1]]), "rds/split_labels1.rds",  update = FALSE)
     
     expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", perl = TRUE), "rds/split_labels1.rds",  update = FALSE)

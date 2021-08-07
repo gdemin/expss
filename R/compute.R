@@ -367,6 +367,7 @@ do_if.list = function (data, cond, ...) {
 #' @export
 #' @rdname compute
 calculate =  function (data, expr, use_labels = FALSE) {
+    .Deprecated(msg = "'calc'/'calculate' is deprecated and will be removed in the next version. Please, use 'query' from maditr package.")
     UseMethod("calculate")
 }
 
