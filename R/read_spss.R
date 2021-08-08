@@ -15,8 +15,6 @@
 #' @return 
 #' \code{read_spss} returns data.frame. 
 #' 
-#' \code{read_spss_to_list} returns list of variables from SPSS files.
-#' 
 #' @seealso \link[foreign]{read.spss} in package \code{foreign}, \link{val_lab},
 #'   \link{var_lab}
 #' 
@@ -25,18 +23,16 @@
 #' \dontrun{
 #' 
 #' w = read_spss("project_123.sav") # to data.frame
-#' list_w = read_spss_to_list("project_123.sav") # to list
 #' 
 #' }
 read_spss=function(file, reencode = TRUE){
     res = read_spss_to_list(file, reencode = reencode)
-    res = do.call(data.frame,c(res,stringsAsFactors=FALSE, check.names = FALSE))
+    res = data.frame(res, stringsAsFactors=FALSE, check.names = FALSE)
     res
 }
 
 
 
-#' @export
 #' @rdname read_spss
 read_spss_to_list=function(file, reencode = TRUE){
     if(is.character(file)){

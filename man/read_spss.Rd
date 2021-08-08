@@ -17,9 +17,7 @@ The default is TRUE. NA means to do so in a UTF-8 locale, only. Alternatively, a
 character string specifying an encoding to assume for the file.}
 }
 \value{
-\code{read_spss} returns data.frame. 
-
-\code{read_spss_to_list} returns list of variables from SPSS files.
+\code{read_spss} returns data.frame.
 }
 \description{
 \code{read_spss} reads data from a file stored in SPSS *.sav format. It
@@ -33,7 +31,6 @@ package \code{foreign}.
 \dontrun{
 
 w = read_spss("project_123.sav") # to data.frame
-list_w = read_spss_to_list("project_123.sav") # to list
 
 }
 }
