@@ -37,32 +37,21 @@
 #' )
 #'
 #' # table by 'am'
-#' tab1 = calculate(mtcars, cro_cpct(gear, am))
+#' tab1 = cross_cpct(mtcars, gear, am)
 #' # table with percents
-#' tab2 = calculate(mtcars, cro_cpct(gear, vs))
+#' tab2 = cross_cpct(mtcars, gear, vs)
 #'
 #' # combine tables
-#' tab1 %merge% tab2
+#' tab1 %>% merge(tab2)
 #'
 #' # complex tables
 #' # table with counts
-#' counts = calculate(mtcars, cro(list(vs, am, gear, carb), list("Count")))
+#' counts = cross_cases(mtcars, list(vs, am, gear, carb), list("Count"))
 #' # table with percents
-#' percents = calculate(mtcars, cro_cpct(list(vs, am, gear, carb), list("Column, %")))
+#' percents = cross_cpct(mtcars, list(vs, am, gear, carb), list("Column, %"))
 #'
 #' # combine tables
-#' counts %merge% percents
-'%merge%' = function(x, y) UseMethod('%merge%')
-
-#' @export
-'%merge%.default' = function(x, y) {
-    .Deprecated("'%merge%' is deprecated. Use 'df1 %>% merge(df2) instead.")
-    common = intersect(colnames(x), colnames(y))
-    stopif(!length(common), "`%merge%` - there are no common column names between `x` and `y`.")
-    merge(x, y, all.x = TRUE, all.y = FALSE)
-}
-
-
+#' counts %>% merge(percents)
 #' @export
 merge.etable = function(x, y,
                         by = 1,
@@ -92,10 +81,10 @@ merge.etable = function(x, y,
 }
 
 
-
-
 #' @export
-'%merge%.etable' = function(x, y) merge.etable(x, y)
+add_columns.etable = merge.etable
+
+
 
 merge_table = function(x, y,
                        by.x,

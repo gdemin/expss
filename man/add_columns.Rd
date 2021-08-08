@@ -2,48 +2,45 @@
 % Please edit documentation in R/add_columns.R
 \name{add_columns}
 \alias{add_columns}
-\title{Look up values in dictionary.}
+\title{Add columns to data.frame.}
 \usage{
-add_columns(data, dict, by = NULL, ignore_duplicates = FALSE)
+add_columns(x, y, by = NULL, ignore_duplicates = FALSE)
 }
 \arguments{
-\item{data}{data.frame to be joined with \code{dict}.}
+\item{x}{data.frame to be joined with \code{y}.}
 
-\item{dict}{data.frame.}
+\item{y}{data.frame.}
 
 \item{by}{character vector or NULL(default) or 1. Names of common variables
-in the \code{data} and \code{dict} by which we will attach \code{dict} to
-\code{data}. If it is NULL then common names will be used. If it is equals
+in the \code{x} and \code{y} by which we will attach \code{y} to
+\code{x}. If it is NULL then common names will be used. If it is equals
 to 1 then we will use the first column from both dataframes. To add columns
-by different variables on \code{data} and \code{dict} use a named vector.
-For example, \code{by = c("a" = "b")} will match data.a to dict.b.}
+by different variables on \code{x} and \code{y} use a named vector.
+For example, \code{by = c("a" = "b")} will match x.a to y.b.}
 
 \item{ignore_duplicates}{logical Should we ignore duplicates in the \code{by}
-variables in the \code{dict}? If it is TRUE than first occurence of duplicated
+variables in the \code{y}? If it is TRUE than first occurence of duplicated
 key will be used.}
 }
 \value{
 data.frame
 }
 \description{
-\code{vlookup}/\code{vlookup_df} function is inspired by VLOOKUP spreadsheet
-function. It looks for a \code{lookup_value} in the \code{lookup_column} of
-the \code{dict}, and then returns values in the same rows from
-\code{result_column}. \code{add_columns} inspired by MATCH FILES (Add
+\code{add_columns} inspired by MATCH FILES (Add
 variables...) from SPSS Statistics. It works similar to SQL left join but
 number of cases in the left part always remain the same. If there are
-duplicated keys in the \code{dict} then error will be raised by default.
+duplicated keys in the \code{y} then error will be raised by default.
 }
 \examples{
 
 # example for 'add_columns' from base 'merge'
-authors = sheet(
+authors = data.frame(
     surname = c("Tukey", "Venables", "Tierney", "Ripley", "McNeil"),
     nationality = c("US", "Australia", "US", "UK", "Australia"),
     deceased = c("yes", rep("no", 4))
 )
 
-books = sheet(
+books = data.frame(
     surname = c("Tukey", "Venables", "Tierney",
                 "Ripley", "Ripley", "McNeil", "R Core"),
     title = c("Exploratory Data Analysis",
