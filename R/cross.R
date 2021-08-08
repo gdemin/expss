@@ -4,21 +4,22 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' Cross tabulation with support of labels, weights and multiple response variables.
 #' 
 #' \itemize{
-#' \item{\code{cro}, \code{cro_cases}}{ build a contingency table of the counts.}
-#' \item{\code{cro_cpct}, \code{cro_cpct_responses}}{ build a contingency table 
+#' \item{\code{cross_cases}}{ build a contingency table of the counts.}
+#' \item{\code{cross_cpct}, \code{cross_cpct_responses}}{ build a contingency table 
 #' of the column percent. These functions give different results only for 
-#' multiple response variables. For \code{cro_cpct} base of percent is number 
+#' multiple response variables. For \code{cross_cpct} base of percent is number 
 #' of valid cases. Case is considered as valid if it has at least one non-NA 
 #' value. So for multiple response variables sum of percent may be greater than
-#' 100. For \code{cro_cpct_responses} base of percent is number of valid 
+#' 100. For \code{cross_cpct_responses} base of percent is number of valid 
 #' responses. Multiple response variables can have several responses for single 
-#' case. Sum of percent of \code{cro_cpct_responses} always equals to 100\%.}
-#' \item{\code{cro_rpct}}{ build a contingency table of the row percent. Base
+#' case. Sum of percent of \code{cross_cpct_responses} always equals to 100\%.}
+#' \item{\code{cross_rpct}}{ build a contingency table of the row percent. Base
 #' for percent is number of valid cases.}
-#' \item{\code{cro_tpct}}{ build a contingency table of the table percent. Base
+#' \item{\code{cross_tpct}}{ build a contingency table of the table percent. Base
 #' for percent is number of valid cases.}
-#' \item{\code{calc_cro_*}}{ are the same as above but evaluate their arguments
+#' \item{\code{cross_*}}{ functions evaluate their arguments
 #' in the context of the first argument \code{data}.}
+#' \item{\code{cro_*}}{ functions use standard evaluation, e. g 'cro(mtcars$am, mtcars$vs)'.}
 #' \item{\code{total}}{ auxiliary function - creates variables with 1 for valid
 #' case of its argument \code{x} and NA in opposite case.}
 #' }
@@ -49,7 +50,7 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' @param total_row_position Position of total row in the resulting table. Can
 #'   be one of "below", "above", "none".
 #' @param data data.frame in which context all other arguments will be evaluated
-#'   (for \code{calc_cro_*}).
+#'   (for \code{cross_*}).
 #' @param x vector/data.frame of class 'category'/'dichotomy'. 
 #' @param label character. Label for total variable. 
 #'   
@@ -77,61 +78,189 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #'                       carb = "Number of carburetors"
 #' )
 #' 
-#' calculate(mtcars, cro(am, vs))
-#' calc_cro(mtcars, am, vs) # the same result
+#' cross_cases(mtcars, am, vs) 
+#' cro(mtcars$am, mtcars$vs) # the same result
 #' 
 #' # column percent with multiple banners
-#' calculate(mtcars, cro_cpct(cyl, list(total(), vs, am)))
-#' calc_cro_cpct(mtcars, cyl, list(total(), vs, am)) # the same result
+#' cross_cpct(mtcars, cyl, list(total(), vs, am)) 
 #' 
 #' # nested banner
-#' calculate(mtcars, cro_cpct(cyl, list(total(), vs %nest% am)))
+#' cross_cpct(mtcars, cyl, list(total(), vs %nest% am))
 #' 
 #' # stacked variables
-#' calculate(mtcars, cro(list(cyl, carb), list(total(), vs %nest% am)))
+#' cross_cases(mtcars, list(cyl, carb), list(total(), vs %nest% am))
 #' 
 #' # nested variables
-#' calculate(mtcars, cro_cpct(am %nest% cyl, list(total(), vs)))
+#' cross_cpct(mtcars, am %nest% cyl, list(total(), vs))
 #'
 #' # row variables
-#' calculate(mtcars, cro_cpct(cyl, list(total(), vs), row_vars = am))
+#' cross_cpct(mtcars, cyl, list(total(), vs), row_vars = am)
 #' 
 #' # several totals above table
-#' calculate(mtcars, cro_cpct(cyl, 
+#' cross_cpct(mtcars, cyl, 
 #'               list(total(), vs), 
 #'               row_vars = am,
 #'               total_row_position = "above",
 #'               total_label = c("number of cases", "row %"),
 #'               total_statistic = c("u_cases", "u_rpct")
-#'               ))
+#'               )
 #' 
 #' # multiple-choice variable
 #' # brands - multiple response question
 #' # Which brands do you use during last three months? 
 #' set.seed(123)
-#' brands = data.frame(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE))))
+#' brands = data.table(t(replicate(20,sample(c(1:5,NA),4,replace = FALSE)))) %>% 
+#'     setNames(paste0("brand_", 1:4))
 #' # score - evaluation of tested product
-#' score = sample(-1:1,20,replace = TRUE)
-#' var_lab(brands) = "Used brands"
-#' val_lab(brands) = make_labels("
+#' brands = brands %>% 
+#'     let(
+#'         score = sample(-1:1,.N,replace = TRUE)
+#'     ) %>% 
+#'     apply_labels(
+#'         brand_1 = "Used brands",
+#'         brand_1 = num_lab("
 #'                               1 Brand A
 #'                               2 Brand B
 #'                               3 Brand C
 #'                               4 Brand D
 #'                               5 Brand E
-#'                               ")
+#'                               "),
 #' 
-#' var_lab(score) = "Evaluation of tested brand"
-#' val_lab(score) = num_lab("
+#'         score = "Evaluation of tested brand",
+#'         score = num_lab("
 #'                              -1 Dislike it
 #'                              0 So-so
 #'                              1 Like it    
 #'                              ")
-#'
-#' cro_cpct(mrset(brands), list(total(), score))
+#' )
+#' cross_cpct(brands, mrset(brand_1 %to% brand_4), list(total(), score))
 #' # responses
-#' cro_cpct_responses(mrset(brands), list(total(), score))
+#' cross_cpct_responses(brands, mrset(brand_1 %to% brand_4), list(total(), score))
 #' @export
+cross_cases = function(data,
+                    cell_vars, 
+                    col_vars = total(), 
+                    row_vars = NULL,
+                    weight = NULL,
+                    subgroup = NULL,
+                    total_label = NULL,
+                    total_statistic = "u_cases",
+                    total_row_position = c("below", "above", "none")
+){
+    expr = substitute(cro_cases(cell_vars = cell_vars, 
+                                col_vars = col_vars, 
+                                row_vars = row_vars,
+                                weight = weight,
+                                subgroup = subgroup,
+                                total_label = total_label,
+                                total_statistic = total_statistic,
+                                total_row_position = total_row_position)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())
+}
+
+
+########################
+#' @export
+#' @rdname cross_cases
+cross_cpct = function(data,
+                    cell_vars, 
+                    col_vars = total(), 
+                    row_vars = NULL,
+                    weight = NULL,
+                    subgroup = NULL,
+                    total_label = NULL,
+                    total_statistic = "u_cases",
+                    total_row_position = c("below", "above", "none")
+){
+    expr = substitute(cro_cpct(cell_vars = cell_vars, 
+                                col_vars = col_vars, 
+                                row_vars = row_vars,
+                                weight = weight,
+                                subgroup = subgroup,
+                                total_label = total_label,
+                                total_statistic = total_statistic,
+                                total_row_position = total_row_position)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())
+}
+
+#' @export
+#' @rdname cross_cases
+cross_rpct = function(data,
+                         cell_vars, 
+                         col_vars = total(), 
+                         row_vars = NULL,
+                         weight = NULL,
+                         subgroup = NULL,
+                         total_label = NULL,
+                         total_statistic = "u_cases",
+                         total_row_position = c("below", "above", "none")
+){
+    expr = substitute(cro_rpct(cell_vars = cell_vars, 
+                               col_vars = col_vars, 
+                               row_vars = row_vars,
+                               weight = weight,
+                               subgroup = subgroup,
+                               total_label = total_label,
+                               total_statistic = total_statistic,
+                               total_row_position = total_row_position)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())
+}
+
+#' @export
+#' @rdname cross_cases
+cross_tpct = function(data,
+                         cell_vars, 
+                         col_vars = total(), 
+                         row_vars = NULL,
+                         weight = NULL,
+                         subgroup = NULL,
+                         total_label = NULL,
+                         total_statistic = "u_cases",
+                         total_row_position = c("below", "above", "none")
+){
+    expr = substitute(cro_tpct(cell_vars = cell_vars, 
+                               col_vars = col_vars, 
+                               row_vars = row_vars,
+                               weight = weight,
+                               subgroup = subgroup,
+                               total_label = total_label,
+                               total_statistic = total_statistic,
+                               total_row_position = total_row_position)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())
+}
+
+
+#' @export
+#' @rdname cross_cases
+cross_cpct_responses = function(data,
+                         cell_vars, 
+                         col_vars = total(), 
+                         row_vars = NULL,
+                         weight = NULL,
+                         subgroup = NULL,
+                         total_label = NULL,
+                         total_statistic = "u_responses",
+                         total_row_position = c("below", "above", "none")
+){
+    expr = substitute(cro_cpct_responses(cell_vars = cell_vars, 
+                                         col_vars = col_vars, 
+                                         row_vars = row_vars,
+                                         weight = weight,
+                                         subgroup = subgroup,
+                                         total_label = total_label,
+                                         total_statistic = total_statistic,
+                                         total_row_position = total_row_position)
+    )
+    calculate_internal(data, expr = expr, parent = parent.frame())
+}
+
+########################
+#' @export
+#' @rdname cross_cases
 cro = function(cell_vars, 
                col_vars = total(), 
                row_vars = NULL,
@@ -163,12 +292,12 @@ cro = function(cell_vars,
 
 
 #' @export
-#' @rdname cro
+#' @rdname cross_cases
 cro_cases = cro
 
 
 #' @export
-#' @rdname cro
+#' @rdname cross_cases
 cro_cpct = function(cell_vars, 
                     col_vars = total(), 
                     row_vars = NULL,
@@ -199,7 +328,7 @@ cro_cpct = function(cell_vars,
 }
 
 #' @export
-#' @rdname cro
+#' @rdname cross_cases
 cro_rpct = function(cell_vars, 
                     col_vars = total(), 
                     row_vars = NULL,
@@ -231,7 +360,7 @@ cro_rpct = function(cell_vars,
 
 
 #' @export
-#' @rdname cro
+#' @rdname cross_cases
 cro_tpct = function(cell_vars, 
                     col_vars = total(), 
                     row_vars = NULL,
@@ -262,7 +391,7 @@ cro_tpct = function(cell_vars,
 }
 
 #' @export
-#' @rdname cro
+#' @rdname cross_cases
 cro_cpct_responses = function(cell_vars, 
                               col_vars = total(), 
                               row_vars = NULL,
@@ -291,135 +420,6 @@ cro_cpct_responses = function(cell_vars,
               stat_type = "cpct_responses"
     )    
 }
-
-#########################################
-
-#' @export
-#' @rdname cro
-calc_cro = function(data,
-                    cell_vars, 
-                    col_vars = total(), 
-                    row_vars = NULL,
-                    weight = NULL,
-                    subgroup = NULL,
-                    total_label = NULL,
-                    total_statistic = "u_cases",
-                    total_row_position = c("below", "above", "none")
-){
-    expr = substitute(cro_cases(cell_vars = cell_vars, 
-                                col_vars = col_vars, 
-                                row_vars = row_vars,
-                                weight = weight,
-                                subgroup = subgroup,
-                                total_label = total_label,
-                                total_statistic = total_statistic,
-                                total_row_position = total_row_position)
-    )
-    calculate_internal(data, expr = expr, parent = parent.frame())
-}
-
-#' @export
-#' @rdname cro
-calc_cro_cases = calc_cro
-
-########################
-#' @export
-#' @rdname cro
-calc_cro_cpct = function(data,
-                    cell_vars, 
-                    col_vars = total(), 
-                    row_vars = NULL,
-                    weight = NULL,
-                    subgroup = NULL,
-                    total_label = NULL,
-                    total_statistic = "u_cases",
-                    total_row_position = c("below", "above", "none")
-){
-    expr = substitute(cro_cpct(cell_vars = cell_vars, 
-                                col_vars = col_vars, 
-                                row_vars = row_vars,
-                                weight = weight,
-                                subgroup = subgroup,
-                                total_label = total_label,
-                                total_statistic = total_statistic,
-                                total_row_position = total_row_position)
-    )
-    calculate_internal(data, expr = expr, parent = parent.frame())
-}
-
-#' @export
-#' @rdname cro
-calc_cro_rpct = function(data,
-                         cell_vars, 
-                         col_vars = total(), 
-                         row_vars = NULL,
-                         weight = NULL,
-                         subgroup = NULL,
-                         total_label = NULL,
-                         total_statistic = "u_cases",
-                         total_row_position = c("below", "above", "none")
-){
-    expr = substitute(cro_rpct(cell_vars = cell_vars, 
-                               col_vars = col_vars, 
-                               row_vars = row_vars,
-                               weight = weight,
-                               subgroup = subgroup,
-                               total_label = total_label,
-                               total_statistic = total_statistic,
-                               total_row_position = total_row_position)
-    )
-    calculate_internal(data, expr = expr, parent = parent.frame())
-}
-
-#' @export
-#' @rdname cro
-calc_cro_tpct = function(data,
-                         cell_vars, 
-                         col_vars = total(), 
-                         row_vars = NULL,
-                         weight = NULL,
-                         subgroup = NULL,
-                         total_label = NULL,
-                         total_statistic = "u_cases",
-                         total_row_position = c("below", "above", "none")
-){
-    expr = substitute(cro_tpct(cell_vars = cell_vars, 
-                               col_vars = col_vars, 
-                               row_vars = row_vars,
-                               weight = weight,
-                               subgroup = subgroup,
-                               total_label = total_label,
-                               total_statistic = total_statistic,
-                               total_row_position = total_row_position)
-    )
-    calculate_internal(data, expr = expr, parent = parent.frame())
-}
-
-
-#' @export
-#' @rdname cro
-calc_cro_cpct_responses = function(data,
-                         cell_vars, 
-                         col_vars = total(), 
-                         row_vars = NULL,
-                         weight = NULL,
-                         subgroup = NULL,
-                         total_label = NULL,
-                         total_statistic = "u_responses",
-                         total_row_position = c("below", "above", "none")
-){
-    expr = substitute(cro_cpct_responses(cell_vars = cell_vars, 
-                                         col_vars = col_vars, 
-                                         row_vars = row_vars,
-                                         weight = weight,
-                                         subgroup = subgroup,
-                                         total_label = total_label,
-                                         total_statistic = total_statistic,
-                                         total_row_position = total_row_position)
-    )
-    calculate_internal(data, expr = expr, parent = parent.frame())
-}
-
 ########################
 make_datatable_for_cro = function(cell_var, 
                                   col_var, 
@@ -1104,7 +1104,7 @@ multi_cro = function(cell_vars,
 
 
 #' @export
-#' @rdname cro
+#' @rdname cross_cases
 total = function(x = 1, label = "#Total"){
     UseMethod("total")
 }    
