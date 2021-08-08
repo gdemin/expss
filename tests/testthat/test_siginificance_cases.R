@@ -164,7 +164,7 @@ if(isTRUE(getOption("covr"))){
         "rds/significance_cases17.rds",  update = TRUE
     )
     
-tbl = calc_cro_cases(mtcars, am, vs) %>% drop_empty_columns()
+tbl = cross_cases(mtcars, am, vs) %>% drop_empty_columns()
 
 correct_true = structure(list(row_labels = structure(c("Transmission|Automatic", 
 "Transmission|Manual", "Transmission|#Chi-squared p-value", "Transmission|#Total cases"

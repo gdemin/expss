@@ -40,7 +40,7 @@ if(isTRUE(getOption("covr"))){
         "rds/table_summary0.rds",  update = FALSE)
     
     expect_equal_to_reference(
-        calc_cro_fun(mtcars, ..[!perl("cyl|am")], col_vars = am, 
+        cross_fun(mtcars, ..[!perl("cyl|am")], col_vars = am, 
                      fun = combine_functions(w_mean), 
                      weight = 2
         ),
@@ -105,7 +105,7 @@ if(isTRUE(getOption("covr"))){
     )
     
     expect_equal_to_reference(
-        calc_cro_fun_df(mtcars, ..[!perl("vs|am")], 
+        cross_fun_df(mtcars, ..[!perl("vs|am")], 
                         col_vars = list("Total", mtcars$am),
                         fun = function(x) {
                             res = t(colMeans(x) )
@@ -342,12 +342,12 @@ if(isTRUE(getOption("covr"))){
     
     
     expect_equal_to_reference(
-        calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs)),
+        cross_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs)),
         "rds/cro_mean_sd_n1.rds",  update = FALSE
     )
     
-    expect_error(calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs), labels = 1))
-    expect_error(calc_cro_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs), 
+    expect_error(cross_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs), labels = 1))
+    expect_error(cross_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs), 
                                     labels = c("", "", "")))
     
     expect_equal_to_reference(
@@ -365,7 +365,7 @@ if(isTRUE(getOption("covr"))){
     )
     
     expect_equal_to_reference(
-        calc_cro_mean_sd_n(mtcars, 
+        cross_mean_sd_n(mtcars, 
                            list(mpg, disp, wt), 
                            list(total(), am, vs), 
                            labels = c("m", "s", "n"),
@@ -382,7 +382,7 @@ if(isTRUE(getOption("covr"))){
     mtcars2$ww = runif(NROW(mtcars), 0.5, 1.5)
     mtcars2$ww[6:10] = NA
     mtcars2$empty = NA
-    expect_equal_to_reference(calc_cro_mean_sd_n(mtcars2, 
+    expect_equal_to_reference(cross_mean_sd_n(mtcars2, 
                                                  empty, 
                                                  list(total(), am, vs),
                                                  weight = ww,
@@ -391,7 +391,7 @@ if(isTRUE(getOption("covr"))){
     )
     
     expect_equal_to_reference(
-        calc_cro_mean_sd_n(mtcars2, 
+        cross_mean_sd_n(mtcars2, 
                            empty, 
                            list(total(), am, vs),
                            weight = ww,
@@ -409,7 +409,7 @@ if(isTRUE(getOption("covr"))){
         "rds/cro_mean_sd_n4_1.rds",  update = FALSE
     )
     mtcars2$empty = NA_real_
-    expect_equal_to_reference(calc_cro_mean_sd_n(mtcars2, 
+    expect_equal_to_reference(cross_mean_sd_n(mtcars2, 
                                                  empty, 
                                                  list(total(), am, vs),
                                                  weight = ww,
@@ -417,7 +417,7 @@ if(isTRUE(getOption("covr"))){
                               "rds/cro_mean_sd_n4.rds",  update = FALSE
     )
     
-    expect_equal_to_reference(calc_cro_mean_sd_n(mtcars2, 
+    expect_equal_to_reference(cross_mean_sd_n(mtcars2, 
                                                  empty, 
                                                  list(total(), am, vs),
                                                  weight = ww,

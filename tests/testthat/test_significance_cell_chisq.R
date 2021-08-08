@@ -200,7 +200,7 @@ NEWBALANCE	56	8	8	40
     
     
     # table with multiple variables
-    tbl = calc_cro_cpct(mtcars2, list(gear, cyl), list(total(), am, vs))
+    tbl = cross_cpct(mtcars2, list(gear, cyl), list(total(), am, vs))
     res = structure(list(row_labels = c("Number of forward gears|3", "Number of forward gears|4", 
                                         "Number of forward gears|5", "Number of forward gears|#Total cases", 
                                         "Number of cylinders|4", "Number of cylinders|6", "Number of cylinders|8", 

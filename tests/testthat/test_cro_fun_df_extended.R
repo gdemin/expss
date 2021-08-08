@@ -291,7 +291,7 @@ expect_equal_to_reference(
 
 val_lab(mtcars$am) = val_lab(mtcars$am)[1:2] 
 expect_equal_to_reference(
-    calc_cro_pearson(mtcars, ..[!perl("vs|am")], col_vars = am)
+    cross_pearson(mtcars, ..[!perl("vs|am")], col_vars = am)
     ,"rds/table_cor_1.rds",  update = FALSE
 )
 
@@ -301,7 +301,7 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    calc_cro_spearman(mtcars, ..[!perl("vs|am")], col_vars = am)
+    cross_spearman(mtcars, ..[!perl("vs|am")], col_vars = am)
     ,"rds/table_cor_2.rds",  update = FALSE
 )
 
@@ -405,7 +405,7 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    calc_cro_mean(mtcars, list(mpg, mpg, mpg, mpg), list(am)),
+    cross_mean(mtcars, list(mpg, mpg, mpg, mpg), list(am)),
     "rds/cro_fun_df_duplicated_names.rds",  update = FALSE
 )
 

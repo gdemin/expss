@@ -12,7 +12,7 @@ val_lab(mtcars$am) = c(automatic = 0,
 
 
 expect_known_value(cro(mtcars$am, mtcars$vs), "rds/table_cases1.rds",  update = FALSE)
-expect_known_value(calc_cro_cases(mtcars, am, vs), "rds/table_cases1.rds",  update = FALSE)
+expect_known_value(cross_cases(mtcars, am, vs), "rds/table_cases1.rds",  update = FALSE)
 expect_known_value(cro(mtcars$am, mtcars$vs, total_row_position = "none"), "rds/table_cases2.rds",  update = FALSE)
 expect_known_value(cro(mtcars$am, mtcars$vs, total_row_position = "above"), "rds/table_cases3.rds",  update = FALSE)
 expect_known_value(cro(mtcars$am, mtcars$vs, total_row_position = "below"), "rds/table_cases1.rds",  update = FALSE)
@@ -235,7 +235,7 @@ expect_known_value(
     "rds/cro_cpct_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(
-    calc_cro_cpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
+    cross_cpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
     "rds/cro_cpct_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(
@@ -244,7 +244,7 @@ expect_known_value(
 
 
 expect_known_value(
-    calc_cro_cpct_responses(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
+    cross_cpct_responses(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
     "rds/cro_cpct_responses_mult_by_mult.rds",  update = FALSE)
 
 
@@ -253,7 +253,7 @@ expect_known_value(
     "rds/cro_rpct_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(
-    calc_cro_rpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
+    cross_rpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
     "rds/cro_rpct_mult_by_mult.rds",  update = FALSE)
 
 
@@ -262,7 +262,7 @@ expect_known_value(
     "rds/cro_tpct_mult_by_mult.rds",  update = FALSE)
 
 expect_known_value(
-    calc_cro_tpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
+    cross_tpct(product_test, mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)),
     "rds/cro_tpct_mult_by_mult.rds",  update = FALSE)
 
 set.seed(1)
@@ -278,7 +278,7 @@ expect_known_value(
 )
 
 expect_known_value(
-    calc_cro_cpct(df, mdset(var_orange, var_banana, var_melon, var_mango), list(area)),
+    cross_cpct(df, mdset(var_orange, var_banana, var_melon, var_mango), list(area)),
     "rds/cro_mdset_names_of_result.rds",  update = FALSE
 )
 

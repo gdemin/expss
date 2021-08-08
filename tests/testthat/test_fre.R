@@ -550,7 +550,7 @@ if(isTRUE(getOption("covr"))){
   b = c(NA, NA, NA, 1, 1)
   expect_known_value(cro_mean(a, list(b, total())), "rds/cro_mean1.rds",  update = FALSE)
   expect_known_value(cro_sum(a, list(b, total())), "rds/cro_sum1.rds",  update = FALSE)
-  expect_known_value(calc_cro_sum(sheet(a, b), a, list(b, total())), 
+  expect_known_value(cross_sum(sheet(a, b), a, list(b, total())), 
                      "rds/cro_sum1.rds",  update = FALSE)
   expect_known_value(cro_median(a, list(b, total())), "rds/cro_median1.rds",  update = FALSE)
   
@@ -560,7 +560,7 @@ if(isTRUE(getOption("covr"))){
   
   expect_known_value(cro_mean(b, list(a, total())), "rds/cro_mean2.rds",  update = FALSE)
   expect_known_value(cro_median(b, list(a, total())), "rds/cro_median2.rds",  update = FALSE)
-  expect_known_value(calc_cro_median(sheet(a, b), b, list(a, total())), "rds/cro_median2.rds",  update = FALSE)
+  expect_known_value(cross_median(sheet(a, b), b, list(a, total())), "rds/cro_median2.rds",  update = FALSE)
   
   weight = rep(1, 5)
   expect_known_value(cro_mean(b, list(a, total()), weight = weight), "rds/cro_mean2.rds",  update = FALSE)
@@ -586,7 +586,7 @@ if(isTRUE(getOption("covr"))){
   
   
   expect_known_value(cro_median(iris[,-5], list(iris$Species, total())), "rds/cro_median8.rds",  update = FALSE)
-  expect_known_value(calc_cro_median(iris, ..[!perl("Species")], list(Species, total())), 
+  expect_known_value(cross_median(iris, ..[!perl("Species")], list(Species, total())), 
                      "rds/cro_median8.rds",  update = FALSE)
   expect_known_value(cro_median(iris[,-5], list(iris$Species, total()), weight = rep(1, 150)),
                      "rds/cro_median8.rds",  update = FALSE)
@@ -598,7 +598,7 @@ if(isTRUE(getOption("covr"))){
   
   
   expect_known_value(cro_sum(iris[,-5], list(iris$Species, total())), "rds/cro_sum8.rds",  update = FALSE)
-  expect_known_value(calc_cro_sum(iris, ..[!perl("Species")], list(Species, total())), 
+  expect_known_value(cross_sum(iris, ..[!perl("Species")], list(Species, total())), 
                      "rds/cro_sum8.rds",  update = FALSE)
   
   expect_known_value(cro_fun(iris[,-5], list(iris$Species, total()), fun = mean), "rds/cro_mean8.rds",  update = FALSE)
