@@ -2,10 +2,22 @@
 % Please edit documentation in R/merge.R
 \name{merge.etable}
 \alias{merge.etable}
-\alias{\%merge\%}
 \title{Merge two tables/data.frames}
 \usage{
-x \%merge\% y
+\method{merge}{etable}(
+  x,
+  y,
+  by = 1,
+  by.x = by,
+  by.y = by,
+  all = TRUE,
+  all.x = all,
+  all.y = all,
+  sort = FALSE,
+  suffixes = c("", ""),
+  incomparables = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}}
@@ -43,21 +55,21 @@ mtcars = apply_labels(mtcars,
 )
 
 # table by 'am'
-tab1 = calculate(mtcars, cro_cpct(gear, am))
+tab1 = cross_cpct(mtcars, gear, am)
 # table with percents
-tab2 = calculate(mtcars, cro_cpct(gear, vs))
+tab2 = cross_cpct(mtcars, gear, vs)
 
 # combine tables
-tab1 \%merge\% tab2
+tab1 \%>\% merge(tab2)
 
 # complex tables
 # table with counts
-counts = calculate(mtcars, cro(list(vs, am, gear, carb), list("Count")))
+counts = cross_cases(mtcars, list(vs, am, gear, carb), list("Count"))
 # table with percents
-percents = calculate(mtcars, cro_cpct(list(vs, am, gear, carb), list("Column, \%")))
+percents = cross_cpct(mtcars, list(vs, am, gear, carb), list("Column, \%"))
 
 # combine tables
-counts \%merge\% percents
+counts \%>\% merge(percents)
 }
 \seealso{
 \link{fre}, \link{cro}, \link{cro}, \link{cro_fun}, \link[base]{merge}
