@@ -1,17 +1,16 @@
-
 #' Merge two tables/data.frames
 #'
 #' \code{\%merge\%} is infix shortcut for base \link[base]{merge} with 
 #' \code{all.x = TRUE} and  \code{all.y = FALSE} (left join). There is also 
-#' special method for combining results of \code{cro_*} and \code{fre}. For them
+#' special method for combining results of \code{cross_*} and \code{fre}. For them
 #' \code{all = TRUE} (full join). It allows make complex tables from simple
 #' ones. See examples. Strange result is possible if one or two arguments have
 #' duplicates in first column (column with labels).
 #'
-#' @seealso \link{fre}, \link{cro}, \link{cro}, \link{cro_fun}, \link[base]{merge}
+#' @seealso \link{fre}, \link{cross_cpct}, \link{cross_fun}, \link[base]{merge}
 #'
-#' @param x data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}
-#' @param y data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}
+#' @param x data.frame or results of \code{fre}/\code{cross_*}/\code{table_*}
+#' @param y data.frame or results of \code{fre}/\code{cross_*}/\code{table_*}
 #'
 #' @return data.frame
 #' @name merge.etable

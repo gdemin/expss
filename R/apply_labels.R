@@ -31,7 +31,7 @@
 #' table(mtcars$vs, mtcars$am)
 #' 
 #' # more sofisticated crosstable
-#' calculate(mtcars, cro(vs, am))
+#' cross_cases(mtcars, vs, am)
 #' 
 apply_labels = function(data, ...){
     UseMethod("apply_labels")

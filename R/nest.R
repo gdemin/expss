@@ -30,22 +30,22 @@
 #'                       carb = "Number of carburetors"
 #' )
 #' 
-#' calc(mtcars, cro(cyl, am %nest% vs))
+#' cross_cases(mtcars, cyl, am %nest% vs)
 #' 
 #' # list of variables
-#' calc(mtcars, cro(cyl, am %nest% list(vs, cyl)))
+#' cross_cases(mtcars, cyl, am %nest% list(vs, cyl))
 #' 
 #' # list of variables - multiple banners/multiple nesting
-#' calc(mtcars, cro(cyl, list(total(), list(am, vs) %nest% cyl)))
+#' cross_cases(mtcars, cyl, list(total(), list(am, vs) %nest% cyl))
 #' 
 #' # three variables 
-#' calc(mtcars, cro(am %nest% vs %nest% carb, cyl))
+#' cross_cases(mtcars, am %nest% vs %nest% carb, cyl)
 #' 
 #' # the same with usual version
-#' calc(mtcars, cro(cyl, nest(am, vs)))
+#' cross_cases(mtcars, cyl, nest(am, vs))
 #' 
 #' # three variables 
-#' calc(mtcars, cro(nest(am, vs, carb), cyl))
+#' cross_cases(mtcars, nest(am, vs, carb), cyl)
 nest = function(...){
     arg = list(...)
     if (length(arg)<2) return(arg[[1]])

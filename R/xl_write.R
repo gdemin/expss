@@ -97,7 +97,7 @@
 #' )
 #' 
 #' # create table with caption
-#' mtcars_table = calc_cro_cpct(mtcars,
+#' mtcars_table = cross_cpct(mtcars,
 #'                              cell_vars = list(cyl, gear),
 #'                              col_vars = list(total(), am, vs)
 #' ) %>% 
@@ -132,7 +132,7 @@
 #' 
 #' ## automated report generation on multiple variables with the same banner
 #'  
-#' banner = calc(mtcars, list(total(), am, vs))
+#' banner = with(mtcars, list(total(), am, vs))
 #' 
 #' # create list of tables
 #' list_of_tables = lapply(mtcars, function(variable) {

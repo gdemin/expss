@@ -17,8 +17,7 @@ mtcars = apply_labels(mtcars,
 # with_empty = calculate(mtcars, table_cases(am, vs))
 # 
 # 
-# with_empty = with_empty %merge% with_empty
-# with_empty = with_empty %add_rows% with_empty
+
 
 with_empty = structure(list(row_labels = c("Transmission|Automatic", "Transmission|Manual", 
 "Transmission|Other", "Transmission|#Total cases", "Transmission|Automatic", 

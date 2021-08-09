@@ -661,14 +661,14 @@ if(isTRUE(getOption("covr"))){
   expect_known_value(cro_fun(list(mtcars$mpg), list(unvr(mtcars$am), total()), fun = sum)[, 1], 
                      "rds/fun_methods_1.rds",  update = FALSE)
   
-  duplicated_colnames = cro_mean(mtcars$mpg, list(mtcars$am, total())) %merge% 
-    cro_mean(mtcars$mpg, list(mtcars$am, total())) 
+  duplicated_colnames = merge(cro_mean(mtcars$mpg, list(mtcars$am, total())),
+    cro_mean(mtcars$mpg, list(mtcars$am, total()))) 
   expect_known_value(duplicated_colnames[,-2], 
                      "rds/cro_methods_2.rds",  update = FALSE)
   expect_known_value(duplicated_colnames[,seq_along(duplicated_colnames)[-2]], 
                      "rds/cro_methods_2.rds",  update = FALSE)
-  duplicated_colnames = cro(mtcars$vs, list(mtcars$am, total())) %merge% 
-    cro(mtcars$vs, list(mtcars$am, total())) 
+  duplicated_colnames = merge(cro(mtcars$vs, list(mtcars$am, total())), 
+    cro(mtcars$vs, list(mtcars$am, total()))) 
   expect_known_value(duplicated_colnames[,-2], 
                      "rds/cro_methods_3.rds",  update = FALSE)
   expect_known_value(duplicated_colnames[,seq_along(duplicated_colnames)[-2]], 

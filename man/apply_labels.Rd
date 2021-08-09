@@ -40,6 +40,6 @@ mtcars = apply_labels(mtcars,
 table(mtcars$vs, mtcars$am)
 
 # more sofisticated crosstable
-calculate(mtcars, cro(vs, am))
+cross_cases(mtcars, vs, am)
 
 }

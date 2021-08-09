@@ -181,7 +181,7 @@ count_if("apples", sheet1$a) # 2
 
 count_if("apples", sheet1) # 2
 
-calc(sheet1, count_if("apples", a, b)) # 2
+with(sheet1, count_if("apples", a, b)) # 2
 
 count_if(gt(55), sheet1$b) # greater than 55 = 2
 
@@ -217,16 +217,16 @@ sheet1 = text_to_columns(
 )
 
 # Sum of commision for property value greater than 160000
-calc(sheet1, sum_if(gt(160000), property_value, data = commission)) # 63000
+with(sheet1, sum_if(gt(160000), property_value, data = commission)) # 63000
     
 # Sum of property value greater than 160000
-calc(sheet1, sum_if(gt(160000), property_value)) # 900000
+with(sheet1, sum_if(gt(160000), property_value)) # 900000
 
 # Sum of commision for property value equals to 300000
-calc(sheet1, sum_if(300000, property_value, data = commission)) # 21000
+with(sheet1, sum_if(300000, property_value, data = commission)) # 21000
     
 # Sum of commision for property value greater than first value of data
-calc(sheet1, sum_if(gt(data[1]), property_value, data = commission)) # 49000
+with(sheet1, sum_if(gt(data[1]), property_value, data = commission)) # 49000
     
 sheet1 = text_to_columns(
        "
@@ -241,16 +241,16 @@ sheet1 = text_to_columns(
        )
 
 # Sum of sales for Fruits
-calc(sheet1, sum_if("Fruits", category, data = sales)) # 2000
+with(sheet1, sum_if("Fruits", category, data = sales)) # 2000
 
 # Sum of sales for Vegetables    
-calc(sheet1, sum_if("Vegetables", category, data = sales)) # 12000
+with(sheet1, sum_if("Vegetables", category, data = sales)) # 12000
 
 # Sum of sales for food which is ending on 'es' 
-calc(sheet1, sum_if(perl("es$"), food, data = sales)) # 4300
+with(sheet1, sum_if(perl("es$"), food, data = sales)) # 4300
 
 # Sum of sales for empty category
-calc(sheet1, sum_if(NA, category, data = sales))  # 400
+with(sheet1, sum_if(NA, category, data = sales))  # 400
 
 
 sheet1 = text_to_columns(
@@ -264,14 +264,14 @@ sheet1 = text_to_columns(
 )
 
 # Commision average for comission less than 23000
-calc(sheet1, mean_if(lt(23000), commission)) # 14000
+with(sheet1, mean_if(lt(23000), commission)) # 14000
 
 
 # Property value average for property value less than 95000
-calc(sheet1, mean_if(lt(95000), property_value)) #  NaN
+with(sheet1, mean_if(lt(95000), property_value)) #  NaN
 
 # Commision average for property value greater than 250000
-calc(sheet1, mean_if(gt(250000), property_value, data = commission)) # 24500
+with(sheet1, mean_if(gt(250000), property_value, data = commission)) # 24500
 
 
 sheet1 = text_to_columns(
@@ -288,11 +288,11 @@ sheet1 = text_to_columns(
 
 
 # Mean profits for 'west' regions
-calc(sheet1, mean_if(contains("West"), region, data = profits)) # 16733.5
+with(sheet1, mean_if(contains("West"), region, data = profits)) # 16733.5
 
 
 # Mean profits for regions wich doesn't contain New Office
-calc(sheet1, mean_if(not(contains("New Office")), region, data = profits))  # 18589
+with(sheet1, mean_if(not(contains("New Office")), region, data = profits))  # 18589
 
 
 sheet1 = text_to_columns(
@@ -308,11 +308,11 @@ sheet1 = text_to_columns(
 )
 
 # Minimum grade for weight equals to 1
-calc(sheet1, min_if(1, weight, data = grade)) # 88
+with(sheet1, min_if(1, weight, data = grade)) # 88
 
 
 # Maximum grade for weight equals to 1
-calc(sheet1, max_if(1, weight, data = grade)) #91
+with(sheet1, max_if(1, weight, data = grade)) #91
 
 
 # Example with offset
@@ -328,7 +328,7 @@ sheet1 = text_to_columns(
     "
 )
 
-calc(sheet1, min_if("a", grade[2:5], data = weight[1:4])) # 10
+with(sheet1, min_if("a", grade[2:5], data = weight[1:4])) # 10
 
 
 }

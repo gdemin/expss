@@ -13,7 +13,7 @@ get_caption(obj)
 is.with_caption(obj)
 }
 \arguments{
-\item{obj}{object of class \code{etable} - result of \code{cro_cpct} and etc.}
+\item{obj}{object of class \code{etable} - result of \code{cross_cpct} and etc.}
 
 \item{caption}{character caption for the table.}
 }
@@ -40,7 +40,7 @@ mtcars = apply_labels(mtcars,
                              1 Manual
                              ")
 )
-tbl_with_caption = calc_cro(mtcars, am, vs) \%>\% 
+tbl_with_caption = cross_cases(mtcars, am, vs) \%>\% 
     set_caption("Table 1. Type of transimission.")
     
 tbl_with_caption

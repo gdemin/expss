@@ -57,12 +57,10 @@ mtcars = apply_labels(mtcars,
                       carb = "Number of carburetors"
 )
 
-# prepend names and 'cro_cpct'
+# prepend names and 'cross_cpct'
 mtcars \%>\% 
        prepend_names \%>\% 
-       calculate(
-              cro_cpct(list(cyl, gear), list(total(), vs, am))
-           )
+       cross_cpct(list(cyl, gear), list(total(), vs, am))
      
 # prepend values to value labels                 
 mtcars \%>\% 

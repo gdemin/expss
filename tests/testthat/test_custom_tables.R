@@ -576,7 +576,7 @@ if(isTRUE(getOption("covr"))) {
     )
     
     # for code coverage
-    res = pr_t %calc% cro_cases(list(mrset(a1_1 %to% a1_6), a22),
+    res = pr_t %>% cross_cases(list(mrset(a1_1 %to% a1_6), a22),
                                 list(mrset(b1_1 %to% b1_6), b22),
                                 total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct",
                                                     "w_cases", "w_responses", "w_cpct", "w_rpct", "w_tpct")
@@ -587,7 +587,7 @@ if(isTRUE(getOption("covr"))) {
         "rds/ctable20_1.rds",  update = FALSE
     )
     
-    res = pr_t %calc% cro_cases(list(mrset(a1_1 %to% a1_6), a22),
+    res = pr_t %>% cross_cases(list(mrset(a1_1 %to% a1_6), a22),
                                 list(mrset(b1_1 %to% b1_6), b22),
                                 weight = 1,
                                 total_statistic = c("u_cases", "u_responses", "u_cpct", "u_rpct", "u_tpct")

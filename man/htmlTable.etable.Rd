@@ -207,11 +207,10 @@ mtcars \%>\%
      set_caption("Table 1. Some variables from mtcars dataset.")
      
 # several tables in a list
-mtcars \%>\% 
-    calc(list(
-        cro_cpct(list(am, vs, cyl), list(total(), am)) \%>\% set_caption("Table 1. Percent."),   
-        cro_mean_sd_n(list(mpg, hp, qsec), list(total(), am)) \%>\% set_caption("Table 2. Means.")
-    )) \%>\% 
+list(
+    cross_cpct(mtcars, list(am, vs, cyl), list(total(), am)) \%>\% set_caption("Table 1. Percent."),   
+    cross_mean_sd_n(mtcars, list(mpg, hp, qsec), list(total(), am)) \%>\% set_caption("Table 2. Means.")
+    ) \%>\% 
     htmlTable()
      
 expss_output_default()   

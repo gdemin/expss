@@ -47,10 +47,7 @@
 #' 
 #' fre(mtcars$am)
 #' 
-#' calculate(mtcars, 
-#'      cro_mean(list(mpg, disp, hp, qsec), list(total(), am))
-#'      ) 
-#' 
+#' cross_mean(mtcars, list(mpg, disp, hp, qsec), list(total(), am))
 #'  
 #' \dontrun{
 #' if(FALSE){ # to prevent execution

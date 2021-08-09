@@ -472,7 +472,7 @@ if(isTRUE(getOption("covr"))) {
         )))
     }
     
-    mtcars_table4 = mtcars %calc% cro_cpct(list(cyl, gear),
+    mtcars_table4 =  cross_cpct(mtcars, list(cyl, gear),
                                            list(total(), vs, am, vs %nest% am))
     
     

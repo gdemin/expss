@@ -1,7 +1,7 @@
 #' Create multiple response set/multiple dichotomy set from variables 
 #' 
 #' These functions are intended for usage with tables - \link{tables},
-#' \link{cro}, \link{cro_fun}. Result of \code{mrset} is considered as 
+#' \link{cross_cpct}, \link{cross_fun}. Result of \code{mrset} is considered as 
 #' muliple-response set with category encoding and result of \code{mdset} is 
 #' considered as multiple response set with dichotomy (dummy) encoding e. g. 
 #' with 0 or 1 in the each column. Each column in the \code{dichotomy} is 
@@ -27,16 +27,16 @@
 #' @examples
 #' data(product_test)
 #' 
-#' calc_cro_cpct(product_test, mrset(a1_1 %to% a1_6))
+#' cross_cpct(product_test, mrset(a1_1 %to% a1_6))
 #' 
 #' # same result
-#' calc_cro_cpct(product_test, mrset_f(a1_))
+#' cross_cpct(product_test, mrset_f(a1_))
 #' 
 #' # same result
-#' calc_cro_cpct(product_test, mrset_p("a1_"))
+#' cross_cpct(product_test, mrset_p("a1_"))
 #' 
 #' # same result
-#' calc_cro_cpct(product_test, mrset_t("a1_{1:6}"))
+#' cross_cpct(product_test, mrset_t("a1_{1:6}"))
 mrset = function(..., label = NULL){
     args = list(...)
     stopif(!length(args), "`mrset` - you should provide at least one argument.")

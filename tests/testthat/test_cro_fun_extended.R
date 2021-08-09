@@ -336,7 +336,7 @@ if(isTRUE(getOption("covr"))){
     )
     
     expect_equal_to_reference(
-        mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs)),
+        with(mtcars, cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs))),
         "rds/cro_mean_sd_n1.rds",  update = FALSE
     )
     
@@ -351,18 +351,11 @@ if(isTRUE(getOption("covr"))){
                                     labels = c("", "", "")))
     
     expect_equal_to_reference(
-        mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs), weight = 0.1,
+         cross_mean_sd_n(mtcars, list(mpg, disp, wt), list(total(), am, vs), weight = 0.1,
                                     weighted_valid_n = TRUE),
         "rds/cro_mean_sd_n2.rds",  update = FALSE
     )
     
-    expect_equal_to_reference(
-        mtcars %calc% cro_mean_sd_n(list(mpg, disp, wt), list(total(), am, vs), 
-                                    labels = c("m", "s", "n"),
-                                    weight = 0.1,
-                                    weighted_valid_n = TRUE),
-        "rds/cro_mean_sd_n3.rds",  update = FALSE
-    )
     
     expect_equal_to_reference(
         cross_mean_sd_n(mtcars, 

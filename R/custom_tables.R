@@ -66,7 +66,7 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #' gives to function each data.frame in cells as a whole 
 #' \link[data.table]{data.table} with all names converted to variable labels (if
 #' labels exists). So it is not recommended to rely on original variables names 
-#' in your \code{fun}. For details see \link{cro_fun}. You can provide several
+#' in your \code{fun}. For details see \link{cross_fun}. You can provide several
 #' functions as arguments. They will be combined as with
 #' \link{combine_functions}. So you can use \code{method} argument. For details
 #' see documentation for \link{combine_functions}. }
@@ -131,7 +131,7 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #'   \code{intermediate_table} except \code{tab_pivot} which returns final
 #'   result - object of class \code{etable}. Basically it's a data.frame but
 #'   class is needed for custom methods.
-#' @seealso \link{fre}, \link{cro}, \link{cro_fun}, \link{tab_sort_asc},
+#' @seealso \link{fre}, \link{cross_cases}, \link{cross_fun}, \link{tab_sort_asc},
 #'   \link{drop_empty_rows}, \link{significance}.
 #' @export
 #'
@@ -279,7 +279,7 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #'     tab_stat_cpct(label = "Col %") %>% 
 #'     tab_pivot(stat_label = "outside")
 #'     
-#' # example from 'cro_fun_df' - linear regression by groups with sorting 
+#' # example from 'cross_fun_df' - linear regression by groups with sorting 
 #' mtcars %>% 
 #'     tab_cells(sheet(mpg, disp, hp, wt, qsec)) %>% 
 #'     tab_cols(total(), am) %>% 

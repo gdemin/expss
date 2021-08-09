@@ -8,13 +8,13 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' 
 #' \itemize{
 #' \item{\code{significance_cpct}}{ conducts z-tests between column percent in
-#' the result of \link{cro_cpct}. Results are calculated with the same formula 
+#' the result of \link{cross_cpct}. Results are calculated with the same formula 
 #' as in \link[stats]{prop.test} without continuity correction.}
 #' \item{\code{significance_means}}{ conducts t-tests between column means in
-#' the result of \link{cro_mean_sd_n}. Results are calculated with the same formula 
+#' the result of \link{cross_mean_sd_n}. Results are calculated with the same formula 
 #' as in \link[stats]{t.test}.}
 #' \item{\code{significance_cases}}{ conducts chi-squared tests on the subtable of
-#' table with counts in the result of \link{cro_cases}. Results are calculated
+#' table with counts in the result of \link{cross_cases}. Results are calculated
 #' with the same formula as in \link[stats]{chisq.test}.}
 #' \item{\code{significance_cell_chisq}}{ compute cell chi-square test on table
 #' with column percent. The cell chi-square test looks at each table cell and
@@ -67,10 +67,10 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' last calculated table to specified number of digits. It is sometimes
 #' needed if you want to combine table with significance with table without it.}
 #' }
-#' @param x table (class \code{etable}): result of \link{cro_cpct} with 
+#' @param x table (class \code{etable}): result of \link{cross_cpct} with 
 #'   proportions and bases for \code{significance_cpct}, result of 
-#'   \link{cro_mean_sd_n} with means, standard deviations and valid N for 
-#'   \code{significance_means}, and result of \link{cro_cases} with counts and
+#'   \link{cross_mean_sd_n} with means, standard deviations and valid N for 
+#'   \code{significance_means}, and result of \link{cross_cases} with counts and
 #'   bases for \code{significance_cases}.
 #' @param sig_level numeric. Significance level - by default it equals to \code{0.05}.
 #' @param delta_cpct numeric. Minimal delta between percent for which we mark 
@@ -149,7 +149,7 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'   \code{etable} object. Other functions return \code{etable} object with
 #'   significant differences.
 #'   
-#' @seealso \link{cro_cpct}, \link{cro_cases}, \link{cro_mean_sd_n}, \link{tables},
+#' @seealso \link{cross_cpct}, \link{cross_cases}, \link{cross_mean_sd_n}, \link{tables},
 #'   \link{compare_proportions}, \link{compare_means}, \link[stats]{prop.test},
 #'   \link[stats]{t.test}, \link[stats]{chisq.test}
 #' @name significance
@@ -175,10 +175,10 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'                       carb = "Number of carburetors"
 #' )
 #' 
-#' mtcars_table = calculate(mtcars,
-#'                    cro_cpct(list(cyl, gear),
-#'                             list(total(), vs, am))
-#'                          )
+#' mtcars_table = cross_cpct(mtcars, 
+#'                           list(cyl, gear),
+#'                           list(total(), vs, am)
+#'                           )
 #' 
 #' significance_cpct(mtcars_table)
 #' \dontrun{
@@ -193,10 +193,10 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' significance_cpct(mtcars_table, keep = "none")
 #' 
 #' # means
-#' mtcars_means = calculate(mtcars,
-#'                    cro_mean_sd_n(list(mpg, wt, hp),
-#'                                  list(total(), vs, cyl))
-#'                         )
+#' mtcars_means = cross_mean_sd_n(mtcars, 
+#'                                list(mpg, wt, hp),
+#'                                list(total(), vs, cyl))
+#'                                )
 #'                         
 #' significance_means(mtcars_means) 
 #' 
@@ -204,10 +204,10 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' significance_means(mtcars_means, subtable_marks = "both")
 #' 
 #' # chi-squared test
-#' mtcars_cases = calculate(mtcars,
-#'                    cro_cases(list(cyl, gear),
-#'                             list(total(), vs, am))
-#'                          )
+#' mtcars_cases = cross_cases(mtcars, 
+#'                            list(cyl, gear),
+#'                            list(total(), vs, am)
+#'                            )
 #'                          
 #' significance_cases(mtcars_cases)  
 #' 
@@ -215,11 +215,11 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' # increase number of cases to avoid warning about chi-square approximation
 #' mtcars2 = add_rows(mtcars, mtcars, mtcars)
 #'
-#' tbl = calc_cro_cpct(mtcars2, gear, am)
+#' tbl = cross_cpct(mtcars2, gear, am)
 #' significance_cell_chisq(tbl)
 #' 
 #' # table with multiple variables
-#' tbl = calc_cro_cpct(mtcars2, list(gear, cyl), list(total(), am, vs))
+#' tbl = cross_cpct(mtcars2, list(gear, cyl), list(total(), am, vs))
 #' significance_cell_chisq(tbl, sig_level = .0001)  
 #' 
 #' # custom tables with significance

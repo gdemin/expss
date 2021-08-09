@@ -3,7 +3,7 @@
 #' To drop caption use \code{set_caption} with \code{caption = NULL}. Captions
 #' are supported by \link{htmlTable.etable}, \link{xl_write} and
 #' \link{as.datatable_widget} functions.
-#' @param obj object of class \code{etable} - result of \code{cro_cpct} and etc.
+#' @param obj object of class \code{etable} - result of \code{cross_cpct} and etc.
 #' @param caption character caption for the table.
 #'
 #' @return object of class \code{with_caption}.
@@ -22,7 +22,7 @@
 #'                              1 Manual
 #'                              ")
 #' )
-#' tbl_with_caption = calc_cro(mtcars, am, vs) %>% 
+#' tbl_with_caption = cross_cases(mtcars, am, vs) %>% 
 #'     set_caption("Table 1. Type of transimission.")
 #'     
 #' tbl_with_caption

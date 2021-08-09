@@ -20,9 +20,9 @@
 )
 }
 \arguments{
-\item{x}{data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}}
+\item{x}{data.frame or results of \code{fre}/\code{cross_*}/\code{table_*}}
 
-\item{y}{data.frame or results of \code{fre}/\code{cro_*}/\code{table_*}}
+\item{y}{data.frame or results of \code{fre}/\code{cross_*}/\code{table_*}}
 }
 \value{
 data.frame
@@ -30,7 +30,7 @@ data.frame
 \description{
 \code{\%merge\%} is infix shortcut for base \link[base]{merge} with 
 \code{all.x = TRUE} and  \code{all.y = FALSE} (left join). There is also 
-special method for combining results of \code{cro_*} and \code{fre}. For them
+special method for combining results of \code{cross_*} and \code{fre}. For them
 \code{all = TRUE} (full join). It allows make complex tables from simple
 ones. See examples. Strange result is possible if one or two arguments have
 duplicates in first column (column with labels).
@@ -72,5 +72,5 @@ percents = cross_cpct(mtcars, list(vs, am, gear, carb), list("Column, \%"))
 counts \%>\% merge(percents)
 }
 \seealso{
-\link{fre}, \link{cro}, \link{cro}, \link{cro_fun}, \link[base]{merge}
+\link{fre}, \link{cross_cpct}, \link{cross_fun}, \link[base]{merge}
 }

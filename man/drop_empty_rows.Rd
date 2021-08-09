@@ -37,8 +37,8 @@ is first column - column with labels in table.}
 data.frame with removed rows/columns
 }
 \description{
-By default tables produced by functions \link{tables}, \link{cro}, 
-\link{cro_fun} and \link{cro_fun_df} are created with all 
+By default tables produced by functions \link{tables}, \link{cross_cpct}, 
+\link{cross_fun} and \link{cross_fun_df} are created with all 
 possible value labels. If values for this labels are absent in variable there 
 are NA's in rows and columns. 
 \code{drop_empty_rows}/\code{drop_empty_columns} are intended to remove 
@@ -62,7 +62,7 @@ mtcars = apply_labels(mtcars,
                      9 Other
                      ")
          )
-with_empty = calculate(mtcars, cro(am, vs))
+with_empty = cross_cases(mtcars, am, vs)
 
 drop_empty_rows(with_empty)
 drop_empty_columns(with_empty)

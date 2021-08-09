@@ -68,16 +68,16 @@ if(FALSE){ # isTRUE(getOption("covr"))
                             "rds/as_hux12single2.rds",  update = TRUE)
   
   new_am = mtcars$am
-  mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total")) %merge%
-    cro_cpct(list(mtcars$vs %nest% mtcars$am), list(new_am, "#Total"))
+  mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total"))  %>% 
+    merge(cro_cpct(list(mtcars$vs %nest% mtcars$am), list(new_am, "#Total")))
   
   expect_equal_to_reference(as_hux(mtcars_table) ,
                             "rds/as_hux13.rds",  update = TRUE)
 
   var_lab(new_am) = "|"
   val_lab(new_am) = setNames(0:1, c("", " "))
-  mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total")) %merge%
-    cro_cpct(list(mtcars$vs %nest% mtcars$am), list(new_am, "#Total"))
+  mtcars_table = cro_cpct(list(mtcars$vs %nest% mtcars$am), list(mtcars$vs %nest% mtcars$am, "#Total"))  %>% 
+    merge(cro_cpct(list(mtcars$vs %nest% mtcars$am), list(new_am, "#Total")))
   colnames(mtcars_table)[7] = ""
   # FIXME
   # expect_equal_to_reference(as_hux(mtcars_table) ,

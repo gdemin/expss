@@ -92,7 +92,7 @@ mtcars = apply_labels(mtcars,
 
 # all row labels in the first column
 tabl = mtcars \%>\% 
-       calculate(cro_cpct(list(cyl, gear, carb), list(total(), vs, am)))
+       cross_cpct(list(cyl, gear, carb), list(total(), vs, am))
 
 tabl # without subheadings
 

@@ -57,18 +57,18 @@ mtcars = apply_labels(mtcars,
 )
 
 # without sorting
-mtcars \%>\% calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am)))
+mtcars \%>\% cross_cpct(list(cyl, gear, carb), list("#total", vs, am))
 
 # with sorting
 mtcars \%>\% 
-    calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am))) \%>\% 
+    cross_cpct(list(cyl, gear, carb), list("#total", vs, am)) \%>\% 
     tab_sort_desc
     
 # sort by parameter
 sorting_column = "Engine|V-engine"
 
 mtcars \%>\% 
-    calculate(cro_cpct(list(cyl, gear, carb), list("#total", vs, am))) \%>\% 
+    cross_cpct(list(cyl, gear, carb), list("#total", vs, am)) \%>\% 
     tab_sort_desc((sorting_column))
     
 }

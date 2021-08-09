@@ -165,7 +165,7 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    mtcars[FALSE,] %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[FALSE,] %>% cross_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = list(total(1), am), 
                                            fun = colMeans
     )
@@ -173,12 +173,12 @@ expect_equal_to_reference(
 )
 
 expect_identical(
-    mtcars[FALSE,] %$% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[FALSE,] %>% cross_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = list(total(1), am), 
                                            fun = colMeans
     )
     ,
-    mtcars %$% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars %>% cross_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = list(total(1), am), 
                                            fun = colMeans,
                              subgroup = FALSE
@@ -186,11 +186,11 @@ expect_identical(
 )
 
 expect_identical(
-    mtcars[FALSE,] %$% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[FALSE,] %>% cross_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = am, 
                                            fun = colMeans
     )
-    ,    mtcars %$% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    ,    mtcars %>% cross_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                                 col_vars = am, 
                                                 fun = colMeans,
                                   subgroup = FALSE
@@ -200,11 +200,11 @@ expect_identical(
 
 
 expect_identical(
-    mtcars[mtcars$cyl == 6,] %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars[mtcars$cyl == 6,] %>% cross_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                            col_vars = am, 
                                            fun = colMeans
     ),
-    mtcars %calc% cro_fun_df(vars(!fixed("vs") & !fixed("am")), 
+    mtcars %>% cross_fun_df(vars(!fixed("vs") & !fixed("am")), 
                                   col_vars = am, 
                                   fun = colMeans,
                                   subgroup = cyl==6
@@ -306,13 +306,13 @@ expect_equal_to_reference(
 )
 
 expect_equal_to_reference(
-    mtcars[FALSE,] %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars[FALSE,] %>% cross_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds",  update = FALSE
 )
 
 
 expect_equal_to_reference(
-    mtcars[FALSE,] %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars[FALSE,] %>% cross_pearson(vars(!perl("vs|am")), col_vars = am)
     ,"rds/table_cor_1a.rds",  update = FALSE
 )
 
@@ -327,34 +327,34 @@ expect_equal_to_reference(
 )
 
 expect_identical(
-    mtcars[FALSE,] %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars[FALSE,] %>% cross_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
+    mtcars %>% cross_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars[FALSE,] %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars[FALSE,] %>% cross_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
+    mtcars %>% cross_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = FALSE)
 )
 
 expect_identical(
-    mtcars[mtcars$cyl == 8,] %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am)
+    mtcars[mtcars$cyl == 8,] %>% cross_pearson(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
+    mtcars %>% cross_pearson(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )
 
 
 expect_identical(
-    mtcars[mtcars$cyl > 4,]  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
+    mtcars[mtcars$cyl > 4,] %>% cross_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl)
     ,
-    mtcars  %calc% cro_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl, subgroup = (cyl > 4))
+    mtcars %>% cross_pearson(vars(!perl("vs|am")), col_vars = am, row_vars = cyl, subgroup = (cyl > 4))
 )
 
 expect_identical(
-    mtcars[mtcars$cyl == 8,] %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am)
+    mtcars[mtcars$cyl == 8,] %>% cross_spearman(vars(!perl("vs|am")), col_vars = am)
     ,
-    mtcars  %calc% cro_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
+    mtcars %>% cross_spearman(vars(!perl("vs|am")), col_vars = am, subgroup = (cyl == 8))
 )
 
 set.seed(1)
