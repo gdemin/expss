@@ -1,3 +1,7 @@
+0.10.10 (30.11.2020)
+================
+* 'apply_labels' now can accept list with variable and value labels
+
 0.10.7 (15.11.2020)
 ================
 * fix compatibility with SPSS in 'w_median' function (issue #72)
