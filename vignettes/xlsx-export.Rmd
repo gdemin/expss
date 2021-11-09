@@ -39,7 +39,7 @@ mtcars = apply_labels(mtcars,
 )
 
 mtcars_table = mtcars %>% 
-    calc_cro_cpct(
+    cross_cpct(
         cell_vars = list(cyl, gear),
         col_vars = list(total(), am, vs)
     ) %>% 
@@ -68,7 +68,7 @@ Screenshot of the exported table:
 
 First of all, we create banner which we will use for all our tables. 
 ```{r}
-banner = calc(mtcars, list(total(), am, vs))
+banner = with(mtcars, list(total(), am, vs))
 ```
 Then we generate list with all tables. If variables have small number of discrete values we create column percent table. In other cases we calculate table with means. For both types of tables we mark significant differencies between groups.
 ```{r}
