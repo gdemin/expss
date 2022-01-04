@@ -1,5 +1,7 @@
 0.10.10 (30.11.2020)
 ================
+* add 'weight_by' - function for "brute force" frequency weighting
+* 'read_spss' now exposes 'use_missings' argument from foreign::read.spss
 * 'apply_labels' now can accept list with variable and value labels
 
 0.10.7 (15.11.2020)
