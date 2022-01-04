@@ -92,10 +92,10 @@ correlation matrix of a numeric matrix/data.frame}}
 \details{
 If argument of correlation functions is data.frame with variable labels then
 variables names will be replaced with labels. If this is undesirable behavior
-use \link{unvr} function: \code{w_cor(unvr(x))}. Weighted spearman
-correlation coefficients are calculated with rounded to nearest integer
-weights. It gives the same result as in SPSS Statistics software. By now this
-algorithm is not memory efficient.
+use \link{drop_var_labs} function: \code{w_cor(drop_var_labs(x))}. Weighted
+Spearman correlation coefficients are calculated with weights rounded to nearest
+integer. It gives the same result as in SPSS Statistics software. By
+now this algorithm is not memory efficient.
 }
 \examples{
 data(mtcars)
@@ -127,5 +127,5 @@ mtcars = mtcars \%>\%
 w_cor(dfs, weight = 1/dfs$wt)
 
 # without labels
-w_cor(unvr(dfs), weight = 1/dfs$wt)
+w_cor(drop_var_labs(dfs), weight = 1/dfs$wt)
 }

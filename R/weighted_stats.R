@@ -19,11 +19,11 @@
 #' @details
 #' If argument of correlation functions is data.frame with variable labels then
 #' variables names will be replaced with labels. If this is undesirable behavior
-#' use \link{unvr} function: \code{w_cor(unvr(x))}. Weighted spearman
-#' correlation coefficients are calculated with rounded to nearest integer
-#' weights. It gives the same result as in SPSS Statistics software. By now this
-#' algorithm is not memory efficient.
-#'
+#' use \link{drop_var_labs} function: \code{w_cor(drop_var_labs(x))}. Weighted
+#' Spearman correlation coefficients are calculated with weights rounded to nearest
+#' integer. It gives the same result as in SPSS Statistics software. By
+#' now this algorithm is not memory efficient.
+#' 
 #' @param x a numeric vector (matrix/data.frame for correlations) containing the
 #'   values whose weighted statistics is to be computed.
 #' @param weight a vector of weights to use for each element of x. Cases with
@@ -70,7 +70,7 @@
 #' w_cor(dfs, weight = 1/dfs$wt)
 #'
 #' # without labels
-#' w_cor(unvr(dfs), weight = 1/dfs$wt)
+#' w_cor(drop_var_labs(dfs), weight = 1/dfs$wt)
 w_mean = function(x, weight = NULL, na.rm = TRUE){
     internal_w_stat(x = x,  weight = weight, na.rm = na.rm, fun = matrixStats::weightedMean)
 }
@@ -207,21 +207,22 @@ w_cov = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.ob
     if (is.data.frame(x)) {
         x = as.matrix(names2labels(x))
     } else {
-        stopif(!is.matrix(x), "'x' must be a matrix or a data frame")
+        is.matrix(x) || stop("'x' must be a matrix or a data frame")
     }
     if(NROW(x)==0){
         return(matrix_of_na(x))
     }
     use = match.arg(use)
     if(!is.null(weight)){
-        if(is.logical(weight)) weight = as.numeric(weight)
         if(length(weight) == 1L){
-            weight = rep(weight, nrow(x))
+            weight = rep(weight, NROW(x))
         }
-        stopif(length(weight) != nrow(x), "length of 'weight' must equal the number of rows in 'x'")
-        positive_weight = (!is.na(weight)) & (weight>0)
-        x = x[positive_weight, , drop = FALSE]
-        weight = weight[positive_weight]
+        (length(weight) == NROW(x)) || stop(
+            "length of 'weight' must equal to the length of 'x' but NROW(x) == ", NROW(x),
+            " and length(weight) == ", length(weight))
+        weight = set_negative_and_na_to_zero(weight)
+        x = x[weight>0, , drop = FALSE]
+        weight = weight[weight>0]
         if(anyNA(x)){
             if(use == "complete.obs"){
                 completes = stats::complete.cases(x)
@@ -238,18 +239,18 @@ w_cov = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.ob
                         curr_cov = internal_w_cov(two_col[complete_pair,], weight = weight[complete_pair])[1,2]
                         res[i,j] = curr_cov
                         if(i!=j){
-                             res[j,i] = curr_cov
+                            res[j,i] = curr_cov
                         }
                     }
                 }
                 colnames(res) = colnames(x)
                 rownames(res) = colnames(x)
                 res
-           }
+            }
         } else {
             internal_w_cov(x = x, weight = weight)
         }
-
+        
     } else {
         suppressWarnings(stats::cov(x = x, use = use, method = "pearson"))
     }
@@ -262,16 +263,21 @@ w_cor = function(x, weight = NULL, use = c("pairwise.complete.obs", "complete.ob
     if (is.data.frame(x)) {
         x = as.matrix(names2labels(x))
     } else {
-        stopif(!is.matrix(x), "'x' must be a matrix or a data frame")
+        is.matrix(x) || stop("'x' must be a matrix or a data frame")
     }
     if(NROW(x)==0){
         return(matrix_of_na(x))
     }
     if(!is.null(weight)){
-        if(is.logical(weight)) weight = as.numeric(weight)
         if(length(weight) == 1L){
-            weight = rep(weight, nrow(x))
+            weight = rep(weight, NROW(x))
         }
+        (length(weight) == NROW(x)) || stop(
+            "length of 'weight' must equal to the length of 'x' but NROW(x) == ", NROW(x),
+            " and length(weight) == ", length(weight))
+        weight = set_negative_and_na_to_zero(weight)
+        x = x[weight>0, , drop = FALSE]
+        weight = weight[weight>0]
         cov_mat = w_cov(x = x, weight = weight, use = use)
         if((use == "complete.obs") || !anyNA(x)){
             if(!all(is.na(cov_mat))) {
@@ -308,19 +314,22 @@ w_spearman = function(x, weight = NULL, use = c("pairwise.complete.obs", "comple
     if (is.data.frame(x)) {
         x = as.matrix(names2labels(x))
     } else {
-        stopif(!is.matrix(x), "'x' must be a matrix or a data frame")
+        is.matrix(x) || stop("'x' must be a matrix or a data frame")
     }
     if(NROW(x)==0){
         return(matrix_of_na(x))
     }
     if(!is.null(weight)){
-        if(is.logical(weight)) weight = as.numeric(weight)
         if(length(weight) == 1L){
-            weight = rep(weight, nrow(x))
+            weight = rep(weight, NROW(x))
         }
-        posititive_weight =  (!is.na(weight)) & (weight>0)
-        x = x[posititive_weight, , drop = FALSE]
-        weight = trunc(weight[posititive_weight]+0.5)
+        (length(weight) == NROW(x)) || stop(
+            "length of 'weight' must equal to the length of 'x' but NROW(x) == ", NROW(x),
+            " and length(weight) == ", length(weight))
+        weight = set_negative_and_na_to_zero(weight)
+        x = x[weight>0, , drop = FALSE]
+        weight = weight[weight>0]
+        weight = trunc(weight+0.5)
         if(sum(weight)<1){
             # warning("Sum of weights is less than one. NA will be returned.")
             res = matrix_of_na(x)
@@ -336,9 +345,6 @@ w_spearman = function(x, weight = NULL, use = c("pairwise.complete.obs", "comple
 }
 
 internal_pairwise_sd = function(x, weight){
-    positive_weight = (!is.na(weight)) & (weight>0)
-    x = x[positive_weight, , drop = FALSE]
-    weight = weight[positive_weight]
     seq_ncol_x = seq_len(ncol(x))
     res = matrix(NA, ncol = ncol(x), nrow = ncol(x))
     for(i in seq_ncol_x){
@@ -380,21 +386,19 @@ matrix_of_na = function(x){
 }
 
 internal_w_stat = function(x, weight, na.rm, check_weight_sum = FALSE, fun){
-    stopif(NCOL(x)>1, "'x' should be vector or single column matrix.")
+    (NCOL(x) == 1) || stop("'x' should be vector or single column object.")
     if(is.data.frame(x)) x = x[[1]]
     if(is.logical(x)) x = as.numeric(x)
     if(!is.null(weight)){
-        if(is.logical(weight)) weight = as.numeric(weight)
         if(length(weight) == 1L){
-            weight = rep(weight, length(x))
+            weight = rep(weight, NROW(x))
         }
-        (length(weight) == length(x)) || stop(
-               "length of 'weight' must equal to the length of 'x' but length(x) == ", length(x),
-               " and length(weight) == ", length(weight))
-
-        positive_weight = (!is.na(weight)) & (weight>0)
-        x = x[positive_weight]
-        weight = weight[positive_weight]
+        (length(weight) == NROW(x)) || stop(
+            "length of 'weight' must equal to the length of 'x' but NROW(x) == ", NROW(x),
+            " and length(weight) == ", length(weight))
+        weight = set_negative_and_na_to_zero(weight)
+        x = x[weight>0]
+        weight = weight[weight>0]
         if(check_weight_sum && (sum(weight[!is.na(x)])<1)) {
             # warning("Sum of weights is less than one. NA will be returned.")
             return(NA_real_) # for data.table - it cannot combine logical and numeric in single column

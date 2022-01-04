@@ -108,6 +108,7 @@ add_first_symbol_to_total_label = function(total_label, symbol = "#"){
 
 #######
 set_negative_and_na_to_zero = function(x){
+    if(is.logical(x)) x = as.numeric(x)
     x[is.na(x) | (x<0)] = 0
     x
 }
