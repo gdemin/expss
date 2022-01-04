@@ -11,7 +11,9 @@
 #' @param reencode logical: should character strings be re-encoded to the current locale.
 #'   The default is TRUE. NA means to do so in a UTF-8 locale, only. Alternatively, a
 #'   character string specifying an encoding to assume for the file.
-#' 
+#' @param use_missings logical: should information on user-defined missing
+#'   values be used to set the corresponding values to NA?
+#' @param ... further parameters for \link[foreign]{read.spss}
 #' @return 
 #' \code{read_spss} returns data.frame. 
 #' 
@@ -25,8 +27,8 @@
 #' w = read_spss("project_123.sav") # to data.frame
 #' 
 #' }
-read_spss=function(file, reencode = TRUE){
-    res = read_spss_to_list(file, reencode = reencode)
+read_spss=function(file, reencode = TRUE, use_missings = FALSE, ...){
+    res = read_spss_to_list(file, reencode = reencode, use_missings = use_missings, ...)
     res = data.frame(res, stringsAsFactors=FALSE, check.names = FALSE)
     res
 }
@@ -34,11 +36,13 @@ read_spss=function(file, reencode = TRUE){
 
 
 #' @rdname read_spss
-read_spss_to_list=function(file, reencode = TRUE){
+read_spss_to_list=function(file, reencode = TRUE, use_missings = FALSE, ...){
     if(is.character(file)){
         file = gsub("^file\\:///", "", file, perl = TRUE)
     }
-    spss = foreign::read.spss(enc2native(file), use.value.labels=FALSE, to.data.frame=FALSE, reencode = reencode, use.missings = FALSE)
+    spss = foreign::read.spss(enc2native(file), 
+                              use.value.labels=FALSE, 
+                              to.data.frame=FALSE, reencode = reencode, use.missings = use_missings, ...)
     var_names = names(spss)
     var_labs = attr(spss,'variable.labels')
     attr(spss,'label.table') = NULL
@@ -58,13 +62,16 @@ read_spss_to_list=function(file, reencode = TRUE){
             spss[[var_name]][spss[[var_name]] %in% ""] = NA
         }    
         val_labs = attr(spss[[var_name]],"value.labels")
-        if (length(val_labs)>0) {
+        if (!is.null(val_labs)) {
             attr(spss[[var_name]],"value.labels") = NULL
-            if (is.character(val_labs)){
-                temp = utils::type.convert(val_labs, numerals = "no.loss", as.is = TRUE)
-                val_labs = setNames(temp, names(val_labs))
+
+            if(length(val_labs)>0) {
+                if (is.character(val_labs)){
+                    temp = utils::type.convert(val_labs, numerals = "no.loss", as.is = TRUE)
+                    val_labs = setNames(temp, names(val_labs))
+                }
+                val_lab(spss[[var_name]]) = val_labs
             }
-            val_lab(spss[[var_name]]) = val_labs
             
         }	
     }

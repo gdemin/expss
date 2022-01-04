@@ -14,6 +14,12 @@ if(isTRUE(getOption("covr"))){
             expect_known_value(nsk, "rds/nsk_R3.4.rds",  update = FALSE)
             expect_known_value(nsk2, "rds/nsk_R3.4.rds",  update = FALSE)        
         }
+        missings = suppressWarnings(read_spss("data_files/missings.sav", use_missings = TRUE))
+        expect_identical(unlab(missings$q1), c(NA, NA, 3))
+        expect_identical(unlab(missings$q2), c(4, NA, NA))
+        missings = suppressWarnings(read_spss("data_files/missings.sav", use_missings = FALSE))
+        expect_identical(unlab(missings$q1), c(1, 2, 3))
+        expect_identical(unlab(missings$q2), c(4, 5, 6))
         aaa2 = cbind(aaa, empty = NA, fac = factor("a"), fractional = 1.2345)
         write_labelled_spss(aaa2, "data_files/prelaunch.csv")
         dat = readLines("data_files/prelaunch.csv")
