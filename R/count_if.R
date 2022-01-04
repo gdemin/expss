@@ -272,18 +272,19 @@ count_col_if=function(criterion,...){
 }
 
 
-
-
 #' @export
 #' @rdname count_if
-'%row_in%'=function(x, criterion){
+has = function(x, criterion){
     cond = build_condition_matrix(criterion, x)
     matrixStats::rowAnys(cond)
 }
 
 #' @export
 #' @rdname count_if
-'%has%' = `%row_in%`
+'%row_in%'= has
+#' @export
+#' @rdname count_if
+'%has%' = has
 
 #' @export
 #' @rdname count_if

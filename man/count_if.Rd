@@ -4,6 +4,7 @@
 \alias{count_if}
 \alias{count_row_if}
 \alias{count_col_if}
+\alias{has}
 \alias{\%row_in\%}
 \alias{\%has\%}
 \alias{\%col_in\%}
@@ -34,6 +35,8 @@ count_if(criterion, ...)
 count_row_if(criterion, ...)
 
 count_col_if(criterion, ...)
+
+has(x, criterion)
 
 x \%row_in\% criterion
 
