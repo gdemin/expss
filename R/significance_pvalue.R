@@ -53,7 +53,7 @@
 #' # means
 #' t.test(mpg ~ am, data = mtcars)$p.value 
 #' # the same result
-#' calculate(mtcars, 
+#' with(mtcars, 
 #'           compare_means(
 #'               mean(mpg[am==0]), mean(mpg[am==1]), 
 #'               sd(mpg[am==0]),  sd(mpg[am==1]),

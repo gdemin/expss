@@ -5684,6 +5684,7679 @@ spss_data = haven::read_spss(&quot;spss_file.sav&quot;)
 spss_data = add_labelled_class(spss_data) </code></pre>
 </div>
 </div>
+<div id="more-table-examples" class="section level2">
+<h2>More table examples</h2>
+<p>First, we apply labels on the well-known <code>mtcars</code> dataset:</p>
+<pre class="r"><code>library(expss)
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = &quot;Miles/(US) gallon&quot;,
+                      cyl = &quot;Number of cylinders&quot;,
+                      disp = &quot;Displacement (cu.in.)&quot;,
+                      hp = &quot;Gross horsepower&quot;,
+                      drat = &quot;Rear axle ratio&quot;,
+                      wt = &quot;Weight (1000 lbs)&quot;,
+                      qsec = &quot;1/4 mile time&quot;,
+                      vs = &quot;Engine&quot;,
+                      vs = c(&quot;V-engine&quot; = 0,
+                             &quot;Straight engine&quot; = 1),
+                      am = &quot;Transmission&quot;,
+                      am = c(&quot;Automatic&quot; = 0,
+                             &quot;Manual&quot;=1),
+                      gear = &quot;Number of forward gears&quot;,
+                      carb = &quot;Number of carburetors&quot;
+)</code></pre>
+<p>Table construction consists of at least of three functions chained with magrittr pipe operator: <code>%&gt;%</code>. At first we need to specify variables for which statistics will be computed with <code>tab_cells</code>. Secondary, we calculate statistics with one of <code>tab_stat_*</code> functions. And last, we finalize table creation with <code>tab_pivot</code>: <code>dataset %&gt;% tab_cells(variable) %&gt;% tab_stat_cases() %&gt;% tab_pivot()</code>. We can split our statistics by columns with <code>tab_cols</code> or by rows with <code>tab_rows</code>. After that we can sort table with <code>tab_sort_asc</code>, drop empty rows/columns with <code>drop_rc</code> and transpose with <code>tab_transpose</code>. Generally, resulting table is just a data.frame so we can use arbitrary operations on it. Statistic is always calculated on the last cells, column/row variables, weight, missing values and subgroup. To define new cell/column/row variables we can call appropriate function one more time. <code>tab_pivot</code> defines how we combine different statistics and where statistic labels will appear - inside/outside rows/columns.</p>
+<div id="simple-column-percent" class="section level3">
+<h3>Simple column percent</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(vs) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Simple column percent&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="3" style="text-align: left;">
+Simple column percent
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="3" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+5.6
+</td>
+<td style="text-align: right;">
+71.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;">
+28.6
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+77.8
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+18
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="split-by-columns-and-rows" class="section level3">
+<h3>Split by columns and rows</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(vs) %&gt;% 
+    tab_rows(am) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Split by columns and rows&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Split by columns and rows
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="2" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Transmission 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Automatic 
+</td>
+<td style="text-align: left;">
+ Number of cylinders 
+</td>
+<td style="text-align: left;">
+ 4 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+42.9
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 6 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+57.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 8 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100.0
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ #Total cases 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+12
+</td>
+<td style="text-align: right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Manual 
+</td>
+<td style="text-align: left;">
+ Number of cylinders 
+</td>
+<td style="text-align: left;">
+ 4 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;">
+100.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 6 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50.0
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 8 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+33.3
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+7
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multiple-banners-table-is-sorted-by-total" class="section level3">
+<h3>Multiple banners, table is sorted by total</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(total(), vs, am) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_sort_desc() %&gt;% 
+    tab_caption(&quot;Multiple banners, table is sorted by total&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="8" style="text-align: left;">
+Multiple banners, table is sorted by total
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="8" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+43.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+77.8
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;">
+15.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+34.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+5.6
+</td>
+<td style="text-align: right;">
+71.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;">
+61.5
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;">
+28.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1
+</td>
+<td style="text-align: right;">
+23.1
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+18
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+14
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="nested-banners" class="section level3">
+<h3>Nested banners</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(total(), vs %nest% am) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Nested banners&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="8" style="text-align: left;">
+Nested banners
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="8" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+34.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42.9
+</td>
+<td style="text-align: right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+50.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+57.1
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+43.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;">
+33.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+12
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+7
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+7
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multiple-nested-banners" class="section level3">
+<h3>Multiple nested banners</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(carb) %&gt;% 
+    tab_cols(total(), list(cyl, vs) %nest% am) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Multiple nested banners&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="17" style="text-align: left;">
+Multiple nested banners
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="8" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Number of cylinders 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 4 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 6 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 8 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="17" style="font-weight: 900;">
+ Number of carburetors 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   1 
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+33.3
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42.9
+</td>
+<td style="text-align: right;">
+57.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   2 
+</td>
+<td style="text-align: right;">
+31.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+66.7
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+33.3
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+33.3
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+28.6
+</td>
+<td style="text-align: right;">
+42.9
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   3 
+</td>
+<td style="text-align: right;">
+9.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+25.0
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+25.0
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+31.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+66.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+41.7
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+41.7
+</td>
+<td style="text-align: right;">
+50.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+28.6
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+3.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+33.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+3.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+3
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+8
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+4
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+3
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+12
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+2
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+12
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+7
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+7
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multiple-variable-and-multiple-summary-statistics" class="section level3">
+<h3>Multiple variable and multiple summary statistics</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(mpg, disp, hp, wt, qsec) %&gt;%
+    tab_cols(total(), am) %&gt;% 
+    tab_stat_fun(Mean = w_mean, &quot;Std. dev.&quot; = w_sd, &quot;Valid N&quot; = w_n) %&gt;%
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Multiple variable and multiple summary statistics&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="5" style="text-align: left;">
+Multiple variable and multiple summary statistics
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Miles/(US) gallon 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+20.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+17.1
+</td>
+<td style="text-align: right;">
+24.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+6.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.8
+</td>
+<td style="text-align: right;">
+6.2
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Valid N 
+</td>
+<td style="text-align: right;">
+32.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0
+</td>
+<td style="text-align: right;">
+13.0
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Displacement (cu.in.) 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+230.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+290.4
+</td>
+<td style="text-align: right;">
+143.5
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+123.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+110.2
+</td>
+<td style="text-align: right;">
+87.2
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Valid N 
+</td>
+<td style="text-align: right;">
+32.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0
+</td>
+<td style="text-align: right;">
+13.0
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Gross horsepower 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+146.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+160.3
+</td>
+<td style="text-align: right;">
+126.8
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+68.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+53.9
+</td>
+<td style="text-align: right;">
+84.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Valid N 
+</td>
+<td style="text-align: right;">
+32.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0
+</td>
+<td style="text-align: right;">
+13.0
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Weight (1000 lbs) 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+3.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.8
+</td>
+<td style="text-align: right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+1.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.8
+</td>
+<td style="text-align: right;">
+0.6
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Valid N 
+</td>
+<td style="text-align: right;">
+32.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0
+</td>
+<td style="text-align: right;">
+13.0
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ 1/4 mile time 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+17.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+18.2
+</td>
+<td style="text-align: right;">
+17.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+1.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1.8
+</td>
+<td style="text-align: right;">
+1.8
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Valid N 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32.0
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.0
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13.0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multiple-variable-and-multiple-summary-statistics---statistic-lables-in-columns" class="section level3">
+<h3>Multiple variable and multiple summary statistics - statistic lables in columns</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(mpg, disp, hp, wt, qsec) %&gt;%
+    tab_cols(total(), am) %&gt;% 
+    tab_stat_fun(Mean = w_mean, &quot;Valid N&quot; = w_n, method = list) %&gt;%
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Multiple variable and multiple summary statistics - statistic lables in columns&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="10" style="text-align: left;">
+Multiple variable and multiple summary statistics - statistic lables in columns
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Mean 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Valid N 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Mean 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Valid N 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Mean 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Valid N 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: right;">
+20.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+32
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+17.1
+</td>
+<td style="text-align: right;">
+19
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+24.4
+</td>
+<td style="text-align: right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Displacement (cu.in.) 
+</td>
+<td style="text-align: right;">
+230.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+32
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+290.4
+</td>
+<td style="text-align: right;">
+19
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+143.5
+</td>
+<td style="text-align: right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Gross horsepower 
+</td>
+<td style="text-align: right;">
+146.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+32
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+160.3
+</td>
+<td style="text-align: right;">
+19
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+126.8
+</td>
+<td style="text-align: right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Weight (1000 lbs) 
+</td>
+<td style="text-align: right;">
+3.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+32
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.8
+</td>
+<td style="text-align: right;">
+19
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+2.4
+</td>
+<td style="text-align: right;">
+13
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+17.8
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+18.2
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+17.4
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="filter-dataset-and-exclude-empty-columns" class="section level3">
+<h3>Filter dataset and exclude empty columns</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_subgroup(am == 0) %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(total(), vs %nest% am) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    drop_empty_columns() %&gt;%
+    tab_caption(&quot;Filter dataset and exclude empty columns&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Filter dataset and exclude empty columns
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+42.9
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+57.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+12
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+7
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="total-at-the-top-of-the-table" class="section level3">
+<h3>Total at the top of the table</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(total(), vs) %&gt;% 
+    tab_rows(am) %&gt;% 
+    tab_stat_cpct(total_row_position = &quot;above&quot;,
+                  total_label = c(&quot;number of cases&quot;, &quot;row %&quot;),
+                  total_statistic = c(&quot;u_cases&quot;, &quot;u_rpct&quot;)) %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Total at the top of the table&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="8" style="text-align: left;">
+Total at the top of the table
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="2" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="8" style="font-weight: 900;">
+ Transmission 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Automatic 
+</td>
+<td style="text-align: left;">
+ Number of cylinders 
+</td>
+<td style="text-align: left;">
+ #number of cases 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+12
+</td>
+<td style="text-align: right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ #row % 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;">
+36.8
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 4 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+42.9
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 6 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+57.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 8 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100.0
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Manual 
+</td>
+<td style="text-align: left;">
+ Number of cylinders 
+</td>
+<td style="text-align: left;">
+ #number of cases 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+6
+</td>
+<td style="text-align: right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ #row % 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+46.2
+</td>
+<td style="text-align: right;">
+53.8
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 4 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+61.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;">
+100.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+</td>
+<td style="text-align: left;">
+ 6 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+23.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50.0
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ 8 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+15.4
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+33.3
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="three-different-statistics-in-each-cell---stat.-labels-in-rows" class="section level3">
+<h3>Three different statistics in each cell - stat. labels in rows</h3>
+<pre class="r"><code>mtcars %&gt;%
+    tab_cells(am) %&gt;%
+    tab_cols(total(), vs) %&gt;%
+    tab_total_row_position(&quot;none&quot;) %&gt;% 
+    tab_stat_cpct(label = &quot;col %&quot;) %&gt;%
+    tab_stat_rpct(label = &quot;row %&quot;) %&gt;%
+    tab_stat_tpct(label = &quot;table %&quot;) %&gt;%
+    tab_pivot(stat_position = &quot;inside_rows&quot;) %&gt;% 
+    tab_caption(&quot;Three different statistics in each cell - stat. labels in rows&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="7" style="text-align: left;">
+Three different statistics in each cell - stat. labels in rows
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="7" style="font-weight: 900;">
+ Transmission 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Automatic 
+</td>
+<td style="text-align: left;">
+ col % 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+59.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+66.7
+</td>
+<td style="text-align: right;">
+50.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ row % 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;">
+36.8
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ table % 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+59.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+37.5
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Manual 
+</td>
+<td style="text-align: left;">
+ col % 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+40.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+33.3
+</td>
+<td style="text-align: right;">
+50.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ row % 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+46.2
+</td>
+<td style="text-align: right;">
+53.8
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ table % 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+40.6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+18.8
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+21.9
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="three-different-statistics-in-each-cell---stat.-labels-in-columns" class="section level3">
+<h3>Three different statistics in each cell - stat. labels in columns</h3>
+<pre class="r"><code>mtcars %&gt;%
+    tab_cells(am) %&gt;%
+    tab_cols(total(), vs) %&gt;%
+    tab_total_row_position(&quot;none&quot;) %&gt;% 
+    tab_stat_cpct(label = &quot;col %&quot;) %&gt;%
+    tab_stat_rpct(label = &quot;row %&quot;) %&gt;%
+    tab_stat_tpct(label = &quot;table %&quot;) %&gt;%
+    tab_pivot(stat_position = &quot;inside_columns&quot;) %&gt;% 
+    tab_caption(&quot;Three different statistics in each cell - stat. labels in columns&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="14" style="text-align: left;">
+Three different statistics in each cell - stat. labels in columns
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="7" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ col % 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ row % 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ table % 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ col % 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ row % 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ table % 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ col % 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ row % 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ table % 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="14" style="font-weight: 900;">
+ Transmission 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Automatic 
+</td>
+<td style="text-align: right;">
+59.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+59.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+66.7
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;">
+37.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+36.8
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Manual 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+40.6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+100
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+40.6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+33.3
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+46.2
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+18.8
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+50
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+53.8
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+21.9
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="stacked-statistics" class="section level3">
+<h3>Stacked statistics</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(total(), am) %&gt;% 
+    tab_stat_mean() %&gt;%
+    tab_stat_se() %&gt;% 
+    tab_stat_valid_n() %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Stacked statistics&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="5" style="text-align: left;">
+Stacked statistics
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+6.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+6.9
+</td>
+<td style="text-align: right;">
+5.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   S. E. 
+</td>
+<td style="text-align: right;">
+0.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.4
+</td>
+<td style="text-align: right;">
+0.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Valid N 
+</td>
+<td style="text-align: right;">
+32.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0
+</td>
+<td style="text-align: right;">
+13.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+34.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;">
+61.5
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1
+</td>
+<td style="text-align: right;">
+23.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+43.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;">
+15.4
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="stacked-statistics-with-section-headings" class="section level3">
+<h3>Stacked statistics with section headings</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(total(), am) %&gt;% 
+    tab_row_label(&quot;#Summary statistics&quot;) %&gt;% 
+    tab_stat_mean() %&gt;%
+    tab_stat_se() %&gt;% 
+    tab_stat_valid_n() %&gt;% 
+    tab_row_label(&quot;#Column percent&quot;) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Stacked statistics with section headings&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="5" style="text-align: left;">
+Stacked statistics with section headings
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ #Summary statistics 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+6.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+6.9
+</td>
+<td style="text-align: right;">
+5.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   S. E. 
+</td>
+<td style="text-align: right;">
+0.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.4
+</td>
+<td style="text-align: right;">
+0.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Valid N 
+</td>
+<td style="text-align: right;">
+32.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0
+</td>
+<td style="text-align: right;">
+13.0
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ #Column percent 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+34.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;">
+61.5
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1
+</td>
+<td style="text-align: right;">
+23.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+43.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;">
+15.4
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="stacked-statistics---different-statistics-for-different-variables" class="section level3">
+<h3>Stacked statistics - different statistics for different variables</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cols(total(), am) %&gt;% 
+    tab_cells(mpg, hp, qsec) %&gt;% 
+    tab_stat_mean() %&gt;%
+    tab_cells(cyl, carb) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Stacked statistics - different statistics for different variables&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="5" style="text-align: left;">
+Stacked statistics - different statistics for different variables
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Miles/(US) gallon 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+20.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+17.1
+</td>
+<td style="text-align: right;">
+24.4
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Gross horsepower 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+146.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+160.3
+</td>
+<td style="text-align: right;">
+126.8
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ 1/4 mile time 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+17.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+18.2
+</td>
+<td style="text-align: right;">
+17.4
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+34.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;">
+61.5
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1
+</td>
+<td style="text-align: right;">
+23.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+43.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2
+</td>
+<td style="text-align: right;">
+15.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   #Total cases 
+</td>
+<td style="text-align: right;">
+32
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19
+</td>
+<td style="text-align: right;">
+13
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Number of carburetors 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   1 
+</td>
+<td style="text-align: right;">
+21.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;">
+30.8
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   2 
+</td>
+<td style="text-align: right;">
+31.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+31.6
+</td>
+<td style="text-align: right;">
+30.8
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   3 
+</td>
+<td style="text-align: right;">
+9.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+31.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+36.8
+</td>
+<td style="text-align: right;">
+23.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+3.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+7.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+3.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+7.7
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="linear-regression-by-groups" class="section level3">
+<h3>Linear regression by groups</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(sheet(mpg, disp, hp, wt, qsec)) %&gt;% 
+    tab_cols(total(), am) %&gt;% 
+    tab_stat_fun_df(
+        function(x){
+            frm = reformulate(&quot;.&quot;, response = as.name(names(x)[1]))
+            model = lm(frm, data = x)
+            sheet(&#39;Coef.&#39; = coef(model), 
+                  confint(model)
+            )
+        }    
+    ) %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Linear regression by groups&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="14" style="text-align: left;">
+Linear regression by groups
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="7" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Coef. 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 2.5 % 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 97.5 % 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Coef. 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 2.5 % 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 97.5 % 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Coef. 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 2.5 % 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 97.5 % 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">
+ (Intercept) 
+</td>
+<td style="text-align: right;">
+27.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+9.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+45.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.8
+</td>
+<td style="text-align: right;">
+-1.9
+</td>
+<td style="text-align: right;">
+45.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13.3
+</td>
+<td style="text-align: right;">
+-21.9
+</td>
+<td style="text-align: right;">
+48.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ <code>Displacement (cu.in.)</code> 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;">
+-0.1
+</td>
+<td style="text-align: right;">
+0.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ <code>Gross horsepower</code> 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+-0.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;">
+-0.1
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;">
+0.0
+</td>
+<td style="text-align: right;">
+0.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ <code>Weight (1000 lbs)</code> 
+</td>
+<td style="text-align: right;">
+-4.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+-7.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+-2.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+-2.3
+</td>
+<td style="text-align: right;">
+-5.0
+</td>
+<td style="text-align: right;">
+0.4
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+-7.7
+</td>
+<td style="text-align: right;">
+-12.5
+</td>
+<td style="text-align: right;">
+-2.9
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ <code>1/4 mile time</code> 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0.5
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+-0.4
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+1.5
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+0.4
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+-0.7
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+1.6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+1.6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+-0.2
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+3.4
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="subtotals" class="section level3">
+<h3>Subtotals</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(mpg) %&gt;% 
+    tab_cols(total(), vs) %&gt;% 
+    tab_rows(subtotal(cyl, 1:2, 3:4, &quot;5 and more&quot; = 5 %thru% hi)) %&gt;% 
+    tab_stat_mean() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Subtotals in rows&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="8" style="text-align: left;">
+Subtotals in rows
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="2" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="8" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   1 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   2 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   TOTAL 1/2 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   3 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.0
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   TOTAL 3/4 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.0
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+20.6
+</td>
+<td style="text-align: right;">
+19.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.1
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   5 and more 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ Mean 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+16.6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+16.1
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="subtotals-at-the-bottom-of-the-table" class="section level3">
+<h3>Subtotals at the bottom of the table</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(mpg, qsec) %&gt;% 
+    tab_cols(total(), vs) %&gt;% 
+    tab_rows(subtotal(cyl, 1:2, 3:4, &quot;TOTAL 5 and more&quot; = 5 %thru% hi, position = &quot;bottom&quot;)) %&gt;% 
+    tab_stat_mean() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Subtotals at the bottom of the table&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="8" style="text-align: left;">
+Subtotals at the bottom of the table
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="2" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="8" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   1 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   2 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   3 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.0
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;">
+19.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+20.6
+</td>
+<td style="text-align: right;">
+19.1
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+18.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.3
+</td>
+<td style="text-align: right;">
+19.2
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.1
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.8
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   TOTAL 1/2 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   TOTAL 3/4 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.0
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+  
+</td>
+<td style="text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.7
+</td>
+<td style="text-align: right;">
+19.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   TOTAL 5 and more 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.1
+</td>
+<td style="text-align: right;">
+19.1
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ 1/4 mile time 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ Mean 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+17.2
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+16.7
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.2
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="nets" class="section level3">
+<h3>Nets</h3>
+<p>Net, contrary to <code>subtotal</code>, remove original categories.</p>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(mpg) %&gt;% 
+    tab_cols(total(), vs) %&gt;% 
+    tab_rows(net(cyl, 1:2, 3:4, &quot;NET 5 and more&quot; = 5 %thru% hi, prefix = &quot;NET &quot;)) %&gt;% 
+    tab_stat_mean() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Nets in rows, custom prefix&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="8" style="text-align: left;">
+Nets in rows, custom prefix
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="2" style="font-weight: 900; border-top: 2px solid grey; text-align: center;">
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="8" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   NET 1/2 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   NET 3/4 
+</td>
+<td style="text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="text-align: left;">
+ Mean 
+</td>
+<td style="text-align: left;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.0
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   NET 5 and more 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ Miles/(US) gallon 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ Mean 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: left;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+16.6
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+16.1
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="nets-with-complex-grouping" class="section level3">
+<h3>Nets with complex grouping</h3>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(net(mpg, &quot;Low mpg&quot; = less(mean(mpg)), &quot;High mpg&quot; = greater_or_equal(mean(mpg)))) %&gt;% 
+    tab_cols(total(), am) %&gt;% 
+    tab_stat_cases() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Nets with complex grouping&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="5" style="text-align: left;">
+Nets with complex grouping
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Miles/(US) gallon 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Low mpg 
+</td>
+<td style="text-align: right;">
+18
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15
+</td>
+<td style="text-align: right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   High mpg 
+</td>
+<td style="text-align: right;">
+14
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+4
+</td>
+<td style="text-align: right;">
+10
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="significance-testing-on-column-percent" class="section level3">
+<h3>Significance testing on column percent</h3>
+<p>Letters marks cells which are significantly greater than cells in the appropriate columns. <code>-</code> and <code>+</code> marks values which are lower/greater than values in the first column. Significance testing on column percent should be applied on the result of <code>tab_stat_cpct</code> with total row.</p>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(cyl) %&gt;% 
+    tab_cols(total(), vs) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_pivot() %&gt;% 
+    significance_cpct(compare_type = c(&quot;first_column&quot;, &quot;subtable&quot;), sig_level = 0.05) %&gt;% 
+    tab_caption(&quot;Significance testing on column percent&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Significance testing on column percent
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Engine 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ V-engine 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Straight engine 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+34.4 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+5.6 -
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+71.4 + A
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.9 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+16.7  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+28.6  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+43.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+77.8 +
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+18  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+14  
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="significance-testing-on-means" class="section level3">
+<h3>Significance testing on means</h3>
+<p>Significance testing on means should be applied on the result of <code>tab_stat_mean_sd_n</code>.</p>
+<pre class="r"><code>mtcars %&gt;% 
+    tab_cells(mpg, disp, hp, wt, qsec) %&gt;%
+    tab_cols(total(), am) %&gt;% 
+    tab_stat_mean_sd_n() %&gt;%
+    tab_pivot() %&gt;% 
+    significance_means(compare_type = c(&quot;first_column&quot;, &quot;subtable&quot;)) %&gt;% 
+    tab_caption(&quot;Significance testing on means&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Significance testing on means
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Miles/(US) gallon 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+20.1 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+17.1 -  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+24.4 + A
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+6.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.8  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+6.2  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Unw. valid N 
+</td>
+<td style="text-align: right;">
+32.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13.0  
+</td>
+</tr>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Displacement (cu.in.) 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+230.7 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+290.4 B  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+143.5 -  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+123.9 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+110.2  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+87.2  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Unw. valid N 
+</td>
+<td style="text-align: right;">
+32.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13.0  
+</td>
+</tr>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Gross horsepower 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+146.7 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+160.3  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+126.8  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+68.6 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+53.9  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+84.1  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Unw. valid N 
+</td>
+<td style="text-align: right;">
+32.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13.0  
+</td>
+</tr>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Weight (1000 lbs) 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+3.2 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.8 + B
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+2.4 -  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+1.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.8  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.6  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Unw. valid N 
+</td>
+<td style="text-align: right;">
+32.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+19.0  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+13.0  
+</td>
+</tr>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ 1/4 mile time 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+17.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+18.2  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+17.4  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+1.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1.8  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1.8  
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Unw. valid N 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.0  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13.0  
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multiple-response-variables-with-weighting" class="section level3">
+<h3>Multiple-response variables with weighting</h3>
+<p>Here we load data with multiple-responce questions. <code>mrset</code> means that we treat set of variables as multiple response varibale with category encoding. For dichotomy encoding use <code>mdset</code>.</p>
+<pre class="r"><code>data(product_test)
+codeframe_likes = num_lab(&quot;
+                          1 Liked everything
+                          2 Disliked everything
+                          3 Chocolate
+                          4 Appearance
+                          5 Taste
+                          6 Stuffing
+                          7 Nuts
+                          8 Consistency
+                          98 Other
+                          99 Hard to answer
+                          &quot;)
+
+set.seed(1)
+product_test = product_test %&gt;% 
+ let( 
+        # recode age by groups
+        age_cat = recode(s2a, &quot;18 - 25&quot; = lo %thru% 25 ~ 1, &quot;26 - 35&quot; = lo %thru% hi ~ 2),
+        wgt = runif(.N, 0.25, 4),
+        wgt = wgt/sum(wgt)*.N
+    )  %&gt;% 
+    apply_labels(
+        age_cat = &quot;Age&quot;,
+        a1_1 = &quot;Likes. VSX123&quot;,
+        b1_1 = &quot;Likes. SDF456&quot;,
+        a1_1 = codeframe_likes,
+        b1_1 = codeframe_likes
+    )
+
+product_test %&gt;% 
+    tab_cells(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)) %&gt;% 
+    tab_cols(total(), age_cat) %&gt;% 
+    tab_weight(wgt) %&gt;% 
+    tab_stat_cpct() %&gt;% 
+    tab_sort_desc() %&gt;% 
+    tab_pivot() %&gt;% 
+    tab_caption(&quot;Multiple-response variables with weighting&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="5" style="text-align: left;">
+Multiple-response variables with weighting
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Age 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 18 - 25 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 26 - 35 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Likes. VSX123 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Nuts 
+</td>
+<td style="text-align: right;">
+68.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+82.5
+</td>
+<td style="text-align: right;">
+53.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Taste 
+</td>
+<td style="text-align: right;">
+39.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+48.4
+</td>
+<td style="text-align: right;">
+30.3
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Chocolate 
+</td>
+<td style="text-align: right;">
+34.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+31.9
+</td>
+<td style="text-align: right;">
+37.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Appearance 
+</td>
+<td style="text-align: right;">
+33.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+<td style="text-align: right;">
+40.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Stuffing 
+</td>
+<td style="text-align: right;">
+31.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+23.6
+</td>
+<td style="text-align: right;">
+39.3
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Consistency 
+</td>
+<td style="text-align: right;">
+12.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+7.7
+</td>
+<td style="text-align: right;">
+18.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Disliked everything 
+</td>
+<td style="text-align: right;">
+0.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+1.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Liked everything 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Other 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Hard to answer 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   #Total cases 
+</td>
+<td style="text-align: right;">
+150
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+70
+</td>
+<td style="text-align: right;">
+80
+</td>
+</tr>
+<tr>
+<td colspan="5" style="font-weight: 900;">
+ Likes. SDF456 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Nuts 
+</td>
+<td style="text-align: right;">
+63.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+62.1
+</td>
+<td style="text-align: right;">
+64.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Taste 
+</td>
+<td style="text-align: right;">
+31.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+35.2
+</td>
+<td style="text-align: right;">
+28.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Appearance 
+</td>
+<td style="text-align: right;">
+30.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+28.8
+</td>
+<td style="text-align: right;">
+31.8
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Chocolate 
+</td>
+<td style="text-align: right;">
+27.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+27.9
+</td>
+<td style="text-align: right;">
+26.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Stuffing 
+</td>
+<td style="text-align: right;">
+21.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+14.3
+</td>
+<td style="text-align: right;">
+28.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Consistency 
+</td>
+<td style="text-align: right;">
+8.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1.7
+</td>
+<td style="text-align: right;">
+14.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Disliked everything 
+</td>
+<td style="text-align: right;">
+2.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.3
+</td>
+<td style="text-align: right;">
+2.5
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Other 
+</td>
+<td style="text-align: right;">
+1.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Liked everything 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Hard to answer 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+150
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+70
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+80
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="side-by-side-variables-comparison" class="section level3">
+<h3>Side-by-side variables comparison</h3>
+<p>To make side-by-side comparison we use “|” to suppress variable labels and put these labels to the statistic labels. Statistics labels we place in columns with <code>tab_pivot</code>.</p>
+<pre class="r"><code>product_test %&gt;% 
+    tab_cols(total(), age_cat) %&gt;% 
+    tab_weight(wgt) %&gt;% 
+    # &#39;|&#39; is needed to prevent automatic labels creation from argument
+    tab_cells(&quot;|&quot; = unvr(mrset(a1_1 %to% a1_6))) %&gt;% 
+    tab_stat_cpct(label = var_lab(a1_1)) %&gt;% 
+    tab_cells(&quot;|&quot; = unvr(mrset(b1_1 %to% b1_6))) %&gt;% 
+    tab_stat_cpct(label = var_lab(b1_1)) %&gt;% 
+    tab_pivot(stat_position = &quot;inside_columns&quot;) %&gt;% 
+    tab_caption(&quot;Side-by-side variables comparison&quot;)</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="10" style="text-align: left;">
+Side-by-side variables comparison
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="5" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Age 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Likes. VSX123 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Likes. SDF456 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 18 - 25 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="2" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ 26 - 35 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Likes. VSX123 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Likes. SDF456 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Likes. VSX123 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Likes. SDF456 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">
+ Liked everything 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Disliked everything 
+</td>
+<td style="text-align: right;">
+0.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+2.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+3.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1.4
+</td>
+<td style="text-align: right;">
+2.5
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Chocolate 
+</td>
+<td style="text-align: right;">
+34.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+27.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+31.9
+</td>
+<td style="text-align: right;">
+27.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+37.0
+</td>
+<td style="text-align: right;">
+26.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Appearance 
+</td>
+<td style="text-align: right;">
+33.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+30.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+26.7
+</td>
+<td style="text-align: right;">
+28.8
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+40.4
+</td>
+<td style="text-align: right;">
+31.8
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Taste 
+</td>
+<td style="text-align: right;">
+39.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+31.6
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+48.4
+</td>
+<td style="text-align: right;">
+35.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+30.3
+</td>
+<td style="text-align: right;">
+28.0
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Stuffing 
+</td>
+<td style="text-align: right;">
+31.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.5
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+23.6
+</td>
+<td style="text-align: right;">
+14.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+39.3
+</td>
+<td style="text-align: right;">
+28.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Nuts 
+</td>
+<td style="text-align: right;">
+68.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.3
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+82.5
+</td>
+<td style="text-align: right;">
+62.1
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+53.7
+</td>
+<td style="text-align: right;">
+64.4
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Consistency 
+</td>
+<td style="text-align: right;">
+12.9
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+8.2
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+7.7
+</td>
+<td style="text-align: right;">
+1.7
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+18.0
+</td>
+<td style="text-align: right;">
+14.7
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Other 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1.0
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+1.9
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ Hard to answer 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+ #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+150
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+150
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+70
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+70
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+80
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+80
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multiple-tables-in-the-loop-with-knitr" class="section level3">
+<h3>Multiple tables in the loop with knitr</h3>
+<p>To make the task more practical we will create table with means for variables which have more than 6 unique elements. For other variables we will calculate column percent table. <strong>Note that you need to set <code>results='asis'</code> in the chunk options.</strong></p>
+<pre class="r"><code># here we specify dataset and banner
+banner = mtcars %&gt;%
+    tab_cols(total(), am)
+
+for(each in colnames(mtcars)){
+    # note ..$ which is used for indirect reference to variable
+    # specify variable
+    curr_table = banner %&gt;% 
+        tab_cells(..$each)
+    # calculate statistics
+    if(length(unique(mtcars[[each]]))&gt;6){
+        curr_table = curr_table %&gt;% 
+            tab_stat_mean_sd_n() %&gt;% 
+            tab_pivot() %&gt;% 
+            significance_means()
+    } else {
+        curr_table = curr_table %&gt;% 
+            tab_stat_cpct() %&gt;% 
+            tab_pivot() %&gt;% 
+            significance_cpct()
+    }
+    # finalize table
+    curr_table %&gt;% 
+        tab_caption(&quot;Variable name: &quot;, each) %&gt;% 
+        htmlTable() %&gt;% 
+        print()
+}</code></pre>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: mpg
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Miles/(US) gallon 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+20.1 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+17.1 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+24.4 A
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+6.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+6.2  
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Unw. valid N 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13.0  
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: cyl
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Number of cylinders 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+34.4 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+61.5 A
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+21.9 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+23.1  
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+43.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2 B
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.4  
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13  
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: disp
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Displacement (cu.in.) 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+230.7 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+290.4 B
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+143.5 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+123.9 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+110.2  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+87.2 
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Unw. valid N 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.0  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13.0 
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: hp
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Gross horsepower 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+146.7 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+160.3 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+126.8 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+68.6 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+53.9 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+84.1 
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Unw. valid N 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13.0 
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: drat
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Rear axle ratio 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+3.6 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.3 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+4.0 A
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+0.5 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.4 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.4  
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Unw. valid N 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13.0  
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: wt
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Weight (1000 lbs) 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+3.2 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+3.8 B
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+2.4 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+1.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.8  
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+0.6 
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Unw. valid N 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.0  
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13.0 
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: qsec
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ 1/4 mile time 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Mean 
+</td>
+<td style="text-align: right;">
+17.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+18.2 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+17.4 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Std. dev. 
+</td>
+<td style="text-align: right;">
+1.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+1.8 
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   Unw. valid N 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19.0 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13.0 
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: vs
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Engine 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   V-engine 
+</td>
+<td style="text-align: right;">
+56.2 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+63.2 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+46.2 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Straight engine 
+</td>
+<td style="text-align: right;">
+43.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+36.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+53.8 
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13 
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: am
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Transmission 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Automatic 
+</td>
+<td style="text-align: right;">
+59.4 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100.0 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   Manual 
+</td>
+<td style="text-align: right;">
+40.6 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+100.0 
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13 
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: gear
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Number of forward gears 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   3 
+</td>
+<td style="text-align: right;">
+46.9 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+78.9 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+37.5 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+21.1 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+61.5 A
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   5 
+</td>
+<td style="text-align: right;">
+15.6 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+38.5  
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13  
+</td>
+</tr>
+</tbody>
+</table>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<thead>
+<tr>
+<td colspan="6" style="text-align: left;">
+Variable name: carb
+</td>
+</tr>
+<tr>
+<th style="border-top: 2px solid grey;">
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ #Total 
+</th>
+<th style="border-bottom: none; border-top: 2px solid grey;" colspan="1">
+ 
+</th>
+<th colspan="3" style="font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+ Transmission 
+</th>
+</tr>
+<tr>
+<th style>
+</th>
+<th colspan="1" style="font-weight: 900; text-align: center;">
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Automatic 
+</th>
+<th style="border-bottom: none;" colspan="1">
+ 
+</th>
+<th colspan="1" style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ Manual 
+</th>
+</tr>
+<tr>
+<th style="border-bottom: 1px solid grey; font-weight: 900; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ A 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;" colspan="1">
+ 
+</th>
+<th style="font-weight: 900; border-bottom: 1px solid grey; text-align: center;">
+ B 
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="font-weight: 900;">
+ Number of carburetors 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   1 
+</td>
+<td style="text-align: right;">
+21.9 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+30.8 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   2 
+</td>
+<td style="text-align: right;">
+31.2 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+31.6 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+30.8 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   3 
+</td>
+<td style="text-align: right;">
+9.4 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+15.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   4 
+</td>
+<td style="text-align: right;">
+31.2 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+36.8 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+23.1 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   6 
+</td>
+<td style="text-align: right;">
+3.1 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+7.7 
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+   8 
+</td>
+<td style="text-align: right;">
+3.1 
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;" colspan="1">
+ 
+</td>
+<td style="text-align: right;">
+7.7 
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+   #Total cases 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+32 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+19 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;" colspan="1">
+ 
+</td>
+<td style="border-bottom: 2px solid grey; text-align: right;">
+13 
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
 
 

@@ -12,7 +12,6 @@ vignette: >
   
 ### Introduction
 
-
 First, we apply labels on the well-known `mtcars` dataset:
 ```{r, message=FALSE, warning=FALSE}
 library(expss)
@@ -303,21 +302,21 @@ codeframe_likes = num_lab("
                           ")
 
 set.seed(1)
-product_test = compute(product_test, {
-    # recode age by groups
-    age_cat = recode(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
-    
-    var_lab(age_cat) = "Age"
-    val_lab(age_cat) = c("18 - 25" = 1, "26 - 35" = 2)
-    
-    var_lab(a1_1) = "Likes. VSX123"
-    var_lab(b1_1) = "Likes. SDF456"
-    val_lab(a1_1) = codeframe_likes
-    val_lab(b1_1) = codeframe_likes
-    
-    wgt = runif(.N, 0.25, 4)
-    wgt = wgt/sum(wgt)*.N
-})
+product_test = product_test %>% 
+    let( 
+        # recode age by groups
+        age_cat = recode(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2),
+        wgt = runif(.N, 0.25, 4),
+        wgt = wgt/sum(wgt)*.N
+    )  %>% 
+    apply_labels(
+        age_cat = "Age",
+        age_cat = c("18 - 25" = 1, "26 - 35" = 2),
+        a1_1 = "Likes. VSX123",
+        b1_1 = "Likes. SDF456",
+        a1_1 = codeframe_likes,
+        b1_1 = codeframe_likes
+    )
 
 product_test %>% 
     tab_cells(mrset(a1_1 %to% a1_6), mrset(b1_1 %to% b1_6)) %>% 
