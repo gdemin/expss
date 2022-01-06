@@ -670,7 +670,6 @@ export(repr_html.with_caption)
 export(repr_text.etable)
 export(repr_text.with_caption)
 }
-import(foreign)
 import(htmlTable)
 import(maditr)
 import(matrixStats)

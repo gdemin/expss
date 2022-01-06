@@ -44,7 +44,7 @@ NULL
 
 #' @import maditr
 #' @import htmlTable 
-#' @import foreign stats utils matrixStats
+#' @import stats utils matrixStats
 #' @importFrom data.table data.table
 
 data.table = maditr::data.table

@@ -4,7 +4,7 @@
 \alias{add_columns}
 \title{Add columns to data.frame.}
 \usage{
-add_columns(x, y, by = NULL, ignore_duplicates = FALSE)
+add_columns(x, y, by = NULL, ignore_duplicates = FALSE, ...)
 }
 \arguments{
 \item{x}{data.frame to be joined with \code{y}.}
@@ -19,8 +19,10 @@ by different variables on \code{x} and \code{y} use a named vector.
 For example, \code{by = c("a" = "b")} will match x.a to y.b.}
 
 \item{ignore_duplicates}{logical Should we ignore duplicates in the \code{by}
-variables in the \code{y}? If it is TRUE than first occurence of duplicated
+variables in the \code{y}? If it is TRUE than first occurrence of duplicated
 key will be used.}
+
+\item{...}{arguments for further methods}
 }
 \value{
 data.frame

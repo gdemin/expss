@@ -14,8 +14,9 @@
 #'   by different variables on \code{x} and \code{y} use a named vector.
 #'   For example, \code{by = c("a" = "b")} will match x.a to y.b.
 #' @param ignore_duplicates logical Should we ignore duplicates in the \code{by}
-#'   variables in the \code{y}? If it is TRUE than first occurence of duplicated
+#'   variables in the \code{y}? If it is TRUE than first occurrence of duplicated
 #'   key will be used.
+#' @param ... arguments for further methods
 #' @return data.frame
 #'   
 #' @export
@@ -44,16 +45,23 @@
 #' @export
 add_columns = function(x, y, 
                        by = NULL, 
-                       ignore_duplicates = FALSE
+                       ignore_duplicates = FALSE,
+                       ...
 ){
     UseMethod("add_columns")
     
 }
 
 #' @export
+add_columns.etable = function(x, y, by = 1, ignore_duplicates = FALSE, ...){
+    merge(x, y, by = by, ...)
+}
+
+#' @export
 add_columns.data.frame = function(x, y, 
                        by = NULL, 
-                       ignore_duplicates = FALSE
+                       ignore_duplicates = FALSE,
+                       ...
 ){
     if(!is.data.frame(x)) x = as.sheet(x)
     if(!is.data.frame(y)) y = as.sheet(y)

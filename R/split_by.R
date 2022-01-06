@@ -48,8 +48,8 @@
 #'                                    ")
 #'     ) %>% 
 #'     split_by(am, vs) %>% 
-#'     use_labels({
-#'         res = lm(mpg ~ hp + disp + wt)
+#'     to_list({
+#'         res = lm(mpg ~ hp + disp + wt, data = .x)
 #'         cbind(Coef. = coef(res), confint(res))
 #'     }) %>% 
 #'     split_off(groups = TRUE, rownames = "variable")

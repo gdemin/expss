@@ -11,7 +11,16 @@
 #'
 #' @param x data.frame or results of \code{fre}/\code{cross_*}/\code{table_*}
 #' @param y data.frame or results of \code{fre}/\code{cross_*}/\code{table_*}
-#'
+#' @param by for 'etable' object default is 1 (first column). For details see \link[base]{merge}
+#' @param by.x For details see \link[base]{merge}
+#' @param by.y For details see \link[base]{merge}
+#' @param all For details see \link[base]{merge}
+#' @param all.x For details see \link[base]{merge}
+#' @param all.y For details see \link[base]{merge}
+#' @param sort For details see \link[base]{merge}
+#' @param suffixes For details see \link[base]{merge}
+#' @param incomparables For details see \link[base]{merge}
+#' @param ... arguments to be passed to or from methods.
 #' @return data.frame
 #' @name merge.etable
 #' @export
@@ -79,9 +88,6 @@ merge.etable = function(x, y,
 
 }
 
-
-#' @export
-add_columns.etable = merge.etable
 
 
 

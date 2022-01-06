@@ -16,10 +16,6 @@ add_rows(...)
 data.frames. Possible values are \code{"add"}, \code{"drop"}, \code{"stop"}.
 \code{"add"} will combine all columns, \code{"drop"} will leave only common
 columns, \code{"stop"} will raise an error.}
-
-\item{x}{data.frame/matrix/table for binding}
-
-\item{y}{data.frame/matrix/table for binding}
 }
 \value{
 See \link[base:cbind]{rbind}, \link{cro}, \link{cro_fun}, \link{fre}, \link{tables}

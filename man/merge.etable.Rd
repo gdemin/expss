@@ -23,6 +23,26 @@
 \item{x}{data.frame or results of \code{fre}/\code{cross_*}/\code{table_*}}
 
 \item{y}{data.frame or results of \code{fre}/\code{cross_*}/\code{table_*}}
+
+\item{by}{for 'etable' object default is 1 (first column). For details see \link[base]{merge}}
+
+\item{by.x}{For details see \link[base]{merge}}
+
+\item{by.y}{For details see \link[base]{merge}}
+
+\item{all}{For details see \link[base]{merge}}
+
+\item{all.x}{For details see \link[base]{merge}}
+
+\item{all.y}{For details see \link[base]{merge}}
+
+\item{sort}{For details see \link[base]{merge}}
+
+\item{suffixes}{For details see \link[base]{merge}}
+
+\item{incomparables}{For details see \link[base]{merge}}
+
+\item{...}{arguments to be passed to or from methods.}
 }
 \value{
 data.frame

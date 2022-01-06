@@ -208,8 +208,10 @@ mtcars \%>\%
      
 # several tables in a list
 list(
-    cross_cpct(mtcars, list(am, vs, cyl), list(total(), am)) \%>\% set_caption("Table 1. Percent."),   
-    cross_mean_sd_n(mtcars, list(mpg, hp, qsec), list(total(), am)) \%>\% set_caption("Table 2. Means.")
+    cross_cpct(mtcars, list(am, vs, cyl), list(total(), am))
+        \%>\% set_caption("Table 1. Percent."),   
+    cross_mean_sd_n(mtcars, list(mpg, hp, qsec), list(total(), am)) 
+        \%>\% set_caption("Table 2. Means.")
     ) \%>\% 
     htmlTable()
      

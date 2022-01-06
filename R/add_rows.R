@@ -7,8 +7,6 @@
 #' \link{cro}/\link{cro_fun}/\link{tables}/\link{fre}.
 #'
 #' @param ... data.frame/matrix/table for binding
-#' @param x data.frame/matrix/table for binding
-#' @param y data.frame/matrix/table for binding
 #' @param nomatch_columns action if there are non-matching columns between
 #'   data.frames. Possible values are \code{"add"}, \code{"drop"}, \code{"stop"}.
 #'   \code{"add"} will combine all columns, \code{"drop"} will leave only common
