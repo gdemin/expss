@@ -1,8 +1,11 @@
-0.10.10 (30.11.2020)
+0.11.1 (07.01.2022)
 ================
 * add 'weight_by' - function for "brute force" frequency weighting
 * 'read_spss' now exposes 'use_missings' argument from foreign::read.spss
 * 'apply_labels' now can accept list with variable and value labels
+* 'calc_cro_*'s are renamed to more clear 'cross_'s 
+* 'compute', 'do_if', 'where' and 'calc' are deprecated in favor of the 'maditr' 
+    package. 'maditr' is thin layer above fastest data manipulation package 'data.tabe'  
 
 0.10.7 (15.11.2020)
 ================
