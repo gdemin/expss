@@ -11,7 +11,7 @@ vignette: >
 
 ## Introduction
 
-To export `expss` tables to *.xlsx you need to install excellent `openxlsx` package. To install it just type in the console `install.packages("openxlsx")`. On Windows system you may need also install RTools. It can be downloaded from CRAN: [RTools](https://cran.r-project.org/bin/windows/Rtools/).
+To export `expss` tables to *.xlsx you need to install excellent `openxlsx` package. To install it just type in the console `install.packages("openxlsx")`. 
 
 ## Examples
 

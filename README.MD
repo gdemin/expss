@@ -7,12 +7,11 @@
 
 ## Introduction
 
-`expss` computes and displays tables with support for 'SPSS'-style labels, multiple / nested banners, weights, multiple-response variables and significance testing. There are facilities for nice output of tables in 'knitr', R notebooks, 'Shiny' and 'Jupyter' notebooks. Proper methods for labelled variables add value labels support to base R functions and to some functions from other packages. Additionally, the package offers useful functions for data processing in marketing research / social surveys - popular data transformation functions from 'SPSS' Statistics ('RECODE', 'COUNT', 'COMPUTE', 'DO IF', etc.) and 'Excel' ('COUNTIF', 'VLOOKUP', etc.). Package is intended to help people to move data processing from 'Excel'/'SPSS' to R. See examples below. You can get help about
-any function by typing `?function_name` in the R console.
+`expss` computes and displays tables with support for 'SPSS'-style labels, multiple / nested banners, weights, multiple-response variables and significance testing. There are facilities for nice output of tables in 'knitr', R notebooks, 'Shiny' and 'Jupyter' notebooks. Proper methods for labelled variables add value labels support to base R functions and to some functions from other packages. Additionally, the package offers useful functions for data processing in marketing research / social surveys - popular data transformation functions from 'SPSS' Statistics and 'Excel' ('RECODE', 'COUNT', 'COUNTIF', 'VLOOKUP', etc.). Package is intended to help people to move data processing from 'Excel'/'SPSS' to R. See examples below. You can get help about any function by typing `?function_name` in the R console.
 
 ### Links
 
-- [Online introduction - visit it to view code with its output](http://gdemin.github.io/expss/)
+- [Online introduction](http://gdemin.github.io/expss/)
 - [expss on CRAN](https://cran.r-project.org/package=expss)
 - [expss on Github](https://github.com/gdemin/expss)
 - [expss on Stackoverflow](https://stackoverflow.com/questions/tagged/expss)
@@ -50,21 +49,19 @@ mtcars = apply_labels(mtcars,
 
 ```
 
-For quick cross-tabulation there are `fre` and `cro` family of function. For simplicity we demonstrate here only `cro_cpct` which caluclates column percent. Documentation for other functions, such as `cro_cases` for counts, `cro_rpct` for row percent, `cro_tpct` for table percent and `cro_fun` for custom summary functions can be seen by typing `?cro` and `?cro_fun` in the console. 
+For quick cross-tabulation there are `fre` and `cross` family of function. For simplicity we demonstrate here only `cross_cpct` which calculates column percent. Documentation for other functions, such as `cross_cases` for counts, `cross_rpct` for row percent, `cross_tpct` for table percent and `cross_fun` for custom summary functions can be seen by typing `?cross_cpct` and `?cross_fun` in the console. 
 
 ```R
-# 'cro' examples
+# 'cross_*' examples
 # just simple crosstabulation, similar to base R 'table' function
-cro(mtcars$am, mtcars$vs)
+cross_cases(mtcars, am, vs)
 
 # Table column % with multiple banners
-cro_cpct(mtcars$cyl, list(total(), mtcars$am, mtcars$vs))
+cross_cpct(mtcars, cyl, list(total(), am, vs))
 
-# or, the same result with another notation
-mtcars %>% cross_cpct(cyl, list(total(), am, vs))
-
-# Table with nested banners (column %).          
-mtcars %>% cross_cpct(cyl, list(total(), am %nest% vs))       
+# magrittr pipe usage and nested banners
+mtcars %>% 
+    cross_cpct(cyl, list(total(), am %nest% vs))      
 
 ```
 We have more sophisticated interface for table construction with `magrittr` piping. Table construction consists of at least of three functions chained with pipe operator: `%>%`. At first we need to specify variables for which statistics will be computed with `tab_cells`. Secondary, we calculate statistics with one of the `tab_stat_*` functions. And last, we finalize table creation with `tab_pivot`, e. g.: `dataset %>% tab_cells(variable) %>% tab_stat_cases() %>% tab_pivot()`. After that we can optionally sort table with `tab_sort_asc`, drop empty rows/columns with `drop_rc` and transpose with `tab_transpose`. Resulting table is just a `data.frame` so we can use usual R operations on it. Detailed documentation for table creation can be seen via `?tables`. For significance testing see `?significance`.
@@ -127,7 +124,7 @@ mtcars %>%
             sheet('Coef.' = coef(model), 
                   confint(model)
             )
-        }  
+        }    
     ) %>% 
     tab_pivot() 
 ```
@@ -165,28 +162,28 @@ w = product_test # shorter name to save some keystrokes
 # also we recode preferences from first/second product to true names
 # for first cell there are no changes, for second cell we should exchange 1 and 2.
 w = w %>% 
-    do_if(cell == 1, {
-        recode(a1_1 %to% a1_6, other ~ copy) %into% (h1_1 %to% h1_6)
-        recode(b1_1 %to% b1_6, other ~ copy) %into% (p1_1 %to% p1_6)
-        recode(a22, other ~ copy) %into% h22
-        recode(b22, other ~ copy) %into% p22
+    let_if(cell == 1, 
+        h1_1 %to% h1_6 := recode(a1_1 %to% a1_6, other ~ copy),
+        p1_1 %to% p1_6 := recode(b1_1 %to% b1_6, other ~ copy),
+        h22 := recode(a22, other ~ copy), 
+        p22 := recode(b22, other ~ copy),
         c1r = c1
-    }) %>% 
-    do_if(cell == 2, {
-        recode(a1_1 %to% a1_6, other ~ copy) %into% (p1_1 %to% p1_6)
-        recode(b1_1 %to% b1_6, other ~ copy) %into% (h1_1 %to% h1_6)
-        recode(a22, other ~ copy) %into% p22
-        recode(b22, other ~ copy) %into% h22
-        recode(c1, 1 ~ 2, 2 ~ 1, other ~ copy) %into% c1r
-    }) %>% 
-    compute({
+    ) %>% 
+    let_if(cell == 2, 
+        p1_1 %to% p1_6 := recode(a1_1 %to% a1_6, other ~ copy), 
+        h1_1 %to% h1_6 := recode(b1_1 %to% b1_6, other ~ copy),
+        p22 := recode(a22, other ~ copy),
+        h22 := recode(b22, other ~ copy), 
+        c1r := recode(c1, 1 ~ 2, 2 ~ 1, other ~ copy) 
+    ) %>% 
+    let(
         # recode age by groups
-        age_cat = recode(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
+        age_cat = recode(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2),
         # count number of likes
         # codes 2 and 99 are ignored.
-        h_likes = count_row_if(1 | 3 %thru% 98, h1_1 %to% h1_6) 
+        h_likes = count_row_if(1 | 3 %thru% 98, h1_1 %to% h1_6), 
         p_likes = count_row_if(1 | 3 %thru% 98, p1_1 %to% p1_6) 
-    })
+    )
 
 # here we prepare labels for future usage
 codeframe_likes = num_lab("
@@ -314,6 +311,103 @@ Or, we can save dataset as *.csv file with SPSS syntax to read data and apply la
 ```R
 write_labelled_spss(w, file  filename = "product_test.csv")
 ```
+
+## Export to Microsoft Excel
+
+To export `expss` tables to *.xlsx you need to install excellent `openxlsx` package. To install it just type in the console `install.packages("openxlsx")`. 
+
+### Examples
+
+First we apply labels on the mtcars dataset and build simple table with caption.
+```R
+library(expss)
+library(openxlsx)
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)",
+                      hp = "Gross horsepower",
+                      drat = "Rear axle ratio",
+                      wt = "Weight (lb/1000)",
+                      qsec = "1/4 mile time",
+                      vs = "Engine",
+                      vs = c("V-engine" = 0,
+                             "Straight engine" = 1),
+                      am = "Transmission",
+                      am = c("Automatic" = 0,
+                             "Manual"=1),
+                      gear = "Number of forward gears",
+                      carb = "Number of carburetors"
+)
+
+mtcars_table = mtcars %>% 
+    cross_cpct(
+        cell_vars = list(cyl, gear),
+        col_vars = list(total(), am, vs)
+    ) %>% 
+    set_caption("Table 1")
+
+mtcars_table
+```
+
+Then we create workbook and add worksheet to it.
+```R
+wb = createWorkbook()
+sh = addWorksheet(wb, "Tables")
+```
+Export - we should specify workbook and worksheet. 
+```R
+xl_write(mtcars_table, wb, sh)
+```
+And, finally, we save workbook with table to the xlsx file.
+```R
+saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
+```
+Screenshot of the exported table:
+![table1.xlsx](vignettes/screen_xlsx1.png)
+
+### Automation of the report generation 
+
+First of all, we create banner which we will use for all our tables. 
+```R
+banner = with(mtcars, list(total(), am, vs))
+```
+Then we generate list with all tables. If variables have small number of discrete values we create column percent table. In other cases we calculate table with means. For both types of tables we mark significant differencies between groups.
+```R
+list_of_tables = lapply(mtcars, function(variable) {
+    if(length(unique(variable))<7){
+        cro_cpct(variable, banner) %>% significance_cpct()
+    } else {
+        # if number of unique values greater than seven we calculate mean
+        cro_mean_sd_n(variable, banner) %>% significance_means()
+        
+    }
+    
+})
+```
+Create workbook:
+```R
+wb = createWorkbook()
+sh = addWorksheet(wb, "Tables")
+```
+Here we export our list with tables with additional formatting. We remove '#' sign from totals and mark total column with bold. You can read about formatting options in the manual fro `xl_write` (`?xl_write` in the console).
+```R
+xl_write(list_of_tables, wb, sh, 
+         # remove '#' sign from totals 
+         col_symbols_to_remove = "#",
+         row_symbols_to_remove = "#",
+         # format total column as bold
+         other_col_labels_formats = list("#" = createStyle(textDecoration = "bold")),
+         other_cols_formats = list("#" = createStyle(textDecoration = "bold")),
+         )
+```
+Save workbook:
+```R
+saveWorkbook(wb, "report.xlsx", overwrite = TRUE)
+```
+Screenshot of the generated report:
+![report.xlsx](vignettes/screen_xlsx2.png)
 
 ## Labels support for base R
 
@@ -498,103 +592,6 @@ spss_data = haven::read_spss("spss_file.sav")
 # add missing 'labelled' class
 spss_data = add_labelled_class(spss_data) 
 ```
-
-## Export to Microsoft Excel
-
-To export `expss` tables to *.xlsx you need to install excellent `openxlsx` package. To install it just type in the console `install.packages("openxlsx")`. On Windows system you may need also install RTools. It can be downloaded from CRAN: [RTools](https://cran.r-project.org/bin/windows/Rtools/).
-
-First we apply labels on the mtcars dataset and build simple table with caption.
-```R
-library(expss)
-library(openxlsx)
-data(mtcars)
-mtcars = apply_labels(mtcars,
-                      mpg = "Miles/(US) gallon",
-                      cyl = "Number of cylinders",
-                      disp = "Displacement (cu.in.)",
-                      hp = "Gross horsepower",
-                      drat = "Rear axle ratio",
-                      wt = "Weight (lb/1000)",
-                      qsec = "1/4 mile time",
-                      vs = "Engine",
-                      vs = c("V-engine" = 0,
-                             "Straight engine" = 1),
-                      am = "Transmission",
-                      am = c("Automatic" = 0,
-                             "Manual"=1),
-                      gear = "Number of forward gears",
-                      carb = "Number of carburetors"
-)
-
-mtcars_table = mtcars %>% 
-    cross_cpct(
-        cell_vars = list(cyl, gear),
-        col_vars = list(total(), am, vs)
-    ) %>% 
-    set_caption("Table 1")
-
-mtcars_table
-```
-
-Then we create workbook and add worksheet to it.
-```R
-wb = createWorkbook()
-sh = addWorksheet(wb, "Tables")
-```
-Export - we should specify workbook and worksheet. 
-```R
-xl_write(mtcars_table, wb, sh)
-```
-And, finally, we save workbook with table to the xlsx file.
-```R
-saveWorkbook(wb, "table1.xlsx", overwrite = TRUE)
-```
-Screenshot of the exported table:
-![table1.xlsx](vignettes/screen_xlsx1.png)
-
-### Automation of the report generation 
-
-First of all, we create banner which we will use for all our tables. 
-```R
-banner = with(mtcars, list(total(), am, vs))
-```
-Then we generate list with all tables. If variables have small number of discrete values we create column percent table. In other cases we calculate table with means. For both types of tables we mark significant differencies between groups.
-```R
-list_of_tables = lapply(mtcars, function(variable) {
-    if(length(unique(variable))<7){
-        cro_cpct(variable, banner) %>% significance_cpct()
-    } else {
-        # if number of unique values greater than seven we calculate mean
-        cro_mean_sd_n(variable, banner) %>% significance_means()
-        
-    }
-    
-})
-```
-Create workbook:
-```R
-wb = createWorkbook()
-sh = addWorksheet(wb, "Tables")
-```
-Here we export our list with tables with additional formatting. We remove '#' sign from totals and mark total column with bold. You can read about formatting options in the manual fro `xl_write` (`?xl_write` in the console).
-```R
-xl_write(list_of_tables, wb, sh, 
-         # remove '#' sign from totals 
-         col_symbols_to_remove = "#",
-         row_symbols_to_remove = "#",
-         # format total column as bold
-         other_col_labels_formats = list("#" = createStyle(textDecoration = "bold")),
-         other_cols_formats = list("#" = createStyle(textDecoration = "bold")),
-         )
-```
-Save workbook:
-```R
-saveWorkbook(wb, "report.xlsx", overwrite = TRUE)
-```
-Screenshot of the generated report:
-![report.xlsx](vignettes/screen_xlsx2.png)
-
-
 
 
 
