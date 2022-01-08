@@ -384,7 +384,7 @@ use_labels =  function (data, expr) {
                 var_lab(data[[all_labs[each]]]) = names(all_labs)[each]
             }
         }
-        substitution_list = extract_var_labs_as_list_with_symbols(data)
+        substitution_list = extract_all_var_labs(data, as_symbols = TRUE)
         expr = substitute_symbols(expr, c(substitution_list, list(..data = names2labels(data))))
         data = names2labels(data) 
     }
@@ -425,11 +425,11 @@ all_labels = function(data){
     setNames(indexes, unlist(res))
 }
 
-extract_var_labs_as_list_with_symbols = function(data){
+extract_all_var_labs = function(data, as_symbols){
     res = lapply(data, function(x) {
         new_name = var_lab(x)
         if(!is.null(new_name) && !is.na(new_name) && new_name!=""){
-            as.symbol(new_name)
+            if(as_symbols) as.symbol(new_name) else new_name
         } else {
             NULL
         }
