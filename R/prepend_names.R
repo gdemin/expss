@@ -116,6 +116,18 @@ prepend_names.data.frame = function(x){
     x
 }
 
+#' @export
+prepend_names.w_lm = function(x){
+    all_names = names(coef(x))
+    all_labels = x[["var_labs"]]
+    if(length(all_names) == 0 ||  length(all_labels)==0) return(x)
+    with_labels = intersect(all_names, names(all_labels))
+    if(length(with_labels)==0) return(x)
+    all_labels[with_labels] = paste(with_labels, all_labels[with_labels], sep = ' ')
+    x[["var_labs"]] = all_labels
+    x
+}
+
 ##################################################
 
 #' @export

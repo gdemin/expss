@@ -98,3 +98,41 @@ mod = mtcars %>%
 expect_equal(rownames(coef(summary(mod))), 
              c("(Intercept)", "Displacement (cu.in.)", "Gross horsepower", "Transmission"))
 
+
+expect_equal(rownames(coef(summary(unlab(mod)))), 
+             c("(Intercept)", "disp", "hp", "am"))
+
+
+
+expect_equal(rownames(coef(summary(drop_var_labs(mod)))), 
+             c("(Intercept)", "disp", "hp", "am"))
+
+expect_equal(rownames(coef(summary(prepend_names(mod)))), 
+             c("(Intercept)", "disp Displacement (cu.in.)", "hp Gross horsepower", "am Transmission"))
+
+
+data(mtcars)
+mtcars = apply_labels(mtcars,
+                      mpg = "Miles/(US) gallon",
+                      cyl = "Number of cylinders",
+                      disp = "Displacement (cu.in.)"
+)
+
+mod = mtcars %>% 
+    w_lm(mpg ~ disp + hp + am)
+
+expect_equal(rownames(coef(summary(mod))), 
+             c("(Intercept)", "Displacement (cu.in.)", "hp", "am"))
+
+
+
+expect_equal(rownames(coef(summary(unlab(mod)))), 
+             c("(Intercept)", "disp", "hp", "am"))
+
+
+
+expect_equal(rownames(coef(summary(drop_var_labs(mod)))), 
+             c("(Intercept)", "disp", "hp", "am"))
+
+expect_equal(rownames(coef(summary(prepend_names(mod)))), 
+             c("(Intercept)", "disp Displacement (cu.in.)", "hp", "am"))

@@ -136,30 +136,36 @@ set_var_lab.default = function(x, value){
 
 #'@rdname var_lab
 #' @export
-unvr=function(x){
-    UseMethod("unvr")
+drop_var_labs = function(x){
+    UseMethod("drop_var_labs")
 }
 
 #' @export
-unvr.default=function(x){
+drop_var_labs.default=function(x){
     set_var_lab(x, NULL)
 }
 
 #' @export
-unvr.data.frame=function(x){
-    for (each in seq_along(x)) x[[each]] = unvr(x[[each]])
+drop_var_labs.w_lm=function(x){
+    x[["var_labs"]] = NULL
     x
 }
 
 #' @export
-unvr.list=function(x){
-    for (each in seq_along(x)) x[[each]] = unvr(x[[each]])
+drop_var_labs.data.frame=function(x){
+    for (each in seq_along(x)) x[[each]] = drop_var_labs(x[[each]])
+    x
+}
+
+#' @export
+drop_var_labs.list=function(x){
+    for (each in seq_along(x)) x[[each]] = drop_var_labs(x[[each]])
     x
 }
 
 #'@rdname var_lab
 #' @export
-drop_var_labs = unvr
+unvr = drop_var_labs 
 
 #### add_labelled_class
 #' @rdname var_lab
@@ -524,6 +530,11 @@ unlab.default=function(x){
 unlab.data.frame=function(x){
     for (each in seq_along(x)) x[[each]] = unlab(x[[each]])
     x
+}
+
+#' @export
+unlab.w_lm = function(x){
+    drop_var_labs(x)
 }
 
 #' @export
