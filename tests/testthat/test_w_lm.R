@@ -115,7 +115,9 @@ data(mtcars)
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",
                       cyl = "Number of cylinders",
-                      disp = "Displacement (cu.in.)"
+                      disp = "Displacement (cu.in.)",
+                      hp = "",
+                      am = ""
 )
 
 mod = mtcars %>% 
