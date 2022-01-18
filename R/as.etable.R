@@ -9,7 +9,7 @@
 #'   \code{x} will be added to result as first column with name 
 #'   \code{row_labels}. By default row names will be added if they are not NULL
 #'   and are not sequential numerics.
-#'
+#' @param ... unused
 #' @return object of class \code{etable}
 #' @export
 #'
@@ -21,27 +21,27 @@
 #' etable_mtcars #another 'print' method is used
 #' 
 #' cor(mtcars) %>% as.etable()
-as.etable = function(x, rownames_as_row_labels = NULL){
+as.etable = function(x, rownames_as_row_labels = NULL, ...){
     UseMethod("as.etable")
 }
 
 #' @export
-as.etable.etable = function(x, rownames_as_row_labels = NULL){
+as.etable.etable = function(x, rownames_as_row_labels = NULL, ...){
     x
 }
 
 #' @export
-as.etable.default = function(x, rownames_as_row_labels = NULL){
+as.etable.default = function(x, rownames_as_row_labels = NULL, ...){
     as.etable(as.sheet(x), rownames_as_row_labels = rownames_as_row_labels)
 }
 
 #' @export
-as.etable.data.table = function(x, rownames_as_row_labels = NULL){
+as.etable.data.table = function(x, rownames_as_row_labels = NULL, ...){
     as.etable(as.sheet(x), rownames_as_row_labels = rownames_as_row_labels)
 }
 
 #' @export
-as.etable.data.frame = function(x, rownames_as_row_labels = NULL){
+as.etable.data.frame = function(x, rownames_as_row_labels = NULL, ...){
     rownames_as_row_labels = if_null(rownames_as_row_labels, has_rownames(x))
     if(rownames_as_row_labels){
         x = sheet(row_labels = rownames(x), x)
@@ -51,7 +51,7 @@ as.etable.data.frame = function(x, rownames_as_row_labels = NULL){
 }
 
 #' @export
-as.etable.matrix = function(x, rownames_as_row_labels = NULL){
+as.etable.matrix = function(x, rownames_as_row_labels = NULL, ...){
     res = as.sheet(x)
     if(is.null(colnames(x))){
         colnames(res) = rep("", NCOL(res))
@@ -68,7 +68,7 @@ has_rownames = function(x){
 }
 
 #' @export
-as.etable.table = function(x, rownames_as_row_labels = NULL){
+as.etable.table = function(x, rownames_as_row_labels = NULL, ...){
     res = do.call(expand.grid, c(dimnames(provideDimnames(x, unique = FALSE)), 
                                  KEEP.OUT.ATTRS = FALSE))
     res = prepend_names(res)
@@ -99,6 +99,33 @@ as.etable.table = function(x, rownames_as_row_labels = NULL){
                 )
         }
     }
+}
+
+#' @export
+as.etable.summary.w_lm = function(x, rownames_as_row_labels = NULL, ...){
+    curr_coef = coefficients(x)  
+    model = expr_to_character(as.expression(as.formula(x$terms))[[1]])
+    summary_res = data.table(
+        row_labels = "Summary",
+        "Parameter" = c("R2", "Adjusted R2", "Observations", "Degrees of freedom", "F-statistic"),
+        "Estimate" =  c(x$r.squared, x$adj.r.squared, x$df[2] + x$df[1], x$df[2], x$fstatistic[1]),
+        "Std. Error" = NA, "t value" = NA,
+        "Pr(>|t|)" = c(NA, NA, NA, NA,  
+                       stats::pf(x$fstatistic[1L], 
+                                      x$fstatistic[2L], 
+                          x$fstatistic[3L], 
+                          lower.tail = FALSE)
+                       )
+  
+    )
+    res = cbind(data.table(row_labels = "Coefficients", "Parameter" = rownames(curr_coef)), curr_coef)
+    res = rbindlist(list(summary_res, res), fill = TRUE, use.names = TRUE)
+    res$symb = symnum(res[["Pr(>|t|)"]], corr = FALSE, na = FALSE, 
+                      cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+                      symbols = c("***", "**", "*", ".", " "))
+    colnames(res) = c("row_labels", "Parameter", "Estimate", "Std. Error", "t value", "Sig.", "")
+    set_caption(as.etable(res), model)
+
 }
 
 #' @export

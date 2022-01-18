@@ -5,7 +5,7 @@
 \alias{is.etable}
 \title{Convert data.frame/matrix to object of class 'etable'}
 \usage{
-as.etable(x, rownames_as_row_labels = NULL)
+as.etable(x, rownames_as_row_labels = NULL, ...)
 
 is.etable(x)
 }
@@ -16,6 +16,8 @@ is.etable(x)
 \code{x} will be added to result as first column with name 
 \code{row_labels}. By default row names will be added if they are not NULL
 and are not sequential numerics.}
+
+\item{...}{unused}
 }
 \value{
 object of class \code{etable}
