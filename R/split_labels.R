@@ -377,7 +377,9 @@ split_all_in_etable_for_print = function(data,
     data = as.data.frame(data, stringsAsFactors = FALSE, fix.empty.names = FALSE, check.names = FALSE)
     ##
     data_ncol = NCOL(data)
-    data = round_dataframe(data, digits = digits)
+    digits = if_null(digits, 1)
+    # hack for w_lm print
+    if(length(digits)<2) data = round_dataframe(data, digits = digits)
     cl_names = colnames(data)
     if(cl_names[1] == "row_labels") cl_names[1] = ""
     header = t(split_labels(cl_names, 
@@ -387,11 +389,14 @@ split_all_in_etable_for_print = function(data,
                             perl = perl)
     )
     if(NROW(data)>0){
-        digits = if_null(digits, 1)
-        if(!is.na(digits)){
+        if(!is.na(digits[1])){
             for(i in seq_len(NCOL(data))[-1]){
                 if(any(grepl(".", data[[i]], fixed = TRUE))){
-                    data[[i]] = format(data[[i]], nsmall = digits, justify = "right")
+                    if(length(digits)<2){
+                        data[[i]] = format(data[[i]], nsmall = digits, justify = "right")
+                    } else {
+                        data[[i]] = format(data[[i]], nsmall = digits[1], digits = digits[2], justify = "right") 
+                    }
                 }
             }
         }

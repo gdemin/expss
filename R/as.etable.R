@@ -102,7 +102,7 @@ as.etable.table = function(x, rownames_as_row_labels = NULL, ...){
 }
 
 #' @export
-as.etable.summary.w_lm = function(x, rownames_as_row_labels = NULL, ...){
+as.etable.summary.lm = function(x, rownames_as_row_labels = NULL, ...){
     curr_coef = coefficients(x)  
     model = expr_to_character(as.expression(as.formula(x$terms))[[1]])
     summary_res = data.table(
@@ -120,11 +120,16 @@ as.etable.summary.w_lm = function(x, rownames_as_row_labels = NULL, ...){
     )
     res = cbind(data.table(row_labels = "Coefficients", "Parameter" = rownames(curr_coef)), curr_coef)
     res = rbindlist(list(summary_res, res), fill = TRUE, use.names = TRUE)
-    res$symb = symnum(res[["Pr(>|t|)"]], corr = FALSE, na = FALSE, 
+    symb = symnum(res[["Pr(>|t|)"]], corr = FALSE, na = FALSE, 
                       cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                       symbols = c("***", "**", "*", ".", " "))
+    res$symb = symb
+    legend = attr(symb, "legend", exact = TRUE)
     colnames(res) = c("row_labels", "Parameter", "Estimate", "Std. Error", "t value", "Sig.", "")
-    set_caption(as.etable(res), model)
+    res = set_caption(as.etable(res), model)
+    class(res) = union(c("etable_summary_lm"), class(res))
+    attr(res, "legend") = legend
+    res
 
 }
 

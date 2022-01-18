@@ -364,6 +364,30 @@ print.etable = function(x, digits = get_expss_digits(), remove_repeated = TRUE, 
     print.data.frame(x, ...,  right = right, row.names = FALSE)
 }
 
+#' @export
+print.summary.w_lm = function(x, digits = get_expss_digits(), remove_repeated = TRUE, ...,  right = TRUE){
+    to_print = as.etable(x)
+    print(to_print, digits = digits, remove_repeated = remove_repeated, ..., right = right)
+    invisible(x)
+}
+
+#' @export
+print.etable_summary_lm = function(x, digits = get_expss_digits(), remove_repeated = TRUE, ...,  right = TRUE){
+    to_print = x
+    class(to_print) = setdiff(class(to_print), 'etable_summary_lm')
+    legend = attr(x, 'legend', exact = TRUE)
+    print(to_print, digits = c(digits, digits), remove_repeated = remove_repeated, ..., right = right)
+    if(!is.null(legend)){
+        # code from stats::printCoefmat
+        #console_width = getOption("width"))
+        #if (console_width < nchar(legend)) legend = strwrap(legend, width = console_width - 2, prefix = "  ")
+        # cat("---\nSignif. codes:  ", legend, sep = "", fill = w + 
+        #         4 + max(nchar(sleg, "bytes") - nchar(sleg)))
+        cat("  ---\n  Signif. codes:  ", legend, "\n", sep = "")
+    }
+    invisible(x)
+}
+
 fix_cyrillic_for_rstudio = function(x){
     need_fix = isTRUE(getOption("expss.fix_encoding"))
     if(need_fix){

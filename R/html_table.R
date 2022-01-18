@@ -113,8 +113,8 @@ htmlTable.etable = function(x, header = NULL, rnames = NULL, rowlabel = NULL, ca
         dollar = "$"
         nb_space =  ""     
     }
-    
-    digits = if_null(digits, 1)
+    # for w_lm we made hack - vector digits for nsmall and digits in format. Here we workaround it.
+    digits = if_null(digits, 1)[1] 
     if(!is.na(digits)){
         x = round_dataframe(x, digits = digits)
         not_total = !get_total_rows_indicator(x, total_marker = "#")
