@@ -5,8 +5,10 @@
 #' \link{as.datatable_widget} functions.
 #' @param obj object of class \code{etable} - result of \code{cross_cpct} and etc.
 #' @param caption character caption for the table.
+#' @param footer character footer for the table.
 #'
-#' @return object of class \code{with_caption}.
+#' @return object of class \code{with_caption} for captions and original class
+#'   for footer.
 #' @examples 
 #' 
 #' data(mtcars)
@@ -23,12 +25,18 @@
 #'                              ")
 #' )
 #' tbl_with_caption = cross_cases(mtcars, am, vs) %>% 
-#'     set_caption("Table 1. Type of transimission.")
+#'     set_caption("Table 1. Type of transimission.") %>% 
+#'     set_footer("Source: Motor Trend US magazine, 1974")
 #'     
 #' tbl_with_caption
 #' 
 #' @export
 set_caption <- function (obj, caption) UseMethod("set_caption")
+
+
+#' @export
+#' @rdname set_caption
+set_footer <- function (obj, footer) UseMethod("set_footer")
 
 
 #' @export
@@ -43,10 +51,26 @@ set_caption.default = function(obj, caption){
     obj    
 }
 
+#' @export
+set_footer.default = function(obj, footer){
+    if(length(footer)==0) {
+        attr(obj, "footer") = NULL
+    } else {
+        attr(obj, "footer") = footer
+    }
+    obj    
+}
+
 
 #' @export
 set_caption.etable = function(obj, caption){
    set_caption.default(obj, caption)  
+}
+
+
+#' @export
+set_footer.etable = function(obj, footer){
+    set_footer.default(obj, footer)  
 }
 
 #' @export
@@ -67,9 +91,7 @@ set_caption.huxtable = function(obj, caption){
 
 
 
-
-
-#######################
+########## get_caption #############
 #' @export
 #' @rdname set_caption
 get_caption <- function (obj) UseMethod("get_caption")
@@ -90,6 +112,22 @@ get_caption.etable = function(obj){
 #' export(caption.etable)
 #' }
 caption.etable = get_caption
+
+######### get_footer ##############
+#' @export
+#' @rdname set_caption
+get_footer <- function (obj) UseMethod("get_footer")
+
+#' @export
+get_footer.default = function(obj){
+    attr(obj, "footer", exact = TRUE)     
+}
+
+#' @export
+get_footer.etable = function(obj){
+    get_footer.default(obj)     
+}
+
 
 ############
 

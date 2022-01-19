@@ -324,7 +324,9 @@ print.labelled = function(x, max = 50, max_labels = 20, ...){
 
 #' @export
 print.etable = function(x, digits = get_expss_digits(), remove_repeated = TRUE, ...,  right = TRUE){
+    etab = x
     curr_output = getOption("expss.output")
+    footer = get_footer(x)
     if(!is.null(curr_output)){
         if("rnotebook" %in% curr_output){
             res = htmlTable(x, digits = digits)
@@ -354,14 +356,27 @@ print.etable = function(x, digits = get_expss_digits(), remove_repeated = TRUE, 
                                           digits = digits, 
                                           remove_repeated = remove_repeated)
     }
-    if("commented" %in% curr_output){
+    commented_output = "commented" %in% curr_output
+    if(commented_output){
         if(NROW(x)>0 && NCOL(x)>0){
             x = cbind("#" = "#", x)
             colnames(x) = rep("", length(x))
         } 
-        
     }
     print.data.frame(x, ...,  right = right, row.names = FALSE)
+    if(length(footer)>0){
+        if(commented_output) {
+            cat(" #  ---\n")
+            footer = paste0(" #  ", footer)
+        } else {
+            cat("  ---\n")
+            footer = paste0("  ", footer)
+        } 
+        footer = paste(footer, collapse = "\n")
+        cat(footer, "\n", sep = "")
+    }    
+    invisible(etab)
+    
 }
 
 #' @export
@@ -373,18 +388,10 @@ print.summary.w_lm = function(x, digits = get_expss_digits(), remove_repeated = 
 
 #' @export
 print.etable_summary_lm = function(x, digits = get_expss_digits(), remove_repeated = TRUE, ...,  right = TRUE){
+    # special method for etable_summary_lm because special processing of 'digits' argument
     to_print = x
     class(to_print) = setdiff(class(to_print), 'etable_summary_lm')
-    legend = attr(x, 'legend', exact = TRUE)
     print(to_print, digits = c(digits, digits), remove_repeated = remove_repeated, ..., right = right)
-    if(!is.null(legend)){
-        # code from stats::printCoefmat
-        #console_width = getOption("width"))
-        #if (console_width < nchar(legend)) legend = strwrap(legend, width = console_width - 2, prefix = "  ")
-        # cat("---\nSignif. codes:  ", legend, sep = "", fill = w + 
-        #         4 + max(nchar(sleg, "bytes") - nchar(sleg)))
-        cat("  ---\n  Signif. codes:  ", legend, "\n", sep = "")
-    }
     invisible(x)
 }
 

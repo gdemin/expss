@@ -2,13 +2,19 @@
 % Please edit documentation in R/caption.R
 \name{set_caption}
 \alias{set_caption}
+\alias{set_footer}
 \alias{get_caption}
+\alias{get_footer}
 \alias{is.with_caption}
 \title{Add caption to the table}
 \usage{
 set_caption(obj, caption)
 
+set_footer(obj, footer)
+
 get_caption(obj)
+
+get_footer(obj)
 
 is.with_caption(obj)
 }
@@ -16,9 +22,12 @@ is.with_caption(obj)
 \item{obj}{object of class \code{etable} - result of \code{cross_cpct} and etc.}
 
 \item{caption}{character caption for the table.}
+
+\item{footer}{character footer for the table.}
 }
 \value{
-object of class \code{with_caption}.
+object of class \code{with_caption} for captions and original class
+  for footer.
 }
 \description{
 To drop caption use \code{set_caption} with \code{caption = NULL}. Captions
@@ -41,7 +50,8 @@ mtcars = apply_labels(mtcars,
                              ")
 )
 tbl_with_caption = cross_cases(mtcars, am, vs) \%>\% 
-    set_caption("Table 1. Type of transimission.")
+    set_caption("Table 1. Type of transimission.") \%>\% 
+    set_footer("Source: Motor Trend US magazine, 1974")
     
 tbl_with_caption
 

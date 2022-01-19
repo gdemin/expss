@@ -127,8 +127,8 @@ as.etable.summary.lm = function(x, rownames_as_row_labels = NULL, ...){
     legend = attr(symb, "legend", exact = TRUE)
     colnames(res) = c("row_labels", "Parameter", "Estimate", "Std. Error", "t value", "Sig.", "")
     res = set_caption(as.etable(res), model)
+    res = set_footer(res, paste0("Signif. codes: ", legend))
     class(res) = union(c("etable_summary_lm"), class(res))
-    attr(res, "legend") = legend
     res
 
 }
