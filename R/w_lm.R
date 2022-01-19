@@ -61,7 +61,7 @@ summary.w_lm = function (object, correlation = FALSE, symbolic.cor = FALSE, ...)
     z <- object
     p <- z$rank
     rdf <- z$df.residual
-    weight_is_frequency = !is.null(z$weights) && if_null(z$weight_is_frequency, FALSE) 
+    weight_is_frequency = !is.null(z$weights) && isTRUE(z$weight_is_frequency) 
     res_class = c("summary.w_lm", "summary.lm")
     if (p == 0) {
         r <- z$residuals
@@ -87,6 +87,7 @@ summary.w_lm = function (object, correlation = FALSE, symbolic.cor = FALSE, ...)
         ans$cov.unscaled <- matrix(NA_real_, 0L, 0L)
         if (correlation) 
             ans$correlation <- ans$cov.unscaled
+        ans$weight_is_frequency = weight_is_frequency
         return(match_labels(ans, z$var_labs))
     }
     if (is.null(z$terms)) 
@@ -155,6 +156,7 @@ summary.w_lm = function (object, correlation = FALSE, symbolic.cor = FALSE, ...)
     }
     if (!is.null(z$na.action)) 
         ans$na.action <- z$na.action
+    ans$weight_is_frequency = weight_is_frequency
     class(ans) <- res_class
     match_labels(ans, z$var_labs)
 }

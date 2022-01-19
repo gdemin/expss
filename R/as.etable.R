@@ -102,15 +102,25 @@ as.etable.table = function(x, rownames_as_row_labels = NULL, ...){
 }
 
 #' @export
+as.etable.lm = function(x, rownames_as_row_labels = NULL, ...){
+    as.etable(summary(x), rownames_as_row_labels = rownames_as_row_labels, ...)   
+}
+
+#' @export
 as.etable.summary.lm = function(x, rownames_as_row_labels = NULL, ...){
     curr_coef = coefficients(x)  
     model = expr_to_character(as.expression(as.formula(x$terms))[[1]])
+    if(isTRUE(x$weight_is_frequency) && !is.null(x$weights)){
+        weighted_obs = sum(x$weights, na.rm = TRUE)
+    } else {
+        weighted_obs = NA
+    }
     summary_res = data.table(
         row_labels = "Summary",
-        "Parameter" = c("R2", "Adjusted R2", "Observations", "Degrees of freedom", "F-statistic"),
-        "Estimate" =  c(x$r.squared, x$adj.r.squared, x$df[2] + x$df[1], x$df[2], x$fstatistic[1]),
+        "Parameter" = c("R2", "Adjusted R2", "Observations", "Weighted obs.", "Degrees of freedom", "F-statistic"),
+        "Estimate" =  c(x$r.squared, x$adj.r.squared, length(x$residuals), weighted_obs, x$df[2], x$fstatistic[1]),
         "Std. Error" = NA, "t value" = NA,
-        "Pr(>|t|)" = c(NA, NA, NA, NA,  
+        "Pr(>|t|)" = c(NA, NA, NA, NA, NA, 
                        stats::pf(x$fstatistic[1L], 
                                       x$fstatistic[2L], 
                           x$fstatistic[3L], 

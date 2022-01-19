@@ -138,3 +138,30 @@ expect_equal(rownames(coef(summary(drop_var_labs(mod)))),
 
 expect_equal(rownames(coef(summary(prepend_names(mod)))), 
              c("(Intercept)", "disp Displacement (cu.in.)", "hp", "am"))
+
+
+context("w_lm etable methods")
+
+mod = mtcars %>% 
+    w_lm(mpg ~ disp + hp + am, weight = wt)
+
+etab = as.etable(mod)
+
+expect_equal(etab[["Estimate"]][etab$Parameter == "Weighted obs."], sum(mod$weights))
+
+mod = mtcars %>% 
+    w_lm(mpg ~ disp + hp + am, weight = wt, weight_is_frequency = FALSE)
+
+etab = as.etable(mod)
+expect_equal(etab[["Estimate"]][etab$Parameter == "Weighted obs."], NA_real_)
+
+mod = mtcars %>% 
+    w_lm(mpg ~ disp + hp + am)
+
+etab = as.etable(mod)
+expect_equal(etab[["Estimate"]][etab$Parameter == "Weighted obs."], NA_real_)
+
+mod = lm(mpg ~ disp + hp + am, data = mtcars)
+
+etab = as.etable(mod)
+expect_equal(etab[["Estimate"]][etab$Parameter == "Weighted obs."], NA_real_)
