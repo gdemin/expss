@@ -147,21 +147,24 @@ mod = mtcars %>%
 
 etab = as.etable(mod)
 
-expect_equal(etab[["Estimate"]][etab$Parameter == "Weighted obs."], sum(mod$weights))
+expect_equal(etab[["estimate"]][etab$parameter == "Weighted obs."], sum(mod$weights))
+
+# 2.508723 - SPSS with the above syntax
+expect_equal(round(etab[["estimate"]][etab$parameter == "Residual std. error"], 6), 2.508723)
 
 mod = mtcars %>% 
     w_lm(mpg ~ disp + hp + am, weight = wt, weight_is_frequency = FALSE)
 
 etab = as.etable(mod)
-expect_equal(etab[["Estimate"]][etab$Parameter == "Weighted obs."], NA_real_)
+expect_equal(etab[["estimate"]][etab$parameter == "Weighted obs."], NA_real_)
 
 mod = mtcars %>% 
     w_lm(mpg ~ disp + hp + am)
 
 etab = as.etable(mod)
-expect_equal(etab[["Estimate"]][etab$Parameter == "Weighted obs."], NA_real_)
+expect_equal(etab[["estimate"]][etab$parameter == "Weighted obs."], NA_real_)
 
 mod = lm(mpg ~ disp + hp + am, data = mtcars)
 
 etab = as.etable(mod)
-expect_equal(etab[["Estimate"]][etab$Parameter == "Weighted obs."], NA_real_)
+expect_equal(etab[["estimate"]][etab$parameter == "Weighted obs."], NA_real_)

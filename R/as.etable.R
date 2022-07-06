@@ -117,10 +117,11 @@ as.etable.summary.lm = function(x, rownames_as_row_labels = NULL, ...){
     }
     summary_res = data.table(
         row_labels = "Summary",
-        "Parameter" = c("R2", "Adjusted R2", "Observations", "Weighted obs.", "Degrees of freedom", "F-statistic"),
-        "Estimate" =  c(x$r.squared, x$adj.r.squared, length(x$residuals), weighted_obs, x$df[2], x$fstatistic[1]),
-        "Std. Error" = NA, "t value" = NA,
-        "Pr(>|t|)" = c(NA, NA, NA, NA, NA, 
+        "parameter" = c("R2", "Adjusted R2", "Observations", "Weighted obs.", "Residual std. error", "Degrees of freedom", "F-statistic"),
+        "estimate" =  c(x$r.squared, x$adj.r.squared, length(x$residuals), weighted_obs, x$sigma, x$df[2], x$fstatistic[1]),
+        "std.error" = NA, 
+        "t.value" = NA,
+        "p.value" = c(NA, NA, NA, NA, NA, NA,
                        stats::pf(x$fstatistic[1L], 
                                       x$fstatistic[2L], 
                           x$fstatistic[3L], 
@@ -128,14 +129,15 @@ as.etable.summary.lm = function(x, rownames_as_row_labels = NULL, ...){
                        )
   
     )
-    res = cbind(data.table(row_labels = "Coefficients", "Parameter" = rownames(curr_coef)), curr_coef)
+    res = cbind(data.table(row_labels = "Coefficients", "parameter" = rownames(curr_coef)), curr_coef)
+    colnames(res) = colnames(summary_res)
     res = rbindlist(list(summary_res, res), fill = TRUE, use.names = TRUE)
-    symb = symnum(res[["Pr(>|t|)"]], corr = FALSE, na = FALSE, 
+    symb = symnum(res[["p.value"]], corr = FALSE, na = FALSE, 
                       cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                       symbols = c("***", "**", "*", ".", " "))
     res$symb = symb
     legend = attr(symb, "legend", exact = TRUE)
-    colnames(res) = c("row_labels", "Parameter", "Estimate", "Std. Error", "t value", "Sig.", "")
+    colnames(res) = c(colnames(summary_res), "")
     res = set_caption(as.etable(res), model)
     res = set_footer(res, paste0("Signif. codes: ", legend))
     class(res) = union(c("etable_summary_lm"), class(res))

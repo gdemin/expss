@@ -46,4 +46,4 @@ Description: Package computes and displays tables with support for 'SPSS'-style
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL (>= 2)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
