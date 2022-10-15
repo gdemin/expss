@@ -548,7 +548,7 @@ write_labels_spss = function(x, filename){
     if(identical(curr_val_lab,next_val_lab)){
       identical_vallabs = c(identical_vallabs,x_names[each])
     } else {
-      if(!is.null(curr_val_lab) && (curr_val_lab!="")){
+      if(!is.null(curr_val_lab) && !identical(curr_val_lab, "")){
         code = paste0(code,
                       make_make_labs_spss(identical_vallabs,curr_val_lab),           
                       "\n\n")
@@ -696,7 +696,7 @@ write_labels = function(x, filename, fileEncoding = ""){
     if(identical(curr_val_lab,next_val_lab)){
       identical_vallabs = c(identical_vallabs,x_names[each])
     } else {
-      if(!is.null(curr_val_lab) && (curr_val_lab!="")){
+      if(!is.null(curr_val_lab) && !identical(curr_val_lab, "")){  
         code = paste0(code,
                       make_make_labs(identical_vallabs,curr_val_lab),           
                       "\n\n")
