@@ -40,6 +40,40 @@ expect_equal(
     0.789412
 )
 
+### ORIGIN
+
+mod_weighted = mtcars %>% 
+    w_lm(mpg ~ disp + hp + am - 1, weight = wt)
+
+# results are tests against SPSS linear regression
+# WEIGHT BY wt.
+# REGRESSION
+# /MISSING LISTWISE
+# /STATISTICS COEFF OUTS R ANOVA
+# /CRITERIA=PIN(.05) POUT(.10)
+# /ORIGIN 
+# /DEPENDENT mpg
+# /METHOD=ENTER disp hp am.
+expect_equal(
+    unname(round(coef(mod_weighted), 6)), c(0.052018, -0.019708, 17.530499)
+)
+
+summary_weighted = summary(mod_weighted)
+pvalue = unname(summary_weighted$coefficients[,"Pr(>|t|)"])
+expect_equal(
+    round(pvalue, 6), 
+    round(c(0.000122, 0.400951, 1.0284E-12), 6)
+)
+
+expect_equal(
+    round(summary_weighted$r.squared, 6), 0.787269
+)
+expect_equal(
+    round(summary_weighted$adj.r.squared, 6),
+    0.780884
+)
+
+
 ###
 
 mod_weighted = mtcars %>% 
@@ -168,3 +202,20 @@ mod = lm(mpg ~ disp + hp + am, data = mtcars)
 
 etab = as.etable(mod)
 expect_equal(etab[["estimate"]][etab$parameter == "Weighted obs."], NA_real_)
+
+
+### correlated variables
+
+mtcars = let(mtcars,
+             disp2 = disp*2
+             
+             )
+
+mod = w_lm(mtcars, mpg ~ disp + hp + am + disp2, weight = wt)
+
+expect_equal(
+    as.etable(mod)$estimate,
+    c(0.799206127263012, 0.777692498041191, 32, NA, 2.84167566048323, 
+      28, 37.1488287272525, 27.8662275014825, -0.014063531998931, -0.0414013148714832, 
+      3.79622731235445, NA)
+)

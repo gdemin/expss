@@ -108,7 +108,16 @@ as.etable.lm = function(x, rownames_as_row_labels = NULL, ...){
 
 #' @export
 as.etable.summary.lm = function(x, rownames_as_row_labels = NULL, ...){
-    curr_coef = coefficients(x)  
+    coef = coefficients(x) 
+    aliased = x$aliased
+    if (any(aliased)) {
+        cn <- names(aliased)
+        curr_coef = matrix(NA, length(aliased), 4, dimnames = list(cn, 
+                                                                colnames(coef)))
+        curr_coef[!aliased, ] = coef
+    } else {
+        curr_coef = coef
+    }
     model = expr_to_character(as.expression(as.formula(x$terms))[[1]])
     if(isTRUE(x$weight_is_frequency) && !is.null(x$weights)){
         weighted_obs = sum(x$weights, na.rm = TRUE)
