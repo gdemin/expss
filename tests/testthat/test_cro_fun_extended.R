@@ -71,12 +71,12 @@ if(isTRUE(getOption("covr"))){
                           drat = "Rear axle ratio",
                           wt = "Weight (lb/1000)",
                           qsec = "1/4 mile time",
-                          vs = "Engine",
-                          vs = c("V-engine" = 0,
-                                 "Straight engine" = 1),
-                          am = "Transmission",
-                          am = c("Automatic" = 0,
-                                 "Manual"=1),
+                          vs = "V/S",
+                          vs = c("V" = 1,
+                                 "Straight" = 0),
+                          am = "Transmission (0 = automatic, 1 = manual)",
+                          am = c(" automatic" = 0,
+                                 " manual"=1),
                           gear = "Number of forward gears",
                           carb = "Number of carburetors"
     )
@@ -219,7 +219,8 @@ if(isTRUE(getOption("covr"))){
                           99 Hard to answer
                           ")
     
-    w = w %>% let( 
+    w = w %>% 
+        let( 
         # recode age by groups
         age_cat = if_val(s2a, lo %thru% 25 ~ 1, lo %thru% hi ~ 2)
         
@@ -252,7 +253,15 @@ if(isTRUE(getOption("covr"))){
                            6 Very good
                            7 Excellent
                            "),
-            b22 = val_lab(a22)
+            b22 = num_lab("
+                           1 Extremely poor 
+                           2 Very poor
+                           3 Quite poor
+                           4 Neither good, nor poor
+                           5 Quite good
+                           6 Very good
+                           7 Excellent
+                           ")
         )
     
     expect_equal_to_reference(
@@ -325,12 +334,12 @@ if(isTRUE(getOption("covr"))){
                           drat = "Rear axle ratio",
                           wt = "Weight (lb/1000)",
                           qsec = "1/4 mile time",
-                          vs = "Engine",
-                          vs = c("V-engine" = 0,
-                                 "Straight engine" = 1),
-                          am = "Transmission",
-                          am = c("Automatic" = 0,
-                                 "Manual"=1),
+                          vs = "V/S",
+                          vs = c("V" = 1,
+                                 "Straight" = 0),
+                          am = "Transmission (0 = automatic, 1 = manual)",
+                          am = c(" automatic" = 0,
+                                 " manual"=1),
                           gear = "Number of forward gears",
                           carb = "Number of carburetors"
     )
@@ -496,3 +505,4 @@ if(isTRUE(getOption("covr"))){
     expect_identical(res, correct)
     
 }
+

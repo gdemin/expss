@@ -166,7 +166,7 @@ if(isTRUE(getOption("covr"))){
     let(
       total = 1,
       total = set_var_lab(total, "Total"),
-      total = val_lab(total, setNames(1, " "))
+      total = set_val_lab(total, setNames(1, " "))
     ) %>% 
     tab_cols(total) %>%
     tab_cells(unvr(mrset(a1_1 %to% a1_6))) %>%

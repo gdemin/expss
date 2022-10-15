@@ -543,7 +543,15 @@ if(isTRUE(getOption("covr"))) {
                    6 Very good
                    7 Excellent
                    "),
-            b22 = val_lab(a22)
+            b22 = num_lab("
+                   1 Extremely poor 
+                   2 Very poor
+                   3 Quite poor
+                   4 Neither good, nor poor
+                   5 Quite good
+                   6 Very good
+                   7 Excellent
+                   ")
             
         )
     
