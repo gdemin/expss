@@ -11,8 +11,6 @@ stopif = function(cond,...){
 }
 
 
-
-
 ####### column ###########
 
 column = function(x, column_num, condition = NULL){

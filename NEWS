@@ -1,3 +1,7 @@
+0.11.2 (15.10.2022)
+================
+* fix for new R version
+
 0.11.1 (07.01.2022)
 ================
 * add 'weight_by' - function for "brute force" frequency weighting

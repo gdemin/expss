@@ -1,3 +1,11 @@
+# for new `match` in R 4.3
+
+#' @export
+mtfrm.labelled = function(x) {
+    return(mtfrm(remove_class(x, "labelled")))
+}
+
+
 
 # this entire method for compatibility with other packages where 
 # "labelled' is single class rather than c("labelled", "numeric") etc.
@@ -218,19 +226,19 @@ as.integer.labelled = function (x, ...){
 #' @export
 as.numeric.labelled = as.double.labelled
 
-# @export
-# as.character.labelled = function (x, prepend_varlab = FALSE, ...){
-#     if(!identical(getOption("expss.enable_value_labels_support"), 0)){
-#         labelled_to_character_internal(x, prepend_varlab = prepend_varlab)  
-#     } else {
-#         y = NextMethod()
-#         if(!prepend_varlab) {
-#             y = set_var_lab(y, var_lab(x))
-#         }
-#         y
-#   
-#     } 
-# }
+#' @export
+as.character.labelled = function (x, prepend_varlab = FALSE, ...){
+    if(!identical(getOption("expss.enable_value_labels_support"), 0)){
+        labelled_to_character_internal(x, prepend_varlab = prepend_varlab)
+    } else {
+        y = NextMethod()
+        if(!prepend_varlab) {
+            y = set_var_lab(y, var_lab(x))
+        }
+        y
+
+    }
+}
 
 labelled_to_character_internal = function(x, prepend_varlab, ...) {
     vallab = val_lab(x)
