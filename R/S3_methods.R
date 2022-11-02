@@ -5,8 +5,7 @@ mtfrm.labelled <- function(x) {
     if (getRversion() >= "4.2.0") {
         return(mtfrm(remove_class(x, "labelled")))
     }
-
-    remove_class(x, "labelled")
+    x
 }
 
 
