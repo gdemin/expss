@@ -1,8 +1,11 @@
 # for new `match` in R 4.3
 
-#' @export
-mtfrm.labelled = function(x) {
-    return(mtfrm(remove_class(x, "labelled")))
+#' @rawNamespace if (getRversion() >= "4.2.0") S3method(mtfrm, labelled)
+mtfrm.labelled <- function(x) {
+    if (getRversion() >= "4.2.0") {
+        return(mtfrm(remove_class(x, "labelled")))
+    }
+    x
 }
 
 
