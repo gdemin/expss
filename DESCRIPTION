@@ -1,13 +1,19 @@
 Package: expss
 Type: Package
 Title: Tables, Labels and Some Useful Functions from Spreadsheets and 'SPSS' Statistics
-Version: 0.11.2
+Version: 0.11.4
 Maintainer: Gregory Demin <gdemin@gmail.com>
 Authors@R: c(
          person("Gregory", "Demin", email = "gdemin@gmail.com",
          role = c("aut", "cre")),
          person("Sebastian", "Jeworutzki", email="Sebastian.Jeworutzki@ruhr-uni-bochum.de", 
-         role = c("ctb"), comment = c(ORCID = "0000-0002-2671-5253"))
+         role = c("ctb"), comment = c(ORCID = "0000-0002-2671-5253")),
+         person("Dan", "Chaltiel",  
+         role = c("ctb")),
+         person("John", "Williams",  
+         role = c("ctb")),
+         person("Tom", "Elliott", 
+         role = c("ctb"))
          )
 URL: https://gdemin.github.io/expss/
 BugReports: https://github.com/gdemin/expss/issues
