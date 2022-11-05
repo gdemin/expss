@@ -38,6 +38,7 @@ you use it in the middle of the sequence then previous statements will not be
 affected.
 }
 \examples{
+\dontrun{
 data(mtcars)
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",
@@ -84,5 +85,6 @@ mtcars \%>\%
    tab_prepend_all \%>\% 
    tab_cols(total(), vs, am) \%>\% 
    tab_stat_cpct() \%>\% 
-   tab_pivot()   
+   tab_pivot()  
+   } 
 }

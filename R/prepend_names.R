@@ -14,6 +14,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
 #'                       mpg = "Miles/(US) gallon",
@@ -60,7 +61,8 @@
 #'    tab_prepend_all %>% 
 #'    tab_cols(total(), vs, am) %>% 
 #'    tab_stat_cpct() %>% 
-#'    tab_pivot()   
+#'    tab_pivot()  
+#'    } 
 prepend_values = function(x){
     UseMethod("prepend_values")
 }

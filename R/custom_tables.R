@@ -137,6 +137,7 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #'
 #' @name tables
 #' @examples
+#' \dontrun{
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
 #'                       mpg = "Miles/(US) gallon",
@@ -358,6 +359,7 @@ SIGNIFICANCE_OPTIONS = "significance_options"
 #'         tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n) 
 #' }
 #' tables %>% tab_pivot()
+#' } 
 tab_cols = function(data, ...){
     data = check_class(data)
     expr = substitute(list(...))

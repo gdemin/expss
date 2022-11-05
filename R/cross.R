@@ -59,6 +59,7 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' @seealso \link{tables}, \link{fre}, \link{cro_fun}.
 #'
 #' @examples
+#' \dontrun{
 #' data(mtcars)
 #' mtcars = apply_labels(mtcars,
 #'                       mpg = "Miles/(US) gallon",
@@ -136,6 +137,7 @@ TOTAL_STATISTICS = c("u_cases", "w_cases", "u_responses", "w_responses", "u_cpct
 #' cross_cpct(brands, mrset(brand_1 %to% brand_4), list(total(), score))
 #' # responses
 #' cross_cpct_responses(brands, mrset(brand_1 %to% brand_4), list(total(), score))
+#' }
 #' @export
 cross_cases = function(data,
                     cell_vars, 

@@ -217,6 +217,7 @@ variables/banners use \link{nest}. For more sophisticated interface with
 modern piping via \code{magrittr} see \link{tables}.
 }
 \examples{
+\dontrun{
 data(mtcars)
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",
@@ -294,6 +295,7 @@ brands = brands \%>\%
 cross_cpct(brands, mrset(brand_1 \%to\% brand_4), list(total(), score))
 # responses
 cross_cpct_responses(brands, mrset(brand_1 \%to\% brand_4), list(total(), score))
+}
 }
 \seealso{
 \link{tables}, \link{fre}, \link{cro_fun}.

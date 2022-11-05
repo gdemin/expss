@@ -41,6 +41,7 @@ sorted table('etable')/data.frame
 rows (by default, it is rows which contain '#' in the first column).
 }
 \examples{
+\dontrun{
 data(mtcars)
 
 # apply labels
@@ -70,5 +71,5 @@ sorting_column = "Engine|V-engine"
 mtcars \%>\% 
     cross_cpct(list(cyl, gear, carb), list("#total", vs, am)) \%>\% 
     tab_sort_desc((sorting_column))
-    
+}    
 }

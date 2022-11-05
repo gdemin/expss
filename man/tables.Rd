@@ -283,6 +283,7 @@ always omitted.}
 statistic.}}
 }
 \examples{
+\dontrun{
 data(mtcars)
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",
@@ -504,6 +505,7 @@ for(each in c("mpg", "disp", "hp", "qsec")){
         tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n) 
 }
 tables \%>\% tab_pivot()
+} 
 }
 \seealso{
 \link{fre}, \link{cross_cases}, \link{cross_fun}, \link{tab_sort_asc},
