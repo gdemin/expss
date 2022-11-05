@@ -2,6 +2,8 @@
 # as.data.table = data.table::as.data.table
 # '[.data.table' = data.table::`[.data.table`
 
+utils::globalVariables("mtfrm")
+
 ## stop if condition with message
 stopif = function(cond,...){
     if (cond) {
