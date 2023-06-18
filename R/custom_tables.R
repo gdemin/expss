@@ -1180,7 +1180,7 @@ pivot_columns = function(data, stat_position = c("inside", "outside"),
     labels = data[[STAT_LABELS]]
     labels_index = seq_along(labels)
     
-    all_colnames = unlist(lapply(results, function(item) colnames(item)[-1]))
+    all_colnames = unlist(lapply(results, function(item) make.unique(colnames(item)[-1])))
     colnames_index = match(all_colnames, unique(all_colnames))
     results_ncols = vapply(results, NCOL, FUN.VALUE = numeric(1)) - 1 # 'row_labels' excluded
     

@@ -431,3 +431,31 @@ res = structure(list(row_labels = c("Group 1|varA", "Group 1|varB",
 if(as.numeric(version$major) >=4){
     expect_equal(output, res)
 }
+
+context("inside_columns with subtotal issue #102")
+
+data(infert)
+res = infert %>% 
+    tab_cells(parity) %>% 
+    tab_cols(
+        #total(),
+        subtotal(
+            education,
+            "LESS THAN 12 Y.O." = levels(education)[1:2],
+            "GREATER THAN 5 Y.O." = levels(education)[2:3]
+        )[,-1]
+    ) %>% 
+    tab_stat_cases() %>% 
+    tab_pivot(
+        stat_position = "inside_columns"
+    )
+
+expect_identical(res, 
+ structure(list(row_labels = c("parity|1", "parity|2", "parity|3", 
+ "parity|4", "parity|5", "parity|6", "parity|#Total cases"), `0-5yrs` = c(3, 
+ NA, NA, 3, NA, 6, 12), `6-11yrs` = c(42, 42, 21, 12, 3, NA, 120
+ ), `LESS THAN 12 Y.O.` = c(45, 42, 21, 15, 3, 6, 132), `6-11yrs` = c(42, 
+ 42, 21, 12, 3, NA, 120), `12+ yrs` = c(54, 39, 15, 3, 3, 2, 116
+ ), `GREATER THAN 5 Y.O.` = c(96, 81, 36, 15, 6, 2, 236)), row.names = c(NA, 
+ -7L), class = c("etable", "data.frame"))
+)
