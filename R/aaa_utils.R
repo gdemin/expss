@@ -234,15 +234,28 @@ flat_list=function(x, flat_df = FALSE){
     }
 }
 
-
+# contrary to base 'round' round .5 to bigest integer
+round2 = function(x, digits = 0) {
+    posneg = sign(x)
+    z = abs(x)*10^digits
+    z = z + 0.5 + sqrt(.Machine$double.eps)
+    z = trunc(z)
+    z = z/10^digits
+    z*posneg
+}
 
 ## round all numerics in the data.frame
 round_dataframe = function(x, digits = NULL){
     if(is.null(digits)) digits = 1
     if(is.na(digits)) return(x)
+    if(isFALSE(get_expss_rounding())) {
+        round_function = round2
+    } else {
+        round_function = round
+    }    
     for (i in seq_len(NCOL(x))){
         if(is.numeric(x[[i]])){
-            x[[i]] = round(x[[i]], digits)
+            x[[i]] = round_function(x[[i]], digits)
         }
     }
     x
