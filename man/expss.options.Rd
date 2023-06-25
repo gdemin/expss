@@ -24,7 +24,7 @@ expss_digits(digits = NULL)
 
 get_expss_digits()
 
-expss_round_half_to_even(round_half_to_even = NULL)
+expss_round_half_to_even(round_half_to_even = TRUE)
 
 get_expss_rounding()
 
@@ -59,6 +59,10 @@ expss_fre_stat_lab(
 \item{digits}{integer. Number of digits after decimal point. \code{NULL} is
 default and means 1 digit. \code{NA} means no rounding.}
 
+\item{round_half_to_even}{logical. Default is TRUE which means
+default R rounding: "half to even". For rounding "half to largest" 
+set this option to FALSE.}
+
 \item{...}{list of parameters for \code{huxtable::set_default_properties}.
 See \link[huxtable]{set_default_properties}.}
 
@@ -75,12 +79,12 @@ will be shown for tables. This parameter is supported in the
 methods. \code{NULL} is default and means one digit. \code{NA} means no
 rounding. There is a convenience function for this option:
 \code{expss_digits}.}
-\item{\code{expss.round_half_to_even} }{ Determine which rounding we will use.
- Default rounding is standard R rounding: "half to even". For rounding "half to largest" 
+\item{\code{expss.round_half_to_even} }{ Determines which rounding we will use.
+ Default rounding is as with R \code{round}: "half to even". For rounding "half to largest" 
  set this option to FALSE. This parameter is supported in the \link[expss]{as.datatable_widget},
  \link[expss]{htmlTable.etable}, \code{print} and in significance testing
 methods. \code{NULL} is default and means R default rounding. \code{NA} means no
-rounding. Parameter do not affect calculations, only table representation. 
+rounding. Parameter does not affect calculations, only table representation. 
 There is a convenience function for this option:
 \code{expss_round_half_to_even}.}
 \item{\code{expss.enable_value_labels_support} }{By default, all labelled
