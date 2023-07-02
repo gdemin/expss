@@ -495,4 +495,27 @@ if(isTRUE(getOption("covr"))) {
         significance_cpct(mtcars_table5), "rds/signif_cpct38.rds",  update = FALSE)
     
     
+    context("significance_cpct issue #100")
+    expss_digits(0)
+    target = c(65.5, 34.5)*10
+    odd_df = data.frame(
+        a = c(rep(1:2, times = target), rep(2:1, times = target), rep(1, sum(target)), rep(1:2, times = c(1, sum(target)-1)), 1), 
+        b = rep(1:5, times = c(sum(target), sum(target), sum(target), sum(target), 1))
+    )
+    expss_round_half_to_even(TRUE)
+    res = as.data.frame(cross_cpct(odd_df, a, b) %>% significance_cpct(digits = 0, min_base = 0))
+    expect_equal(trimws(res[2,2]), "34")
+    expect_equal(trimws(res[1,4]), "100 A B D")
+    expect_equal(trimws(res[1,6]), "100 D")
+    
+    expss_round_half_to_even(FALSE)
+    res = as.data.frame(cross_cpct(odd_df, a, b) %>% significance_cpct(digits = 0, min_base = 0, as_spss = TRUE))
+    expect_equal(trimws(res[2,2]), "35")
+    expect_equal(trimws(res[1,4]), "100")
+    expect_equal(trimws(res[1,6]), "100")
+    
+    expss_round_half_to_even(TRUE)
+    
+    
+    
 }

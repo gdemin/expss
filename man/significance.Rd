@@ -41,7 +41,8 @@ tab_significance_options(
   digits = get_expss_digits(),
   na_as_zero = FALSE,
   var_equal = FALSE,
-  mode = c("replace", "append")
+  mode = c("replace", "append"),
+  as_spss = FALSE
 )
 
 tab_last_sig_cpct(
@@ -61,6 +62,7 @@ tab_last_sig_cpct(
   total_marker = "#",
   total_row = 1,
   digits = get_expss_digits(),
+  as_spss = FALSE,
   mode = c("replace", "append"),
   label = NULL
 )
@@ -162,7 +164,8 @@ significance_cpct(
   na_as_zero = FALSE,
   total_marker = "#",
   total_row = 1,
-  digits = get_expss_digits()
+  digits = get_expss_digits(),
+  as_spss = FALSE
 )
 
 add_sig_labels(x, sig_labels = LETTERS)
@@ -260,8 +263,7 @@ subtables with incomplete bases may be incorrect. Only for
 subtable it is a number or name of total row for the significance
 calculation.}
 
-\item{digits}{an integer indicating how much digits after decimal separator 
-will be shown in the final table.}
+\item{digits}{an integer indicating how much digits after decimal separator}
 
 \item{na_as_zero}{logical. \code{FALSE} by default. Should we treat
 \code{NA}'s as zero cases?}
@@ -274,6 +276,10 @@ the first case the previous result in the sequence of table calculation
 will be replaced with result of significance testing. In the second case
 result of the significance testing will be appended to sequence of table
 calculation.}
+
+\item{as_spss}{a logical. FALSE by default. If TRUE, proportions which
+are equal to zero or one will be ignored. Also will be ignored categories
+with bases less than 2.}
 
 \item{label}{character. Label for the statistic in the \code{tab_*}. Ignored
 if the \code{mode} is equals to \code{replace}.}

@@ -135,7 +135,9 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #' @param var_equal a logical variable indicating whether to treat the two
 #'   variances as being equal. For details see \link[stats]{t.test}.
 #' @param digits an integer indicating how much digits after decimal separator 
-#'   will be shown in the final table.
+#' @param as_spss a logical. FALSE by default. If TRUE, proportions which
+#'   are equal to zero or one will be ignored. Also will be ignored categories
+#'   with bases less than 2.
 #' @param data data.frame/intermediate_table for \code{tab_*} functions.
 #' @param mode character. One of \code{replace}(default) or \code{append}. In
 #'   the first case the previous result in the sequence of table calculation
@@ -268,7 +270,8 @@ significance_cpct = function(x,
                              na_as_zero = FALSE,
                              total_marker = "#",
                              total_row = 1,
-                             digits = get_expss_digits()
+                             digits = get_expss_digits(),
+                             as_spss = FALSE
                              ){
     UseMethod("significance_cpct")
 }
@@ -290,7 +293,8 @@ significance_cpct.etable = function(x,
                                     na_as_zero = FALSE,
                                     total_marker = "#",
                                     total_row = 1,
-                                    digits = get_expss_digits()
+                                    digits = get_expss_digits(),
+                                    as_spss = FALSE
 ){
     
     
@@ -304,6 +308,10 @@ significance_cpct.etable = function(x,
     keep = match.arg(keep, KEEP_STAT, several.ok = TRUE)
     keep_percent = "percent" %in% keep
     keep_bases = "bases" %in% keep
+    if(as_spss) {
+        min_base = max(min_base, 2)
+        na_as_zero = FALSE
+    }
     if(NCOL(x)>1){
         groups = header_groups(colnames(x))
         if("subtable" %in% compare_type){
@@ -325,6 +333,9 @@ significance_cpct.etable = function(x,
             curr_props[,-1] = curr_props[,-1]/100
             if(na_as_zero){
                 if_na(curr_props[,-1]) = 0
+            }
+            if(as_spss){
+                recode(curr_props[,-1]) = list(c(0, 1) ~ NA)
             }
             if(any(c("first_column", "adjusted_first_column") %in% compare_type)){
                 sig_section = section_sig_first_column(sig_section = sig_section, 

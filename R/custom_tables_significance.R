@@ -21,7 +21,9 @@ tab_significance_options = function(data,
                                     digits = get_expss_digits(),
                                     na_as_zero = FALSE,
                                     var_equal = FALSE,
-                                    mode = c("replace", "append")){
+                                    mode = c("replace", "append"),
+                                    as_spss = FALSE
+                                    ){
     data = check_class(data)
     sig_options = match.call()[-2]
     sig_options[[1]] = quote(list)
@@ -57,6 +59,7 @@ tab_last_sig_cpct = function(data,
                              total_marker = "#",
                              total_row = 1,
                              digits = get_expss_digits(),
+                             as_spss = FALSE,
                              mode = c("replace", "append"),
                              label = NULL
 ){
