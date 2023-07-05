@@ -73,9 +73,9 @@
 #' 
 #' 
 do_repeat = function(data, ...){
-    .Deprecated("", 
-                msg = "'do_repeat' functionality is deprecated because it seems no one need it.\n
-                    If you use 'do_repeat' please file an issue at https://github.com/gdemin/expss/issues/")
+    # .Deprecated("", 
+    #             msg = "'do_repeat' functionality is deprecated because it seems no one need it.\n
+    #                 If you use 'do_repeat' please file an issue at https://github.com/gdemin/expss/issues/")
     args = substitute(list(...))
     do_repeat_internal(data, args, parent = parent.frame())   
 }
