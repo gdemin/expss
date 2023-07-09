@@ -104,8 +104,9 @@ merge_table = function(x, y,
     class_y = class(y)
     # below we try to preserve order in rows in y for rows which doesn't exists in x
     order.x = seq_len(nrow(x))
+    backup_colnames = colnames(x)
     x[['..order..x']] = order.x
-    
+    names(x) = c(backup_colnames, '..order..x')
     #### duplicated column names are possible so we use integer position if by.x or by.y is character
     if(is.numeric(by.x)){
         pos1 = by.x

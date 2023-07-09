@@ -1190,4 +1190,29 @@ if(isTRUE(getOption("covr"))) {
         "rds/ctable41.rds",  update = FALSE
     )
     
+    context("tab_pivot inside columns double labels")
+    res = mtcars %>%
+        tab_cells(am) %>%
+        tab_cols(total(), vs, vs) %>%
+        tab_total_row_position("none") %>% 
+        tab_stat_cpct(label = "col %") %>%
+        tab_stat_rpct(label = "row %") %>%
+        tab_stat_tpct(label = "table %") %>%
+        tab_pivot(stat_position = "inside_columns")
+    
+        expect_equal(res, structure(list(row_labels = c("Transmission|Automatic", "Transmission|Manual"
+        ), `#Total|col %` = c(59.375, 40.625), `#Total|row %` = c(100, 
+        100), `#Total|table %` = c(59.375, 40.625), `Engine|V-engine|col %` = c(66.6666666666667, 
+        33.3333333333333), `Engine|V-engine|row %` = c(63.1578947368421, 
+        46.1538461538462), `Engine|V-engine|table %` = c(37.5, 18.75), 
+        `Engine|Straight engine|col %` = c(50, 50), `Engine|Straight engine|row %` = c(36.8421052631579, 
+        53.8461538461538), `Engine|Straight engine|table %` = c(21.875, 
+        21.875), `Engine|V-engine|col %` = c(66.6666666666667, 33.3333333333333
+        ), `Engine|V-engine|row %` = c(63.1578947368421, 46.1538461538462
+        ), `Engine|V-engine|table %` = c(37.5, 18.75), `Engine|Straight engine|col %` = c(50, 
+        50), `Engine|Straight engine|row %` = c(36.8421052631579, 
+        53.8461538461538), `Engine|Straight engine|table %` = c(21.875, 
+        21.875)), row.names = c(NA, -2L), class = c("etable", "data.frame"
+        )))
+        
 }
