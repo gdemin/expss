@@ -1,3 +1,9 @@
+0.11.5 (10.07.2023)
+================
+* add 'as_spss' argument to 'significance_cpct' for more SPSS-compatible results (issue #100) 
+* add rounding option (issue #100)
+* fix bug with duplicated columns labels in tab_pivot(stat_position = 'inside_columns') (issue #102) 
+
 0.11.4 (03.11.2022)
 ================
 * fix disastrous bug which prevent package installation for R version before 4.2 (many thanks to Tom Elliott)
@@ -13,7 +19,7 @@
 * 'apply_labels' now can accept list with variable and value labels
 * 'calc_cro_*'s are renamed to more clear 'cross_'s 
 * 'compute', 'do_if', 'where' and 'calc' are deprecated in favor of the 'maditr' 
-    package. 'maditr' is thin layer above fastest data manipulation package 'data.tabe'  
+    package. 'maditr' is thin layer above fastest data manipulation package 'data.table'  
 
 0.10.7 (15.11.2020)
 ================
@@ -68,7 +74,7 @@
 * improve 'recode' performance
 * simplify 'recode' behavior. Now RHS and LHS part in the recoding formula should be single column object. However, you can still recode entire data.frame or list.
 * improve preformance of 'sum_row', 'mean_row', 'median_row' and etc.
-* change labelled 'csv' format. Now labels are stored in the same file as data. Labels are located in the commented lines at the begining of the file. Ispite of changing format, 'read_labelled_csv' should detect and read the old format automatically.
+* change labelled 'csv' format. Now labels are stored in the same file as data. Labels are located in the commented lines at the begining of the file. Inspite of changing format, 'read_labelled_csv' should detect and read the old format automatically.
 * add new functions: 'read_labelled_xlsx' and 'write_labelled_xlsx'. Now you can save and restore labelled data to Excel file. Labels are stored on the separate sheet. 
 * add new functions: 'read_labelled_fst' and 'write_labelled_fst' for storing data in the 'fst' format (https://www.fstpackage.org/). With this format you can read and write a huge amount of labelled data very quickly.
 * Small bugfixes.
