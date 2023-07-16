@@ -129,6 +129,7 @@ And 'unhide' is used with 'net' when you want to show items for some nets.
 See examples.
 }
 \examples{
+data.table::setDTthreads(2)
 ol = c(1:7, 99)
 var_lab(ol) = "Liking"
 val_lab(ol)  = num_lab("

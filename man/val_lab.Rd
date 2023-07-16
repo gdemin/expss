@@ -87,6 +87,7 @@ Value labels are stored in attribute "labels"
 }
 \examples{
 # toy example
+data.table::setDTthreads(2)
 set.seed(123)
 # score - evaluation of tested product
 

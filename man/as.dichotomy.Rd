@@ -99,6 +99,7 @@ because any column of such matrix usually is linear combinations of other column
 }
 }
 \examples{
+data.table::setDTthreads(2)
 # toy example
 # brands - multiple response question
 # Which brands do you use during last three months? 

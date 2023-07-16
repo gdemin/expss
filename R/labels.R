@@ -230,6 +230,7 @@ add_labelled_class.data.frame = add_labelled_class.list
 #' @export
 #' @examples
 #' # toy example
+#' data.table::setDTthreads(2)
 #' set.seed(123)
 #' # score - evaluation of tested product
 #' 

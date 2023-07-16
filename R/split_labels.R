@@ -29,6 +29,7 @@
 #' @export
 #' @seealso \link[base]{strsplit}
 #' @examples
+#' data.table::setDTthreads(2)
 #' data(mtcars)
 #'
 #' # apply labels

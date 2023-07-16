@@ -75,6 +75,7 @@ and column names. Result of this operation is data.frame with character
 columns.
 }
 \examples{
+data.table::setDTthreads(2)
 data(mtcars)
 
 # apply labels

@@ -56,6 +56,7 @@ ones. See examples. Strange result is possible if one or two arguments have
 duplicates in first column (column with labels).
 }
 \examples{
+data.table::setDTthreads(2)
 data(mtcars)
 # apply labels
 mtcars = apply_labels(mtcars,

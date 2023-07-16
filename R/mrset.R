@@ -25,6 +25,7 @@
 #' @export
 #'
 #' @examples
+#' data.table::setDTthreads(2)
 #' data(product_test)
 #' 
 #' cross_cpct(product_test, mrset(a1_1 %to% a1_6))

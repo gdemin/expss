@@ -26,6 +26,7 @@
 #' @export
 #'
 #' @examples
+#' data.table::setDTthreads(2)
 #' data(mtcars)
 #' # apply labels
 #' mtcars = apply_labels(mtcars,

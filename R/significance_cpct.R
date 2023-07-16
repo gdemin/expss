@@ -177,13 +177,13 @@ KEEP_STAT = c("percent", "cases", "means", "bases", "sd", "none")
 #'                       carb = "Number of carburetors"
 #' )
 #' 
+#' \dontrun{
 #' mtcars_table = cross_cpct(mtcars, 
 #'                           list(cyl, gear),
 #'                           list(total(), vs, am)
 #'                           )
 #' 
 #' significance_cpct(mtcars_table)
-#' \dontrun{
 #' # comparison with first column
 #' significance_cpct(mtcars_table, compare_type = "first_column")
 #' 

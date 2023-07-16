@@ -1,4 +1,4 @@
-0.11.5 (10.07.2023)
+0.11.6 (14.07.2023)
 ================
 * add 'as_spss' argument to 'significance_cpct' for more SPSS-compatible results (issue #100) 
 * add rounding option (issue #100)

@@ -40,6 +40,7 @@
 #' @seealso \code{\link{as.category}} for reverse conversion, \link{mrset},
 #'   \link{mdset} for usage multiple-response variables with tables.
 #' @examples
+#' data.table::setDTthreads(2)
 #' # toy example
 #' # brands - multiple response question
 #' # Which brands do you use during last three months? 

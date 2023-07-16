@@ -30,6 +30,7 @@
 #'                       carb = "Number of carburetors"
 #' )
 #' 
+#' data.table::setDTthreads(2) # for running on CRAN
 #' cross_cases(mtcars, cyl, am %nest% vs)
 #' 
 #' # list of variables
