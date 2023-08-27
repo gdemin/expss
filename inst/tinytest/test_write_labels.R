@@ -1,6 +1,5 @@
 if(isTRUE(getOption("covr"))){ 
-    cat("write_labels", "
-")
+    cat("\nCONTEXT:", "write_labels", "\n")
     if(dir.exists("data_files")){
         # if(TRUE){
         is_windows = any(grepl("windows", tolower(sessionInfo()$running)))
@@ -224,8 +223,7 @@ if(isTRUE(getOption("covr"))){
         unlink("data_files/aaa_csv2.csv")
         unlink("data_files/aaa_tab.csv")
         unlink("data_files/aaa_tab2.csv")
-        cat("write_labelled_xlsx", "
-")
+        cat("\nCONTEXT:", "write_labelled_xlsx", "\n")
         aaa = suppressWarnings(read_spss("data_files/7556w2_4Client_prelaunch.sav"))
         bbb = suppressWarnings(read_spss("data_files/2014-2016final.sav"))
         nsk = suppressWarnings(read_spss("data_files/NSK_all.sav"))

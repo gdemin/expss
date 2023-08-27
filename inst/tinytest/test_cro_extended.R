@@ -1,5 +1,4 @@
-cat("cro extended", "
-")
+cat("\nCONTEXT:", "cro extended", "\n")
 suppressWarnings(RNGversion("3.5.0"))
 
 data(mtcars)
@@ -138,8 +137,7 @@ expect_equal_to_reference(
     "rds/long_table26.rds",  update = FALSE)
 
 
-cat("cro extended some exotics", "
-")
+cat("\nCONTEXT:", "cro extended some exotics", "\n")
 
 mult1 = sheet(v1 = c(1,1,NA), v2 = c(NA, 2, 2))
 mult2 = sheet(b1 = c(1, 1, 2), b2 = c(3, NA, 1))
@@ -207,8 +205,7 @@ expect_equal_to_reference(
 
 
 
-cat("cro multiple by multiple", "
-")
+cat("\nCONTEXT:", "cro multiple by multiple", "\n")
 
 data("product_test")
 codeframe_likes = num_lab("

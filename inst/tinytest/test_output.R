@@ -1,8 +1,7 @@
 # if(isTRUE(getOption("covr"))){ 
 if(FALSE){ 
 
-    cat("output methods print labelled", "
-")
+    cat("\nCONTEXT:", "output methods print labelled", "\n")
     
     x = c(letters, LETTERS)
     x = as.labelled(x)
@@ -29,8 +28,7 @@ if(FALSE){
     expect_output_file(str(x), "rds/str_labelled7.txt")
     
     #####################################
-    cat("output etable fre methods", "
-")
+    cat("\nCONTEXT:", "output etable fre methods", "\n")
     
     data(mtcars)
     # add labels to dataset

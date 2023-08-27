@@ -1,7 +1,6 @@
 if(isTRUE(getOption("covr"))){ 
 
-  cat("htmlTable", "
-")
+  cat("\nCONTEXT:", "htmlTable", "\n")
   
   data(mtcars)
   mtcars = apply_labels(mtcars,

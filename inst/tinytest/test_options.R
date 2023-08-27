@@ -1,5 +1,4 @@
-cat("options", "
-")
+cat("\nCONTEXT:", "options", "\n")
 data(mtcars)
 data(iris)
 # add labels to dataset

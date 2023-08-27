@@ -1,5 +1,4 @@
-cat("apply_labels", "
-")
+cat("\nCONTEXT:", "apply_labels", "\n")
 
 data(mtcars)
 correct_mtcars = mtcars
@@ -150,8 +149,7 @@ expect_identical(val_lab(dt_mt$vs), c("V-engine" = 0,
 expect_silent(dt_mt[,new:=1])
 expect_silent(new_mt[,new:=1])
 
-cat("apply_labels list argument", "
-")
+cat("\nCONTEXT:", "apply_labels list argument", "\n")
 
 data(mtcars)
 correct_mtcars = mtcars

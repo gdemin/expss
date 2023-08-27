@@ -1,5 +1,4 @@
-cat("drop_empty_*", "
-")
+cat("\nCONTEXT:", "drop_empty_*", "\n")
 data("mtcars")
 mtcars = apply_labels(mtcars,
             vs = "Engine",

@@ -1,5 +1,4 @@
-cat("text_expand", "
-")
+cat("\nCONTEXT:", "text_expand", "\n")
 
 i = 1:2
 # expect_error(text_expand(i))
@@ -37,8 +36,7 @@ expect_identical(with(dfs, text_expand("{zzz}")), as.character(67:68))
 expect_identical(with(dfs, text_expand("{k}")), '42')
 
 
-cat("qe", "
-")
+cat("\nCONTEXT:", "qe", "\n")
 
 res = qe(mrset(a1 %to% a6), ..$a, ..p("aaa"))
 etal = list(quote(mrset(a1 %to% a6)), 

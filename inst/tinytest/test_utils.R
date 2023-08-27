@@ -1,5 +1,4 @@
-cat("insert_value_before", "
-")
+cat("\nCONTEXT:", "insert_value_before", "\n")
 aaa = 1:5
 expss:::insert_value_before(aaa, 1) = 10
 expect_identical(aaa, c(10, 1:5))
@@ -17,8 +16,7 @@ expss:::insert_value_before(aaa, 11) = 10
 expect_identical(aaa, 1:5)
 
 
-cat("insert_value_after", "
-")
+cat("\nCONTEXT:", "insert_value_after", "\n")
 aaa = 1:5
 expss:::insert_value_after(aaa, 1) = 10
 expect_identical(aaa, c(1, 10, 2:5))
@@ -35,8 +33,7 @@ aaa = 1:5
 expss:::insert_value_after(aaa, 11) = 10
 expect_identical(aaa, 1:5)
 
-cat("uniq_elements", "
-")
+cat("\nCONTEXT:", "uniq_elements", "\n")
 
 uniq_elements = expss:::uniq_elements
 

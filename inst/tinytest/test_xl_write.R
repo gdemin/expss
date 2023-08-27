@@ -1,5 +1,4 @@
-cat("xl_write", "
-")
+cat("\nCONTEXT:", "xl_write", "\n")
 
 if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
     if(isTRUE(getOption("covr"))) { 
@@ -193,8 +192,7 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
         # wb$core = ""
         # expect_known_hash(wb, "6cfcca3057")
         # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
-        cat("xl_write.list", "
-")
+        cat("\nCONTEXT:", "xl_write.list", "\n")
         
         res_list = list()
         mtcars_table = cro_cpct(list(unvr(mtcars$vs)), 
@@ -264,8 +262,7 @@ if(require(openxlsx, quietly = TRUE, warn.conflicts = FALSE)){
         res = xl_write(res_list, wb, sh, row = 1, col = 1, gap = 2, rownames = TRUE)
         # saveWorkbook(wb, "tables.xlsx", overwrite = TRUE)
         
-        # cat("custom format", "
-")
+        # cat("\nCONTEXT:", "custom format", "\n")
         mtcars = apply_labels(mtcars,
                               mpg = "Miles/(US) gallon",
                               hp = "Gross horsepower"

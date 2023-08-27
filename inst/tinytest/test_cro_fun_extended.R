@@ -1,8 +1,7 @@
 if(isTRUE(getOption("covr"))){ 
 
     
-    cat("cro_fun extended", "
-")
+    cat("\nCONTEXT:", "cro_fun extended", "\n")
     suppressWarnings(RNGversion("3.5.0"))
     
     
@@ -324,8 +323,7 @@ if(isTRUE(getOption("covr"))){
                           fun = combine_functions(w_mean)))
     )
     # calc(w, fre(a1_1 %to% a1_6))
-    cat("cro_mean_sd_n", "
-")
+    cat("\nCONTEXT:", "cro_mean_sd_n", "\n")
     
     data(mtcars)
     mtcars = apply_labels(mtcars,
@@ -429,8 +427,7 @@ if(isTRUE(getOption("covr"))){
                               "rds/cro_mean_sd_n4_1.rds",  update = FALSE
     )
     
-    cat("cro_fun unsafe labels", "
-")
+    cat("\nCONTEXT:", "cro_fun unsafe labels", "\n")
     
     fun = function(x) c(sum(x), mean(x), length(x))
     

@@ -1,5 +1,4 @@
-cat("names2labels", "
-")
+cat("\nCONTEXT:", "names2labels", "\n")
 
 vec = 1:7
 

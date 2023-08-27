@@ -1,8 +1,7 @@
 if(isTRUE(getOption("covr"))){ 
 
     
-    cat("custom tables significance cpct", "
-")
+    cat("\nCONTEXT:", "custom tables significance cpct", "\n")
     
     data(mtcars)
     mtcars = apply_labels(mtcars,
@@ -174,8 +173,7 @@ if(isTRUE(getOption("covr"))){
         "rds/ct_signif_cpct10.rds",  update = FALSE)
     
     
-    cat("custom tables significance means", "
-")
+    cat("\nCONTEXT:", "custom tables significance means", "\n")
     
     mtcars_table = cro_mean_sd_n(list(mtcars$mpg, mtcars$hp),
                                  list(total(), mtcars$vs, mtcars$am))

@@ -1,5 +1,4 @@
-cat("window_fun", "
-")
+cat("\nCONTEXT:", "window_fun", "\n")
 
 expect_error(window_fun(1:3))
 expect_error(window_fun(1:10, 1:2, mean))

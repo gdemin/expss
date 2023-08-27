@@ -1,5 +1,4 @@
-cat("write_labelled_*", "
-")
+cat("\nCONTEXT:", "write_labelled_*", "\n")
 if(isTRUE(getOption("covr")) && dir.exists("data_files")){
     data(mtcars)
     mtcars = apply_labels(mtcars,

@@ -1,5 +1,4 @@
-cat("w_* unweighted", "
-")
+cat("\nCONTEXT:", "w_* unweighted", "\n")
 suppressWarnings(RNGversion("3.5.0"))
 
 
@@ -62,8 +61,7 @@ expect_equal(w_n(x, na.rm = FALSE), sum(!is.na(x)))
 expect_equal(w_se(x, na.rm = FALSE), sd(x)/sqrt(length(x)))
 
 ##############################
-cat("w_* weighted", "
-")
+cat("\nCONTEXT:", "w_* weighted", "\n")
 
 set.seed(123)
 x = round(c(NA, runif(8, 1,2), NA), 5)
@@ -184,8 +182,7 @@ expect_equal(w_var(x, w, na.rm = FALSE), matrixStats::weightedVar(x_no_na, w_no_
 expect_equal(w_n(x, w, na.rm = FALSE), sum((!is.na(x))*w_prep))
 
 ###################################################
-cat("w_* unweighted corr", "
-")
+cat("\nCONTEXT:", "w_* unweighted corr", "\n")
 
 set.seed(123)
 x = round(c(NA, runif(8, 1,2), NA), 5)
@@ -298,8 +295,7 @@ expect_equal(w_spearman(mat, use = "pairwise"), spss_test)
 #############################################################
 #############################################################
 
-cat("w_* weighted corr", "
-")
+cat("\nCONTEXT:", "w_* weighted corr", "\n")
 
 ### listwise
 
@@ -383,8 +379,7 @@ expect_equal(w_spearman(mat, weight = w, use = "pairwise"), spss_test)
 
 ######################################
 #####################################
-cat("weight = 1", "
-")
+cat("\nCONTEXT:", "weight = 1", "\n")
 set.seed(123)
 x = round(c(NA, runif(8, 1,2), NA), 5)
 w = round(c(runif(6, 1,2), -1, NA, NA, 0), 5)
@@ -456,8 +451,7 @@ expect_equal(w_spearman(mat, weight = w/100, use = "complete.obs"), diag_one)
 
 
 #########
-cat("weighted statistics labels", "
-")
+cat("\nCONTEXT:", "weighted statistics labels", "\n")
 
 
 data(mtcars)
@@ -512,8 +506,7 @@ expect_equal(
     labs
 )
 
-cat("cor emtpy argumnet", "
-")
+cat("\nCONTEXT:", "cor emtpy argumnet", "\n")
 
 empty = matrix(NA*1, ncol = ncol(dfs), nrow = ncol(dfs))
 colnames(empty) = colnames(names2labels(dfs))
@@ -529,8 +522,7 @@ expect_equal(w_cov(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
 expect_equal(w_spearman(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
 
 #####
-cat("weighted stats logical args", "
-")
+cat("\nCONTEXT:", "weighted stats logical args", "\n")
 
 a = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE)
 b = c(TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE)

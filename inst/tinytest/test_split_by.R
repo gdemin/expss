@@ -1,5 +1,4 @@
-cat("split_by", "
-")
+cat("\nCONTEXT:", "split_by", "\n")
 
 data(airquality)
 

@@ -1,6 +1,5 @@
 if(isTRUE(getOption("covr"))){ 
-  cat("elementary_fre", "
-")
+  cat("\nCONTEXT:", "elementary_fre", "\n")
   suppressWarnings(RNGversion("3.5.0"))
   
   data(mtcars)
@@ -51,8 +50,7 @@ if(isTRUE(getOption("covr"))){
   ############################################################################################
   ############################################################################################
   
-  cat("etable methods", "
-")
+  cat("\nCONTEXT:", "etable methods", "\n")
   expect_equal_to_reference(fre(mtcars$am)[,"Count"], "rds/fre2.6.rds")
   expect_equal_to_reference(fre(mtcars$am)[2, ], "rds/fre2.7.rds")
   
@@ -63,8 +61,7 @@ if(isTRUE(getOption("covr"))){
   expect_equal_to_reference(fre(mtcars$am)[,"Count", drop = TRUE][3], "rds/fre2.10.rds")
   expect_equal_to_reference(fre(mtcars$am)[,"Count"][2, , drop = TRUE], "rds/fre2.11.rds")
   
-  cat("fre drop_unused", "
-")
+  cat("\nCONTEXT:", "fre drop_unused", "\n")
   
   a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c", "d", "e")))
   expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = FALSE)
@@ -88,8 +85,7 @@ if(isTRUE(getOption("covr"))){
   expect_equal_to_reference(fre(a, drop_unused_labels = TRUE, prepend_var_lab = TRUE),"rds/fre_new_args6.rds")
   expect_equal_to_reference(fre(a, drop_unused_labels = FALSE, prepend_var_lab = FALSE),"rds/fre_new_args7.rds")
   
-  cat("fre and cro examples", "
-")
+  cat("\nCONTEXT:", "fre and cro examples", "\n")
   
   a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c")))
   expect_equal_to_reference(fre(a), "rds/order_factor_fre20.rds")
@@ -253,8 +249,7 @@ if(isTRUE(getOption("covr"))){
   
   
   #################################################
-  cat("fre and cro some special cases", "
-")
+  cat("\nCONTEXT:", "fre and cro some special cases", "\n")
   
   expect_equal_to_reference(fre(numeric(0)), "rds/fre1.rds")
   
@@ -302,8 +297,7 @@ if(isTRUE(getOption("covr"))){
     expect_equal_to_reference(cro_tpct(list(a), list(b), weight = weight), "rds/cro3.rds")
   }
   
-  cat("cro_fun", "
-")
+  cat("\nCONTEXT:", "cro_fun", "\n")
   
   a = c(1,1,1, NA, NA)
   b = c(NA, NA, NA, 1, 1)
@@ -550,8 +544,7 @@ if(isTRUE(getOption("covr"))){
   
   
   
-  cat("cro_mean", "
-")
+  cat("\nCONTEXT:", "cro_mean", "\n")
   
   a = c(1,1,1, NA, NA)
   b = c(NA, NA, NA, 1, 1)
@@ -643,8 +636,7 @@ if(isTRUE(getOption("covr"))){
   #                           "rds/cro_fun_df2.rds",  update = FALSE)
   
   
-  cat("table_summary methods", "
-")
+  cat("\nCONTEXT:", "table_summary methods", "\n")
   # data(mtcars)
   mtcars = mtcars %>% 
       apply_labels(
@@ -681,8 +673,7 @@ if(isTRUE(getOption("covr"))){
                      "rds/cro_methods_3.rds",  update = FALSE)
   expect_equal_to_reference(duplicated_colnames[,seq_along(duplicated_colnames)[-2]], 
                      "rds/cro_methods_3.rds",  update = FALSE)
-  cat("datetime", "
-")
+  cat("\nCONTEXT:", "datetime", "\n")
   
   aaa = rep(c(as.POSIXct("2016-09-22 02:28:39"), as.POSIXct("2016-09-22 03:28:39")), 10)
   var_lab(aaa) = "aaa"
@@ -704,8 +695,7 @@ if(isTRUE(getOption("covr"))){
   expect_identical(cro_rpct(list(aaa), list("total")),cro_rpct(list(aaa_str), list(a_total))) 
   expect_identical(cro_tpct(a_total, bbb), cro_tpct(a_total, bbb_str)) 
   
-  cat("cro duplicated names", "
-")
+  cat("\nCONTEXT:", "cro duplicated names", "\n")
   
   data(iris)
   ex_iris = iris[,-5]

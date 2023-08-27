@@ -1,5 +1,4 @@
-cat("nest", "
-")
+cat("\nCONTEXT:", "nest", "\n")
 
 simple_res = structure(c(1, 5, 9), labels = structure(1:9,
                       .Names = c("1|5",

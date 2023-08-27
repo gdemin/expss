@@ -1,5 +1,4 @@
-cat("vec ops", "
-")
+cat("\nCONTEXT:", "vec ops", "\n")
 
 expect_equal(1:4 %a% 5, 1:5)
 expect_equal(c(a=1, b=4) %a% c(d = 5), c(a=1, b=4, d = 5))
@@ -66,8 +65,7 @@ expect_equal(1:4 %e% 4:5   , c(1, 2, 3, 5))
 expect_equal(1:2 %r% 2     , c(1, 2, 1, 2))
 
 
-cat("%n_i%, %n_d%", "
-")
+cat("\nCONTEXT:", "%n_i%, %n_d%", "\n")
 
 expect_identical(iris %n_d% "Species", iris[, -5, drop = FALSE]) # remove column Species
 expect_identical(n_diff(iris, "Species"), iris[, -5, drop = FALSE]) # remove column Species
@@ -93,8 +91,7 @@ expect_identical(as.matrix(iris) %n_i% (perl("^Sepal")|"Species"), as.matrix(iri
 
 expect_error(5 %r% 1:2)
 
-cat("edge cases", "
-")
+cat("\nCONTEXT:", "edge cases", "\n")
 expect_identical(iris %n_i% NULL, iris[, FALSE, drop = FALSE])
 expect_identical(iris %n_d% NULL, iris)
 expect_identical(as.matrix(iris) %n_d% NULL, as.matrix(iris))
@@ -107,8 +104,7 @@ expect_identical(iris %n_d% factor("Species"), iris[,-5])
 
 
 
-cat("vec ops list", "
-")
+cat("\nCONTEXT:", "vec ops list", "\n")
 data(iris)
 expect_identical(iris %i% is.numeric, iris[,-5])
 expect_identical(iris %i% NULL, iris[FALSE])

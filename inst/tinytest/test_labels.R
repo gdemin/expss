@@ -1,5 +1,4 @@
-cat("var_lab", "
-")
+cat("\nCONTEXT:", "var_lab", "\n")
 
 data(mtcars)
 
@@ -40,8 +39,7 @@ expect_identical(set_var_lab(test_ds, "Age group"), test_test_ds)
 expect_identical(test_ds, unvr(test_test_ds))
 expect_identical(test_ds, drop_var_labs(test_test_ds))
 
-cat("val_lab", "
-")
+cat("\nCONTEXT:", "val_lab", "\n")
 
 a = 1
 expect_error({val_lab(a) = c(a = 1, b = 1)})
@@ -92,8 +90,7 @@ val_lab(test_ds$s2b) = make_labels("
 
 expect_equal(test_ds$s2b, set_val_lab(test_ds$s2b,age_groups))
 
-cat("make_labels", "
-")
+cat("\nCONTEXT:", "make_labels", "\n")
 
 labs1 = c('18 - 26' = 2, '27 - 35' = 3)
 
@@ -266,8 +263,7 @@ expect_error(make_labels("
                          10
                          "))
 
-cat("add_val_lab", "
-")
+cat("\nCONTEXT:", "add_val_lab", "\n")
 vec = 1:5
 dfs = data.frame(a = vec, b = vec)
 
@@ -282,8 +278,7 @@ add_val_lab(dfs) = c(e=5)
 expect_identical(dfs, dfs1)
 
 
-cat("labels NULL", "
-")
+cat("\nCONTEXT:", "labels NULL", "\n")
 a = 1:3
 b = a
 val_lab(b) = c(a=1)
@@ -298,8 +293,7 @@ expect_identical(b, set_var_lab(a, "bbb"))
 var_lab(b) = NULL
 expect_identical(b, a)
 
-cat("make_labels autonum", "
-")
+cat("\nCONTEXT:", "make_labels autonum", "\n")
 
 expect_identical(
  make_labels(
@@ -348,8 +342,7 @@ expect_identical(
 
 
 
-cat("as.labelled", "
-")
+cat("\nCONTEXT:", "as.labelled", "\n")
 
 
 
@@ -418,8 +411,7 @@ a = 1:2
 var_lab(a) = "ssdds"
 expect_equal(as.labelled(a), set_val_lab(a, c("1" = 1L, "2" = 2L)))
 
-cat("as.labelled labelled factor", "
-")
+cat("\nCONTEXT:", "as.labelled labelled factor", "\n")
 a = factor(c("a", "b", "c"), levels = rev(c("a", "b", "c", "d", "e")))
 b = as.double(5:3)
 val_lab(b) = setNames(5:1, letters[1:5])
@@ -431,8 +423,7 @@ expect_identical(as.labelled(a), b)
 var_lab(b) = "New label"
 expect_identical(as.labelled(a, "New label"), b)
 
-cat("as.labelled labelled character", "
-")
+cat("\nCONTEXT:", "as.labelled labelled character", "\n")
 
 a = letters
 a_res = set_val_lab(1:26, setNames(1:26, letters))
@@ -444,8 +435,7 @@ expect_identical(as.labelled(a), a_res)
 
 
 
-cat("is.labelled", "
-")
+cat("\nCONTEXT:", "is.labelled", "\n")
 
 a = 1:5
 expect_identical(is.labelled(a), FALSE)
@@ -466,8 +456,7 @@ expect_error(as.labelled(as.list(aaa), NULL))
 expect_error(as.labelled(as.data.frame(aaa), NULL))
 
 #### with strange lists ####
-cat("labels on lists", "
-")
+cat("\nCONTEXT:", "labels on lists", "\n")
 
 data(mtcars)
 mtcars = apply_labels(mtcars,
@@ -498,8 +487,7 @@ expect_equal(deparse(formula(model), width.cutoff = 500),
                           "`Miles/(US) gallon` ~ Engine + Transmission + `Gross horsepower` + `Weight (lb/1000)`")
 
 
-cat("value labels on factor", "
-")
+cat("\nCONTEXT:", "value labels on factor", "\n")
 
 gender = c(1, 1, 1, 0, 0, 0, 1, 0, 0, 0,
                      1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1,
@@ -535,8 +523,7 @@ test = cro_cases(group, gender)
 expect_identical(res, test)
 
 
-cat("add_labelled_class", "
-")
+cat("\nCONTEXT:", "add_labelled_class", "\n")
 
 a = 1:3
 attr(a, "label") = "My label"

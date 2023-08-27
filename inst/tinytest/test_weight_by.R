@@ -1,5 +1,4 @@
-cat("weight_by", "
-")
+cat("\nCONTEXT:", "weight_by", "\n")
 
 data(state)
 

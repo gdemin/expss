@@ -1,5 +1,4 @@
-cat("prop vector", "
-")
+cat("\nCONTEXT:", "prop vector", "\n")
 
 a = c(25, 25)
 
@@ -22,8 +21,7 @@ expect_identical(prop_row(0), NaN)
 expect_identical(prop_row(1), 1)
 
 
-cat("prop matrix", "
-")
+cat("\nCONTEXT:", "prop matrix", "\n")
 
 a = cbind(c(25, 25, NA), c(100, NA, 50))
 
@@ -31,8 +29,7 @@ expect_identical(prop(a), cbind(c(.125, .125, NA), c(.5, NA, .25)))
 expect_identical(prop_col(a), cbind(c(.5, .5, NA), c(2/3, NA, 1/3)))
 expect_identical(prop_row(a), cbind(c(25/125, 1, NA), c(100/125, NA, 1)))
 
-cat("prop data.frame", "
-")
+cat("\nCONTEXT:", "prop data.frame", "\n")
 
 a = sheet(a = c(25, 25, NA), b = c(100, NA, 50))
 
