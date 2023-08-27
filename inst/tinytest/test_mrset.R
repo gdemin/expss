@@ -1,4 +1,5 @@
-context("mrset")
+cat("mrset", "
+")
 
 data("product_test")
 
@@ -60,7 +61,8 @@ expect_identical(calculate(product_test, mrset_f(a1_, label = "New label")), a_r
 expect_identical(calculate(product_test, mrset_p("a1_", label = "New label")), a_res)
 expect_identical(calculate(product_test, mrset_t("a1_{1:6}", label = "New label")), a_res)
 #########################
-context("mdset")
+cat("mdset", "
+")
 
 a_res = calculate(product_test, a1_1 %to% a1_6)
 b_res = calculate(product_test, b1_1 %to% b1_6)

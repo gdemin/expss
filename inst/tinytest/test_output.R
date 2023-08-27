@@ -1,7 +1,8 @@
 # if(isTRUE(getOption("covr"))){ 
 if(FALSE){ 
 
-    context("output methods print labelled")
+    cat("output methods print labelled", "
+")
     
     x = c(letters, LETTERS)
     x = as.labelled(x)
@@ -28,7 +29,8 @@ if(FALSE){
     expect_output_file(str(x), "rds/str_labelled7.txt")
     
     #####################################
-    context("output etable fre methods")
+    cat("output etable fre methods", "
+")
     
     data(mtcars)
     # add labels to dataset
@@ -172,7 +174,7 @@ if(FALSE){
     options(expss.output = NULL)
     
     # res = expss:::knit_print.etable(tbl)
-    # expect_equal_to_reference(res, "rds/knit_print.rds",  update = FALSE)
+    # expect_equal_to_reference(res, "rds/knit_print.rds")
     # 
     options(expss.output = "rnotebook")
     colnames(tbl) = enc2utf8(colnames(tbl))

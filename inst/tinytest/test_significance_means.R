@@ -20,7 +20,8 @@ if(isTRUE(getOption("covr"))) {
     )
     
     
-    context("significance_means")
+    cat("significance_means", "
+")
     
     mtcars_table = cro_mean_sd_n(list(mtcars$mpg, mtcars$hp),
                                  list(total(), mtcars$vs, mtcars$am))

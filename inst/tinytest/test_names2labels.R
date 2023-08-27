@@ -1,4 +1,5 @@
-context("names2labels")
+cat("names2labels", "
+")
 
 vec = 1:7
 
@@ -91,8 +92,8 @@ mtcars = within(mtcars,{
 })
 
 
-expect_equal_to_reference(summary(lm(mpg ~ ., data = names2labels(mtcars))),"rds/lm_names2labels_1.rds",  update = FALSE)
-expect_equal_to_reference(summary(lm(mpg ~ ., data = names2labels(mtcars, keep_names = TRUE))),"rds/lm_names2labels_2.rds",  update = FALSE)
+expect_equal_to_reference(summary(lm(mpg ~ ., data = names2labels(mtcars))),"rds/lm_names2labels_1.rds")
+expect_equal_to_reference(summary(lm(mpg ~ ., data = names2labels(mtcars, keep_names = TRUE))),"rds/lm_names2labels_2.rds")
 
 data(mtcars)
 mtcars = within(mtcars,{
@@ -108,4 +109,4 @@ mtcars = within(mtcars,{
     var_lab(gear) = "Number of forward gears"
     var_lab(carb) = "Number of carburetors"
 })
-expect_equal_to_reference(summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg"))),"rds/lm_names2labels_3.rds",  update = FALSE)
+expect_equal_to_reference(summary(lm(mpg ~ ., data = names2labels(mtcars, exclude = "mpg"))),"rds/lm_names2labels_3.rds")

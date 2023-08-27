@@ -1,4 +1,5 @@
-context("weight_by")
+cat("weight_by", "
+")
 
 data(state)
 

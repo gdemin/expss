@@ -1,6 +1,7 @@
 if(isTRUE(getOption("covr"))) { 
 
-    context("recode simple vector")
+    cat("recode simple vector", "
+")
     suppressWarnings(RNGversion("3.5.0"))
     
     
@@ -113,7 +114,8 @@ if(isTRUE(getOption("covr"))) {
    
     ##########################
     
-    context("recode 'from, to' notation simple vector")
+    cat("recode 'from, to' notation simple vector", "
+")
     
     expect_identical(recode(1:5, from_to(list(1, other), to = list(-1, copy))), c(-1, 2, 3, 4, 5))
     expect_identical(recode(1:5, from_to(1:2, to =c(-1, NA))), c(-1, NA, NA, NA, NA))
@@ -173,7 +175,8 @@ if(isTRUE(getOption("covr"))) {
     
     
     
-    context("recode examples")
+    cat("recode examples", "
+")
     set.seed(123)
     v1  = sample(c(0:3,9,10), 20, replace = TRUE)
     # RECODE V1 TO V3 (0=1) (1=0) (2,3=-1) (9=9) (ELSE=SYSMIS)
@@ -238,7 +241,8 @@ if(isTRUE(getOption("covr"))) {
         voter_test
     )
     
-    context("recode examples from/to")
+    cat("recode examples from/to", "
+")
     set.seed(123)
     v1  = sample(c(0:3,9,10), 20, replace = TRUE)
     # RECODE V1 TO V3 (0=1) (1=0) (2,3=-1) (9=9) (ELSE=SYSMIS)
@@ -299,7 +303,8 @@ if(isTRUE(getOption("covr"))) {
         voter_test
     )
     
-    context("ifs")
+    cat("ifs", "
+")
     a = 1:5
     b = 5:1
     expect_identical(
@@ -343,7 +348,8 @@ if(isTRUE(getOption("covr"))) {
     )
     
     
-    context("recode type")
+    cat("recode type", "
+")
     
     a = 1:3
     var_lab(a) = "aadad"
@@ -411,17 +417,20 @@ if(isTRUE(getOption("covr"))) {
     recode(a) = "2016-10-01" ~ "2016-10-02"
     expect_identical(a, as.Date(c("2016-10-02", "2017-05-10")))
     
-    context("recode copy")
+    cat("recode copy", "
+")
     
     a = 1:5
     
     expect_identical(recode(a, 1:4 ~ NA, 5 ~ copy), c(NA, NA, NA, NA, 5L))
     
-    context("type conversion")
+    cat("type conversion", "
+")
     
     expect_identical(recode("a", "a" ~ 1), 1)
     
-    context("recode to function")
+    cat("recode to function", "
+")
     expect_identical(recode(letters, other ~ toupper), LETTERS)
     
     letters2 = letters
@@ -430,7 +439,8 @@ if(isTRUE(getOption("covr"))) {
     
     
     
-    context("%into%")
+    cat("%into%", "
+")
     
     remove_if_exists = function(...){
         for(each in unlist(list(...))){
@@ -627,7 +637,8 @@ if(isTRUE(getOption("covr"))) {
     
     
     
-    # context("recode factor")
+    # cat("recode factor", "
+")
     # 
     # df = data.frame(id = c(1,2,3,4,5),
     #                 Did_you_use_tv=factor(c("tv","","","tv","tv")),

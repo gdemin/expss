@@ -1,4 +1,5 @@
-context("drop_empty_*")
+cat("drop_empty_*", "
+")
 data("mtcars")
 mtcars = apply_labels(mtcars,
             vs = "Engine",
@@ -35,9 +36,9 @@ NA_integer_, NA_integer_, NA_integer_, NA_integer_, NA_integer_
 "Engine|Other"), row.names = c(NA, 8L), class = c( 
 "etable", "data.frame"))
 
-expect_equal_to_reference(drop_r(with_empty), "rds/drop_empty1.rds",  update = FALSE)
-expect_equal_to_reference(drop_c(with_empty), "rds/drop_empty2.rds",  update = FALSE)
-expect_equal_to_reference(drop_rc(with_empty), "rds/drop_empty3.rds",  update = FALSE)
+expect_equal_to_reference(drop_r(with_empty), "rds/drop_empty1.rds")
+expect_equal_to_reference(drop_c(with_empty), "rds/drop_empty2.rds")
+expect_equal_to_reference(drop_rc(with_empty), "rds/drop_empty3.rds")
 
 expect_equal_to_reference(drop_r(with_empty, excluded_rows = NULL),
                           "rds/drop_empty1.rds",  update = FALSE)

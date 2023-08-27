@@ -1,5 +1,6 @@
 if(isTRUE(getOption("covr"))){ 
-    context("prepend_names/prepend_values")
+    cat("prepend_names/prepend_values", "
+")
     
     data(mtcars)
     
@@ -9,7 +10,7 @@ if(isTRUE(getOption("covr"))){
             cro_cpct(list(cyl, gear), list(total(), vs, am))
         )
     
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     res = mtcars %>% 
         prepend_values() %>% 
@@ -17,7 +18,7 @@ if(isTRUE(getOption("covr"))){
             cro_cpct(list(cyl, gear), list(total(), vs, am))
         )
     
-    expect_equal_to_reference(res, "rds/prepend2.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend2.rds")
     
     res = mtcars %>% 
         prepend_all() %>% 
@@ -25,7 +26,7 @@ if(isTRUE(getOption("covr"))){
             cro_cpct(list(cyl, gear), list(total(), vs, am))
         )
     
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     #########
     
@@ -37,7 +38,7 @@ if(isTRUE(getOption("covr"))){
         tab_pivot()
     
     
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     res = mtcars %>% 
         tab_prepend_values() %>% 
@@ -46,7 +47,7 @@ if(isTRUE(getOption("covr"))){
         tab_stat_cpct() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     res = mtcars %>% 
         tab_prepend_all() %>% 
@@ -54,7 +55,7 @@ if(isTRUE(getOption("covr"))){
         tab_cells(cyl, gear) %>% 
         tab_stat_cpct() %>% 
         tab_pivot()
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     #########
     
@@ -66,7 +67,7 @@ if(isTRUE(getOption("covr"))){
         tab_pivot()
     
     
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     res = mtcars %>% 
         tab_prepend_values() %>% 
@@ -75,7 +76,7 @@ if(isTRUE(getOption("covr"))){
         tab_stat_cpct() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     res = mtcars %>% 
         tab_prepend_all() %>% 
@@ -83,7 +84,7 @@ if(isTRUE(getOption("covr"))){
         tab_cells(cyl, gear) %>% 
         tab_stat_cpct() %>% 
         tab_pivot()
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     #########
     
@@ -96,7 +97,7 @@ if(isTRUE(getOption("covr"))){
         tab_pivot()
     
     
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     res = mtcars %>% 
         tab_mis_val(99) %>% 
@@ -106,7 +107,7 @@ if(isTRUE(getOption("covr"))){
         tab_stat_cpct() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     res = mtcars %>% 
         tab_mis_val(99) %>% 
@@ -115,7 +116,7 @@ if(isTRUE(getOption("covr"))){
         tab_cells(cyl, gear) %>% 
         tab_stat_cpct() %>% 
         tab_pivot()
-    expect_equal_to_reference(res, "rds/prepend1.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend1.rds")
     
     ##########################
     
@@ -143,7 +144,7 @@ if(isTRUE(getOption("covr"))){
             cro_cpct(list(cyl, gear), list(total(), vs, am))
         )
     
-    expect_equal_to_reference(res, "rds/prepend3.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend3.rds")
     
     res = mtcars %>% 
         prepend_values() %>% 
@@ -151,7 +152,7 @@ if(isTRUE(getOption("covr"))){
             cro_cpct(list(cyl, gear), list(total(), vs, am))
         )
     
-    expect_equal_to_reference(res, "rds/prepend4.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend4.rds")
     
     res = mtcars %>% 
         prepend_all() %>% 
@@ -159,7 +160,7 @@ if(isTRUE(getOption("covr"))){
             cro_cpct(list(cyl, gear), list(total(), vs, am))
         )
     
-    expect_equal_to_reference(res, "rds/prepend5.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend5.rds")
     
     ################
     #########
@@ -172,7 +173,7 @@ if(isTRUE(getOption("covr"))){
         tab_pivot()
     
     
-    expect_equal_to_reference(res, "rds/prepend3.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend3.rds")
     
     res = mtcars %>% 
         tab_prepend_values() %>% 
@@ -181,7 +182,7 @@ if(isTRUE(getOption("covr"))){
         tab_stat_cpct() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(res, "rds/prepend4.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend4.rds")
     
     res = mtcars %>% 
         tab_prepend_all() %>% 
@@ -189,7 +190,7 @@ if(isTRUE(getOption("covr"))){
         tab_cells(cyl, gear) %>% 
         tab_stat_cpct() %>% 
         tab_pivot()
-    expect_equal_to_reference(res, "rds/prepend5.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend5.rds")
     
     ############################
     
@@ -202,7 +203,7 @@ if(isTRUE(getOption("covr"))){
                           prepend_values(am)))
         )
     
-    expect_equal_to_reference(res, "rds/prepend4.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend4.rds")
     
     #######################################
     
@@ -213,6 +214,6 @@ if(isTRUE(getOption("covr"))){
         tab_stat_cpct() %>% 
         tab_pivot()     
     
-    expect_equal_to_reference(res, "rds/prepend6.rds",  update = FALSE)
+    expect_equal_to_reference(res, "rds/prepend6.rds")
     
 }

@@ -1,4 +1,5 @@
-context("match")
+cat("match", "
+")
 
 a = as.data.frame(matrix(1:9, ncol = 3))
 
@@ -29,7 +30,8 @@ expect_equal(match_row(gt(2), V1, V2, V3), c(2, 3, 1))
 expect_equal(match_col(gt(2), V1, V2, V3), c(3, 1, 1))
 
 
-context("index")
+cat("index", "
+")
 
 a = as.data.frame(matrix(1:9, ncol = 3))
 
@@ -69,7 +71,8 @@ expect_error(index_col(NULL, V1, V2, V3))
 expect_error(index_row(numeric(0), V1, V2, V3))
 expect_error(index_col(numeric(0), V1, V2, V3))
 
-context("match_examples")
+cat("match_examples", "
+")
 
 v1 = 1:3
 v2 = 2:4

@@ -1,4 +1,5 @@
-context("recode labelled recodings")
+cat("recode labelled recodings", "
+")
 
 
 a = 1:5
@@ -51,7 +52,8 @@ res = c(1, 1, 3, 4, 5)
 val_lab(res) = c(Top =1, Five = 5)
 expect_equal(a, res)
 
-context("recode with labels")
+cat("recode with labels", "
+")
 
 a = c(1:7, 99)
 

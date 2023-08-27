@@ -1,4 +1,5 @@
-context("sort vector")
+cat("sort vector", "
+")
 suppressWarnings(RNGversion("3.5.0"))
 
 set.seed(123)
@@ -15,7 +16,8 @@ expect_identical(sort_asc(a, na.last = NA), sort(a, decreasing = FALSE, na.last 
 expect_identical(sort_desc(a, na.last = NA), sort(a, decreasing = TRUE, na.last = NA))
 
 
-context("sort data.frame")
+cat("sort data.frame", "
+")
 data(iris)
 
 expect_error(sort_asc(iris))
@@ -81,7 +83,8 @@ expect_error(sort_asc(iris, 12))
 expect_error(sort_asc(as.list(1:3)))
 expect_error(sort_desc(as.list(1:3)))
 
-context("sort matrices")
+cat("sort matrices", "
+")
 set.seed(123)
 mat = matrix(sample(1:4, 18, replace = TRUE), ncol = 3)
 

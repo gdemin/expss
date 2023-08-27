@@ -1,4 +1,5 @@
-context("create dictionary/apply_dictionary")
+cat("create dictionary/apply_dictionary", "
+")
 
 
 df = sheet(

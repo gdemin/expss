@@ -1,5 +1,6 @@
 if(isTRUE(getOption("covr"))){ 
-    context("write_labels")
+    cat("write_labels", "
+")
     if(dir.exists("data_files")){
         # if(TRUE){
         is_windows = any(grepl("windows", tolower(sessionInfo()$running)))
@@ -8,11 +9,11 @@ if(isTRUE(getOption("covr"))){
         nsk = suppressWarnings(read_spss("data_files/NSK_all.sav"))
         nsk2 = suppressWarnings(read_spss("file:///data_files/NSK_all.sav"))
         if(as.numeric(version$major) ==3 && as.numeric(version$minor)<4){
-            expect_known_value(nsk, "rds/nsk.rds",  update = FALSE)
-            expect_known_value(nsk2, "rds/nsk.rds",  update = FALSE)
+            expect_equal_to_reference(nsk, "rds/nsk.rds")
+            expect_equal_to_reference(nsk2, "rds/nsk.rds")
         } else {
-            expect_known_value(nsk, "rds/nsk_R3.4.rds",  update = FALSE)
-            expect_known_value(nsk2, "rds/nsk_R3.4.rds",  update = FALSE)        
+            expect_equal_to_reference(nsk, "rds/nsk_R3.4.rds")
+            expect_equal_to_reference(nsk2, "rds/nsk_R3.4.rds")        
         }
         missings = suppressWarnings(read_spss("data_files/missings.sav", use_missings = TRUE))
         expect_identical(unlab(missings$q1), c(NA, NA, 3))
@@ -223,7 +224,8 @@ if(isTRUE(getOption("covr"))){
         unlink("data_files/aaa_csv2.csv")
         unlink("data_files/aaa_tab.csv")
         unlink("data_files/aaa_tab2.csv")
-        context("write_labelled_xlsx")
+        cat("write_labelled_xlsx", "
+")
         aaa = suppressWarnings(read_spss("data_files/7556w2_4Client_prelaunch.sav"))
         bbb = suppressWarnings(read_spss("data_files/2014-2016final.sav"))
         nsk = suppressWarnings(read_spss("data_files/NSK_all.sav"))

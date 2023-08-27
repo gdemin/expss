@@ -1,4 +1,5 @@
-context("significance tests")
+cat("significance tests", "
+")
 if(isTRUE(getOption("covr"))) { 
 
     
@@ -64,7 +65,8 @@ if(isTRUE(getOption("covr"))) {
     
     expect_equal(res, c(t_test_pval, t_test_pval))
     
-    context("significance_cpct")
+    cat("significance_cpct", "
+")
     
     mtcars_table = cro_cpct(list(mtcars$cyl, mtcars$gear),
                             list(total(), mtcars$vs, mtcars$am))
@@ -495,7 +497,8 @@ if(isTRUE(getOption("covr"))) {
         significance_cpct(mtcars_table5), "rds/signif_cpct38.rds",  update = FALSE)
     
     
-    context("significance_cpct issue #100")
+    cat("significance_cpct issue #100", "
+")
     expss_digits(0)
     target = c(65.5, 34.5)*10
     odd_df = data.frame(

@@ -1,4 +1,5 @@
-context("if_val with NA.vector")
+cat("if_val with NA.vector", "
+")
 suppressWarnings(RNGversion("3.5.0"))
 
 
@@ -22,7 +23,8 @@ expect_error(if_val(a, NA ~ 1:2, other ~ copy))
 expect_error(if_val(a, NA ~ t(1:2), other ~ copy))
 expect_identical(if_val(numeric(0), NA ~ 1, other ~ copy),logical(0))
 
-context("if_val with NA.data.frame")
+cat("if_val with NA.data.frame", "
+")
 
 a = data.frame(a = as.double(1:4), b = as.double(5:8), d = as.double(10:13))
 b = a
@@ -58,7 +60,8 @@ expect_error(if_val(a, NA ~ 3:2, other ~ copy))
 
 
 
-context("if_val with NA.matrix")
+cat("if_val with NA.matrix", "
+")
 
 a = as.matrix(data.frame(a = 1:4, b = 5:8, d = 10:13))
 
@@ -98,7 +101,8 @@ expect_error(if_val(a, NA ~ as.data.frame(cbind(4:1,2,-(1:4))), other ~ copy))
 
 
 
-context("if_val with NA list")
+cat("if_val with NA list", "
+")
 
 a = 1:4
 b = 4:1
@@ -123,7 +127,8 @@ expect_error(if_val(ab, NA ~ list(42,43)))
 expect_error(if_val(ab, NA ~ list(42:39,40:43)))
 expect_error(if_val(ab, NA ~ data.frame(42:39,40:43)))
 
-context("if_val with NA help")
+cat("if_val with NA help", "
+")
 
 # simple case
 a = c(NA, 2, 3, 4, NA)
@@ -184,7 +189,8 @@ expect_identical(
 
 
 
-context("if_val with NA add_val_lab")
+cat("if_val with NA add_val_lab", "
+")
 
 a = 1:4
 b = a

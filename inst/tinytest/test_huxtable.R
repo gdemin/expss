@@ -1,6 +1,7 @@
 if(FALSE){ # isTRUE(getOption("covr")) 
 # ! FIXME FIXME FIXME !!!
-  context("huxtable")
+  cat("huxtable", "
+")
   library(huxtable)
   library(expss)
   

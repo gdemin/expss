@@ -1,4 +1,5 @@
-context("split_by")
+cat("split_by", "
+")
 
 data(airquality)
 
@@ -27,36 +28,36 @@ mtcars = apply_labels(mtcars,
                       )
 
 mtcars_list = mtcars %>% split_by(am, vs, drop = FALSE)
-expect_equal_to_reference(mtcars_list, "rds/split_by4.rds",  update = FALSE)
+expect_equal_to_reference(mtcars_list, "rds/split_by4.rds")
 
 mtcars_list = mtcars %>% split_by(am, vs, drop = TRUE)
-expect_equal_to_reference(mtcars_list, "rds/split_by3.rds",  update = FALSE)
+expect_equal_to_reference(mtcars_list, "rds/split_by3.rds")
 
 
 dt_mtcars = as.data.table(mtcars)
 
 
 dt_list = dt_mtcars %>% split_by(am, vs, drop = TRUE)
-expect_equal_to_reference(dt_list, "rds/split_by10.rds",  update = FALSE)
+expect_equal_to_reference(dt_list, "rds/split_by10.rds")
 
 dt_unsplit = split_off(dt_list)
-expect_equal_to_reference(dt_unsplit, "rds/split_by11.rds",  update = FALSE)
+expect_equal_to_reference(dt_unsplit, "rds/split_by11.rds")
 
 dt_unsplit = split_off(dt_list, groups = "my_groups", rownames = "my_rows")
-expect_equal_to_reference(dt_unsplit, "rds/split_by12.rds",  update = FALSE)
+expect_equal_to_reference(dt_unsplit, "rds/split_by12.rds")
 
 tbl_list = mtcars_list %>% calc(
     cro(cyl, gear)
 )
 
-expect_equal_to_reference(tbl_list, "rds/split_by13.rds",  update = FALSE)
+expect_equal_to_reference(tbl_list, "rds/split_by13.rds")
 
 tbls = mtcars_list %>% calc(
     cro(cyl, gear)
 ) %>% 
     split_off()
 
-expect_equal_to_reference(tbls, "rds/split_by14.rds",  update = FALSE)
+expect_equal_to_reference(tbls, "rds/split_by14.rds")
 
 
 tbls = mtcars_list %>% calc(
@@ -64,7 +65,7 @@ tbls = mtcars_list %>% calc(
 ) %>% 
     split_off(groups = TRUE, rownames = TRUE)
 
-expect_equal_to_reference(tbls, "rds/split_by15.rds",  update = FALSE)
+expect_equal_to_reference(tbls, "rds/split_by15.rds")
 
 tbls = mtcars_list %>% calc(
     cro(cyl, gear)
@@ -72,14 +73,14 @@ tbls = mtcars_list %>% calc(
     split_off(groups = "My group", rownames = TRUE)
 
 
-expect_equal_to_reference(tbls, "rds/split_by16.rds",  update = FALSE)
+expect_equal_to_reference(tbls, "rds/split_by16.rds")
 
 tbls = mtcars_list %>% calc(
     cro(cyl, gear) %>% set_caption(names(val_lab(am)[1]))
 ) %>% 
     split_off()
 
-expect_equal_to_reference(tbls, "rds/split_by17.rds",  update = FALSE)
+expect_equal_to_reference(tbls, "rds/split_by17.rds")
 
 
 tbls = mtcars_list %>% calc(
@@ -87,7 +88,7 @@ tbls = mtcars_list %>% calc(
 ) %>% 
     split_off(groups = TRUE)
 
-expect_equal_to_reference(tbls, "rds/split_by18.rds",  update = FALSE)
+expect_equal_to_reference(tbls, "rds/split_by18.rds")
 
 tbls_list = tbls %>% split_by(row_labels)
-expect_equal_to_reference(tbls_list, "rds/split_by19.rds",  update = FALSE)
+expect_equal_to_reference(tbls_list, "rds/split_by19.rds")

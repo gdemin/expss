@@ -1,6 +1,7 @@
 if(isTRUE(getOption("covr"))){ 
 
-  context("htmlTable")
+  cat("htmlTable", "
+")
   
   data(mtcars)
   mtcars = apply_labels(mtcars,
@@ -160,7 +161,7 @@ if(isTRUE(getOption("covr"))){
     tab_pivot(stat_position = "inside_columns")
   
   ## first row of header with duplicates
-  expect_equal_to_reference(htmlTable(res), "rds/htmlTable15.rds",  update = FALSE)
+  expect_equal_to_reference(htmlTable(res), "rds/htmlTable15.rds")
   
   res = product_test %>%
     let(
@@ -174,20 +175,20 @@ if(isTRUE(getOption("covr"))){
     tab_pivot()
   
   # single column header
-  expect_equal_to_reference(htmlTable(res), "rds/htmlTable16.rds",  update = FALSE)
+  expect_equal_to_reference(htmlTable(res), "rds/htmlTable16.rds")
   
   # single row header
   res = mtcars %>% calc(cro(am, list(unvr(vs))))
-  expect_equal_to_reference(htmlTable(res), "rds/htmlTable17.rds",  update = FALSE)
+  expect_equal_to_reference(htmlTable(res), "rds/htmlTable17.rds")
   
   # single row header
   res = mtcars %>% calc(cro(list(unvr(am)), list(unvr(vs))))
-  expect_equal_to_reference(htmlTable(res), "rds/htmlTable18.rds",  update = FALSE)
+  expect_equal_to_reference(htmlTable(res), "rds/htmlTable18.rds")
   
   # temp = function(x) htmlTable:::print.htmlTable(x, useViewer = TRUE)
   
   res = fre(mtcars$cyl)
-  expect_equal_to_reference(htmlTable(res), "rds/htmlTable19.rds",  update = FALSE)
+  expect_equal_to_reference(htmlTable(res), "rds/htmlTable19.rds")
   
   
   

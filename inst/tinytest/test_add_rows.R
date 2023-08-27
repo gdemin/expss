@@ -1,23 +1,25 @@
-context("add_rows")
+cat("add_rows", "
+")
 
 a = data.frame(x = 1:5, y = 6:10)
 b = data.frame(y = 6:10, z = 11:15)
 d = data.frame(y = 6:10, w = 16:20)
 e = data.frame(f = 21:25, g = 26:30)
 
-expect_known_value(add_rows(a, b), "rds/add_rows1.rds",  update = FALSE)
-expect_known_value(add_rows(a, b, d), "rds/add_rows2.rds",  update = FALSE)
-expect_known_value(add_rows(a, b, d, e), "rds/add_rows3.rds",  update = FALSE)
+expect_equal_to_reference(add_rows(a, b), "rds/add_rows1.rds")
+expect_equal_to_reference(add_rows(a, b, d), "rds/add_rows2.rds")
+expect_equal_to_reference(add_rows(a, b, d, e), "rds/add_rows3.rds")
 
-expect_known_value(add_rows(a, b, nomatch_columns = "drop"), "rds/add_rows4.rds",  update = FALSE)
-expect_known_value(add_rows(a, b, d, nomatch_columns = "drop"), "rds/add_rows5.rds",  update = FALSE)
-
-
-expect_known_value(add_rows(a, NA), "rds/add_rows6a.rds",  update = FALSE)
-expect_known_value(add_rows(a, 1:2), "rds/add_rows6b.rds",  update = FALSE)
+expect_equal_to_reference(add_rows(a, b, nomatch_columns = "drop"), "rds/add_rows4.rds")
+expect_equal_to_reference(add_rows(a, b, d, nomatch_columns = "drop"), "rds/add_rows5.rds")
 
 
-context("add_rows.etable")
+expect_equal_to_reference(add_rows(a, NA), "rds/add_rows6a.rds")
+expect_equal_to_reference(add_rows(a, 1:2), "rds/add_rows6b.rds")
+
+
+cat("add_rows.etable", "
+")
 
 a = data.frame(x = 1:5, y = 6:10)
 b = data.frame(y = 6:10, z = 11:15)
@@ -29,17 +31,18 @@ class(a) = union(c("etable"), class(a))
 class(b) = union(c("etable"), class(b))
 class(d) = union(c("etable"), class(d))
 
-expect_known_value(add_rows(a, b), "rds/add_rows7e.rds",  update = FALSE)
-expect_known_value(add_rows(a, a), "rds/add_rows7ee.rds",  update = FALSE)
-expect_known_value(add_rows(a, b, d), "rds/add_rows8e.rds",  update = FALSE)
-expect_known_value(add_rows(a, b, d, e), "rds/add_rows9e.rds",  update = FALSE)
+expect_equal_to_reference(add_rows(a, b), "rds/add_rows7e.rds")
+expect_equal_to_reference(add_rows(a, a), "rds/add_rows7ee.rds")
+expect_equal_to_reference(add_rows(a, b, d), "rds/add_rows8e.rds")
+expect_equal_to_reference(add_rows(a, b, d, e), "rds/add_rows9e.rds")
 
-expect_known_value(add_rows(a, NA), "rds/add_rows10e.rds",  update = FALSE)
-expect_known_value(add_rows(a, 1:2), "rds/add_rows11e.rds",  update = FALSE)
+expect_equal_to_reference(add_rows(a, NA), "rds/add_rows10e.rds")
+expect_equal_to_reference(add_rows(a, 1:2), "rds/add_rows11e.rds")
 
 
 
-context("labels preserving")
+cat("labels preserving", "
+")
 
 a = sheet(x = 1:5, y = 11:15)
 b = sheet(x = 6:10, z = 16:20)
@@ -63,7 +66,8 @@ val_lab(res$y) = c("yyy" = 1)
 
 expect_identical(add_rows(a, b), res)
 
-context("etable")
+cat("etable", "
+")
 data(mtcars)
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",
@@ -89,12 +93,12 @@ tab2 = with(mtcars, cro_cpct(list(unvr(vs)), list(unvr(am), total())))
 tab3 = with(mtcars, cro_cpct(list(unvr(vs)), list(unvr(carb), total())))
 
 
-expect_known_value(add_rows(tab1, tab2), "rds/add_rows7.rds",  update = FALSE)
+expect_equal_to_reference(add_rows(tab1, tab2), "rds/add_rows7.rds")
 expect_identical(add_rows(tab1, tab2), add_rows(tab1, tab2))
 
-expect_known_value(add_rows(tab1, tab3), "rds/add_rows8.rds",  update = FALSE)
+expect_equal_to_reference(add_rows(tab1, tab3), "rds/add_rows8.rds")
 expect_identical(add_rows(tab1, tab3), add_rows(tab1, tab3, nomatch_columns = "add"))
-expect_known_value(add_rows(tab1, tab3, nomatch_columns = "drop"), "rds/add_rows9.rds",  update = FALSE)
+expect_equal_to_reference(add_rows(tab1, tab3, nomatch_columns = "drop"), "rds/add_rows9.rds")
 expect_error(add_rows(tab1, tab3, nomatch_columns = "stop"))
 
 
@@ -103,7 +107,8 @@ a = matrix(1:9, 3)
 expect_identical(add_rows(a, NA), rbind(a, NA))
 
 
-context("add_rows duplicated column names")
+cat("add_rows duplicated column names", "
+")
 
 
 data(iris)

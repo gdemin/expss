@@ -1,4 +1,5 @@
-context("window_fun")
+cat("window_fun", "
+")
 
 expect_error(window_fun(1:3))
 expect_error(window_fun(1:10, 1:2, mean))

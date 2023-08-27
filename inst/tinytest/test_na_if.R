@@ -1,4 +1,5 @@
-context("na_if vector")
+cat("na_if vector", "
+")
 suppressWarnings(RNGversion("3.5.0"))
 
 a = c(1, 1, 2, 2, 99)
@@ -29,7 +30,8 @@ expect_equal(1:5 %na_if% 4:5,a)
 expect_equal(1:5 %na_if% when(c(FALSE,FALSE,FALSE,TRUE,TRUE)),a)
 
 
-context("na_if data.frame")
+cat("na_if data.frame", "
+")
 a = data.frame(a=1:5,b=5:1)
 
 b = a
@@ -66,7 +68,8 @@ b[,1] = NA
 b$a = as.numeric(b$a)
 
 
-context("na_if matrix")
+cat("na_if matrix", "
+")
 
 a = cbind(a=1:5,b=5:1)
 

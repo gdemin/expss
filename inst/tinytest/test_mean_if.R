@@ -1,4 +1,5 @@
-context("mean_if")
+cat("mean_if", "
+")
 suppressWarnings(RNGversion("3.5.0"))
 
 df1 = data.frame(
@@ -30,7 +31,8 @@ expect_equal(mean_if(33:85,df1$b), (54L + 75L)/2)
 
 
 
-context("mean_if complex criteria")
+cat("mean_if complex criteria", "
+")
 # more complex criteria
 # values with letters
 expect_equal(mean_if(function(x) grepl("^[A-z]+$",x),df1$a, data = df1$b), 247/4)
@@ -40,7 +42,8 @@ expect_error(mean_if(function(x) grepl("^[A-z]+$",x),df1, data = df1))
 expect_equal(mean_if(function(x) grepl("^a",x), df1$a, data = df1$b),118/2)
 expect_error(mean_if(eq("apples"), df1, data = df1))
 
-context("mean_row_if")
+cat("mean_row_if", "
+")
 
 
 expect_equal(mean_row_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,NaN,NaN,86))
@@ -50,7 +53,8 @@ expect_equal(mean_row_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,NaN
 
 
 
-context("mean_col_if")
+cat("mean_col_if", "
+")
 
 
 
@@ -133,7 +137,8 @@ expect_equal(
     unname(colMeans(df2, na.rm = TRUE))
 )
 
-context("max_if/min_if")
+cat("max_if/min_if", "
+")
 
 set.seed(123)
 df2 = as.data.frame(
@@ -154,7 +159,8 @@ expect_identical(unname(min_col_if(gt(5), df2)), do.call(pmin, c(as.sheet(t(df2_
 
 #######
 
-context("errors")
+cat("errors", "
+")
 
 data(iris)
 iris$Species = as.character(iris$Species)

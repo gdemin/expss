@@ -1,4 +1,5 @@
-context("dichotomy.default")
+cat("dichotomy.default", "
+")
 suppressWarnings(RNGversion("3.5.0"))
 
 
@@ -249,7 +250,8 @@ expect_identical(dummy(vec,drop_labels=letters[1:3]),structure(c(0, 0, 0, 1, 0, 
     NULL, c("d", "e")), class = c("dichotomy", MATRIX_CLASS)))
 
 
-context("dichotomy.data.frame")
+cat("dichotomy.data.frame", "
+")
 vec = data.frame(1)
 
 expect_identical(dummy(vec),
@@ -491,7 +493,7 @@ val_lab(brands) = make_labels("
                               4 Brand D
                               5 Brand E
                               ")
-expect_equal_to_reference(as.dichotomy(brands, prefix = "brand_"),"rds/brands_df.rds",  update = FALSE)
+expect_equal_to_reference(as.dichotomy(brands, prefix = "brand_"),"rds/brands_df.rds")
 
 brands2 = as.dichotomy(brands)
 brands2[5, ] = NA 

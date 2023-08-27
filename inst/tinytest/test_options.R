@@ -1,4 +1,5 @@
-context("options")
+cat("options", "
+")
 data(mtcars)
 data(iris)
 # add labels to dataset
@@ -89,7 +90,7 @@ expect_output_file(print(tbl[, 1:2]),
 
 expss_output_default()
 # res = expss:::knit_print.etable(tbl)
-# expect_equal_to_reference(res, "rds/knit_print.rds",  update = FALSE)
+# expect_equal_to_reference(res, "rds/knit_print.rds")
 
 # expss_output_rnotebook()
 # colnames(tbl) = enc2utf8(colnames(tbl))

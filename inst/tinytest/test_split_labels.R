@@ -1,5 +1,6 @@
 if(isTRUE(getOption("covr"))) { 
-    context("split_labels")
+    cat("split_labels", "
+")
     
     data(mtcars)
     
@@ -18,19 +19,19 @@ if(isTRUE(getOption("covr"))) {
     
     # without sorting
     tabl = mtcars %>% query(cro_cpct(list(cyl, gear, carb), list("#total", vs, am), total_label = "#Total"))
-    expect_equal_to_reference(split_labels(tabl[[1]]), "rds/split_labels1.rds",  update = FALSE)
+    expect_equal_to_reference(split_labels(tabl[[1]]), "rds/split_labels1.rds")
     
-    expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", perl = TRUE), "rds/split_labels1.rds",  update = FALSE)
-    expect_equal_to_reference(split_labels(tabl[[1]], split = "|", fixed = TRUE), "rds/split_labels1.rds",  update = FALSE)
-    expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE), "rds/split_labels1.rds",  update = FALSE)
-    expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE, perl = TRUE), "rds/split_labels1.rds",  update = FALSE)
-    expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE, perl = FALSE), "rds/split_labels1.rds",  update = FALSE)
-    expect_equal_to_reference(split_labels(tabl[[1]], split = "|", fixed = TRUE, perl = FALSE), "rds/split_labels1.rds",  update = FALSE)
+    expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", perl = TRUE), "rds/split_labels1.rds")
+    expect_equal_to_reference(split_labels(tabl[[1]], split = "|", fixed = TRUE), "rds/split_labels1.rds")
+    expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE), "rds/split_labels1.rds")
+    expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE, perl = TRUE), "rds/split_labels1.rds")
+    expect_equal_to_reference(split_labels(tabl[[1]], split = "\\|", fixed = FALSE, perl = FALSE), "rds/split_labels1.rds")
+    expect_equal_to_reference(split_labels(tabl[[1]], split = "|", fixed = TRUE, perl = FALSE), "rds/split_labels1.rds")
     expect_warning(split_labels(tabl[[1]], split = "\\|", fixed = TRUE, perl = TRUE))
-    expect_equal_to_reference(split_labels(colnames(tabl)), "rds/split_labels2.rds",  update = FALSE)
+    expect_equal_to_reference(split_labels(colnames(tabl)), "rds/split_labels2.rds")
     
-    expect_equal_to_reference(split_labels(tabl[[1]], remove_repeated = FALSE), "rds/split_labels3.rds",  update = FALSE)
-    expect_equal_to_reference(split_labels(colnames(tabl), remove_repeated = FALSE), "rds/split_labels4.rds",  update = FALSE)
+    expect_equal_to_reference(split_labels(tabl[[1]], remove_repeated = FALSE), "rds/split_labels3.rds")
+    expect_equal_to_reference(split_labels(colnames(tabl), remove_repeated = FALSE), "rds/split_labels4.rds")
     
     
     expect_identical(split_labels(letters, remove_repeated = TRUE), as.matrix(as.character(letters)))
@@ -53,18 +54,19 @@ if(isTRUE(getOption("covr"))) {
         cbind(c("", "", "1", ""), c("", "", "6", ""))
     )
     
-    context("split_columns")
+    cat("split_columns", "
+")
     # replace first column with new columns 
-    expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds",  update = FALSE)
-    expect_equal_to_reference(split_columns(tabl, split = "|", fixed = TRUE), "rds/split_columns1.rds",  update = FALSE)
-    expect_equal_to_reference(split_columns(tabl, split = "\\|", perl = TRUE), "rds/split_columns1.rds",  update = FALSE)
-    expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_columns1subheadings.rds",  update = FALSE)
-    expect_equal_to_reference(split_columns(tabl, "row_labels"), "rds/split_columns1.rds",  update = FALSE)
-    expect_equal_to_reference(split_columns(tabl, c(TRUE, rep(FALSE, ncol(tabl)-1))), "rds/split_columns1.rds",  update = FALSE)
+    expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
+    expect_equal_to_reference(split_columns(tabl, split = "|", fixed = TRUE), "rds/split_columns1.rds")
+    expect_equal_to_reference(split_columns(tabl, split = "\\|", perl = TRUE), "rds/split_columns1.rds")
+    expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_columns1subheadings.rds")
+    expect_equal_to_reference(split_columns(tabl, "row_labels"), "rds/split_columns1.rds")
+    expect_equal_to_reference(split_columns(tabl, c(TRUE, rep(FALSE, ncol(tabl)-1))), "rds/split_columns1.rds")
     
     
-    expect_equal_to_reference(split_columns(tabl, remove_repeated = FALSE), "rds/split_columns2.rds",  update = FALSE)
-    expect_equal_to_reference(split_columns(tabl, "row_labels", remove_repeated = FALSE), "rds/split_columns2.rds",  update = FALSE)
+    expect_equal_to_reference(split_columns(tabl, remove_repeated = FALSE), "rds/split_columns2.rds")
+    expect_equal_to_reference(split_columns(tabl, "row_labels", remove_repeated = FALSE), "rds/split_columns2.rds")
     expect_equal_to_reference(split_columns(tabl, c(TRUE, rep(FALSE, ncol(tabl)-1)), 
                                             remove_repeated = FALSE), 
                               "rds/split_columns2.rds",  update = FALSE)
@@ -95,19 +97,19 @@ if(isTRUE(getOption("covr"))) {
     )
     
     
-    expect_equal_to_reference(split_columns(as.matrix(tabl[[1]])), "rds/split_columns4.rds",  update = FALSE)
+    expect_equal_to_reference(split_columns(as.matrix(tabl[[1]])), "rds/split_columns4.rds")
     expect_equal_to_reference(make_subheadings(split_columns(as.matrix(tabl[[1]]))), 
                               "rds/split_columns4subheafings.rds",  update = FALSE)
     expect_equal_to_reference(split_columns(as.matrix(tabl[[1]]), remove_repeated = FALSE),
                               "rds/split_columns5.rds",  update = FALSE)
     
     tabl[,1] = as.factor(tabl[[1]])
-    expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds",  update = FALSE)
+    expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
     expect_equal_to_reference(make_subheadings(split_columns(tabl)),
                               "rds/split_columns1subheadings.rds",  update = FALSE)
     
     colnames(tabl)[1] = "My super table"
-    expect_equal_to_reference(split_columns(tabl), "rds/split_columns1b.rds",  update = FALSE)
+    expect_equal_to_reference(split_columns(tabl), "rds/split_columns1b.rds")
     expect_equal_to_reference(make_subheadings(split_columns(tabl)),
                               "rds/split_columns1b_subheadings.rds",  update = FALSE)
     
@@ -116,7 +118,8 @@ if(isTRUE(getOption("covr"))) {
         split_columns(tabl_fre),
         "rds/split_columns_fre.rds",  update = FALSE)
     
-    context("split_table_to_df")
+    cat("split_table_to_df", "
+")
     mtcars = apply_labels(mtcars,
                           cyl = "Number of cylinders",
                           vs = "Engine",
@@ -143,7 +146,7 @@ if(isTRUE(getOption("covr"))) {
     
     tabl = tabl %>% tab_pivot() 
     
-    expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1.rds",  update = FALSE)
+    expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1.rds")
     expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)),
                               "rds/split_table_to_df1subheadings.rds",  update = FALSE)
     expect_equal_to_reference(split_table_to_df(tabl, remove_repeated = FALSE),
@@ -167,8 +170,8 @@ if(isTRUE(getOption("covr"))) {
     
     colnames(tabl)[1] = "My super table"
     
-    expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1b.rds",  update = FALSE)
-    expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_table_to_df1b_subheadings.rds",  update = FALSE)
+    expect_equal_to_reference(split_table_to_df(tabl), "rds/split_table_to_df1b.rds")
+    expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_table_to_df1b_subheadings.rds")
     expect_equal_to_reference(split_table_to_df(tabl, remove_repeated = FALSE),
                               "rds/split_table_to_df2b.rds",  update = FALSE)
     
@@ -185,7 +188,8 @@ if(isTRUE(getOption("covr"))) {
                               "rds/split_table_to_df6b.rds",  update = FALSE)
     
     
-    context("split_columns subheading")
+    cat("split_columns subheading", "
+")
     
     tabl = mtcars %>% 
         tab_cells(cyl, gear, carb) %>% 
@@ -194,8 +198,8 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cpct() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_subheadings1.rds",  update = FALSE)
-    expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_subheadings2.rds",  update = FALSE)
+    expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_subheadings1.rds")
+    expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_subheadings2.rds")
     
     tabl = mtcars %>% 
         tab_cols(tot, vs, am) %>%
@@ -210,8 +214,8 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cpct() %>% 
         tab_pivot()
     
-    expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_subheadings3.rds",  update = FALSE)
-    expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_subheadings4.rds",  update = FALSE)
+    expect_equal_to_reference(make_subheadings(split_columns(tabl)), "rds/split_subheadings3.rds")
+    expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)), "rds/split_subheadings4.rds")
     
     tabl[[1]] = paste0(tabl[[1]], "|newlab")
     expect_equal_to_reference(make_subheadings(split_table_to_df(tabl)),
@@ -280,7 +284,8 @@ if(isTRUE(getOption("covr"))) {
         "rds/split_subheadings13.rds",  update = FALSE)
     
     #############################
-    context("make_subheadings etable")
+    cat("make_subheadings etable", "
+")
     
     tabl = mtcars %>% 
         tab_cells(am %nest% vs) %>% 

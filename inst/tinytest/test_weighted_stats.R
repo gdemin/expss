@@ -1,4 +1,5 @@
-context("w_* unweighted")
+cat("w_* unweighted", "
+")
 suppressWarnings(RNGversion("3.5.0"))
 
 
@@ -61,7 +62,8 @@ expect_equal(w_n(x, na.rm = FALSE), sum(!is.na(x)))
 expect_equal(w_se(x, na.rm = FALSE), sd(x)/sqrt(length(x)))
 
 ##############################
-context("w_* weighted")
+cat("w_* weighted", "
+")
 
 set.seed(123)
 x = round(c(NA, runif(8, 1,2), NA), 5)
@@ -182,7 +184,8 @@ expect_equal(w_var(x, w, na.rm = FALSE), matrixStats::weightedVar(x_no_na, w_no_
 expect_equal(w_n(x, w, na.rm = FALSE), sum((!is.na(x))*w_prep))
 
 ###################################################
-context("w_* unweighted corr")
+cat("w_* unweighted corr", "
+")
 
 set.seed(123)
 x = round(c(NA, runif(8, 1,2), NA), 5)
@@ -295,7 +298,8 @@ expect_equal(w_spearman(mat, use = "pairwise"), spss_test)
 #############################################################
 #############################################################
 
-context("w_* weighted corr")
+cat("w_* weighted corr", "
+")
 
 ### listwise
 
@@ -379,7 +383,8 @@ expect_equal(w_spearman(mat, weight = w, use = "pairwise"), spss_test)
 
 ######################################
 #####################################
-context("weight = 1")
+cat("weight = 1", "
+")
 set.seed(123)
 x = round(c(NA, runif(8, 1,2), NA), 5)
 w = round(c(runif(6, 1,2), -1, NA, NA, 0), 5)
@@ -451,7 +456,8 @@ expect_equal(w_spearman(mat, weight = w/100, use = "complete.obs"), diag_one)
 
 
 #########
-context("weighted statistics labels")
+cat("weighted statistics labels", "
+")
 
 
 data(mtcars)
@@ -506,7 +512,8 @@ expect_equal(
     labs
 )
 
-context("cor emtpy argumnet")
+cat("cor emtpy argumnet", "
+")
 
 empty = matrix(NA*1, ncol = ncol(dfs), nrow = ncol(dfs))
 colnames(empty) = colnames(names2labels(dfs))
@@ -522,7 +529,8 @@ expect_equal(w_cov(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
 expect_equal(w_spearman(dfs[FALSE, FALSE]), matrix(numeric(0), ncol = 0, nrow =0))
 
 #####
-context("weighted stats logical args")
+cat("weighted stats logical args", "
+")
 
 a = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE)
 b = c(TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE)
