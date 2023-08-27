@@ -34,7 +34,7 @@ Suggests:
     rmarkdown,
     repr,
     ggplot2,
-    testthat,
+    tinytest,
     openxlsx,
     fst,
     huxtable
