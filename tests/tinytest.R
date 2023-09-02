@@ -12,6 +12,8 @@ if(capabilities('long.double')){
             cat("\nCONTEXT:", text, "\n")
             invisible(NULL)
         }
+        expss::expss_round_half_to_even(TRUE)
+        expss::expss_digits(NULL)
         tinytest::test_package("expss", remove_side_effects=FALSE)
     }
 
@@ -32,6 +34,8 @@ if(FALSE){
     }
     
     library(expss)
+    expss_round_half_to_even(TRUE)
+    expss_digits(NULL)
     tinytest::test_all(remove_side_effects=FALSE)
     # 
     # res = covr::package_coverage(quiet = FALSE, type = "all", combine_types = TRUE, clean = FALSE)

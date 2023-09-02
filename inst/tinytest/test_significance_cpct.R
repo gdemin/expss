@@ -515,7 +515,7 @@ if(isTRUE(getOption("covr"))) {
     expect_equal(trimws(res[1,6]), "100")
     
     expss_round_half_to_even(TRUE)
-    
+    expss_digits(NULL)
     
     
 }
