@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "category", "\n")
+context("category")
 suppressWarnings(RNGversion("3.5.0"))
 
 set.seed(123)

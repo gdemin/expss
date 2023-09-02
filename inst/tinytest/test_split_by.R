@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "split_by", "\n")
+context("split_by")
 
 data(airquality)
 

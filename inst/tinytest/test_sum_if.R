@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "sum_if", "\n")
+context("sum_if")
 suppressWarnings(RNGversion("3.5.0"))
 
 
@@ -31,7 +31,7 @@ expect_equal(sum_if(33:85,df1$b),54L + 75L)
 
 
 
-cat("\nCONTEXT:", "sum_if complex criteria", "\n")
+context("sum_if complex criteria")
 # more complex criteria
 # values with letters
 expect_equal(sum_if(function(x) grepl("^[A-z]+$",x),df1$a, data = df1$b), 247L)
@@ -41,7 +41,7 @@ expect_error(sum_if(function(x) grepl("^[A-z]+$",x),df1, data = df1))
 expect_equal(sum_if(function(x) grepl("^a",x), df1$a, data = df1$b),118L)
 expect_error(sum_if(eq("apples"), df1, data = df1))
 
-cat("\nCONTEXT:", "sum_row_if", "\n")
+context("sum_row_if")
 
 
 expect_equal(sum_row_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,0,0,86))
@@ -49,7 +49,7 @@ expect_equal(sum_row_if(function(x) grepl("^a",x),df1$a, data = df1$b),c(32,0,0,
 
 
 
-cat("\nCONTEXT:", "sum_col_if", "\n")
+context("sum_col_if")
 
 
 

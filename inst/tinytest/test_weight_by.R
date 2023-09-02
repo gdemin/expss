@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "weight_by", "\n")
+context("weight_by")
 
 data(state)
 

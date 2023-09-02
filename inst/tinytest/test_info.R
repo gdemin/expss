@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "info", "\n")
+context("info")
 
 vec = c(1:2,NA)
 expect_equal_to_reference(info(vec),"rds/info1.rds")

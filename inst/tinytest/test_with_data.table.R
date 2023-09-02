@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "data.table vec ops", "\n")
+context("data.table vec ops")
 
 dt2 = data.table(
     zz = 42,

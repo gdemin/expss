@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "count_if", "\n")
+context("count_if")
 suppressWarnings(RNGversion("3.5.0"))
 df1 = data.frame(
     a=c("apples",   "oranges",     "peaches",     "apples"),
@@ -39,7 +39,7 @@ expect_equal(count_if(35 %thru% 80, df1$b),2L)
 
 expect_equal(count_if(33:85,df1$b),2L)
 
-cat("\nCONTEXT:", "count_if character", "\n")
+context("count_if character")
 
 expect_equal(count_if("a", letters),1L)
 expect_equal(count_if(gt("a"), letters),25L)
@@ -51,7 +51,7 @@ expect_equal(count_if(eq("b"), letters),1L)
 # expect_warning(count_if(c(eq(b),"d"), letters))
 expect_equal(count_if(c("a","b"), letters),2L)
 
-cat("\nCONTEXT:", "count_ifs", "\n")
+context("count_ifs")
 
 df3 = data.frame( 
     "Sales Person" = c("Davidoski", "Burke", "Sundaram", "Levitan"),
@@ -64,7 +64,7 @@ expect_equal(count_if("Yes", df3[1,2:4]), 1) # Counts how many times Davidoski e
 
 
 
-cat("\nCONTEXT:", "count_if complex criteria", "\n")
+context("count_if complex criteria")
 # more complex criteria
 # values with letters
 expect_equal(count_if(function(x) grepl("^[A-z]+$",x),df1),4L)
@@ -75,7 +75,7 @@ expect_equal(count_if(regex("[:alpha:]"),df1),4L)
 expect_equal(count_if(function(x) grepl("^a",x),df1),2L)
 expect_equal(count_if(perl("^a"),df1),2L)
 
-cat("\nCONTEXT:", "count_row_if", "\n")
+context("count_row_if")
 
 
 expect_equal(count_row_if(function(x) grepl("^a",x),df1),c(1,0,0,1))
@@ -87,7 +87,7 @@ expect_equal(df1 %col_in% 'apples', c(a = TRUE, b = FALSE))
 
 
 
-cat("\nCONTEXT:", "count_col_if", "\n")
+context("count_col_if")
 
 
 expect_equal(count_col_if(function(x) grepl("^a",x),t(df1)),
@@ -176,7 +176,7 @@ expect_equal(
     c(9, 8, 9)
 )
 
-cat("\nCONTEXT:", "count_if new examples", "\n")
+context("count_if new examples")
 set.seed(123)
 dfs = as.data.frame(
        matrix(sample(c(1:10,NA),30,replace = TRUE),10)

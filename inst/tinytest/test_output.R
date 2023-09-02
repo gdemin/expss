@@ -1,7 +1,7 @@
 # if(isTRUE(getOption("covr"))){ 
 if(FALSE){ 
 
-    cat("\nCONTEXT:", "output methods print labelled", "\n")
+    context("output methods print labelled")
     
     x = c(letters, LETTERS)
     x = as.labelled(x)
@@ -28,7 +28,7 @@ if(FALSE){
     expect_output_file(str(x), "rds/str_labelled7.txt")
     
     #####################################
-    cat("\nCONTEXT:", "output etable fre methods", "\n")
+    context("output etable fre methods")
     
     data(mtcars)
     # add labels to dataset
@@ -149,12 +149,12 @@ if(FALSE){
     #                    "rds/print_etable_rnotebook_caption.txt")
     
     options(expss.output = "viewer")
-    aa = capture_output(
+    aa = capture.output(
         expect_identical(print(tbl), NULL)
     )
     
     
-    aa = capture_output(
+    aa = capture.output(
         expect_identical(print(set_caption(tbl, "Caption")), NULL)
     )
     

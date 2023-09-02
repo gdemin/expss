@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "tab_sort_*", "\n")
+context("tab_sort_*")
 
 data(mtcars)
 

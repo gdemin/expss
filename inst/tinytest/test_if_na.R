@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "if_na.vector", "\n")
+context("if_na.vector")
 suppressWarnings(RNGversion("3.5.0"))
 
 
@@ -40,7 +40,7 @@ expect_error(if_na(a, 1:2))
 expect_error(if_na(a, t(1:2)))
 expect_identical(if_na(numeric(0), 1),numeric(0))
 
-cat("\nCONTEXT:", "if_na.data.frame", "\n")
+context("if_na.data.frame")
 
 a = data.frame(a = 1:4, b = 5:8, d = 10:13)
 val_lab(a$a) = c('aaa' = 1)
@@ -72,7 +72,7 @@ b[1,3] = 1
 
 
 
-cat("\nCONTEXT:", "if_na.matrix", "\n")
+context("if_na.matrix")
 
 a = as.matrix(data.frame(a = 1:4, b = 5:8, d = 10:13))
 
@@ -98,7 +98,7 @@ b[1,3] = 4
 expect_equal(if_na(a, rep(4:1, 3)), b)
 
 
-cat("\nCONTEXT:", "if_na list", "\n")
+context("if_na list")
 
 a = 1:4
 b = 4:1
@@ -120,7 +120,7 @@ ab_no_na[[1]][1] = 42
 ab_no_na[[2]][4] = 42
 expect_error(if_na(ab, list(42,43)))
 
-cat("\nCONTEXT:", "if_na help", "\n")
+context("if_na help")
 
 # simple case
 a = c(NA, 2, 3, 4, NA)
@@ -145,7 +145,7 @@ df = data.frame(group, param)
 # replacement with column means
 
 
-cat("\nCONTEXT:", "if_na add_val_lab", "\n")
+context("if_na add_val_lab")
 
 
 set.seed(123)
@@ -171,14 +171,14 @@ df_test = within(df_test, {
 
 expect_identical(df, df_test)
 
-cat("\nCONTEXT:", "if_na factor", "\n")
+context("if_na factor")
 
 fac = factor(c("a","b",NA))
 
 expect_identical(if_na(fac, "c"), factor(c("a","b","c")))
 expect_identical(if_na(fac, "a"), factor(c("a","b","a")))
 
-cat("\nCONTEXT:", "if_na POSIXct", "\n")
+context("if_na POSIXct")
 
 ct = c(as.POSIXct("2016-09-24"), NA)
 expect_equal(if_na(ct, "2016-09-25"), as.POSIXct(c("2016-09-24", "2016-09-25")))

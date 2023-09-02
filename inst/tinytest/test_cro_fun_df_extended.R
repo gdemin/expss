@@ -3,7 +3,7 @@ suppressWarnings(RNGversion("3.5.0"))
 
 #################################
 
-cat("\nCONTEXT:", "cro_fun_df", "\n")
+context("cro_fun_df")
 
 data(mtcars)
 mtcars = apply_labels(mtcars,
@@ -279,7 +279,7 @@ expect_error(
 
 
 
-cat("\nCONTEXT:", "table correlations", "\n")
+context("table correlations")
 
 
 
@@ -375,7 +375,7 @@ expect_equal(cro_spearman(mtcars %>% columns(-vs, -am), col_vars = "Total")[[2]]
              unname(cor(mtcars %>% columns(-vs, -am), method = "spearman")[,1]))
 
 
-cat("\nCONTEXT:", "table_summary_df datetime", "\n")
+context("table_summary_df datetime")
 
 dates = as.POSIXct(rep(paste0("2017-02-", 1:10), each = 10))
 measure = runif(length(dates), 1, 2)
@@ -397,7 +397,7 @@ expect_equal_to_reference(
 ,"rds/table_summary_df_dates4.rds",  update = FALSE
 )
 
-cat("\nCONTEXT:", "cro_fun_df duplicated names", "\n")
+context("cro_fun_df duplicated names")
 
 expect_equal_to_reference(
     calculate(mtcars, cro_mean(list(mpg, mpg, mpg, mpg), list(am))),

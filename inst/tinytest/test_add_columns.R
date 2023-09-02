@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "add_columns", "\n")
+context("add_columns")
  
 sh1 = sheet(a = 1:5, b = 5:1)
 sh2 = sheet(a = 4:2, d = 4:2)
@@ -88,7 +88,7 @@ expect_identical(add_columns(sh1, sh2, by = c("b" = "a", "a" = "b")), res)
 
 
 ############################
-cat("\nCONTEXT:", "add_columns data.table", "\n")
+context("add_columns data.table")
 # data.table is modified by reference
 sh1 = data.table(a = 1:5, b = 5:1)
 sh2 = data.table(a = 4:2, d = 4:2)

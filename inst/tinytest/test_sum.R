@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "common case", "\n")
+context("common case")
 
 a = 1:3
 b = 3:1
@@ -40,7 +40,7 @@ expect_equal(unname(sd_col(a, b, d)), unname(apply(temp, 2, sd)))
 expect_equal(apply_row(sum, a, b, d), 1*c(NA,NA,NA))
 expect_equal(unname(apply_col(sum, a, b, d)), c(6,6,NA))
 
-cat("\nCONTEXT:", "edge cases", "\n")
+context("edge cases")
 
 a = 1:3
 b = 3:1
@@ -77,7 +77,7 @@ expect_equal(new_median, apply(iris[,-5], 1, median))
 expect_equal(new_mean, apply(iris[,-5], 1, mean))
 
 
-cat("\nCONTEXT:", "any/all", "\n")
+context("any/all")
 
 a = c(T, NA, F, T, NA, F, T, NA, F)
 b = c(T, T, T, F, F, F, NA, NA, NA)

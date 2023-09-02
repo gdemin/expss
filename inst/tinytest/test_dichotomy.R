@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "dichotomy.default", "\n")
+context("dichotomy.default")
 suppressWarnings(RNGversion("3.5.0"))
 
 
@@ -249,7 +249,7 @@ expect_identical(dummy(vec,drop_labels=letters[1:3]),structure(c(0, 0, 0, 1, 0, 
     NULL, c("d", "e")), class = c("dichotomy", MATRIX_CLASS)))
 
 
-cat("\nCONTEXT:", "dichotomy.data.frame", "\n")
+context("dichotomy.data.frame")
 vec = data.frame(1)
 
 expect_identical(dummy(vec),

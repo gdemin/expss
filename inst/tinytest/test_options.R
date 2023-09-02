@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "options", "\n")
+context("options")
 data(mtcars)
 data(iris)
 # add labels to dataset
@@ -78,7 +78,7 @@ expss_output_rnotebook()
 #                    "rds/print_etable_rnotebook.txt")
 
 expss_output_viewer()
-aa = capture_output(
+aa = capture.output(
     expect_identical(print(tbl), NULL)
 )
 

@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "add_rows", "\n")
+context("add_rows")
 
 a = data.frame(x = 1:5, y = 6:10)
 b = data.frame(y = 6:10, z = 11:15)
@@ -17,7 +17,7 @@ expect_equal_to_reference(add_rows(a, NA), "rds/add_rows6a.rds")
 expect_equal_to_reference(add_rows(a, 1:2), "rds/add_rows6b.rds")
 
 
-cat("\nCONTEXT:", "add_rows.etable", "\n")
+context("add_rows.etable")
 
 a = data.frame(x = 1:5, y = 6:10)
 b = data.frame(y = 6:10, z = 11:15)
@@ -39,7 +39,7 @@ expect_equal_to_reference(add_rows(a, 1:2), "rds/add_rows11e.rds")
 
 
 
-cat("\nCONTEXT:", "labels preserving", "\n")
+context("labels preserving")
 
 a = sheet(x = 1:5, y = 11:15)
 b = sheet(x = 6:10, z = 16:20)
@@ -63,7 +63,7 @@ val_lab(res$y) = c("yyy" = 1)
 
 expect_identical(add_rows(a, b), res)
 
-cat("\nCONTEXT:", "etable", "\n")
+context("etable")
 data(mtcars)
 mtcars = apply_labels(mtcars,
                       mpg = "Miles/(US) gallon",
@@ -103,7 +103,7 @@ a = matrix(1:9, 3)
 expect_identical(add_rows(a, NA), rbind(a, NA))
 
 
-cat("\nCONTEXT:", "add_rows duplicated column names", "\n")
+context("add_rows duplicated column names")
 
 
 data(iris)

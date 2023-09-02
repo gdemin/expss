@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "c", "\n")
+context("c")
 
 vec_with_lab = rep(1:2,3)
 var_lab(vec_with_lab) = "Fruits"
@@ -9,7 +9,7 @@ new_vec = c(vec_with_lab,vec_with_lab)
 expect_identical(var_lab(new_vec),var_lab(vec_with_lab))
 expect_identical(val_lab(new_vec),val_lab(vec_with_lab))
 ###
-cat("\nCONTEXT:", "c on labelled factors", "\n")
+context("c on labelled factors")
 
 a = factor(0:1, levels = 0:1, labels = c("Zero", "One"))
 a = set_var_lab(a, "my labelled factor")
@@ -39,12 +39,12 @@ res = set_var_lab(res, "my labelled factor")
 
 expect_identical(c(a,b), res)
 ###
-cat("\nCONTEXT:", "[", "\n")
+context("[")
 expect_identical(var_lab(vec_with_lab[1]),var_lab(vec_with_lab))
 expect_identical(val_lab(vec_with_lab[1]),val_lab(vec_with_lab))
 
 
-cat("\nCONTEXT:", "data.frame[", "\n")
+context("data.frame[")
 dfs = data.frame(a = vec_with_lab,b= vec_with_lab,stringsAsFactors = FALSE)
 
 expect_identical(var_lab(dfs[1,1]),var_lab(vec_with_lab))
@@ -70,7 +70,7 @@ dfs$a[1] = "a"
 
 expect_identical(aa, dfs$a)
 
-cat("\nCONTEXT:", "rep", "\n")
+context("rep")
 
 new_vec = rep(vec_with_lab,2)
 
@@ -78,7 +78,7 @@ expect_identical(var_lab(new_vec),var_lab(vec_with_lab))
 expect_identical(val_lab(new_vec),val_lab(vec_with_lab))
 
 
-cat("\nCONTEXT:", "as.data.frame", "\n")
+context("as.data.frame")
 
 a = 1:3
 
@@ -109,7 +109,7 @@ expect_identical(as.data.frame(a), as.data.frame(a, stringsAsFactors = FALSE))
 
 
 
-cat("\nCONTEXT:", "type conversion", "\n")
+context("type conversion")
 a = 1:0
 a_str = as.character(a)
 a_log = c(TRUE, FALSE)
@@ -157,7 +157,7 @@ expect_identical(factor(aa), factor(1:3, levels = 1:3, labels = c("c", "b", "a")
 # expect_warning(as.character(a))
 # suppressWarnings(expect_identical(as.character(a), c("a", "2", "b")))
 
-cat("\nCONTEXT:", "unique.labelled", "\n")
+context("unique.labelled")
 a = c(1, 1, 0, NA)
 var_lab(a) = "This is a"
 val_lab(a) = c("a" = 1, b = 0, d = 2)
@@ -175,7 +175,7 @@ expss_enable_value_labels_support()
 expect_identical(unique(a), a[-1])
 
 
-cat("\nCONTEXT:", "print.labelled/str.labelled", "\n")
+context("print.labelled/str.labelled")
 
 x = c(letters, LETTERS)
 x = as.labelled(x)
@@ -205,7 +205,7 @@ expect_identical(print(x), x)
 # cyrillic
 
 
-cat("\nCONTEXT:", "as.etable", "\n")
+context("as.etable")
 
 data(mtcars)
 res = mtcars
@@ -277,7 +277,7 @@ expect_equal_to_reference(
     use_labels(mtcars, as.etable(table(am, vs, cyl, gear))),
     "rds/as.etable8.rds",  update = FALSE)
 
-cat("\nCONTEXT:", "method as.character.labelled and others", "\n")
+context("method as.character.labelled and others")
 
 a = 1:0
 a_str = as.character(a)

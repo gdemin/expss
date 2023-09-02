@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "fctr.labelled", "\n")
+context("fctr.labelled")
 
 no_lab = rep(1:2,3)
 vec_with_lab = no_lab
@@ -64,7 +64,7 @@ val_lab(test_ds$s2b) = c('18 - 26' = 2, '27 - 35' = 3)
 expect_identical(levels(fctr(test_ds$s2b)), names(val_lab(test_ds$s2b)))
 
 
-cat("\nCONTEXT:", "fctr.labelled - some values without labels", "\n")
+context("fctr.labelled - some values without labels")
 no_lab = c(no_lab,5:6)
 vec_with_lab = c(vec_with_lab,5:6)
 
@@ -78,7 +78,7 @@ expect_identical(fctr(unvl(vec_with_lab)),
                 factor(no_lab,levels =  c(1:2,5:6),labels= c("Fruits|1","Fruits|2","Fruits|5","Fruits|6")))
 
 
-cat("\nCONTEXT:",  "fctr - errors and warnings", "\n")
+context("fctr - errors and warnings")
 
 a = 1
 class(a) = "labelled"

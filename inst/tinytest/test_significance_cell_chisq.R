@@ -1,5 +1,5 @@
 if(isTRUE(getOption("covr"))) { 
-    cat("\nCONTEXT:", "significance_cell_chisq", "\n")
+    context("significance_cell_chisq")
     
     test_table = text_to_columns("
 row_labels       Total Segment|PRO	Segment|AMT	Segment|DES
@@ -131,7 +131,7 @@ NEWBALANCE	56	8	8	40
     
     expect_identical(significance_cell_chisq(test_table[,1]), test_table[,1])
     
-    cat("\nCONTEXT:", "cell_chisq correct", "\n")
+    context("cell_chisq correct")
     
     
     test_table = text_to_columns("

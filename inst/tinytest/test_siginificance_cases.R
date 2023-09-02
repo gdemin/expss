@@ -1,5 +1,5 @@
 if(isTRUE(getOption("covr"))){ 
-    cat("\nCONTEXT:", "significance_cases", "\n")
+    context("significance_cases")
     mtcars = NULL
     rm(mtcars)
     mtcars = datasets::mtcars

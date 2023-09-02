@@ -1,6 +1,6 @@
 if(isTRUE(getOption("covr"))) { 
 
-    cat("\nCONTEXT:", "custom tables", "\n")
+    context("custom tables")
     suppressWarnings(RNGversion("3.5.0"))
     
     data(mtcars)
@@ -336,7 +336,7 @@ if(isTRUE(getOption("covr"))) {
         tab_pivot(stat_position = "inside_rows")
     expect_equal_to_reference(res, "rds/ctable18.rds")
     
-    cat("\nCONTEXT:", "custom tables summary stats", "\n")
+    context("custom tables summary stats")
     
     mtcars$mpg[1:2] = NA
     mtcars$wt[4:5] = NA
@@ -954,7 +954,7 @@ if(isTRUE(getOption("covr"))) {
     
     expect_output_file(print(res), "rds/print_intermediate_table.txt")
     
-    cat("\nCONTEXT:", "custom tables error", "\n")
+    context("custom tables error")
     
     expect_error(
         mtcars %>% tab_stat_cases()
@@ -996,7 +996,7 @@ if(isTRUE(getOption("covr"))) {
         1:5 %>% tab_cells(42)
     )
     
-    cat("\nCONTEXT:", "custom table long expression as argument", "\n")
+    context("custom table long expression as argument")
     
     
     res = mtcars %>% 
@@ -1148,7 +1148,7 @@ if(isTRUE(getOption("covr"))) {
         tab_stat_cpct() %>%
         tab_pivot() 
     
-    cat("\nCONTEXT:", "tab_last_vstack/tab_last_hstack", "\n")
+    context("tab_last_vstack/tab_last_hstack")
     
     res = pr_t %>% tab_cols(total(), age_cat) %>% 
         tab_cells("Mean" = unlab(a22)) %>% 
@@ -1190,7 +1190,7 @@ if(isTRUE(getOption("covr"))) {
         "rds/ctable41.rds",  update = FALSE
     )
     
-    cat("\nCONTEXT:", "tab_pivot inside columns double labels", "\n")
+    context("tab_pivot inside columns double labels")
     res = mtcars %>%
         tab_cells(am) %>%
         tab_cols(total(), vs, vs) %>%

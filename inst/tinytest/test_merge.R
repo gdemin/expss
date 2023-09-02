@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "merge etable", "\n")
+context("merge etable")
 
 data("mtcars")
 
@@ -68,7 +68,7 @@ expect_equal_to_reference(with(mtcars, {
 }), "rds/merge6.rds",  update = FALSE)
 
 
-cat("\nCONTEXT:", "merge etable", "\n")
+context("merge etable")
 
 data("mtcars")
 
@@ -121,7 +121,7 @@ expect_equal_to_reference(with(mtcars,{
 }), "rds/merge11.rds",  update = FALSE)
 
 
-cat("\nCONTEXT:", "merge simple_summary", "\n")
+context("merge simple_summary")
 data("mtcars")
 
 
@@ -169,13 +169,13 @@ expect_equal_to_reference(
 
 
 
-cat("\nCONTEXT:", "merge duplicated columns", "\n")
+context("merge duplicated columns")
 
 data(mtcars)
 expect_equal_to_reference(merge(fre(mtcars$cyl[mtcars$mpg<20]), fre(mtcars$cyl)) ,
                            "rds/merge12.rds",  update = FALSE)
 
-cat("\nCONTEXT:", "merge duplicated rows", "\n")
+context("merge duplicated rows")
 
 tabl1 = mtcars %>% 
     tab_cells(am) %>% 

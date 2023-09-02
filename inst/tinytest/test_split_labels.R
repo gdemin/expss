@@ -1,5 +1,5 @@
 if(isTRUE(getOption("covr"))) { 
-    cat("\nCONTEXT:", "split_labels", "\n")
+    context("split_labels")
     
     data(mtcars)
     
@@ -53,7 +53,7 @@ if(isTRUE(getOption("covr"))) {
         cbind(c("", "", "1", ""), c("", "", "6", ""))
     )
     
-    cat("\nCONTEXT:", "split_columns", "\n")
+    context("split_columns")
     # replace first column with new columns 
     expect_equal_to_reference(split_columns(tabl), "rds/split_columns1.rds")
     expect_equal_to_reference(split_columns(tabl, split = "|", fixed = TRUE), "rds/split_columns1.rds")
@@ -116,7 +116,7 @@ if(isTRUE(getOption("covr"))) {
         split_columns(tabl_fre),
         "rds/split_columns_fre.rds",  update = FALSE)
     
-    cat("\nCONTEXT:", "split_table_to_df", "\n")
+    context("split_table_to_df")
     mtcars = apply_labels(mtcars,
                           cyl = "Number of cylinders",
                           vs = "Engine",
@@ -185,7 +185,7 @@ if(isTRUE(getOption("covr"))) {
                               "rds/split_table_to_df6b.rds",  update = FALSE)
     
     
-    cat("\nCONTEXT:", "split_columns subheading", "\n")
+    context("split_columns subheading")
     
     tabl = mtcars %>% 
         tab_cells(cyl, gear, carb) %>% 
@@ -280,7 +280,7 @@ if(isTRUE(getOption("covr"))) {
         "rds/split_subheadings13.rds",  update = FALSE)
     
     #############################
-    cat("\nCONTEXT:", "make_subheadings etable", "\n")
+    context("make_subheadings etable")
     
     tabl = mtcars %>% 
         tab_cells(am %nest% vs) %>% 

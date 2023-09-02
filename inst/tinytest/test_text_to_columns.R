@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "text_to_columns", "\n")
+context("text_to_columns")
 
 result = sheet(
     a = 1:3,

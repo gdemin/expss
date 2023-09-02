@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "create dictionary/apply_dictionary", "\n")
+context("create dictionary/apply_dictionary")
 
 
 df = sheet(

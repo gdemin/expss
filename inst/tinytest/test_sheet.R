@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "sheet", "\n")
+context("sheet")
 
 df1 = data.frame(a = letters[1:3], "This is my long name" = 1:3, 
                  check.names = FALSE,

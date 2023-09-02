@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "drop_unused_labels", "\n")
+context("drop_unused_labels")
 
 a = as.double(1:2)
 expect_identical(drop_unused_labels(a), a)

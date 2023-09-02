@@ -1,6 +1,6 @@
 ## examples form Microsoft Excel
 
-cat("\nCONTEXT:", "excel sumif", "\n")
+context("excel sumif")
 
 dfs = read.csv(
     text = "
@@ -93,7 +93,7 @@ expect_equal(
 
 
 
-cat("\nCONTEXT:", "excel averageif", "\n")
+context("excel averageif")
 
 dfs = read.csv(
     text = "
@@ -143,7 +143,7 @@ expect_equal(
 )
 
 
-cat("\nCONTEXT:", "excel minif/maxif", "\n")
+context("excel minif/maxif")
 
 dfs = read.csv(
     text = '
@@ -210,7 +210,7 @@ expect_equal(
     NA_real_
 )
 
-cat("\nCONTEXT:", "median/sd if", "\n")
+context("median/sd if")
 
 dfs = read.csv(
     text = "
@@ -278,7 +278,7 @@ expect_equal(
 )
 
 
-cat("\nCONTEXT:", "apply_if", "\n")
+context("apply_if")
 
 m_med = function(x) median(x, na.rm = TRUE)
 m_sd = function(x) sd(x, na.rm = TRUE)

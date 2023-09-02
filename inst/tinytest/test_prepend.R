@@ -1,5 +1,5 @@
 if(isTRUE(getOption("covr"))){ 
-    cat("\nCONTEXT:", "prepend_names/prepend_values", "\n")
+    context("prepend_names/prepend_values")
     
     data(mtcars)
     

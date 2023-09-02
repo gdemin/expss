@@ -1,4 +1,4 @@
-cat("\nCONTEXT:", "subtotal", "\n")
+context("subtotal")
 
 
 a = 1:7
@@ -432,7 +432,7 @@ if(as.numeric(version$major) >=4){
     expect_equal(output, res)
 }
 
-cat("\nCONTEXT:", "inside_columns with subtotal issue #102", "\n")
+context("inside_columns with subtotal issue #102")
 
 data(infert)
 res = infert %>% 
