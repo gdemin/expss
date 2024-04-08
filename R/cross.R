@@ -714,7 +714,7 @@ margin_from_cases = function(cases, margin = c("columns", "rows", "total")){
                     rows =  "cell_var",
                     total =  NULL
     )
-    by_str = paste(c(row_var_name, margin), collapse = ",")    
+    by_str = c(row_var_name, margin)
     dtotal = cases[, list(total = sum(value, na.rm = TRUE)), by = by_str]
     dtotal
 }
@@ -792,7 +792,7 @@ calculate_response_column_margin = function(raw_data,
     value = NULL
     if(stat_type=="cpct_responses" || any(total_statistic %in% c("u_responses", "w_responses"))){  
         if(has_row_var(raw_data)){
-            by_str = "row_var,col_var"
+            by_str = c("row_var", "col_var")
         } else {
             by_str = "col_var"
         }
@@ -875,7 +875,7 @@ rbindlist_and_aggregate = function(list_of_datatables){
        list_of_datatables = unlist(list_of_datatables, recursive = FALSE, use.names = FALSE)    
     }
     res = rbindlist(list_of_datatables, use.names = FALSE, fill = FALSE)
-    by_str = paste(colnames(res)[!(colnames(res) %in% "value")], collapse = ",")
+    by_str = setdiff(colnames(res), "value")
     res[, list(value = sum(value, na.rm = TRUE)), by = by_str]
      
 }
@@ -897,7 +897,7 @@ internal_cases = function(raw_data, col_var_names, cell_var_names = NULL, use_we
     if(is.null(col_var_names)) col_var_names = list(NULL) 
     res = lapply(cell_var_names, function(each_cell) { 
         res = lapply(col_var_names, function(each_col){
-            by_str = paste(c(row_var_name, each_cell, each_col), collapse = ",")
+            by_str = c(row_var_name, each_cell, each_col)
             if(use_weight){
                 dres = raw_data[, list(value = sum(weight, na.rm = TRUE)), 
                                 by = by_str] 
