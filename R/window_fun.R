@@ -36,8 +36,7 @@ window_fun.default = function(x, ...){
                "`window_fun` - all variables should be of the same length or length 1.")
         dt_table = as.data.table(c(list(x), grouping_variables))
         setnames(dt_table, c("x", grouping_names))
-        by_string = paste(grouping_names, collapse = ",")
-        dt_table[, res:=eval(expr), by = by_string]
+        dt_table[, res:=eval(expr), by = grouping_names]
         dt_table[["res"]]
     } else {
         rep(fun(x), length(x))

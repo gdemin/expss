@@ -500,7 +500,7 @@ elementary_cro_fun_df = function(cell_var,
 
     
     # statistics
-    by_string = "..row_var__,..col_var__"
+    by_string = c("..row_var__", "..col_var__")
     if(is.logical(use_lapply) && !use_lapply){
         if(is.null(weight)){
             dtable = raw_data[ , fun(.SD), by = by_string]
